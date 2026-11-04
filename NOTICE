@@ -1,0 +1,56 @@
+==============================================================================
+NOTICE — Quiet UI Skills (Visual Architecture System v4.5)
+Copyright (C) 2026 FrankXLT (https://github.com/FrankXLT/quiet-ui-skills)
+Licensed under the GNU Affero General Public License v3.0 (AGPL-3.0-only)
+with Additional Terms Pursuant to AGPLv3 Section 7 & Commercial Output Exemption
+==============================================================================
+
+This repository (`quiet-ui-skills`), including its agent skill definitions
+(`skills/visual-architecture-system/SKILL.md`, `references/*.md`), contract
+verifier (`verify_visual_contract.py`), and interactive showcase
+(`quiet-ui-showcase.html` / `docs/index.html`), is licensed under the
+GNU Affero General Public License v3.0 (`LICENSE`), subject to the following
+clarifications, exemptions, and AGPLv3 Section 7 additional terms:
+
+------------------------------------------------------------------------------
+1. Unconditional Output & Commercial UI Exemption (100% User Ownership)
+------------------------------------------------------------------------------
+The copyleft obligations of the GNU AGPLv3 apply ONLY to the `quiet-ui-skills`
+skill package, documentation, verifier scripts, and showcase files themselves.
+
+Any HTML, CSS, JavaScript, TypeScript, React/Vue/Svelte components, web
+applications, dashboards, slide decks, PDFs, or Home Assistant configurations
+generated *using* `quiet-ui-skills` belong 100% to the user and are NOT
+derivative works of this skill.
+
+Furthermore, `tokens/quiet-ui-tokens.css` is explicitly dual-licensed under the
+MIT License and GNU AGPLv3 so that you may freely embed, bundle, modify, or
+redistribute `quiet-ui-tokens.css` and any generated UI deliverables inside
+proprietary, closed-source, or commercial software and client deliverables
+without any AGPLv3 source-disclosure obligation on your application.
+
+------------------------------------------------------------------------------
+2. Prohibition on Standalone Skill Repackaging & Paid Skill Marketplaces
+------------------------------------------------------------------------------
+You may NOT repackage, rebrand, strip attribution from, sublicense under
+proprietary terms, or sell `quiet-ui-skills` itself (`SKILL.md`, `references/`,
+`verify_visual_contract.py`, or `quiet-ui-showcase.html`) as a paid standalone
+AI agent skill, paid prompt pack, or commercial skill-marketplace product.
+
+------------------------------------------------------------------------------
+3. Mandatory Upstream GitHub Link, Fork Lineage & Attribution
+   (Pursuant to GNU AGPLv3 Section 7(b)-(c) and Section 5(a))
+------------------------------------------------------------------------------
+Any modified version, redistribution, or derivative skill based on
+`quiet-ui-skills` MUST:
+
+  (a) Retain all copyright notices and this `NOTICE` file intact in all copies
+      and substantial portions of the skill;
+  (b) Prominently display an attribution notice and clickable link back to the
+      canonical upstream GitHub repository:
+      https://github.com/FrankXLT/quiet-ui-skills
+  (c) Clearly mark all modified files with prominent notices stating that you
+      changed the files and the date of each change (AGPLv3 Section 5(a)); and
+  (d) Be distributed under the GNU Affero General Public License v3.0 via a
+      publicly accessible repository or linked GitHub fork that preserves
+      upstream provenance to `FrankXLT/quiet-ui-skills`.

@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
+   Version: 4.5 (17-Tier Graduated Continuum + Earned Expressiveness C3 + Corner Dial)
+   License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
+            & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
+   ========================================================================== */
+
+:root {
+  /* 1. Offline System Typography Stacks & Tabular Numerals */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Source Serif 4', 'Newsreader', 'Charter', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --font-nums: tabular-nums slashed-zero;
+
+  /* 2. Default Density: D2 Balanced Operational (Default) */
+  --density-row-py: 6px;
+  --density-row-px: 10px;
+  --density-card-pad: 14px;
+  --density-grid-gap: 12px;
+  --density-font-scale: 0.9375rem;
+  --density-meta-display: inline-flex;
+
+  /* 3. 5-Stop Corner Radius Dial (auto, sharp=0px, subtle=6px, rounded=12px, soft=18px) */
+  --radius-card: 8px;
+  --radius-inner: 5px;
+  --radius-pill: 999px;
+
+  /* 4. Default Resolution Scaling (R2: 1440p QHD) */
+  --res-font-scale: 1;
+  --res-touch-min: 36px;
+  --res-grid-cols: 3;
+
+  /* 5. Zero-Shame Pacing & Time-Budget Tokens (Tier 13 App-5) */
+  --state-anchor: #475569;      /* Soft Slate — Fixed External Commitment */
+  --state-buffer: #65A30D;      /* Warm Sage — Transition & Recovery Buffer */
+  --state-held: #B45309;        /* Muted Ochre — Intentionally Deferred */
+  --state-breathing: rgba(148, 163, 184, 0.16); /* Unscheduled Margin */
+}
+
+/* ==========================================================================
+   5-Stop Corner Radius Dial Override (`data-corners="auto|sharp|subtle|rounded|soft"`)
+   ========================================================================== */
+
+:root[data-corners="sharp"] {
+  --radius-card: 0px;
+  --radius-inner: 0px;
+}
+:root[data-corners="subtle"] {
+  --radius-card: 6px;
+  --radius-inner: 4px;
+}
+:root[data-corners="rounded"] {
+  --radius-card: 12px;
+  --radius-inner: 8px;
+}
+:root[data-corners="soft"] {
+  --radius-card: 18px;
+  --radius-inner: 12px;
+}
+
+/* ==========================================================================
+   Color Themes (S1: Pure White, S2: Warm Paper, S3: Dark Paper, S4: Obsidian)
+   ========================================================================== */
+
+:root,
+[data-theme="white"] {
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F1F5F9;
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --border-hairline: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --accent-primary: #2563EB;
+  --status-ok: #15803D;
+  --status-warn: #B45309;
+  --status-danger: #B91C1C;
+  /* C3 Soft Surface Tint Tokens (Light) */
+  --tint-indigo-bg: #EEF2FF;  --tint-indigo-fg: #4338CA;
+  --tint-emerald-bg: #ECFDF5; --tint-emerald-fg: #047857;
+  --tint-amber-bg: #FFFBEB;   --tint-amber-fg: #B45309;
+  --tint-rose-bg: #FFF1F2;    --tint-rose-fg: #BE123C;
+  --tint-violet-bg: #F5F3FF;  --tint-violet-fg: #6D28D9;
+}
+
+[data-theme="paper"] {
+  --bg-canvas: #F6F4F0;
+  --bg-surface: #FCFBF9;
+  --bg-elevated: #EFECE6;
+  --bg-glass: rgba(252, 251, 249, 0.90);
+  --text-primary: #1C1917;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
+  --border-hairline: #E5E0D8;
+  --border-strong: #D6CFC7;
+  --accent-primary: #1D4ED8;
+  --status-ok: #15803D;
+  --status-warn: #B45309;
+  --status-danger: #B91C1C;
+  /* C3 Soft Surface Tint Tokens (Warm Paper) */
+  --tint-indigo-bg: #EBF0FA;  --tint-indigo-fg: #3730A3;
+  --tint-emerald-bg: #E8F5EE; --tint-emerald-fg: #065F46;
+  --tint-amber-bg: #FDF5E6;   --tint-amber-fg: #92400E;
+  --tint-rose-bg: #FCEEEF;    --tint-rose-fg: #9F1239;
+  --tint-violet-bg: #F1EEFA;  --tint-violet-fg: #5B21B6;
+}
+
+[data-theme="dark-paper"] {
+  --bg-canvas: #141413;
+  --bg-surface: #1C1B1A;
+  --bg-elevated: #262523;
+  --bg-glass: rgba(28, 27, 26, 0.88);
+  --text-primary: #EDEBE6;
+  --text-secondary: #A8A29E;
+  --text-muted: #78716C;
+  --border-hairline: #2E2D2A;
+  --border-strong: #44403C;
+  --accent-primary: #60A5FA;
+  --status-ok: #22C55E;
+  --status-warn: #F59E0B;
+  --status-danger: #EF4444;
+  /* C3 Soft Surface Tint Tokens (Dark Paper) */
+  --tint-indigo-bg: rgba(99, 102, 241, 0.14); --tint-indigo-fg: #A5B4FC;
+  --tint-emerald-bg: rgba(16, 185, 129, 0.14); --tint-emerald-fg: #6EE7B7;
+  --tint-amber-bg: rgba(245, 158, 11, 0.14);   --tint-amber-fg: #FCD34D;
+  --tint-rose-bg: rgba(244, 63, 94, 0.14);     --tint-rose-fg: #FDA4AF;
+  --tint-violet-bg: rgba(139, 92, 246, 0.14);  --tint-violet-fg: #C4B5FD;
+}
+
+[data-theme="dark"] {
+  --bg-canvas: #090D16;
+  --bg-surface: #0F1523;
+  --bg-elevated: #172033;
+  --bg-glass: rgba(15, 21, 35, 0.86);
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border-hairline: #1E293B;
+  --border-strong: #334155;
+  --accent-primary: #38BDF8;
+  --status-ok: #22C55E;
+  --status-warn: #F59E0B;
+  --status-danger: #EF4444;
+  /* C3 Soft Surface Tint Tokens (Obsidian Dark) */
+  --tint-indigo-bg: rgba(99, 102, 241, 0.16); --tint-indigo-fg: #A5B4FC;
+  --tint-emerald-bg: rgba(16, 185, 129, 0.16); --tint-emerald-fg: #6EE7B7;
+  --tint-amber-bg: rgba(245, 158, 11, 0.16);   --tint-amber-fg: #FCD34D;
+  --tint-rose-bg: rgba(244, 63, 94, 0.16);     --tint-rose-fg: #FDA4AF;
+  --tint-violet-bg: rgba(139, 92, 246, 0.16);  --tint-violet-fg: #C4B5FD;
+}
+
+/* ==========================================================================
+   3-Stop Color Discipline (C1: Quiet Monochrome, C2: Semantic, C3: Modern Expressive)
+   ========================================================================== */
+
+[data-chromatic="c1"],
+[data-color-policy="c1"] {
+  --status-ok: var(--text-secondary);
+  --status-warn: var(--text-primary);
+  --status-danger: var(--text-primary);
+  --tint-indigo-bg: var(--bg-elevated);  --tint-indigo-fg: var(--text-primary);
+  --tint-emerald-bg: var(--bg-elevated); --tint-emerald-fg: var(--text-primary);
+  --tint-amber-bg: var(--bg-elevated);   --tint-amber-fg: var(--text-primary);
+  --tint-rose-bg: var(--bg-elevated);    --tint-rose-fg: var(--text-primary);
+  --tint-violet-bg: var(--bg-elevated);  --tint-violet-fg: var(--text-primary);
+}
+
+/* ==========================================================================
+   Orthogonal Density Dial (D1: Spacious -> D4: Ultra-Dense 1px Hairline)
+   ========================================================================== */
+
+[data-density="d1"] {
+  --density-row-py: 10px;
+  --density-row-px: 14px;
+  --density-card-pad: 22px;
+  --density-grid-gap: 18px;
+  --density-font-scale: 1rem;
+  --density-meta-display: inline-flex;
+}
+
+[data-density="d3"] {
+  --density-row-py: 3px;
+  --density-row-px: 8px;
+  --density-card-pad: 10px;
+  --density-grid-gap: 8px;
+  --density-font-scale: 0.84rem;
+  --density-meta-display: inline-flex;
+}
+
+[data-density="d4"] {
+  --density-row-py: 1px;
+  --density-row-px: 6px;
+  --density-card-pad: 6px;
+  --density-grid-gap: 4px;
+  --density-font-scale: 0.78rem;
+  --density-meta-display: none;
+}
+
+/* ==========================================================================
+   Native 3-Breakpoint @media Viewport Scaling (Desktop >=1100px | Fold/Tablet 641-1099px | Phone <=640px)
+   ========================================================================== */
+
+@media (min-width: 1100px) { :root { --res-font-scale: 1.00; --res-touch-min: 36px; --res-grid-cols: 3; } }
+@media (min-width: 641px) and (max-width: 1099px) { :root { --res-font-scale: 0.95; --res-touch-min: 44px; --res-grid-cols: 2; } }
+@media (max-width: 640px) { :root { --res-font-scale: 0.92; --res-touch-min: 48px; --res-grid-cols: 1; } }
+/* ==========================================================================
+   Earned Expressiveness & Interactive Affordance Utilities (v4.5)
+   ========================================================================== */
+
+.va-nums {
+  font-variant-numeric: var(--font-nums);
+}
+
+.va-icon-well {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--tint-indigo-bg);
+  color: var(--tint-indigo-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.va-pill-btn {
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.va-tab-link {
+  height: 42px;
+  padding: 0 12px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+.va-tab-link.active {
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--accent-primary);
+}

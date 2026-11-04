@@ -1,0 +1,35 @@
+{
+  "schema": "visual-architecture-lock-v4.4",
+  "project": "Workspace Planner",
+  "mode": "M1_PRESERVE_AND_TUNE",
+  "archetype_tier": "11_APP_4_TASK_AND_CALENDAR_PLANNER",
+  "color_theme": "S1_PURE_WHITE_ALABASTER",
+  "default_density": "D2_BALANCED_WORKSPACE",
+  "color_restraint": "C2_SEMANTIC_CATEGORY_ACCENTS",
+  "navigation_topology": "N1_FULL_HEIGHT_LEFT_SIDEBAR",
+  "locked_invariants": {
+    "DO_NOT_REPLACE_SHELL": "Preserve N1 left navigation spine (Today | Schedule | Buckets | Insights) and 3-zone coupled planner geometry.",
+    "DO_NOT_REMOVE_CARD_CHROME": "Preserve white card containers (#ffffff on #f8fafc canvas), 1px solid #e2e8f0 borders, 8px border-radius, drag handles (::), and resize handles (.:) in DashboardView.tsx.",
+    "DO_NOT_ALTER_SPLIT_BUCKETS_LAYOUT": "Buckets view must retain the top 7-day rolling Horizon timeline (HorizonPane.tsx) above the bottom categorized Backlog columns (BacklogPane.tsx).",
+    "DO_NOT_ALTER_SCHEDULE_DRAWERS": "Schedule view (SchedulePane.tsx) must retain the 7-day calendar columns with collapsible 'All-Day & Untimed' top drawers.",
+    "DO_NOT_FORCE_DARK_OR_MONOSPACE": "Never switch the project into a dark-only terminal or replace sans-serif task titles with monospace fonts.",
+    "PRIORITY_BADGE_DISCIPLINE": "Keep URGENT in high-contrast red (#dc2626), HIGH in warm amber/slate, and MED/LOW in quiet neutral slate (PriorityBadge.tsx) so urgent items pop."
+  },
+  "component_map": {
+    "visual_style_engine": "frontend/src/utils/visualStyle.ts",
+    "dashboard_grid": "frontend/src/components/DashboardView.tsx",
+    "schedule_calendar": "frontend/src/components/SchedulePane.tsx",
+    "buckets_horizon_top": "frontend/src/components/HorizonPane.tsx",
+    "buckets_backlog_bottom": "frontend/src/components/BacklogPane.tsx",
+    "task_card": "frontend/src/components/TaskCard.tsx",
+    "priority_badge": "frontend/src/components/PriorityBadge.tsx"
+  },
+  "density_dial_overrides": {
+    "when_d3_high_density_requested": [
+      "Tighten task card padding from 10px/12px down to 5px/8px",
+      "Reduce vertical gap between task cards from 8px down to 4px",
+      "Render task metadata (due date, recurrence, category tag, priority) on a single compact inline row where possible",
+      "Allow multi-line task titles to clamp cleanly at 1 or 2 lines with hover expansion"
+    ]
+  }
+}
