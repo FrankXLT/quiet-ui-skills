@@ -201,6 +201,24 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
         if 'id="ha3-device-frame"' in content:
             errors.append("[HA3_BOX_VIOLATION] Fake hardware bezel #ha3-device-frame is forbidden; HA-3 must fill 100% viewport width.")
 
+    if tier == "ALL":
+        for v48_tok in (
+            "va-flow-spine",
+            "va-scoped-nav-box",
+            "va-fleet-card-3zone",
+            "va-icon-well-tile",
+            "va-bulk-action-bar",
+            "va-status-briefing",
+            "va-task-group-bar",
+            "va-priority-ring",
+            "va-timegrid-block",
+            "toggleDoc4BTableModal",
+            "closeTheDayApp4",
+            "syncUrlQueryParams",
+        ):
+            if v48_tok not in content:
+                errors.append(f"[V48_PATTERN_VIOLATION] Missing v4.8 domain pattern / URL deep-link token '{v48_tok}'.")
+
     return errors
 
 

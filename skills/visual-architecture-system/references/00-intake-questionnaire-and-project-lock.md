@@ -37,14 +37,29 @@ Before modifying any file in an existing repository (such as a **Task & Calendar
 
 ---
 
-## 2. Single-Pass 6-Question Intake Scorecard (Greenfield `Mode M3`)
+## 2. Autonomous Zero-Guidance Content-to-UI Compiler (`Mode M3` Default)
 
-When a user requests a brand-new deliverable and has not specified its visual parameters, present this compact scorecard so they can reply with a single 6-code shorthand (e.g., `11, D2, S1, C3, rounded, N1` or `14, D3, S4, C2, subtle, N1`):
+When a user provides raw domain content (markdown notes, API specs, container/node lists, tasks, SQL schemas, or Home Assistant entities) without specifying UI controls, **do not block on questions**—deterministically classify the input and compose the matching Tier, Navigation Shell (`N0`–`N4`), Pure White (`S1`) surface, and signature component blocks:
 
-> **Visual Architecture v4.6 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S1, C2, subtle, N1`):*
+| # | Input Content Signature | Target Tier & Nav | Mandatory Intra-Page Component Building Blocks |
+| :-: | :--- | :--- | :--- |
+| **1** | **Long-Form Prose / RFC / Math / Runbook** | `01. Doc-1` (`N1`), `02. Doc-2` (`N0`), `03. Doc-3` (`N0`), or `05. Doc-4A` (`N1`) | `text-wrap: balance` headings, `.va-breakout-grid` (`68ch–74ch` prose + wide tables), theme-aware `.va-mermaid-figure`, and (`Doc-4A`) split code runbook with `28px` right-edge collapse tab |
+| **2** | **Skill / CLI / API / SDK Reference** | `04. Doc-4B` (`N3`) | **2-Level Numbered Sidebar** (`1.0`, `2.1 /command`), **6-Stage Numbered Flow Spine (`.va-flow-spine`)** with `/slash-command` pills, and **Situation $\rightarrow$ Action Decision-Router Table** with `[View Full Table]` expand toggle |
+| **3** | **Fleet / Container / Node Inventory** *(Portainer / LibreNMS / Dozzle shape)* | `08. Bridge-2` (`N2`) or `12. App-3` (`N2`) | **Scoped Sidebar Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, **2×3 Icon-Well Summary Tiles (`.va-icon-well-tile`)**, and **Stateful Bulk-Action Table Toolbar (`.va-bulk-action-bar`)** with 5-icon Quick Actions |
+| **4** | **Tasks / Planner / Daily Schedule** *(OpenTodo / Linear shape)* | `11. App-4` (`N1`) or `13. App-5` (`N1`) | **1-Sentence Human Status Briefing (`.va-status-briefing`)**, **Tinted Section Header Bars with Batch Actions (`.va-task-group-bar`)**, **Priority-Ring Task Rows (`.va-priority-ring`)** + `[Close the day]`, and **Pastel `3px`-Left-Bar Hourly Time-Blocks (`.va-timegrid-block`)** with red "Now" line |
+| **5** | **Schema / Tree / Logs** *(App-Tree / Grafana shape)* | `14. App-Tree` (`N1`) or `10. App-1` (`N1`) | Coupled 3-pane explorer (`.va-tree-pane` preserved in `N0/N2/N4` on `>640px`), `28px` edge collapse tabs, joined `Key \| Value` filter pills, and 3-column log/row inspection |
+| **6** | **Smart Home / Wall Kiosk / Companion** | `15. HA-1` (`N0`), `16. HA-2` (`N1`), or `17. HA-3` (`N4`) | `HA-1` Monet canvas + Frosted Light/Dark Glass HUD (`.ha1-glass-hud`), `HA-2` room cards (`<= 4` metrics/room), `HA-3` circular quick-toggle matrix & split-capsule bottom thumb bar |
+
+---
+
+## 3. Single-Pass 6-Question Intake Scorecard (Interactive Greenfield `Mode M4`)
+
+When a user explicitly asks to configure visual parameters before building, present this compact scorecard so they can reply with a single 6-code shorthand (e.g., `11, D2, S1, C3, rounded, N1` or `14, D3, S4, C2, subtle, N1`):
+
+> **Visual Architecture v4.8 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S1, C2, subtle, N1`):*
 > 1. **Deliverable Archetype (`01`–`17`):**
->    - *Docs & Decks:* `01` Academic Monograph · `02` Executive Memo (`BLUF` + Mermaid) · `03` Normative RFC (+ Mermaid FSM) · `04` SDK/API Reference · `05` Split-Pane Runbook (+ Mermaid Seq) · `06` Parametric Worksheet · `07` Briefing Stage
->    - *Data, Workspaces & Explorers:* `08` High-Density Data Table (`1px` Grid) · `09` Live Metrics & Time-Series Console · `10` Compact Issue & Ticket Tracker · `11` Task & Calendar Planner (+ Focus Hero) · `12` KPI & Analytics Dashboard (Bento Grid) · `13` Daily Pacing & Wellness Planner (+ Readiness Ring Hero) · `14` **`App-Tree` Schema, Tree & File Explorer Workbench**
+>    - *Docs & Decks:* `01` Academic Monograph · `02` Executive Memo (`BLUF` + Mermaid) · `03` Normative RFC (+ Mermaid FSM) · `04` SDK/Skill Reference (Flow Spine + Router Table) · `05` Split-Pane Runbook (+ Mermaid Seq) · `06` Parametric Worksheet · `07` Briefing Stage
+>    - *Data, Workspaces & Explorers:* `08` High-Density Fleet/Data Table (`1px` Grid + Bulk Toolbar) · `09` Live Metrics & Time-Series Console · `10` Compact Issue & Ticket Tracker · `11` Task & Calendar Planner (Status Briefing + Priority Rings + Time-Grid) · `12` KPI & Fleet Bento Dashboard (3-Zone Fleet Cards + `2x3` Icon-Well Tiles) · `13` Daily Pacing & Wellness Planner (+ Readiness Ring Hero) · `14` **`App-Tree` Schema, Tree & File Explorer Workbench**
 >    - *Home Assistant:* `15` HA-1 Ambient Wall Kiosk (Monet + Frosted Glass) · `16` HA-2 Room-First Wall Control Panel · `17` HA-3 Crease-Aware Foldable & Phone Controller
 > 2. **Compactness / Density (`D1`–`D4`):** `D1` Relaxed · `D2` Balanced *(Default)* · `D3` Compact · `D4` Ultra-Dense Hairline
 > 3. **Color Theme (`S1–S4`):** `S1` Pure White *(Default across all 17 tiers)* · `S2` Warm Paper · `S3` Dark Paper · `S4` Obsidian Dark
@@ -54,5 +69,6 @@ When a user requests a brand-new deliverable and has not specified its visual pa
 >    - `N0` **Zero-Chrome Kiosk / Ambient Canvas** (`07. Deck-1`, `15. HA-1` — `0px` nav bars)
 >    - `N1` **Full-Height Left Sidebar / Spine** (`10. App-1`, `11. App-4`, `13. App-5`, `14. App-Tree`, `16. HA-2` — `220px` collapsible to `60px` via `.va-hamburger-btn`)
 >    - `N2` **Single Top Command Bar** (`08. Bridge-2`, `12. App-3` — single `42px` borderless `.va-tab-link` bar)
->    - `N3` **Hybrid Enterprise L-Shell** (`04. Doc-4B` — `38px` global top bar + `220px` local left section tree)
->    - `N4` **Sticky Bottom Thumb-Zone Dock** (`17. HA-3` and `R5` `390px` mobile — `48px–52px` 5-slot bottom thumb bar)
+>    - `N3` **Hybrid Enterprise L-Shell** (`04. Doc-4B` — `42px` global top bar + `220px` local left section tree)
+>    - `N4` **Sticky Bottom Thumb-Zone Dock** (`17. HA-3` and `R5` `390px` mobile — `40px` desktop pill / `52px` mobile 5-slot thumb bar)
+

@@ -1,21 +1,29 @@
 ---
 name: visual-architecture-system
-description: Master 17-tier anti-slop visual design and UI architecture system (v4.6) with Universal Pure White (S1) Default, Outer Stage Frame, Non-Overlapping Top Studio Bar (#va-floating-dock) & OA Workbench Sticky Sidebar Footer Swatches (.va-oa-sidebar-footer), Brownfield Project Lock (.visual-lock.json), Earned Expressiveness (C3 + 3-Zone Expressiveness Envelope + Interactive Affordance Pill Law), 5-Stop Corner Radius Dial (auto/sharp/subtle/rounded/soft), Font Awesome 6 Vector Icon Taxonomy (zero unicode emojis), Clean N0-N4 Navigation with Hamburger Rail Collapse, Theme-Aware Mermaid Diagrams, App-4/App-5 Hero Cards, App-Tree Schema & File Explorer Workbench (Domain Pane preserved across N0-N4), and Home Assistant spatial archetypes (HA-1 Monet Light Glass, HA-2, HA-3). Use whenever generating, styling, refactoring, density-tuning, or specifying HTML, PDF documents, slide decks, web apps, schema/tree explorers, or Home Assistant dashboards.
+description: Master 17-tier anti-slop visual design and UI architecture system (v4.8) with Autonomous Zero-Guidance Content-to-UI Compiler, Universal Pure White (S1) Default, Outer Stage Frame, Compact Zero-Scroll Top Studio Bar (#va-floating-dock) & OA Workbench Sticky Sidebar Footer Swatches (.va-oa-sidebar-footer), Shareable URL Query-Param Deep Linking, AI Hero 6-Stage Flow Spine (.va-flow-spine) & Decision-Router Table, Portainer Fleet 3-Zone Cards (.va-fleet-card-3zone) & Bulk-Action Toolbar (.va-bulk-action-bar), OpenTodo Human Status Briefing (.va-status-briefing) + Priority Rings (.va-priority-ring) & 3px-Left-Bar Time-Blocks (.va-timegrid-block), App-Tree Schema & File Explorer Workbench, and Home Assistant spatial archetypes (HA-1 Monet Light Glass, HA-2, HA-3). Use whenever generating, styling, refactoring, density-tuning, or specifying HTML, PDF documents, slide decks, web apps, schema/tree explorers, or Home Assistant dashboards.
 ---
-# Visual Architecture System v4.6 (17-Tier Continuum + Pure White `S1` Default + Top Studio Bar & OA Swatches + `App-Tree` Workbench)
+# Visual Architecture System v4.8 (Autonomous Content-to-UI Compiler + 17-Tier Pure White `S1` Continuum + AI Hero, Portainer & OpenTodo Patterns)
 
-You are a Principal Design Technologist and Systems Architect. Your mandate is to eliminate "AI Dashboard Slop" while protecting established project visual identities via **Gate 0 (Brownfield Project Lock)**, **Universal Pure White (`S1`, `data-theme="white"`) Default**, **Outer Perimeter Breathing Room**, and **Earned Expressiveness (`C3` + 3-Zone Expressiveness Envelope)**.
+You are a Principal Design Technologist and Systems Architect. Your mandate is to eliminate "AI Dashboard Slop" while protecting established project visual identities via **Gate 0 (Brownfield Project Lock & Autonomous Content-to-UI Compiler)**, **Universal Pure White (`S1`, `data-theme="white"`) Default**, **Outer Perimeter Breathing Room**, and **Earned Expressiveness (`C3` + 3-Zone Expressiveness Envelope)**.
 
 > **Plain-Language UI Copy & Zero-Emoji Law (MANDATORY):** Always use plain, everyday English for UI labels, headings, and tooltips. Never expose internal debug strings (`11. APP-4 //`, `(N2 MASTHEAD)`, `(85% BOX WEIGHT)`) in visible `<header>`, `<nav>`, `<aside>`, or `<h1>` elements, and never use unicode emojis (`✨`, `⚡`, `☀`, `🛡`, `●`) in production UI—use **Font Awesome 6 (`fa-solid`)** or inline vector SVGs.
 
 ---
 
-## 0. GATE 0: BROWNFIELD PROJECT LOCK vs. GREENFIELD DISCOVERY (RUN FIRST)
+## 0. GATE 0: BROWNFIELD PROJECT LOCK & AUTONOMOUS CONTENT-TO-UI COMPILER (RUN FIRST)
 
-Before applying any template, check the workspace for `.visual-lock.json` or existing CSS/components (see `references/00-intake-questionnaire-and-project-lock.md`).
+Before applying any template, check the workspace for `.visual-lock.json` or existing CSS/components (see `references/00-intake-questionnaire-and-project-lock.md`):
 - **Mode `M1` — Brownfield Lock Active:** NEVER switch the project's archetype, Color Theme (`S1–S4`), or card geometry. Only adjust `--density-*` tokens (`D1`–`D4`) or the specific component requested.
 - **Mode `M2` — Brownfield Adoption:** Extract the existing project's colors, fonts, and layout into `.visual-lock.json` before making requested refinements.
-- **Mode `M3` — Greenfield New Deliverable:** Present the **6-Axis Single-Pass Intake Scorecard** (`M, D, S, C, R, N`) from `references/00-intake-questionnaire-and-project-lock.md` (user replies in one line, e.g. `11, D2, S1, C3, rounded, N1`).
+- **Mode `M3` — Autonomous Zero-Guidance Content-to-UI Compiler (Default When User Provides Raw Content):**
+  When a user provides raw domain content (notes, docs, fleet inventories, task lists, schemas, or smart-home entities) without specifying UI controls, **deterministically detect the content signature** and compile the optimal Tier (`01`–`17`), Navbar (`N0`–`N4`), Theme (`Pure White S1` default), and intra-page component blocks:
+  1. **Long-Form Prose / RFC / Math / Runbook** $\rightarrow$ `01. Doc-1`, `02. Doc-2` (`BLUF` + Mermaid), or `05. Doc-4A` (Split Code Runbook + `28px` right-edge collapse tab).
+  2. **Skill / CLI / API / SDK Reference** $\rightarrow$ `04. Doc-4B` (`N3`) with **2-Level Numbered Sidebar (`1.0`, `2.1 /command`)**, **6-Stage Numbered Flow Spine (`.va-flow-spine`)** with `/slash-command` pills, and **Situation $\rightarrow$ Action Decision-Router Table** with `[View Full Table]` expand toggle.
+  3. **Fleet / Container / Node Inventory (Portainer / LibreNMS / Dozzle shape)** $\rightarrow$ `08. Bridge-2` (`N2`) or `12. App-3` with **Scoped Sidebar Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, **2×3 Icon-Well Summary Tiles (`.va-icon-well-tile`)**, and **Stateful Bulk-Action Table Toolbar (`.va-bulk-action-bar`)**.
+  4. **Tasks / Planner / Daily Schedule (OpenTodo / Linear shape)** $\rightarrow$ `11. App-4` (`N1`) or `13. App-5` with **1-Sentence Human Status Briefing (`.va-status-briefing`)**, **Tinted Section Header Bars with Batch Actions (`.va-task-group-bar`)**, **Priority-Ring Task Rows (`.va-priority-ring`)** + `[Close the day]`, and **Pastel `3px`-Left-Bar Hourly Time-Blocks (`.va-timegrid-block`)** with a red current-time line.
+  5. **Schema / Tree / Logs (App-Tree / Grafana shape)** $\rightarrow$ `14. App-Tree` (`N1`) or `10. App-1` with coupled 3-pane explorer, joined `Key | Value` filter pills, and 3-column log/row inspection.
+  6. **Smart Home / Wall Kiosk / Companion (`HA-1..HA-3`)** $\rightarrow$ `15. HA-1`..`17. HA-3` with circular quick-toggle matrix and split-capsule bottom bar.
+- **Mode `M4` — Interactive Greenfield Scorecard:** If the user explicitly asks to choose options before building, present the **6-Axis Single-Pass Intake Scorecard** (`M, D, S, C, R, N`) from `references/00-intake-questionnaire-and-project-lock.md`.
 
 ---
 

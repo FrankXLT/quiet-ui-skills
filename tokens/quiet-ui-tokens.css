@@ -1,11 +1,18 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 4.6 (17-Tier Continuum + Pure White Default + Top Studio Bar + OA Swatches)
+   Version: 4.8 (Autonomous Content-to-UI Compiler + AI Hero, Portainer & OpenTodo Patterns)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
 
 :root {
+  /* 0. Modern CSS Foundation (good-css.com & aihero.dev) */
+  interpolate-size: allow-keywords;
+  text-wrap: pretty;
+  font-synthesis: none;
+  scrollbar-gutter: stable;
+  -webkit-font-smoothing: antialiased;
+
   /* 1. Offline System Typography Stacks & Tabular Numerals */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Source Serif 4', 'Newsreader', 'Charter', 'Iowan Old Style', Georgia, serif;
@@ -37,26 +44,13 @@
   --state-breathing: rgba(148, 163, 184, 0.16); /* Unscheduled Margin */
 }
 
-/* ==========================================================================
-   5-Stop Corner Radius Dial Override (`data-corners="auto|sharp|subtle|rounded|soft"`)
-   ========================================================================== */
+h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
-:root[data-corners="sharp"] {
-  --radius-card: 0px;
-  --radius-inner: 0px;
-}
-:root[data-corners="subtle"] {
-  --radius-card: 6px;
-  --radius-inner: 4px;
-}
-:root[data-corners="rounded"] {
-  --radius-card: 12px;
-  --radius-inner: 8px;
-}
-:root[data-corners="soft"] {
-  --radius-card: 18px;
-  --radius-inner: 12px;
-}
+/* 5-Stop Corner Radius Dial Override (`data-corners="auto|sharp|subtle|rounded|soft"`) */
+:root[data-corners="sharp"]   { --radius-card: 0px;  --radius-inner: 0px; }
+:root[data-corners="subtle"]  { --radius-card: 6px;  --radius-inner: 4px; }
+:root[data-corners="rounded"] { --radius-card: 12px; --radius-inner: 8px; }
+:root[data-corners="soft"]    { --radius-card: 18px; --radius-inner: 12px; }
 
 /* ==========================================================================
    Color Themes (S1: Pure White [Default], S2: Warm Paper, S3: Dark Paper, S4: Obsidian)
@@ -269,15 +263,21 @@
   border-bottom-color: var(--accent-primary);
 }
 
-.va-side-link {
-  margin: 2px 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border-left: 3px solid transparent;
-}
-.va-side-link.active {
-  border-left-color: var(--accent-primary);
-  background: var(--tint-indigo-bg);
-  color: var(--text-primary);
-  font-weight: 600;
-}
+.va-side-link { margin: 2px 6px; padding: 6px 10px; border-radius: 6px; border-left: 3px solid transparent; }
+.va-side-link.active { border-left-color: var(--accent-primary); background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600; }
+
+/* v4.8 Subgrid Card Alignment, Editorial Content-Breakout Grid & Domain Component Helpers */
+.va-subgrid-card { display: grid; grid-row: span 3; grid-template-rows: subgrid; gap: 8px; }
+.va-breakout-grid { display: grid; grid-template-columns: [full-start] minmax(16px, 1fr) [content-start] min(72ch, 100% - 32px) [content-end] minmax(16px, 1fr) [full-end]; }
+.va-breakout-grid > * { grid-column: content; }
+.va-breakout-grid > .va-breakout-wide { grid-column: full; }
+.va-flow-spine { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.va-scoped-nav-box { border: 1px solid var(--border-strong); border-radius: var(--radius-inner); padding: 8px; background: var(--bg-surface); }
+.va-fleet-card-3zone { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 12px 16px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
+.va-icon-well-tile { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
+.va-bulk-action-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 12px; background: var(--bg-elevated); border-bottom: 1px solid var(--border-hairline); flex-wrap: wrap; }
+.va-status-briefing { padding: 10px 14px; border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; font-size: 0.85rem; }
+.va-task-group-bar { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: var(--tint-amber-bg); border-radius: var(--radius-inner); font-size: 0.75rem; font-weight: 600; }
+.va-priority-ring { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent-primary); display: inline-block; flex-shrink: 0; }
+.va-timegrid-block { border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; padding: 6px 10px; }
+
