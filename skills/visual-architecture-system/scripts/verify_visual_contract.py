@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Automated Visual Architecture Contract Verifier (v4.5 - 17-Tier Continuum + Earned Expressiveness + App-Tree)
+Automated Visual Architecture Contract Verifier (v4.6 - 17-Tier Continuum + Pure White Default + Top Studio Bar & OA Swatches)
 License: GNU AGPLv3 + Section 7 NOTICE (with Unconditional Commercial UI Output Exemption;
          tokens/quiet-ui-tokens.css dual-licensed MIT)
 Usage:
@@ -64,13 +64,13 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
         if m:
             errors.append(f"[PII_VIOLATION] Forbidden personal/internal identifier matched: '{m.group(0)}'")
 
-    # 0B. Zero-Emoji & Font Awesome 6 Vector Icon Contract (v4.5)
+    # 0B. Zero-Emoji & Font Awesome 6 Vector Icon Contract (v4.6)
     for emoji in FORBIDDEN_EMOJIS:
         if emoji in content:
             errors.append(f"[EMOJI_VIOLATION] Banned unicode emoji/entity found: {emoji!r}. Use Font Awesome 6 (fa-solid).")
     for fa_tok in ("font-awesome", "fa-solid", "va-hamburger-btn", "toggleLeftRailCollapse"):
         if fa_tok not in content:
-            errors.append(f"[ICON_NAV_VIOLATION] Missing v4.5 Font Awesome / rail-collapse token: '{fa_tok}'.")
+            errors.append(f"[ICON_NAV_VIOLATION] Missing v4.6 Font Awesome / rail-collapse token: '{fa_tok}'.")
 
     # 1. Offline Font & Tabular Numeral Contract
     if "fonts.googleapis.com" in content or "fonts.gstatic.com" in content:
@@ -78,16 +78,26 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
     if "tabular-nums" not in content:
         errors.append("[TYPOGRAPHY_VIOLATION] Missing 'tabular-nums' numeric discipline in CSS.")
 
-    # 2. Zero-Hotkey & Layer 0 Floating Bottom Dock Contract
+    # 2. Zero-Hotkey & v4.6 Top Studio Bar + OA Sidebar Swatches Contract
     if re.search(r"addEventListener\(\s*['\"]keydown['\"]", content):
         errors.append("[HOTKEY_VIOLATION] Global keydown listener detected. Theme/density/tier switching must use UI controls.")
     if 'id="va-topbar"' in content or 'class="continuum-topbar"' in content:
-        errors.append("[TOPBAR_VIOLATION] Global top showcase bar (#va-topbar / .continuum-topbar) is forbidden.")
-    for tok in ('id="va-floating-dock"', 'id="va-display-trigger"', 'id="va-dock-nav-cycle"', 'id="va-display-popover"', "data-corner="):
+        errors.append("[TOPBAR_VIOLATION] Legacy #va-topbar / .continuum-topbar is forbidden.")
+    for tok in (
+        'id="va-floating-dock"',
+        'id="va-studio-tier-select"',
+        'id="va-display-trigger"',
+        'id="va-dock-nav-cycle"',
+        'id="va-display-popover"',
+        'class="va-oa-sidebar-footer',
+        'id="va-drawer-scrim"',
+    ):
         if tok not in content:
-            errors.append(f"[FLOATING_DOCK_VIOLATION] Missing Layer 0 Floating Bottom HUD token: {tok}")
+            errors.append(f"[STUDIO_BAR_VIOLATION] Missing v4.6 Top Studio Bar / OA Swatches token: {tok}")
 
-    # 3. 4-Mode Color Theme, Density Dial (d1..d4), 5-Stop Corner Dial, C3 Expressive, 5-Resolution & N0-N4 Nav Shell
+    # 3. 4-Mode Color Theme (S1 Pure White Default), Density Dial (d1..d4), 5-Stop Corner Dial, C3 Expressive & N0-N4 Nav Shell
+    if 'data-theme="white"' not in content[:600]:
+        errors.append('[WHITE_DEFAULT_VIOLATION] <html> tag must default to data-theme="white" (S1 Pure White).')
     for theme_attr in ('data-theme="white"', 'data-theme="paper"', 'data-theme="dark-paper"', 'data-theme="dark"'):
         if theme_attr not in content:
             errors.append(f"[THEME_ENGINE_VIOLATION] Missing CSS selector for {theme_attr} in 4-mode color theme engine.")
@@ -96,10 +106,10 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
             errors.append(f"[DENSITY_ENGINE_VIOLATION] Missing CSS selector for {density_attr} in 4-level compactness dial.")
     for corner_tok in ('id="corners-switcher-bar"', 'data-corners="sharp"', 'data-corners="subtle"', 'data-corners="rounded"', 'data-corners="soft"', "--radius-card", "--radius-inner", "--radius-pill", "setCornerStyle"):
         if corner_tok not in content:
-            errors.append(f"[CORNER_DIAL_VIOLATION] Missing v4.5 5-stop Corner Radius Dial token: '{corner_tok}'.")
+            errors.append(f"[CORNER_DIAL_VIOLATION] Missing v4.6 5-stop Corner Radius Dial token: '{corner_tok}'.")
     for c3_tok in ('data-color-policy="c3"', "--tint-indigo-bg", "va-icon-well", "va-pill-btn", "va-seg-pills"):
         if c3_tok not in content:
-            errors.append(f"[EXPRESSIVE_C3_VIOLATION] Missing v4.5 C3 Modern Expressive / Pill Affordance token: '{c3_tok}'.")
+            errors.append(f"[EXPRESSIVE_C3_VIOLATION] Missing v4.6 C3 Modern Expressive / Pill Affordance token: '{c3_tok}'.")
     for media_tok in (
         "@media (min-width: 1100px)",
         "@media (min-width: 641px) and (max-width: 1099px)",
@@ -157,7 +167,7 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
     if tier in ("ALL", "APP-4"):
         for req_cls in ("app4-focus-hero", "app4-staging-tray", "app4-command-composer", "app4-token-preview", "app4-continuity-strip"):
             if req_cls not in content:
-                errors.append(f"[APP4_VIOLATION] Missing v4.5 Temporal Workbench class '.{req_cls}' in App-4.")
+                errors.append(f"[APP4_VIOLATION] Missing v4.6 Temporal Workbench class '.{req_cls}' in App-4.")
 
     if tier in ("ALL", "APP-3"):
         for layer_cls in ("bento-layer1-header", "bento-layer2-hero", "bento-layer3-proof", "bento-layer4-footer"):
@@ -167,12 +177,12 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
     if tier in ("ALL", "APP-5"):
         for req_cls in ("app5-hero-grid", "app5-readiness-ring", "app5-day-timeline", "life1-stepping-stones", "--state-anchor", "--state-buffer", "--state-held"):
             if req_cls not in content:
-                errors.append(f"[APP5_VIOLATION] Missing v4.5 Restorative Companion token '{req_cls}' in App-5.")
+                errors.append(f"[APP5_VIOLATION] Missing v4.6 Restorative Companion token '{req_cls}' in App-5.")
 
     if tier in ("ALL", "APP-TREE"):
-        for req_cls in ("va-tree-workbench", "va-tree-pane", "va-tree-node", "va-tree-guide", "va-tree-inspector", "setTreeMode", "switchTreeTab"):
+        for req_cls in ("va-tree-workbench", "va-tree-pane", "va-tree-node", "va-tree-guide", "va-tree-inspector", "setTreeMode", "switchTreeTab", "toggleAppTreePane"):
             if req_cls not in content:
-                errors.append(f"[APPTREE_VIOLATION] Missing v4.5 Tree/Schema Explorer token '{req_cls}' in App-Tree.")
+                errors.append(f"[APPTREE_VIOLATION] Missing v4.6 Tree/Schema Explorer token '{req_cls}' in App-Tree.")
 
     if tier in ("ALL", "HA-1"):
         for req_cls in ("ha1-stage", "ha1-monet-img", "monet_water_lilies_1906.jpg", "ha1-glass-hud", "ha1-giant-clock"):
@@ -213,7 +223,7 @@ def main() -> None:
             print(f"  - {e}")
         sys.exit(1)
     else:
-        print(f"[PASS] 100% of Visual Architecture v4.5 checks succeeded for '{html_file}' (Tier={tier_arg}).")
+        print(f"[PASS] 100% of Visual Architecture v4.6 checks succeeded for '{html_file}' (Tier={tier_arg}).")
         sys.exit(0)
 
 

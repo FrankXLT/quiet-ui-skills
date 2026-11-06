@@ -1,6 +1,6 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 4.5 (17-Tier Graduated Continuum + Earned Expressiveness C3 + Corner Dial)
+   Version: 4.6 (17-Tier Continuum + Pure White Default + Top Studio Bar + OA Swatches)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
@@ -59,14 +59,15 @@
 }
 
 /* ==========================================================================
-   Color Themes (S1: Pure White, S2: Warm Paper, S3: Dark Paper, S4: Obsidian)
+   Color Themes (S1: Pure White [Default], S2: Warm Paper, S3: Dark Paper, S4: Obsidian)
    ========================================================================== */
 
 :root,
 [data-theme="white"] {
-  --bg-canvas: #F8FAFC;
+  --bg-shell: #F1F5F9;
+  --bg-canvas: #FFFFFF;
   --bg-surface: #FFFFFF;
-  --bg-elevated: #F1F5F9;
+  --bg-elevated: #F8FAFC;
   --bg-glass: rgba(255, 255, 255, 0.88);
   --text-primary: #0F172A;
   --text-secondary: #334155;
@@ -86,6 +87,7 @@
 }
 
 [data-theme="paper"] {
+  --bg-shell: #EFECE6;
   --bg-canvas: #F6F4F0;
   --bg-surface: #FCFBF9;
   --bg-elevated: #EFECE6;
@@ -108,6 +110,7 @@
 }
 
 [data-theme="dark-paper"] {
+  --bg-shell: #0E0D0C;
   --bg-canvas: #141413;
   --bg-surface: #1C1B1A;
   --bg-elevated: #262523;
@@ -130,6 +133,7 @@
 }
 
 [data-theme="dark"] {
+  --bg-shell: #05070B;
   --bg-canvas: #090D16;
   --bg-surface: #0F1523;
   --bg-elevated: #172033;
@@ -205,9 +209,15 @@
 @media (min-width: 1100px) { :root { --res-font-scale: 1.00; --res-touch-min: 36px; --res-grid-cols: 3; } }
 @media (min-width: 641px) and (max-width: 1099px) { :root { --res-font-scale: 0.95; --res-touch-min: 44px; --res-grid-cols: 2; } }
 @media (max-width: 640px) { :root { --res-font-scale: 0.92; --res-touch-min: 48px; --res-grid-cols: 1; } }
+
 /* ==========================================================================
-   Earned Expressiveness & Interactive Affordance Utilities (v4.5)
+   Earned Expressiveness, Outer Stage Frame & Active Rail Utilities (v4.6)
    ========================================================================== */
+
+.va-stage-outer {
+  padding: 8px 10px;
+  background: var(--bg-shell);
+}
 
 .va-nums {
   font-variant-numeric: var(--font-nums);
@@ -257,4 +267,17 @@
   color: var(--text-primary);
   font-weight: 600;
   border-bottom-color: var(--accent-primary);
+}
+
+.va-side-link {
+  margin: 2px 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+.va-side-link.active {
+  border-left-color: var(--accent-primary);
+  background: var(--tint-indigo-bg);
+  color: var(--text-primary);
+  font-weight: 600;
 }

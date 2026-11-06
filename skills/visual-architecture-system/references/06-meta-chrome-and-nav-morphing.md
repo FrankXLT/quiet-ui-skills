@@ -35,10 +35,14 @@ Load Font Awesome 6 CSS (`https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.
 
 ---
 
-## 3. Editorial Purity & Zero Debug Header Law
+## 3. Editorial Purity, Zero Debug Header Law & Top Studio Bar + OA Sidebar Swatches (`v4.6`)
 
 1. **Zero SaaS Account Pod in Editorial Tiers (`01. Doc-1`–`06. Bridge-1`):** Documentation, RFCs, API references, and worksheets must NEVER render `.va-account-pod` (`AR · Author`) or account popovers. Replace right-hand masthead slots with document-native utilities (`[/] Search Corpus` + `.va-pill-btn` `PDF`).
-2. **Zero Internal Debug Strings in Headers:** Never render `11. APP-4 //`, `(N2 MASTHEAD)`, or `(85% BOX WEIGHT)` in visible `<header>`, `<nav>`, `<aside>`, or `<h1>` elements. Tier numbers belong exclusively inside the Layer 0 `#va-floating-dock` / `#va-display-popover`.
+2. **Zero Internal Debug Strings in Headers:** Never render `11. APP-4 //`, `(N2 MASTHEAD)`, or `(85% BOX WEIGHT)` in visible `<header>`, `<nav>`, `<aside>`, or `<h1>` elements.
+3. **Non-Overlapping Top Studio Bar (`#va-floating-dock`) + OA Workbench Sidebar Footer Swatches (`.va-oa-sidebar-footer`):**
+   - Dock `#va-floating-dock` at `position: sticky; top: 0; z-index: 900; width: 100%; min-height: 40px;` ABOVE `.va-stage-outer` so it never overlaps bottom `N4` docks or right-hand inspectors.
+   - Every left sidebar includes `.va-oa-sidebar-footer.va-rail-hide` at the bottom with 4 circular theme swatches (`White`, `Paper`, `Sepia`, `Dark`), `Soft / Crisp`, and `D1 / D2 / D3` pills.
+   - Opening the drawer on `<= 1099px` activates the theme-matched backdrop scrim (`#va-drawer-scrim`) and morphs `.va-hamburger-btn i` from `fa-bars` to `fa-xmark`.
 
 ---
 

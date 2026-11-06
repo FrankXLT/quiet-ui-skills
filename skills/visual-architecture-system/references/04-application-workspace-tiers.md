@@ -41,13 +41,16 @@ Designed for finite daily human energy, transition-friction visibility, and real
 
 ---
 
-## 5. Tier `14. App-Tree` — Hierarchical Tree, Schema & File Explorer Workbench (`90% 3-Pane`, Default `S4` Dark, `N1`)
+## 5. Tier `14. App-Tree` — Hierarchical Tree, Schema & File Explorer Workbench (`90% 3-Pane`, Default `S1` White, `N1`)
 
 Dedicated archetype for Database Schema Browsers, Git/IDE File Explorers, JSON/AST Inspectors, and Configuration Hierarchies:
-- **3-Pane Coupled Layout (`height: 100dvh; overflow: hidden`):**
-  1. **Left Hierarchical Tree Explorer (`.va-tree-pane`, `260px`, collapsible to `60px`):** Dual-Mode Switcher (`.va-seg-pills`: `DB Schema` vs. `Repo Files`), live tree filter input, and nested `.va-tree-node` rows (`28px` height) with `1px` `.va-tree-guide` vertical indent lines, rotating `fa-chevron-right` carets, color-coded Font Awesome icons (`fa-database`, `fa-table`, `fa-key`, `fa-link`, `fa-folder-open`, `fa-file-code`), and right-aligned monospace type/row-count badges (`UUID PK`, `BIGINT`, `JSONB`, `142k`).
+- **Domain Workbench Pane Preservation Across `N0`, `N2`, and `N4` + `28px` Collapsible Edge Tabs (`v4.6`):**
+  - Unlike ordinary navigation sidebars, `.va-tree-pane` (`Object Explorer`) is the primary **Domain Workbench Pane** of `14. App-Tree` and remains visible (`260px` on desktop, `200px` on `641–1099px`) even when `N0`, `N2`, or `N4` is selected.
+  - Both `.va-tree-pane` (`#va-tree-left-pane`) and `.va-tree-inspector` (`#va-tree-right-pane`) include `«` / `»` collapse triggers (`toggleAppTreePane('left'|'right')`) that collapse either pane into a `28px` vertical edge tab (`#va-tree-left-edge-tab`, `#va-tree-right-edge-tab`).
+- **3-Pane Coupled Layout:**
+  1. **Left Hierarchical Tree Explorer (`.va-tree-pane`, `260px`):** Includes live `[/] Filter schema objects...` input (`filterTreeObjects()`), Dual-Mode Switcher (`.va-seg-pills`: `DB Schema` vs. `File Tree`), and nested `.va-tree-node` rows (`28px` height) with `1px` `.va-tree-guide` vertical indent lines, rotating `fa-chevron-right` carets, color-coded Font Awesome icons, and right-aligned monospace badges (`UUID PK`, `BIGINT`, `JSONB`, `142k`).
   2. **Center 3-Tab Multi-Mode Workbench (`1fr`):**
-     - **Tab 1 (`Data Grid · 142,840 rows`):** High-density tabular data grid where every `<th>` displays `Column Name + PK/FK Icon + Data Type subheader`, with tabular alignment and null/JSONB badge formatting.
-     - **Tab 2 (`DDL & Foreign Keys`):** Copyable SQL `CREATE TABLE` DDL block alongside a Foreign Key & Index Lineage table.
-     - **Tab 3 (`SQL / Grep Console`):** Split query editor + instant tabular execution timing ledger (`1.84 ms · Index Only Scan`).
-  3. **Right Contextual Node & Column Inspector (`.va-tree-inspector`, `280px`):** Displays selected node/table/column cardinality, storage footprint, index hit ratio (`99.94%`), and non-null distribution bar.
+     - **Tab 1 (`Table Data · 142,840 rows`):** Top filter bar (`Node / Host` & `Status` selects calling `filterAppTreeRows()`), 8 boundary-node rows with `4px` left status bars (`.tr-status-ok`, `.tr-status-warn`), and a bottom 4-cell **TimescaleDB Hypertable & Gorilla Compression KPI Strip** (`.va-tree-kpi-strip`).
+     - **Tab 2 (`Column Spec & Indexes`):** Column specification table + copyable PostgreSQL 16 / TimescaleDB `CREATE TABLE` DDL block.
+     - **Tab 3 (`Query & AST Preview`):** Split SQL query editor + instant tabular execution timing ledger (`1.4 ms · Index Scan`).
+  3. **Right Contextual Object & FK Inspector (`.va-tree-inspector`, `280px`):** Displays selected table/column cardinality, foreign-key lineage, and JSONB payload preview.

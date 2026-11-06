@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for visual-architecture-system (v4.5)
+# quiet-ui-skills — 1-Command Installer for visual-architecture-system (v4.6)
 # License: GNU AGPLv3 + Section 7 NOTICE (Unconditional Commercial UI Output
 #          Exemption; tokens/quiet-ui-tokens.css dual-licensed MIT)
 # Upstream: https://github.com/FrankXLT/quiet-ui-skills
@@ -25,7 +25,7 @@ install_to_target() {
   cp -f "${SRC_SKILL_DIR}/references/"*.md "${dest}/references/"
   cp -f "${SRC_SKILL_DIR}/scripts/verify_visual_contract.py" "${dest}/scripts/verify_visual_contract.py"
   chmod +x "${dest}/scripts/verify_visual_contract.py"
-  echo "[OK] Installed visual-architecture-system v4.5 -> ${dest}"
+  echo "[OK] Installed visual-architecture-system v4.6 -> ${dest}"
 }
 
 if [[ $# -ge 1 ]]; then

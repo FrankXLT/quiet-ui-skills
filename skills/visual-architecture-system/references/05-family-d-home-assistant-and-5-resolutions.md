@@ -4,13 +4,13 @@ Home Assistant dashboards fail when designed like desktop SaaS web apps or when 
 
 ---
 
-## 1. Tier `15. HA-1` — Ambient Wall Kiosk Screensaver (`20% HUD`, Default `S4` Dark, `N0` Zero-Chrome)
+## 1. Tier `15. HA-1` — Ambient Wall Kiosk Screensaver (`20% HUD`, Default `S1` White, `N0` Zero-Chrome)
 
 - **Target Hardware & Distance:** Wall-mounted display (`1920×1080` or `2560×1440`) viewed from `>= 2m` (`10–16 ft`).
 - **60/40 Asymmetric Split (`100dvh` starting at `(0,0)`):**
   - **Full-Bleed Fine-Art / Architectural Backdrop:** Renders an authentic CC0 Claude Monet *Water Lilies (1906)* painting (`<img class="ha1-monet-img" src="assets/monet_water_lilies_1906.jpg" alt="Claude Monet Water Lilies 1906" />`) with a subtle radial readability vignette, or switches live to an Isometric Residence Blueprint (`blueprint`) or OLED Night Minimal (`oled`) canvas.
   - **Left 60%:** Giant tabular clock (`clamp(3.2rem, 6.8cqi, 6.2rem)`), date, perimeter status badge, and museum artwork caption. Zero top mode ribbon in `N0` mode.
-  - **Right 40% Frosted Glass HUD (`.ha1-glass-hud`):** True translucent frosted glass (`backdrop-filter: blur(22px) saturate(145%); -webkit-backdrop-filter: blur(22px) saturate(145%); background: rgba(12, 16, 24, 0.46);`) strictly capped at **3 calm blocks**:
+  - **Right 40% Theme-Aware Frosted Glass HUD (`.ha1-glass-hud`):** Translucent **Frosted Light Glass** in `S1` White / `S2` Paper modes (`background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(22px) saturate(145%);`) and **Frosted Dark Glass** in `S3` / `S4` modes (`background: rgba(12, 16, 24, 0.46);`), strictly capped at **3 calm blocks**:
     1. **Weather & 4-Slot Horizon:** Current outdoor condition + 4 upcoming time slots (`09:00`, `12:00`, `15:00`, `18:00`) with Font Awesome 6 weather icons (`fa-cloud-sun`, `fa-sun`, `fa-wind`, `fa-moon`).
     2. **Zero-Nominal Exception Pills:** Surfaces ONLY active exceptions (open garage bay, active person detection, running HVAC warmup). Nominal/closed states are hidden.
     3. **Next 3 Upcoming Agenda & Planner Items:** Next 3 household events or scheduled tasks.

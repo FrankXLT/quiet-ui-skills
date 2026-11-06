@@ -41,13 +41,13 @@ Before modifying any file in an existing repository (such as a **Task & Calendar
 
 When a user requests a brand-new deliverable and has not specified its visual parameters, present this compact scorecard so they can reply with a single 6-code shorthand (e.g., `11, D2, S1, C3, rounded, N1` or `14, D3, S4, C2, subtle, N1`):
 
-> **Visual Architecture v4.5 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S4, C2, subtle, N1`):*
+> **Visual Architecture v4.6 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S1, C2, subtle, N1`):*
 > 1. **Deliverable Archetype (`01`–`17`):**
 >    - *Docs & Decks:* `01` Academic Monograph · `02` Executive Memo (`BLUF` + Mermaid) · `03` Normative RFC (+ Mermaid FSM) · `04` SDK/API Reference · `05` Split-Pane Runbook (+ Mermaid Seq) · `06` Parametric Worksheet · `07` Briefing Stage
 >    - *Data, Workspaces & Explorers:* `08` High-Density Data Table (`1px` Grid) · `09` Live Metrics & Time-Series Console · `10` Compact Issue & Ticket Tracker · `11` Task & Calendar Planner (+ Focus Hero) · `12` KPI & Analytics Dashboard (Bento Grid) · `13` Daily Pacing & Wellness Planner (+ Readiness Ring Hero) · `14` **`App-Tree` Schema, Tree & File Explorer Workbench**
 >    - *Home Assistant:* `15` HA-1 Ambient Wall Kiosk (Monet + Frosted Glass) · `16` HA-2 Room-First Wall Control Panel · `17` HA-3 Crease-Aware Foldable & Phone Controller
 > 2. **Compactness / Density (`D1`–`D4`):** `D1` Relaxed · `D2` Balanced *(Default)* · `D3` Compact · `D4` Ultra-Dense Hairline
-> 3. **Color Theme (`S1–S4`):** `S1` Pure White · `S2` Warm Paper *(Default)* · `S3` Dark Paper · `S4` Obsidian Dark
+> 3. **Color Theme (`S1–S4`):** `S1` Pure White *(Default across all 17 tiers)* · `S2` Warm Paper · `S3` Dark Paper · `S4` Obsidian Dark
 > 4. **Color Policy (`C1–C3`):** `C1` Quiet Cockpit (Monochrome) · `C2` Semantic Accents · `C3` **Modern Expressive** (1 Tinted Hero Card + `.va-icon-well` Soft Tints)
 > 5. **Corner Geometry (`auto|sharp|subtle|rounded|soft`):** `auto` Tier Default · `sharp` (`0px`) · `subtle` (`6px`) · `rounded` (`12px`) · `soft` (`18px`)
 > 6. **Native Navigation Topology (`N0`–`N4`):**
