@@ -212,12 +212,22 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
             "va-task-group-bar",
             "va-priority-ring",
             "va-timegrid-block",
+            "va-fill-capsule",
+            "va-corridor-sparkline",
+            "va-state-hypnogram",
+            "va-prop-bar-row",
+            "va-invariant-strip",
+            "va-pace-bar",
+            "va-pace-tick",
+            "va-card-hdr-actions",
+            "va-threshold-gauge",
+            "va-trajectory-chart",
             "toggleDoc4BTableModal",
             "closeTheDayApp4",
             "syncUrlQueryParams",
         ):
             if v48_tok not in content:
-                errors.append(f"[V48_PATTERN_VIOLATION] Missing v4.8 domain pattern / URL deep-link token '{v48_tok}'.")
+                errors.append(f"[V49_PATTERN_VIOLATION] Missing v4.8/v4.9 domain pattern / URL deep-link token '{v48_tok}'.")
 
     return errors
 

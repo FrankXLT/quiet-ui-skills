@@ -27,7 +27,7 @@ Home Assistant dashboards fail when designed like desktop SaaS web apps or when 
   - **Body:** Holds at most **1 master `.ha2-slider-tile` group dimmer bar** (`52px` tall) + a 2-column grid of compact `44px` `.ha2-entity-tile` state pills.
 - **Contextual Right Inspector Dock (`.ha2-right-dock`, `330px` wide):**
   - Top card: **1 live IP Camera / WebRTC stream** with detection badge.
-  - Bottom card (`#ha2-room-inspector`): **Selected-Room Fixture Inspector** with individual fixture sliders, color temperature presets (`2200K`–`5000K`), and Smart Relay / Circuit wattage.
+  - Bottom card (`#ha2-room-inspector`): **Selected-Room Fixture Inspector** with individual fixture sliders, color temperature presets (`2200K`–`5000K`), and **Proportional Background-Fill Circuit Load Breakdown Rows (`.va-prop-bar-row`)** (`HVAC Heat Pump 46.5%`, `Kitchen Induction 26.6%`, `Rack & PoE 17.4%`, `Outdoor 9.5%`) under a recessed `[Circuit | Room | Phase]` switcher.
 
 ---
 

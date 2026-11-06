@@ -23,29 +23,31 @@ Couples an unscheduled backlog staging rail with a time-blocked calendar stage a
 
 ---
 
-## 3. Tier `12. App-3` — KPI & Analytics Dashboard (Bento Grid) (`100% Cards`, Default `S4` Dark, `N2`)
+## 3. Tier `12. App-3` — KPI & Analytics Dashboard (Bento Grid) (`100% Cards`, Default `S1` White, `N2`)
 
 - **Structural Mandate:** 12-column CSS Grid (`.app3-grid-12`) of `1px` hairline cards with specular top rim. Serves as the **Tier 3 Dedicated `Insights` Route** for `App-1`, `App-4`, and `App-5`.
-- **Mandatory 4-Layer Card Anatomy:** Every `.bento-card` MUST contain `.bento-layer1-header`, `.bento-layer2-hero`, `.bento-layer3-proof`, and `.bento-layer4-footer`.
+- **Mandatory 4-Layer Card Anatomy + v4.9 Monarch Patterns:** Every `.bento-card` MUST contain `.bento-layer1-header` (with `.va-card-hdr-actions` `[fa-wand-magic-sparkles] [fa-ellipsis]` micro-actions), `.bento-layer2-hero`, `.bento-layer3-proof`, and `.bento-layer4-footer`, supplemented by:
+  - **Top Invariant Strip (`.va-invariant-strip`) & Expected-Pace Progress Bars (`.va-pace-bar` + `.va-pace-tick`):** Horizontal quota/budget bars with a vertical `|` tick (`left: var(--expected-pct)`) showing expected pace vs. actual consumption.
+  - **5-Segment Threshold Gauge (`.va-threshold-gauge`) & Cumulative Trajectory vs. Baseline Curve (`.va-trajectory-chart`):** Active cumulative trace stopping at today with vertical drop-fill over a full-period dashed baseline.
 
 ---
 
-## 4. Tier `13. App-5` (`Life-1`) — Daily Pacing & Wellness Planner (+ Readiness Hero & Day Timeline) (`75%` Box Weight, Default `S2` Paper, `N1`)
+## 4. Tier `13. App-5` (`Life-1`) — Daily Pacing & Wellness Planner (+ Readiness Hero, Fitbit Capsules & Corridor Sparklines) (`75%` Box Weight, Default `S1` White, `N1`)
 
 Designed for finite daily human energy, transition-friction visibility, and realistic 24-hour time budgeting:
 - **2-Column Restorative Hero Grid (`.app5-hero-grid`: `1.35fr 1fr`, `18px` Radius):**
-  - **Left Hero Card (`.app5-hero-card.primary-hero`):** Soft radial surface tint, `.va-icon-well.emerald` (`fa-heart-pulse`), plain-English headline (*"Steady Energy & Balanced Recovery"*), `96×96` SVG Readiness Ring (`.app5-readiness-ring` showing `84 · Steady`), and rounded segmented pill bar (`.va-seg-pills`: `Standard Rhythm | Gentle Pacing | Afternoon Reset`).
-  - **Right Hero Card:** Proportional 24-Hour (1,440-Minute) Day Arc bar (`Sleep 8.0h + Anchors 8.5h + Buffered Focus 3.5h + Breathing Room 4.0h`) + 1-tap `Open +90m Breathing Room` pill button.
+  - **Left Hero Card (`.app5-hero-card`):** Soft radial surface tint, `.va-icon-well.tint-emerald` (`fa-heart-pulse`), plain-English headline, `96×96` SVG Readiness Ring (`.app5-readiness-ring` showing `84 · Steady`), segmented pill bar (`.va-seg-pills`), and **3 Stacked Self-Filling Two-Tone Progress Capsules (`.va-fill-capsule`)** (`Restorative Sleep 7h 48m`, `Zone 2 Movement 38/45m`, `Cognitive Focus 3.5/4.5h`).
+  - **Right Hero Card:** Proportional 24-Hour (1,440-Minute) Day Arc bar + **2-Up Target-Corridor 7-Day Sparklines (`.va-corridor-sparkline`)** (`S S M T W T (F)` with circled current day and `[In range]` badge) + **Connected State Hypnogram (`.va-state-hypnogram`)**.
 - **Visual Vertical Day-Arc Timeline (`.app5-day-timeline`):**
-  - Chronological vertical spine (`09:00` Morning Deep Focus, `11:00` Clear Garage Workbench `+40% Buffer`, `15:30` School Pickup Protected Anchor, `18:00` Family Dinner & Unscheduled Margin) paired with inline Stepping Stones (`.life1-stepping-stones`) and the right-hand *"Held for Tomorrow"* tray.
+  - Chronological vertical spine with a red `NOW 11:25` marker (`.va-now-line`) paired with inline Stepping Stones (`.life1-stepping-stones`) and the right-hand *"Held for Tomorrow"* tray.
 
 ---
 
 ## 5. Tier `14. App-Tree` — Hierarchical Tree, Schema & File Explorer Workbench (`90% 3-Pane`, Default `S1` White, `N1`)
 
 Dedicated archetype for Database Schema Browsers, Git/IDE File Explorers, JSON/AST Inspectors, and Configuration Hierarchies:
-- **Domain Workbench Pane Preservation Across `N0`, `N2`, and `N4` + `28px` Collapsible Edge Tabs (`v4.6`):**
-  - Unlike ordinary navigation sidebars, `.va-tree-pane` (`Object Explorer`) is the primary **Domain Workbench Pane** of `14. App-Tree` and remains visible (`260px` on desktop, `200px` on `641–1099px`) even when `N0`, `N2`, or `N4` is selected.
+- **Domain Workbench Pane Preservation Across `N0`, `N2`, and `N4` + Never Collapse Into Unlabelled `60px` Strip (`v4.9`):**
+  - Unlike ordinary navigation sidebars, `.va-tree-pane` (`Object Explorer`) is the primary **Domain Workbench Pane** of `14. App-Tree` and remains a **labeled `200px–260px` schema tree across all `>= 641px` states** (never collapsing schema columns into unlabelled icons in a `60px` strip).
   - Both `.va-tree-pane` (`#va-tree-left-pane`) and `.va-tree-inspector` (`#va-tree-right-pane`) include `«` / `»` collapse triggers (`toggleAppTreePane('left'|'right')`) that collapse either pane into a `28px` vertical edge tab (`#va-tree-left-edge-tab`, `#va-tree-right-edge-tab`).
 - **3-Pane Coupled Layout:**
   1. **Left Hierarchical Tree Explorer (`.va-tree-pane`, `260px`):** Includes live `[/] Filter schema objects...` input (`filterTreeObjects()`), Dual-Mode Switcher (`.va-seg-pills`: `DB Schema` vs. `File Tree`), and nested `.va-tree-node` rows (`28px` height) with `1px` `.va-tree-guide` vertical indent lines, rotating `fa-chevron-right` carets, color-coded Font Awesome icons, and right-aligned monospace badges (`UUID PK`, `BIGINT`, `JSONB`, `142k`).

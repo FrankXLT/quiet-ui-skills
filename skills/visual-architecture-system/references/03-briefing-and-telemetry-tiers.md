@@ -68,11 +68,12 @@ This is the canonical tabular engineering console (`t5-console`) bridging docume
 
 ---
 
-## 09. Tier `App-2`: Live Metrics & Time-Series Console (`100% 1px Grid`, Default `S4` Dark, `N2`)
+## 09. Tier `App-2`: Live Metrics & Time-Series Console (`100% 1px Grid`, Default `S1` White, `N1`)
 - **Strict Ban on Top KPI Cards:** Do not place summary metric cards above the strip charts.
 - **3-Column `1px` Hairline Grid (`width: 100%; max-width: 100%; grid-template-columns: 230px minmax(0, 1fr) 280px; gap: 1px; background: var(--border-grid); border-radius: 0 !important;`):**
   1. **Left Column (`230px`):** Compact channel tree with `7px` `.sq-status` squares and live cursor readouts.
   2. **Center Column (`1fr` Hybrid Stack):**
      - **Top Half:** 2 to 3 vertically stacked multi-channel SVG strip charts with thin `1.3px` traces, shaded nominal/abort bands, and a **synchronized vertical crosshair cursor** (`onmousemove`) that scrubs across all channels simultaneously.
-     - **Bottom Half:** A docked **`28px`-row Channel Matrix (`table.t5-table`)** showing `Bus Node | State | Cursor Value | 24h Min | 24h Max | Margin Envelope` with inline monochrome bar gauges.
-  3. **Right Column (`280px`):** Register snapshot + automated verification check log.
+     - **Bottom Half:** A docked **`28px`-row Channel Matrix (`table.t5-table`)** + **Proportional Background-Fill Subsystem Ranking Rows (`.va-prop-bar-row`)** under a recessed `[Subsystem | Rail | Node]` switcher (`width: var(--share-pct)`) and **Cumulative Trajectory vs. Historical Baseline Curve (`.va-trajectory-chart`)**.
+  3. **Right Column (`280px`):** Register snapshot + **5-Segment Threshold Gauge Bar (`.va-threshold-gauge`)** + automated verification check log.
+
