@@ -1,6 +1,6 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 5.0 (Mathematical Alignment Invariants + Zero-Parenthesis Active Pill)
+   Version: 5.1 (Unified Suite Typography, 7-Step Type Scale & 6 Alignment Invariants)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
@@ -13,18 +13,28 @@
   scrollbar-gutter: stable;
   -webkit-font-smoothing: antialiased;
 
-  /* 1. Offline System Typography Stacks & Tabular Numerals */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Source Serif 4', 'Newsreader', 'Charter', 'Iowan Old Style', Georgia, serif;
-  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  /* 1. Law 1 — Curated 3-Role Font Stack & Tabular Numerals (Zero Random Font Drift) */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader', 'Charter', 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
   --font-nums: tabular-nums slashed-zero;
+
+  /* 1B. Law 3 — Strict 7-Step Modular Scale (--ts-*) & 11px Hard Floor */
+  --ts-xs: 11px;                            /* 0.6875rem, lh: 1.35 — Hard minimum floor */
+  --ts-sm: 12.5px;                          /* 0.78125rem, lh: 1.45 — Dense table cells & captions */
+  --ts-nav: 13px;                           /* 0.8125rem, lh: 1.35 — Universal navigation & controls */
+  --ts-base: 14px;                          /* 0.875rem, lh: 1.5 — Workspace & dashboard body copy */
+  --ts-prose: 15.5px;                       /* 0.96875rem, lh: 1.65 — Editorial docs (Doc-2..Bridge-1) */
+  --ts-md: 16px;                            /* 1rem, lh: 1.4, weight 600 — Card titles & H3 */
+  --ts-xl: clamp(20px, 2vw, 24px);          /* lh: 1.22, weight 700 — Universal Page H1 (Doc-2..HA-3) & KPIs */
+  --ts-display: clamp(24px, 2.5vw, 28px);   /* lh: 1.18, weight 700 — Doc-1 Monograph H1 & Deck-1 Headline */
 
   /* 2. Default Density: D2 Balanced Operational (Default) */
   --density-row-py: 6px;
   --density-row-px: 10px;
   --density-card-pad: 14px;
   --density-grid-gap: 12px;
-  --density-font-scale: 0.9375rem;
+  --density-font-scale: 0.875rem;
   --density-meta-display: inline-flex;
 
   /* 3. 5-Stop Corner Radius Dial (auto, sharp=0px, subtle=6px, rounded=12px, soft=18px) */
@@ -176,6 +186,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --density-grid-gap: 18px;
   --density-font-scale: 1rem;
   --density-meta-display: inline-flex;
+  --ts-sm: 13px;
+  --ts-base: 15px;
+  --ts-prose: 16.5px;
+  --ts-md: 17px;
 }
 
 [data-density="d3"] {
@@ -183,8 +197,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --density-row-px: 8px;
   --density-card-pad: 10px;
   --density-grid-gap: 8px;
-  --density-font-scale: 0.84rem;
+  --density-font-scale: 0.8125rem;
   --density-meta-display: inline-flex;
+  --ts-sm: 12px;
+  --ts-base: 13px;
+  --ts-prose: 14.5px;
+  --ts-md: 15px;
 }
 
 [data-density="d4"] {
@@ -192,8 +210,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --density-row-px: 6px;
   --density-card-pad: 6px;
   --density-grid-gap: 4px;
-  --density-font-scale: 0.78rem;
+  --density-font-scale: 0.78125rem;
   --density-meta-display: none;
+  --ts-sm: 11.5px;
+  --ts-base: 12.5px;
+  --ts-prose: 14px;
+  --ts-md: 14.5px;
 }
 
 /* ==========================================================================
@@ -205,7 +227,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 @media (max-width: 640px) { :root { --res-font-scale: 0.92; --res-touch-min: 48px; --res-grid-cols: 1; } }
 
 /* ==========================================================================
-   Earned Expressiveness, Outer Stage Frame & Active Rail Utilities (v4.6)
+   Earned Expressiveness, Outer Stage Frame & Active Rail Utilities (v5.1)
    ========================================================================== */
 
 .va-stage-outer {
@@ -217,15 +239,17 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   font-variant-numeric: var(--font-nums);
 }
 
+.va-kicker, .doc1-kicker-text { font-family: var(--font-sans) !important; font-size: var(--ts-xs, 11px) !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase; line-height: 1.35; }
 .va-icon-well { width: 34px; height: 34px; border-radius: 9px; background: var(--tint-indigo-bg); color: var(--tint-indigo-fg); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.va-pill-btn { border-radius: var(--radius-pill); padding: 5px 12px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.va-tab-link { height: 42px; padding: 0 12px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-secondary); font-size: 0.78rem; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
-.va-tab-link.active { color: var(--text-primary); font-weight: 600; border-bottom-color: var(--accent-primary); }
+.va-pill-btn { border-radius: var(--radius-pill); padding: 5px 12px; font-family: var(--font-sans); font-size: var(--ts-sm, 12.5px); font-weight: 600; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.va-side-link, .va-tab-link, .va-poly-n2-bar a, .va-poly-n3-topbar a, .app1-nav-btn, .va-tree-node { font-family: var(--font-sans) !important; font-size: var(--ts-nav, 13px) !important; font-weight: 500 !important; line-height: 1.35 !important; }
+.va-tab-link { height: 42px; padding: 0 12px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+.va-tab-link.active { color: var(--text-primary); font-weight: 600 !important; border-bottom-color: var(--accent-primary); }
 .va-side-link, .va-tree-node { position: relative; margin: 2px 6px; padding: 6px 10px; border-radius: 6px; border-left: none; box-shadow: none; }
-.va-side-link.active, .va-tree-node.active { border-left: none; box-shadow: none; padding-left: 14px; background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600; }
+.va-side-link.active, .va-tree-node.active { border-left: none; box-shadow: none; padding-left: 14px; background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600 !important; }
 .va-side-link.active::before, .va-tree-node.active::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px; background: var(--accent-primary); }
 
-/* v4.8–v5.0 Subgrid, Content-Breakout, 2-Col Bento Safeguard, Table Header Alignment & Component Helpers */
+/* v4.8–v5.1 Subgrid, Content-Breakout, 2-Col Bento Safeguard, Table Header Alignment & Component Helpers */
 .va-bento-2col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .va-bento-2col > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 @media (max-width: 640px) { .va-bento-2col { grid-template-columns: minmax(0, 1fr); } }
@@ -239,15 +263,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 .va-fleet-card-3zone { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 12px 16px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
 .va-icon-well-tile { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
 .va-bulk-action-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 12px; background: var(--bg-elevated); border-bottom: 1px solid var(--border-hairline); flex-wrap: wrap; }
-.va-status-briefing { padding: 10px 14px; border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; font-size: 0.85rem; }
-.va-task-group-bar { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: var(--tint-amber-bg); border-radius: var(--radius-inner); font-size: 0.75rem; font-weight: 600; }
+.va-status-briefing { padding: 10px 14px; border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; font-size: var(--ts-md, 16px); }
+.va-task-group-bar { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: var(--tint-amber-bg); border-radius: var(--radius-inner); font-size: var(--ts-xs, 11px); font-weight: 600; }
 .va-priority-ring { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent-primary); display: inline-block; flex-shrink: 0; }
 .va-timegrid-block { border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; padding: 6px 10px; }
 .va-fill-capsule { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: var(--radius-card); border: 1px solid var(--border-hairline); background: linear-gradient(90deg, var(--tint-emerald-bg) var(--pct, 75%), var(--bg-surface) var(--pct, 75%)); }
 .va-corridor-sparkline { padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); display: flex; flex-direction: column; gap: 6px; }
 .va-state-hypnogram { padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
 .va-prop-bar-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: linear-gradient(90deg, var(--tint-indigo-bg) var(--share-pct, 50%), var(--bg-surface) var(--share-pct, 50%)); }
-.va-invariant-strip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; border-radius: var(--radius-inner); background: var(--bg-elevated); border: 1px solid var(--border-hairline); font-family: var(--font-mono); font-size: 0.72rem; }
+.va-invariant-strip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; border-radius: var(--radius-inner); background: var(--bg-elevated); border: 1px solid var(--border-hairline); font-family: var(--font-mono); font-size: var(--ts-xs, 11px); }
 .va-pace-bar { position: relative; height: 10px; border-radius: 999px; background: var(--bg-elevated); border: 1px solid var(--border-strong); overflow: visible; }
 .va-pace-tick { position: absolute; top: -3px; bottom: -3px; left: var(--expected-pct, 66%); width: 2px; background: var(--text-primary); }
 .va-card-hdr-actions { display: inline-flex; align-items: center; gap: 4px; }

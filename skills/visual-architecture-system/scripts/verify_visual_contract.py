@@ -230,11 +230,22 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
             "doc1-mobile-toc-bar",
             "doc1-kicker-text",
             ".va-side-link.active::before",
+            "--ts-xs",
+            "--ts-sm",
+            "--ts-nav",
+            "--ts-base",
+            "--ts-prose",
+            "--ts-md",
+            "--ts-xl",
+            "--ts-display",
         ):
             if v48_tok not in content:
-                errors.append(f"[V50_PATTERN_VIOLATION] Missing v4.8-v5.0 domain pattern / alignment invariant token '{v48_tok}'.")
+                errors.append(f"[V51_PATTERN_VIOLATION] Missing v4.8-v5.1 domain pattern / typography token '{v48_tok}'.")
         if "inset 3px 0 0 var(--accent-focal)" in content or "inset 2px 0 0 var(--accent-focal)" in content:
             errors.append("[PAREN_CURVE_VIOLATION] Curved inset left box-shadow on rounded nav/tree items is forbidden; use ::before straight vertical pill.")
+        sub11_match = re.search(r"font-size\s*:\s*(?:[0-9]|10)(?:\.[0-9]+)?px", content, flags=re.IGNORECASE)
+        if sub11_match:
+            errors.append(f"[SUB_11PX_VIOLATION] Forbidden sub-11px font-size rule found: '{sub11_match.group(0)}' (Hard floor is 11px / --ts-xs).")
 
     return errors
 
@@ -258,7 +269,7 @@ def main() -> None:
             print(f"  - {e}")
         sys.exit(1)
     else:
-        print(f"[PASS] 100% of Visual Architecture v5.0 checks succeeded for '{html_file}' (Tier={tier_arg}).")
+        print(f"[PASS] 100% of Visual Architecture v5.1 checks succeeded for '{html_file}' (Tier={tier_arg}).")
         sys.exit(0)
 
 
