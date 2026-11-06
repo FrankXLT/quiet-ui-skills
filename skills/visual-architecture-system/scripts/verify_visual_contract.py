@@ -225,9 +225,16 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
             "toggleDoc4BTableModal",
             "closeTheDayApp4",
             "syncUrlQueryParams",
+            "va-bento-2col",
+            "va-th-title",
+            "doc1-mobile-toc-bar",
+            "doc1-kicker-text",
+            ".va-side-link.active::before",
         ):
             if v48_tok not in content:
-                errors.append(f"[V49_PATTERN_VIOLATION] Missing v4.8/v4.9 domain pattern / URL deep-link token '{v48_tok}'.")
+                errors.append(f"[V50_PATTERN_VIOLATION] Missing v4.8-v5.0 domain pattern / alignment invariant token '{v48_tok}'.")
+        if "inset 3px 0 0 var(--accent-focal)" in content or "inset 2px 0 0 var(--accent-focal)" in content:
+            errors.append("[PAREN_CURVE_VIOLATION] Curved inset left box-shadow on rounded nav/tree items is forbidden; use ::before straight vertical pill.")
 
     return errors
 
@@ -251,7 +258,7 @@ def main() -> None:
             print(f"  - {e}")
         sys.exit(1)
     else:
-        print(f"[PASS] 100% of Visual Architecture v4.6 checks succeeded for '{html_file}' (Tier={tier_arg}).")
+        print(f"[PASS] 100% of Visual Architecture v5.0 checks succeeded for '{html_file}' (Tier={tier_arg}).")
         sys.exit(0)
 
 

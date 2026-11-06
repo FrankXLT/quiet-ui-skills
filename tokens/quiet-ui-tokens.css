@@ -1,6 +1,6 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 4.8 (Autonomous Content-to-UI Compiler + AI Hero, Portainer & OpenTodo Patterns)
+   Version: 5.0 (Mathematical Alignment Invariants + Zero-Parenthesis Active Pill)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
@@ -221,10 +221,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 .va-pill-btn { border-radius: var(--radius-pill); padding: 5px 12px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .va-tab-link { height: 42px; padding: 0 12px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-secondary); font-size: 0.78rem; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
 .va-tab-link.active { color: var(--text-primary); font-weight: 600; border-bottom-color: var(--accent-primary); }
-.va-side-link { margin: 2px 6px; padding: 6px 10px; border-radius: 6px; border-left: 3px solid transparent; }
-.va-side-link.active { border-left-color: var(--accent-primary); background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600; }
+.va-side-link, .va-tree-node { position: relative; margin: 2px 6px; padding: 6px 10px; border-radius: 6px; border-left: none; box-shadow: none; }
+.va-side-link.active, .va-tree-node.active { border-left: none; box-shadow: none; padding-left: 14px; background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600; }
+.va-side-link.active::before, .va-tree-node.active::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px; background: var(--accent-primary); }
 
-/* v4.8 & v4.9 Subgrid, Content-Breakout, AI Hero, Portainer, OpenTodo, Fitbit & Monarch Component Helpers */
+/* v4.8–v5.0 Subgrid, Content-Breakout, 2-Col Bento Safeguard, Table Header Alignment & Component Helpers */
+.va-bento-2col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.va-bento-2col > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (max-width: 640px) { .va-bento-2col { grid-template-columns: minmax(0, 1fr); } }
+.va-th-title { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
 .va-subgrid-card { display: grid; grid-row: span 3; grid-template-rows: subgrid; gap: 8px; }
 .va-breakout-grid { display: grid; grid-template-columns: [full-start] minmax(16px, 1fr) [content-start] min(72ch, 100% - 32px) [content-end] minmax(16px, 1fr) [full-end]; }
 .va-breakout-grid > * { grid-column: content; }
