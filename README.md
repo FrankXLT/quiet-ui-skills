@@ -1,112 +1,98 @@
-# `quiet-ui-skills` — Featuring *The Quiet UI Canvas* (17-Tier Anti-Slop Visual Architecture System v6.0)
+# Quiet UI (`visual-architecture-system`)
 
-> **Eliminate generic AI-generated layout slop, top-of-page KPI card bloat, random font/size drift across pages, and "pill/color soup" — while embracing a Compiler-Grade Agent Architecture (`v6.0` Pre-Edit Output Contract & Content-Only Lock), Concentric Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$), Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `<= 4` sizes/card, `0px` Nav Drift), 6 Mathematical Alignment Invariants, Universal Pure White (`S1`) Default legibility, and Earned Expressiveness (`C3`).**
-> **`quiet-ui-skills`** equips coding agents (**Claude Code**, **Google Antigravity**, **Gemini CLI**, **Devin Desktop**, and **Cursor**) with a deterministic, 100% brand-free **17-Tier Graduated Visual Architecture System**, standalone CSS tokens ([`tokens/quiet-ui-tokens.css`](tokens/quiet-ui-tokens.css)), machine-readable [`llms.txt`](llms.txt), and **The Quiet UI Canvas** interactive showcase ([`quiet-ui-showcase.html`](quiet-ui-showcase.html) & [`docs/index.html`](docs/index.html)).
+[![License: AGPLv3 + UI Output Exemption](https://img.shields.io/badge/License-AGPLv3%20%2B%20UI%20Exemption-1E293B.svg)](LICENSE)
+[![Tokens: MIT Dual-Licensed](https://img.shields.io/badge/CSS%20Tokens-MIT-0F766E.svg)](tokens/quiet-ui-tokens.css)
+[![Live Showcase: 17 Tiers](https://img.shields.io/badge/Live%20Showcase-17%20Tiers%20%C2%B7%20408%20States-2563EB.svg)](https://FrankXLT.github.io/quiet-ui-skills/)
 
-> [!TIP]
-> ### 1-File Standalone Desktop Viewer ([`quiet-ui-showcase.html`](quiet-ui-showcase.html)) & Shareable URL Deep Links
-> Explore all **17 Mediums**, **4 Color Themes (`S1–S4`)**, **4 Densities (`D1–D4`)**, **5 Concentric Corner Stops (`0px`–`18px`)**, **3 Color Policies (`C1–C3`)**, and **5 Navigation Topologies (`N0–N4`)** offline or via deep-linked URL query parameters (`?tier=app-4&nav=n1&theme=white&density=d2&corners=rounded`).
-> Download **[`quiet-ui-showcase.html`](quiet-ui-showcase.html)** (100% self-contained single HTML file with embedded CC0 Claude Monet *Water Lilies* canvas) and open it directly in any browser—**zero build step, zero server, and zero external local file dependencies required.**
+**Quiet UI (`visual-architecture-system`)** is an open-source skill and CSS design-token system for AI coding agents that turns raw prose, technical specifications, SQL schemas, fleet inventories, and smart-home entities into cohesive, responsive HTML interfaces. Instead of defaulting every prompt to a generic dark-mode Bento dashboard, it routes content across **17 graduated structural archetypes** (`0%` unboxed monograph prose up to `100%` hairline telemetry grids and spatial wall panels) that share one typographic scale, four surface themes, and mathematically verified layout geometry.
 
-![The Quiet UI Canvas — 4-Family Architectural Overview](docs/assets/hero_4family_overview.png)
+![Quiet UI 17-Tier Overview](docs/assets/hero_4family_overview.png)
 
 ---
 
-## Quickstart Installation
+## Quick Start & Live Showcase
+
+- **Interactive 17-Tier Showcase:** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) (or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally — zero build step or server required).
+- **Deep-Link Any State:** Append query parameters such as `?tier=app-3&nav=n2&theme=white&density=d2&corners=rounded` to share an exact archetype, navigation shell, surface theme, and corner geometry.
 
 ```bash
+# Install into ~/.agents/skills and ~/.gemini/config/skills
 git clone https://github.com/FrankXLT/quiet-ui-skills.git
 cd quiet-ui-skills
-bash install.sh
+./install.sh
+
+# Or install directly via the Skills CLI (Claude Code, Antigravity, Cursor, Codex, Windsurf)
+npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill visual-architecture-system
 ```
 
-- Installs `visual-architecture-system` (`v6.0` `SKILL.md`, `references/00..06`, `scripts/verify_visual_contract.py`, and `tokens/quiet-ui-tokens.css`) into `~/.agents/skills/visual-architecture-system` and `~/.gemini/config/skills/visual-architecture-system` (or pass a custom path: `bash install.sh ./my-repo/.agents/skills/visual-architecture-system`).
-- **Standalone CSS Tokens (Dual-Licensed MIT for Commercial Embedding):**
-  ```html
-  <link rel="stylesheet" href="tokens/quiet-ui-tokens.css">
-  ```
-
 ---
 
-## Which Tier Should I Use? (Autonomous Situation $\rightarrow$ Tier Router)
+## How It Works: Zero-Guidance Content Routing
 
-When you ask an agent to *"make this look better"* or pass raw markdown, JSON, SQL, or container/task data without naming a tier, the **v6.0 Autonomous Content-to-UI Compiler (`Mode M3`)** inspects your content shape and compiles it into the right medium and component blocks:
+When you hand raw content to an agent equipped with `visual-architecture-system`, it inspects the content structure first, declares a 4-field **Pre-Edit Output Contract**, and compiles the matching archetype without asking boilerplate setup questions:
 
-| Your Situation / Input Data Shape | Auto-Selected Tier & Nav | Signature Component Blocks Compiled Automatically |
+| What You Hand the Agent | What It Builds Automatically | Representative Components |
 | :--- | :--- | :--- |
-| **Long-Form Essay, Whitepaper, or Math Proof** | `01. Doc-1` (`N1` + `S1`) | `68ch` prose column (`16.5px`), `.doc1-mobile-toc-bar` (`0px` left-axis drift), Booktabs tables |
-| **Architecture Decision Memo or Post-Mortem** | `02. Doc-2` (`N0` + `S1`) | Top `BLUF` Decision Box, Option Trade Matrix, Mermaid topology diagram |
-| **Normative RFC or Security Compliance Spec** | `03. Doc-3` (`N0` + `S1`) | `MUST`/`SHALL` filterable requirement strip, Mermaid state machine |
-| **Skill Repo, CLI Tool, SDK, or API Reference** | `04. Doc-4B` (`N3` + `S1`) | **6-Stage Flow Spine (`.va-flow-spine`)**, `/slash` pills, **Situation $\rightarrow$ Action Router Table** |
-| **Deployment SOP or Incident Playbook** | `05. Doc-4A` (`N1` + `S1`) | `55/45` split narrative + sticky multi-tab code pane (`28px` edge collapse tab) |
-| **Container Fleet, Node Inventory, or Quota Telemetry** | `08. Bridge-2` / `12. App-3` (`N2`) | **Scoped Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, **Bulk Action Bar (`.va-bulk-action-bar`)**, **Expected-Pace Bar (`.va-pace-bar`)**, **Trajectory Curve (`.va-trajectory-chart`)** |
-| **Daily Tasks, Planner, or Biometric Pacing** | `11. App-4` / `13. App-5` (`N1`) | **1-Sentence Briefing (`.va-status-briefing`)**, **Priority Rings (`.va-priority-ring`)**, **Time-Grid Blocks (`.va-timegrid-block`)**, **Self-Filling Capsules (`.va-fill-capsule`)**, **Corridor Sparklines (`.va-corridor-sparkline`)** |
-| **DB Schema, File Tree, or Log Stream** | `14. App-Tree` / `10. App-1` (`N1`) | 3-pane coupled Schema/File explorer (`228px–260px` labeled tree, `.va-th-title` aligned headers), `Key \| Value` chips |
-| **Smart Home Wall Kiosk or Mobile Companion** | `15. HA-1` .. `17. HA-3` (`N0/N1/N4`) | `60/40` Monet glass HUD (`HA-1`), room cards + `.va-prop-bar-row` circuit load (`HA-2`), `820px` fold / `390px` thumb dock (`HA-3`) |
+| **Long-form research, essays, derivations, or post-mortems** | **Editorial Monograph (`01. Doc-1`)** or **Executive Decision Memo (`02. Doc-2`)** with unboxed `68ch` reading measure | Margin sidenotes, horizontal-rule equations, `BLUF` decision frame, theme-aware `.va-mermaid-figure` |
+| **Protocol specs, CLI/SDK documentation, or incident SOPs** | **Normative RFC (`03. Doc-3`)**, **SDK Reference (`04. Doc-4B`)**, or **Split Runbook (`05. Doc-4A`)** | **6-Stage Numbered Flow Spine (`.va-flow-spine`)**, **Situation-to-Action Decision Table**, pinned right-hand code console |
+| **Container fleets, node tables, time-series, or quota telemetry** | **High-Density Fleet Grid (`08. Bridge-2`)**, **Time-Series Console (`09. App-2`)**, or **Bento Dashboard (`12. App-3`)** | **3-Zone Fleet Summary Cards (`.va-fleet-card-3zone`)**, **Bulk-Action Table Toolbars (`.va-bulk-action-bar`)**, **Expected-Pace Bars (`.va-pace-bar`)**, **Cumulative Trajectory Charts (`.va-trajectory-chart`)**, **Proportional Share Bars (`.va-prop-bar-row`)** |
+| **Task backlogs, daily schedules, or wellness/readiness logs** | **Task & Calendar Planner (`11. App-4`)** or **Daily Pacing Planner (`13. App-5`)** | **Daily Status Briefings (`.va-status-briefing`)**, **Priority-Ring Task Rows (`.va-priority-ring`)**, **Left-Accent Time Blocks (`.va-timegrid-block`)**, **Self-Filling Progress Capsules (`.va-fill-capsule`)**, **Target-Corridor Sparklines (`.va-corridor-sparkline`)**, **Multi-Track State Timelines (`.va-state-hypnogram`)** |
+| **Database schemas, file trees, or AST/JSON hierarchies** | **3-Pane Schema & File Explorer (`14. App-Tree`)** or **Issue Stream (`10. App-1`)** | Persistent `228px–260px` labeled object tree (`.va-tree-pane`), `1px` indent guides, top-aligned `.va-th-title` data grid |
+| **Smart-home rooms, wall kiosks, or mobile room controllers** | **Ambient Wall Kiosk (`15. HA-1`)**, **Room Control Panel (`16. HA-2`)**, or **Foldable Companion (`17. HA-3`)** | `60/40` fine-art backdrop + `blur(22px)` glass HUD, room dimmer cards (`<= 4` metrics/room), crease-aware `50/50` split |
 
 ---
 
-## What's New in v6.0 (Compiler-Grade Agent Architecture, Concentric Radius Math, 7-Step Typography & `--check-docs` Linter)
+## The 17-Tier Continuum
 
-1. **Compiler-Grade Agent Architecture & Progressive-Disclosure Routing (`v6.0`):**
-   - **Pre-Edit 4-Field Output Contract (`Execution Mode`, `Target Tier & Nav`, `Surface & Density`, `Verification Gate`)** + **Content-Only Preservation Lock** (preserving 100% of existing CSS/layout when updating copy or rows) + **Atomic Staging Rule** + **Progressive-Disclosure Routing Table** (`Read ONLY when...` triggers for `references/00..06.md`).
-   - **`--check-docs` Reference Snippet Token Linter & LLM Generation-Failure Linter:** Automatically verifies that 100% of `var(--...)` custom properties in markdown code blocks exist in `tokens/quiet-ui-tokens.css`, all `references/*.md` files are linked in `SKILL.md`, and rendered DOM has `0` leaked markdown syntax (`**`, `## `), `0` unfilled placeholders (`TODO`, `TBD`, `Lorem ipsum`), and `<= 4` consecutive identical cards.
-2. **Concentric Nested Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$) & Per-View 4-Size Restraint:**
-   - Nested sub-cards, `.va-icon-well`, segmented trough buttons, and `.va-fill-capsule` derive concentric inner radii via `--inset-pad: 4px`, `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))`, and `--radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px))` across all 5 corner stops.
-   - Each card/panel budgets at most **4 active font sizes** and **2 primary text contrast rungs** (`--text-primary` and `--text-secondary`).
-3. **Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `0px` Nav Drift):**
-   - `--font-sans` (`Inter`) governs 100% of navigation (`13px`), kickers (`11px`), headings (`Doc-2`..`HA-3`), controls, and app copy; `--font-serif` (`Newsreader`) is reserved strictly for `01. Doc-1` & `13. App-5` narrative prose; `--font-mono` (`JetBrains Mono`) is reserved strictly for machine literals.
-4. **6 Mathematical Alignment Invariants (`v5.0`) + Fitbit & Monarch Telemetry (`v4.9`) + AI Hero, Portainer & OpenTodo Archetypes (`v4.8`).**
+All 17 tiers default to **Pure White (`data-theme="white"`)** and switch live across **Warm Paper (`paper`)**, **Warm Sepia Dark (`dark-paper`)**, and **Carbon Dark (`dark`)**:
 
----
-
-## The 17-Tier Graduated Continuum (Universal `S1` Pure White Default $\rightarrow$ Live 4-Theme Switching)
-
-| # | Tier ID | Structural Archetype | Box Weight | Default Theme | Default Nav | Primary Use Cases |
-| :-: | :--- | :--- | :---: | :---: | :---: | :--- |
-| `01` | **`Doc-1`** | Academic & Scientific Monograph | `0%` | `S1` White | `N1` | Whitepapers, mathematical derivations, research monographs |
-| `02` | **`Doc-2`** | Executive Decision Memo (`BLUF` + Mermaid) | `15%` | `S1` White | `N0` | Board memos, architecture decision records, post-mortems |
-| `03` | **`Doc-3`** | Normative RFC Specification (+ Mermaid FSM) | `25%` | `S1` White | `N0` | Protocol specs, RFCs, `MUST`/`SHALL` compliance audits |
-| `04` | **`Doc-4B`** | Encyclopedic SDK & API Reference (+ Flow Spine) | `25%` | `S1` White | `N3` | Library SDK references, CLI/Skill docs, Situation $\rightarrow$ Action tables |
-| `05` | **`Doc-4A`** | Split-Pane Operational Runbook (+ Mermaid Seq) | `45%` | `S1` White | `N1` | Deployment playbooks, incident response SOPs, tutorials |
-| `06` | **`Bridge-1`** | Parametric Engineering Worksheet | `50%` | `S1` White | `N0` | Interactive trade studies, link-budget calculators, notebooks |
-| `07` | **`Deck-1`** | Viewport-Locked Briefing Stage | `60%` | `S1` White | `N1` | `100dvh` assertion-evidence briefings with zero page scroll |
-| `08` | **`Bridge-2`** | High-Density Data Table & Fleet Grid (`1px` Grid) | `100% 1px Grid` | `S1` White | `N2` | Fleet inventories, bulk-action container tables, benchmark grids |
-| `09` | **`App-2`** | Live Metrics & Time-Series Console | `100% 1px Grid` | `S1` White | `N1` | Multi-channel strip charts, timing analyzers, register matrices |
-| `10` | **`App-1`** | Compact Issue & Ticket Tracker | `0% Cards (Rows)` | `S1` White | `N1` | `36px` single-line issue queues + live right inspector |
-| `11` | **`App-4`** | Task & Calendar Planner (+ Focus Hero & Briefing) | `80%` | `S1` White | `N1` | 1-sentence briefing, priority-ring tasks, Focus Hero, time-grid blocks |
-| `12` | **`App-3`** | KPI & Fleet Analytics Dashboard (Bento Grid) | `100% Cards` | `S1` White | `N2` | 12-col executive KPI & 2×3 icon-well fleet summary grid |
-| `13` | **`App-5`** | Daily Pacing & Wellness Planner (+ Readiness Hero) | `75%` | `S1` White | `N1` | Readiness Ring Hero (`84 · Steady`), 24h Day Arc, time-grid blocks |
-| `14` | **`App-Tree`** | Hierarchical Tree, Schema & File Explorer | `90% 3-Pane` | `S1` White | `N1` | 3-pane coupled Schema/File tree (`1px` indent guides) + 3-tab workbench |
-| `15` | **`HA-1`** | Ambient Wall Kiosk Screensaver (Monet + Light Glass) | `20% HUD` | `S1` White | `N0` | 10-foot `60/40` Claude Monet canvas + `blur(22px)` frosted glass HUD |
-| `16` | **`HA-2`** | Room-First Wall Control Panel | `85%` | `S1` White | `N1` | Walk-up room cards (`<= 4` metrics/room, `.va-icon-well`) + fixture dock |
-| `17` | **`HA-3`** | Crease-Aware Foldable & Phone Controller | `85%` | `S1` White | `N4` | `56px` full-row slider tiles, `820px` 50/50 fold split & `390px` thumb bar |
-
-![All 17 Tiers @ Full Desktop Viewport](docs/assets/contact_sheet_full.png)
+| # | Tier ID | Structural Archetype | Box Weight | Default Nav | Primary Use Cases |
+| :-: | :--- | :--- | :---: | :---: | :--- |
+| `01` | **`Doc-1`** | Academic & Scientific Monograph | `0%` | `N1` Left Spine | Whitepapers, mathematical derivations, research monographs |
+| `02` | **`Doc-2`** | Executive Decision Memo (`BLUF` + Mermaid) | `15%` | `N0` Kiosk | Architecture decision records, board memos, post-mortems |
+| `03` | **`Doc-3`** | Normative RFC Specification | `25%` | `N0` Kiosk | Protocol specs, `MUST`/`SHALL` compliance matrices, state machines |
+| `04` | **`Doc-4B`** | Encyclopedic SDK & API Reference | `25%` | `N3` Top + Left | Library SDK references, CLI/skill docs, decision router tables |
+| `05` | **`Doc-4A`** | Split-Pane Operational Runbook | `45%` | `N1` Left Spine | Deployment playbooks, incident response SOPs, interactive tutorials |
+| `06` | **`Bridge-1`** | Parametric Engineering Worksheet | `50%` | `N0` Kiosk | Interactive trade studies, link-budget calculators, solver sheets |
+| `07` | **`Deck-1`** | Viewport-Locked Briefing Stage | `60%` | `N1` Left Spine | `100dvh` assertion-evidence briefings with zero vertical scroll |
+| `08` | **`Bridge-2`** | High-Density Data Table & Fleet Grid | `100% 1px Grid` | `N2` Top Bar | Container fleet inventories, node ledgers, benchmark matrices |
+| `09` | **`App-2`** | Live Metrics & Time-Series Console | `100% 1px Grid` | `N1` Left Spine | Synchronized strip charts, subsystem rankings, threshold gauges |
+| `10` | **`App-1`** | Compact Issue & Ticket Tracker | `0% Cards (Rows)` | `N1` Left Spine | `36px` single-line triage queues with docked right inspector |
+| `11` | **`App-4`** | Task & Calendar Planner | `80%` | `N1` Left Spine | Daily status briefing, focus timer hero, backlog staging, time grid |
+| `12` | **`App-3`** | KPI & Analytics Dashboard (Bento Grid) | `100% Cards` | `N2` Top Bar | 12-column executive KPI grid and balanced 2×2 `.va-bento-2col` |
+| `13` | **`App-5`** | Daily Pacing & Wellness Planner | `75%` | `N1` Left Spine | Readiness ring, self-filling progress capsules, corridor sparklines |
+| `14` | **`App-Tree`** | Hierarchical Tree, Schema & File Explorer | `90% 3-Pane` | `N1` Left Spine | Coupled object tree, 3-tab table/DDL/AST stage, and FK inspector |
+| `15` | **`HA-1`** | Ambient Wall Kiosk Screensaver | `20% HUD` | `N0` Kiosk | 10-foot `60/40` fine-art canvas with frosted glass exception HUD |
+| `16` | **`HA-2`** | Room-First Wall Control Panel | `85%` | `N1` Zone Rail | Walk-up room cards, fixture dimmer dock, circuit load breakdown |
+| `17` | **`HA-3`** | Crease-Aware Foldable & Phone Controller | `85%` | `N4` Thumb Dock | `56px` touch slider tiles, `820px` 50/50 fold split, `390px` thumb bar |
 
 ---
 
-## Visual Proof Gallery
+## 5 Core Engineering Principles
 
-| `11. App-4` · Task & Calendar Planner (+ Focus Hero) | `13. App-5` · Daily Pacing & Wellness Planner (+ Readiness Hero) |
-| :---: | :---: |
-| ![Tier 11 App-4 Task and Calendar Planner](docs/assets/tier_11_app4_temporal_workbench.png) | ![Tier 13 App-5 Daily Pacing and Wellness Planner](docs/assets/tier_13_app5_restorative_companion.png) |
-
-| Unfolded Foldable (`R4 · 900px` Across All 17 Tiers) | Portrait Phone Handset (`R5 · 390px` Across All 17 Tiers) |
-| :---: | :---: |
-| ![All 17 Tiers @ Foldable 900px](docs/assets/contact_sheet_fold.png) | ![All 17 Tiers @ Phone 390px](docs/assets/contact_sheet_phone.png) |
+1. **Graduated Structure (`0%` to `100%` Box Weight):** Prose belongs in unboxed typographic columns (`01. Doc-1`–`05. Doc-4A`); high-frequency telemetry belongs in `1px` hairline matrices (`08. Bridge-2`, `09. App-2`); executive summaries and room controls belong in structured cards (`11. App-4`–`17. HA-3`).
+2. **Same-Website Typographic Cohesion:** A strict 3-role font stack (`--font-sans` Inter with `tabular-nums` for 100% of navigation, kickers, controls, and `Doc-2`..`HA-3` headings; `--font-serif` Newsreader strictly for narrative prose; `--font-mono` JetBrains Mono strictly for code/literals) and a 7-step modular scale (`--ts-xs: 11px` hard floor through `--ts-display: clamp(24px, 2.5vw, 28px)`). Each card budgets at most **4 active font sizes** and **2 primary text contrast rungs**.
+3. **Adaptive Navigation Across 3 Breakpoints (`N0`–`N4`):** Five navigation topologies (`N0` Kiosk, `N1` Left Spine, `N2` Top Bar, `N3` Hybrid L-Shell, `N4` Bottom Thumb Dock) and a **Sticky Sidebar Theme & Density Footer (`.va-oa-sidebar-footer`)** adapt cleanly across Desktop (`>= 1100px`), Tablet/Foldable (`641px–1099px` in-flow `60px` icon rail), and Phone (`<= 640px` bottom thumb bar).
+4. **Concentric Corner Math & 6 Alignment Invariants:** Nested elements derive their radius via $R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$ (`--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))`), while automated gates enforce straight `::before` active nav pills, zero orphan grid holes (`.va-bento-2col`), top-aligned table headers (`.va-th-title`), aligned left prose axes, `N4` dock clearance, and zero mid-word right-edge clipping.
+5. **Existing-Project & Content-Only Preservation Lock:** When updating copy or data on an existing screen (`Content-Only` mode) or inside a repository with `.visual-lock.json`, the agent preserves 100% of existing CSS and layout structure.
 
 ---
 
-## Automated Visual Contract & Zero-PII Verifier
+## Verification & Repository Structure
 
 ```bash
-python3 skills/visual-architecture-system/scripts/verify_visual_contract.py quiet-ui-showcase.html --tier ALL
-python3 skills/visual-architecture-system/scripts/verify_visual_contract.py docs/index.html --tier ALL
+# Run static contract + documentation token & reference link linter
+python3 skills/visual-architecture-system/scripts/verify_visual_contract.py quiet-ui-showcase.html --check-docs
 ```
 
----
-
-## License & Commercial Output Exemption (`GNU AGPLv3` + `NOTICE`)
-
-Licensed under the **GNU Affero General Public License v3.0 ([`LICENSE`](LICENSE))** with **AGPLv3 Section 7 Commercial Output Exemption ([`NOTICE`](NOTICE))**: any HTML, CSS, web apps, dashboards, slide decks, or documents generated *using* `quiet-ui-skills` (including embedding [`tokens/quiet-ui-tokens.css`](tokens/quiet-ui-tokens.css), dual-licensed under **MIT**) belong 100% to you for unrestricted commercial distribution.
+```text
+quiet-ui-skills/
+├── install.sh                                       # 1-command installer for ~/.agents & ~/.gemini
+├── llms.txt                                         # Machine-readable index for AI coding agents
+├── quiet-ui-showcase.html                           # Self-contained 17-tier interactive showcase
+├── tokens/quiet-ui-tokens.css                       # Standalone CSS custom properties (MIT dual-licensed)
+└── skills/visual-architecture-system/
+    ├── SKILL.md                                     # Core agent instructions & progressive-disclosure router
+    ├── references/00..06-*.md                       # On-demand domain reference modules
+    └── scripts/verify_visual_contract.py            # Static DOM, typography, and --check-docs verifier
+```

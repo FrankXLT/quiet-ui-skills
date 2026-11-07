@@ -1,17 +1,17 @@
-# Tiers 01 to 06: Editorial Publications, Theme-Aware Mermaid Diagrams & Parametric Document Bridge
+# Reference 02: Editorial Publications, Theme-Aware Mermaid Diagrams & Parametric Worksheets (`01. Doc-1` $\rightarrow$ `06. Bridge-1`)
 
 Under `data-corners="auto"` (default) or `data-corners="sharp"`, all tiers in this module enforce `border-radius: 0px !important; box-shadow: none !important;` on structural frames while preserving rounded `.va-pill-btn` interactive affordances.
-- **Zero SaaS Account Clutter Law:** Never render `.va-account-pod` (`AR · Author`) or `toggleAccountPopover` triggers inside Editorial tiers (`01. Doc-1` through `06. Bridge-1`).
+- **Zero SaaS Account Clutter Rule:** Never render `.va-account-pod` (`AR · Author`) or `toggleAccountPopover` triggers inside Editorial tiers (`01. Doc-1` through `06. Bridge-1`).
 
-## 01. Tier `Doc-1`: Academic & Scientific Monograph (`0%` Box Weight, Default `S1` White, `N1`)
+## 01. Tier `Doc-1`: Academic & Scientific Monograph (`0%` Box Weight, Default `white`, `N1`)
 - **Grid:** `max-width: 1260px; margin: 0 auto; padding: 2.25rem 2rem; display: grid; grid-template-columns: 200px minmax(0, 68ch) 230px; gap: 2.75rem;`
 - **Left Column (`200px`):** Sticky outline Table of Contents (`border-top: 2px solid var(--border-strong)`) with `--font-sans` `13px` (`.va-side-link`) links and a `.va-hamburger-btn` (`toggleLeftRailCollapse()`) that collapses the outline to a compact `60px` rail.
-- **Center Column (`68ch`) & Left Typographic Axis Law (`v6.0`):**
+- **Center Column (`68ch`) & Left Typographic Axis Alignment:**
   - Never place an inline `[☰]` toggle button inside the `.doc1-kicker` text line. Render the outline toggle in a block row (`.doc1-mobile-toc-bar`) ABOVE `.doc1-kicker-text` so the kicker (`--font-sans`, `--ts-xs: 11px`), display `H1` (`--font-serif`, `--ts-display: clamp(24px, 2.5vw, 28px)`), and body prose (`--font-serif`, `16.5px`, `line-height: 1.7`) share the exact same left X-coordinate (`|kicker.left - h1.left| <= 2px`).
   - Includes `var(--font-sans)` numbered section headers (`1.0`, `2.0`), flat bottom-bordered `[/]` section filter input, horizontal-rule display equations with `(Eq. 1.1)` right-aligned numbers, and click-to-sort `table.booktabs` (`2px` top/bottom rules, `1px` header rule, zero vertical lines).
 - **Right Column (`230px`):** Margin `.sidenote-box` items (`border-left: 1px solid var(--border-grid); padding-left: 0.75rem; font-size: var(--ts-sm, 12.5px);`) that highlight when hovering superscript `[1]` references.
 
-## 02. Tier `Doc-2`: Executive Decision Memo (`BLUF` + Mermaid) (`15%` Box Weight, Default `S1` White, `N0`)
+## 02. Tier `Doc-2`: Executive Decision Memo (`BLUF` + Mermaid) (`15%` Box Weight, Default `white`, `N0`)
 - **Container & Typography:** `max-width: 820px; margin: 0 auto; padding: 2rem 2rem 4rem;` with `--font-sans` page `H1` (`--ts-xl: clamp(20px, 2vw, 24px)`) and `--ts-prose: 15.5px` body copy.
 - **4 Core Architectural Elements:**
   1. **Top BLUF Decision Ledger (`.bluf-frame`):** `border: 1px solid var(--border-strong); border-top: 4px solid var(--border-strong); background: var(--bg-card);` containing a 4-column hairline metadata strip above a Bottom Line Up Front synthesis paragraph.
@@ -19,7 +19,7 @@ Under `data-corners="auto"` (default) or `data-corners="sharp"`, all tiers in th
   3. **Theme-Aware Mermaid Architecture Figure (`.va-mermaid-figure`):** Multi-node architecture decision flowchart (`<svg class="va-mermaid-svg">`) with a `[Diagram | Mermaid Source]` toggle button (`toggleMermaidSource(this)`) revealing `<pre class="va-mermaid-code">`.
   4. **Asymmetric Left-Rule Risk Callout (`.risk-left-bar`):** `border-left: 3px solid var(--status-err); background: var(--bg-card); padding: 0.75rem 1.1rem;`.
 
-## 03. Tier `Doc-3`: Normative RFC Specification (`25%` Box Weight, Default `S1` White, `N0`)
+## 03. Tier `Doc-3`: Normative RFC Specification (`25%` Box Weight, Default `white`, `N0`)
 - **Container:** `max-width: 900px; margin: 0 auto; font-size: var(--ts-prose, 15.5px);` with `--font-sans` `H1` (`--ts-xl`) and `--font-mono` (`--ts-sm: 12.5px`) specification tables/blocks.
 - **6 Mandatory Components:**
   1. Top `2px`-bordered Specification Metadata Table (`Document ID`, `Status: PROPOSED STANDARD`, `Category`, `Authors`, `License: MIT`).
@@ -29,21 +29,21 @@ Under `data-corners="auto"` (default) or `data-corners="sharp"`, all tiers in th
   5. Character-grid ASCII State Machine inside a bordered `<pre>` block.
   6. Unified configuration schema diff block (`-` removal / `+` addition lines).
 
-## 04. Tier `Doc-4B`: Encyclopedic SDK, CLI & Skill Reference (`25%` Box Weight, Default `S1` White, `N3`)
+## 04. Tier `Doc-4B`: Encyclopedic SDK, CLI & Skill Reference (`25%` Box Weight, Default `white`, `N3`)
 - **2-Column Shell:** `display: grid; grid-template-columns: 250px minmax(0, 1fr); width: 100%; max-width: 100%;` with clean `N3` topbar (`13px` `--font-sans`) and `.va-hamburger-btn` collapsible **2-Level Numbered Sidebar** (`1.0`, `1.1 /lock_carrier`, `2.0`).
-- **Right Column (`84ch`) & `v4.8–v5.1` AI Hero Reference Blocks:**
-  1. **6-Stage Numbered Lifecycle Flow Spine (`.va-flow-spine`):** Horizontal 6-step pipeline (`01 Discover` $\rightarrow$ `06 Verify`) with `/slash-command` pills (`--font-mono`, `11px` floor).
-  2. **Situation $\rightarrow$ Recommended Action Decision-Router Table:** Booktabs router table with a `[View Full Table]` expand toggle (`toggleDoc4BTableModal()`).
+- **Right Column (`84ch`) & Reference Blocks:**
+  1. **6-Stage Numbered Flow Spine (`.va-flow-spine`):** Horizontal 6-step pipeline (`01 Discover` $\rightarrow$ `06 Verify`) with `/slash-command` pills (`--font-mono`, `11px` floor).
+  2. **Situation-to-Tier Decision Table:** Booktabs router table with a `[View Full Table]` expand toggle (`toggleDoc4BTableModal()`).
   3. Nested semantic definition lists (`<dl>` / `<dt class="sig-band">` / `<dd class="sig-body">`) + `.doctest-box` with `[>>>]` prompt stripper.
 
-## 05. Tier `Doc-4A`: Split-Pane Operational Runbook (`45%` Box Weight, Default `S1` White, `N1`)
+## 05. Tier `Doc-4A`: Split-Pane Operational Runbook (`45%` Box Weight, Default `white`, `N1`)
 - **Full-Stage 3-Pane Split (`width: 100%; max-width: 100%; display: grid; grid-template-columns: 230px minmax(0, 1fr) 430px;`):**
   - Left (`230px`): Sticky runbook step index with `.va-hamburger-btn` rail collapse (`13px` `--font-sans`).
   - Center (`72ch`): **Theme-Aware Mermaid Sequence Diagram (`.va-mermaid-figure`)** (`Operator CLI` $\rightarrow$ `Primary GM-A` $\rightarrow$ `Sector-7 FPGA` $\rightarrow$ `Standby GM-B`) + unboxed `.step-anchor` procedural blocks. Clicking any step syncs the right console.
   - Right (`430px`): Sticky dark code console (`YAML / systemd / Python / CLI` tabs + `Copy` button).
 
-## 06. Tier `Bridge-1`: Parametric Engineering Worksheet (`50%` Box Weight, Default `S1` White, `N0`)
+## 06. Tier `Bridge-1`: Parametric Engineering Worksheet (`50%` Box Weight, Default `white`, `N0`)
 - **Anatomy:** Preserves `--ts-prose: 15.5px` prose and `table.booktabs` tables (`max-width: 900px`), while embedding a `1px` hairline interactive solver frame (`.b1-solver-frame`: 3 `<input type="range">` sliders on the left coupled to a live SVG sensitivity curve and `booktabs` table row on the right).
 
 ## 07. Theme-Aware Mermaid Diagram Contract (`.va-mermaid-figure`)
-Always style Mermaid diagrams using CSS custom properties (`var(--bg-canvas)`, `var(--bg-header)`, `var(--text-main)`, `var(--accent-focal)`, `var(--tint-indigo-bg)`, `var(--tint-emerald-bg)`, `var(--tint-amber-bg)`) with `font-size: var(--ts-xs, 11px)` minimum text labels rather than Mermaid's default yellow/purple fills, and provide a 1-click `toggleMermaidSource(btn)` button to inspect the raw Mermaid DSL.
+Always style Mermaid diagrams using CSS custom properties (`var(--bg-canvas)`, `var(--bg-header)`, `var(--text-main)`, `var(--accent-focal)`, `var(--tint-indigo-bg)`, `var(--tint-emerald-bg)`, `var(--tint-amber-bg)`) with `font-size: var(--ts-xs, 11px)` minimum text labels rather than default yellow/purple fills, and provide a 1-click `toggleMermaidSource(btn)` button to inspect the raw Mermaid DSL.

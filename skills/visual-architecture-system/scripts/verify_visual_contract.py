@@ -234,19 +234,27 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
 def verify_docs_contract() -> list[str]:
     errors: list[str] = []
     skill_dir = Path(__file__).resolve().parent.parent
+    repo_root = skill_dir.parent.parent
     tokens_file = skill_dir / "tokens" / "quiet-ui-tokens.css"
     if not tokens_file.exists():
-        tokens_file = skill_dir.parent.parent / "tokens" / "quiet-ui-tokens.css"
+        tokens_file = repo_root / "tokens" / "quiet-ui-tokens.css"
     if not tokens_file.exists():
         return [f"[DOCS_LINTER] tokens/quiet-ui-tokens.css not found near {skill_dir}"]
     defined_tokens = set(re.findall(r"(--[a-zA-Z0-9_-]+)\s*:", tokens_file.read_text(encoding="utf-8")))
     skill_md = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    desc_m = re.search(r"^description:\s*(.+)$", skill_md, flags=re.M)
+    if not desc_m or len(desc_m.group(1).split()) > 55:
+        errors.append("[SKILL_DESC_LEN] SKILL.md YAML description must be a concise <= 55-word summary.")
     ref_files = sorted((skill_dir / "references").glob("*.md"))
     for rf in ref_files:
         if f"references/{rf.name}" not in skill_md:
             errors.append(f"[UNLINKED_REF] Reference '{rf.name}' is not linked in SKILL.md.")
-    for md_file in [skill_dir / "SKILL.md", *ref_files]:
+    extra_docs = [p for p in (repo_root / "README.md", repo_root / "llms.txt", skill_dir / "llms.txt") if p.exists()]
+    for md_file in [skill_dir / "SKILL.md", *ref_files, *extra_docs]:
         md_text = md_file.read_text(encoding="utf-8")
+        for brand in ("Fitbit", "Monarch", "Portainer", "OpenTodo", "AI Hero", "OA Workbench"):
+            if re.search(rf"\b{re.escape(brand)}\b", md_text, flags=re.I):
+                errors.append(f"[DOC_BRAND_JARGON] {md_file.name} contains brand name '{brand}'; use universal design-system terminology.")
         for block in re.findall(r"(?:```|~~~)(?:css|html)\n(.*?)(?:```|~~~)", md_text, flags=re.S | re.I):
             for line in block.splitlines():
                 if "/* avoid */" in line:

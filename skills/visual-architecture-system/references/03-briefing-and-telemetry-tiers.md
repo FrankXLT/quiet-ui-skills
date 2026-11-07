@@ -1,6 +1,6 @@
-# Tiers 07 to 09: Viewport-Locked Briefing Stage, High-Density Data Table & Live Metrics Console
+# Reference 03: Viewport-Locked Briefing Stage, High-Density Fleet Grid & Live Time-Series Console (`07. Deck-1` $\rightarrow$ `09. App-2`)
 
-## 07. Tier `Deck-1`: Viewport-Locked Briefing Stage (`60%` Box Weight, Default `S1` White, `N1`)
+## 07. Tier `Deck-1`: Viewport-Locked Briefing Stage (`60%` Box Weight, Default `white`, `N1`)
 - **Hard Viewport Lock:** `display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; width: 100%; max-width: 100%; height: 100dvh; overflow: hidden;`
 - **Row 1 (`48px` Header):** Slide/step counter badge (`SLIDE 01 / 04 • STEP 1/3`, `--ts-xs: 11px`) + full-sentence quantitative **Assertion Headline** in `var(--font-sans)` (`--ts-display: clamp(24px, 2.5vw, 28px)`).
 - **Row 2 (`400px` Left Stepper | `1fr` Right 3-Band Visual Stage):**
@@ -9,13 +9,13 @@
 
 ---
 
-## 08. Tier `Bridge-2`: High-Density Data Table & Fleet Grid (`1px` Grid) (`100% 1px Grid`, Default `S1` White, `N2`)
+## 08. Tier `Bridge-2`: High-Density Data Table & Fleet Grid (`100% 1px Grid`, Default `white`, `N2`)
 
-This is the canonical tabular engineering and container-fleet console (`t5-console`) bridging documents and dashboards. It pairs `1px` hairline matrices (`--ts-sm: 12.5px` cells, `--ts-xs: 11px` headers) with **Portainer 3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, a **Scoped Context Box (`.va-scoped-nav-box`)**, and a **Stateful Bulk-Action Table Toolbar (`.va-bulk-action-bar`)**:
+This is the canonical tabular engineering and container-fleet console (`t5-console`) bridging documents and dashboards. It pairs `1px` hairline matrices (`--ts-sm: 12.5px` cells, `--ts-xs: 11px` headers) with **3-Zone Fleet Summary Cards (`.va-fleet-card-3zone`)**, a **Scoped Context Rail (`.va-scoped-nav-box`)**, and a **Bulk-Action Table Toolbar (`.va-bulk-action-bar`)**:
 
 ~~~html
 <div class="t5-console">
-  <!-- Top Dense Toolbar + Stateful Bulk-Action Bar (.va-bulk-action-bar) -->
+  <!-- Top Dense Toolbar + Bulk-Action Table Toolbar (.va-bulk-action-bar) -->
   <div class="t5-panel-hdr">
     <span>ARRAY-01 // HIGH-DENSITY DATA TABLE &amp; FLEET GRID (1PX HAIRLINE MATRIX)</span>
     <div>
@@ -68,12 +68,11 @@ This is the canonical tabular engineering and container-fleet console (`t5-conso
 
 ---
 
-## 09. Tier `App-2`: Live Metrics & Time-Series Console (`100% 1px Grid`, Default `S1` White, `N1`)
+## 09. Tier `App-2`: Live Metrics & Time-Series Console (`100% 1px Grid`, Default `white`, `N1`)
 - **Strict Ban on Top KPI Cards:** Do not place summary metric cards above the strip charts.
 - **3-Column `1px` Hairline Grid (`width: 100%; max-width: 100%; grid-template-columns: 230px minmax(0, 1fr) 280px; gap: 1px; background: var(--border-grid); border-radius: 0 !important;`):**
   1. **Left Column (`230px`):** Compact channel tree with `7px` `.sq-status` squares and live cursor readouts.
   2. **Center Column (`1fr` Hybrid Stack):**
      - **Top Half:** 2 to 3 vertically stacked multi-channel SVG strip charts with thin `1.3px` traces, shaded nominal/abort bands, and a **synchronized vertical crosshair cursor** (`onmousemove`) that scrubs across all channels simultaneously.
-     - **Bottom Half:** A docked **`28px`-row Channel Matrix (`table.t5-table`)** + **Proportional Background-Fill Subsystem Ranking Rows (`.va-prop-bar-row`)** under a recessed `[Subsystem | Rail | Node]` switcher (`width: var(--share-pct)`) and **Cumulative Trajectory vs. Historical Baseline Curve (`.va-trajectory-chart`)**.
+     - **Bottom Half:** A docked **`28px`-row Channel Matrix (`table.t5-table`)** + **Proportional Share Bars (`.va-prop-bar-row`)** under a recessed `[Subsystem | Rail | Node]` switcher (`width: var(--share-pct)`) and **Cumulative Trajectory Chart (`.va-trajectory-chart`)**.
   3. **Right Column (`280px`):** Register snapshot + **5-Segment Threshold Gauge Bar (`.va-threshold-gauge`)** + automated verification check log.
-
