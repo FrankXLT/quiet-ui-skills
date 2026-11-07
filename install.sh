@@ -20,14 +20,16 @@ fi
 
 install_to_target() {
   local dest="$1"
-  mkdir -p "${dest}/references" "${dest}/scripts" "${dest}/tokens"
+  mkdir -p "${SRC_SKILL_DIR}/tokens" "${dest}/references" "${dest}/scripts" "${dest}/tokens"
+  cp -f "${SCRIPT_DIR}/tokens/quiet-ui-tokens.css" "${SRC_SKILL_DIR}/tokens/quiet-ui-tokens.css"
+  [[ -f "${SCRIPT_DIR}/llms.txt" ]] && cp -f "${SCRIPT_DIR}/llms.txt" "${SRC_SKILL_DIR}/llms.txt"
   cp -f "${SRC_SKILL_DIR}/SKILL.md" "${dest}/SKILL.md"
   cp -f "${SRC_SKILL_DIR}/references/"*.md "${dest}/references/"
   cp -f "${SRC_SKILL_DIR}/scripts/verify_visual_contract.py" "${dest}/scripts/verify_visual_contract.py"
   cp -f "${SCRIPT_DIR}/tokens/quiet-ui-tokens.css" "${dest}/tokens/quiet-ui-tokens.css"
   [[ -f "${SCRIPT_DIR}/llms.txt" ]] && cp -f "${SCRIPT_DIR}/llms.txt" "${dest}/llms.txt"
   chmod +x "${dest}/scripts/verify_visual_contract.py"
-  echo "[OK] Installed visual-architecture-system v6.0 -> ${dest}"
+  echo "[OK] Installed visual-architecture-system v6.1 -> ${dest}"
 }
 
 if [[ $# -ge 1 ]]; then

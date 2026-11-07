@@ -185,7 +185,7 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
                 errors.append(f"[APPTREE_VIOLATION] Missing v4.6 Tree/Schema Explorer token '{req_cls}' in App-Tree.")
 
     if tier in ("ALL", "HA-1"):
-        for req_cls in ("ha1-stage", "ha1-monet-img", "monet_water_lilies_1906.jpg", "ha1-glass-hud", "ha1-giant-clock"):
+        for req_cls in ("ha1-stage", "ha1-monet-stage", "ha1-monet-img", "monet_water_lilies_1906.jpg", "ha1-glass-hud", "va-glass-panel", "va-glass-tile", "va-glass-slider", "va-glass-pill", "ha1-giant-clock"):
             if req_cls not in content:
                 errors.append(f"[HA1_VIOLATION] Missing required HA-1 Monet/glass token '{req_cls}'.")
 

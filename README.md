@@ -38,7 +38,7 @@ When you hand raw content to an agent equipped with `visual-architecture-system`
 | **Container fleets, node tables, time-series, or quota telemetry** | **High-Density Fleet Grid (`08. Bridge-2`)**, **Time-Series Console (`09. App-2`)**, or **Bento Dashboard (`12. App-3`)** | **3-Zone Fleet Summary Cards (`.va-fleet-card-3zone`)**, **Bulk-Action Table Toolbars (`.va-bulk-action-bar`)**, **Expected-Pace Bars (`.va-pace-bar`)**, **Cumulative Trajectory Charts (`.va-trajectory-chart`)**, **Proportional Share Bars (`.va-prop-bar-row`)** |
 | **Task backlogs, daily schedules, or wellness/readiness logs** | **Task & Calendar Planner (`11. App-4`)** or **Daily Pacing Planner (`13. App-5`)** | **Daily Status Briefings (`.va-status-briefing`)**, **Priority-Ring Task Rows (`.va-priority-ring`)**, **Left-Accent Time Blocks (`.va-timegrid-block`)**, **Self-Filling Progress Capsules (`.va-fill-capsule`)**, **Target-Corridor Sparklines (`.va-corridor-sparkline`)**, **Multi-Track State Timelines (`.va-state-hypnogram`)** |
 | **Database schemas, file trees, or AST/JSON hierarchies** | **3-Pane Schema & File Explorer (`14. App-Tree`)** or **Issue Stream (`10. App-1`)** | Persistent `228px–260px` labeled object tree (`.va-tree-pane`), `1px` indent guides, top-aligned `.va-th-title` data grid |
-| **Smart-home rooms, wall kiosks, or mobile room controllers** | **Ambient Wall Kiosk (`15. HA-1`)**, **Room Control Panel (`16. HA-2`)**, or **Foldable Companion (`17. HA-3`)** | `60/40` fine-art backdrop + `blur(22px)` glass HUD, room dimmer cards (`<= 4` metrics/room), crease-aware `50/50` split |
+| **Smart-home rooms, wall kiosks, or mobile room controllers** | **Ambient Wall Kiosk (`15. HA-1`)**, **Room Control Panel (`16. HA-2`)**, or **Foldable Companion (`17. HA-3`)** | Full-bleed Monet stage (`.ha1-monet-stage`) + `blur(22px) saturate(165%)` optical glass control panels (`.va-glass-panel`, `.va-glass-tile`, `.va-glass-slider`, `.va-glass-pill`), room dimmer cards (`<= 4` metrics/room), crease-aware `50/50` split |
 
 ---
 
@@ -62,7 +62,7 @@ All 17 tiers default to **Pure White (`data-theme="white"`)** and switch live ac
 | `12` | **`App-3`** | KPI & Analytics Dashboard (Bento Grid) | `100% Cards` | `N2` Top Bar | 12-column executive KPI grid and balanced 2×2 `.va-bento-2col` |
 | `13` | **`App-5`** | Daily Pacing & Wellness Planner | `75%` | `N1` Left Spine | Readiness ring, self-filling progress capsules, corridor sparklines |
 | `14` | **`App-Tree`** | Hierarchical Tree, Schema & File Explorer | `90% 3-Pane` | `N1` Left Spine | Coupled object tree, 3-tab table/DDL/AST stage, and FK inspector |
-| `15` | **`HA-1`** | Ambient Wall Kiosk Screensaver | `20% HUD` | `N0` Kiosk | 10-foot `60/40` fine-art canvas with frosted glass exception HUD |
+| `15` | **`HA-1`** | Ambient Wall Kiosk Screensaver (Monet + Optical Glass) | `20% HUD` | `N0` Kiosk | 10-foot `60/40` Monet canvas + `.va-glass-panel` dimmer/scene controls |
 | `16` | **`HA-2`** | Room-First Wall Control Panel | `85%` | `N1` Zone Rail | Walk-up room cards, fixture dimmer dock, circuit load breakdown |
 | `17` | **`HA-3`** | Crease-Aware Foldable & Phone Controller | `85%` | `N4` Thumb Dock | `56px` touch slider tiles, `820px` 50/50 fold split, `390px` thumb bar |
 

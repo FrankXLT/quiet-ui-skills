@@ -1,6 +1,6 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 6.0 (Compiler-Grade Architecture, Concentric Radius Math, 7-Step Type Scale & 6 Invariants)
+   Version: 6.1 (Optical Glassmorphism, Concentric Radius Math, 7-Step Type Scale & 6 Invariants)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
@@ -288,4 +288,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 .va-hdr-icon-btn { width: 24px; height: 24px; border-radius: var(--radius-trough-pill); border: 1px solid var(--border-hairline); background: var(--bg-surface); color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .va-threshold-gauge { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: 8px; margin: 6px 0; }
 .va-trajectory-chart { border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); padding: 10px 12px; }
+/* v6.1 True Optical Glassmorphism Control Panels (.va-glass-panel, .va-glass-tile, .va-glass-slider, .va-glass-pill) */
+.ha1-monet-stage { position: relative; background-size: cover; background-position: center; overflow: hidden; }
+.va-glass-panel { border-radius: var(--radius-card, 12px); backdrop-filter: blur(22px) saturate(165%) !important; -webkit-backdrop-filter: blur(22px) saturate(165%) !important; background: linear-gradient(135deg, rgba(255, 255, 255, 0.60) 0%, rgba(248, 250, 252, 0.38) 100%) !important; border: 1px solid rgba(255, 255, 255, 0.52) !important; box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.72), 0 16px 36px -8px rgba(15, 23, 42, 0.22) !important; color: #09090B; }
+:root[data-theme="dark"] .va-glass-panel, :root[data-theme="dark-paper"] .va-glass-panel { background: linear-gradient(135deg, rgba(15, 23, 42, 0.62) 0%, rgba(15, 23, 42, 0.38) 100%) !important; border: 1px solid rgba(255, 255, 255, 0.20) !important; box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.26), 0 16px 36px -8px rgba(2, 6, 23, 0.55) !important; color: #F8FAFC; }
+.va-glass-tile, .va-glass-pill, .va-glass-slider { border-radius: var(--radius-inner); backdrop-filter: blur(12px) saturate(140%) !important; -webkit-backdrop-filter: blur(12px) saturate(140%) !important; background: rgba(255, 255, 255, 0.34) !important; border: 1px solid rgba(255, 255, 255, 0.48) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45) !important; }
+:root[data-theme="dark"] .va-glass-tile, :root[data-theme="dark-paper"] .va-glass-tile, :root[data-theme="dark"] .va-glass-pill, :root[data-theme="dark-paper"] .va-glass-pill, :root[data-theme="dark"] .va-glass-slider, :root[data-theme="dark-paper"] .va-glass-slider { background: rgba(30, 41, 59, 0.44) !important; border: 1px solid rgba(255, 255, 255, 0.18) !important; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22) !important; color: #F8FAFC; }
 

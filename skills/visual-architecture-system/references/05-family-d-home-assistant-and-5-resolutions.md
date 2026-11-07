@@ -7,13 +7,17 @@ Smart-home dashboards fail when designed like desktop SaaS web apps or when ever
 ## 1. Tier `15. HA-1` — Ambient Wall Kiosk Screensaver (`20% HUD`, Default `white`, `N0` Zero-Chrome)
 
 - **Target Hardware & Distance:** Wall-mounted display (`1920×1080` or `2560×1440`) viewed from `>= 2m` (`10–16 ft`).
-- **60/40 Asymmetric Split (`100dvh` starting at `(0,0)`):**
-  - **Full-Bleed Fine-Art / Architectural Backdrop:** Renders an authentic CC0 Claude Monet *Water Lilies (1906)* painting (`<img class="ha1-monet-img" src="assets/monet_water_lilies_1906.jpg" alt="Claude Monet Water Lilies 1906" />`) with a subtle radial readability vignette, or switches live to an Isometric Residence Blueprint (`blueprint`) or OLED Night Minimal (`oled`) canvas.
-  - **Left 60%:** Giant tabular clock (`clamp(3.2rem, 6.8cqi, 6.2rem)`), date, perimeter status badge, and museum artwork caption. Zero top mode ribbon in `N0` mode.
-  - **Right 40% Theme-Aware Frosted Glass HUD (`.ha1-glass-hud`):** Translucent **Frosted Light Glass** in `white` / `paper` modes (`background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(22px) saturate(145%);`) and **Frosted Dark Glass** in `dark-paper` / `dark` modes (`background: rgba(12, 16, 24, 0.46);`), strictly capped at **3 calm blocks**:
-    1. **Weather & 4-Slot Horizon:** Current outdoor condition + 4 upcoming time slots (`09:00`, `12:00`, `15:00`, `18:00`) with Font Awesome 6 weather icons (`fa-cloud-sun`, `fa-sun`, `fa-wind`, `fa-moon`).
-    2. **Zero-Nominal Exception Pills:** Surfaces ONLY active exceptions (open garage bay, active person detection, running HVAC warmup). Nominal/closed states are hidden.
-    3. **Next 3 Upcoming Agenda & Planner Items:** Next 3 household events or scheduled tasks.
+- **Full-Bleed Monet Artwork Stage (`.ha1-stage.ha1-monet-stage`, `100dvh` starting at `(0,0)`):**
+  - Renders the authentic CC0 Claude Monet *Water Lilies (1906)* painting (`<img class="ha1-monet-img" src="assets/monet_water_lilies_1906.jpg" alt="Claude Monet Water Lilies 1906" />`) across `100%` of the stage (`object-fit: cover; object-position: center;`) so every control panel, HUD header, dimmer slider, and scene pill floats directly over the artwork and refracts its oil pigments. Also switches live to an Isometric Residence Blueprint (`blueprint`) or OLED Night Minimal (`oled`) canvas.
+- **True Optical Glassmorphism Control Panels (`.va-glass-panel`, `.va-glass-tile`, `.va-glass-slider`, `.va-glass-pill`):**
+  - **Outer Glass Panels (`.ha1-glass-hud, .va-glass-panel`):** Enforce `backdrop-filter: blur(22px) saturate(165%) !important; -webkit-backdrop-filter: blur(22px) saturate(165%) !important;` with adaptive translucent surfaces across all 4 themes (never an opaque `rgb()` fill):
+    - **Light Glass (`white`, `paper`):** `background: linear-gradient(135deg, rgba(255, 255, 255, 0.60) 0%, rgba(248, 250, 252, 0.38) 100%) !important; border: 1px solid rgba(255, 255, 255, 0.52) !important; box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.72), 0 16px 36px -8px rgba(15, 23, 42, 0.22) !important;`
+    - **Dark Smoked Glass (`dark-paper`, `dark`):** `background: linear-gradient(135deg, rgba(15, 23, 42, 0.62) 0%, rgba(15, 23, 42, 0.38) 100%) !important; border: 1px solid rgba(255, 255, 255, 0.20) !important; box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.26), 0 16px 36px -8px rgba(2, 6, 23, 0.55) !important;`
+  - **Concentric Inner Glass Controls (`.va-glass-tile`, `.va-glass-pill`, `.va-glass-slider`):** Derive their corner radius from `var(--radius-inner)` (`max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))`) with `backdrop-filter: blur(12px) saturate(140%) !important`, translucent inner fill (`rgba(255,255,255,0.34)` in light / `rgba(30,41,59,0.44)` in dark), and a `1px` specular top catch-light (`inset 0 1px 0 rgba(255,255,255,0.45)`).
+  - **3 Interactive Glass Control Panels Floating Over the Monet Stage:**
+    1. **Panel 1 — Ambient Weather, Time & Conservatory Climate Glass HUD (`.va-glass-panel`):** Outdoor/indoor humidity & temp capsules, HVAC mode pills (`.va-glass-pill`: `Heat 71.5°F`, `Auto Eco`, `Humidifier 45%`), and 4-slot `.ha1-hour-cell.va-glass-tile` horizon.
+    2. **Panel 2 — Lighting & Dimmer Glass Control Deck (`.va-glass-panel`):** Interactive glass dimmer sliders (`.va-glass-slider`: `Conservatory Pendants 72%`, `Gallery Wall Wash 45%`, `Garden Path & Pond 100%`) with glowing Monet-palette `rgba` fill tracks, plus a 2×2 grid of concentric `.va-glass-tile` room/scene toggles (`Monet Pond`, `Morning Mist`, `Evening Warmth`, `Night Watch`).
+    3. **Panel 3 — Algorithmic Monet 10-Color Palette & Sensor Dock (`.va-glass-panel`):** Bottom-left glass dock displaying the 10 extracted Monet oil-painting swatches (`#142238`..`#F3DAD2` in `.va-glass-tile` cells), artwork metadata caption, and live telemetry pills (`.va-glass-pill`).
 
 ---
 

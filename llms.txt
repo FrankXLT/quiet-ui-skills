@@ -56,7 +56,7 @@ Or copy `skills/visual-architecture-system/` into `~/.agents/skills/visual-archi
 - `12. App-3` — KPI & Analytics Dashboard (4-Layer Bento + 2x2 `.va-bento-2col`, `100% Cards`, `N2`)
 - `13. App-5` — Daily Pacing & Wellness Planner (`.va-fill-capsule`, `.va-corridor-sparkline`, `.va-state-hypnogram`, `75%`, `N1`)
 - `14. App-Tree` — Hierarchical Tree, Schema & File Explorer Workbench (`90% 3-Pane`, `N1`)
-- `15. HA-1` — Ambient Wall Kiosk Screensaver (Fine-Art Backdrop + `blur(22px)` Glass HUD, `20% HUD`, `N0`)
+- `15. HA-1` — Ambient Wall Kiosk Screensaver (`.ha1-monet-stage` + `blur(22px) saturate(165%)` `.va-glass-panel`, `.va-glass-tile`, `.va-glass-slider`, `.va-glass-pill`, `20% HUD`, `N0`)
 - `16. HA-2` — Room-First Wall Control Panel (`<= 4` metrics/room, `.va-prop-bar-row` circuit load, `85%`, `N1`)
 - `17. HA-3` — Crease-Aware Foldable & Phone Controller (`56px` slider tiles, `820px` 50/50 split, `85%`, `N4`)
 
