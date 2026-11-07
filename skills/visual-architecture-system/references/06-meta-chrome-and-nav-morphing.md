@@ -17,7 +17,10 @@ Every production deliverable across the 17-Tier Continuum must follow determinis
 4. **`N3 · Hybrid Enterprise L-Shell (Top + Left)` (`04. Doc-4B`):**
    - **Single-Bar & Anti-Duplication Law:** At most `1` top bar and `1` left rail may be visible simultaneously. Never show `switchTier()` tier numbers in `N3` bars, and never show two stacked top bars (e.g. hide `.ha2-top-strip` when `.va-poly-n3-topbar` is visible).
 5. **`N4 · Sticky Bottom Thumb-Zone Dock` (`17. HA-3` and all `R5 · Phone 390px` views):**
-   - **Rule:** `48px–52px` bottom bar with 5 thumb-reachable slots (icon stacked above `10px` label); strictly zero top navbar.
+   - **Rule:** `40px` centered desktop pill (`<= 520px` wide) / `48px–52px` mobile bottom bar with 5 thumb-reachable slots (icon stacked above `11px` `--ts-xs` label); strictly zero top navbar, and main scroll containers add `padding-bottom >= 64px` (`76px` in `14. App-Tree`).
+6. **Zero-Drift `13px` Sans Nav Typography (`v5.1`) & Straight `::before` Vertical Pill (`v5.0`):**
+   - **100% Identical Nav Typography (`0px` Variance Across All 17 Tiers):** Every `.va-side-link`, `.va-tab-link`, `.va-poly-n2-bar a`, `.va-poly-n3-topbar a`, `.app1-nav-btn`, and `.va-tree-node` renders at `font-family: var(--font-sans) !important; font-size: var(--ts-nav, 13px) !important; font-weight: 500 !important; line-height: 1.35 !important;`.
+   - **Zero Curved-Border Parenthesis Law:** Never combine `border-radius > 0` with `box-shadow: inset 3px 0 0 ...` or `border-left: 3px solid ...` on active sidebar/drawer links or tree nodes. Always render the active indicator as a straight vertical pill pseudo-element (`.va-side-link.active::before, .va-tree-node.active::before, .app1-nav-btn.active::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px; background: var(--accent-focal); }`), hidden (`display: none !important`) when collapsed to `60px`.
 
 ---
 
@@ -35,7 +38,7 @@ Load Font Awesome 6 CSS (`https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.
 
 ---
 
-## 3. Editorial Purity, Zero Debug Header Law & Top Studio Bar + OA Sidebar Swatches (`v4.6`)
+## 3. Editorial Purity, Zero Debug Header Law & Top Studio Bar + OA Sidebar Swatches (`v5.1`)
 
 1. **Zero SaaS Account Pod in Editorial Tiers (`01. Doc-1`–`06. Bridge-1`):** Documentation, RFCs, API references, and worksheets must NEVER render `.va-account-pod` (`AR · Author`) or account popovers. Replace right-hand masthead slots with document-native utilities (`[/] Search Corpus` + `.va-pill-btn` `PDF`).
 2. **Zero Internal Debug Strings in Headers:** Never render `11. APP-4 //`, `(N2 MASTHEAD)`, or `(85% BOX WEIGHT)` in visible `<header>`, `<nav>`, `<aside>`, or `<h1>` elements.

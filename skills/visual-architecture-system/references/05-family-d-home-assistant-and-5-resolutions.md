@@ -17,7 +17,7 @@ Home Assistant dashboards fail when designed like desktop SaaS web apps or when 
 
 ---
 
-## 2. Tier `16. HA-2` — Room-First Wall Control Panel (`85%` Box Weight, Default `S2` Paper, `N1` `68px` Rail)
+## 2. Tier `16. HA-2` — Room-First Wall Control Panel (`85%` Box Weight, Default `S1` White, `N1` `68px` Rail)
 
 - **Target Hardware & Distance:** Walk-up wall tablet (`1920×1080` / `2560×1440`) at arm's length (`0.5m–1m`).
 - **Default `N1` Left Vertical Zone Rail (`.ha2-left-rail`, `68px` wide, `100dvh`):**
@@ -31,7 +31,7 @@ Home Assistant dashboards fail when designed like desktop SaaS web apps or when 
 
 ---
 
-## 3. Tier `17. HA-3` — Full-Viewport Crease-Aware Foldable & Phone Companion App (`85%` Box Weight, Default `S4` Dark, `N4` Thumb Dock)
+## 3. Tier `17. HA-3` — Full-Viewport Crease-Aware Foldable & Phone Companion App (`85%` Box Weight, Default `S1` White, `N4` Thumb Dock)
 
 - **Zero Fake Hardware Bezels:** `HA-3` is never trapped inside a simulated `390px`/`820px` `#ha3-device-frame` box. It owns `100%` of the real browser viewport (`min-height: 100dvh`) and adapts via native `@media` queries:
   - **Desktop (`@media (min-width: 1100px)`):** `.ha3-split-body` renders a multi-column left tile grid (`repeat(auto-fill, minmax(210px, 1fr))`) paired with a `360px` right `#ha3-detail-inspector` (`grid-template-columns: minmax(0, 1fr) 360px`) and a centered `560px` floating `N4` bottom pill dock.

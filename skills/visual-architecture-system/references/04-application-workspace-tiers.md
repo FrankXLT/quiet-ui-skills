@@ -4,22 +4,26 @@ All application workspace tiers own the **full `100vw × 100dvh` viewport** star
 
 ---
 
-## 1. Tier `10. App-1` — Compact Issue & Ticket Tracker (`0% Cards (Rows)`, Default `S4` Dark, `N1`)
+## 1. Tier `10. App-1` — Compact Issue & Ticket Tracker (`0% Cards (Rows)`, Default `S1` White, `N1`)
 
-- **Structural Mandate:** Zero floating cards (`0%` card ratio). Uses a 3-pane full-viewport shell (`220px` collapsible left filter spine + `1fr` center `36px` issue row stream + `330px` right live inspector).
+- **Structural Mandate:** Zero floating cards (`0%` card ratio). Uses a 3-pane full-viewport shell (`220px` collapsible left filter spine with `13px` `--font-sans` nav links + `1fr` center `36px` issue row stream + `330px` right live inspector).
 - **App Shell Integration:** Includes the `Inbox · 4` monochrome sidebar route, bottom-left `#va-account-pod`, Tier 1 Inline Summary Bar (`<= 36px`) toggling `.va-pulse-drawer`, and `.va-mobile-thumb-bar` on `R5` (`390px`).
 
 ---
 
-## 2. Tier `11. App-4` — Task & Calendar Planner (+ Active Focus Session Hero) (`80%` Box Weight, Default `S1` White, `N1`)
+## 2. Tier `11. App-4` — Task & Calendar Planner (+ Briefing, Priority Rings & Focus Hero) (`80%` Box Weight, Default `S1` White, `N1`)
 
-Couples an unscheduled backlog staging rail with a time-blocked calendar stage and a Single-Anchor Focus Session Hero:
+Couples an unscheduled backlog staging rail with a time-blocked calendar stage, a **1-Sentence Human Status Briefing (`.va-status-briefing`)**, and a **Single-Anchor Focus Session Hero (`.app4-focus-hero`)**:
+- **OpenTodo Calm Planning Patterns (`v4.8–v5.1`):**
+  - **1-Sentence Human Status Briefing (`.va-status-briefing`):** Lead sentence (`--ts-md: 16px`, weight `600`) summarizing today's remaining tasks, deep-work windows, and evening wrap-up button (`[Close the day]`, `closeTheDayApp4()`).
+  - **Tinted Section Header Bars (`.va-task-group-bar`) & Priority-Ring Checkboxes (`.va-priority-ring`):** Grouped task sections (`Overdue · 2`, `Today · 4`) with inline `Move all to today · Reschedule` actions and semantic priority-ring checkboxes (`.p1` rose, `.p2` amber, `.p3` indigo, `.p4` slate).
+  - **Pastel `3px`-Left-Bar Time-Grid Blocks (`.va-timegrid-block`):** Full-width calendar blocks (`border-left: 3px solid ...`) with a live red current-time marker line (`.va-now-line`).
 - **Single-Anchor Focus Session Hero (`.app4-focus-hero`):**
   - Anchors the top of the main stage with a `.va-icon-well` (`fa-bolt`), active time-block title (`Deep Work · Calibration Verification`), `60×60` SVG progress ring (`2/4 Done`), live tabular countdown timer (`00:45:00`), and rounded `.va-pill-btn` duration extenders (`[+15m]`, `[+30m]`).
 - **3-Zone Coupled Geometry:**
-  1. `220px` Left Sidebar (`N1`, collapsible to `60px` via `.va-hamburger-btn`) with Font Awesome 6 icons (`fa-sun`, `fa-calendar-week`, `fa-inbox`, `fa-chart-pie`) and bottom-left `#va-account-pod`.
+  1. `220px` Left Sidebar (`N1`, `13px` `--font-sans`, collapsible to `60px` via `.va-hamburger-btn`) with Font Awesome 6 icons (`fa-sun`, `fa-calendar-week`, `fa-inbox`, `fa-chart-pie`) and bottom-left `#va-account-pod`.
   2. `280px` Unscheduled & Backlog Staging Rail (`.app4-staging-tray`) with a rounded `.va-pill-btn.primary` (`fa-wand-magic-sparkles` `Process All`) toggling the inline 2-pane batch triage split.
-  3. `1fr` Horizon & Time-Block Stage with `.app4-focus-hero`, In-Place Morphing Command Composer (`.app4-command-composer` + `.app4-token-preview`), and Stateful Time-Block Continuity Strips (`.app4-continuity-strip`).
+  3. `1fr` Horizon & Time-Block Stage with `.va-status-briefing`, `.app4-focus-hero`, In-Place Morphing Command Composer (`.app4-command-composer` + `.app4-token-preview`), and Stateful Time-Block Continuity Strips (`.app4-continuity-strip`).
 
 ---
 

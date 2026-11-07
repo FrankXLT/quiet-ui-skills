@@ -1,6 +1,6 @@
-# `quiet-ui-skills` — Featuring *The Quiet UI Canvas* (17-Tier Anti-Slop Visual Architecture System v4.8)
+# `quiet-ui-skills` — Featuring *The Quiet UI Canvas* (17-Tier Anti-Slop Visual Architecture System v5.1)
 
-> **Eliminate generic AI-generated layout slop, top-of-page KPI card bloat, and "pill/color soup" — while embracing an Autonomous Content-to-UI Compiler (`Mode M3`), Universal Pure White (`S1`) Default legibility, a Non-Overlapping Top Studio Bar + OA Workbench Sidebar Swatches, Earned Expressiveness (`C3`), and vector icon precision.**
+> **Eliminate generic AI-generated layout slop, top-of-page KPI card bloat, random font/size drift across pages, and "pill/color soup" — while embracing an Autonomous Content-to-UI Compiler (`Mode M3`), Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `0px` Nav Drift), 6 Mathematical Alignment Invariants, Universal Pure White (`S1`) Default legibility, and Earned Expressiveness (`C3`).**
 > **`quiet-ui-skills`** equips coding agents (**Claude Code**, **Google Antigravity**, **Gemini CLI**, **Devin Desktop**, and **Cursor**) with a deterministic, 100% brand-free **17-Tier Graduated Visual Architecture System**, standalone CSS tokens ([`tokens/quiet-ui-tokens.css`](tokens/quiet-ui-tokens.css)), and **The Quiet UI Canvas** interactive showcase ([`quiet-ui-showcase.html`](quiet-ui-showcase.html) & [`docs/index.html`](docs/index.html)).
 
 > [!TIP]
@@ -20,7 +20,7 @@ cd quiet-ui-skills
 bash install.sh
 ```
 
-- Installs `visual-architecture-system` into `~/.agents/skills/visual-architecture-system` and `~/.gemini/config/skills/visual-architecture-system` (or pass a custom path: `bash install.sh ./my-repo/.agents/skills/visual-architecture-system`).
+- Installs `visual-architecture-system` (v5.1 `SKILL.md`, `references/00..06`, `scripts/verify_visual_contract.py`, and `tokens/quiet-ui-tokens.css`) into `~/.agents/skills/visual-architecture-system` and `~/.gemini/config/skills/visual-architecture-system` (or pass a custom path: `bash install.sh ./my-repo/.agents/skills/visual-architecture-system`).
 - **Standalone CSS Tokens (Dual-Licensed MIT for Commercial Embedding):**
   ```html
   <link rel="stylesheet" href="tokens/quiet-ui-tokens.css">
@@ -30,30 +30,36 @@ bash install.sh
 
 ## Which Tier Should I Use? (Autonomous Situation $\rightarrow$ Tier Router)
 
-When you ask an agent to *"make this look better"* or pass raw markdown, JSON, SQL, or container/task data without naming a tier, the **v4.8 Autonomous Content-to-UI Compiler (`Mode M3`)** inspects your content shape and compiles it into the right medium and component blocks:
+When you ask an agent to *"make this look better"* or pass raw markdown, JSON, SQL, or container/task data without naming a tier, the **v5.1 Autonomous Content-to-UI Compiler (`Mode M3`)** inspects your content shape and compiles it into the right medium and component blocks:
 
 | Your Situation / Input Data Shape | Auto-Selected Tier & Nav | Signature Component Blocks Compiled Automatically |
 | :--- | :--- | :--- |
-| **Long-Form Essay, Whitepaper, or Math Proof** | `01. Doc-1` (`N1` + `S1`) | `65ch` prose column, Booktabs tables (`border-radius: 0px`), margin citations |
+| **Long-Form Essay, Whitepaper, or Math Proof** | `01. Doc-1` (`N1` + `S1`) | `68ch` prose column (`16.5px`), `.doc1-mobile-toc-bar` (`0px` left-axis drift), Booktabs tables |
 | **Architecture Decision Memo or Post-Mortem** | `02. Doc-2` (`N0` + `S1`) | Top `BLUF` Decision Box, Option Trade Matrix, Mermaid topology diagram |
 | **Normative RFC or Security Compliance Spec** | `03. Doc-3` (`N0` + `S1`) | `MUST`/`SHALL` filterable requirement strip, Mermaid state machine |
 | **Skill Repo, CLI Tool, SDK, or API Reference** | `04. Doc-4B` (`N3` + `S1`) | **6-Stage Flow Spine (`.va-flow-spine`)**, `/slash` pills, **Situation $\rightarrow$ Action Router Table** |
 | **Deployment SOP or Incident Playbook** | `05. Doc-4A` (`N1` + `S1`) | `55/45` split narrative + sticky multi-tab code pane (`28px` edge collapse tab) |
-| **Container Fleet, Node Inventory, or Benchmark** | `08. Bridge-2` / `12. App-3` (`N2`) | **Scoped Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, **Bulk Action Bar (`.va-bulk-action-bar`)** |
-| **Daily Tasks, Planner, or Restorative Schedule** | `11. App-4` / `13. App-5` (`N1`) | **1-Sentence Briefing (`.va-status-briefing`)**, **Priority Rings (`.va-priority-ring`)**, **Time-Grid Blocks (`.va-timegrid-block`)**, `[Close the day]` |
-| **DB Schema, File Tree, or Log Stream** | `14. App-Tree` / `10. App-1` (`N1`) | 3-pane coupled Schema/File explorer (`1px` indent guides), `Key \| Value` filter chips |
-| **Smart Home Wall Kiosk or Mobile Companion** | `15. HA-1` .. `17. HA-3` (`N0/N1/N4`) | `60/40` Monet glass HUD (`HA-1`), room cards (`HA-2`), `820px` fold / `390px` thumb dock (`HA-3`) |
+| **Container Fleet, Node Inventory, or Quota Telemetry** | `08. Bridge-2` / `12. App-3` (`N2`) | **Scoped Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, **Bulk Action Bar (`.va-bulk-action-bar`)**, **Expected-Pace Bar (`.va-pace-bar`)**, **Trajectory Curve (`.va-trajectory-chart`)** |
+| **Daily Tasks, Planner, or Biometric Pacing** | `11. App-4` / `13. App-5` (`N1`) | **1-Sentence Briefing (`.va-status-briefing`)**, **Priority Rings (`.va-priority-ring`)**, **Time-Grid Blocks (`.va-timegrid-block`)**, **Self-Filling Capsules (`.va-fill-capsule`)**, **Corridor Sparklines (`.va-corridor-sparkline`)** |
+| **DB Schema, File Tree, or Log Stream** | `14. App-Tree` / `10. App-1` (`N1`) | 3-pane coupled Schema/File explorer (`228px–260px` labeled tree, `.va-th-title` aligned headers), `Key \| Value` chips |
+| **Smart Home Wall Kiosk or Mobile Companion** | `15. HA-1` .. `17. HA-3` (`N0/N1/N4`) | `60/40` Monet glass HUD (`HA-1`), room cards + `.va-prop-bar-row` circuit load (`HA-2`), `820px` fold / `390px` thumb dock (`HA-3`) |
 
 ---
 
-## What's New in v4.8 (Autonomous Content-to-UI Compiler, Modern CSS Foundation & Domain Patterns)
+## What's New in v5.1 (Unified Suite Typography, 6 Alignment Invariants & Domain Archetypes)
 
-1. **Autonomous Content-to-UI Compiler (`Mode M3` Default):** Agents never ask a 6-question intake form before rendering—they classify raw input into one of 6 structural signatures and assemble domain-specific component blocks automatically.
-2. **Modern CSS Foundation (`tokens/quiet-ui-tokens.css`):** Ships `interpolate-size: allow-keywords`, `text-wrap: balance` on headings, `text-wrap: pretty` on prose, `scrollbar-gutter: stable`, `.va-subgrid-card` (`grid-row: span 4; grid-template-rows: subgrid`), and `.va-breakout-grid`.
-3. **AI Hero & Technical Docs (`04. Doc-4B`):** 2-level numbered outline (`1.0`, `1.1 /lock_carrier`), **6-Stage Numbered Flow Spine (`.va-flow-spine`)** with `/slash-command` pills, and a **Situation $\rightarrow$ Recommended Tier Router Table** with `[View Full Table]` expand toggle.
-4. **Portainer Fleet & Bulk Action Patterns (`08. Bridge-2` & `12. App-3`):** **Scoped Sidebar Context Box (`.va-scoped-nav-box`)**, **3-Zone Fleet Cards (`.va-fleet-card-3zone`)** with inline icon-metric counts (`13 stacks · 64 containers [61 up / 3 down] · 65 volumes`), **2×3 Icon-Well Summary Tiles (`.va-icon-well-tile`)**, and **Stateful Bulk-Action Table Toolbar (`.va-bulk-action-bar`)** with 5-icon inline Quick Actions.
-5. **OpenTodo Calm Planning Patterns (`11. App-4` & `13. App-5`):** **1-Sentence Human Status Briefing (`.va-status-briefing`)**, **Tinted Section Header Bars (`.va-task-group-bar`)** (`Move all to today · Reschedule`), **Priority-Ring Checkboxes (`.va-priority-ring`)**, `[Close the day]` button, and **Pastel `3px`-Left-Bar Time-Grid Blocks (`.va-timegrid-block`)** with a red current-time marker line.
-6. **Non-Overlapping Top Studio Bar (`#va-floating-dock`) + Shareable URL Query Params:** Sticky `40px` Top Studio Bar with `0px` horizontal scroll across `1920px`, `880px`, and `390px`, synced live with `window.history.replaceState` (`?tier=...&nav=...&theme=...&density=...&corners=...`).
+1. **Unified Suite Typography & 7-Step Modular Scale (`v5.1` — "Same-Website Cohesion"):**
+   - **Curated 3-Role Font Stack:** `--font-sans` (`Inter` / system UI sans) governs **100% of navigation (`N0–N4`), kickers, page/card headings (`Doc-2`..`HA-3`), controls, badges, and app/dashboard copy** (`tabular-nums` on KPI readouts); `--font-serif` (`Newsreader` / `Charter`) is reserved strictly for long-form narrative prose (`01. Doc-1` & `13. App-5` reflection); `--font-mono` (`JetBrains Mono`) is reserved strictly for machine literals.
+   - **100% Identical Shell & Navigation Chrome (`0px` Variance):** Every `.va-side-link`, `.va-tab-link`, `.va-poly-n2-bar a`, `.va-poly-n3-topbar a`, `.app1-nav-btn`, and `.va-tree-node` across all 17 tiers renders at `font-family: var(--font-sans); font-size: var(--ts-nav, 13px); font-weight: 500;`.
+   - **Strict 7-Step Type Scale (`--ts-*`) & `11px` Hard Floor:** `--ts-xs: 11px` (hard minimum floor; `9px–10px` micro-text is banned), `--ts-sm: 12.5px`, `--ts-nav: 13px`, `--ts-base: 14px`, `--ts-prose: 15.5px` (`16.5px` in `Doc-1`), `--ts-md: 16px`, `--ts-xl: clamp(20px, 2vw, 24px)` (`Doc-2`..`HA-3` `H1`), and `--ts-display: clamp(24px, 2.5vw, 28px)` (`Doc-1` & `Deck-1` `H1`).
+2. **6 Mathematical Alignment Invariants (`v5.0`):**
+   - **Zero Curved-Border Parenthesis (`::before` Vertical Pill):** Active rounded nav/tree items use a straight `3px` vertical pill pseudo-element (`left: 4px; top: 6px; bottom: 6px; border-radius: 99px`) instead of curved `inset` left `box-shadow` or `border-left`.
+   - **Zero Orphan Grid Hole (`.va-bento-2col`):** 2-column Bento grids maintain even card counts (4-card 2×2 matrix in `12. App-3`) and auto-span trailing odd cards (`grid-column: 1 / -1`).
+   - **Table Header Baseline Alignment (`.va-th-title`):** `vertical-align: top` on `<th>` with single-line `.va-th-title` (`|thTitle[i].top - thTitle[0].top| <= 2px`).
+   - **Left Typographic Axis (`.doc1-mobile-toc-bar`):** Mobile/tablet TOC triggers sit on a dedicated block row above `.doc1-kicker-text` so kicker, `H1`, and prose share the exact same left X-coordinate (`0px` drift).
+   - **Bottom Dock Clearance (`>= 64px` in `N4`) & Zero Right-Edge Clipping (`228px–260px` labeled `.va-tree-pane`).**
+3. **Fitbit Biometric & Monarch Financial/Quota Telemetry Patterns (`v4.9`):** Self-filling two-tone capsules (`.va-fill-capsule`), 7-day target-corridor sparklines (`.va-corridor-sparkline`), connected state hypnograms (`.va-state-hypnogram`), proportional ranking rows (`.va-prop-bar-row`), expected-pace bars (`.va-pace-bar` + `.va-pace-tick`), 5-segment threshold gauges (`.va-threshold-gauge`), and cumulative trajectory curves (`.va-trajectory-chart`).
+4. **AI Hero Flow Spine (`04. Doc-4B`), Portainer 3-Zone Fleet Cards (`08. Bridge-2` / `12. App-3`) & OpenTodo Calm Planning (`11. App-4` / `13. App-5`) (`v4.8`).**
 
 ---
 

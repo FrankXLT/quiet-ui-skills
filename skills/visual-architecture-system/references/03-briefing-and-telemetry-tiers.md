@@ -1,23 +1,23 @@
 # Tiers 07 to 09: Viewport-Locked Briefing Stage, High-Density Data Table & Live Metrics Console
 
-## 07. Tier `Deck-1`: Viewport-Locked Briefing Stage (`60%` Box Weight, Default `S3` Dark Paper, `N0`)
+## 07. Tier `Deck-1`: Viewport-Locked Briefing Stage (`60%` Box Weight, Default `S1` White, `N1`)
 - **Hard Viewport Lock:** `display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; width: 100%; max-width: 100%; height: 100dvh; overflow: hidden;`
-- **Row 1 (`48px` Header):** Slide/step counter badge (`SLIDE 01 / 04 • STEP 1/3`) + full-sentence quantitative **Assertion Headline** in `var(--font-sans)`.
+- **Row 1 (`48px` Header):** Slide/step counter badge (`SLIDE 01 / 04 • STEP 1/3`, `--ts-xs: 11px`) + full-sentence quantitative **Assertion Headline** in `var(--font-sans)` (`--ts-display: clamp(24px, 2.5vw, 28px)`).
 - **Row 2 (`400px` Left Stepper | `1fr` Right 3-Band Visual Stage):**
   - Left Pane: 3 vertical `.deck-step-card` blocks (`opacity: 0.38` when inactive, `1.0` with `3px` left accent bar when active). Clicking any step card or `[Next Step / Slide →]` advances `step 0 -> 1 -> 2` before advancing slides.
   - Right Stage: Full-height flex column (`justify-content: space-between`) with (Band 1) 4-cell `1px` hairline metric readout strip, (Band 2) `flex: 1` interactive SVG plot, and (Band 3) bottom parameter control bar with live `<input type="range">` sliders.
 
 ---
 
-## 08. Tier `Bridge-2`: High-Density Data Table & Status Grid (`1px` Grid) (`100% 1px Grid`, Default `S1` White, `N2`)
+## 08. Tier `Bridge-2`: High-Density Data Table & Fleet Grid (`1px` Grid) (`100% 1px Grid`, Default `S1` White, `N2`)
 
-This is the canonical tabular engineering console (`t5-console`) bridging documents and dashboards. It uses **zero floating cards, `0px` corner radius, and 92% monochrome ink**.
+This is the canonical tabular engineering and container-fleet console (`t5-console`) bridging documents and dashboards. It pairs `1px` hairline matrices (`--ts-sm: 12.5px` cells, `--ts-xs: 11px` headers) with **Portainer 3-Zone Fleet Cards (`.va-fleet-card-3zone`)**, a **Scoped Context Box (`.va-scoped-nav-box`)**, and a **Stateful Bulk-Action Table Toolbar (`.va-bulk-action-bar`)**:
 
 ~~~html
 <div class="t5-console">
-  <!-- Top Dense Toolbar -->
+  <!-- Top Dense Toolbar + Stateful Bulk-Action Bar (.va-bulk-action-bar) -->
   <div class="t5-panel-hdr">
-    <span>ARRAY-01 // HIGH-DENSITY DATA TABLE &amp; STATUS GRID (1PX HAIRLINE MATRIX)</span>
+    <span>ARRAY-01 // HIGH-DENSITY DATA TABLE &amp; FLEET GRID (1PX HAIRLINE MATRIX)</span>
     <div>
       <button class="c-btn" onclick="filterT5Nodes('ALL')">ALL (8)</button>
       <button class="c-btn" onclick="filterT5Nodes('LOCKED')">LOCKED (7)</button>
@@ -31,7 +31,7 @@ This is the canonical tabular engineering console (`t5-console`) bridging docume
       <div class="t5-cell-head"><span>ARRAY MEAN JITTER</span><span>SLA &lt; 150ps</span></div>
       <div class="t5-cell-main">
         <strong class="t5-big-num" id="kpi-jitter">81.4 ps</strong>
-        <span style="color:var(--status-ok); font-size:10.5px;">-68.6 ps vs SLA</span>
+        <span style="color:var(--status-ok); font-size:var(--ts-xs, 11px);">-68.6 ps vs SLA</span>
       </div>
       <svg width="100%" height="18" viewBox="0 0 120 18" preserveAspectRatio="none">
         <polyline fill="none" stroke="currentColor" stroke-width="1.2" points="0,12 15,10 30,13 45,9 60,11 75,8 90,10 105,7 120,9"/>
