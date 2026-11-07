@@ -1,28 +1,34 @@
-# Gate 0: Brownfield Project Lock (`.visual-lock.json`) & 6-Axis Intake Scorecard
+# Gate 0: Pre-Edit Output Contract, Brownfield Project Lock (`.visual-lock.json`) & Autonomous Compiler (`v6.0`)
 
-## 1. Brownfield Protection Law (Never Clobber Existing Project Identity)
+## 1. Pre-Edit 4-Field Output Contract, Content-Only Mode Lock & Brownfield Protection Law
 
-Before modifying any file in an existing repository (such as a **Task & Calendar Planner** or an existing **Home Assistant** dashboard), inspect the project root for `.visual-lock.json` or existing theme stylesheets:
-1. **When `.visual-lock.json` exists (`Mode M1`):**
-   - Treat `color_theme`, `card_chrome`, `layout_shells`, and `locked_invariants` as immutable invariants.
-   - If the user asks to *"make the view more compact"* or *"tighten spacing"*, ONLY adjust the Orthogonal Density Dial (`D1` $\rightarrow$ `D4`) and local padding/gaps. Never replace the project's light/paper surface with a dark terminal or strip its custom components.
-2. **When working on an unlocked existing repo (`Mode M2`):**
-   - Offer to generate `.visual-lock.json` capturing its current palette, typography, corner geometry, and view topology before applying targeted changes.
+Before modifying or generating any UI file, declare the compact **4-Field Output Contract** and enforce **Content-Only Preservation** and **Atomic Staging**:
+1. **Pre-Edit 4-Field Output Contract:**
+   - `Execution Mode`: `Full Assembly` (new view/tier) | `Content-Only` (updating copy, metrics, or rows on an existing page)
+   - `Target Tier & Nav`: e.g., `11. App-4 (N1)` or `04. Doc-4B (N3)`
+   - `Surface & Density`: e.g., `S1 Pure White · D2 Balanced · C3 Expressive · Rounded (12px)`
+   - `Verification Gate`: `verify_visual_contract.py --check-docs` + `408-permutation DOM audit`
+2. **Content-Only Mode Preservation Lock & Atomic Staging Rule:**
+   - When `Execution Mode = Content-Only`, preserve **100% of existing CSS and layout structure** unless the new content creates a measured fit defect.
+   - Always validate generated HTML/CSS with `scripts/verify_visual_contract.py` before overwriting a working artifact so a failed check never leaves a broken UI.
+3. **Brownfield Protection Law (`.visual-lock.json` — `Mode M1` & `Mode M2`):**
+   - **When `.visual-lock.json` exists (`Mode M1`):** Treat `color_theme`, `card_chrome`, `layout_shells`, and `locked_invariants` as immutable invariants. If the user asks to *"make the view more compact"*, ONLY adjust the Orthogonal Density Dial (`D1` $\rightarrow$ `D4`).
+   - **When working on an unlocked existing repo (`Mode M2`):** Offer to generate `.visual-lock.json` capturing its current palette, typography, corner geometry, and view topology before applying targeted changes.
 
-### Canonical `.visual-lock.json` Schema (Workspace Planner Reference Lock)
+### Canonical `.visual-lock.json` Schema (`v6.0` Workspace Planner Reference Lock)
 
 ```json
 {
-  "$schema": "https://visual-architecture.local/schemas/visual-lock-v5.1.json",
+  "$schema": "https://visual-architecture.local/schemas/visual-lock-v6.0.json",
   "project": "Workspace Planner",
   "mode": "M1_PRESERVE_AND_TUNE",
   "archetype_tier": "11. App-4 (Task & Calendar Planner)",
   "color_theme": "S1_PURE_WHITE_ALABASTER",
   "default_density": "D2_BALANCED_WORKSPACE",
   "color_restraint": "C3_MODERN_EXPRESSIVE",
-  "corner_geometry": "ROUNDED_12PX",
+  "corner_geometry": "ROUNDED_12PX_CONCENTRIC",
   "navigation_topology": "N1_FULL_HEIGHT_LEFT_SIDEBAR",
-  "typography_scale": "V51_UNIFIED_7STEP_11PX_FLOOR",
+  "typography_scale": "V60_UNIFIED_7STEP_11PX_FLOOR_MAX4_PER_CARD",
   "surface_palette": {
     "bg_canvas": "#F8FAFC",
     "bg_card": "#FFFFFF",
@@ -57,7 +63,7 @@ When a user provides raw domain content (markdown notes, API specs, container/no
 
 When a user explicitly asks to configure visual parameters before building, present this compact scorecard so they can reply with a single 6-code shorthand (e.g., `11, D2, S1, C3, rounded, N1` or `14, D3, S4, C2, subtle, N1`):
 
-> **Visual Architecture v5.1 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S1, C2, subtle, N1`):*
+> **Visual Architecture v6.0 Intake Scorecard** *(Reply with 6 codes, e.g. `11, D2, S1, C3, rounded, N1` or `14, D3, S1, C2, subtle, N1`):*
 > 1. **Deliverable Archetype (`01`–`17`):**
 >    - *Docs & Decks:* `01` Academic Monograph · `02` Executive Memo (`BLUF` + Mermaid) · `03` Normative RFC (+ Mermaid FSM) · `04` SDK/Skill Reference (Flow Spine + Router Table) · `05` Split-Pane Runbook (+ Mermaid Seq) · `06` Parametric Worksheet · `07` Briefing Stage
 >    - *Data, Workspaces & Explorers:* `08` High-Density Fleet/Data Table (`1px` Grid + Bulk Toolbar) · `09` Live Metrics & Time-Series Console · `10` Compact Issue & Ticket Tracker · `11` Task & Calendar Planner (Status Briefing + Priority Rings + Time-Grid) · `12` KPI & Fleet Bento Dashboard (3-Zone Fleet Cards + `2x3` Icon-Well Tiles) · `13` Daily Pacing & Wellness Planner (+ Readiness Ring Hero) · `14` **`App-Tree` Schema, Tree & File Explorer Workbench**

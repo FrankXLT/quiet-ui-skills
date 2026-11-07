@@ -1,6 +1,6 @@
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 5.1 (Unified Suite Typography, 7-Step Type Scale & 6 Alignment Invariants)
+   Version: 6.0 (Compiler-Grade Architecture, Concentric Radius Math, 7-Step Type Scale & 6 Invariants)
    License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
             & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
    ========================================================================== */
@@ -37,15 +37,21 @@
   --density-font-scale: 0.875rem;
   --density-meta-display: inline-flex;
 
-  /* 3. 5-Stop Corner Radius Dial (auto, sharp=0px, subtle=6px, rounded=12px, soft=18px) */
+  /* 3. Concentric 5-Stop Corner Radius Math: R_inner = max(0px, R_outer - Inset) */
+  --inset-pad: 4px;
   --radius-card: 8px;
-  --radius-inner: 5px;
+  --radius-sm: 6px;
+  --radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));
+  --radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));
   --radius-pill: 999px;
 
-  /* 4. Default Resolution Scaling (R2: 1440p QHD) */
+  /* 4. Default Resolution Scaling & Telemetry Bar Defaults */
   --res-font-scale: 1;
   --res-touch-min: 36px;
   --res-grid-cols: 3;
+  --pct: 75%;
+  --share-pct: 50%;
+  --expected-pct: 66%;
 
   /* 5. Zero-Shame Pacing & Time-Budget Tokens (Tier 13 App-5) */
   --state-anchor: #475569;      /* Soft Slate — Fixed External Commitment */
@@ -56,11 +62,12 @@
 
 h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
-/* 5-Stop Corner Radius Dial Override (`data-corners="auto|sharp|subtle|rounded|soft"`) */
-:root[data-corners="sharp"]   { --radius-card: 0px;  --radius-inner: 0px; }
-:root[data-corners="subtle"]  { --radius-card: 6px;  --radius-inner: 4px; }
-:root[data-corners="rounded"] { --radius-card: 12px; --radius-inner: 8px; }
-:root[data-corners="soft"]    { --radius-card: 18px; --radius-inner: 12px; }
+/* Concentric 5-Stop Corner Radius Dial Override (`data-corners="auto|sharp|subtle|rounded|soft"`) */
+:root[data-corners="auto"]    { --radius-card: 8px;  --radius-sm: 6px;  --radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));  --radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px)); }
+:root[data-corners="sharp"]   { --radius-card: 0px;  --radius-sm: 0px;  --radius-inner: 0px;  --radius-trough-pill: 0px; }
+:root[data-corners="subtle"]  { --radius-card: 6px;  --radius-sm: 4px;  --radius-inner: max(0px, calc(var(--radius-card, 6px) - var(--inset-pad, 4px)));  --radius-trough-pill: max(0px, calc(var(--radius-sm, 4px) - 2px)); }
+:root[data-corners="rounded"] { --radius-card: 12px; --radius-sm: 8px;  --radius-inner: max(0px, calc(var(--radius-card, 12px) - var(--inset-pad, 4px))); --radius-trough-pill: max(0px, calc(var(--radius-sm, 8px) - 2px)); }
+:root[data-corners="soft"]    { --radius-card: 18px; --radius-sm: 10px; --radius-inner: max(0px, calc(var(--radius-card, 18px) - var(--inset-pad, 4px))); --radius-trough-pill: max(0px, calc(var(--radius-sm, 10px) - 2px)); }
 
 /* ==========================================================================
    Color Themes (S1: Pure White [Default], S2: Warm Paper, S3: Dark Paper, S4: Obsidian)
@@ -71,17 +78,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --bg-shell: #F1F5F9;
   --bg-canvas: #FFFFFF;
   --bg-surface: #FFFFFF;
+  --bg-card: var(--bg-surface);
   --bg-elevated: #F8FAFC;
+  --bg-header: var(--bg-elevated);
   --bg-glass: rgba(255, 255, 255, 0.88);
   --text-primary: #0F172A;
+  --text-main: var(--text-primary);
   --text-secondary: #334155;
+  --text-dim: var(--text-secondary);
   --text-muted: #64748B;
   --border-hairline: #E2E8F0;
+  --border-grid: var(--border-hairline);
   --border-strong: #CBD5E1;
   --accent-primary: #2563EB;
+  --accent-focal: var(--accent-primary);
   --status-ok: #15803D;
   --status-warn: #B45309;
   --status-danger: #B91C1C;
+  --status-err: var(--status-danger);
   /* C3 Soft Surface Tint Tokens (Light) */
   --tint-indigo-bg: #EEF2FF;  --tint-indigo-fg: #4338CA;
   --tint-emerald-bg: #ECFDF5; --tint-emerald-fg: #047857;
@@ -227,29 +241,25 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 @media (max-width: 640px) { :root { --res-font-scale: 0.92; --res-touch-min: 48px; --res-grid-cols: 1; } }
 
 /* ==========================================================================
-   Earned Expressiveness, Outer Stage Frame & Active Rail Utilities (v5.1)
+   Earned Expressiveness, Concentric Radius & Active Rail Utilities (v6.0)
    ========================================================================== */
 
-.va-stage-outer {
-  padding: 8px 10px;
-  background: var(--bg-shell);
-}
-
-.va-nums {
-  font-variant-numeric: var(--font-nums);
-}
+.va-stage-outer { padding: 8px 10px; background: var(--bg-shell); }
+.va-nums { font-variant-numeric: var(--font-nums); }
 
 .va-kicker, .doc1-kicker-text { font-family: var(--font-sans) !important; font-size: var(--ts-xs, 11px) !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase; line-height: 1.35; }
-.va-icon-well { width: 34px; height: 34px; border-radius: 9px; background: var(--tint-indigo-bg); color: var(--tint-indigo-fg); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.va-icon-well { width: 34px; height: 34px; border-radius: var(--radius-inner); background: var(--tint-indigo-bg); color: var(--tint-indigo-fg); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.va-seg-pills { display: inline-flex; padding: 2px; border-radius: var(--radius-sm, 6px); background: var(--bg-elevated); border: 1px solid var(--border-hairline); gap: 2px; }
+.va-seg-pills button, .va-trough-btn { border-radius: var(--radius-trough-pill); font-family: var(--font-sans); font-size: var(--ts-nav, 13px); }
 .va-pill-btn { border-radius: var(--radius-pill); padding: 5px 12px; font-family: var(--font-sans); font-size: var(--ts-sm, 12.5px); font-weight: 600; border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .va-side-link, .va-tab-link, .va-poly-n2-bar a, .va-poly-n3-topbar a, .app1-nav-btn, .va-tree-node { font-family: var(--font-sans) !important; font-size: var(--ts-nav, 13px) !important; font-weight: 500 !important; line-height: 1.35 !important; }
 .va-tab-link { height: 42px; padding: 0 12px; border: none; border-bottom: 2px solid transparent; background: transparent; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
 .va-tab-link.active { color: var(--text-primary); font-weight: 600 !important; border-bottom-color: var(--accent-primary); }
-.va-side-link, .va-tree-node { position: relative; margin: 2px 6px; padding: 6px 10px; border-radius: 6px; border-left: none; box-shadow: none; }
+.va-side-link, .va-tree-node { position: relative; margin: 2px 6px; padding: 6px 10px; border-radius: var(--radius-sm, 6px); border-left: none; box-shadow: none; }
 .va-side-link.active, .va-tree-node.active { border-left: none; box-shadow: none; padding-left: 14px; background: var(--tint-indigo-bg); color: var(--text-primary); font-weight: 600 !important; }
 .va-side-link.active::before, .va-tree-node.active::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px; background: var(--accent-primary); }
 
-/* v4.8–v5.1 Subgrid, Content-Breakout, 2-Col Bento Safeguard, Table Header Alignment & Component Helpers */
+/* v4.8–v6.0 Subgrid, Content-Breakout, 2-Col Bento Safeguard, Table Header Alignment & Component Helpers */
 .va-bento-2col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .va-bento-2col > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 @media (max-width: 640px) { .va-bento-2col { grid-template-columns: minmax(0, 1fr); } }
@@ -267,7 +277,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 .va-task-group-bar { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: var(--tint-amber-bg); border-radius: var(--radius-inner); font-size: var(--ts-xs, 11px); font-weight: 600; }
 .va-priority-ring { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--accent-primary); display: inline-block; flex-shrink: 0; }
 .va-timegrid-block { border-left: 3px solid var(--accent-primary); background: var(--tint-indigo-bg); border-radius: 0 var(--radius-inner) var(--radius-inner) 0; padding: 6px 10px; }
-.va-fill-capsule { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: var(--radius-card); border: 1px solid var(--border-hairline); background: linear-gradient(90deg, var(--tint-emerald-bg) var(--pct, 75%), var(--bg-surface) var(--pct, 75%)); }
+.va-fill-capsule { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: linear-gradient(90deg, var(--tint-emerald-bg) var(--pct, 75%), var(--bg-surface) var(--pct, 75%)); }
 .va-corridor-sparkline { padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); display: flex; flex-direction: column; gap: 6px; }
 .va-state-hypnogram { padding: 10px 12px; border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); }
 .va-prop-bar-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: var(--radius-inner); border: 1px solid var(--border-hairline); background: linear-gradient(90deg, var(--tint-indigo-bg) var(--share-pct, 50%), var(--bg-surface) var(--share-pct, 50%)); }
@@ -275,7 +285,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 .va-pace-bar { position: relative; height: 10px; border-radius: 999px; background: var(--bg-elevated); border: 1px solid var(--border-strong); overflow: visible; }
 .va-pace-tick { position: absolute; top: -3px; bottom: -3px; left: var(--expected-pct, 66%); width: 2px; background: var(--text-primary); }
 .va-card-hdr-actions { display: inline-flex; align-items: center; gap: 4px; }
-.va-hdr-icon-btn { width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border-hairline); background: var(--bg-surface); color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+.va-hdr-icon-btn { width: 24px; height: 24px; border-radius: var(--radius-trough-pill); border: 1px solid var(--border-hairline); background: var(--bg-surface); color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .va-threshold-gauge { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: 8px; margin: 6px 0; }
 .va-trajectory-chart { border: 1px solid var(--border-hairline); border-radius: var(--radius-card); background: var(--bg-surface); padding: 10px 12px; }
 

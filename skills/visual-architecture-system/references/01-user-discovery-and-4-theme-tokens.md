@@ -37,13 +37,14 @@ Never ask vague aesthetic questions (*"What colors or layout style do you want?"
    - **Zone 1 (`>= 75%` Calm Neutral Canvas):** Backgrounds (`S1–S4`) remain neutral paper, alabaster, warm slate, or obsidian.
    - **Zone 2 (`<= 20%` Soft Surface Tints & Single-Anchor Hero):** Under `C2` and `C3`, views may feature **at most 1 tinted Hero Card** (`.app5-hero-card.primary-hero`, `.app4-focus-hero`) and soft surface-tinted icon wells (`.va-icon-well`: `34px×34px`, `9px` radius using `--tint-indigo-bg`, `--tint-emerald-bg`, `--tint-amber-bg`, `--tint-rose-bg`, `--tint-violet-bg`).
    - **Zone 3 (`<= 5%` Saturated Signal Ink):** High-saturation colors reserved strictly for primary CTAs (`.va-pill-btn.primary`), active SVG progress rings, and live fault indicators.
-2. **Interactive Affordance Pill Law & 5-Stop Corner Radius Dial (`data-corners="auto|sharp|subtle|rounded|soft"`):**
-   - Structural cards obey `--radius-card` (`0px`, `6px`, `12px`, `18px`), while interactive buttons (`.va-pill-btn`), segmented controls (`.va-seg-pills`), and `.va-icon-well` badges ALWAYS preserve tactile rounded geometry (`999px` / `9px`) even when `data-corners="sharp"` is active.
+2. **Concentric Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$) & 5-Stop Corner Radius Dial (`data-corners="auto|sharp|subtle|rounded|soft"`):**
+   - Define `--inset-pad: 4px;`, `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));`, and `--radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));` across all 5 corner stops (`auto`, `sharp`, `subtle`, `rounded`, `soft`).
+   - Apply `--radius-inner` and `--radius-trough-pill` to nested sub-cards, `.va-icon-well`, segmented trough buttons, and `.va-fill-capsule` so inner and outer corners share a single concentric geometric center, while primary `.va-pill-btn` CTAs preserve `var(--radius-pill)` (`999px`).
    - Scope editorial `0px` overrides strictly to `:root[data-corners="auto"] .editorial-zero-box` and `:root[data-corners="sharp"]` so choosing `subtle`, `rounded`, or `soft` visibly rounds cards across all 17 tiers.
 
 ---
 
-## 3. Unified Suite Typography (`v5.1`), 7-Step Modular Scale (`--ts-*`) & `11px` Hard Floor
+## 3. Unified Suite Typography (`v6.0`), 7-Step Modular Scale (`--ts-*`) & Per-View 4-Size Restraint
 
 Because multiple tiers (`Doc-2`, `Doc-4B`, `App-3`, `App-4`, `App-Tree`, `HA-2`) are frequently used together as tabs or views within a **single website or application suite**, switching between tiers must never cause jarring shifts in font families, navigation font sizes, page title scales, or micro-text legibility:
 
@@ -62,3 +63,5 @@ Because multiple tiers (`Doc-2`, `Doc-4B`, `App-3`, `App-4`, `App-Tree`, `HA-2`)
    - `--ts-md: 16px` (`1rem`, `lh: 1.4`, weight `600`) — Card titles, `H3` subheadings, and `.va-status-briefing` lead sentences.
    - `--ts-xl: clamp(20px, 2vw, 24px)` (`lh: 1.22`, weight `700`) — Universal Page `H1` across `Doc-2`..`HA-3` and primary Bento KPI values.
    - `--ts-display: clamp(24px, 2.5vw, 28px)` (`lh: 1.18`, weight `700`) — Reserved for `01. Doc-1` Monograph `H1` and `07. Deck-1` Briefing headline (within `4px` of `--ts-xl`).
+4. **Law 4 — Per-View Typographic & Contrast Restraint (`<= 4` Active Font Sizes & `2` Primary Contrast Rungs per Card):**
+   - While the suite provides 7 `--ts-*` tokens across all 17 tiers, any single card or component panel budgets at most **4 active font sizes** and **2 primary text contrast rungs** (`--text-primary` and `--text-secondary`, reserving `--text-muted` strictly for axis/meta captions), and never stacks `> 4` consecutive identical card layouts without structural variation.

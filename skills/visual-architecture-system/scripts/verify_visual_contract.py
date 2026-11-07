@@ -202,75 +202,82 @@ def verify_html(file_path: Path, tier: str = "ALL") -> list[str]:
             errors.append("[HA3_BOX_VIOLATION] Fake hardware bezel #ha3-device-frame is forbidden; HA-3 must fill 100% viewport width.")
 
     if tier == "ALL":
-        for v48_tok in (
-            "va-flow-spine",
-            "va-scoped-nav-box",
-            "va-fleet-card-3zone",
-            "va-icon-well-tile",
-            "va-bulk-action-bar",
-            "va-status-briefing",
-            "va-task-group-bar",
-            "va-priority-ring",
-            "va-timegrid-block",
-            "va-fill-capsule",
-            "va-corridor-sparkline",
-            "va-state-hypnogram",
-            "va-prop-bar-row",
-            "va-invariant-strip",
-            "va-pace-bar",
-            "va-pace-tick",
-            "va-card-hdr-actions",
-            "va-threshold-gauge",
-            "va-trajectory-chart",
-            "toggleDoc4BTableModal",
-            "closeTheDayApp4",
-            "syncUrlQueryParams",
-            "va-bento-2col",
-            "va-th-title",
-            "doc1-mobile-toc-bar",
-            "doc1-kicker-text",
-            ".va-side-link.active::before",
-            "--ts-xs",
-            "--ts-sm",
-            "--ts-nav",
-            "--ts-base",
-            "--ts-prose",
-            "--ts-md",
-            "--ts-xl",
-            "--ts-display",
-        ):
-            if v48_tok not in content:
-                errors.append(f"[V51_PATTERN_VIOLATION] Missing v4.8-v5.1 domain pattern / typography token '{v48_tok}'.")
+        v60_tokens = (
+            "va-flow-spine", "va-scoped-nav-box", "va-fleet-card-3zone", "va-icon-well-tile",
+            "va-bulk-action-bar", "va-status-briefing", "va-task-group-bar", "va-priority-ring",
+            "va-timegrid-block", "va-fill-capsule", "va-corridor-sparkline", "va-state-hypnogram",
+            "va-prop-bar-row", "va-invariant-strip", "va-pace-bar", "va-pace-tick",
+            "va-card-hdr-actions", "va-threshold-gauge", "va-trajectory-chart", "toggleDoc4BTableModal",
+            "closeTheDayApp4", "syncUrlQueryParams", "va-bento-2col", "va-th-title",
+            "doc1-mobile-toc-bar", "doc1-kicker-text", ".va-side-link.active::before",
+            "--ts-xs", "--ts-sm", "--ts-nav", "--ts-base", "--ts-prose", "--ts-md", "--ts-xl", "--ts-display",
+            "--inset-pad", "--radius-inner", "--radius-trough-pill",
+        )
+        for v60_tok in v60_tokens:
+            if v60_tok not in content:
+                errors.append(f"[V60_PATTERN_VIOLATION] Missing v4.8-v6.0 domain pattern / typography / concentric token '{v60_tok}'.")
         if "inset 3px 0 0 var(--accent-focal)" in content or "inset 2px 0 0 var(--accent-focal)" in content:
             errors.append("[PAREN_CURVE_VIOLATION] Curved inset left box-shadow on rounded nav/tree items is forbidden; use ::before straight vertical pill.")
         sub11_match = re.search(r"font-size\s*:\s*(?:[0-9]|10)(?:\.[0-9]+)?px", content, flags=re.IGNORECASE)
         if sub11_match:
             errors.append(f"[SUB_11PX_VIOLATION] Forbidden sub-11px font-size rule found: '{sub11_match.group(0)}' (Hard floor is 11px / --ts-xs).")
+        visible_html = re.sub(r"<(script|style|pre|code)\b[^>]*>.*?</\1>", "", content, flags=re.S | re.I)
+        visible_text = re.sub(r"<[^>]+>", " ", visible_html)
+        for ph in (r"\bTODO\b", r"\bTBD\b", r"Lorem\s+ipsum", r"\[Insert\s", r"\{\{"):
+            m_ph = re.search(ph, visible_text)
+            if m_ph:
+                errors.append(f"[PLACEHOLDER_VIOLATION] Unfilled placeholder in visible text: '{m_ph.group(0)}'")
 
     return errors
 
 
+def verify_docs_contract() -> list[str]:
+    errors: list[str] = []
+    skill_dir = Path(__file__).resolve().parent.parent
+    tokens_file = skill_dir / "tokens" / "quiet-ui-tokens.css"
+    if not tokens_file.exists():
+        tokens_file = skill_dir.parent.parent / "tokens" / "quiet-ui-tokens.css"
+    if not tokens_file.exists():
+        return [f"[DOCS_LINTER] tokens/quiet-ui-tokens.css not found near {skill_dir}"]
+    defined_tokens = set(re.findall(r"(--[a-zA-Z0-9_-]+)\s*:", tokens_file.read_text(encoding="utf-8")))
+    skill_md = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    ref_files = sorted((skill_dir / "references").glob("*.md"))
+    for rf in ref_files:
+        if f"references/{rf.name}" not in skill_md:
+            errors.append(f"[UNLINKED_REF] Reference '{rf.name}' is not linked in SKILL.md.")
+    for md_file in [skill_dir / "SKILL.md", *ref_files]:
+        md_text = md_file.read_text(encoding="utf-8")
+        for block in re.findall(r"(?:```|~~~)(?:css|html)\n(.*?)(?:```|~~~)", md_text, flags=re.S | re.I):
+            for line in block.splitlines():
+                if "/* avoid */" in line:
+                    continue
+                for var_name in re.findall(r"var\(\s*(--[a-zA-Z0-9_-]+)", line):
+                    if var_name not in defined_tokens:
+                        errors.append(f"[UNDEFINED_DOC_TOKEN] {md_file.name} references undefined token '{var_name}'.")
+    return errors
+
+
 def main() -> None:
-    if len(sys.argv) < 2:
-        print("Usage: python3 verify_visual_contract.py <html_file> [--tier TIER_ID|ALL]")
+    args = [a for a in sys.argv[1:] if a != "--check-docs"]
+    check_docs = "--check-docs" in sys.argv
+    if not args and not check_docs:
+        print("Usage: python3 verify_visual_contract.py [<html_file>] [--tier TIER_ID|ALL] [--check-docs]")
         sys.exit(2)
-
-    html_file = Path(sys.argv[1])
-    tier_arg = "ALL"
-    if "--tier" in sys.argv:
-        idx = sys.argv.index("--tier")
-        if idx + 1 < len(sys.argv):
-            tier_arg = sys.argv[idx + 1].upper()
-
-    errs = verify_html(html_file, tier_arg)
+    errs: list[str] = []
+    if args and not args[0].startswith("--"):
+        tier_arg = "ALL"
+        if "--tier" in args and args.index("--tier") + 1 < len(args):
+            tier_arg = args[args.index("--tier") + 1].upper()
+        errs.extend(verify_html(Path(args[0]), tier_arg))
+    if check_docs:
+        errs.extend(verify_docs_contract())
     if errs:
-        print(f"[FAIL] Visual Architecture Contract Verification failed ({len(errs)} issues):")
+        print(f"[FAIL] Visual Architecture v6.0 Verification failed ({len(errs)} issues):")
         for e in errs:
             print(f"  - {e}")
         sys.exit(1)
-    else:
-        print(f"[PASS] 100% of Visual Architecture v5.1 checks succeeded for '{html_file}' (Tier={tier_arg}).")
-        sys.exit(0)
+    print(f"[PASS] 100% of Visual Architecture v6.0 checks succeeded (check_docs={check_docs}).")
+    sys.exit(0)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ Under `data-corners="auto"` (default) or `data-corners="sharp"`, all tiers in th
 ## 01. Tier `Doc-1`: Academic & Scientific Monograph (`0%` Box Weight, Default `S1` White, `N1`)
 - **Grid:** `max-width: 1260px; margin: 0 auto; padding: 2.25rem 2rem; display: grid; grid-template-columns: 200px minmax(0, 68ch) 230px; gap: 2.75rem;`
 - **Left Column (`200px`):** Sticky outline Table of Contents (`border-top: 2px solid var(--border-strong)`) with `--font-sans` `13px` (`.va-side-link`) links and a `.va-hamburger-btn` (`toggleLeftRailCollapse()`) that collapses the outline to a compact `60px` rail.
-- **Center Column (`68ch`) & Left Typographic Axis Law (`v5.0/v5.1`):**
+- **Center Column (`68ch`) & Left Typographic Axis Law (`v6.0`):**
   - Never place an inline `[☰]` toggle button inside the `.doc1-kicker` text line. Render the outline toggle in a block row (`.doc1-mobile-toc-bar`) ABOVE `.doc1-kicker-text` so the kicker (`--font-sans`, `--ts-xs: 11px`), display `H1` (`--font-serif`, `--ts-display: clamp(24px, 2.5vw, 28px)`), and body prose (`--font-serif`, `16.5px`, `line-height: 1.7`) share the exact same left X-coordinate (`|kicker.left - h1.left| <= 2px`).
   - Includes `var(--font-sans)` numbered section headers (`1.0`, `2.0`), flat bottom-bordered `[/]` section filter input, horizontal-rule display equations with `(Eq. 1.1)` right-aligned numbers, and click-to-sort `table.booktabs` (`2px` top/bottom rules, `1px` header rule, zero vertical lines).
 - **Right Column (`230px`):** Margin `.sidenote-box` items (`border-left: 1px solid var(--border-grid); padding-left: 0.75rem; font-size: var(--ts-sm, 12.5px);`) that highlight when hovering superscript `[1]` references.

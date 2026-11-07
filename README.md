@@ -1,11 +1,11 @@
-# `quiet-ui-skills` — Featuring *The Quiet UI Canvas* (17-Tier Anti-Slop Visual Architecture System v5.1)
+# `quiet-ui-skills` — Featuring *The Quiet UI Canvas* (17-Tier Anti-Slop Visual Architecture System v6.0)
 
-> **Eliminate generic AI-generated layout slop, top-of-page KPI card bloat, random font/size drift across pages, and "pill/color soup" — while embracing an Autonomous Content-to-UI Compiler (`Mode M3`), Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `0px` Nav Drift), 6 Mathematical Alignment Invariants, Universal Pure White (`S1`) Default legibility, and Earned Expressiveness (`C3`).**
-> **`quiet-ui-skills`** equips coding agents (**Claude Code**, **Google Antigravity**, **Gemini CLI**, **Devin Desktop**, and **Cursor**) with a deterministic, 100% brand-free **17-Tier Graduated Visual Architecture System**, standalone CSS tokens ([`tokens/quiet-ui-tokens.css`](tokens/quiet-ui-tokens.css)), and **The Quiet UI Canvas** interactive showcase ([`quiet-ui-showcase.html`](quiet-ui-showcase.html) & [`docs/index.html`](docs/index.html)).
+> **Eliminate generic AI-generated layout slop, top-of-page KPI card bloat, random font/size drift across pages, and "pill/color soup" — while embracing a Compiler-Grade Agent Architecture (`v6.0` Pre-Edit Output Contract & Content-Only Lock), Concentric Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$), Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `<= 4` sizes/card, `0px` Nav Drift), 6 Mathematical Alignment Invariants, Universal Pure White (`S1`) Default legibility, and Earned Expressiveness (`C3`).**
+> **`quiet-ui-skills`** equips coding agents (**Claude Code**, **Google Antigravity**, **Gemini CLI**, **Devin Desktop**, and **Cursor**) with a deterministic, 100% brand-free **17-Tier Graduated Visual Architecture System**, standalone CSS tokens ([`tokens/quiet-ui-tokens.css`](tokens/quiet-ui-tokens.css)), machine-readable [`llms.txt`](llms.txt), and **The Quiet UI Canvas** interactive showcase ([`quiet-ui-showcase.html`](quiet-ui-showcase.html) & [`docs/index.html`](docs/index.html)).
 
 > [!TIP]
 > ### 1-File Standalone Desktop Viewer ([`quiet-ui-showcase.html`](quiet-ui-showcase.html)) & Shareable URL Deep Links
-> Explore all **17 Mediums**, **4 Color Themes (`S1–S4`)**, **4 Densities (`D1–D4`)**, **5 Corner Stops (`0px`–`18px`)**, **3 Color Policies (`C1–C3`)**, and **5 Navigation Topologies (`N0–N4`)** offline or via deep-linked URL query parameters (`?tier=app-4&nav=n1&theme=white&density=d2&corners=rounded`).
+> Explore all **17 Mediums**, **4 Color Themes (`S1–S4`)**, **4 Densities (`D1–D4`)**, **5 Concentric Corner Stops (`0px`–`18px`)**, **3 Color Policies (`C1–C3`)**, and **5 Navigation Topologies (`N0–N4`)** offline or via deep-linked URL query parameters (`?tier=app-4&nav=n1&theme=white&density=d2&corners=rounded`).
 > Download **[`quiet-ui-showcase.html`](quiet-ui-showcase.html)** (100% self-contained single HTML file with embedded CC0 Claude Monet *Water Lilies* canvas) and open it directly in any browser—**zero build step, zero server, and zero external local file dependencies required.**
 
 ![The Quiet UI Canvas — 4-Family Architectural Overview](docs/assets/hero_4family_overview.png)
@@ -20,7 +20,7 @@ cd quiet-ui-skills
 bash install.sh
 ```
 
-- Installs `visual-architecture-system` (v5.1 `SKILL.md`, `references/00..06`, `scripts/verify_visual_contract.py`, and `tokens/quiet-ui-tokens.css`) into `~/.agents/skills/visual-architecture-system` and `~/.gemini/config/skills/visual-architecture-system` (or pass a custom path: `bash install.sh ./my-repo/.agents/skills/visual-architecture-system`).
+- Installs `visual-architecture-system` (`v6.0` `SKILL.md`, `references/00..06`, `scripts/verify_visual_contract.py`, and `tokens/quiet-ui-tokens.css`) into `~/.agents/skills/visual-architecture-system` and `~/.gemini/config/skills/visual-architecture-system` (or pass a custom path: `bash install.sh ./my-repo/.agents/skills/visual-architecture-system`).
 - **Standalone CSS Tokens (Dual-Licensed MIT for Commercial Embedding):**
   ```html
   <link rel="stylesheet" href="tokens/quiet-ui-tokens.css">
@@ -30,7 +30,7 @@ bash install.sh
 
 ## Which Tier Should I Use? (Autonomous Situation $\rightarrow$ Tier Router)
 
-When you ask an agent to *"make this look better"* or pass raw markdown, JSON, SQL, or container/task data without naming a tier, the **v5.1 Autonomous Content-to-UI Compiler (`Mode M3`)** inspects your content shape and compiles it into the right medium and component blocks:
+When you ask an agent to *"make this look better"* or pass raw markdown, JSON, SQL, or container/task data without naming a tier, the **v6.0 Autonomous Content-to-UI Compiler (`Mode M3`)** inspects your content shape and compiles it into the right medium and component blocks:
 
 | Your Situation / Input Data Shape | Auto-Selected Tier & Nav | Signature Component Blocks Compiled Automatically |
 | :--- | :--- | :--- |
@@ -46,20 +46,17 @@ When you ask an agent to *"make this look better"* or pass raw markdown, JSON, S
 
 ---
 
-## What's New in v5.1 (Unified Suite Typography, 6 Alignment Invariants & Domain Archetypes)
+## What's New in v6.0 (Compiler-Grade Agent Architecture, Concentric Radius Math, 7-Step Typography & `--check-docs` Linter)
 
-1. **Unified Suite Typography & 7-Step Modular Scale (`v5.1` — "Same-Website Cohesion"):**
-   - **Curated 3-Role Font Stack:** `--font-sans` (`Inter` / system UI sans) governs **100% of navigation (`N0–N4`), kickers, page/card headings (`Doc-2`..`HA-3`), controls, badges, and app/dashboard copy** (`tabular-nums` on KPI readouts); `--font-serif` (`Newsreader` / `Charter`) is reserved strictly for long-form narrative prose (`01. Doc-1` & `13. App-5` reflection); `--font-mono` (`JetBrains Mono`) is reserved strictly for machine literals.
-   - **100% Identical Shell & Navigation Chrome (`0px` Variance):** Every `.va-side-link`, `.va-tab-link`, `.va-poly-n2-bar a`, `.va-poly-n3-topbar a`, `.app1-nav-btn`, and `.va-tree-node` across all 17 tiers renders at `font-family: var(--font-sans); font-size: var(--ts-nav, 13px); font-weight: 500;`.
-   - **Strict 7-Step Type Scale (`--ts-*`) & `11px` Hard Floor:** `--ts-xs: 11px` (hard minimum floor; `9px–10px` micro-text is banned), `--ts-sm: 12.5px`, `--ts-nav: 13px`, `--ts-base: 14px`, `--ts-prose: 15.5px` (`16.5px` in `Doc-1`), `--ts-md: 16px`, `--ts-xl: clamp(20px, 2vw, 24px)` (`Doc-2`..`HA-3` `H1`), and `--ts-display: clamp(24px, 2.5vw, 28px)` (`Doc-1` & `Deck-1` `H1`).
-2. **6 Mathematical Alignment Invariants (`v5.0`):**
-   - **Zero Curved-Border Parenthesis (`::before` Vertical Pill):** Active rounded nav/tree items use a straight `3px` vertical pill pseudo-element (`left: 4px; top: 6px; bottom: 6px; border-radius: 99px`) instead of curved `inset` left `box-shadow` or `border-left`.
-   - **Zero Orphan Grid Hole (`.va-bento-2col`):** 2-column Bento grids maintain even card counts (4-card 2×2 matrix in `12. App-3`) and auto-span trailing odd cards (`grid-column: 1 / -1`).
-   - **Table Header Baseline Alignment (`.va-th-title`):** `vertical-align: top` on `<th>` with single-line `.va-th-title` (`|thTitle[i].top - thTitle[0].top| <= 2px`).
-   - **Left Typographic Axis (`.doc1-mobile-toc-bar`):** Mobile/tablet TOC triggers sit on a dedicated block row above `.doc1-kicker-text` so kicker, `H1`, and prose share the exact same left X-coordinate (`0px` drift).
-   - **Bottom Dock Clearance (`>= 64px` in `N4`) & Zero Right-Edge Clipping (`228px–260px` labeled `.va-tree-pane`).**
-3. **Fitbit Biometric & Monarch Financial/Quota Telemetry Patterns (`v4.9`):** Self-filling two-tone capsules (`.va-fill-capsule`), 7-day target-corridor sparklines (`.va-corridor-sparkline`), connected state hypnograms (`.va-state-hypnogram`), proportional ranking rows (`.va-prop-bar-row`), expected-pace bars (`.va-pace-bar` + `.va-pace-tick`), 5-segment threshold gauges (`.va-threshold-gauge`), and cumulative trajectory curves (`.va-trajectory-chart`).
-4. **AI Hero Flow Spine (`04. Doc-4B`), Portainer 3-Zone Fleet Cards (`08. Bridge-2` / `12. App-3`) & OpenTodo Calm Planning (`11. App-4` / `13. App-5`) (`v4.8`).**
+1. **Compiler-Grade Agent Architecture & Progressive-Disclosure Routing (`v6.0`):**
+   - **Pre-Edit 4-Field Output Contract (`Execution Mode`, `Target Tier & Nav`, `Surface & Density`, `Verification Gate`)** + **Content-Only Preservation Lock** (preserving 100% of existing CSS/layout when updating copy or rows) + **Atomic Staging Rule** + **Progressive-Disclosure Routing Table** (`Read ONLY when...` triggers for `references/00..06.md`).
+   - **`--check-docs` Reference Snippet Token Linter & LLM Generation-Failure Linter:** Automatically verifies that 100% of `var(--...)` custom properties in markdown code blocks exist in `tokens/quiet-ui-tokens.css`, all `references/*.md` files are linked in `SKILL.md`, and rendered DOM has `0` leaked markdown syntax (`**`, `## `), `0` unfilled placeholders (`TODO`, `TBD`, `Lorem ipsum`), and `<= 4` consecutive identical cards.
+2. **Concentric Nested Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$) & Per-View 4-Size Restraint:**
+   - Nested sub-cards, `.va-icon-well`, segmented trough buttons, and `.va-fill-capsule` derive concentric inner radii via `--inset-pad: 4px`, `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))`, and `--radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px))` across all 5 corner stops.
+   - Each card/panel budgets at most **4 active font sizes** and **2 primary text contrast rungs** (`--text-primary` and `--text-secondary`).
+3. **Unified Suite Typography & 7-Step Modular Scale (`--ts-xs: 11px` Hard Floor .. `--ts-display: 24px–28px`, `0px` Nav Drift):**
+   - `--font-sans` (`Inter`) governs 100% of navigation (`13px`), kickers (`11px`), headings (`Doc-2`..`HA-3`), controls, and app copy; `--font-serif` (`Newsreader`) is reserved strictly for `01. Doc-1` & `13. App-5` narrative prose; `--font-mono` (`JetBrains Mono`) is reserved strictly for machine literals.
+4. **6 Mathematical Alignment Invariants (`v5.0`) + Fitbit & Monarch Telemetry (`v4.9`) + AI Hero, Portainer & OpenTodo Archetypes (`v4.8`).**
 
 ---
 
