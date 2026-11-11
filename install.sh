@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for visual-architecture-system (v6.0)
-# License: GNU AGPLv3 + Section 7 NOTICE (Unconditional Commercial UI Output
-#          Exemption; tokens/quiet-ui-tokens.css dual-licensed MIT)
+# quiet-ui-skills — 1-Command Installer for visual-architecture-system (v6.2)
+# License: Apache 2.0 (Core Engine) + MIT (Customizations & Tokens)
+#          (tokens/quiet-ui-tokens.css and generated UI licensed MIT)
 # Upstream: https://github.com/FrankXLT/quiet-ui-skills
 # Usage:
 #   bash install.sh                  # Installs to ~/.agents/skills & ~/.gemini/config/skills
@@ -29,7 +29,7 @@ install_to_target() {
   cp -f "${SCRIPT_DIR}/tokens/quiet-ui-tokens.css" "${dest}/tokens/quiet-ui-tokens.css"
   [[ -f "${SCRIPT_DIR}/llms.txt" ]] && cp -f "${SCRIPT_DIR}/llms.txt" "${dest}/llms.txt"
   chmod +x "${dest}/scripts/verify_visual_contract.py"
-  echo "[OK] Installed visual-architecture-system v6.1 -> ${dest}"
+  echo "[OK] Installed visual-architecture-system v6.2 -> ${dest}"
 }
 
 if [[ $# -ge 1 ]]; then

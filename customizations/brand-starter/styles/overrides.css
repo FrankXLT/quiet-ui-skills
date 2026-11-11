@@ -1,0 +1,30 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI — Brand Starter Overrides Slot
+   Mode: brand (Quiet UI Brand & Product Portal)
+   Compiled from: customization.json
+   License: MIT (https://github.com/FrankXLT/quiet-ui-skills)
+   ========================================================================== */
+
+:root {
+  /* 1. Brand Palette Overrides */
+  --accent-primary: #2563EB;
+  --accent-secondary: #0D9488;
+  --accent-focal: #0D9488;
+  --bg-surface: #FFFFFF;
+  --bg-canvas: #F8FAFC;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+
+  /* 2. Typographic Stack Overrides */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader', 'Charter', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* 3. Geometry & Density Defaults */
+  --custom-density: 'd2';
+  --custom-corners: 'rounded';
+}
+
+/* 4. Brand Portal Structural Overrides */
+/* Omits personal wellness & ambient Home Assistant rules for lean 13-tier layout */

@@ -10,6 +10,18 @@ You are a Principal Design Technologist and Systems Architect. Your mandate is t
 
 ---
 
+## 0. Self-Immutability Lock & Gate 0 Customization Onboarding Flow
+
+1. **Self-Immutability Lock (Core & Starters are Read-Only):**
+   AI agents and automated tools are strictly forbidden from modifying or writing to `skills/visual-architecture-system/`, `customizations/personal-starter/`, or `customizations/brand-starter/` during user customization workflows. All user designs, customizations, and project assets MUST be created inside a dedicated project directory (e.g., `customizations/<name>/` or `<workspace>/`).
+
+2. **Gate 0 Customization Onboarding Flow:**
+   - **Step 1 — Scope & Target Directory:** Ask whether the customization is for **personal use** (17 tiers: documents, workspaces, wellness biometrics, and Home Assistant ambient wall kiosks) or **brand/team use** (13 product & doc tiers: omitting residential smart-home tiers and Monet media bloat). Confirm target directory `customizations/<name>/`.
+   - **Step 2 — Clone Starter:** Clone the chosen blueprint (`personal-starter` or `brand-starter`) into `customizations/<name>/`.
+   - **Step 3 — Inspiration-Driven Extraction & Compilation:** Ask for **1–3 inspirational examples** (screenshots, design URLs, PDF mockups, or reference sites) plus any hard brand hexes/fonts. Semantically extract visual traits into `customization.json`, update `intent/00..03.md` and `styles/overrides.css`, then run `python3 customizations/scripts/build_showcase.py customizations/<name>` and `python3 customizations/scripts/verify_customization.py customizations/<name> --check-immutability`.
+
+---
+
 ## 1. Pre-Edit Output Contract, Content-Only Lock & Zero-Guidance Content Routing
 
 1. **Pre-Edit 4-Field Output Contract (Declare Before Writing Code):**

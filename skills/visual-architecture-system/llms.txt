@@ -1,13 +1,13 @@
-# Quiet UI (`visual-architecture-system`)
+# Quiet UI (`visual-architecture-system`) v6.2
 
 > Open-source design system and UI architecture skill that turns raw prose, technical specs, SQL schemas, fleet inventories, and smart-home entities into cohesive, responsive HTML interfaces across 17 structural archetypes.
 
 - **Live 17-Tier Interactive Showcase:** https://FrankXLT.github.io/quiet-ui-skills/
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Coverage:** 17 Tiers · 8 Navigation States · 3 Viewport Breakpoints (408 Verified Permutations)
-- **License:** AGPLv3 + UI Output Exemption (`tokens/quiet-ui-tokens.css` dual-licensed MIT)
+- **License:** Apache 2.0 (Core Engine) + MIT (Customizations & UI Deliverables, 0 NOTICE obligations on shipped apps)
 
-## 1. Installation
+## 1. Installation & Quick Start
 
 ```bash
 git clone https://github.com/FrankXLT/quiet-ui-skills.git
@@ -17,27 +17,42 @@ cd quiet-ui-skills
 
 Or copy `skills/visual-architecture-system/` into `~/.agents/skills/visual-architecture-system/` or `~/.gemini/config/skills/visual-architecture-system/`, and link `tokens/quiet-ui-tokens.css`.
 
+### Customize in 60 Seconds
+To adapt Quiet UI to your brand or personal workspace, copy a starter from `customizations/`:
+- **`customizations/personal-starter/`**: 17-tier blueprint for personal research, wellness pacing, and Home Assistant kiosks.
+- **`customizations/brand-starter/`**: 13-tier blueprint for enterprise software products and documentation (omits ambient art and residential tiers).
+
+Compile and verify via:
+```bash
+python3 customizations/scripts/build_showcase.py customizations/<target>
+python3 customizations/scripts/verify_customization.py customizations/<target> --check-immutability
+```
+
 ## 2. Core Architectural Rules
 
-1. **Pre-Edit Output Contract & Content-Only Preservation Lock:**
+1. **Self-Immutability Lock & Gate 0 Customization Onboarding:**
+   - Core skill files and starter blueprints (`skills/visual-architecture-system/`, `customizations/personal-starter/`, `customizations/brand-starter/`) are read-only and immutable.
+   - User customizations live in dedicated folders (`customizations/<name>/`).
+   - Gate 0 prompts for scope (Personal 17-tier vs. Brand 13-tier), clones the starter, extracts visual traits from 1–3 inspiration examples, compiles, and verifies.
+2. **Pre-Edit Output Contract & Content-Only Preservation Lock:**
    - Declare `Execution Mode` (`Full Assembly` | `Content-Only`), `Target Tier & Nav`, `Surface & Density`, and `Verification Gate` before writing UI code.
    - **Content-Only Lock:** Preserve 100% of existing CSS and layout structure when updating copy, metrics, or rows on an existing page.
    - **Zero-Guidance Content Router:** Automatically maps raw user content to the optimal Tier (`01`..`17`), Navbar (`N0`..`N4`), and component blocks without asking boilerplate intake questions.
-2. **Concentric Nested Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$):**
+3. **Concentric Nested Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$):**
    - `--inset-pad: 4px;`
    - `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));`
    - `--radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));`
    - Evaluated dynamically across all 5 corner stops (`auto`, `sharp`, `subtle`, `rounded`, `soft`).
-3. **Unified Suite Typography & Per-View Restraint:**
+4. **Unified Suite Typography & Per-View Restraint:**
    - **3-Role Font Stack:** `--font-sans` (`Inter` + `tabular-nums`) for 100% of navigation (`13px` `--ts-nav`, `0px` drift), kickers (`11px` `--ts-xs`), UI controls, and `Doc-2`..`HA-3` headings (`--ts-xl: clamp(20px, 2vw, 24px)`); `--font-serif` (`Newsreader`) strictly for `Doc-1` narrative prose (`16.5px`) & display `H1` (`--ts-display: clamp(24px, 2.5vw, 28px)`); `--font-mono` (`JetBrains Mono`) strictly for machine literals.
    - **`11px` Hard Minimum Floor (`--ts-xs`):** Zero visible text `< 10.8px` anywhere in the DOM.
    - **Per-View Restraint:** Any single card budgets `<= 4` active font sizes and `2` primary contrast rungs (`--text-primary`, `--text-secondary`).
-4. **6 Mathematical Alignment Invariants:**
+5. **6 Mathematical Alignment Invariants:**
    - **Invariant 1 (Straight Active Nav Pill):** Active nav/tree items use a straight `::before` vertical pill (`left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px`) instead of curved left borders.
    - **Invariant 2 (Zero Orphan Grid Hole):** `.va-bento-2col` enforces even card counts or `grid-column: 1 / -1` on trailing odd cards.
    - **Invariant 3 (Table Header Baseline):** `table.va-tree-grid th { vertical-align: top !important; }` keeps all `.va-th-title` spans aligned within `<= 2px`.
    - **Invariant 4 (Left Typographic Axis):** `.doc1-mobile-toc-bar` renders above `.doc1-kicker-text` so `|kicker.left - h1.left| <= 2px`.
-   - **Invariant 5 (Bottom Dock Clearance):** Scrollable panes add `padding-bottom >= 64px` (`76px` in `14. App-Tree`) in `N4`.
+   - **Invariant 5 (Bottom Dock Clearance):** Scrollable panes add `padding-bottom >= 64px` in `N4`.
    - **Invariant 6 (Zero Right-Edge Clipping):** `.va-tree-pane` stays a labeled `228px-260px` schema tree on `>= 641px`, and JSONB table cells truncate with `text-overflow: ellipsis`.
 
 ## 3. The 17-Tier Continuum (Default `data-theme="white"`)
@@ -63,7 +78,8 @@ Or copy `skills/visual-architecture-system/` into `~/.agents/skills/visual-archi
 ## 4. Reference Map
 
 - [SKILL.md](skills/visual-architecture-system/SKILL.md): Core instructions, Output Contract, 17-Tier table, and progressive-disclosure router.
-- [tokens/quiet-ui-tokens.css](tokens/quiet-ui-tokens.css): Standalone CSS Custom Properties (4 surface themes, 4 densities, concentric `--radius-inner`, `--ts-*` type scale, `.va-*` components).
+- [tokens/quiet-ui-tokens.css](tokens/quiet-ui-tokens.css): Standalone CSS Custom Properties (4 surface themes, 4 densities, concentric `--radius-inner`, `--ts-*` type scale, `.va-*` components, MIT licensed).
+- [customizations/README.md](customizations/README.md): Starter kits (`personal-starter`, `brand-starter`), 60-second onboarding prompt, build & verification toolchain.
 - [references/00-intake-questionnaire-and-project-lock.md](skills/visual-architecture-system/references/00-intake-questionnaire-and-project-lock.md): Pre-Edit Output Contract, Content-Only Lock, `.visual-lock.json`, and Zero-Guidance Content Router.
 - [references/01-user-discovery-and-4-theme-tokens.md](skills/visual-architecture-system/references/01-user-discovery-and-4-theme-tokens.md): Surface Themes, Concentric 5-Stop Corner Radius Math, Color Policies, and 7-Step Typography Scale.
 - [references/02-editorial-and-bridge-tiers.md](skills/visual-architecture-system/references/02-editorial-and-bridge-tiers.md): Tiers `01. Doc-1` through `06. Bridge-1` and theme-aware `.va-mermaid-figure`.

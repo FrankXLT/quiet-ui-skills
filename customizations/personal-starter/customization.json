@@ -1,0 +1,42 @@
+{
+  "name": "personal-starter",
+  "title": "Quiet UI Personal Workspace & Continuum",
+  "version": "6.2",
+  "mode": "personal",
+  "description": "Read-only blueprint for personal life planning, research monographs, daily biometrics, and spatial ambient kiosks across all 17 tiers.",
+  "palette": {
+    "primary": "#4F46E5",
+    "accent": "#06B6D4",
+    "surface": "#FFFFFF",
+    "canvas": "#F8FAFC",
+    "text_primary": "#0F172A",
+    "text_secondary": "#475569"
+  },
+  "fonts": {
+    "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "serif": "'Newsreader', 'Charter', Georgia, serif",
+    "mono": "'JetBrains Mono', 'Fira Code', monospace"
+  },
+  "corner_geometry": "rounded",
+  "density": "d2",
+  "enabled_tiers": [
+    "doc-1",
+    "doc-2",
+    "doc-3",
+    "doc-4b",
+    "doc-4a",
+    "bridge-1",
+    "deck-1",
+    "bridge-2",
+    "app-2",
+    "app-1",
+    "app-4",
+    "app-3",
+    "app-5",
+    "app-tree",
+    "ha-1",
+    "ha-2",
+    "ha-3"
+  ],
+  "disabled_tiers": []
+}

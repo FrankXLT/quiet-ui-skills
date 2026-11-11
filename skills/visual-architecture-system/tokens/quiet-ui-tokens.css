@@ -1,8 +1,8 @@
+/* SPDX-License-Identifier: MIT */
 /* ==========================================================================
    Quiet UI Skills — Standalone Design Tokens & Responsive Shell Utilities
-   Version: 6.1 (Optical Glassmorphism, Concentric Radius Math, 7-Step Type Scale & 6 Invariants)
-   License: Dual-Licensed MIT (for runtime embedding in any commercial/proprietary UI)
-            & GNU AGPLv3 + Section 7 NOTICE | Zero External Framework Dependencies
+   Version: 6.2 (Optical Glassmorphism, Concentric Radius Math, 7-Step Type Scale & 6 Invariants)
+   License: MIT License (https://github.com/FrankXLT/quiet-ui-skills)
    ========================================================================== */
 
 :root {

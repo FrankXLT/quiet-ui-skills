@@ -1,0 +1,43 @@
+{
+  "name": "brand-starter",
+  "title": "Quiet UI Brand & Product Portal",
+  "version": "6.2",
+  "mode": "brand",
+  "description": "Read-only blueprint for enterprise software products, design systems, engineering docs, and team productivity portals (13 product tiers).",
+  "palette": {
+    "primary": "#2563EB",
+    "accent": "#0D9488",
+    "surface": "#FFFFFF",
+    "canvas": "#F8FAFC",
+    "text_primary": "#0F172A",
+    "text_secondary": "#475569"
+  },
+  "fonts": {
+    "sans": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    "serif": "'Newsreader', 'Charter', Georgia, serif",
+    "mono": "'JetBrains Mono', 'Fira Code', monospace"
+  },
+  "corner_geometry": "rounded",
+  "density": "d2",
+  "enabled_tiers": [
+    "doc-1",
+    "doc-2",
+    "doc-3",
+    "doc-4b",
+    "doc-4a",
+    "bridge-1",
+    "deck-1",
+    "bridge-2",
+    "app-2",
+    "app-1",
+    "app-4",
+    "app-3",
+    "app-tree"
+  ],
+  "disabled_tiers": [
+    "app-5",
+    "ha-1",
+    "ha-2",
+    "ha-3"
+  ]
+}
