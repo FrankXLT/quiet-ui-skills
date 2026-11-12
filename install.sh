@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for Quiet UI Skills Plugin & Skills (v7.0)
+# quiet-ui-skills — 1-Command Installer for Quiet UI Skills Plugin & Skills (v7.1)
 # Bundles:
 #   1. Antigravity Native Plugin -> ~/.gemini/config/plugins/quiet-ui-skills
 #   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-ui-diagrams}
@@ -53,7 +53,7 @@ install_plugin_bundle() {
   done
   copy_clean_tree "${UI_SKILL_SRC}" "${plugin_dest}/skills/quiet-ui"
   copy_clean_tree "${DIAG_SKILL_SRC}" "${plugin_dest}/skills/quiet-ui-diagrams"
-  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v7.0 -> ${plugin_dest}"
+  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v7.1 -> ${plugin_dest}"
 }
 
 if [[ $# -ge 1 ]]; then
@@ -64,7 +64,7 @@ if [[ $# -ge 1 ]]; then
     mkdir -p "${TARGET_ROOT}"
     copy_clean_tree "${UI_SKILL_SRC}" "${TARGET_ROOT}/quiet-ui"
     copy_clean_tree "${DIAG_SKILL_SRC}" "${TARGET_ROOT}/quiet-ui-diagrams"
-    echo "[OK] Installed quiet-ui & quiet-ui-diagrams v7.0 -> ${TARGET_ROOT}"
+    echo "[OK] Installed quiet-ui & quiet-ui-diagrams v7.1 -> ${TARGET_ROOT}"
   fi
 else
   # 1. Purge legacy loose skills so they never shadow the Antigravity plugin

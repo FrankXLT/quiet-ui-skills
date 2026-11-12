@@ -1,8 +1,9 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-ui-diagrams`) v7.0
+# Quiet UI Skills (`quiet-ui` + `quiet-ui-diagrams`) v7.1
 
 > Unified open-source Antigravity plugin and cross-agent design suite combining a **17-tier responsive HTML UI & document architecture (`quiet-ui`)** with a **45-type editorial SVG diagram, quantitative chart, and Mermaid/draw.io/Excalidraw/PlantUML import engine (`quiet-ui-diagrams`)** on one 4-theme CSS token palette.
 
-- **Live 17-Tier Interactive Showcase:** https://FrankXLT.github.io/quiet-ui-skills/
+- **Live 17-Tier Interactive Showcase (In-Situ UI + Diagrams):** https://FrankXLT.github.io/quiet-ui-skills/
+- **Live 45-Type Diagram & Chart Atlas (+ DSL Workbench):** https://FrankXLT.github.io/quiet-ui-skills/diagrams.html
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Skills:** `quiet-ui` (17 UI Tiers · 408 Verified States) + `quiet-ui-diagrams` (45 Diagram/Chart Types · 4 DSL AST Importers)
 - **License:** Apache 2.0 (Core Plugin & UI Engine) + MIT (Customizations, Tokens, Diagrams & 100% of Generated UI/SVG Deliverables)

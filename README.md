@@ -1,4 +1,4 @@
-# Quiet UI Skills (`v7.0`)
+# Quiet UI Skills (`v7.1`)
 
 [![License: Apache 2.0](https://img.shields.io/badge/Plugin%20%26%20UI%20Engine-Apache%202.0-blue.svg)](LICENSE)
 [![Customizations, Tokens & Diagrams: MIT](https://img.shields.io/badge/Customizations%2C%20Tokens%20%26%20Diagrams-MIT-0F766E.svg)](customizations/LICENSE)
@@ -15,8 +15,9 @@
 
 ## Quick Start & Installation
 
-- **Interactive 17-Tier Showcase:** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) (or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally — zero build step required).
-- **Deep-Link Any State:** Append `?tier=app-3&nav=n2&theme=white&density=d2&corners=rounded` to share an exact archetype, navigation shell, surface theme, and corner geometry.
+- **Interactive 17-Tier UI + In-Situ Diagram Showcase:** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) (or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally — zero build step required).
+- **Companion 45-Type Diagram & Chart Atlas + DSL Workbench:** [**https://FrankXLT.github.io/quiet-ui-skills/diagrams.html**](https://FrankXLT.github.io/quiet-ui-skills/diagrams.html) (or open [`docs/diagrams.html`](docs/diagrams.html) locally).
+- **Deep-Link Any State:** Append `?tier=app-3&nav=n2&theme=white&density=d2&corners=rounded` (or `?theme=dark` on `diagrams.html`) to share an exact archetype, navigation shell, surface theme, and corner geometry.
 
 ```bash
 # Install native Antigravity Plugin (~/.gemini/config/plugins/quiet-ui-skills)

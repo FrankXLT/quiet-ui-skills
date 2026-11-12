@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="en" data-theme="white">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiet UI — 45-Type Diagram &amp; Chart Atlas</title>
+  <link rel="stylesheet" href="./atlas/quiet-ui-tokens.css">
+  <link rel="stylesheet" href="./atlas/atlas.css">
+  <script defer src="./atlas/workbench-data.js"></script>
+  <script defer src="./atlas/catalog-systems-data.js"></script>
+  <script defer src="./atlas/catalog-flows-strategy.js"></script>
+  <script defer src="./atlas/catalog-charts.js"></script>
+  <script defer src="./atlas/atlas-app.js"></script>
+</head>
+<body>
+  <div class="atlas-container">
+    <!-- 1. Editorial Masthead -->
+    <header class="atlas-header">
+      <div class="atlas-header-top">
+        <span class="atlas-brand-badge">Quiet UI Skills v7.1 · Layer 2</span>
+        <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-dock-btn">&larr; Back to 17 UI Tiers</a>
+      </div>
+      <h1 class="atlas-title">45-Type Diagram &amp; Chart Atlas</h1>
+      <p class="atlas-subtitle">
+        Editorial SVG diagram and quantitative chart engine designed for technical RFCs, distributed architecture blueprints,
+        and telemetry dashboards. 100% offline, 4-theme token binding, 11px typography floor, and deterministic DSL AST import.
+      </p>
+      <div class="atlas-meta-row">
+        <span class="atlas-stat-pill"><strong>45</strong> Visual Types</span>
+        <span class="atlas-stat-pill"><strong>9</strong> Semantic Patterns</span>
+        <span class="atlas-stat-pill"><strong>4</strong> Surface Themes</span>
+        <span class="atlas-stat-pill"><strong>100%</strong> Offline SVG &amp; No CDN</span>
+        <span class="atlas-stat-pill"><strong>White Rabbit</strong> Phase-Lock Narrative</span>
+      </div>
+    </header>
+
+    <!-- 2. Hero Section: DSL Import Before -> After Workbench -->
+    <section id="dsl-workbench" class="atlas-workbench" aria-label="DSL Import Before and After Workbench">
+      <div class="wb-head">
+        <div class="wb-title-group">
+          <h2>DSL Import Before &rarr; After Workbench</h2>
+          <p>Deterministic AST extraction from Mermaid, draw.io, Excalidraw, and PlantUML into native Quiet UI SVGs.</p>
+        </div>
+        <div class="wb-tabs" role="tablist" aria-label="DSL Grammar Selectors">
+          <button type="button" class="wb-tab-btn active" data-tab="mermaid" onclick="switchWbTab('mermaid')">1. Mermaid (.mmd)</button>
+          <button type="button" class="wb-tab-btn" data-tab="drawio" onclick="switchWbTab('drawio')">2. draw.io (.drawio XML)</button>
+          <button type="button" class="wb-tab-btn" data-tab="excalidraw" onclick="switchWbTab('excalidraw')">3. Excalidraw (.excalidraw)</button>
+          <button type="button" class="wb-tab-btn" data-tab="plantuml" onclick="switchWbTab('plantuml')">4. PlantUML (.puml)</button>
+        </div>
+      </div>
+      <div class="wb-grid">
+        <div class="wb-pane">
+          <div class="wb-pane-head"><span>Pane 1 · Raw DSL Source</span><span>Inert Text</span></div>
+          <pre id="wb-raw-source" class="wb-pane-code"></pre>
+        </div>
+        <div class="wb-pane">
+          <div class="wb-pane-head"><span>Pane 2 · Deterministic AST Extract</span><span>CLI Invocation</span></div>
+          <div class="wb-pane-ast">
+            <div id="wb-cli-cmd" class="wb-cli-banner"></div>
+            <pre id="wb-ast-extract" style="margin:0;"></pre>
+          </div>
+        </div>
+        <div class="wb-pane">
+          <div class="wb-pane-head">
+            <span>Pane 3 · Rebuilt Quiet UI SVG</span>
+            <button type="button" class="atlas-btn" onclick="downloadWbSvg()">Download Standalone .svg</button>
+          </div>
+          <div id="wb-svg-render" class="wb-svg-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Filter & Search Controls -->
+    <nav class="atlas-control-bar" aria-label="Diagram Catalog Search and Filter Controls">
+      <div class="atlas-search-row">
+        <div class="atlas-search-wrap">
+          <input id="atlas-search" class="atlas-search-input" type="search"
+                 placeholder="Filter 45 types, semantic patterns, or prompts..." aria-label="Filter visual types">
+          <kbd class="atlas-kbd-hint">[/]</kbd>
+        </div>
+        <span id="atlas-counter" class="atlas-counter">Showing 45 of 45 visual types</span>
+      </div>
+      <div class="atlas-pills-row" role="group" aria-label="Family Category Filter">
+        <button type="button" class="atlas-pill-btn active" data-family="all" onclick="setFilter('all')">All (45)</button>
+        <button type="button" class="atlas-pill-btn" data-family="systems" onclick="setFilter('systems')">1. Systems &amp; Cloud (11)</button>
+        <button type="button" class="atlas-pill-btn" data-family="data" onclick="setFilter('data')">2. Data &amp; Schema (6)</button>
+        <button type="button" class="atlas-pill-btn" data-family="flows" onclick="setFilter('flows')">3. Flows &amp; State (9)</button>
+        <button type="button" class="atlas-pill-btn" data-family="strategy" onclick="setFilter('strategy')">4. Product &amp; Strategy (8)</button>
+        <button type="button" class="atlas-pill-btn" data-family="charts" onclick="setFilter('charts')">5. Quantitative Charts (11)</button>
+      </div>
+    </nav>
+
+    <!-- 4. Complete 45-Type Catalog Sections -->
+    <!-- Family 1: Systems & Cloud (11 cards) — Above Fold (NOT deferred) -->
+    <section id="fam-sec-systems" class="atlas-family-section">
+      <div class="atlas-family-head">
+        <h3>1. System &amp; Software Architecture</h3>
+        <span>11 Visual Types · References: type-architecture..type-dp-security-matrix</span>
+      </div>
+      <div id="fam-grid-systems" class="atlas-grid"></div>
+    </section>
+
+    <!-- Family 2: Data & Schema (6 cards) — Modern Web Guidance #1 Deferred -->
+    <section id="fam-sec-data" class="atlas-family-section atlas-deferred-family">
+      <div class="atlas-family-head">
+        <h3>2. Data Pipelines &amp; Storage Schema</h3>
+        <span>6 Visual Types · References: type-data-flow..type-uml-class</span>
+      </div>
+      <div id="fam-grid-data" class="atlas-grid"></div>
+    </section>
+
+    <!-- Family 3: Flows & State (9 cards) — Modern Web Guidance #1 Deferred -->
+    <section id="fam-sec-flows" class="atlas-family-section atlas-deferred-family">
+      <div class="atlas-family-head">
+        <h3>3. Processes, Logic &amp; Sequences</h3>
+        <span>9 Visual Types · References: type-flowchart..type-gantt</span>
+      </div>
+      <div id="fam-grid-flows" class="atlas-grid"></div>
+    </section>
+
+    <!-- Family 4: Product & Strategy (8 cards) — Modern Web Guidance #1 Deferred -->
+    <section id="fam-sec-strategy" class="atlas-family-section atlas-deferred-family">
+      <div class="atlas-family-head">
+        <h3>4. Product, Strategy &amp; Organization</h3>
+        <span>8 Visual Types · References: type-wardley..type-quadrant</span>
+      </div>
+      <div id="fam-grid-strategy" class="atlas-grid"></div>
+    </section>
+
+    <!-- Family 5: Quantitative Charts (11 cards) — Modern Web Guidance #1 Deferred -->
+    <section id="fam-sec-charts" class="atlas-family-section atlas-deferred-family">
+      <div class="atlas-family-head">
+        <h3>5. Quantitative &amp; Statistical Charts</h3>
+        <span>11 Visual Types · References: type-bar..type-venn</span>
+      </div>
+      <div id="fam-grid-charts" class="atlas-grid"></div>
+    </section>
+  </div>
+
+  <!-- 5. Modern Web Guidance #2: Inspect Dialog -->
+  <dialog id="atlas-inspect-dialog" closedby="any" aria-labelledby="atlas-dialog-title">
+    <div class="atlas-dialog-head">
+      <div class="atlas-dialog-title-wrap">
+        <h3 id="atlas-dialog-title">Visual Type Inspector</h3>
+        <p id="atlas-dialog-family">Category &amp; Pattern</p>
+      </div>
+      <button type="button" class="atlas-close-btn" onclick="closeAtlasDialog()">Close &times;</button>
+    </div>
+    <div id="atlas-dialog-svg" class="atlas-dialog-preview"></div>
+    <div class="atlas-dialog-meta">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:var(--ts-xs, 11px); color:var(--text-muted);">Documentation: <strong id="atlas-dialog-doc"></strong></span>
+        <button id="atlas-copy-prompt-btn" type="button" class="atlas-btn" onclick="copyDialogPrompt()">Copy Agent Prompt</button>
+      </div>
+      <pre id="atlas-dialog-prompt" class="atlas-dialog-prompt-box"></pre>
+      <div class="atlas-dialog-actions">
+        <button type="button" class="atlas-btn atlas-btn-primary" onclick="downloadDialogSvg()">Download Standalone .svg</button>
+        <button type="button" class="atlas-btn" onclick="closeAtlasDialog()">Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 6. Floating Studio Dock Matching quiet-ui-showcase.html -->
+  <aside id="atlas-dock" class="atlas-dock" aria-label="Quiet UI Studio Controller Bar">
+    <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-dock-btn" title="Back to 17 UI Tiers">&larr; 17 UI Tiers</a>
+    <select id="atlas-dock-family-select" class="atlas-dock-select" aria-label="Jump to Visual Family">
+      <option value="workbench">DSL Workbench</option>
+      <option value="systems">1. Systems &amp; Cloud (11)</option>
+      <option value="data">2. Data &amp; Schema (6)</option>
+      <option value="flows">3. Flows &amp; State (9)</option>
+      <option value="strategy">4. Product &amp; Strategy (8)</option>
+      <option value="charts">5. Quantitative Charts (11)</option>
+    </select>
+    <div class="atlas-swatches" role="group" aria-label="Surface Theme Switcher">
+      <span class="atlas-swatch-dot swatch-white active" data-theme="white" title="Pure White" onclick="applyTheme('white', true)"></span>
+      <span class="atlas-swatch-dot swatch-paper" data-theme="paper" title="Warm Paper" onclick="applyTheme('paper', true)"></span>
+      <span class="atlas-swatch-dot swatch-dark-paper" data-theme="dark-paper" title="Dark Paper" onclick="applyTheme('dark-paper', true)"></span>
+      <span class="atlas-swatch-dot swatch-dark" data-theme="dark" title="Obsidian Dark" onclick="applyTheme('dark', true)"></span>
+    </div>
+  </aside>
+</body>
+</html>

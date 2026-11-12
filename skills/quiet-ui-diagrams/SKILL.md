@@ -78,7 +78,7 @@ Choose a behavioral pattern first when flow or lifecycle dictates structure ([se
    - Document Integrity: `python3 scripts/self_check.py <file>` (checks accessible `<title>`/`<desc>`, viewBox clipping, offline fonts).
 3. **Export Pipeline (Diagram-Only SVG & PNG):**
    - Standalone SVG: `python3 scripts/export_svg.py <src.html> [<out.svg>] --theme white|paper|dark-paper|dark` ([export.md](references/export.md) & [export-registry.md](references/export-registry.md)).
-   - Standalone PNG: `python3 scripts/export_png.py <src.html> [<out.png>] [scale]` using Selenium + headless Chrome (`--headless=new`) with transparent background ([export-png.md](references/export-png.md)). Strictly zero Selenium headless Chrome.
+   - Standalone PNG: `python3 scripts/export_png.py <src.html> [<out.png>] [scale]` using Selenium + headless Chrome (`--headless=new`) with EXIF-clean output ([export-png.md](references/export-png.md)).
 
 ---
 

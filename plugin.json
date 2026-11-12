@@ -3,7 +3,7 @@
   "displayName": "Quiet UI Skills",
   "description": "17-tier responsive HTML UI design system (quiet-ui) paired with a 45-type editorial SVG diagram, quantitative chart, and Mermaid/draw.io/Excalidraw/PlantUML import engine (quiet-ui-diagrams).",
   "logo": "assets/logo.svg",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "suggestedPrompts": [
     "Turn these engineering notes and metrics into a clean Quiet UI page",
     "Design an editorial SVG system architecture diagram from our codebase",
