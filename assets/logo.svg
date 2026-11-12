@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="quiet-ui-logo-title">
+  <title id="quiet-ui-logo-title">Quiet UI Skills</title>
+  <!-- High-contrast outer emblem with ~10% transparent margin (26px inset) -->
+  <rect x="26" y="26" width="204" height="204" rx="44" fill="#0F172A" stroke="#38BDF8" stroke-width="6"/>
+  <rect x="38" y="38" width="180" height="180" rx="32" fill="none" stroke="#334155" stroke-width="2"/>
+  <!-- Macro UI layout spine (left rail + header band) -->
+  <rect x="56" y="56" width="38" height="144" rx="10" fill="#1E293B" stroke="#64748B" stroke-width="3"/>
+  <rect x="66" y="72" width="18" height="6" rx="3" fill="#38BDF8"/>
+  <rect x="66" y="90" width="18" height="6" rx="3" fill="#94A3B8"/>
+  <rect x="66" y="108" width="18" height="6" rx="3" fill="#94A3B8"/>
+  <!-- Micro schematic diagram graph (nodes + orthogonal connector) -->
+  <rect x="110" y="56" width="90" height="44" rx="10" fill="#F8FAFC"/>
+  <rect x="122" y="70" width="46" height="6" rx="3" fill="#0F172A"/>
+  <rect x="122" y="82" width="28" height="5" rx="2.5" fill="#2563EB"/>
+  <path d="M155 100 V126 H132 V146 M155 126 H178 V146" fill="none" stroke="#38BDF8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="110" y="146" width="42" height="54" rx="10" fill="#1E293B" stroke="#F8FAFC" stroke-width="3"/>
+  <rect x="158" y="146" width="42" height="54" rx="10" fill="#2563EB" stroke="#BAE6FD" stroke-width="3"/>
+  <circle cx="131" cy="173" r="7" fill="#38BDF8"/>
+  <circle cx="179" cy="173" r="7" fill="#F8FAFC"/>
+</svg>

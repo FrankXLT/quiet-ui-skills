@@ -86,4 +86,4 @@ If you prefer building without an agent:
 ## 5. Licensing & Immutability Rules
 
 - **Pure MIT License:** All files in `customizations/` and all output HTML/CSS/JS are licensed under MIT (`customizations/LICENSE`). You own your designs 100% with zero `NOTICE` requirements on shipped products.
-- **Starter Immutability Lock:** AI agents and automated scripts are strictly prohibited from mutating `personal-starter/`, `brand-starter/`, or `skills/visual-architecture-system/`. All user modifications must reside in dedicated subfolders (`customizations/<name>/`).
+- **Starter Immutability Lock:** AI agents and automated scripts are strictly prohibited from mutating `personal-starter/`, `brand-starter/`, `skills/quiet-ui/`, or `skills/quiet-ui-diagrams/`. All user modifications must reside in dedicated subfolders (`customizations/<name>/`). Both `quiet-ui` (17-tier UI shells) and `quiet-ui-diagrams` (45-type SVG diagrams & charts) automatically read `customizations/<name>/customization.json` for brand palette and typography cohesion.

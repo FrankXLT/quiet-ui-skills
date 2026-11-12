@@ -124,7 +124,8 @@ def check_immutability(repo_root: Path) -> list[str]:
         return [f"[GIT_ERROR] Failed to run git status: {res.stderr}"]
 
     protected_prefixes = (
-        "skills/visual-architecture-system/",
+        "skills/quiet-ui/",
+        "skills/quiet-ui-diagrams/",
         "customizations/personal-starter/",
         "customizations/brand-starter/",
     )
