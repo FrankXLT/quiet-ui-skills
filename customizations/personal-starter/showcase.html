@@ -10959,6 +10959,7 @@ GROUP BY node_id ORDER BY p99_skew_ps DESC;</pre>
     }
 
     function syncUrlQueryParams() {
+      if (!window._urlParamsHydrated) return;
       try {
         const root = document.documentElement;
         const params = new URLSearchParams(window.location.search);
@@ -10987,8 +10988,11 @@ GROUP BY node_id ORDER BY p99_skew_ps DESC;</pre>
         if (qTier && typeof tierOrder !== 'undefined' && tierOrder.includes(qTier)) switchTier(qTier, true);
         if (qNav && ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'].includes(qNav) && typeof setNavShell === 'function') setNavShell(qNav);
       } catch (e) {}
+      window._urlParamsHydrated = true;
+      syncUrlQueryParams();
     }
-    window.addEventListener('DOMContentLoaded', applyUrlQueryParamsOnLoad);
+    if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', applyUrlQueryParamsOnLoad);
+    else applyUrlQueryParamsOnLoad();
 
     function toggleDoc4BTableModal() {
       const rows = document.querySelectorAll('#tier-doc-4b .doc4b-extra-row');

@@ -184,6 +184,23 @@ def patch_scripts_and_styles(html: str) -> str:
     if "let targetEntity = 'wr_samples';" not in html:
         html = html.replace("      const d = treeNodePayloads[nodeKey]", er_sync, 1)
 
+    html = html.replace(
+        "    let _urlParamsHydrated = false;\n    function syncUrlQueryParams() {\n      if (!_urlParamsHydrated) return;",
+        "    function syncUrlQueryParams() {\n      if (!window._urlParamsHydrated) return;",
+    )
+    html = html.replace("      _urlParamsHydrated = true;\n", "      window._urlParamsHydrated = true;\n")
+    if "window._urlParamsHydrated" not in html:
+        html = html.replace(
+            "    function syncUrlQueryParams() {\n      try {",
+            "    function syncUrlQueryParams() {\n      if (!window._urlParamsHydrated) return;\n      try {",
+            1,
+        )
+        html = html.replace(
+            "      } catch (e) {}\n    }\n    window.addEventListener('DOMContentLoaded', applyUrlQueryParamsOnLoad);",
+            "      } catch (e) {}\n      window._urlParamsHydrated = true;\n      syncUrlQueryParams();\n    }\n    if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', applyUrlQueryParamsOnLoad);\n    else applyUrlQueryParamsOnLoad();",
+            1,
+        )
+
     return html
 
 
