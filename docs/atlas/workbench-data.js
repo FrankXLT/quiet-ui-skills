@@ -29,21 +29,21 @@ window.ATLAS_WORKBENCH_DATA = {
 | WR1 | WR-NODE-01             | rect     | 1/2 |
 | DB  | TimescaleDB Hypertable | cylinder | 1/0 |`,
     svg: `<svg viewBox="0 0 460 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rebuilt Architecture Delta">
-  <rect x="16" y="24" width="120" height="60" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="76" y="52" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">DWDM Master</text>
-  <text x="76" y="68" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Atomic Cs Ref</text>
-  <path d="M 136 54 L 176 54" stroke="var(--border-strong)" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
-  <rect x="176" y="24" width="130" height="60" rx="6" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="2"/>
-  <text x="241" y="48" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">DDMTD Helper PLL</text>
-  <text x="241" y="64" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" font-weight="600" text-anchor="middle">[+ Proposed]</text>
-  <path d="M 306 54 L 346 54" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-  <rect x="346" y="24" width="98" height="60" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="395" y="52" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">WR-NODE-01</text>
-  <text x="395" y="68" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Locked 0.8ps</text>
-  <path d="M 395 84 L 395 120 L 241 120 L 241 146" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-  <rect x="166" y="146" width="150" height="54" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="241" y="170" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">TimescaleDB</text>
-  <text x="241" y="186" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Phase Hypertable</text>
+  <rect x="12" y="24" width="124" height="60" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="74" y="50" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="600" text-anchor="middle">DWDM Master</text>
+  <text x="74" y="68" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14.2" text-anchor="middle">Atomic Cs Ref</text>
+  <path d="M 136 54 L 166 54" stroke="var(--border-strong)" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <rect x="166" y="24" width="142" height="60" rx="6" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="2"/>
+  <text x="237" y="48" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="14.2" font-weight="600" text-anchor="middle">DDMTD Helper PLL</text>
+  <text x="237" y="66" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="14.2" font-weight="600" text-anchor="middle">[+ Proposed]</text>
+  <path d="M 308 54 L 338 54" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+  <rect x="338" y="24" width="108" height="60" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="392" y="50" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="600" text-anchor="middle">WR-NODE-01</text>
+  <text x="392" y="68" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="14.2" text-anchor="middle">Locked 0.8ps</text>
+  <path d="M 392 84 L 392 118 L 237 118 L 237 146" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+  <rect x="162" y="146" width="150" height="54" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="237" y="170" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="600" text-anchor="middle">TimescaleDB</text>
+  <text x="237" y="188" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14.2" text-anchor="middle">Phase Hypertable</text>
   <defs><marker id="arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 8 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>
 </svg>`
   },
@@ -81,25 +81,25 @@ window.ATLAS_WORKBENCH_DATA = {
 | pll | DDMTD Helper PCIe     | Accelerator |
 | db  | TimescaleDB Cluster   | Ingestion   |`,
     svg: `<svg viewBox="0 0 460 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rebuilt Deployment Diagram">
-  <rect x="20" y="24" width="124" height="156" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="82" y="48" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">Rack 01 · Hub</text>
-  <rect x="30" y="62" width="104" height="46" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
-  <text x="82" y="84" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Grandmaster 1U</text>
-  <text x="82" y="98" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">10 MHz Atomic</text>
-  <path d="M 144 85 L 184 85" stroke="var(--accent-primary)" stroke-width="2" fill="none"/>
-  <rect x="184" y="24" width="140" height="156" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="254" y="48" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">Compute Node WR-01</text>
-  <rect x="194" y="62" width="120" height="46" rx="4" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)"/>
-  <text x="254" y="84" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">DDMTD PCIe Card</text>
-  <text x="254" y="98" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Virtex UltraScale+</text>
-  <rect x="194" y="118" width="120" height="46" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
-  <text x="254" y="140" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">WR Core Daemon</text>
-  <path d="M 324 85 L 356 85" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-  <rect x="356" y="24" width="90" height="156" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="401" y="48" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="12" font-weight="600" text-anchor="middle">Storage</text>
-  <rect x="364" y="62" width="74" height="46" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
-  <text x="401" y="84" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Timescale</text>
-  <text x="401" y="98" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Cluster</text>
+  <rect x="14" y="20" width="132" height="170" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="80" y="44" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="600" text-anchor="middle">Rack 01 · Hub</text>
+  <rect x="22" y="58" width="116" height="52" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
+  <text x="80" y="80" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.2" font-weight="600" text-anchor="middle">Grandmaster 1U</text>
+  <text x="80" y="98" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">10 MHz Atomic</text>
+  <path d="M 146 84 L 176 84" stroke="var(--accent-primary)" stroke-width="2" fill="none"/>
+  <rect x="176" y="20" width="146" height="170" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="249" y="44" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">Compute Node</text>
+  <rect x="184" y="58" width="130" height="52" rx="4" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)"/>
+  <text x="249" y="80" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">DDMTD PCIe Card</text>
+  <text x="249" y="98" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">Virtex UltraScale+</text>
+  <rect x="184" y="122" width="130" height="52" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
+  <text x="249" y="152" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">WR Core Daemon</text>
+  <path d="M 322 84 L 350 84" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+  <rect x="350" y="20" width="98" height="170" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="399" y="44" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="600" text-anchor="middle">Storage</text>
+  <rect x="358" y="58" width="82" height="52" rx="4" fill="var(--bg-surface)" stroke="var(--border-hairline)"/>
+  <text x="399" y="80" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">Timescale</text>
+  <text x="399" y="98" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">Cluster</text>
 </svg>`
   },
   excalidraw: {
@@ -130,23 +130,23 @@ window.ATLAS_WORKBENCH_DATA = {
 | Silver | wr_calibrated_sync      | Outlier rejection  |
 | Gold   | wr_allan_dev_hypertable | 100ms aggregation  |`,
     svg: `<svg viewBox="0 0 460 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rebuilt Medallion Pipeline">
-  <rect x="18" y="36" width="124" height="140" rx="8" fill="var(--tint-amber-bg)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="80" y="66" fill="var(--tint-amber-fg)" font-family="var(--font-sans)" font-size="13" font-weight="700" text-anchor="middle">BRONZE</text>
-  <text x="80" y="86" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Raw UDP Frames</text>
-  <text x="80" y="104" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">100k samples/s</text>
-  <text x="80" y="150" fill="var(--status-warn)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Unfiltered</text>
-  <path d="M 142 106 L 168 106" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-  <rect x="168" y="36" width="124" height="140" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="230" y="66" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="13" font-weight="700" text-anchor="middle">SILVER</text>
-  <text x="230" y="86" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">DDMTD Filtered</text>
-  <text x="230" y="104" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Phase Calibrated</text>
-  <text x="230" y="150" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">0.1ps Residual</text>
-  <path d="M 292 106 L 318 106" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-  <rect x="318" y="36" width="124" height="140" rx="8" fill="var(--tint-emerald-bg)" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="380" y="66" fill="var(--tint-emerald-fg)" font-family="var(--font-sans)" font-size="13" font-weight="700" text-anchor="middle">GOLD</text>
-  <text x="380" y="86" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">TimescaleDB</text>
-  <text x="380" y="104" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">Allan Deviation</text>
-  <text x="380" y="150" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">100ms Rollups</text>
+  <rect x="14" y="30" width="128" height="156" rx="8" fill="var(--tint-amber-bg)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="78" y="60" fill="var(--tint-amber-fg)" font-family="var(--font-sans)" font-size="14.5" font-weight="700" text-anchor="middle">BRONZE</text>
+  <text x="78" y="84" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">Raw UDP Frames</text>
+  <text x="78" y="106" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">100k samples/s</text>
+  <text x="78" y="154" fill="var(--status-warn)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">Unfiltered</text>
+  <path d="M 142 106 L 166 106" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+  <rect x="166" y="30" width="128" height="156" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="230" y="60" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14.5" font-weight="700" text-anchor="middle">SILVER</text>
+  <text x="230" y="84" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">DDMTD Filtered</text>
+  <text x="230" y="106" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">Phase Calibrated</text>
+  <text x="230" y="154" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">0.1ps Residual</text>
+  <path d="M 294 106 L 318 106" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+  <rect x="318" y="30" width="128" height="156" rx="8" fill="var(--tint-emerald-bg)" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="382" y="60" fill="var(--tint-emerald-fg)" font-family="var(--font-sans)" font-size="14.5" font-weight="700" text-anchor="middle">GOLD</text>
+  <text x="382" y="84" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">TimescaleDB</text>
+  <text x="382" y="106" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">Allan Deviation</text>
+  <text x="382" y="154" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">100ms Rollups</text>
 </svg>`
   },
   plantuml: {
@@ -179,26 +179,26 @@ WR -> DB: Append Telemetry Record
 | 3    | WR     | PLL    | Feedback Adjustment     |
 | 4    | WR     | DB     | Append Telemetry Record |`,
     svg: `<svg viewBox="0 0 460 220" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rebuilt Sequence Diagram">
-  <rect x="20" y="16" width="80" height="30" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
-  <text x="60" y="36" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Grandmaster</text>
-  <line x1="60" y1="46" x2="60" y2="200" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
-  <rect x="130" y="16" width="90" height="30" rx="4" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)"/>
-  <text x="175" y="36" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">DDMTD PLL</text>
-  <line x1="175" y1="46" x2="175" y2="200" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
-  <rect x="250" y="16" width="80" height="30" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
-  <text x="290" y="36" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">WR-NODE-01</text>
-  <line x1="290" y1="46" x2="290" y2="200" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
-  <rect x="360" y="16" width="80" height="30" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
-  <text x="400" y="36" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">TimescaleDB</text>
-  <line x1="400" y1="46" x2="400" y2="200" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
-  <line x1="60" y1="75" x2="175" y2="75" stroke="var(--border-strong)" stroke-width="1.5"/>
-  <text x="117" y="70" fill="var(--text-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">1. Sync 10MHz</text>
-  <line x1="175" y1="105" x2="290" y2="105" stroke="var(--accent-primary)" stroke-width="1.5"/>
-  <text x="232" y="100" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">2. Phase Offset &lt;1.2ps</text>
-  <line x1="290" y1="135" x2="175" y2="135" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4 2"/>
-  <text x="232" y="130" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">3. Tune VCXO</text>
-  <line x1="290" y1="165" x2="400" y2="165" stroke="var(--status-ok)" stroke-width="1.5"/>
-  <text x="345" y="160" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">4. Log Hypertable</text>
+  <rect x="10" y="16" width="96" height="32" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+  <text x="58" y="37" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">Grandmaster</text>
+  <line x1="58" y1="48" x2="58" y2="204" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
+  <rect x="122" y="16" width="102" height="32" rx="4" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)"/>
+  <text x="173" y="37" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">DDMTD PLL</text>
+  <line x1="173" y1="48" x2="173" y2="204" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
+  <rect x="240" y="16" width="98" height="32" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+  <text x="289" y="37" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">WR-NODE-01</text>
+  <line x1="289" y1="48" x2="289" y2="204" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
+  <rect x="352" y="16" width="98" height="32" rx="4" fill="var(--bg-surface)" stroke="var(--border-strong)"/>
+  <text x="401" y="37" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="14" font-weight="600" text-anchor="middle">TimescaleDB</text>
+  <line x1="401" y1="48" x2="401" y2="204" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
+  <line x1="58" y1="78" x2="173" y2="78" stroke="var(--border-strong)" stroke-width="1.5"/>
+  <text x="115" y="72" fill="var(--text-primary)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">1. Sync PPS</text>
+  <line x1="173" y1="110" x2="289" y2="110" stroke="var(--accent-primary)" stroke-width="1.5"/>
+  <text x="231" y="104" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">2. &lt;1.2ps Lock</text>
+  <line x1="289" y1="142" x2="173" y2="142" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <text x="231" y="136" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">3. Tune VCXO</text>
+  <line x1="289" y1="174" x2="401" y2="174" stroke="var(--status-ok)" stroke-width="1.5"/>
+  <text x="345" y="168" fill="var(--status-ok)" font-family="var(--font-mono)" font-size="14" text-anchor="middle">4. Log Row</text>
 </svg>`
   }
 };

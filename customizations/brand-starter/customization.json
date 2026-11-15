@@ -1,7 +1,7 @@
 {
   "name": "brand-starter",
   "title": "Quiet UI Brand & Product Portal",
-  "version": "6.2",
+  "version": "8.0.0",
   "mode": "brand",
   "description": "Read-only blueprint for enterprise software products, design systems, engineering docs, and team productivity portals (13 product tiers).",
   "palette": {
@@ -36,8 +36,7 @@
   ],
   "disabled_tiers": [
     "app-5",
-    "ha-1",
-    "ha-2",
-    "ha-3"
+    "hud-1",
+    "ctrl-1"
   ]
 }

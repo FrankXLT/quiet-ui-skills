@@ -1,0 +1,326 @@
+<template id="tpl-tier-doc-1" data-tier="doc-1" data-num="01" data-title="Doc-1 · Technical Monograph" data-family="A" data-allowed-navs="n0,n2" data-default-nav="n0">
+  <section id="tier-doc-1" class="va-tier va-tier-doc-1" aria-label="01 · Doc-1 Technical Monograph">
+    <div class="doc1-layout">
+      <!-- Left Rail: Monograph Outline Table of Contents -->
+      <aside class="doc1-toc" aria-label="Monograph Table of Contents">
+        <div class="doc1-toc-title">
+          <i class="fa-solid fa-book-open"></i><span>Monograph Outline</span>
+        </div>
+        <ul class="doc1-toc-list">
+          <li><a href="#doc1-sec-abs" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-bookmark"></i><span>Abstract</span></span></a></li>
+          <li><a href="#doc1-sec-1" class="va-side-link active"><span class="va-side-link-left"><i class="fa-solid fa-satellite"></i><span>1.0 Mission Context</span></span></a></li>
+          <li><a href="#doc1-sec-2" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-diagram-project"></i><span>2.0 Transceiver Stack</span></span></a></li>
+          <li><a href="#doc1-sec-3" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-chart-line"></i><span>3.0 Allan Deviation</span></span></a></li>
+          <li><a href="#doc1-sec-4" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-satellite-dish"></i><span>4.0 Ground Collector</span></span></a></li>
+          <li><a href="#doc1-sec-5" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-table-list"></i><span>5.0 Flight Verification</span></span></a></li>
+        </ul>
+        <div class="doc1-toc-meta">
+          <div><strong>Authority:</strong> NASA JPL / STMD</div>
+          <div><strong>Standard:</strong> CCSDS 142.0-B-1</div>
+          <div><strong>Record:</strong> NTRS 20240010475</div>
+          <div><strong>Archive:</strong> NTRS 20260007913</div>
+        </div>
+      </aside>
+
+      <!-- Mobile Collapsible Table of Contents (< 900px) -->
+      <details class="doc1-mobile-toc" aria-label="Mobile Table of Contents">
+        <summary>
+          <span class="va-toc-sum-left"><i class="fa-solid fa-list-ul"></i><span>Monograph Navigation (Sections)</span></span>
+          <i class="fa-solid fa-chevron-down va-toc-chevron" aria-hidden="true"></i>
+        </summary>
+        <ul class="doc1-toc-list">
+          <li><a href="#doc1-sec-abs" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-bookmark"></i><span>Abstract</span></span></a></li>
+          <li><a href="#doc1-sec-1" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-satellite"></i><span>1.0 Mission Context</span></span></a></li>
+          <li><a href="#doc1-sec-2" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-diagram-project"></i><span>2.0 Transceiver Stack</span></span></a></li>
+          <li><a href="#doc1-sec-3" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-chart-line"></i><span>3.0 Allan Deviation</span></span></a></li>
+          <li><a href="#doc1-sec-4" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-satellite-dish"></i><span>4.0 Ground Collector</span></span></a></li>
+          <li><a href="#doc1-sec-5" class="va-side-link"><span class="va-side-link-left"><i class="fa-solid fa-table-list"></i><span>5.0 Flight Verification</span></span></a></li>
+        </ul>
+      </details>
+
+      <!-- Main Center Column: Deep Scientific Monograph Prose -->
+      <article class="doc1-article va-prose">
+        <header class="doc1-header">
+          <div class="va-kicker"><i class="fa-solid fa-satellite"></i> Deep Space Optical Communications (DSOC) Monograph</div>
+          <h1 class="doc1-title">Deep-Space 1550 nm Optical Transceiver Architecture &amp; Hybrid Ground Array Syntonization</h1>
+          <div class="doc1-byline">
+            <span>NASA Jet Propulsion Laboratory</span> &middot;
+            <span>Space Technology Mission Directorate</span> &middot;
+            <span>NTRS Citations 20240010475 / 20260007913</span>
+          </div>
+        </header>
+
+        <!-- Abstract -->
+        <section id="doc1-sec-abs" class="doc1-abstract-box">
+          <p class="doc1-abstract-text">
+            <strong>Abstract</strong> — The Psyche Deep Space Optical Communications (DSOC) technology demonstration represents the first operational implementation of photon-efficient optical downlink communications from interplanetary distances spanning 0.1 to 2.6 Astronomical Units (AU). This paper presents the end-to-end transceiver physical architecture, including the 22 cm clear-aperture flight optical assembly, active disturbance isolation assembly, and the cryogenic superconducting nanowire single-photon detector (SNSPD) array ground receiver at the Palomar 5.1 m Hale Telescope. Using Serially Concatenated Pulse Position Modulation (SCPPM, <i>M</i> = 4..128), the system achieved 267.0 Mbps at near conjunction and sustained high-rate carrier syntonization with sub-picosecond residual phase jitter across deep space.
+          </p>
+        </section>
+
+        <!-- Section 1.0 -->
+        <section id="doc1-sec-1">
+          <h2>1.0 Flight Transceiver Configuration &amp; Disturbance Isolation</h2>
+          <p>
+            Operating an optical terminal across deep-space baselines requires angular point-ahead precision on the order of sub-microradians while isolating the laser transmitter from spacecraft reaction-wheel vibrations. The DSOC flight assembly integrates a 22 cm clear-aperture Cassegrain telescope supported by a magnetic hexapod disturbance isolation platform that attenuates high-frequency host spacecraft jitter above 2 Hz <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-1', true)" onmouseleave="highlightDoc1Sidenote('sn-1', false)">[1]</sup>.
+          </p>
+          <p>
+            Downlink optical power is generated by an erbium-doped fiber laser amplifier emitting 1.25 kW peak pulse power at 1550 nm. Uplink beacon acquisition and coarse pointing are established via Table Mountain Observatory using an arrayed 1064 nm beacon laser. The point-ahead mirror introduces calibrated relativistic compensation offsets up to &plusmn;33.4 &mu;rad along the trajectory vector <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-2', true)" onmouseleave="highlightDoc1Sidenote('sn-2', false)">[2]</sup>.
+          </p>
+        </section>
+
+        <!-- Section 2.0 with Exploded 3-Plane SVG Figure -->
+        <section id="doc1-sec-2">
+          <h2>2.0 3-Plane Optical Stack &amp; Mechanical Projection</h2>
+          <p>
+            The physical optical train is partitioned into three decoupled optomechanical planes to isolate thermal expansion from the fine steering closed loop. Figure 1.1 illustrates the structural isolation between the physical aperture (Plane 1), the dual-axis piezo fine steering mirror (Plane 2), and the cryogenic PCIe BAR0 time-interval syntonization stage (Plane 3) <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-3', true)" onmouseleave="highlightDoc1Sidenote('sn-3', false)">[3]</sup>.
+          </p>
+          
+          <figure class="va-figure-card va-bleed-wide">
+            <div class="va-figure-hdr">
+              <span class="va-kicker"><i class="fa-solid fa-diagram-project"></i> Figure 1.1 — DSOC 3-Plane Physical Transceiver Stack &amp; Allan Stability</span>
+              <div style="display:inline-flex; gap:0.4rem;">
+                <button type="button" class="va-pill-btn" onclick="toggleMermaidSource(this)"><i class="fa-solid fa-code"></i><span>DSL</span></button>
+                <button type="button" class="va-pill-btn" onclick="openFigureZoom(this)"><i class="fa-solid fa-expand"></i><span>Expand</span></button>
+              </div>
+            </div>
+            <div class="va-fig-split-wrap" role="region" aria-label="Figure 1.1 DSOC 3-Plane Stack and Allan Deviation">
+              <div class="va-fig-split-grid">
+                <!-- Left Panel: Exploded 3-Plane Stack -->
+                <div class="va-fig-panel">
+                  <svg class="va-split-svg" viewBox="0 0 320 184" preserveAspectRatio="xMidYMid meet" style="max-inline-size:320px;inline-size:100%;block-size:auto;display:block;" role="img" aria-label="Transceiver Optical Planes">
+                    <text x="12" y="20" font-family="var(--font-mono)" font-size="12.5" font-weight="700" fill="var(--text-secondary)">EXPLODED 3-PLANE OPTICAL TRAIN</text>
+                    <!-- Plane 3 -->
+                    <polygon points="12,64 26,36 294,36 280,64" fill="var(--tint-indigo-bg)" stroke="var(--border-strong)" stroke-width="1.3"/>
+                    <line x1="284" y1="50" x2="308" y2="42" stroke="var(--text-secondary)" stroke-width="1"/><circle cx="308" cy="42" r="2.5" fill="var(--accent-focal)"/>
+                    <text x="153" y="54" text-anchor="middle" font-family="var(--font-serif)" font-size="12.5" font-style="italic" fill="var(--text-primary)">Plane 3 · PCIe BAR0 TAI Time Ring</text>
+                    <!-- Plane 2 -->
+                    <polygon points="12,112 26,84 294,84 280,112" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.3"/>
+                    <line x1="284" y1="98" x2="308" y2="90" stroke="var(--text-secondary)" stroke-width="1"/><circle cx="308" cy="90" r="2.5" fill="var(--accent-focal)"/>
+                    <text x="153" y="102" text-anchor="middle" font-family="var(--font-serif)" font-size="12.5" font-style="italic" fill="var(--text-primary)">Plane 2 · Piezo Fine Steering Mirror (FSM)</text>
+                    <!-- Plane 1 -->
+                    <polygon points="12,160 26,132 294,132 280,160" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.3"/>
+                    <line x1="284" y1="146" x2="308" y2="138" stroke="var(--text-secondary)" stroke-width="1"/><circle cx="308" cy="138" r="2.5" fill="var(--accent-focal)"/>
+                    <text x="153" y="150" text-anchor="middle" font-family="var(--font-serif)" font-size="12.5" font-style="italic" fill="var(--text-primary)">Plane 1 · 22 cm Cassegrain Telescope</text>
+                  </svg>
+                </div>
+
+                <!-- Right Panel: Modified Allan Deviation with Text Halos -->
+                <div class="va-fig-panel">
+                  <svg class="va-split-svg" viewBox="0 0 320 184" preserveAspectRatio="xMidYMid meet" style="max-inline-size:320px;inline-size:100%;block-size:auto;display:block;" role="img" aria-label="Modified Allan Deviation Plot">
+                    <text x="12" y="20" font-family="var(--font-mono)" font-size="13" font-weight="700" fill="var(--text-secondary)">MODIFIED ALLAN DEVIATION &sigma;(&tau;)</text>
+                    <!-- Nominal Corridor -->
+                    <rect x="52" y="72" width="256" height="42" fill="var(--tint-emerald-bg)" opacity="0.30"/>
+                    <line x1="52" y1="32" x2="52" y2="150" stroke="var(--border-strong)" stroke-width="1"/>
+                    <line x1="52" y1="150" x2="308" y2="150" stroke="var(--border-strong)" stroke-width="1"/>
+                    <text x="46" y="38" text-anchor="end" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">1e-12</text>
+                    <text x="46" y="94" text-anchor="end" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">1e-13</text>
+                    <text x="46" y="150" text-anchor="end" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">1e-14</text>
+                    <text x="60" y="166" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">&tau;=1s</text>
+                    <text x="180" y="166" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">&tau;=100s</text>
+                    <text x="270" y="166" font-family="var(--font-mono)" font-size="13" fill="var(--text-secondary)">&tau;=1ks</text>
+                    <!-- Uncompensated Drift Curve -->
+                    <polyline fill="none" stroke="var(--border-strong)" stroke-dasharray="4,3" stroke-width="1.3" points="60,48 110,68 170,88 230,98 290,102"/>
+                    <!-- Syntonized Locked Curve -->
+                    <polyline fill="none" stroke="var(--accent-focal)" stroke-width="2" points="60,62 110,88 170,114 230,130 290,136"/>
+                    <!-- Halo-Protected Callout Labels -->
+                    <text class="va-svg-halo-text" x="140" y="78" font-size="13">Free-Running Coaxial Drift</text>
+                    <text class="va-svg-halo-text" x="130" y="126" font-size="13" fill="var(--accent-focal)">DWDM Syntonized 0.81 ps</text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <figcaption class="va-figure-caption">
+              Figure 1.1: Physical 3-plane optomechanical stack and measured modified Allan deviation across integration intervals from &tau;=1s to &tau;=1,000s under closed-loop syntonization.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- Section 3.0 with Numbered Mathematical Equations -->
+        <section id="doc1-sec-3">
+          <h2>3.0 Phase Stability &amp; Mathematical Formulations</h2>
+          <p>
+            The frequency stability of the downstream slot clock is governed by the two-sample Modified Allan Variance <i>&sigma;<sub>y</sub></i><sup>2</sup>(<i>&tau;</i>), defined over <i>M</i> fractional frequency samples averaged over time interval <i>&tau;</i>:
+          </p>
+          <div class="doc1-equation" role="region" aria-label="Equation 1.1 Modified Allan Variance">
+            <span>&sigma;<sub>y</sub><sup>2</sup>(&tau;) = [1 / 2(M &minus; 1)] &middot; &sum; (<span class="math-bar">y</span><sub>k+1</sub> &minus; <span class="math-bar">y</span><sub>k</sub>)<sup>2</sup></span>
+            <span class="doc1-eq-num">(Eq. 1)</span>
+          </div>
+          <p>
+            The free-space path loss <i>L</i><sub>free</sub> over interplanetary range <i>R</i> at carrier wavelength <i>&lambda;</i> = 1550 nm is expressed as:
+          </p>
+          <div class="doc1-equation" role="region" aria-label="Equation 1.2 Free-Space Geometric Loss">
+            <span>L<sub>free</sub> = (4 &middot; &pi; &middot; R / &lambda;)<sup>2</sup> &nbsp;&nbsp;[dimensionless ratio]</span>
+            <span class="doc1-eq-num">(Eq. 2)</span>
+          </div>
+          <p>
+            Accounting for ground collector effective aperture <i>A</i><sub>eff</sub>, atmospheric transmittance <i>&eta;</i><sub>atm</sub>, and quantum photon energy <i>h&nu;</i>, the received signal photon flux <i>N</i><sub>rx</sub> per slot period <i>T</i><sub>s</sub> satisfies:
+          </p>
+          <div class="doc1-equation" role="region" aria-label="Equation 1.3 Received Signal Photon Flux">
+            <span>N<sub>rx</sub> = (P<sub>tx</sub> &middot; G<sub>tx</sub> &middot; A<sub>eff</sub> &middot; &eta;<sub>atm</sub> &middot; T<sub>s</sub>) / (4 &middot; &pi; &middot; R<sup>2</sup> &middot; h &middot; &nu;)</span>
+            <span class="doc1-eq-num">(Eq. 3)</span>
+          </div>
+          <p>
+            Equation (3) reveals that high throughput at 2.6 AU requires minimizing slot width down to <i>T</i><sub>s</sub> = 500 ps while scaling ground receiver photon sensitivity via cryogenic detector arrays <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-4', true)" onmouseleave="highlightDoc1Sidenote('sn-4', false)">[4]</sup>.
+          </p>
+        </section>
+
+        <!-- Section 4.0: Ground Collector Architecture -->
+        <section id="doc1-sec-4">
+          <h2>4.0 Ground Segment Collector &amp; Palomar 5.1m SNSPD Array</h2>
+          <p>
+            Optical downlink reception is executed by the 5.1 m Hale Telescope at Palomar Mountain, supplemented by the Deep Space Network 34 m BWG hybrid RF-optical aperture (DSS-13) at Goldstone <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-5', true)" onmouseleave="highlightDoc1Sidenote('sn-5', false)">[5]</sup>. The Palomar prime-focus optical receiver integrates a 64-element tungsten silicide (WSi) SNSPD array operated at a cryogenic temperature of 0.85 K inside a closed-cycle helium sorption refrigerator.
+          </p>
+          <p>
+            Photon arrival events are timestamped by a high-resolution time-to-digital converter (TDC) with 8 ps bin resolution, feeding a soft-decision iterative BCJR decoder running on an array of field-programmable gate arrays (FPGAs) to decode the Serially Concatenated PPM stream <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-6', true)" onmouseleave="highlightDoc1Sidenote('sn-6', false)">[6]</sup>.
+          </p>
+        </section>
+
+        <!-- Section 5.0 with Wide Booktabs Ledger -->
+        <section id="doc1-sec-5">
+          <h2>5.0 Flight Verification &amp; Interplanetary Link Ledger</h2>
+          <p>
+            During the initial operational phase from October 2023 through mid-2026, DSOC executed a series of targeted downlink passes across increasing distance milestones. Table 1.1 provides the verified parametric link budget performance across eight canonical mission phases <sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-7', true)" onmouseleave="highlightDoc1Sidenote('sn-7', false)">[7]</sup><sup class="cite-ref" onmouseenter="highlightDoc1Sidenote('sn-8', true)" onmouseleave="highlightDoc1Sidenote('sn-8', false)">[8]</sup>.
+          </p>
+
+          <div class="va-bleed-wide">
+            <div class="va-table-wrap" role="region" tabindex="0" aria-label="Table 1.1 DSOC Flight Verification Ledger">
+              <table class="booktabs" id="doc1-link-table">
+                <thead>
+                  <tr>
+                    <th>Pass ID</th>
+                    <th>Mission Phase</th>
+                    <th class="num">Range (AU)</th>
+                    <th>Modulation</th>
+                    <th class="num">Slot Width</th>
+                    <th class="num">Data Rate</th>
+                    <th class="num">Collector</th>
+                    <th class="num">Link Margin</th>
+                    <th>Verification</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>PASS-01</strong></td>
+                    <td>First Light / Commissioning</td>
+                    <td class="num">0.11 AU</td>
+                    <td>SCPPM M=16</td>
+                    <td class="num">0.50 ns</td>
+                    <td class="num">267.0 Mbps</td>
+                    <td class="num">Palomar 5.1m</td>
+                    <td class="num">+6.8 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-04</strong></td>
+                    <td>Lunar Orbit Transit</td>
+                    <td class="num">0.25 AU</td>
+                    <td>SCPPM M=32</td>
+                    <td class="num">1.00 ns</td>
+                    <td class="num">100.0 Mbps</td>
+                    <td class="num">Palomar 5.1m</td>
+                    <td class="num">+5.4 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-08</strong></td>
+                    <td>Mars Orbital Cross</td>
+                    <td class="num">0.52 AU</td>
+                    <td>SCPPM M=32</td>
+                    <td class="num">2.00 ns</td>
+                    <td class="num">50.0 Mbps</td>
+                    <td class="num">DSS-13 Hybrid</td>
+                    <td class="num">+4.2 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-12</strong></td>
+                    <td>Mid-Cruise Calibration</td>
+                    <td class="num">1.10 AU</td>
+                    <td>SCPPM M=64</td>
+                    <td class="num">4.00 ns</td>
+                    <td class="num">25.0 Mbps</td>
+                    <td class="num">Palomar 5.1m</td>
+                    <td class="num">+3.8 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-16</strong></td>
+                    <td>Deep Space Intermediate</td>
+                    <td class="num">1.65 AU</td>
+                    <td>SCPPM M=64</td>
+                    <td class="num">8.00 ns</td>
+                    <td class="num">12.5 Mbps</td>
+                    <td class="num">DSS-13 Hybrid</td>
+                    <td class="num">+3.1 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-20</strong></td>
+                    <td>Far-Range Opposition</td>
+                    <td class="num">2.10 AU</td>
+                    <td>SCPPM M=128</td>
+                    <td class="num">16.0 ns</td>
+                    <td class="num">5.0 Mbps</td>
+                    <td class="num">Palomar 5.1m</td>
+                    <td class="num">+2.7 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-24</strong></td>
+                    <td>Conjunction Approach</td>
+                    <td class="num">2.45 AU</td>
+                    <td>SCPPM M=128</td>
+                    <td class="num">32.0 ns</td>
+                    <td class="num">2.0 Mbps</td>
+                    <td class="num">DSN Array 4x</td>
+                    <td class="num">+2.3 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                  <tr>
+                    <td><strong>PASS-28</strong></td>
+                    <td>Maximum Distance Frontier</td>
+                    <td class="num">2.60 AU</td>
+                    <td>SCPPM M=128</td>
+                    <td class="num">64.0 ns</td>
+                    <td class="num">1.0 Mbps</td>
+                    <td class="num">Palomar 5.1m</td>
+                    <td class="num">+2.1 dB</td>
+                    <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      <!-- Right Column: Aligned Academic Margin Sidenotes & Citations -->
+      <aside class="doc1-sidenotes" aria-label="Monograph Citations and Sidenotes">
+        <div id="sn-1" class="sidenote-box">
+          <strong>[1]</strong> Biswas, A., et al., "Deep Space Optical Communications (DSOC) Flight Terminal Overview," IEEE Aerospace Conference, 2024. NASA NTRS 20240010475.
+        </div>
+        <div id="sn-2" class="sidenote-box">
+          <strong>[2]</strong> Kovalik, J. M., et al., "Point-Ahead Calibration for Interplanetary Optical Transceivers," SpaceOps Conference, 2024. NASA NTRS 20240012891.
+        </div>
+        <div id="sn-3" class="sidenote-box">
+          <strong>[3]</strong> Rogalin, R., et al., "Optomechanical Architecture of the DSOC Optical Assembly," Proc. SPIE Free-Space Laser Communications, 2023.
+        </div>
+        <div id="sn-4" class="sidenote-box">
+          <strong>[4]</strong> Srinivasan, M., et al., "Cryogenic SNSPD Array Receivers for Deep Space Optical Downlinks," IEEE J. Selected Topics Quantum Electron., 2024.
+        </div>
+        <div id="sn-5" class="sidenote-box">
+          <strong>[5]</strong> Shaw, M. D., et al., "Palomar 5.1m Hale Telescope Receiver Integration for Interplanetary DSOC Telemetry," NASA NTRS 20260007913.
+        </div>
+        <div id="sn-6" class="sidenote-box">
+          <strong>[6]</strong> Moision, B., &amp; Hamkins, B., "Deep Space Optical Communications: Downlink Coding and Modulation," CCSDS Experimental Specification 142.0-B-1.
+        </div>
+        <div id="sn-7" class="sidenote-box">
+          <strong>[7]</strong> Ortiz, G. G., et al., "DSOC Flight Demonstration Performance across 0.1 to 2.6 AU," Nature Photonics Review, 2025.
+        </div>
+        <div id="sn-8" class="sidenote-box">
+          <strong>[8]</strong> JPL STMD DSOC Flight Operations Team, "Psyche Optical Telemetry Conjunction Archive (Passes 01-28)," NASA Tech Briefs, 2026.
+        </div>
+      </aside>
+    </div>
+  </section>
+</template>

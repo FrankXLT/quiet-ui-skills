@@ -1,0 +1,293 @@
+<template id="tpl-tier-app-5" data-tier="app-5" data-num="13" data-title="App-5 · Crew Circadian Readiness" data-family="C" data-allowed-navs="n1,n2,n4" data-default-nav="n1">
+  <section id="tier-app-5" class="va-tier va-tier-app-5" aria-label="13 · App-5 Crew Circadian Readiness">
+    <div class="app5-companion">
+      <!-- Top Title & Phase Switcher Toolbar -->
+      <header class="app5-top-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <div>
+          <span class="va-badge"><i class="fa-solid fa-moon"></i> NASA-STD-3001</span>
+          <h2 style="font-size:var(--ts-md);margin:4px 0 0;font-weight:600;color:var(--text-primary);">
+            Astronaut Circadian Synchronization &amp; Sortie Readiness Monitor
+          </h2>
+        </div>
+        <div class="app5-phase-switcher" role="group" aria-label="Circadian Phase Selectors" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="va-pill-btn" onclick="setApp5Phase('presleep', this)">Pre-Sleep 4100K&rarr;2700K</button>
+          <button type="button" class="va-pill-btn active" onclick="setApp5Phase('nominal', this)">Nominal Orbit</button>
+          <button type="button" class="va-pill-btn" onclick="setApp5Phase('sortie', this)">Pre-Sortie Briefing</button>
+        </div>
+      </header>
+
+      <!-- Status & Phase Telemetry Banner -->
+      <div class="va-status-strip" style="background:var(--bg-elevated);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;">
+        <span id="app5-phase-status" style="font-weight:600;color:var(--text-primary);">
+          Phase: Nominal Orbit &middot; 8.0h Sleep Opportunity Protected &middot; Melatonin Alignment Nominal
+        </span>
+        <span class="mono" style="font-size:11px;color:var(--text-secondary);">
+          NASA NTRS 20250011652 &middot; Artemis Sortie-2 Crew Readiness
+        </span>
+      </div>
+
+      <!-- 4-Card 2x2 Responsive Health Grid -->
+      <div class="app5-grid">
+        <!-- Card 1: Circadian Melatonin Alignment Corridor SVG -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div>
+              <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+                Circadian Lighting &amp; Hormone Alignment
+              </span>
+              <strong style="font-size:13px;color:var(--text-primary);">
+                <i class="fa-solid fa-sun"></i> 24-Hour Melatonin &amp; Dynamic Lux Corridor
+              </strong>
+            </div>
+            <span class="mono" style="font-size:11px;color:var(--accent-primary,#2563eb);">Corridor Nominal</span>
+          </div>
+
+          <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Circadian Melatonin Alignment Curve">
+            <svg class="app5-circadian-svg" viewBox="0 0 460 150" style="display:block;min-inline-size:340px;max-inline-size:520px;inline-size:100%;block-size:auto;background:var(--bg-canvas);border:1px solid var(--border-hairline);border-radius:6px;" role="img" aria-label="Circadian Melatonin Alignment and Lighting Shift Curve">
+              <!-- Protected Sleep Band 22:00 to 06:00 -->
+              <rect x="292" y="18" width="152" height="98" fill="var(--tint-indigo-bg, rgba(99,102,241,0.08))"/>
+              <text class="va-svg-halo-text" x="368" y="36" fill="var(--tint-indigo-fg, #4338ca)" font-size="13.8" text-anchor="middle" font-family="var(--font-mono)">Protected Sleep</text>
+              <!-- Baseline grid lines -->
+              <line x1="36" y1="18" x2="36" y2="116" stroke="var(--border-hairline)" stroke-width="1.2"/>
+              <line x1="36" y1="116" x2="444" y2="116" stroke="var(--border-hairline)" stroke-width="1.2"/>
+              <!-- Melatonin level curve -->
+              <path d="M 36 102 Q 116 106 196 96 T 292 66 T 368 42 T 444 86" fill="none" stroke="var(--accent-primary, #2563eb)" stroke-width="2.2"/>
+              <!-- Color Temperature shift (4100K daylight to 2700K pre-sleep) -->
+              <path d="M 36 48 L 232 48 Q 272 52 292 82 L 444 82" fill="none" stroke="var(--status-warn, #d97706)" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <text class="va-svg-halo-text" x="44" y="42" fill="var(--status-warn, #d97706)" font-size="13.8" font-family="var(--font-mono)">4100K Daylight</text>
+              <text class="va-svg-halo-text" x="438" y="102" text-anchor="end" fill="var(--status-warn, #d97706)" font-size="13.8" font-family="var(--font-mono)">2700K</text>
+              <!-- Hour Ticks with halo text -->
+              <text class="va-svg-halo-text" x="36" y="138" fill="var(--text-secondary)" font-size="13.8" font-family="var(--font-mono)">06:00</text>
+              <text class="va-svg-halo-text" x="142" y="138" fill="var(--text-secondary)" font-size="13.8" text-anchor="middle" font-family="var(--font-mono)">12:00</text>
+              <text class="va-svg-halo-text" x="236" y="138" fill="var(--text-secondary)" font-size="13.8" text-anchor="middle" font-family="var(--font-mono)">18:00</text>
+              <text class="va-svg-halo-text" x="330" y="138" fill="var(--text-secondary)" font-size="13.8" text-anchor="middle" font-family="var(--font-mono)">22:00</text>
+              <text class="va-svg-halo-text" x="444" y="138" text-anchor="end" fill="var(--text-secondary)" font-size="13.8" font-family="var(--font-mono)">06:00</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Card 2: Crew Readiness Score Radial Ring & Day Arc -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div>
+              <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+                Cognitive &amp; Sortie Assessment
+              </span>
+              <strong style="font-size:13px;color:var(--text-primary);">
+                <i class="fa-solid fa-person-running"></i> Operational Readiness Score &amp; 24h Day Arc
+              </strong>
+            </div>
+            <span class="va-badge" style="color:var(--status-ok,#16a34a);"><i class="fa-solid fa-circle-check"></i> GO FOR SORTIE</span>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:space-around;gap:12px;margin:10px 0;">
+            <!-- Radial Score Ring SVG -->
+            <svg viewBox="0 0 120 120" style="inline-size:110px;block-size:110px;overflow:visible;" role="img" aria-label="Readiness Radial Gauge">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--border-hairline)" stroke-width="8"/>
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--status-ok,#16a34a)" stroke-width="8" stroke-dasharray="301.6" stroke-dashoffset="12.0" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+              <text class="va-svg-halo-text" x="60" y="56" text-anchor="middle" font-family="var(--font-mono)" font-size="15.5" font-weight="700" fill="var(--text-primary)">96%</text>
+              <text class="va-svg-halo-text" x="60" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-ok,#16a34a)">READINESS</text>
+            </svg>
+
+            <!-- Day Arc Segments -->
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;flex:1;">
+              <div style="display:flex;justify-content:space-between;padding:4px 8px;border-radius:4px;background:var(--bg-elevated);">
+                <span><i class="fa-solid fa-bed" style="color:#6366f1;"></i> Sleep Opportunity</span>
+                <strong class="mono">8.0h (100%)</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:4px 8px;border-radius:4px;background:var(--bg-elevated);">
+                <span><i class="fa-solid fa-mug-saucer" style="color:#f59e0b;"></i> Inertia Buffer</span>
+                <strong class="mono">45m Protected</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:4px 8px;border-radius:4px;background:var(--bg-elevated);">
+                <span><i class="fa-solid fa-vest-patches" style="color:#10b981;"></i> Lunar Sortie-2 Slot</span>
+                <strong class="mono" style="color:var(--status-ok,#16a34a);">6.5h Authorized</strong>
+              </div>
+            </div>
+          </div>
+
+          <span class="mono" style="font-size:11px;color:var(--text-secondary);">
+            Rest-activity circadian stability verified &middot; NASA-STD-3001 Compliance 100%
+          </span>
+        </div>
+
+        <!-- Card 3: 3 Real-Time Progress Capsules -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              Environmental &amp; Neurocognitive Load
+            </span>
+            <strong style="font-size:13px;color:var(--text-primary);display:block;margin-top:2px;">
+              <i class="fa-solid fa-brain"></i> Real-Time Habitat Ergonomics &amp; Stress Biometrics
+            </strong>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin:8px 0;">
+            <!-- Capsule 1: Cognitive Load -->
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+                <span>Cognitive Workload Index (Pupillometry)</span>
+                <span class="mono" style="color:var(--status-ok,#16a34a);font-weight:600;">18% (Sub-threshold)</span>
+              </div>
+              <div style="height:6px;border-radius:3px;background:var(--border-hairline);overflow:hidden;">
+                <div style="width:18%;height:100%;background:var(--status-ok,#16a34a);border-radius:3px;"></div>
+              </div>
+            </div>
+
+            <!-- Capsule 2: Ambient Lux -->
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+                <span>Cabin Melanopic Illuminance (CIE S 026)</span>
+                <span class="mono" style="color:var(--accent-primary,#2563eb);font-weight:600;">450 lux / 4100K</span>
+              </div>
+              <div style="height:6px;border-radius:3px;background:var(--border-hairline);overflow:hidden;">
+                <div style="width:65%;height:100%;background:var(--accent-primary,#2563eb);border-radius:3px;"></div>
+              </div>
+            </div>
+
+            <!-- Capsule 3: Acoustic Margin -->
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
+                <span>Ambient Cabin Sound Level (NC-40 Limit)</span>
+                <span class="mono" style="color:var(--status-ok,#16a34a);font-weight:600;">38.2 dBA (&le; 45 dBA)</span>
+              </div>
+              <div style="height:6px;border-radius:3px;background:var(--border-hairline);overflow:hidden;">
+                <div style="width:52%;height:100%;background:var(--status-ok,#16a34a);border-radius:3px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <span class="mono" style="font-size:11px;color:var(--text-secondary);">
+            Continuous wearable telemetry &middot; Sensor array sync rate 1 Hz
+          </span>
+        </div>
+
+        <!-- Card 4: 4-Stage Sleep Architecture & Hypnogram -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div>
+              <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+                Polysomnography Sleep Architecture
+              </span>
+              <strong style="font-size:13px;color:var(--text-primary);">
+                <i class="fa-solid fa-bed"></i> 4-Stage Hypnogram (Deep Slow-Wave, REM, Light NREM)
+              </strong>
+            </div>
+            <span class="mono" style="font-size:11px;color:var(--status-ok,#16a34a);">94.2% Efficiency</span>
+          </div>
+
+          <!-- Hypnogram Step Curve SVG -->
+          <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Sleep Hypnogram">
+            <svg viewBox="0 0 460 92" style="min-inline-size:340px;max-inline-size:520px;inline-size:100%;block-size:auto;display:block;background:var(--bg-canvas);border:1px solid var(--border-hairline);border-radius:6px;" role="img" aria-label="Sleep Hypnogram">
+              <line x1="54" y1="18" x2="444" y2="18" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,2"/>
+              <line x1="54" y1="38" x2="444" y2="38" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,2"/>
+              <line x1="54" y1="58" x2="444" y2="58" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,2"/>
+              <line x1="54" y1="78" x2="444" y2="78" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,2"/>
+              <!-- Stage labels -->
+              <text class="va-svg-halo-text" x="48" y="22" text-anchor="end" font-family="var(--font-mono)" font-size="13.8" fill="var(--text-secondary)">AWAKE</text>
+              <text class="va-svg-halo-text" x="48" y="42" text-anchor="end" font-family="var(--font-mono)" font-size="13.8" fill="var(--text-secondary)">REM</text>
+              <text class="va-svg-halo-text" x="48" y="62" text-anchor="end" font-family="var(--font-mono)" font-size="13.8" fill="var(--text-secondary)">LIGHT</text>
+              <text class="va-svg-halo-text" x="48" y="82" text-anchor="end" font-family="var(--font-mono)" font-size="13.8" fill="var(--text-secondary)">DEEP</text>
+              <!-- Step curve -->
+              <path d="M 56 18 L 76 18 L 76 58 L 106 58 L 106 78 L 146 78 L 146 58 L 166 58 L 166 38 L 196 38 L 196 58 L 226 58 L 226 78 L 266 78 L 266 38 L 296 38 L 296 58 L 336 58 L 336 38 L 376 38 L 376 58 L 414 58 L 414 18 L 444 18" fill="none" stroke="var(--accent-primary, #2563eb)" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:6px;">
+            <span>Slow-Wave Deep: <strong class="mono">1h 48m (23%)</strong></span>
+            <span>REM Sleep: <strong class="mono">1h 54m (24%)</strong></span>
+            <span>Inertia Status: <strong class="mono" style="color:var(--status-ok,#16a34a);">CLEARED</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5: Sortie Preparation & Physiological Biomarker Ledger -->
+      <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;margin-top:4px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              NASA-STD-3001 Human-System Verification Checklist
+            </span>
+            <strong style="font-size:13px;color:var(--text-primary);">
+              <i class="fa-solid fa-notes-medical"></i> Pre-Sortie Surface Sortie-2 Physiological Biomarkers &amp; Medical Authority Clearances
+            </strong>
+          </div>
+          <span class="mono" style="font-size:11px;color:var(--status-ok,#16a34a);">
+            <i class="fa-solid fa-circle-check"></i> Flight Surgeon Cleared
+          </span>
+        </div>
+
+        <div class="va-table-wrap" tabindex="0" role="region" aria-label="Physiological Biomarker Ledger" style="border:1px solid var(--border-hairline);border-radius:6px;">
+          <table class="va-data-table mono" style="font-size:11px;width:100%;">
+            <thead>
+              <tr>
+                <th>Biomarker / Protocol</th>
+                <th>Standard Ref</th>
+                <th>Baseline Target</th>
+                <th>Measured 24H Value</th>
+                <th>Flight Margin</th>
+                <th>Gate Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Heart Rate Variability (rMSSD)</strong></td>
+                <td>NASA-STD-3001 &sect;6.2</td>
+                <td>&ge; 45 ms</td>
+                <td>68.4 ms</td>
+                <td>+23.4 ms buffer</td>
+                <td><span class="sq-status sq-ok"></span>PASS</td>
+              </tr>
+              <tr>
+                <td><strong>Core Body Temperature Rhythm</strong></td>
+                <td>NASA-STD-3001 &sect;6.4</td>
+                <td>36.5&deg;C &ndash; 37.2&deg;C</td>
+                <td>36.85&deg;C</td>
+                <td>Centered diurnal nadir</td>
+                <td><span class="sq-status sq-ok"></span>PASS</td>
+              </tr>
+              <tr>
+                <td><strong>Blood Oxygen Saturation (SpO2)</strong></td>
+                <td>NASA-STD-3001 &sect;6.1</td>
+                <td>&ge; 96.0%</td>
+                <td>98.5%</td>
+                <td>ppO2 21.2 kPa cabin</td>
+                <td><span class="sq-status sq-ok"></span>PASS</td>
+              </tr>
+              <tr>
+                <td><strong>Cognitive Psychomotor Vigilance (PVT)</strong></td>
+                <td>NTRS 20250011652</td>
+                <td>Lapses &le; 2</td>
+                <td>0 Lapses (Mean 218 ms)</td>
+                <td>Full alertness confirmed</td>
+                <td><span class="sq-status sq-ok"></span>PASS</td>
+              </tr>
+              <tr>
+                <td><strong>100% O2 Pre-Breathe Denitrogenation</strong></td>
+                <td>SORTIE-SOP-302</td>
+                <td>90 min duration</td>
+                <td>90 min verified</td>
+                <td>Tissue N2 &le; 9.5 kPa</td>
+                <td><span class="sq-status sq-ok"></span>COMPLETED</td>
+              </tr>
+              <tr>
+                <td><strong>Suit Umbilical Pressure Decay Rate</strong></td>
+                <td>EMU-CHECK-04</td>
+                <td>&le; 0.05 kPa/min</td>
+                <td>0.012 kPa/min</td>
+                <td>Hermetic seal verified</td>
+                <td><span class="sq-status sq-ok"></span>VERIFIED</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer style="margin-top:10px;padding:6px 2px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span>NASA NTRS 20250011652 &middot; Advanced Informatics &amp; Display Systems for Extravehicular Activity</span>
+        <span>NASA-STD-3001 Space Flight Human-System Standard &middot; Desktop N1 Default</span>
+      </footer>
+    </div>
+  </section>
+</template>

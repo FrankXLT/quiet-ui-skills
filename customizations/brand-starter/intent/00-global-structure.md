@@ -1,7 +1,7 @@
 # Brand Blueprint — 00 Global Structure
 
 ## 1. Intent & Identity
-The Brand Starter provides a clean, enterprise-grade design framework tailored for team products, SaaS applications, developer portals, and corporate engineering hubs. It focuses on the 13 core product tiers, omitting personal wellness trackers and residential smart-home interfaces.
+The Brand Starter provides a clean, enterprise-grade design framework tailored for team products, SaaS applications, developer portals, and corporate engineering hubs. It focuses on the 13 core product tiers, omitting personal wellness trackers, optical HUD, and tactile subsystem interfaces.
 
 ## 2. Navigation Architecture
 - **N0 (Zero-Chrome):** Focused documentation reading for executive whitepapers and RFC specifications.

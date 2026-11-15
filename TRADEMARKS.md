@@ -1,7 +1,7 @@
 # Trademark Policy — Quiet UI, Quiet UI Skills & Visual Architecture System
 
-**Version:** 7.0  
-**Effective Date:** 2026-11-11  
+**Version:** 8.0  
+**Effective Date:** 2026-11-13  
 **Repository:** https://github.com/FrankXLT/quiet-ui-skills  
 
 ## 1. Purpose & Scope
@@ -16,7 +16,7 @@ You may use the marks "Quiet UI", "Quiet UI Skills", and "Visual Architecture Sy
 
 1. **Factual Attribution:** Stating truthfully that your software, application, or website was built using Quiet UI or adheres to the Visual Architecture System specifications (e.g., *"Built with Quiet UI"* or *"Designed using the Visual Architecture System"*).
 2. **Upstream Fork Provenance:** Referencing upstream lineage in public forks, open-source pull requests, or package mirrors, provided attribution complies with Section 4(d) of the Apache License 2.0 and the `NOTICE` file.
-3. **Documentation & Educational Discourse:** Referencing the marks in tutorials, reviews, comparative design benchmarks, or academic papers analyzing the 17-tier architecture continuum.
+3. **Documentation & Educational Discourse:** Referencing the marks in tutorials, reviews, comparative design benchmarks, or academic papers analyzing the 16-tier architecture continuum.
 
 ## 3. Restricted Uses (Prior Permission Required)
 

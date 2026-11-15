@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" class="va-studio-root" data-studio-view="ui">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiet UI v8.2 Universal Responsive Stage Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
+  <style id="va-studio-chrome-css">
+__CHROME_CSS__
+  </style>
+</head>
+<body class="va-studio-body">
+  <header id="va-studio-bar" class="va-studio-bar">
+    <div class="va-bar-left">
+      <div class="va-mode-tablist" role="tablist" aria-label="Showcase Mode">
+        <button type="button" id="va-view-ui-btn" class="va-mode-tab is-active" role="tab" aria-selected="true">UI</button>
+        <button type="button" id="va-view-diag-btn" class="va-mode-tab" role="tab" aria-selected="false">Atlas</button>
+      </div>
+      <div class="va-studio-brand">
+        <i class="fa-solid fa-layer-group va-brand-icon" aria-hidden="true"></i>
+        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v8.2</span></span>
+      </div>
+    </div>
+
+    <div class="va-bar-center">
+      <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous Item" title="Previous"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
+      <select id="va-tier-select" class="va-studio-select va-tier-select" aria-label="Select Stage Tier">
+__TIER_OPTIONS__
+      </select>
+      <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next Item" title="Next"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="va-bar-right">
+      <button type="button" id="va-theme-cycle-btn" class="va-studio-btn va-phone-only" aria-label="Cycle Surface Theme" title="Cycle Surface Theme"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
+
+      <div class="va-theme-dots va-fold-up" role="radiogroup" aria-label="Surface Theme">
+        <button type="button" class="va-theme-dot is-active" data-theme-dot="white" role="radio" aria-checked="true" aria-label="White Theme" title="White"></button>
+        <button type="button" class="va-theme-dot" data-theme-dot="paper" role="radio" aria-checked="false" aria-label="Paper Theme" title="Paper"></button>
+        <button type="button" class="va-theme-dot" data-theme-dot="dark-paper" role="radio" aria-checked="false" aria-label="Slate Theme" title="Slate"></button>
+        <button type="button" class="va-theme-dot" data-theme-dot="dark" role="radio" aria-checked="false" aria-label="OLED Theme" title="OLED"></button>
+      </div>
+
+      <label class="va-inline-ctrl va-fold-up va-ui-only" for="va-nav-select">
+        <span class="va-ctrl-prefix">Nav:</span>
+        <select id="va-nav-select" class="va-ctrl-bare-select" aria-label="Navigation Shell">
+          <option value="auto" selected>Auto</option>
+          <option value="n0">N0 None</option>
+          <option value="n1">N1 Rail</option>
+          <option value="n2">N2 Top</option>
+          <option value="n3">N3 Dual</option>
+          <option value="n4">N4 Dock</option>
+        </select>
+      </label>
+
+      <label class="va-inline-ctrl va-desktop-only" for="va-vp-select">
+        <span class="va-ctrl-prefix">Stage:</span>
+        <select id="va-vp-select" class="va-ctrl-bare-select" aria-label="Stage Simulator">
+          <option value="fill" selected>Fill</option>
+          <option value="390x844">390×844</option>
+          <option value="820x1180">820×1180</option>
+          <option value="1920x1080">1080p</option>
+          <option value="2560x1440">1440p</option>
+          <option value="3840x2160">4K</option>
+        </select>
+      </label>
+
+      <div id="va-stage-tools" class="va-stage-tools va-desktop-only" hidden>
+        <button type="button" id="va-rotate-btn" class="va-studio-btn" aria-label="Rotate Stage" title="Rotate Viewport"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
+        <button type="button" id="va-zoom-btn" class="va-studio-btn" aria-label="Toggle Zoom Mode" title="Toggle Zoom Mode">FIT</button>
+      </div>
+
+      <button type="button" id="va-customize-btn" class="va-studio-btn va-gear-btn" aria-label="Studio Settings" title="Studio Settings">
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        <span id="va-settings-dot" class="va-settings-dot" hidden></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="va-portal-mat">
+    <div id="va-portal-scaler">
+      <div class="va-hinge-guide"></div>
+      <div class="va-drag-handle va-drag-w"></div>
+      <div class="va-drag-handle va-drag-e"></div>
+      <div class="va-drag-handle va-drag-s"></div>
+      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI Stage Portal"></iframe>
+    </div>
+  </main>
+
+  <dialog id="va-customize-sheet" closedby="any" aria-label="Studio Settings">
+    <div class="va-customize-header">
+      <strong>Studio Settings</strong>
+      <button type="button" class="va-studio-btn" aria-label="Close Settings" onclick="this.closest('dialog').close()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    <div class="va-sheet-sections">
+      <div class="va-customize-field">
+        <span class="va-customize-label">SURFACE THEME</span>
+        <div class="va-sheet-seg" role="radiogroup" aria-label="Surface Theme">
+          <button type="button" class="va-sheet-seg-btn is-active" data-sheet-theme="white">White</button>
+          <button type="button" class="va-sheet-seg-btn" data-sheet-theme="paper">Paper</button>
+          <button type="button" class="va-sheet-seg-btn" data-sheet-theme="dark-paper">Slate</button>
+          <button type="button" class="va-sheet-seg-btn" data-sheet-theme="dark">OLED</button>
+        </div>
+        <select id="va-theme-select" hidden aria-hidden="true">
+          <option value="white">White</option><option value="paper">Paper</option><option value="dark-paper">Slate</option><option value="dark">OLED</option>
+        </select>
+      </div>
+
+      <div class="va-customize-field va-ui-only">
+        <label class="va-customize-label" for="va-sheet-nav-select">NAVIGATION SHELL</label>
+        <select id="va-sheet-nav-select" class="va-studio-select">
+          <option value="auto" selected>Auto (Viewport Adaptive)</option>
+          <option value="n0">N0 Kiosk / None</option>
+          <option value="n1">N1 Left Spine Rail</option>
+          <option value="n2">N2 Top Header Bar</option>
+          <option value="n3">N3 Composite Top + Rail</option>
+          <option value="n4">N4 Mobile Bottom Dock</option>
+        </select>
+      </div>
+
+      <div class="va-customize-row-2">
+        <div class="va-customize-field">
+          <label class="va-customize-label" for="va-density-select">DENSITY</label>
+          <select id="va-density-select" class="va-studio-select">
+            <option value="d1">D1 Spacious</option>
+            <option value="d2" selected>D2 Operational</option>
+            <option value="d3">D3 Compact</option>
+            <option value="d4">D4 Hairline</option>
+          </select>
+        </div>
+        <div class="va-customize-field">
+          <label class="va-customize-label" for="va-corners-select">CORNERS</label>
+          <select id="va-corners-select" class="va-studio-select">
+            <option value="auto" selected>Auto</option>
+            <option value="sharp">Sharp</option>
+            <option value="subtle">Subtle</option>
+            <option value="rounded">Rounded</option>
+            <option value="soft">Soft</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="va-customize-field">
+        <span class="va-customize-label">ROOT SCALE</span>
+        <div class="va-sheet-seg" role="group" aria-label="Root Scale">
+          <button type="button" class="va-sheet-seg-btn" data-sheet-scale="90">90%</button>
+          <button type="button" class="va-sheet-seg-btn is-active" data-sheet-scale="100">100%</button>
+          <button type="button" class="va-sheet-seg-btn" data-sheet-scale="110">110%</button>
+          <button type="button" class="va-sheet-seg-btn" data-sheet-scale="125">125%</button>
+        </div>
+      </div>
+
+      <div class="va-customize-field">
+        <label class="va-customize-label" for="va-sheet-vp-select">STAGE SIMULATOR</label>
+        <div class="va-sheet-stage-row">
+          <select id="va-sheet-vp-select" class="va-studio-select">
+            <option value="fill" selected>Fill (Responsive)</option>
+            <option value="390x844">390×844 Phone</option>
+            <option value="820x1180">820×1180 Foldable</option>
+            <option value="1920x1080">1080p Desktop</option>
+            <option value="2560x1440">1440p QHD</option>
+            <option value="3840x2160">4K UHD</option>
+          </select>
+          <button type="button" id="va-sheet-rotate-btn" class="va-studio-btn" title="Rotate Stage"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
+          <button type="button" id="va-sheet-zoom-btn" class="va-studio-btn" title="Toggle Fit vs 1:1">FIT</button>
+        </div>
+      </div>
+
+      <div class="va-customize-field">
+        <span class="va-customize-label">COPY PROMPT</span>
+        <div class="va-prompt-row">
+          <code id="va-prompt-preview" class="va-prompt-preview">Target Tier: doc-1 (auto)</code>
+          <button type="button" id="va-copy-prompt-btn" class="va-studio-btn">Copy</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="text/plain" id="va-bundled-portal-css">
+__PORTAL_CSS__
+  </script>
+  <script type="text/plain" id="va-bundled-tier-js">
+__TIER_JS__
+  </script>
+
+__TIER_TEMPLATES__
+
+  <script>
+__STUDIO_JS__
+  </script>
+</body>
+</html>

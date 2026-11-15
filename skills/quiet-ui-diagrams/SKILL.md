@@ -92,3 +92,5 @@ Choose a behavioral pattern first when flow or lifecycle dictates structure ([se
   4. Distinct fan-out attachment points per edge (≥ 12px apart).
   5. Never transit behind non-endpoint boxes.
   6. Label masks must be emitted before subsequent node rects (or drawn in proper z-order).
+
+For publication-grade multi-layer SVGs, text halos, and @container breakouts in HTML documents, see companion reference [08-figure-craftsmanship-and-breakouts.md](../quiet-ui/references/08-figure-craftsmanship-and-breakouts.md).

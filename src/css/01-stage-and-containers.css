@@ -1,0 +1,345 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI v8.2 — Stage Container, Primitives & Responsive Figures/Tables
+   ========================================================================== */
+
+@layer shell {
+  .va-stage {
+    container-type: inline-size;
+    container-name: stage;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  /* Surface Primitives (Nested border depth <= 2) */
+  .va-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    padding: var(--density-card-pad);
+    min-inline-size: 0;
+  }
+
+  .va-panel-tonal {
+    background: var(--bg-elevated);
+    border: none;
+    border-radius: var(--radius-card);
+    padding: var(--density-card-pad);
+    min-inline-size: 0;
+  }
+
+  .va-status-strip {
+    min-block-size: 32px;
+    padding: 0.35rem 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-inner);
+    font-size: var(--ts-sm);
+  }
+
+  /* Control Primitives: Sleek >= 28-32px on Desktop/Foldable, >= 44px on Phone */
+  button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, select, input {
+    min-block-size: 26px;
+  }
+
+  .va-btn-primary,
+  .va-btn-ghost {
+    min-block-size: 32px;
+    padding: 0.35rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: var(--ts-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+
+  .va-btn-primary {
+    font-weight: 600;
+    border: 1px solid transparent;
+    background: var(--accent-primary);
+    color: #FFFFFF;
+  }
+
+  .va-btn-ghost {
+    font-weight: 500;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-primary);
+  }
+
+  .va-pill-btn {
+    min-block-size: 28px;
+    padding: 0.22rem 0.62rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .va-pill-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
+  }
+
+  .va-pill-btn.active,
+  .va-pill-btn.is-active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #FFFFFF;
+  }
+
+  .va-figure-hdr .va-pill-btn {
+    min-block-size: 26px;
+    padding: 0.15rem 0.5rem;
+    font-size: max(0.75rem, 11px);
+  }
+
+  /* Sidebar & Tree Link Primitives */
+  .va-side-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.38rem 0.6rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .va-side-link:hover,
+  .va-side-link.active,
+  .va-side-link.is-active {
+    background: var(--bg-elevated);
+    color: var(--accent-primary);
+    font-weight: 600;
+  }
+  .va-side-link-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-inline-size: 0;
+  }
+
+  pre {
+    overflow-x: auto;
+    max-inline-size: 100%;
+    margin: 0;
+  }
+
+  /* Badges & Status */
+  .va-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .va-badge-ok      { background: var(--status-ok-bg); color: var(--status-ok); border-color: var(--status-ok); }
+  .va-badge-warn    { background: var(--status-warn-bg); color: var(--status-warn); border-color: var(--status-warn); }
+  .va-badge-err     { background: var(--status-err-bg); color: var(--status-err); border-color: var(--status-err); }
+  .va-badge-neutral { background: var(--bg-elevated); color: var(--text-secondary); border-color: var(--border-hairline); }
+
+  .va-stale-badge {
+    background: var(--status-warn-bg);
+    color: var(--status-warn);
+    border: 1px solid var(--status-warn);
+    border-radius: var(--radius-sm);
+    padding: 0.15rem 0.45rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  /* Prose Rhythm & Ceiling */
+  .va-prose {
+    font-size: var(--ts-prose);
+    line-height: 1.65;
+    color: var(--text-primary);
+    min-inline-size: 0;
+  }
+  .va-prose h1 { line-height: 1.15; text-wrap: balance; margin: 0.25rem 0 0.5rem; font-size: var(--ts-xl); }
+  .va-prose h2 { margin-block: 1.65rem 0.55rem; font-size: var(--ts-md); line-height: 1.28; }
+  .va-prose h3 { margin-block: 1.15rem 0.4rem; font-size: var(--ts-base); }
+  .va-prose p, .va-prose li { max-inline-size: 68ch; margin-block: 0 0.85rem; }
+
+  /* Figures & SVG Schematics */
+  .va-figure-card {
+    margin: 1.1rem 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    padding: var(--density-card-pad);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-inline-size: 0;
+  }
+
+  .va-figure-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: var(--ts-sm);
+  }
+
+  .va-figure-caption {
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+    line-height: 1.45;
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+
+  .va-figure-scroll {
+    overflow-x: auto;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .va-figure-scroll svg.va-schematic-svg {
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 540px;
+    max-inline-size: 760px;
+    block-size: auto;
+    margin-inline: auto;
+  }
+
+  .va-mermaid-code {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    overflow-x: auto;
+    padding: 0.75rem;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-hairline);
+    white-space: pre;
+  }
+
+  /* Responsive Data & Academic Booktabs Tables */
+  .va-table-wrap {
+    overflow-x: auto;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    background: var(--bg-surface);
+  }
+
+  table.va-data-table,
+  table.booktabs {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font-size: var(--ts-xs);
+    font-variant-numeric: var(--font-nums);
+  }
+
+  table.booktabs {
+    border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong);
+  }
+
+  table.va-data-table th,
+  table.va-data-table td,
+  table.booktabs th,
+  table.booktabs td {
+    min-inline-size: 54px;
+    padding: 0.42rem 0.55rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-hairline);
+    overflow-wrap: normal;
+    word-break: normal;
+    vertical-align: middle;
+  }
+
+  table.va-data-table th,
+  table.booktabs th {
+    background: var(--bg-elevated);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-size: var(--ts-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    border-bottom: 1.5px solid var(--border-strong);
+  }
+
+  table.va-data-table td { white-space: nowrap; }
+  table.booktabs td { white-space: normal; }
+  table.booktabs td strong,
+  table.booktabs td code { white-space: nowrap; }
+}
+
+@layer utilities {
+  .mono { font-family: var(--font-mono); font-variant-numeric: var(--font-nums); }
+  .tabular-nums { font-variant-numeric: var(--font-nums); }
+  th.num, td.num, .num {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-variant-numeric: var(--font-nums);
+    white-space: nowrap;
+  }
+
+  .math-bar { text-decoration: overline; }
+
+  .va-bleed-wide { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; }
+
+  .sq-status {
+    display: inline-block;
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 2px;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+    background: var(--text-muted);
+  }
+  .sq-ok   { background: var(--status-ok); }
+  .sq-warn { background: var(--status-warn); }
+  .sq-err  { background: var(--status-err); }
+
+  /* Phone Portrait (<480px / data-form-factor="touch") >= 44px Hit Targets */
+  [data-form-factor="touch"] :is(button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) {
+    min-block-size: 44px;
+  }
+
+  @media (max-width: 480px) {
+    button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+      min-block-size: 44px;
+    }
+  }
+}

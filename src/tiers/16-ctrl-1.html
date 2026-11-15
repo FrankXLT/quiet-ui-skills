@@ -1,0 +1,390 @@
+<template id="tpl-tier-ctrl-1" data-tier="ctrl-1" data-num="16" data-title="Ctrl-1 · ECLSS Subsystem Console" data-family="D" data-allowed-navs="n0,n4,n2" data-default-nav="n0">
+  <section id="tier-ctrl-1" class="va-tier va-tier-ctrl-1" aria-label="16 · Ctrl-1 Tactile Subsystem Console">
+    <div class="ctrl1-console">
+      <!-- Master Annunciator Alarm Strip (NASA-STD-3001 §10.3 Rapid Visual Status) -->
+      <div class="ctrl-annunciator-grid" role="region" aria-label="Subsystem Annunciator Status Strip">
+        <div class="ctrl-ann-cell is-nominal" data-alarm="ALM-ECLSS-01">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">ECLSS CABIN P</strong>
+            <span class="mono" style="color:var(--status-ok,#059669);font-weight:700;font-size:11px;">101.2 kPa</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Primary Loop Normal</span>
+        </div>
+        <div class="ctrl-ann-cell is-nominal" data-alarm="ALM-TCS-01">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">TCS LOOP-A</strong>
+            <span class="mono" style="color:var(--status-ok,#059669);font-weight:700;font-size:11px;">21.4 °C</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Mix Temp Nominal</span>
+        </div>
+        <div class="ctrl-ann-cell is-warning" data-alarm="ALM-EPS-01">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">EPS BUS-TIE</strong>
+            <span class="mono" style="color:var(--status-warn,#d97706);font-weight:700;font-size:11px;">OPEN</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Bus Isolation Engaged</span>
+          <button type="button" class="va-pill-btn ann-ack-btn" onclick="acknowledgeAlarm('ALM-EPS-01')">ACK ALARM</button>
+        </div>
+        <div class="ctrl-ann-cell is-nominal" data-alarm="ALM-OPT-01">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">OPT SNSPD CRYO</strong>
+            <span class="mono" style="color:var(--status-ok,#059669);font-weight:700;font-size:11px;">0.84 K</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Sub-Kelvin Locked</span>
+        </div>
+        <div class="ctrl-ann-cell is-nominal" data-alarm="ALM-COM-01">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">CCSDS 133.0</strong>
+            <span class="mono" style="color:var(--status-ok,#059669);font-weight:700;font-size:11px;">SYNC OK</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Frame Lock Active</span>
+        </div>
+        <div class="ctrl-ann-cell is-warning" data-alarm="ALM-RCS-02">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--text-primary);font-size:11px;">RCS QUAD-B</strong>
+            <span class="mono" style="color:var(--status-warn,#d97706);font-weight:700;font-size:11px;">MAN-2 WARM</span>
+          </div>
+          <span style="color:var(--text-muted);font-size:11px;">Sensor Exceeds 32°C</span>
+          <button type="button" class="va-pill-btn ann-ack-btn" onclick="acknowledgeAlarm('ALM-RCS-02')">ACK ALARM</button>
+        </div>
+      </div>
+
+      <div class="ctrl1-layout-split">
+        <!-- Tactile Zone Selector Rail -->
+        <aside class="ctrl1-zone-rail" aria-label="Tactile Subsystem Zone Rail">
+          <button type="button" class="va-pill-btn active" onclick="toggleCtrlZone('eclss', this)">ECLSS</button>
+          <button type="button" class="va-pill-btn" onclick="toggleCtrlZone('pwr', this)">PWR</button>
+          <button type="button" class="va-pill-btn" onclick="toggleCtrlZone('tcs', this)">TCS</button>
+          <button type="button" class="va-pill-btn" onclick="toggleCtrlZone('opt', this)">OPT</button>
+        </aside>
+
+        <main class="ctrl1-main">
+          <!-- Passive Read-Only Telemetry Strip (flat --bg-elevated, ZERO button styling) -->
+          <div class="ctrl1-telemetry-strip">
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <span>HALO Cabin: <strong class="mono" style="color:var(--text-primary);">101.2 kPa</strong></span>
+              <span>ppO2: <strong class="mono" style="color:var(--text-primary);">21.1 kPa</strong></span>
+              <span>ppCO2: <strong class="mono" style="color:var(--text-primary);">2.1 mmHg</strong></span>
+              <span>Cabin T: <strong class="mono" style="color:var(--text-primary);">21.4 °C</strong></span>
+              <span>RH: <strong class="mono" style="color:var(--text-primary);">44%</strong></span>
+            </div>
+            <span class="va-badge va-stale-badge" style="font-size:11px;">STALE &gt; 6s &middot; AUX-HYG-B</span>
+          </div>
+
+          <!-- Interactive P&ID Fluid & Gas Loop (NASA Systems Engineering P&ID) -->
+          <div class="ctrl-pid-container">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <strong style="font-size:12px;color:var(--text-primary);">ECLSS P&amp;ID Cabin Atmosphere &amp; Regulating Loop</strong>
+                <span style="font-size:11px;color:var(--text-muted);margin-left:8px;">Click valves to toggle flow state</span>
+              </div>
+              <div id="pid-status-readout" class="mono" style="font-size:11px;color:var(--status-ok,#059669);font-weight:600;">
+                Valve V101 // FLOW ENGAGED
+              </div>
+            </div>
+            <div class="va-figure-scroll" tabindex="0" role="region" aria-label="ECLSS P&amp;ID Schematic Diagram">
+              <svg class="ctrl-pid-svg" viewBox="0 0 720 126" style="min-inline-size:540px;max-inline-size:760px;inline-size:100%;block-size:auto;display:block;" aria-label="ECLSS P&amp;ID Schematic Diagram">
+                <!-- Flow Lines -->
+                <line x1="44" y1="60" x2="670" y2="60" stroke="var(--border-strong)" stroke-width="3" stroke-dasharray="6 3" />
+                <line x1="160" y1="60" x2="160" y2="25" stroke="var(--border-strong)" stroke-width="2" />
+                <line x1="160" y1="25" x2="338" y2="25" stroke="var(--border-strong)" stroke-width="2" />
+                <line x1="338" y1="25" x2="338" y2="60" stroke="var(--border-strong)" stroke-width="2" />
+                <line x1="476" y1="60" x2="476" y2="95" stroke="var(--border-strong)" stroke-width="2" />
+                <line x1="476" y1="95" x2="615" y2="95" stroke="var(--border-strong)" stroke-width="2" />
+
+                <!-- Nodes & Vessels -->
+                <rect x="16" y="44" width="46" height="32" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5" />
+                <text x="39" y="65" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-primary)">N2</text>
+
+                <!-- Valve V101 (Open) -->
+                <g data-valve="V101" class="is-open" onclick="togglePidValve('V101')">
+                  <polygon points="100,50 120,60 100,70" stroke="var(--text-primary)" stroke-width="1.5" />
+                  <polygon points="140,50 120,60 140,70" stroke="var(--text-primary)" stroke-width="1.5" />
+                  <circle cx="120" cy="46" r="3" fill="var(--text-primary)" />
+                  <text x="120" y="88" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">V101</text>
+                </g>
+
+                <!-- Bypass Valve V102 (Closed) -->
+                <g data-valve="V102" onclick="togglePidValve('V102')">
+                  <polygon points="230,15 250,25 230,35" stroke="var(--text-primary)" stroke-width="1.5" fill="var(--bg-surface)" />
+                  <polygon points="270,15 250,25 270,35" stroke="var(--text-primary)" stroke-width="1.5" fill="var(--bg-surface)" />
+                  <circle cx="250" cy="11" r="3" fill="var(--text-primary)" />
+                  <text x="250" y="49" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">V102 BYPASS</text>
+                </g>
+
+                <!-- Cabin Chamber Core -->
+                <rect x="354" y="34" width="104" height="52" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.5" />
+                <text x="406" y="56" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--text-primary)">CABIN</text>
+                <text x="406" y="74" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">101.2 kPa</text>
+
+                <!-- Scrubber Valve V201 (Open) -->
+                <g data-valve="V201" class="is-open" onclick="togglePidValve('V201')">
+                  <polygon points="496,50 516,60 496,70" stroke="var(--text-primary)" stroke-width="1.5" />
+                  <polygon points="536,50 516,60 536,70" stroke="var(--text-primary)" stroke-width="1.5" />
+                  <circle cx="516" cy="46" r="3" fill="var(--text-primary)" />
+                  <text x="516" y="84" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">V201</text>
+                </g>
+
+                <!-- Vent Valve V305 (Closed) -->
+                <g data-valve="V305" onclick="togglePidValve('V305')">
+                  <polygon points="536,85 556,95 536,105" stroke="var(--text-primary)" stroke-width="1.5" fill="var(--bg-surface)" />
+                  <polygon points="576,85 556,95 576,105" stroke="var(--text-primary)" stroke-width="1.5" fill="var(--bg-surface)" />
+                  <circle cx="556" cy="81" r="3" fill="var(--text-primary)" />
+                  <text x="556" y="120" text-anchor="middle" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">V305 VENT</text>
+                </g>
+
+                <!-- Exhaust Vent -->
+                <path d="M 615,95 L 645,85 L 645,105 Z" fill="var(--border-strong)" />
+                <text x="652" y="100" font-size="13.5" font-family="var(--font-mono)" fill="var(--text-muted)">SPACE</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Zone Deck: ECLSS (Primary) -->
+          <div id="ctrl-deck-eclss" class="ctrl1-grid">
+            <!-- 1. Cabin Pressure Regulator -->
+            <div class="va-card ctrl1-effector-card">
+              <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;">Effector 01</div>
+              <strong style="font-size:13px;color:var(--text-primary);">Cabin Pressure Regulator</strong>
+              <div class="va-panel-tonal" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Setpoint</span>
+                  <span class="mono ctrl-cmd-val" style="font-weight:600;color:var(--text-primary);">101.3 kPa</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Actual</span>
+                  <span class="mono" style="color:var(--status-ok,#059669);">101.2 kPa</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, -0.1)" style="flex:1;justify-content:center;font-weight:700;">-0.1</button>
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, 0.1)" style="flex:1;justify-content:center;font-weight:700;">+0.1</button>
+              </div>
+            </div>
+
+            <!-- 2. Thermal Loop Mix Valve -->
+            <div class="va-card ctrl1-effector-card">
+              <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;">Effector 02</div>
+              <strong style="font-size:13px;color:var(--text-primary);">Thermal Loop Mix Valve</strong>
+              <div class="va-panel-tonal" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Setpoint</span>
+                  <span class="mono ctrl-cmd-val" style="font-weight:600;color:var(--text-primary);">21.5 °C</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Actual</span>
+                  <span class="mono" style="color:var(--status-ok,#059669);">21.4 °C</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, -0.1)" style="flex:1;justify-content:center;font-weight:700;">-0.1</button>
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, 0.1)" style="flex:1;justify-content:center;font-weight:700;">+0.1</button>
+              </div>
+            </div>
+
+            <!-- 3. Guarded Critical Effector 1: N2 Emergency Repress Valve -->
+            <div class="va-card guarded-actuator-card" data-actuator="N2-ISO-01">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:11px;font-weight:600;color:var(--status-danger,#dc2626);text-transform:uppercase;">Critical Effector 01</div>
+                <span class="transit-dot" title="Transit State Indicator"></span>
+              </div>
+              <strong style="font-size:13px;color:var(--text-primary);">N2 Emergency Repress Isolation</strong>
+              <div class="va-panel-tonal act-state" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Status</span>
+                  <span class="mono" style="font-weight:600;color:var(--text-primary);">ISOLATED</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Status</span>
+                  <span class="mono state-val" style="color:var(--status-ok,#059669);">ISOLATED</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="arm-btn ctrl1-arm-btn va-pill-btn" aria-pressed="false" onclick="armGuardedActuator('N2-ISO-01', this)" style="flex:1;">
+                  <i class="fa-solid fa-shield-halved"></i> ARM
+                </button>
+                <button type="button" class="execute-btn ctrl1-exec-btn va-pill-btn" disabled onclick="executeGuardedAction('N2-ISO-01', this)" style="flex:1;">
+                  EXECUTE REPRESS
+                </button>
+              </div>
+            </div>
+
+            <!-- 4. Guarded Critical Effector 2: Cabin Overpressure Relief Valve -->
+            <div class="va-card guarded-actuator-card" data-actuator="RELIEF-01">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:11px;font-weight:600;color:var(--status-danger,#dc2626);text-transform:uppercase;">Critical Effector 02</div>
+                <span class="transit-dot" title="Transit State Indicator"></span>
+              </div>
+              <strong style="font-size:13px;color:var(--text-primary);">Cabin Overpressure Relief Valve</strong>
+              <div class="va-panel-tonal act-state" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Status</span>
+                  <span class="mono" style="font-weight:600;color:var(--text-primary);">CLOSED</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Status</span>
+                  <span class="mono state-val" style="color:var(--status-ok,#059669);">CLOSED</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="arm-btn ctrl1-arm-btn va-pill-btn" aria-pressed="false" onclick="armGuardedActuator('RELIEF-01', this)" style="flex:1;">
+                  <i class="fa-solid fa-shield-halved"></i> ARM
+                </button>
+                <button type="button" class="execute-btn ctrl1-exec-btn va-pill-btn" disabled onclick="executeGuardedAction('RELIEF-01', this)" style="flex:1;">
+                  EXECUTE VENT
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone Deck: PWR (Power Distribution) -->
+          <div id="ctrl-deck-pwr" class="ctrl1-grid" style="display:none;">
+            <div class="va-card ctrl1-effector-card">
+              <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;">Effector 03</div>
+              <strong style="font-size:13px;color:var(--text-primary);">Solar Shunt Regulator Voltage</strong>
+              <div class="va-panel-tonal" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Setpoint</span>
+                  <span class="mono ctrl-cmd-val" style="font-weight:600;color:var(--text-primary);">120.0 V</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Actual</span>
+                  <span class="mono" style="color:var(--status-ok,#059669);">120.1 V</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, -0.5)" style="flex:1;justify-content:center;font-weight:700;">-0.5</button>
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, 0.5)" style="flex:1;justify-content:center;font-weight:700;">+0.5</button>
+              </div>
+            </div>
+            <div class="va-card guarded-actuator-card" data-actuator="BUS-TIE-B">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:11px;font-weight:600;color:var(--status-danger,#dc2626);text-transform:uppercase;">Critical Effector 03</div>
+                <span class="transit-dot"></span>
+              </div>
+              <strong style="font-size:13px;color:var(--text-primary);">Primary 120V Bus-B Tie Contactor</strong>
+              <div class="va-panel-tonal act-state" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Status</span>
+                  <span class="mono" style="font-weight:600;color:var(--text-primary);">ISOLATED</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Status</span>
+                  <span class="mono state-val" style="color:var(--status-ok,#059669);">ISOLATED</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="arm-btn ctrl1-arm-btn va-pill-btn" aria-pressed="false" onclick="armGuardedActuator('BUS-TIE-B', this)" style="flex:1;">
+                  <i class="fa-solid fa-shield-halved"></i> ARM
+                </button>
+                <button type="button" class="execute-btn ctrl1-exec-btn va-pill-btn" disabled onclick="executeGuardedAction('BUS-TIE-B', this)" style="flex:1;">
+                  EXECUTE TIE
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone Deck: TCS (Thermal Control System) -->
+          <div id="ctrl-deck-tcs" class="ctrl1-grid" style="display:none;">
+            <div class="va-card ctrl1-effector-card">
+              <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;">Effector 04</div>
+              <strong style="font-size:13px;color:var(--text-primary);">Radiator Loop Flow Rate</strong>
+              <div class="va-panel-tonal" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Setpoint</span>
+                  <span class="mono ctrl-cmd-val" style="font-weight:600;color:var(--text-primary);">42.0 kg/h</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Actual</span>
+                  <span class="mono" style="color:var(--status-ok,#059669);">41.8 kg/h</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, -1.0)" style="flex:1;justify-content:center;font-weight:700;">-1.0</button>
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, 1.0)" style="flex:1;justify-content:center;font-weight:700;">+1.0</button>
+              </div>
+            </div>
+            <div class="va-card guarded-actuator-card" data-actuator="TCS-BYPASS-02">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:11px;font-weight:600;color:var(--status-danger,#dc2626);text-transform:uppercase;">Critical Effector 04</div>
+                <span class="transit-dot"></span>
+              </div>
+              <strong style="font-size:13px;color:var(--text-primary);">Loop-B Ammonia Bypass Valve</strong>
+              <div class="va-panel-tonal act-state" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Status</span>
+                  <span class="mono" style="font-weight:600;color:var(--text-primary);">CLOSED</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Status</span>
+                  <span class="mono state-val" style="color:var(--status-ok,#059669);">CLOSED</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="arm-btn ctrl1-arm-btn va-pill-btn" aria-pressed="false" onclick="armGuardedActuator('TCS-BYPASS-02', this)" style="flex:1;">
+                  <i class="fa-solid fa-shield-halved"></i> ARM
+                </button>
+                <button type="button" class="execute-btn ctrl1-exec-btn va-pill-btn" disabled onclick="executeGuardedAction('TCS-BYPASS-02', this)" style="flex:1;">
+                  EXECUTE BYPASS
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone Deck: OPT (Optical Communications Terminal) -->
+          <div id="ctrl-deck-opt" class="ctrl1-grid" style="display:none;">
+            <div class="va-card ctrl1-effector-card">
+              <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;">Effector 05</div>
+              <strong style="font-size:13px;color:var(--text-primary);">Fast Steering Mirror Boresight Bias</strong>
+              <div class="va-panel-tonal" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Setpoint</span>
+                  <span class="mono ctrl-cmd-val" style="font-weight:600;color:var(--text-primary);">0.0 µrad</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Actual</span>
+                  <span class="mono" style="color:var(--status-ok,#059669);">0.2 µrad</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, -0.1)" style="flex:1;justify-content:center;font-weight:700;">-0.1</button>
+                <button type="button" class="va-pill-btn" onclick="stepCtrlSetpoint(this, 0.1)" style="flex:1;justify-content:center;font-weight:700;">+0.1</button>
+              </div>
+            </div>
+            <div class="va-card guarded-actuator-card" data-actuator="CRYO-SW-01">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:11px;font-weight:600;color:var(--status-danger,#dc2626);text-transform:uppercase;">Critical Effector 05</div>
+                <span class="transit-dot"></span>
+              </div>
+              <strong style="font-size:13px;color:var(--text-primary);">SNSPD Pulse Tube Cryo Cooler Switch</strong>
+              <div class="va-panel-tonal act-state" style="padding:10px;border-radius:6px;font-size:12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                  <span style="color:var(--text-muted);">CMD Status</span>
+                  <span class="mono" style="font-weight:600;color:var(--text-primary);">ENGAGED</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span style="color:var(--text-muted);">ACT Status</span>
+                  <span class="mono state-val" style="color:var(--status-ok,#059669);">ENGAGED</span>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="arm-btn ctrl1-arm-btn va-pill-btn" aria-pressed="false" onclick="armGuardedActuator('CRYO-SW-01', this)" style="flex:1;">
+                  <i class="fa-solid fa-shield-halved"></i> ARM
+                </button>
+                <button type="button" class="execute-btn ctrl1-exec-btn va-pill-btn" disabled onclick="executeGuardedAction('CRYO-SW-01', this)" style="flex:1;">
+                  EXECUTE TRIP
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <footer style="margin-top:4px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+            <span>NASA-STD-3001 &middot; Human Integration Design Handbook Tactile Console</span>
+            <span>Effector Protection Dual-Action Interlock Protocol</span>
+            <span class="mono">MISSION TIME: MET+148:22:15</span>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </section>
+</template>

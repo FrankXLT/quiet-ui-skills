@@ -1,4 +1,4 @@
-# Quiet UI Customizations Architecture (v6.2)
+# Quiet UI Customizations Architecture (v8.0)
 
 > **Customize in 60 Seconds (Show Inspiration Examples)**  
 > Transform Quiet UI into your own bespoke design system in under a minute by providing 1–3 inspirational examples (screenshots, URLs, brand guides) or brand hexes.
@@ -27,13 +27,13 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 ## 2. Choosing a Starter Blueprint
 
-| Blueprint | Scope | Tiers | Monet Art | Best For |
+| Blueprint | Scope | Tiers | Optical Backplates | Best For |
 | :--- | :--- | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial Living | 17 Tiers | Included | Personal workspaces, wellness trackers, Home Assistant wall kiosks, and mobile companions. |
-| **`brand-starter`** | Team & Product Portal | 13 Tiers | Omitted | Enterprise software, SaaS platforms, B2B dashboards, and technical documentation hubs. |
+| **`personal-starter`** | Personal & Spatial Workspaces | 16 Tiers | Apollo 8 Earthrise (`as08-14-2383`) | Personal research, telemetry consoles, optical viewport HUD, and tactile control decks. |
+| **`brand-starter`** | Team & Product Portal | 13 Tiers | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
 
 > [!NOTE]
-> `brand-starter` disables residential smart-home tiers (`HA-1`..`HA-3`) and wellness planning (`App-5`), reducing showcase bundle size by over 65% for lean corporate deployment.
+> `brand-starter` disables specialized optical HUD and tactile console tiers (`hud-1`, `ctrl-1`) and personal wellness planning (`app-5`), keeping corporate deployments lean and focused.
 
 ---
 
@@ -43,17 +43,17 @@ Please clone the starter, extract design tokens into customization.json, update 
 customizations/
 ├── README.md                          # This architecture guide
 ├── LICENSE                            # Standalone MIT License (0 NOTICE obligations)
-├── personal-starter/                  # Read-only 17-tier blueprint
-│   ├── customization.json             # Manifest (mode: personal, all 17 tiers)
+├── personal-starter/                  # Read-only 16-tier blueprint
+│   ├── customization.json             # Manifest (mode: personal, all 16 tiers)
 │   ├── intent/                        # Architectural design rationale
 │   │   ├── 00-global-structure.md     # Layout, chrome & 7-step typography
 │   │   ├── 01-docs-and-specs.md       # Editorial & spec tiers (01..06)
 │   │   ├── 02-workspaces-apps.md      # Workspaces & telemetry tiers (07..14)
-│   │   └── 03-spatial-ambient.md      # Wall kiosk & mobile companion (15..17)
+│   │   └── 03-spatial-ambient.md      # Optical HUD & tactile console (15..16)
 │   ├── styles/
 │   │   ├── quiet-ui-tokens.css        # MIT base design tokens
 │   │   └── overrides.css              # Custom :root variables & CSS rules
-│   └── showcase.html                  # Pre-compiled 17-tier preview
+│   └── showcase.html                  # Pre-compiled 16-tier preview
 ├── brand-starter/                     # Read-only 13-tier product blueprint
 │   └── ...                            # Same anatomy with 13 product tiers
 └── scripts/                           # Build & verification toolchain
@@ -86,4 +86,4 @@ If you prefer building without an agent:
 ## 5. Licensing & Immutability Rules
 
 - **Pure MIT License:** All files in `customizations/` and all output HTML/CSS/JS are licensed under MIT (`customizations/LICENSE`). You own your designs 100% with zero `NOTICE` requirements on shipped products.
-- **Starter Immutability Lock:** AI agents and automated scripts are strictly prohibited from mutating `personal-starter/`, `brand-starter/`, `skills/quiet-ui/`, or `skills/quiet-ui-diagrams/`. All user modifications must reside in dedicated subfolders (`customizations/<name>/`). Both `quiet-ui` (17-tier UI shells) and `quiet-ui-diagrams` (45-type SVG diagrams & charts) automatically read `customizations/<name>/customization.json` for brand palette and typography cohesion.
+- **Starter Immutability Lock:** AI agents and automated scripts are strictly prohibited from mutating `personal-starter/`, `brand-starter/`, `skills/quiet-ui/`, or `skills/quiet-ui-diagrams/`. All user modifications must reside in dedicated subfolders (`customizations/<name>/`). Both `quiet-ui` (16-tier UI shells) and `quiet-ui-diagrams` (45-type SVG diagrams & charts) automatically read `customizations/<name>/customization.json` for brand palette and typography cohesion.

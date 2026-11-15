@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: MIT */
 /* ==========================================================================
    Quiet UI — Brand Starter Overrides Slot
-   Mode: brand (Quiet UI Brand & Product Portal)
+   Mode: brand (Quiet UI Brand & Product Portal v8.0)
    Compiled from: customization.json
    License: MIT (https://github.com/FrankXLT/quiet-ui-skills)
    ========================================================================== */
@@ -27,4 +27,4 @@
 }
 
 /* 4. Brand Portal Structural Overrides */
-/* Omits personal wellness & ambient Home Assistant rules for lean 13-tier layout */
+/* Omits personal wellness & optical HUD rules for lean 13-tier product layout */

@@ -1,0 +1,137 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI v8.2 — Telemetry Archetypes Part B (Bridge-2 Matrix, App-2 Waveforms)
+   ========================================================================== */
+
+@layer archetypes {
+  /* Bridge-2: High-Density DSN Aperture Matrix */
+  .bridge2-shell {
+    padding: 1rem 1.25rem;
+    display: grid;
+    gap: 0.85rem;
+    max-inline-size: 96rem;
+    margin-inline: auto;
+  }
+
+  .bridge2-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .bridge2-title {
+    font-size: var(--ts-xl);
+    line-height: 1.18;
+    margin: 0.2rem 0 0;
+  }
+
+  .bridge2-filter-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .bridge2-matrix {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--border-hairline);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+  @container stage (width >= 600px) and (width < 1200px) {
+    .bridge2-matrix { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @container stage (width < 600px) {
+    .bridge2-matrix { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  .bridge2-cell {
+    background: var(--bg-surface);
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-inline-size: 0;
+  }
+
+  .bridge2-cell-label {
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .bridge2-cell-val {
+    font-family: var(--font-mono);
+    font-size: var(--ts-md);
+    font-weight: 700;
+    font-variant-numeric: var(--font-nums);
+  }
+
+  tr.va-row-warn td {
+    background: var(--status-warn-bg);
+  }
+
+  /* App-2: Synchronized 4-Strip Oscilloscope & HIL Workbench */
+  .app2-workbench {
+    padding: 1rem 1.25rem;
+    display: grid;
+    gap: 0.75rem;
+    max-inline-size: 96rem;
+    margin-inline: auto;
+  }
+
+  .app2-wave-wrap {
+    position: relative;
+    inline-size: 100%;
+    min-inline-size: 0;
+    background: #060D1F;
+    border: 1px solid #1E293B;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .app2-wave-svg {
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: auto;
+    background: #060D1F;
+    cursor: crosshair;
+  }
+
+  .app2-thresh-pill {
+    position: absolute;
+    left: 0.5rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid #334155;
+    color: #CBD5E1;
+    font-family: var(--font-mono);
+    font-size: max(0.6875rem, 11px);
+    line-height: 1.25;
+    pointer-events: none;
+  }
+
+  .app2-thresh-ceil  { top: 8%; }
+  .app2-thresh-base  { top: 38%; }
+  .app2-thresh-floor { bottom: 8%; }
+
+  /* SVG Text Halo Standards (Gate 19) */
+  .va-svg-halo-text,
+  [data-halo="true"] {
+    paint-order: stroke fill;
+    stroke: var(--bg-surface, #ffffff);
+    stroke-width: 3.2px;
+    stroke-linejoin: round;
+  }
+}

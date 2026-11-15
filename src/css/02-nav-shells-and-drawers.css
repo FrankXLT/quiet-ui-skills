@@ -1,0 +1,262 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI v8.0 — Polymorphic Navigation Shells (n0..n4) & Native Drawers
+   ========================================================================== */
+
+@layer shell {
+  /* Core Shell Foundation */
+  .va-app-shell {
+    min-block-size: 100dvh;
+    display: grid;
+    background: var(--bg-canvas);
+    color: var(--text-primary);
+  }
+
+  /* 100dvh Stage-Lock for Viewport-Bound Tiers (Deck-1, HUD-1, App-Tree) */
+  html[data-stage-lock="100dvh"] .va-app-shell {
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    overflow: hidden;
+  }
+  html[data-stage-lock="100dvh"] .va-stage {
+    block-size: 100%;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+
+  /* Common Shell Components */
+  .va-shell-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-block-size: 44px;
+    padding: 0.25rem 0.75rem;
+    border-bottom: 1px solid var(--border-hairline);
+    background: var(--bg-elevated);
+    z-index: 10;
+  }
+
+  .va-shell-brand {
+    font-size: var(--ts-sm);
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+  }
+
+  .va-shell-topbar-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .va-shell-topbar-link {
+    font-size: var(--ts-nav);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+  }
+  .va-shell-topbar-link:hover,
+  .va-shell-topbar-link.is-active {
+    color: var(--text-primary);
+    background: var(--bg-canvas);
+  }
+
+  .va-shell-rail {
+    background: var(--bg-elevated);
+    border-right: 1px solid var(--border-hairline);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    overflow-y: auto;
+  }
+
+  .va-rail-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.35rem 0.65rem 0.6rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border-hairline);
+    font-size: var(--ts-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .va-rail-link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.4rem 0.65rem;
+    font-size: var(--ts-sm);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    min-block-size: 34px;
+  }
+  .va-rail-link:hover,
+  .va-rail-link.is-active {
+    color: var(--text-primary);
+    background: var(--bg-canvas);
+    font-weight: 600;
+  }
+
+  .va-shell-bottomdock {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--border-hairline);
+    background: var(--bg-elevated);
+    padding: 0.25rem 0.5rem;
+  }
+
+  .va-shell-bottomdock button,
+  .va-shell-bottomdock a {
+    min-block-size: 48px;
+    white-space: nowrap;
+    font-size: var(--ts-xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .va-shell-bottomdock button.is-active,
+  .va-shell-bottomdock a.is-active {
+    color: var(--accent-primary);
+    font-weight: 600;
+  }
+
+  /* N0: Undecorated Stage */
+  html[data-effective-nav="n0"] .va-shell-topbar,
+  html[data-effective-nav="n0"] .va-shell-rail,
+  html[data-effective-nav="n0"] .va-shell-bottomdock { display: none; }
+  html[data-effective-nav="n0"] .va-app-shell { grid-template-rows: minmax(0, 1fr); }
+
+  /* N1: Left Rail (Desktop >= 1100px) / Drawer (< 1100px) */
+  @media (min-width: 1100px) {
+    html[data-effective-nav="n1"] .va-app-shell {
+      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+    }
+    html[data-effective-nav="n1"] .va-shell-topbar,
+    html[data-effective-nav="n1"] .va-shell-bottomdock { display: none; }
+    html[data-effective-nav="n1"] .va-shell-rail { display: flex; }
+  }
+
+  @media (max-width: 1099px) {
+    html[data-effective-nav="n1"] .va-app-shell {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    html[data-effective-nav="n1"] .va-shell-rail { display: none; width: 0; }
+    html[data-effective-nav="n1"] .va-shell-topbar { display: flex; }
+    html[data-effective-nav="n1"] .va-shell-bottomdock { display: none; }
+  }
+
+  /* N2: Top Bar with Responsive Drawer Collapse */
+  html[data-effective-nav="n2"] .va-shell-rail,
+  html[data-effective-nav="n2"] .va-shell-bottomdock { display: none; }
+  html[data-effective-nav="n2"] .va-shell-topbar {
+    display: flex; min-block-size: 46px; padding: 0.35rem 1rem;
+  }
+  html[data-effective-nav="n2"] .va-app-shell { grid-template-rows: auto minmax(0, 1fr); }
+
+  @media (max-width: 899px) {
+    html[data-effective-nav="n2"] .va-shell-topbar-links { display: none; }
+    html[data-effective-nav="n2"] #va-drawer-open-btn { display: inline-flex; }
+  }
+  @media (min-width: 900px) {
+    html[data-effective-nav="n2"] #va-drawer-open-btn { display: none; }
+  }
+
+  /* N3: Composite Top Bar + Left Rail */
+  @media (min-width: 1100px) {
+    html[data-effective-nav="n3"] .va-app-shell {
+      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    html[data-effective-nav="n3"] .va-shell-topbar { grid-column: 1 / -1; display: flex; }
+    html[data-effective-nav="n3"] .va-shell-rail { grid-column: 1; display: flex; }
+    html[data-effective-nav="n3"] .va-shell-bottomdock,
+    html[data-effective-nav="n3"] #va-drawer-open-btn { display: none; }
+  }
+
+  @media (max-width: 1099px) {
+    html[data-effective-nav="n3"] .va-app-shell {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+    html[data-effective-nav="n3"] .va-shell-rail { display: none; width: 0; }
+    html[data-effective-nav="n3"] .va-shell-topbar { display: flex; }
+    html[data-effective-nav="n3"] #va-drawer-open-btn { display: inline-flex; }
+    html[data-effective-nav="n3"] .va-shell-bottomdock { display: none; }
+  }
+
+  /* N4: Mobile Bottom Dock */
+  html[data-effective-nav="n4"] .va-shell-topbar,
+  html[data-effective-nav="n4"] .va-shell-rail { display: none; }
+  html[data-effective-nav="n4"] .va-app-shell { grid-template-rows: minmax(0, 1fr) auto; }
+  html[data-effective-nav="n4"] .va-shell-bottomdock { display: grid; }
+
+  /* Dialogs: Drawer & Figure Zoom */
+  dialog#va-shell-drawer,
+  dialog#va-fig-zoom-dialog {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-card);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 1.25rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
+    max-inline-size: min(90vw, 560px);
+    max-block-size: 90vh;
+    overflow-y: auto;
+  }
+
+  dialog#va-shell-drawer::backdrop,
+  dialog#va-fig-zoom-dialog::backdrop {
+    background: rgba(9, 13, 22, 0.52);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+
+  .va-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .va-drawer-nav { display: flex; flex-direction: column; gap: 0.35rem; }
+
+  .va-drawer-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    font-size: var(--ts-base);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    min-block-size: 44px;
+  }
+  .va-drawer-link:hover,
+  .va-drawer-link.is-active {
+    background: var(--bg-elevated);
+    font-weight: 600;
+  }
+}

@@ -1,0 +1,261 @@
+<template id="tpl-tier-app-2" data-tier="app-2" data-num="09" data-title="App-2 · HIL Photon Workbench" data-family="B" data-allowed-navs="n0,n2,n1" data-default-nav="n0">
+  <section id="tier-app-2" class="va-tier va-tier-app-2" aria-label="09 · App-2 HIL Photon Workbench">
+    <div class="app2-workbench">
+      <!-- Top Title & Station Banner -->
+      <header class="app2-top-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div class="app2-title-cluster" style="display:flex;align-items:center;gap:10px;">
+          <span class="va-badge"><i class="fa-solid fa-microchip"></i> HIL-BENCH</span>
+          <h2 class="app2-heading" style="margin:0;font-size:var(--ts-md);line-height:1.2;">
+            SNSPD Cryogenic Photon-Counting &amp; Synchronized Waveform Workbench
+          </h2>
+        </div>
+        <div class="app2-meta-cluster" style="display:flex;align-items:center;gap:12px;font-size:var(--ts-xs);">
+          <span class="mono" style="color:var(--text-secondary);"><i class="fa-solid fa-satellite-dish"></i> DSOC Palomar Hale 5.08m Receiver</span>
+          <span class="va-badge" style="color:var(--status-ok,#16a34a);"><i class="fa-solid fa-circle-dot"></i> HARDWARE-IN-LOOP SYNC</span>
+        </div>
+      </header>
+
+      <!-- 5-Segment KPI Instrument Strip -->
+      <div class="app2-kpi-strip" style="background:var(--bg-elevated);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:10px 14px;margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+        <div class="app2-kpi-item">
+          <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Detector Array</span>
+          <strong style="font-size:13px;color:var(--text-primary);">64-Ch Cryo SNSPD</strong>
+        </div>
+        <div class="app2-kpi-item">
+          <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Cryo Coldhead</span>
+          <strong class="mono" style="font-size:13px;color:var(--status-ok,#16a34a);">0.84 K Sub-Kelvin</strong>
+        </div>
+        <div class="app2-kpi-item">
+          <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Wavelength / Band</span>
+          <strong class="mono" style="font-size:13px;color:var(--accent-primary,#2563eb);">1550.92 nm (C-Band)</strong>
+        </div>
+        <div class="app2-kpi-item">
+          <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Downlink Telemetry</span>
+          <strong class="mono" style="font-size:13px;color:var(--text-primary);">267.0 Mbps (M=16 SCPPM)</strong>
+        </div>
+        <div class="app2-kpi-item">
+          <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Arrival Jitter (1&sigma;)</span>
+          <strong class="mono" style="font-size:13px;color:var(--text-primary);">0.38 ps RMS (&plusmn;1.5 ps req)</strong>
+        </div>
+      </div>
+
+      <!-- Synchronized 4-Strip Oscilloscope Workbench -->
+      <div class="va-card app2-scope-card" style="margin-bottom:12px;padding:12px;background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">Quad-Channel Synchronized HIL Oscilloscope</span>
+            <strong style="font-size:13px;color:var(--text-primary);"><i class="fa-solid fa-wave-square"></i> Real-Time DDMTD Phase Offset, BCJR LLR, FSM Voltage &amp; Coldhead Vibration</strong>
+          </div>
+          <span id="app2-cursor-readout" class="mono" style="font-size:11.5px;padding:4px 10px;border-radius:4px;background:var(--bg-elevated);color:var(--accent-primary,#2563eb);border:1px solid var(--border-hairline);">
+            Cursor: T+142ms &middot; Phase Skew: +0.42 ps &middot; SNSPD Array Locked
+          </span>
+        </div>
+
+        <!-- Strip 1: SNSPD Arrival Phase Residual (ps) -->
+        <div style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+            <span class="mono" style="font-weight: 600; color: var(--accent-primary, #2563eb);">CH-01: SNSPD Arrival Phase Residual (&Delta;<i>t</i> ps)</span>
+            <span class="mono" style="color: var(--text-secondary);">Scale: &plusmn;2.0 ps full scale</span>
+          </div>
+          <div class="app2-wave-wrap">
+            <svg class="app2-wave-svg" viewBox="0 0 600 130" preserveAspectRatio="xMidYMid slice" onclick="scrubApp2Wave(event)" style="inline-size:100%;block-size:66px;display:block;cursor:crosshair;" role="img" aria-label="Phase Residual Strip">
+              <line x1="0" y1="54" x2="600" y2="54" stroke="rgba(217, 119, 6, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="65" x2="600" y2="65" stroke="rgba(148, 163, 184, 0.30)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="76" x2="600" y2="76" stroke="rgba(217, 119, 6, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <path d="M 0 65 Q 35 56 75 68 T 150 60 T 225 71 T 300 59 T 375 65 T 450 56 T 525 67 T 600 63" fill="none" stroke="var(--accent-primary, #38bdf8)" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+              <polyline points="0,65 25,63 50,69 75,62 100,59 125,64 150,61 175,66 200,60 225,68 250,62 275,60 300,64 325,67 350,61 375,64 400,60 425,65 450,59 475,63 500,67 525,62 550,64 575,61 600,64" fill="none" stroke="#e2e8f0" stroke-width="1.1" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/>
+              <line class="hil-cursor-line" x1="300" y1="0" x2="300" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <span class="app2-thresh-pill app2-thresh-ceil">+1.5 ps Ceil</span>
+            <span class="app2-thresh-pill app2-thresh-base">0.0 ps Nom</span>
+            <span class="app2-thresh-pill app2-thresh-floor">-1.5 ps Floor</span>
+          </div>
+        </div>
+
+        <!-- Strip 2: BCJR Soft Demodulator LLR -->
+        <div style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+            <span class="mono" style="font-weight: 600; color: var(--status-ok, #16a34a);">CH-02: BCJR Log-Likelihood Ratio (&Lambda; Metric)</span>
+            <span class="mono" style="color: var(--text-secondary);">Convergence Threshold: &Lambda; &ge; 8.0</span>
+          </div>
+          <div class="app2-wave-wrap">
+            <svg class="app2-wave-svg" viewBox="0 0 600 130" preserveAspectRatio="xMidYMid slice" onclick="scrubApp2Wave(event)" style="inline-size:100%;block-size:66px;display:block;cursor:crosshair;" role="img" aria-label="BCJR LLR Strip">
+              <line x1="0" y1="55" x2="600" y2="55" stroke="rgba(34, 197, 94, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="65" x2="600" y2="65" stroke="rgba(148, 163, 184, 0.30)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>
+              <path d="M 0 75 Q 40 69 80 60 T 160 55 T 240 59 T 320 56 T 400 54 T 480 58 T 560 55 T 600 56" fill="none" stroke="#22c55e" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+              <polyline points="0,76 30,73 60,65 90,60 120,57 150,55 180,60 210,57 240,59 270,56 300,58 330,55 360,57 390,54 420,56 450,55 480,59 510,56 540,55 570,57 600,56" fill="none" stroke="#86efac" stroke-width="1.1" stroke-opacity="0.85" vector-effect="non-scaling-stroke"/>
+              <line class="hil-cursor-line" x1="300" y1="0" x2="300" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <span class="app2-thresh-pill app2-thresh-ceil">&Lambda; &ge; 8.0 Locked</span>
+            <span class="app2-thresh-pill app2-thresh-base">&Lambda; = 4.0 Half</span>
+            <span class="app2-thresh-pill app2-thresh-floor">&Lambda; &le; 1.0 Drop</span>
+          </div>
+        </div>
+
+        <!-- Strip 3: FSM Piezo Error Voltage -->
+        <div style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+            <span class="mono" style="font-weight: 600; color: #f59e0b;">CH-03: Fast Steering Mirror Piezo Error Voltage (<i>V</i><sub>err</sub>)</span>
+            <span class="mono" style="color: var(--text-secondary);">Closed-Loop 2.4 kHz Bandwidth</span>
+          </div>
+          <div class="app2-wave-wrap">
+            <svg class="app2-wave-svg" viewBox="0 0 600 130" preserveAspectRatio="xMidYMid slice" onclick="scrubApp2Wave(event)" style="inline-size:100%;block-size:66px;display:block;cursor:crosshair;" role="img" aria-label="Piezo Voltage Strip">
+              <line x1="0" y1="54" x2="600" y2="54" stroke="rgba(245, 158, 11, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="65" x2="600" y2="65" stroke="rgba(148, 163, 184, 0.30)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="76" x2="600" y2="76" stroke="rgba(245, 158, 11, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <path d="M 0 65 Q 25 73 50 57 T 100 72 T 150 59 T 200 69 T 250 62 T 300 68 T 350 58 T 400 71 T 450 61 T 500 67 T 550 62 T 600 65" fill="none" stroke="#f59e0b" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+              <line class="hil-cursor-line" x1="300" y1="0" x2="300" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <span class="app2-thresh-pill app2-thresh-ceil">+2.5V Sat</span>
+            <span class="app2-thresh-pill app2-thresh-base">0.0V Null</span>
+            <span class="app2-thresh-pill app2-thresh-floor">-2.5V Sat</span>
+          </div>
+        </div>
+
+        <!-- Strip 4: Cryostat Coldhead Vibration -->
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
+            <span class="mono" style="font-weight: 600; color: #a855f7;">CH-04: Cryostat Cold Head Vibration Acceleration (g RMS)</span>
+            <span class="mono" style="color: var(--text-secondary);">Pulse Tube Active Cancellation</span>
+          </div>
+          <div class="app2-wave-wrap">
+            <svg class="app2-wave-svg" viewBox="0 0 600 130" preserveAspectRatio="xMidYMid slice" onclick="scrubApp2Wave(event)" style="inline-size:100%;block-size:66px;display:block;cursor:crosshair;" role="img" aria-label="Coldhead Vibration Strip">
+              <line x1="0" y1="56" x2="600" y2="56" stroke="rgba(168, 85, 247, 0.45)" stroke-width="1" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="65" x2="600" y2="65" stroke="rgba(148, 163, 184, 0.30)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>
+              <path d="M 0 65 Q 15 61 30 69 T 60 62 T 90 68 T 120 63 T 150 67 T 180 61 T 210 68 T 240 62 T 270 67 T 300 63 T 330 68 T 360 62 T 390 67 T 420 63 T 450 68 T 480 62 T 510 67 T 540 63 T 570 68 T 600 65" fill="none" stroke="#c084fc" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+              <line class="hil-cursor-line" x1="300" y1="0" x2="300" y2="130" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,2" vector-effect="non-scaling-stroke"/>
+            </svg>
+            <span class="app2-thresh-pill app2-thresh-ceil">0.05g Trip</span>
+            <span class="app2-thresh-pill app2-thresh-base">0.01g Nom</span>
+            <span class="app2-thresh-pill app2-thresh-floor">0.00g Quiet</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FPGA BAR0 Register Space Hex Dump & CSR Map -->
+      <div class="va-card" style="padding:10px 14px;background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span class="mono" style="font-size:11.5px;font-weight:600;color:var(--text-primary);">
+            <i class="fa-solid fa-memory"></i> FPGA Baseband Demodulator BAR0 Register CSR Map
+          </span>
+          <span class="mono" style="font-size:11px;color:var(--text-secondary);">PCIe Gen4 x8 &middot; MMIO Base 0xFCA0_0000</span>
+        </div>
+        <div class="va-table-wrap" tabindex="0" role="region" aria-label="BAR0 Register Map">
+          <table class="va-data-table mono" style="font-size:11px;width:100%;">
+            <thead>
+              <tr>
+                <th>Offset</th>
+                <th>Register Name</th>
+                <th>Raw Hex</th>
+                <th>Field Decodes</th>
+                <th>State</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>0x0000_0000</code></td>
+                <td>CSR_DEMOD_CTRL</td>
+                <td><code>0x0000_0007</code></td>
+                <td>ENABLE=1, AUTO_RATE=1, SOFT_BCJR=1</td>
+                <td><span class="sq-status sq-ok"></span>ENGAGED</td>
+              </tr>
+              <tr>
+                <td><code>0x0000_0004</code></td>
+                <td>CSR_DEMOD_STATUS</td>
+                <td><code>0x0000_0033</code></td>
+                <td>CARRIER_LOCK=1, FRAME_SYNC=1, FIFO_READY=1</td>
+                <td><span class="sq-status sq-ok"></span>SYNCED</td>
+              </tr>
+              <tr>
+                <td><code>0x0000_0008</code></td>
+                <td>CSR_SNSPD_JITTER</td>
+                <td><code>0x0000_017C</code></td>
+                <td>ARRIVAL_DISP_RAW=380 (0.38 ps RMS)</td>
+                <td><span class="sq-status sq-ok"></span>NOMINAL</td>
+              </tr>
+              <tr>
+                <td><code>0x0000_000C</code></td>
+                <td>CSR_BCJR_ITER</td>
+                <td><code>0x0000_0004</code></td>
+                <td>CURRENT_ITER_COUNT=4 (BUDGET=10)</td>
+                <td><span class="sq-status sq-ok"></span>CONVERGED</td>
+              </tr>
+              <tr>
+                <td><code>0x0000_0010</code></td>
+                <td>CSR_FRAME_ERRORS</td>
+                <td><code>0x0000_0000</code></td>
+                <td>UNRESOLVED_CRC_ERRORS=0 / 142,850 FRAMES</td>
+                <td><span class="sq-status sq-ok"></span>ZERO ERR</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Docked Channel Telemetry Matrix -->
+      <div class="va-table-wrap" tabindex="0" role="region" aria-label="Cryogenic Channel Telemetry Matrix" style="border:1px solid var(--border-hairline);border-radius:var(--radius-card);background:var(--bg-surface);">
+        <table class="va-data-table" style="width:100%;border-collapse:collapse;font-size:12px;text-align:left;">
+          <thead>
+            <tr style="background:var(--bg-elevated);border-bottom:1px solid var(--border-hairline);color:var(--text-muted);">
+              <th style="padding:8px 12px;font-weight:600;">CHANNEL &middot; SUBSYSTEM</th>
+              <th style="padding:8px 12px;font-weight:600;">STATUS</th>
+              <th style="padding:8px 12px;font-weight:600;text-align:right;">READING</th>
+              <th style="padding:8px 12px;font-weight:600;text-align:right;">24H MIN / MAX</th>
+              <th style="padding:8px 12px;font-weight:600;">MARGIN TRACK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border-hairline);">
+              <td style="padding:8px 12px;"><strong>CH-01 SNSPD Phase Residual</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> NOMINAL</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">+0.42 ps</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">-0.68 / +0.94 ps</td>
+              <td style="padding:8px 12px;">28% of &plusmn;1.5 ps window</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-hairline);">
+              <td style="padding:8px 12px;"><strong>CH-02 1550nm Optical Rx Power</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> LOCKED</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">-112.4 dBm</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">-114.1 / -110.8 dBm</td>
+              <td style="padding:8px 12px;">+4.6 dB over threshold</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-hairline);">
+              <td style="padding:8px 12px;"><strong>CH-03 VCXO Offset DAC</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> TRACKING</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">2,048.2 mV</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">2,044.0 / 2,052.1 mV</td>
+              <td style="padding:8px 12px;">Centered (&plusmn;0.2 mV drift)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-hairline);">
+              <td style="padding:8px 12px;"><strong>CH-04 Cryostat Cold Head</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> CRYO OK</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">0.84 K</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">0.81 / 0.88 K</td>
+              <td style="padding:8px 12px;">Sub-Kelvin cycle stable</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border-hairline);">
+              <td style="padding:8px 12px;"><strong>CH-05 SCPPM Decoder Clock</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> SYNCED</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">267.0 MHz</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">266.9 / 267.1 MHz</td>
+              <td style="padding:8px 12px;">CCSDS 133.0-B-2 compliant</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px;"><strong>CH-06 FSM Piezo High-Voltage Bias</strong></td>
+              <td style="padding:8px 12px;"><span class="va-badge" style="color:var(--status-ok, #059669);"><i class="fa-solid fa-check"></i> BALANCED</span></td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">118.4 V</td>
+              <td class="mono" style="padding:8px 12px;text-align:right;">116.0 / 121.2 V</td>
+              <td style="padding:8px 12px;">Thermal equilibrium confirmed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Telemetry Footer -->
+      <footer style="margin-top:10px;padding:6px 2px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span>NASA NTRS 20240003670 &middot; Deep Space Optical Communications Ground Receiver Telemetry</span>
+        <span>Cryogenic Nanowire Array &middot; Palomar 5.08m Hale Telescope Facility</span>
+      </footer>
+    </div>
+  </section>
+</template>

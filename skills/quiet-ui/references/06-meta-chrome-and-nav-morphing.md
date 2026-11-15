@@ -1,75 +1,193 @@
-# Reference 06: Navigation Topologies (`N0–N4`), Font Awesome 6 Taxonomy, Hamburger Rail Collapse & App Shell Essentials
+# Reference 06: Universal Responsive Stage Portal, Navigation Topologies (`N0–N4`) & Responsive Drawers
 
-Every deliverable across the 17-Tier Continuum follows deterministic navigation selection rules, **Font Awesome 6 (`fa-solid`) vector icon taxonomy (zero unicode emojis)**, **borderless `.va-tab-link` / `.va-side-link` nav anatomy**, **Hamburger Rail Collapse (`toggleLeftRailCollapse()`)**, and the **Single-Bar Rule** (`<= 1` visible top, left, and bottom bar at any time).
-
----
-
-## 1. Navigation Topology Selection (`N0`–`N4`) & Single-Bar Invariant
-
-1. **`N0 · Zero-Chrome Kiosk` (`02. Doc-2`, `03. Doc-3`, `06. Bridge-1`, `15. HA-1`):**
-   - **Rule:** Zero navigation bars (`0px`). Stage owns `100vw × 100dvh`.
-2. **`N1 · Full-Height Left Sidebar / Spine` (`01. Doc-1`, `05. Doc-4A`, `07. Deck-1`, `09. App-2`, `10. App-1`, `11. App-4`, `13. App-5`, `14. App-Tree`, `16. HA-2`):**
-   - **When to Choose:** Vertical height (`100dvh`) is the scarce resource or navigation has `> 5` items/tree nodes.
-   - **Hamburger Rail Collapse (`.va-hamburger-btn`):** Every `N1` / `N3` sidebar includes `<button type="button" class="va-hamburger-btn" onclick="toggleLeftRailCollapse()"><i class="fa-solid fa-bars"></i></button>` that toggles `html.is-rail-collapsed`, smoothly collapsing the `220px–260px` sidebar into a `60px` icon-only rail (`labels hidden`, icons centered).
-3. **`N2 · Pure Single Top Command Bar` (`08. Bridge-2`, `12. App-3`):**
-   - **When to Choose:** Horizontal width (`100vw`) is scarce and top-level navigation has `<= 5` views.
-   - **Borderless Tab Anatomy (`.va-tab-link`):** Never put boxy `.c-btn` buttons inside `<nav>` or `<header>`. Use borderless `.va-tab-link` (`height: 42px`, `border-bottom: 2px solid transparent`, `.active { border-bottom-color: var(--accent-focal); }`) with `<i class="fa-solid ..."></i>` + label.
-4. **`N3 · Hybrid Enterprise L-Shell (Top + Left)` (`04. Doc-4B`):**
-   - **Single-Bar & Anti-Duplication Rule:** At most `1` top bar and `1` left rail may be visible simultaneously. Never show `switchTier()` tier numbers in `N3` bars, and never show two stacked top bars (e.g. hide `.ha2-top-strip` when `.va-poly-n3-topbar` is visible).
-5. **`N4 · Sticky Bottom Thumb-Zone Dock` (`17. HA-3` and all `390px` mobile views):**
-   - **Rule:** `40px` centered desktop pill (`<= 520px` wide) / `48px–52px` mobile bottom bar with 5 thumb-reachable slots (icon stacked above `11px` `--ts-xs` label); strictly zero top navbar, and main scroll containers add `padding-bottom >= 64px` (`76px` in `14. App-Tree`).
-6. **Zero-Drift `13px` Sans Nav Typography & Straight `::before` Vertical Pill:**
-   - **Identical Nav Typography (`0px` Variance Across All 17 Tiers):** Every `.va-side-link`, `.va-tab-link`, `.va-poly-n2-bar a`, `.va-poly-n3-topbar a`, `.app1-nav-btn`, and `.va-tree-node` renders at `font-family: var(--font-sans) !important; font-size: var(--ts-nav, 13px) !important; font-weight: 500 !important; line-height: 1.35 !important;`.
-   - **Straight Active Indicator Rule:** Never combine `border-radius > 0` with `box-shadow: inset 3px 0 0 ...` or `border-left: 3px solid ...` on active sidebar/drawer links or tree nodes. Always render the active indicator as a straight vertical pill pseudo-element (`.va-side-link.active::before, .va-tree-node.active::before, .app1-nav-btn.active::before { content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 3px; border-radius: 99px; background: var(--accent-focal); }`), hidden (`display: none !important`) when collapsed to `60px`.
+Quiet UI pairs a universal viewport simulation portal (`<iframe id="va-stage-portal">`) with deterministic navigation topologies, a single-row 44px outer studio bar, borderless navigation affordances, and responsive `<dialog closedby="any">` drawers.
 
 ---
 
-## 2. Font Awesome 6 (`fa-solid`) Vector Icon Taxonomy & Zero-Emoji Rule
+## 1. Stage Portal & Studio Bar Architecture
 
-Load Font Awesome 6 CSS (`https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css`) with an offline CSS glyph fallback table so icons render cleanly both online and air-gapped. **Strictly forbid unicode emojis (`✨`, `⚡`, `☀`, `🛡`, `●`, `&#10024;`) anywhere in the HTML.**
+### 1.1 Universal Responsive Stage Portal (`<iframe id="va-stage-portal">`)
+The Stage Portal isolates and previews any tier under calibrated physical hardware envelopes without resizing the parent browser window:
+- **Calibrated Physical Hardware Presets:**
+  - `Fill`: Unconstrained 100% parent container width and height.
+  - `390×844`: Modern handheld phone portrait envelope (390×844 CSS px).
+  - `820×1180`: Tablet, foldable, and split-screen operational envelope (820×1180 CSS px).
+  - `1080p` (`1920×1080`): Standard high-definition display and wall kiosk.
+  - `1440p` (`2560×1440`): QHD operator workstation.
+  - `4K` (`3840×2160`): Ultra-high-resolution mission operations canvas.
+- **Continuous Drag Resizing & Auto-Fit:**
+  - Right-edge and bottom-corner drag handles enable continuous interactive width/height stress-testing.
+  - `Auto-Fit / 1:1` toggle scales the iframe smoothly via CSS `transform: scale(...)` to fit available screen space without clipping, or renders at exact 1:1 pixel fidelity.
 
-| Domain / Function | Standard `fa-solid` Icon Classes |
-| :--- | :--- |
-| **Navigation & Shell** | `fa-bars` (Hamburger collapse), `fa-magnifying-glass` (Search), `fa-user-astronaut` (Profile), `fa-sliders` |
-| **Editorial & Mermaid** | `fa-book-open`, `fa-scroll`, `fa-scale-balanced`, `fa-code`, `fa-terminal`, `fa-diagram-project`, `fa-file-pdf` |
-| **Workspaces (`App-1..5`)** | `fa-layer-group`, `fa-bolt` (Active/Focus), `fa-clock`, `fa-calendar-week`, `fa-wand-magic-sparkles`, `fa-heart-pulse`, `fa-leaf` |
-| **Tree & Schema (`App-Tree`)** | `fa-database`, `fa-table`, `fa-key` (PK), `fa-link` (FK), `fa-folder-open`, `fa-file-code`, `fa-chevron-right` |
-| **Home Assistant (`HA-1..3`)** | `fa-lightbulb`, `fa-temperature-half`, `fa-shield-halved`, `fa-video`, `fa-couch`, `fa-utensils`, `fa-bed`, `fa-warehouse` |
+### 1.2 Single-Row 44px Outer Studio Bar (`#va-studio-bar`)
+The outer studio bar provides persistent session control in a single `44px` row without vertical multi-row stack bloat:
+- **Left Section (Mode Toggle):**
+  - Segmented `[UI | Atlas]` pill toggle switching between the 16 interactive UI tiers and the 45-Type Diagram Atlas.
+  - Conditional badge (`45`) displayed when Atlas mode is active.
+- **Center Section (Tier & View Stepper):**
+  - Left chevron `[‹]` button.
+  - Native `<select id="va-tier-select">` dropdown with all 16 canonical UI tiers (or 7 Atlas family jump anchors).
+  - Right chevron `[›]` button.
+- **Right Section (Viewport-Adaptive Fast Actions):**
+  - **Narrow Viewports (`< 700px`):** `[◐]` quick theme cycle button + `[⚙]` settings sheet trigger with a `6px` configuration indicator dot.
+  - **Medium Viewports (`700px–1099px`):** 4 Theme Dots (`white`, `paper`, `dark-paper`, `dark`) + `Nav` dropdown + `[⚙]` settings trigger.
+  - **Wide Desktop (`>= 1100px`):** 4 Theme Dots + `Nav` dropdown + `Stage` preset pills (`Fill`, `390`, `820`, `1080p`, `1440p`, `4K`, `1:1`) + `[⚙]` settings trigger.
+- **Mobile Auto-Tuck Ergonomics:** On handheld screens (`< 700px`), the studio bar automatically tucks away (`transform: translateY(-100%)`) on scroll down and smoothly restores on scroll up or hover.
 
 ---
 
-## 3. Editorial Purity, Zero Debug Header Rule & Sticky Sidebar Theme Footer
+## 2. Deterministic Navigation Topologies (`N0–N4`)
 
-1. **Zero SaaS Account Pod in Editorial Tiers (`01. Doc-1`–`06. Bridge-1`):** Documentation, RFCs, API references, and worksheets must NEVER render `.va-account-pod` (`AR · Author`) or account popovers. Replace right-hand masthead slots with document-native utilities (`[/] Search Corpus` + `.va-pill-btn` `PDF`).
-2. **Zero Internal Debug Strings in Headers:** Never render `11. APP-4 //`, `(N2 MASTHEAD)`, or `(85% BOX WEIGHT)` in visible `<header>`, `<nav>`, `<aside>`, or `<h1>` elements.
-3. **Non-Overlapping Top Studio Bar (`#va-floating-dock`) + Sticky Sidebar Theme & Density Footer (`.va-oa-sidebar-footer`):**
-   - Dock `#va-floating-dock` at `position: sticky; top: 0; z-index: 900; width: 100%; min-height: 40px;` ABOVE `.va-stage-outer` so it never overlaps bottom `N4` docks or right-hand inspectors.
-   - Every left sidebar includes `.va-oa-sidebar-footer.va-rail-hide` at the bottom with 4 circular theme swatches (`White`, `Paper`, `Sepia`, `Dark`), `Soft / Crisp`, and `D1 / D2 / D3` density pills.
-   - Opening the drawer on `<= 1099px` activates the theme-matched backdrop scrim (`#va-drawer-scrim`) and morphs `.va-hamburger-btn i` from `fa-bars` to `fa-xmark`.
+### 2.1 Per-Tier Navigation Compatibility Matrix
+Every archetype defines compatible navigation shells. Incompatible combinations automatically fall back to the tier's default:
+
+| Navigation Shell | Archetype Compatibility Matrix | Primary Characteristics |
+| :--- | :--- | :--- |
+| **`N0 · Zero-Chrome Kiosk`** | `02. Doc-2`, `03. Doc-3`, `06. Bridge-1`, `15. HUD-1` | Zero chrome (`0px`). Viewport owns full canvas. Maximum immersion. |
+| **`N1 · Full-Height Left Rail`** | `01. Doc-1`, `05. Doc-4A`, `07. Deck-1`, `09. App-2`, `10. App-1`, `11. App-4`, `13. App-5`, `14. App-Tree`, `16. Ctrl-1` | `220px–260px` sidebar with `.va-hamburger-btn` collapsing to `60px` icon rail. |
+| **`N2 · Single Top Command Bar`** | `08. Bridge-2`, `12. App-3` | `42px` borderless horizontal tabs (`.va-tab-link`). |
+| **`N3 · Hybrid L-Shell`** | `04. Doc-4B` | Single top bar + left symbol tree. Strictly `<= 1` top and left bar. |
+| **`N4 · Bottom Thumb Dock`** | Handheld viewports (`< 700px`) ONLY | `52px` 5-slot bottom thumb bar. Prohibited on desktop viewports. |
+
+### 2.2 The Single-Bar Invariant
+At most **one top command bar**, **one left rail**, and **one bottom dock** may be active simultaneously. Stacking multiple top navigation bars or combining duplicate left rails is strictly prohibited.
+
+### 2.3 Active Navigation Indicator Architecture
+Active navigation pills, sidebar links, and object tree nodes enforce a straight vertical indicator pseudo-element rather than curved or rounded borders:
+```css
+.va-side-link.is-active::before,
+.va-tab-link.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 99px;
+  background: var(--accent-focal);
+}
+```
 
 ---
 
-## 4. Inline Summary Bar, Account Menu & 3-Channel Notifications (Workspaces `07`–`17`)
+## 3. Responsive Drawer Behavior & `<dialog>` Overlays
 
-1. **3-Tier Summary Progression:** Inline Summary Bar (`<= 36px` `.va-pulse-strip`), On-Demand Summary Drawer (`.va-pulse-drawer`), and Dedicated `Insights` Route (`12. App-3`).
-2. **Standardized Account Menu (`#va-account-pod` + `.va-account-popover`):** Pinned to bottom-left of `N1` sidebars and top-right of `N2`/`N3` bars in application tiers (`07`–`17`).
-3. **3-Channel Notification Discipline:** Monochrome `Inbox · 4` pill (`.va-inbox-pill`), `6px` sync heartbeat dot (`.va-sync-dot`), and dismissible `32px` `.va-tripwire-banner`.
+### 3.1 Tablet & Medium Screens (`641px–1099px`)
+- Left rails auto-collapse to a compact `60px` centered icon rail.
+- Clicking the `.va-hamburger-btn` expands the rail in-flow within the grid (`220px minmax(0, 1fr)`) with `0px` inline overlap and zero sliced content.
+
+### 3.2 Mobile Screens (`<= 640px`)
+- Sidebars open via lightweight `<dialog closedby="any">` overlay drawers (`position: fixed; top: 44px; width: 240px; z-index: 600`) with theme backdrop scrim.
+- Primary navigation routes transfer to the bottom thumb dock (`N4`).
+- Main scroll container applies `padding-bottom: max(64px, env(safe-area-inset-bottom, 20px))` to prevent bottom dock obstruction.
 
 ---
 
-## 5. 3-Breakpoint Responsive Nav Morphing & 408-Permutation Invariants (`17 Tiers × 3 Breakpoints × 8 Nav States`)
+## 4. Implementation Code Patterns & Token Bindings
 
-1. **Unified Effective-Nav Selectors (`:root[data-effective-nav="..."]`):**
-   - Bind 100% of polymorphic navbar visibility and grid track rules to `:root[data-effective-nav="n0..n4"]` rather than `:root[data-nav-shell]` so `Auto` and explicit `N0–N4` share identical layout geometry (`0` duplicate headers on `Bridge-2` / `App-2`, preserved `.deck1-hdr` masthead on `Deck-1`).
-2. **Desktop (`@media (min-width: 1100px)`):**
-   - Scope all multi-column desktop grid tracks (`220px minmax(0, 1fr) 330px`, `html.is-rail-collapsed` `60px` rail tracks, and `N4` single-column/centered resets) strictly inside `@media (min-width: 1100px)` so desktop multi-column tracks never leak into tablet or phone viewports.
-3. **Tablet / Unfolded Foldable (`@media (min-width: 641px) and (max-width: 1099px)`):**
-   - **Closed `60px` Icon Rail (`N1` / `N3`):** Auto-collapse left sidebars to `60px` (`grid-template-columns: 60px minmax(0, 1fr)`), centering icons, `.va-account-pod` (`44px`), and styling `.va-side-link.active` as a centered `44px × 36px` rounded icon pill (`border-left: none; border-radius: var(--radius-inner, 6px); margin: 0 auto`).
-   - **In-Flow `220px` Grid Expansion (`html.is-drawer-open`, Zero Overlap):** At `641px–1099px`, clicking `.va-hamburger-btn` MUST expand the left sidebar **in-flow inside the CSS Grid** (`position: sticky; top: 0; width: 220px; grid-template-columns: 220px minmax(0, 1fr)`), pushing the main content column cleanly to `x >= 220px` (`mainRect.left >= railRect.right - 2`, **strictly zero horizontal overlap or sliced prose/headings**). Never use a fixed overlay drawer at `641px–1099px`.
-   - **Nav-Switch & Tier-Switch State-Reset Rule:** Every call to `setNavShell()`, `cycleNavShell()`, or `switchTier()` (and `syncEffectiveNav()` whenever `eff !== 'n1' && eff !== 'n3'`) MUST execute `document.documentElement.classList.remove('is-drawer-open', 'is-rail-collapsed')`, and all `html.is-drawer-open` CSS rules MUST be qualified with `:root:not([data-effective-nav="n0"]):not([data-effective-nav="n2"]):not([data-effective-nav="n4"])` so an expanded sidebar can never bleed into `N0`, `N2`, or `N4`.
-   - **Full-Width `N0` / `N2` / `N4`:** Force `grid-template-columns: minmax(0, 1fr) !important` and stack right-hand inspector/code panes full-width below (`grid-column: 1 / -1`) with `0px` empty right-hand holes.
-4. **Phone (`@media (max-width: 640px)`):**
-   - **`Auto` & `N4`:** Resolve `Auto` to `N4` (`52px` fixed 5-slot bottom thumb bar, `0` top/left bars).
-   - **`N2`:** Single-row `42px` horizontally scrollable top bar (`flex-wrap: nowrap; overflow-x: auto; max-width: 100vw`) with `0px` horizontal page overflow.
-   - **`N1` & `N3`:** Compact `42px` single-row top bar with `.va-hamburger-btn` (`hamCount = 1`) that toggles the **`240px` fixed overlay drawer** (`position: fixed; top: 42px; width: 240px; z-index: 600` — scoped strictly to `@media (max-width: 640px)`), while main content spans `100%` of the phone viewport.
-   - **Zero `@container` vs. `@media` Collisions:** Never attach `container-type: inline-size` to `.va-viewport-stage`; drive all responsive reflows via `@media` breakpoints.
+### 4.1 Studio Bar Single-Row Layout
+```css
+#va-studio-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 1rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-hairline);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#va-studio-bar.is-tucked {
+  transform: translateY(-100%);
+}
+```
+
+### 4.2 Labeled Settings Sheet Dialog (`#va-studio-sheet`)
+```html
+<dialog id="va-studio-sheet" class="va-settings-sheet" aria-labelledby="sheet-title" closedby="any">
+  <div class="sheet-header">
+    <h3 id="sheet-title">Showcase Studio Settings</h3>
+    <button type="button" class="va-pill-btn" onclick="closeStudioSheet()">Close</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-row">
+      <label for="sheet-theme-select">Surface Theme</label>
+      <select id="sheet-theme-select">
+        <option value="white">Pure White (Default)</option>
+        <option value="paper">Warm Editorial Paper</option>
+        <option value="dark-paper">Dark Technical Paper</option>
+        <option value="dark">Deep Space Optical Dark</option>
+      </select>
+    </div>
+    <div class="sheet-row">
+      <label for="sheet-density-select">Interface Density</label>
+      <select id="sheet-density-select">
+        <option value="compact">Compact (High Density)</option>
+        <option value="balanced" selected>Balanced (Standard)</option>
+        <option value="comfortable">Comfortable</option>
+      </select>
+    </div>
+    <div class="sheet-row">
+      <label for="sheet-corners-select">Corner Geometry</label>
+      <select id="sheet-corners-select">
+        <option value="auto" selected>Concentric Auto</option>
+        <option value="sharp">Technical Sharp (0px)</option>
+      </select>
+    </div>
+  </div>
+</dialog>
+```
+
+### 4.3 Mobile Bottom Thumb Dock (N4) Architecture
+```css
+.va-bottom-dock {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-hairline);
+  z-index: 500;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (max-width: 640px) {
+  .va-bottom-dock {
+    display: flex;
+  }
+}
+
+.dock-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.dock-slot.is-active {
+  color: var(--accent-focal);
+  font-weight: 600;
+}
+```
+
+---
+
+## 5. Verification & Audit Checklist for Meta Chrome & Navigation
+- [ ] Studio bar maintains exact `44px` single-row height across all screen resolutions.
+- [ ] Studio bar fast actions adapt responsively (`< 700px`, `700–1099px`, `>= 1100px`).
+- [ ] Settings sheet opens cleanly via `<dialog id="va-studio-sheet">` with full keyboard escape support.
+- [ ] Desktop default navigation (`>= 700px`) is strictly `N1` or `N2` (zero desktop `N4`).
+- [ ] Mobile viewports (`<= 640px`) render `N4` bottom dock with safe bottom clearance.
+- [ ] Active navigation indicators use straight vertical pseudo-elements with zero curved borders.

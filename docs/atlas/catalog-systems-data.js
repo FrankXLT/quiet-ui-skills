@@ -11,21 +11,21 @@
       desc: "Component topology of White Rabbit optical array connecting Grandmaster, DDMTD PLL, and node array.",
       prompt: "Create a Quiet UI architecture diagram for WR-NODE-01..08 optical phase-lock array with grandmaster and DDMTD helper PLL.",
       doc: "references/type-architecture.md",
-      svg: wSvg(`${b(15, 58, 85, 60, "Grandmaster", "DWDM 10MHz")}<path d="M 100 88 L 130 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(130, 58, 85, 60, "DDMTD PLL", "Helper Loop", "var(--tint-indigo-bg)")}<path d="M 215 88 L 242 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(242, 58, 68, 60, "WR-NODE", "01..08")}`, "Architecture Topology")
+      svg: wSvg(`${b(15, 58, 85, 60, "Grandmaster", "DWDM 10MHz")}<path d="M 100 88 L 130 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(130, 58, 85, 60, "DDMTD PLL", "Helper Loop", "var(--tint-indigo-bg)")}<path d="M 215 88 L 242 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(242, 58, 68, 60, "WR-NODE", "01..08")}`, "Architecture Topology")
     },
     {
       id: "architecture-delta", title: "Architecture Delta", family: "systems", familyName: "Systems & Cloud", pattern: "Secure Paved Road",
       desc: "Baseline vs proposed layout highlighting addition of DDMTD helper loop and deprecation of legacy coax.",
       prompt: "Generate an architecture-delta diagram showing migration from legacy coaxial distribution to optical phase lock.",
       doc: "references/type-architecture-delta.md",
-      svg: wSvg(`${b(15, 25, 98, 50, "Grandmaster", "Atomic Clock")}${b(15, 100, 98, 50, "Legacy Coax", "[- Retiring]", "var(--tint-rose-bg)")}<path d="M 113 50 L 155 50" stroke="var(--accent-primary)" stroke-width="1.5"/>${b(155, 25, 150, 50, "DDMTD Phase Lock", "[+ Proposed]", "var(--tint-indigo-bg)")}<path d="M 113 125 L 200 125" stroke="var(--status-danger)" stroke-width="1.5" stroke-dasharray="4 2"/>`, "Architecture Delta")
+      svg: wSvg(`${b(15, 25, 98, 50, "Grandmaster", "Atomic Clock")}${b(15, 100, 98, 50, "Legacy Coax", "[- Retiring]", "var(--tint-rose-bg)")}<path d="M 113 50 L 155 50" fill="none" stroke="var(--accent-primary)" stroke-width="1.5"/>${b(155, 25, 150, 50, "DDMTD Phase Lock", "[+ Proposed]", "var(--tint-indigo-bg)")}<path d="M 113 125 L 200 125" fill="none" stroke="var(--status-danger)" stroke-width="1.5" stroke-dasharray="4 2"/>`, "Architecture Delta")
     },
     {
       id: "high-level", title: "High-Level Overview", family: "systems", familyName: "Systems & Cloud", pattern: "Stage Framework",
-      desc: "Three-tier macro system overview: Optical Reference, Distribution Network, and Endpoints.",
-      prompt: "Draw a high-level 3-tier system overview for White Rabbit optical phase-lock distribution.",
+      desc: "Three-plane macro system overview: Optical Reference, Distribution Network, and Endpoints.",
+      prompt: "Draw a high-level 3-plane system overview for White Rabbit optical phase-lock distribution.",
       doc: "references/type-high-level.md",
-      svg: wSvg(`${b(15, 20, 290, 36, "Tier 1: Atomic Reference (DWDM Grandmaster)", "")}<path d="M 160 56 L 160 70" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 70, 290, 36, "Tier 2: Optical Distribution (DDMTD PLL Switched)", "")}<path d="M 160 106 L 160 120" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 120, 290, 36, "Tier 3: Sensor Endpoints (WR-NODE-01..08)", "")}`, "High Level Overview")
+      svg: wSvg(`${b(15, 20, 290, 36, "Plane 1: Atomic Reference (DWDM Grandmaster)", "")}<path d="M 160 56 L 160 70" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 70, 290, 36, "Plane 2: Optical Distribution (DDMTD PLL Switched)", "")}<path d="M 160 106 L 160 120" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 120, 290, 36, "Plane 3: Sensor Endpoints (WR-NODE-01..08)", "")}`, "High Level Overview")
     },
     {
       id: "it-state", title: "IT Operational State", family: "systems", familyName: "Systems & Cloud", pattern: "Lifecycle Phase Map",
@@ -39,28 +39,28 @@
       desc: "Physical 1U chassis mapping, PCIe accelerator slots, fiber patch panel, and database nodes.",
       prompt: "Diagram the physical hardware deployment topology of WR-01..08 across server racks.",
       doc: "references/type-deployment.md",
-      svg: wSvg(`<rect x="15" y="20" width="135" height="136" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="82" y="40" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Rack Chassis 1U</text>${b(25, 50, 115, 40, "Grandmaster 1U", "PCIe Slot 0")}${b(25, 100, 115, 44, "DDMTD Carrier", "Virtex FPGA", "var(--tint-indigo-bg)")}<path d="M 150 90 L 175 90" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="175" y="20" width="130" height="136" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="240" y="40" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Worker Nodes</text>${b(185, 50, 110, 40, "WR-NODE-01", "PCIe Slot 1")}${b(185, 100, 110, 44, "Timescale Host", "Hypertable DB")}`, "Deployment Topology")
+      svg: wSvg(`<rect x="15" y="20" width="135" height="136" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="82" y="40" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Rack Chassis 1U</text>${b(25, 50, 115, 40, "Grandmaster 1U", "PCIe Slot 0")}${b(25, 100, 115, 44, "DDMTD Carrier", "Virtex FPGA", "var(--tint-indigo-bg)")}<path d="M 150 90 L 175 90" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="175" y="20" width="130" height="136" rx="6" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="240" y="40" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Worker Nodes</text>${b(185, 50, 110, 40, "WR-NODE-01", "PCIe Slot 1")}${b(185, 100, 110, 44, "Timescale Host", "Hypertable DB")}`, "Deployment Topology")
     },
     {
       id: "dependency", title: "Dependency Matrix", family: "systems", familyName: "Systems & Cloud", pattern: "Traceable Block",
       desc: "Inter-component dependency graph connecting master clock, calibration loops, and telemetry sinks.",
       prompt: "Generate a dependency graph showing critical clock and telemetry relationships.",
       doc: "references/type-dependency.md",
-      svg: wSvg(`${b(110, 20, 100, 44, "Grandmaster", "Ref Source")}<path d="M 160 64 L 65 105" stroke="var(--accent-primary)" stroke-width="1.5"/><path d="M 160 64 L 255 105" stroke="var(--accent-primary)" stroke-width="1.5"/>${b(15, 105, 100, 48, "DDMTD Loop", "Helper PLL", "var(--tint-indigo-bg)")}${b(205, 105, 100, 48, "TimescaleDB", "Telemetry", "var(--tint-emerald-bg)")}<path d="M 115 129 L 205 129" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="3 3"/>`, "Dependency Map")
+      svg: wSvg(`${b(110, 20, 100, 44, "Grandmaster", "Ref Source")}<path d="M 160 64 L 65 105" fill="none" stroke="var(--accent-primary)" stroke-width="1.5"/><path d="M 160 64 L 255 105" fill="none" stroke="var(--accent-primary)" stroke-width="1.5"/>${b(15, 105, 100, 48, "DDMTD Loop", "Helper PLL", "var(--tint-indigo-bg)")}${b(205, 105, 100, 48, "TimescaleDB", "Telemetry", "var(--tint-emerald-bg)")}<path d="M 115 129 L 205 129" fill="none" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="3 3"/>`, "Dependency Map")
     },
     {
       id: "layers", title: "Architectural Layers", family: "systems", familyName: "Systems & Cloud", pattern: "Compensating Security",
       desc: "Stacked horizontal architectural layers from optical physics to analytical telemetry queries.",
-      prompt: "Draw a 4-tier layered architecture diagram for the White Rabbit system.",
+      prompt: "Draw a 4-layer architecture diagram for the White Rabbit system.",
       doc: "references/type-layers.md",
-      svg: wSvg(`${b(15, 16, 290, 32, "Layer 4 · Telemetry & Hypertable Analytics", "", "var(--tint-indigo-bg)")}${b(15, 54, 290, 32, "Layer 3 · Precision Time Protocol Engine", "")}${b(15, 92, 290, 32, "Layer 2 · DDMTD Phase Offset DSP", "")}${b(15, 130, 290, 32, "Layer 1 · DWDM Optical Physical Carrier", "", "var(--tint-emerald-bg)")}`, "Architectural Layers")
+      svg: wSvg(`${b(15, 16, 290, 32, "Layer 4 &middot; Telemetry &amp; Hypertable Analytics", "", "var(--tint-indigo-bg)")}${b(15, 54, 290, 32, "Layer 3 &middot; Precision Time Protocol Engine", "")}${b(15, 92, 290, 32, "Layer 2 &middot; DDMTD Phase Offset DSP", "")}${b(15, 130, 290, 32, "Layer 1 &middot; DWDM Optical Physical Carrier", "", "var(--tint-emerald-bg)")}`, "Architectural Layers")
     },
     {
       id: "nested", title: "Nested Containers", family: "systems", familyName: "Systems & Cloud", pattern: "Traceable Block",
       desc: "Nested boundary containment: Optical Rack Chassis containing FPGA blade containing DDMTD core.",
       prompt: "Create a nested containment diagram showing chassis and DSP sub-modules.",
       doc: "references/type-nested.md",
-      svg: wSvg(`<rect x="15" y="16" width="290" height="144" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="30" y="36" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600">Rack Chassis · WR-RACK-01</text><rect x="30" y="48" width="260" height="96" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="45" y="68" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600">FPGA Accelerator Blade</text>${b(45, 80, 230, 50, "DDMTD Phase Detector Engine", "Virtex-UP DSP Slice", "var(--tint-indigo-bg)")}`, "Nested Containers")
+      svg: wSvg(`<rect x="15" y="16" width="290" height="144" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="30" y="36" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600">Rack Chassis &middot; WR-RACK-01</text><rect x="30" y="48" width="260" height="96" rx="6" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="45" y="68" fill="var(--text-primary)" font-family="var(--font-sans)" font-size="11" font-weight="600">FPGA Accelerator Blade</text>${b(45, 80, 230, 50, "DDMTD Phase Detector Engine", "Virtex-UP DSP Slice", "var(--tint-indigo-bg)")}`, "Nested Containers")
     },
     {
       id: "exploded", title: "Exploded Hardware Planes", family: "systems", familyName: "Systems & Cloud", pattern: "Traceable Block",
@@ -88,21 +88,21 @@
       desc: "Queue buffering and phase error transformation flow from FPGA detectors to database ingestion.",
       prompt: "Draw a data-flow diagram showing telemetry ingress, queue buffer, and hypertable batching.",
       doc: "references/type-data-flow.md",
-      svg: wSvg(`${b(15, 60, 80, 56, "WR Detector", "100k fps")}<path d="M 95 88 L 120 88" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="120" y="60" width="75" height="56" rx="5" fill="var(--tint-amber-bg)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="157" y="84" fill="var(--tint-amber-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">FIFO Buffer</text><text x="157" y="100" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">512KB Ring</text><path d="M 195 88 L 220 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(220, 60, 85, 56, "TimescaleDB", "Batch Writer", "var(--tint-emerald-bg)")}`, "Data Flow Pipeline")
+      svg: wSvg(`${b(15, 60, 80, 56, "WR Detector", "100k fps")}<path d="M 95 88 L 120 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="120" y="60" width="75" height="56" rx="5" fill="var(--tint-amber-bg)" stroke="var(--border-strong)" stroke-width="1.2"/><text x="157" y="84" fill="var(--tint-amber-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">FIFO Buffer</text><text x="157" y="100" fill="var(--text-muted)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">512KB Ring</text><path d="M 195 88 L 220 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(220, 60, 85, 56, "TimescaleDB", "Batch Writer", "var(--tint-emerald-bg)")}`, "Data Flow Pipeline")
     },
     {
       id: "medallion", title: "Medallion Data Architecture", family: "data", familyName: "Data & Schema", pattern: "Unstructured to Structured",
       desc: "Bronze raw frames, Silver calibrated offsets, and Gold Allan deviation hypertable rollups.",
       prompt: "Render a Medallion architecture showing Bronze, Silver, and Gold data transformations.",
       doc: "references/type-medallion.md",
-      svg: wSvg(`${b(15, 30, 90, 116, "Bronze", "Raw UDP Packets", "var(--tint-amber-bg)")}<path d="M 105 88 L 115 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(115, 30, 90, 116, "Silver", "DDMTD Offset", "var(--bg-elevated)")}<path d="M 205 88 L 215 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(215, 30, 90, 116, "Gold", "Allan Deviation", "var(--tint-emerald-bg)")}`, "Medallion Pipeline")
+      svg: wSvg(`${b(15, 30, 90, 116, "Bronze", "Raw UDP Packets", "var(--tint-amber-bg)")}<path d="M 105 88 L 115 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(115, 30, 90, 116, "Silver", "DDMTD Offset", "var(--bg-elevated)")}<path d="M 205 88 L 215 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(215, 30, 90, 116, "Gold", "Allan Deviation", "var(--tint-emerald-bg)")}`, "Medallion Pipeline")
     },
     {
       id: "dp-integration", title: "Data Pipeline Integration", family: "data", familyName: "Data & Schema", pattern: "Stage Framework",
       desc: "Integration bus connecting streaming telemetry, processing workers, and analytical visualizers.",
       prompt: "Create a data pipeline integration blueprint with Kafka event bus and consumers.",
       doc: "references/type-dp-integration.md",
-      svg: wSvg(`${b(15, 35, 75, 46, "WR-NODE", "Producer")}${b(15, 95, 75, 46, "Grandmaster", "Producer")}<path d="M 90 58 L 120 88" stroke="var(--border-strong)" stroke-width="1.5"/><path d="M 90 118 L 120 88" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="120" y="50" width="75" height="76" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.2"/><text x="157" y="84" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Event Bus</text><text x="157" y="100" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">wr.telemetry</text><path d="M 195 88 L 225 88" stroke="var(--border-strong)" stroke-width="1.5"/>${b(225, 60, 80, 56, "TimescaleDB", "Consumer", "var(--tint-emerald-bg)")}`, "Data Integration")
+      svg: wSvg(`${b(15, 35, 75, 46, "WR-NODE", "Producer")}${b(15, 95, 75, 46, "Grandmaster", "Producer")}<path d="M 90 58 L 120 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/><path d="M 90 118 L 120 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/><rect x="120" y="50" width="75" height="76" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.2"/><text x="157" y="84" fill="var(--tint-indigo-fg)" font-family="var(--font-sans)" font-size="11" font-weight="600" text-anchor="middle">Event Bus</text><text x="157" y="100" fill="var(--accent-primary)" font-family="var(--font-mono)" font-size="11" text-anchor="middle">wr.telemetry</text><path d="M 195 88 L 225 88" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(225, 60, 80, 56, "TimescaleDB", "Consumer", "var(--tint-emerald-bg)")}`, "Data Integration")
     },
     {
       id: "er", title: "Entity Relationship", family: "data", familyName: "Data & Schema", pattern: "Traceable Block",
@@ -123,7 +123,7 @@
       desc: "Object-oriented class structures for PhaseController, DdmtdDetector, and TelemetryWriter.",
       prompt: "Create a UML class model showing inheritance and composition in the White Rabbit controller.",
       doc: "references/type-uml-class.md",
-      svg: wSvg(`${b(15, 20, 130, 60, "PhaseController", "+ lockPhase(): bool")}<path d="M 80 80 L 80 100" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 100, 130, 60, "DdmtdDetector", "- vcxo_offset: float")}<path d="M 145 50 L 175 50" stroke="var(--border-strong)" stroke-width="1.5"/>${b(175, 20, 130, 60, "TelemetryWriter", "+ append(sample): int")}`, "UML Class Diagram")
+      svg: wSvg(`${b(15, 20, 130, 60, "PhaseController", "+ lockPhase(): bool")}<path d="M 80 80 L 80 100" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(15, 100, 130, 60, "DdmtdDetector", "- vcxo_offset: float")}<path d="M 145 50 L 175 50" fill="none" stroke="var(--border-strong)" stroke-width="1.5"/>${b(175, 20, 130, 60, "TelemetryWriter", "+ append(sample): int")}`, "UML Class Diagram")
     }
   ];
 

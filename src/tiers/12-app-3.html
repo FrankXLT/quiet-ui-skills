@@ -1,0 +1,269 @@
+<template id="tpl-tier-app-3" data-tier="app-3" data-num="12" data-title="App-3 · DSN Executive Link Bento" data-family="C" data-allowed-navs="n1,n2,n3,n4" data-default-nav="n1">
+  <section id="tier-app-3" class="va-tier va-tier-app-3" aria-label="12 · App-3 DSN Executive Link Bento">
+    <div class="app3-bento">
+      <!-- Top Executive Bar with Time Horizon Switcher -->
+      <header class="app3-top-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <div>
+          <span class="va-badge"><i class="fa-solid fa-chart-pie"></i> DSN-EXECUTIVE</span>
+          <h2 style="font-size:var(--ts-md);margin:4px 0 0;font-weight:600;color:var(--text-primary);">
+            Deep Space Network Executive Link Status &amp; Performance Bento
+          </h2>
+        </div>
+        <div class="app3-meta-pills" style="display:flex;align-items:center;gap:6px;font-size:11px;">
+          <span class="mono" style="color:var(--text-secondary);margin-right:4px;">Time Horizon:</span>
+          <button type="button" class="va-pill-btn active" onclick="setApp3Horizon('24H', this)">24H</button>
+          <button type="button" class="va-pill-btn" onclick="setApp3Horizon('7D', this)">7D</button>
+          <button type="button" class="va-pill-btn" onclick="setApp3Horizon('30D', this)">30D</button>
+          <button type="button" class="va-pill-btn" onclick="setApp3Horizon('ORBIT', this)">ORBIT</button>
+        </div>
+      </header>
+
+      <!-- Complete 6-Card Executive Bento (Zero Empty Holes) -->
+      <div class="app3-grid">
+        <!-- Card 1 (Span 2): Optical vs Ka-Band Trajectory Plot -->
+        <div class="va-card app3-span-2" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+            <div>
+              <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+                Deep Space Flight Trajectory Comparison
+              </span>
+              <strong style="font-size:13px;color:var(--text-primary);">
+                <i class="fa-solid fa-chart-line"></i> Downlink Data Rate vs Heliocentric Distance (0.1 to 2.5 AU)
+              </strong>
+            </div>
+            <span class="mono" style="font-size:11px;color:var(--accent-primary,#2563eb);">
+              1550nm Laser vs 32 GHz Ka-Band
+            </span>
+          </div>
+
+          <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Optical vs Ka-Band Gain and Trajectory Comparison">
+            <svg class="app3-svg" viewBox="0 0 720 175" role="img" aria-label="Optical vs Ka-Band Gain and Trajectory Comparison" style="display:block;min-inline-size:560px;max-inline-size:840px;inline-size:100%;block-size:auto;background:var(--bg-canvas);border:1px solid var(--border-hairline);border-radius:6px;">
+              <!-- Shaded Optical Gain Advantage Corridor -->
+              <polygon points="68,42 210,56 395,92 555,124 680,136 680,144 68,140" fill="var(--tint-indigo-bg)" opacity="0.45"/>
+              <!-- Axis lines -->
+              <line x1="56" y1="22" x2="56" y2="146" stroke="var(--border-strong)" stroke-width="1.2"/>
+              <line x1="56" y1="146" x2="708" y2="146" stroke="var(--border-strong)" stroke-width="1.2"/>
+              <text class="va-svg-halo-text" x="708" y="164" fill="var(--text-secondary)" font-size="13.2" text-anchor="end" font-family="var(--font-mono)">Range (AU)</text>
+              <text class="va-svg-halo-text" x="64" y="32" fill="var(--text-secondary)" font-size="13" font-family="var(--font-mono)">Rate (Mbps)</text>
+              <!-- RF Ka-Band Baseline curve -->
+              <path d="M 68 140 L 210 141 L 395 142 L 535 143 L 680 144" fill="none" stroke="var(--text-muted)" stroke-width="1.8" stroke-dasharray="4,3"/>
+              <circle cx="210" cy="141" r="4" fill="var(--text-muted)"/>
+              <text class="va-svg-halo-text" x="224" y="136" fill="var(--text-secondary)" font-size="13" font-family="var(--font-mono)">RF Ka-Band Baseline (0.5 &ndash; 2.0 Mbps)</text>
+              <!-- DSOC Optical High-Rate Trajectory curve -->
+              <path d="M 68 42 C 145 46 265 62 395 92 S 585 126 680 136" fill="none" stroke="var(--accent-primary, #2563eb)" stroke-width="2.5"/>
+              <!-- Dumbbell marker at 0.4 AU -->
+              <line x1="210" y1="56" x2="210" y2="141" stroke="var(--accent-primary, #2563eb)" stroke-width="1.5" stroke-dasharray="3,2"/>
+              <circle cx="210" cy="56" r="5" fill="var(--accent-primary, #2563eb)"/>
+              <text class="va-svg-halo-text" x="224" y="52" fill="var(--accent-primary, #2563eb)" font-size="13.5" font-weight="700" font-family="var(--font-mono)">DSOC 267.0 Mbps (10&ndash;100x Gain)</text>
+              <!-- Range ticks with halo text -->
+              <text class="va-svg-halo-text" x="68" y="164" fill="var(--text-secondary)" font-size="13" font-family="var(--font-mono)">0.1</text>
+              <text class="va-svg-halo-text" x="210" y="164" fill="var(--text-secondary)" font-size="13" text-anchor="middle" font-family="var(--font-mono)">0.4</text>
+              <text class="va-svg-halo-text" x="350" y="164" fill="var(--text-secondary)" font-size="13" text-anchor="middle" font-family="var(--font-mono)">1.2</text>
+              <text class="va-svg-halo-text" x="468" y="164" fill="var(--text-secondary)" font-size="13" text-anchor="middle" font-family="var(--font-mono)">2.0</text>
+              <text class="va-svg-halo-text" x="572" y="164" fill="var(--text-secondary)" font-size="13" text-anchor="middle" font-family="var(--font-mono)">2.6</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Card 2: Downlink Science Volume & Pacing -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              Downlink Science Volume
+            </span>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;">
+              <strong id="bento-vol-val" class="mono" style="font-size:24px;color:var(--text-primary);letter-spacing:-0.02em;">4.2 TB</strong>
+              <span id="bento-pace-delta" class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">+0.6 TB ahead</span>
+            </div>
+            <p style="margin:4px 0 0;font-size:11.5px;color:var(--text-secondary);line-height:1.4;">
+              Science telemetry accumulated across recent Palomar 5.08m &amp; DSS-13 downlink passes.
+            </p>
+          </div>
+          <div class="va-panel-tonal" style="margin-top:10px;padding:8px 10px;border-radius:6px;background:var(--bg-elevated);font-size:11.5px;">
+            <div style="display:flex;justify-content:space-between;color:var(--text-secondary);margin-bottom:4px;">
+              <span>Flight Target: 4.0 TB</span>
+              <span class="mono">105% of Plan</span>
+            </div>
+            <div style="height:6px;border-radius:3px;background:var(--border-hairline);overflow:hidden;">
+              <div style="width:100%;height:100%;background:var(--status-ok,#16a34a);border-radius:3px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: 3-Complex Ground Station Share -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              Ground Network Fleet Share
+            </span>
+            <strong style="font-size:13px;color:var(--text-primary);display:block;margin-top:2px;">
+              <i class="fa-solid fa-earth-americas"></i> 3-Complex Global Coverage
+            </strong>
+            <!-- Proportional Stacked Bar -->
+            <div style="display:flex;height:12px;border-radius:4px;overflow:hidden;margin:10px 0 8px 0;border:1px solid var(--border-hairline);">
+              <div style="width:42%;background:var(--accent-primary,#2563eb);" title="Goldstone 42%"></div>
+              <div style="width:31%;background:#f59e0b;" title="Madrid 31%"></div>
+              <div style="width:27%;background:#10b981;" title="Canberra 27%"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;font-size:11px;">
+              <div style="display:flex;justify-content:space-between;">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--accent-primary,#2563eb);margin-right:4px;"></span>Goldstone (GDSCC)</span>
+                <span class="mono">42% (10.1h)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f59e0b;margin-right:4px;"></span>Madrid (MDSCC)</span>
+                <span class="mono">31% (7.4h)</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#10b981;margin-right:4px;"></span>Canberra (CDSCC)</span>
+                <span class="mono">27% (6.5h)</span>
+              </div>
+            </div>
+          </div>
+          <span class="mono" style="font-size:11px;color:var(--text-secondary);margin-top:6px;">
+            Total 24H Contact Time: 24.0h (100% continuous handovers)
+          </span>
+        </div>
+
+        <!-- Card 4: Photon Efficiency & Information Unit Economics -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              Photon Information Efficiency
+            </span>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:4px;">
+              <strong class="mono" style="font-size:22px;color:var(--accent-primary,#2563eb);">2.4 Bits/Photon</strong>
+              <span class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">Optimal SCPPM</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;font-size:11px;">
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--text-secondary);">Ground Cryo Energy:</span>
+                <span class="mono">0.18 kWh / GB</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--text-secondary);">Spacecraft Tx Power:</span>
+                <span class="mono">1,250 W / 267 Mbps</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--text-secondary);">Downlink Efficiency:</span>
+                <span class="mono" style="color:var(--status-ok,#16a34a);font-weight:600;">+18.4 dB over RF</span>
+              </div>
+            </div>
+          </div>
+          <svg viewBox="0 0 160 22" style="inline-size:100%;max-inline-size:160px;block-size:auto;display:block;margin-top:6px;" aria-hidden="true">
+            <rect x="0" y="4" width="30" height="18" fill="var(--accent-primary,#2563eb)" opacity="0.4"/>
+            <rect x="35" y="6" width="30" height="16" fill="var(--accent-primary,#2563eb)" opacity="0.6"/>
+            <rect x="70" y="2" width="30" height="20" fill="var(--accent-primary,#2563eb)" opacity="0.8"/>
+            <rect x="105" y="0" width="30" height="22" fill="var(--accent-primary,#2563eb)"/>
+            <rect x="140" y="3" width="20" height="19" fill="var(--status-ok,#16a34a)"/>
+          </svg>
+        </div>
+
+        <!-- Card 5: Subsystem Health & Consumables Matrix -->
+        <div class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+              Flight Consumables &amp; Health
+            </span>
+            <strong style="font-size:13px;color:var(--text-primary);display:block;margin-top:2px;">
+              <i class="fa-solid fa-gauge-high"></i> Critical Bus Telemetry
+            </strong>
+            <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px;font-size:11px;">
+              <div style="display:flex;justify-content:space-between;padding:3px 6px;border-radius:4px;background:var(--bg-elevated);">
+                <span>Cryo Dewpoint:</span>
+                <strong class="mono" style="color:var(--status-ok,#16a34a);">0.84 K (Stable)</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:3px 6px;border-radius:4px;background:var(--bg-elevated);">
+                <span>Xenon Propellant:</span>
+                <strong class="mono">428 kg (91% left)</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:3px 6px;border-radius:4px;background:var(--bg-elevated);">
+                <span>Solar Array Power:</span>
+                <strong class="mono">20.4 kW (+12% margin)</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:3px 6px;border-radius:4px;background:var(--bg-elevated);">
+                <span>Wavefront Error:</span>
+                <strong class="mono">24 nm RMS (Locked)</strong>
+              </div>
+            </div>
+          </div>
+          <span class="mono" style="font-size:11px;color:var(--status-ok,#16a34a);margin-top:6px;">
+            <i class="fa-solid fa-circle-check"></i> All Bus Invariants within Nominal Corridor
+          </span>
+        </div>
+
+        <!-- Card 6 (Full Width Span): Active Ground Station Pass Allocation -->
+        <div class="va-card app3-span-full" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);padding:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+            <div>
+              <span class="mono" style="font-size:11px;color:var(--text-muted);text-transform:uppercase;display:block;">
+                Aperture Link Allocation &amp; Mission Events
+              </span>
+              <strong style="font-size:13px;color:var(--text-primary);">
+                <i class="fa-solid fa-tower-observation"></i> Active Deep Space Tracking Passes &amp; Upcoming Telemetry Gates
+              </strong>
+            </div>
+            <span class="mono" style="font-size:11px;color:var(--text-secondary);">
+              DSN 810-005 Schedule Dispatch
+            </span>
+          </div>
+
+          <div class="va-table-wrap" tabindex="0" role="region" aria-label="Active Aperture Schedule" style="border:1px solid var(--border-hairline);border-radius:6px;">
+            <table class="va-data-table mono" style="font-size:11px;width:100%;">
+              <thead>
+                <tr>
+                  <th>Aperture</th>
+                  <th>Mission Target</th>
+                  <th>Contact Window</th>
+                  <th>Operating Mode</th>
+                  <th>Throughput Rate</th>
+                  <th>Interlock Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>DSS-14 Goldstone 70m</strong></td>
+                  <td>Psyche Deep Space Cruise</td>
+                  <td>08:00 - 16:30 UTC</td>
+                  <td>Ka-Band Uplink &middot; S-Band Carrier</td>
+                  <td>120.0 Mbps</td>
+                  <td><span class="sq-status sq-ok"></span>TRACKING</td>
+                </tr>
+                <tr>
+                  <td><strong>DSS-13 Goldstone 34m</strong></td>
+                  <td>DSOC Optical Technology Demo</td>
+                  <td>14:30 - 18:00 UTC</td>
+                  <td>1550nm Downlink &middot; SNSPD Array</td>
+                  <td>267.0 Mbps</td>
+                  <td><span class="sq-status sq-ok"></span>OPTICAL LOCK</td>
+                </tr>
+                <tr>
+                  <td><strong>DSS-54 Madrid 34m BWG</strong></td>
+                  <td>Gateway NRHO Lunar Orbit</td>
+                  <td>11:00 - 19:30 UTC</td>
+                  <td>X/Ka-Band Dual-Carrier</td>
+                  <td>33.7 Mbps</td>
+                  <td><span class="sq-status sq-ok"></span>ACTIVE</td>
+                </tr>
+                <tr>
+                  <td><strong>DSS-36 Canberra 34m BWG</strong></td>
+                  <td>Interplanetary Uplink Beacon</td>
+                  <td>18:00 - 02:00 UTC</td>
+                  <td>1064nm 1.25 kW Beacon Transmission</td>
+                  <td>1.25 kW Tx</td>
+                  <td><span class="sq-status sq-ok"></span>BEACON ON</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer style="margin-top:10px;padding:6px 2px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span>NASA NTRS 20240010475 &middot; Deep Space Network Operations &amp; STMD Envisioned Future</span>
+        <span>JPL DSOC Downlink Validation Metric &middot; Zero Grid Holes</span>
+      </footer>
+    </div>
+  </section>
+</template>

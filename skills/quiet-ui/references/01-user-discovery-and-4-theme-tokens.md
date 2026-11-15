@@ -1,67 +1,56 @@
-# Reference 01: Functional Discovery Forks, Surface Themes, Concentric Corner Math & 7-Step Typography Scale
+# Reference 01: Functional Discovery Forks, 4 Themes, Fluid 4K Root & @layer Architecture
 
 ## 1. Functional Triage Forks (When Content Is Ambiguous Across Tiers)
 
-Never ask vague aesthetic questions (*"What colors or layout style do you want?"*). When a request could reasonably fit multiple archetypes, ask the matching functional fork question below:
-
-### Fork A: "Write a report / summary / analysis on [Topic]"
-> *"Who is the primary reader and how will they use this document?*
-> - **Option A — Academic & Scientific Monograph (`01. Doc-1`, `0%` Boxes):** Continuous serif prose, inline equations, right-margin sidenotes, and sortable horizontal-rule `booktabs` tables.
-> - **Option B — Executive Decision Memo (`02. Doc-2`, `15%` Boxes):** Anchored at the top by a 4-cell Bottom-Line-Up-Front (`BLUF`) Decision Ledger, theme-aware Mermaid topology diagram, 4-cell hairline metric strip, and a risk callout.
-> - **Option C — Parametric Engineering Worksheet (`06. Bridge-1`, `50%` Boxes):** Editorial prose and tables with an embedded `1px` hairline interactive slider solver and live sensitivity plot."
-
-### Fork B: "Document [System / API / CLI]"
-> *"How will engineers use this documentation day-to-day?*
-> - **Option A — Split-Pane Operational Runbook (`05. Doc-4A`, `45%` Boxes):** Sequential operator steps and Mermaid sequence diagram in the center synchronized with full config files (`YAML`/`CLI`/`systemd`) pinned in a sticky right-hand dark console.
-> - **Option B — Encyclopedic SDK & API Reference (`04. Doc-4B`, `25%` Boxes):** 2-column lookup with a left symbol tree, **6-Stage Numbered Flow Spine (`.va-flow-spine`)**, **Situation-to-Tier Decision Table**, and `<dl>/<dt>/<dd>` signature bands.
-> - **Option C — Normative RFC Specification (`03. Doc-3`, `25%` Boxes):** Specification with `MUST`/`SHOULD` requirement matrices, Mermaid state machine, and unified schema diffs."
-
-### Fork C: "Build a dashboard / workspace / schema explorer / tracker for [System]"
-> *"What is the primary workflow on this view?*
-> - **Option A — High-Density Data Table (`08. Bridge-2`) or Live Time-Series Console (`09. App-2`):** Sharp `1px` hairline grid with a 5-cell sparkline strip and **3-Zone Fleet Summary Cards (`.va-fleet-card-3zone`)** (`Bridge-2`) or synchronized multi-channel waveforms (`App-2`).
-> - **Option B — Compact Issue Tracker (`10. App-1`) or Task & Calendar Planner (`11. App-4`):** `36px` issue rows with a right-hand inspector (`App-1`), or a **Daily Status Briefing (`.va-status-briefing`)**, active Focus Session Hero, 3-zone staging backlog, and time-blocked calendar lanes (`App-4`).
-> - **Option C — Hierarchical Tree, Schema & File Explorer (`14. App-Tree`, `90% 3-Pane`):** 3-pane coupled workbench with a collapsible `260px` Schema/File tree (`1px` `.va-tree-guide` indent guides + type badges), a 3-tab center workbench (`Data Grid`, `DDL Spec`, `SQL/Grep Console`), and a `280px` metadata inspector.
-> - **Option D — KPI & Analytics Dashboard (`12. App-3`, `100% Cards`):** 12-column Bento grid where every card contains 4 layers plus a balanced 2×2 `.va-bento-2col` telemetry matrix."
-
-### Fork D: "Build a personal/household pacing app or Home Assistant dashboard"
-> *"Where and how is this screen viewed?*
-> - **Option A — Daily Pacing & Wellness Planner (`13. App-5`, `75%` Boxes):** Readiness Ring Hero (`84 · Steady`), **Self-Filling Progress Capsules (`.va-fill-capsule`)**, **Target-Corridor Sparklines (`.va-corridor-sparkline`)**, and a vertical Day Timeline.
-> - **Option B — Ambient Wall Kiosk Screensaver (`15. HA-1`, `20% HUD`):** 10-foot `60/40` fine-art canvas + `backdrop-filter: blur(22px)` frosted glass HUD (`N0` zero nav bars).
-> - **Option C — Room-First Wall Control Panel (`16. HA-2`) or Foldable/Phone Controller (`17. HA-3`):** Walk-up room cards (`<= 4` metrics/room, `.va-icon-well` badges) + fixture dock (`HA-2`), or `56px` touch slider tiles (`HA-3`)."
+Never ask vague aesthetic questions (*"What colors or layout do you want?"*). Ask the matching functional fork question:
+- **Fork A — Report / Analysis / Specification:**
+  - *Academic Monograph (`01. Doc-1`, `0%` Boxes):* Continuous serif prose, inline equations, margin sidenotes, `booktabs` tables.
+  - *Executive Decision Memo (`02. Doc-2`, `15%` Boxes):* Top `BLUF` ledger, Mermaid decision flowchart, 4-cell hairline metric strip.
+  - *Normative RFC Specification (`03. Doc-3`, `25%` Boxes):* `MUST`/`SHALL` requirement matrix, Mermaid state machine, schema diff.
+  - *Parametric Worksheet (`06. Bridge-1`, `50%` Boxes):* Editorial prose coupled to `1px` interactive slider solver and live SVG plot.
+- **Fork B — Documentation / Runbook / API:**
+  - *Split Runbook (`05. Doc-4A`, `45%` Boxes):* Operator steps and Mermaid sequence flow coupled to pinned right code console.
+  - *SDK & API Reference (`04. Doc-4B`, `25%` Boxes):* 2-column symbol tree, **6-Stage Numbered Flow Spine (`.va-flow-spine`)**, and decision table.
+- **Fork C — Dashboard / Workspace / Telemetry:**
+  - *High-Density Table (`08. Bridge-2`)* or *Time-Series Console (`09. App-2`)*: `1px` hairline grid, 3-zone fleet cards, strip charts.
+  - *Compact Issue Tracker (`10. App-1`)* or *Task Planner (`11. App-4`)*: `36px` triage rows, or status briefing, focus hero, time blocks.
+  - *KPI Bento Dashboard (`12. App-3`)* or *Daily Pacing (`13. App-5`)*: 12-col bento grid, or readiness ring, self-filling capsules, hypnogram.
+  - *Hierarchical Explorer (`14. App-Tree`)*: 3-pane schema/file explorer with `228px–260px` tree and 3-tab workbench.
+- **Fork D — Optical HUD / Tactile Console:**
+  - *Optical Viewport HUD (`15. HUD-1`, `20% HUD`):* `>= 65%` open optical sightline + smoked-glass perimeter pods (`.va-hud-pod`).
+  - *Tactile Subsystem Console (`16. Ctrl-1`, `85%` Boxes):* Arm's-reach walk-up touch interface with 2-step guarded effector controls (`ARM` -> `EXECUTE`).
 
 ---
 
-## 2. Color Discipline (`c1–c3`), 3-Zone Envelope & Concentric Corner Radius Math
+## 2. 4 Themes, Color Discipline (`c1–c3`) & Concentric Corner Math
 
-1. **The 3-Zone Expressiveness Envelope (`c1` $\rightarrow$ `c2` $\rightarrow$ `c3`):**
-   - **Zone 1 (`>= 75%` Calm Neutral Canvas):** Surface themes (`white`, `paper`, `dark-paper`, `dark`) keep backgrounds calm and neutral.
-   - **Zone 2 (`<= 20%` Soft Surface Tints & Single-Anchor Hero):** Under `c2` and `c3`, views may feature **at most 1 tinted Hero Card** (`.app5-hero-card.primary-hero`, `.app4-focus-hero`) and soft surface-tinted icon wells (`.va-icon-well`: `34px×34px`, concentric `--radius-inner` using `--tint-indigo-bg`, `--tint-emerald-bg`, `--tint-amber-bg`, `--tint-rose-bg`, `--tint-violet-bg`).
-   - **Zone 3 (`<= 5%` Saturated Signal Ink):** High-saturation colors are reserved strictly for primary CTAs (`.va-pill-btn.primary`), active SVG progress rings, and live fault indicators.
-2. **Concentric Border-Radius Math ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$) & 5-Stop Corner Radius Dial (`data-corners="auto|sharp|subtle|rounded|soft"`):**
-   - Define `--inset-pad: 4px;`, `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));`, and `--radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));` across all 5 corner stops (`auto`, `sharp`, `subtle`, `rounded`, `soft`).
-   - Apply `--radius-inner` and `--radius-trough-pill` to nested sub-cards, `.va-icon-well`, segmented trough buttons, and `.va-fill-capsule` so inner and outer corners share a single concentric geometric center, while primary `.va-pill-btn` CTAs preserve `var(--radius-pill)` (`999px`).
-   - Scope editorial `0px` overrides strictly to `:root[data-corners="auto"] .editorial-zero-box` and `:root[data-corners="sharp"]` so choosing `subtle`, `rounded`, or `soft` visibly rounds cards across all 17 tiers.
+1. **4 Surface Themes (Default `white`):** `white` (Pure Alabaster), `paper` (Warm Paper), `dark-paper` (Sepia Dark), `dark` (Carbon Dark).
+2. **3-Zone Expressiveness:** Zone 1 (`>= 75%` calm neutral canvas), Zone 2 (`<= 20%` soft tints & single hero card), Zone 3 (`<= 5%` signal ink for active CTAs, progress rings, and alarms).
+3. **Concentric Corner Geometry ($R_{\text{inner}} = \max(0, R_{\text{outer}} - \text{Inset})$):**
+   `--inset-pad: 4px; --radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px))); --radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));` applied across `auto`, `sharp` (`0px`), `subtle` (`6px`), `rounded` (`12px`), `soft` (`18px`).
 
 ---
 
-## 3. Unified Suite Typography, 7-Step Modular Scale (`--ts-*`) & Per-View Restraint
+## 3. Fluid 4K Root Scale, rem Typography & 11px Legibility Floor
 
-Because multiple tiers (`Doc-2`, `Doc-4B`, `App-3`, `App-4`, `App-Tree`, `HA-2`) are frequently used together as tabs or views within a **single website or application suite**, switching between tiers must never cause jarring shifts in font families, navigation font sizes, page title scales, or micro-text legibility:
+1. **Fluid 4K Root:** `font-size: clamp(16px, calc(12.4px + 0.25vw), 22px);` scales naturally with viewing distance (16px at 1440p, 17.2px at 1080p-scaled, 22px at 4K).
+2. **Modular `rem` Scale (`--ts-*`) with `11px` Hard Floor:**
+   - `--ts-xs: max(11px, 0.6875rem)` — **Hard floor** for kickers, badges, axes (zero visible elements `< 10.8px`).
+   - `--ts-sm: max(12px, 0.78125rem)` — Dense table cells, captions, status pills.
+   - `--ts-nav: max(12.5px, 0.8125rem)` — Navigation links, buttons, tab bars.
+   - `--ts-base: max(13.5px, 0.875rem)` — Standard body copy; `--ts-prose: max(15px, 0.96875rem)` for editorial docs.
+   - `--ts-md: max(15.5px, 1rem)` — Card titles, H3 subheadings.
+   - `--ts-xl: clamp(1.25rem, 1.1rem + 0.45vw, 1.55rem)` — Page H1 and primary Bento KPIs.
+   - `--ts-display: clamp(1.5rem, 1.3rem + 0.65vw, 1.9rem)` — Monograph & Deck-1 display H1.
+3. **Typographic Restraint:** At most **4 active font sizes** and **2 primary contrast rungs** per card.
 
-1. **Rule 1 — Curated 3-Role Font Stack (Zero Random Font Drift):**
-   - `--font-sans`: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif` — Universal structural anchor for **100% of navigation (`N0–N4`), kickers, page/card headings (`Doc-2`..`HA-3`), controls, badges, and app/dashboard copy** (`font-variant-numeric: tabular-nums` on all numeric KPI readouts).
-   - `--font-serif`: `'Newsreader', 'Charter', 'Source Serif 4', Georgia, serif` — Restricted strictly to **long-form narrative prose (`01. Doc-1` body & display H1, and optional `13. App-5` reflection copy)**. Keep `01. Doc-1` kickers, TOC, filter input, metadata, and tables in `--font-sans` / `--font-mono`.
-   - `--font-mono`: `'JetBrains Mono', 'Fira Code', ui-monospace, monospace` — Restricted strictly to **machine literals** (code blocks, CLI `/slash-cmd`, UUIDs/hashes, socket paths, SQL types, raw logs). Never use `--font-mono` for card titles, section headers, or navigation links.
-2. **Rule 2 — Identical Shell & Navigation Chrome Across All 17 Tiers (`0px` Variance):**
-   - **Sidebar & Top Bar Links (`.va-side-link`, `.va-tab-link`, `.va-poly-n2-bar a`, `.va-poly-n3-topbar a`, `.app1-nav-btn`, `.va-tree-node`):** `font-family: var(--font-sans) !important; font-size: var(--ts-nav, 13px) !important; font-weight: 500 !important; line-height: 1.35 !important;`
-   - **Eyebrow Kickers & Card Section Headers (`.va-kicker`, `.doc1-kicker-text`):** `font-family: var(--font-sans) !important; font-size: var(--ts-xs, 11px) !important; font-weight: 600 !important; letter-spacing: 0.05em !important; text-transform: uppercase;`
-3. **Rule 3 — 7-Step Modular Scale (`--ts-*`) & `11px` Hard Floor (Ban `9px`–`10px` Micro-Text):**
-   - `--ts-xs: 11px` (`0.6875rem`, `lh: 1.35`) — **Hard minimum floor** for kickers, badges, table `<th>` meta, and sparkline axes (zero visible elements `< 10.8px`).
-   - `--ts-sm: 12.5px` (`0.78125rem`, `lh: 1.45`) — Dense table cells (`Bridge-2`, `App-1`, `App-Tree`), secondary captions, filter pills, status metadata.
-   - `--ts-nav: 13px` (`0.8125rem`, `lh: 1.35`) — All navigation links, buttons, segmented trough tabs, form inputs.
-   - `--ts-base: 14px` (`0.875rem`, `lh: 1.5`) — Standard Workspace & Dashboard body copy (`Bridge-2`..`HA-3`), stepping up by **+1.5px (`--ts-prose: 15.5px`, `lh: 1.65`)** for Editorial Docs (`Doc-2`..`Bridge-1`) and **`16.5px` (`lh: 1.7`)** for `Doc-1` Monograph prose.
-   - `--ts-md: 16px` (`1rem`, `lh: 1.4`, weight `600`) — Card titles, `H3` subheadings, and `.va-status-briefing` lead sentences.
-   - `--ts-xl: clamp(20px, 2vw, 24px)` (`lh: 1.22`, weight `700`) — Universal Page `H1` across `Doc-2`..`HA-3` and primary Bento KPI values.
-   - `--ts-display: clamp(24px, 2.5vw, 28px)` (`lh: 1.18`, weight `700`) — Reserved for `01. Doc-1` Monograph `H1` and `07. Deck-1` Briefing headline (within `4px` of `--ts-xl`).
-4. **Rule 4 — Per-View Typographic & Contrast Restraint (`<= 4` Active Font Sizes & `2` Primary Contrast Rungs per Card):**
-   - While the suite provides 7 `--ts-*` tokens across all 17 tiers, any single card or component panel budgets at most **4 active font sizes** and **2 primary text contrast rungs** (`--text-primary` and `--text-secondary`, reserving `--text-muted` strictly for axis/meta captions), and never stacks `> 4` consecutive identical card layouts without structural variation.
+---
+
+## 4. Zero-Specificity Cascade Layer Architecture (@layer)
+
+All Quiet UI CSS declares explicit cascade layers to completely eliminate specificity battles:
+```css
+@layer reset, tokens, shell, archetypes, utilities;
+```
+- Layer precedence guarantees utilities override archetypes, archetypes override shell, and shell overrides tokens cleanly without specificity conflicts.
+- 100% of custom rules and theme overrides integrate into their appropriate layer, ensuring zero specificity escalation.

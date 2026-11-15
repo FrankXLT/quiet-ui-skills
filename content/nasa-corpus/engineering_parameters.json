@@ -1,0 +1,77 @@
+{
+  "dsoc_optical_link": {
+    "wavelength_nm": 1550,
+    "uplink_beacon_nm": 1064,
+    "max_data_rate_mbps": 267.0,
+    "max_range_rate_mbps_at_2_6_au": 1.0,
+    "rf_ka_34m_baseline_kbps": 500.0,
+    "flight_aperture_cm": 22.0,
+    "palomar_hale_aperture_m": 5.1,
+    "hybrid_rf_optical_equiv_m": 8.0,
+    "arrayed_4x_hybrid_equiv_m": 11.3,
+    "scppm_orders": [
+      4,
+      8,
+      16,
+      32,
+      64,
+      128
+    ],
+    "peak_laser_power_kw": 1.25
+  },
+  "ccsds_space_packet": {
+    "standard": "CCSDS 133.0-B-2",
+    "primary_header_bytes": 6,
+    "version_bits": 3,
+    "apid_bits": 11,
+    "seq_flags_bits": 2,
+    "seq_count_bits": 14,
+    "data_length_bits": 16
+  },
+  "dsn_complexes": [
+    {
+      "complex": "GDSCC \u00b7 Goldstone",
+      "apertures": [
+        "DSS-24 34m BWG",
+        "DSS-26 34m BWG",
+        "DSS-14 70m",
+        "DSS-13 Hybrid Opt"
+      ]
+    },
+    {
+      "complex": "MDSCC \u00b7 Madrid",
+      "apertures": [
+        "DSS-54 34m BWG",
+        "DSS-55 34m BWG",
+        "DSS-56 34m BWG",
+        "DSS-63 70m"
+      ]
+    },
+    {
+      "complex": "CDSCC \u00b7 Canberra",
+      "apertures": [
+        "DSS-34 34m BWG",
+        "DSS-35 34m BWG",
+        "DSS-36 34m BWG",
+        "DSS-43 70m"
+      ]
+    }
+  ],
+  "gateway_eclss": {
+    "pressure_nominal_kpa": 101.3,
+    "pressure_corridor_kpa": [
+      70.0,
+      101.3
+    ],
+    "pp_o2_nominal_kpa": 21.2,
+    "pp_co2_max_mmhg": 3.0,
+    "rel_humidity_pct_range": [
+      25,
+      75
+    ],
+    "temp_corridor_c": [
+      18.3,
+      26.7
+    ]
+  }
+}

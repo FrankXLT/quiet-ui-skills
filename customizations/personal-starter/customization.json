@@ -1,9 +1,9 @@
 {
   "name": "personal-starter",
   "title": "Quiet UI Personal Workspace & Continuum",
-  "version": "6.2",
+  "version": "8.0.0",
   "mode": "personal",
-  "description": "Read-only blueprint for personal life planning, research monographs, daily biometrics, and spatial ambient kiosks across all 17 tiers.",
+  "description": "Read-only blueprint for personal research monographs, telemetry consoles, optical viewport HUD, and tactile control decks across all 16 tiers.",
   "palette": {
     "primary": "#4F46E5",
     "accent": "#06B6D4",
@@ -34,9 +34,8 @@
     "app-3",
     "app-5",
     "app-tree",
-    "ha-1",
-    "ha-2",
-    "ha-3"
+    "hud-1",
+    "ctrl-1"
   ],
   "disabled_tiers": []
 }

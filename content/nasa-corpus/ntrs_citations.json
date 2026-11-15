@@ -1,0 +1,144 @@
+[
+  {
+    "ntrs_id": "20240010475",
+    "tiers": [
+      "doc-1",
+      "bridge-1"
+    ],
+    "title": "Addressing the High-Rate Deep Space Communications Shortfall in NASA\u2019s Space Technology Mission Directorate's Envisioned Future",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20240010475",
+    "summary": "NASA\u2019s Space Technology Mission Directorate (STMD) has identified key technologies needed for future crewed and robotic exploration and science missions. STMD is helping to build the civilian technology base by working with other NASA Mission Directorates, other United States government agencies, commercial industry, and academia to ident"
+  },
+  {
+    "ntrs_id": "20240012165",
+    "tiers": [
+      "doc-1",
+      "bridge-1"
+    ],
+    "title": "Optical Communications to Enhance Science & Exploration",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20240012165",
+    "summary": "NASA 2024 Optical Communications Overview"
+  },
+  {
+    "ntrs_id": "20260007913",
+    "tiers": [
+      "doc-1",
+      "doc-4b",
+      "bridge-1"
+    ],
+    "title": "SCPPM Decoder FPGA Manual",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20260007913",
+    "summary": "This FPGA design implements an iterative decoder for Serially Concatenated Pulse Position Modulation (SCPPM), a forward error correction coding scheme specified in the Consultative Committee for Space Data Systems (CCSDS) High Photon Efficiency (HPE) Optical Communications Coding and Synchronization standard. SCPPM is designed for photon-"
+  },
+  {
+    "ntrs_id": "20170001761",
+    "tiers": [
+      "doc-2"
+    ],
+    "title": "NASA Systems Engineering Handbook",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20170001761",
+    "summary": "The update of this handbook continues the methodology of the previous revision: a top-down compatibility with higher level Agency policy and a bottom-up infusion of guidance from the NASA practitioners in the field. This approach provides the opportunity to obtain best practices from across NASA and bridge the information to the establish"
+  },
+  {
+    "ntrs_id": "20230006984",
+    "tiers": [
+      "bridge-2",
+      "app-2",
+      "app-3"
+    ],
+    "title": "Psyche Project Implementation During the COVID Pandemic",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20230006984",
+    "summary": "In January 2017, \u201cPsyche: Journey to a Metal World\u201d was selected for implementation as part of NASA\u2019s Discovery program. The Psyche mission will utilize electric propulsion with SPT-140 Hall thrusters to rendezvous and orbit the metal-rich asteroid (16) Psyche, in the main asteroid belt between Mars and Jupiter. The Psyche spacecraft requ"
+  },
+  {
+    "ntrs_id": "20240003670",
+    "tiers": [
+      "app-1",
+      "app-2"
+    ],
+    "title": "Psyche: Journey to a Metal World Overview, Launch, and Early Data",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20240003670",
+    "summary": "Psyche Mission Flight Operations & Triage Readiness"
+  },
+  {
+    "ntrs_id": "20220015628",
+    "tiers": [
+      "deck-1",
+      "ctrl-1"
+    ],
+    "title": "Gateway Integrated Environmental Control and Life Support System Overview and Status",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20220015628",
+    "summary": "The Gateway will be a lunar orbiting platform that is a critical element in establishing a sustainable, long-term human presence on the lunar surface and beyond to deep space exploration. As part of this mission, the Gateway Environmental Control and Life Support Subsystem (ECLSS), employs its capabilities to: - Support two to four-person"
+  },
+  {
+    "ntrs_id": "20240016087",
+    "tiers": [
+      "deck-1",
+      "app-4",
+      "ctrl-1"
+    ],
+    "title": "Gateway Payload Users Guide",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20240016087",
+    "summary": "This Gateway Payload Users Guide is provided as an introduction to science operations on the Gateway for potential Payload Developer (PD) teams. It is not intended to be a comprehensive guide that answers detailed questions that may arise. More detailed information and resources will be provided as PD teams work toward launch and flight o"
+  },
+  {
+    "ntrs_id": "20130000738",
+    "tiers": [
+      "hud-1",
+      "ctrl-1"
+    ],
+    "title": "NASA-STD-3001, Space Flight Human-System Standard and the Human Integration Design Handbook",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20130000738",
+    "summary": "NASA-STD-3001 Space Flight Human-System Standard Volume 1, Crew Health, Volume 2, Human Factors, Habitability and Environmental Health, and the Human Integration Design Handbook (HIDH) have replaced the Man-Systems Integration Standards (MSIS), NASA-STD-3000. For decades, NASA-STD-3000 was a significant contribution to human spaceflight p"
+  },
+  {
+    "ntrs_id": "20250011652",
+    "tiers": [
+      "app-5",
+      "hud-1"
+    ],
+    "title": "Review of Advanced Informatics and Display Systems for Extravehicular Activity Operations",
+    "centers": [
+      "NASA / JPL"
+    ],
+    "copyright_status": "GOV_PUBLIC_USE_PERMITTED",
+    "citation_url": "https://ntrs.nasa.gov/citations/20250011652",
+    "summary": "New operational challenges exist for coordination and collaboration amongst spatially and temporally distributed teams as NASA prepares to return to the Lunar surface and beyond to execute ambitious Extravehicular Activities (EVAs). Novel strategies will be required to effectively execute manned surface exploration activities where commun"
+  }
+]

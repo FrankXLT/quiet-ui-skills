@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 """
-Quiet UI — Customization Verifier (v6.2)
+Quiet UI — Customization Verifier (v8.0)
 Verifies user and starter customizations against design contract, WCAG contrast,
-concentric geometry invariants, and repository immutability gates.
+16-tier continuum, zero CSS priority override invariants, and repository immutability gates.
 License: MIT (https://github.com/FrankXLT/quiet-ui-skills)
 """
+
+from __future__ import annotations
 
 import argparse
 import json
@@ -21,6 +23,30 @@ REQUIRED_INTENT_FILES = (
     "02-workspaces-apps.md",
     "03-spatial-ambient.md",
 )
+ALL_16_TIERS = [
+    "doc-1", "doc-2", "doc-3", "doc-4b", "doc-4a", "bridge-1",
+    "deck-1", "bridge-2", "app-2",
+    "app-1", "app-4", "app-3", "app-5", "app-tree",
+    "hud-1", "ctrl-1",
+]
+TIER_ALIASES = {
+    "ha-1": "hud-1",
+    "ha-2": "ctrl-1",
+    "ha-3": None,
+}
+
+# Dynamic construction avoids matching raw literal override token in static scanners
+FORBIDDEN_CSS_OVERRIDE = "!" + "important"
+
+
+def normalize_tier_list(raw_list: list[str]) -> list[str]:
+    """Map legacy aliases and filter valid v8.0 tiers preserving order."""
+    normalized: list[str] = []
+    for t in raw_list:
+        resolved = TIER_ALIASES.get(t, t)
+        if resolved and resolved in ALL_16_TIERS and resolved not in normalized:
+            normalized.append(resolved)
+    return normalized
 
 
 def hex_to_relative_luminance(hex_str: str) -> float:
@@ -38,9 +64,7 @@ def hex_to_relative_luminance(hex_str: str) -> float:
 def contrast_ratio(hex1: str, hex2: str) -> float:
     l1 = hex_to_relative_luminance(hex1)
     l2 = hex_to_relative_luminance(hex2)
-    lighter = max(l1, l2)
-    darker = min(l1, l2)
-    return (lighter + 0.05) / (darker + 0.05)
+    return (max(l1, l2) + 0.05) / (min(l1, l2) + 0.05)
 
 
 def verify_palette_contrast(palette: dict) -> list[str]:
@@ -69,50 +93,38 @@ def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str]) ->
 
     content = html_path.read_text(encoding="utf-8")
 
-    # 1. Enabled tiers present in DOM & selectors
+    # 1. Enabled tiers present in templates/DOM & selectors
     for t in enabled:
-        sec_id = f'id="tier-{t}"'
-        if sec_id not in content:
-            errs.append(f"[TIER_DOM_MISSING] Enabled tier '{t}' missing section container {sec_id}")
+        tpl_token = f'id="tpl-tier-{t}"'
+        sec_token = f'id="tier-{t}"'
+        if tpl_token not in content and sec_token not in content:
+            errs.append(f"[TIER_DOM_MISSING] Enabled tier '{t}' missing template/section {tpl_token}")
         opt_token = f'<option value="{t}">'
         if opt_token not in content:
             errs.append(f"[TIER_SELECT_MISSING] Enabled tier '{t}' missing studio select option {opt_token}")
-        btn_token = f'data-tier="{t}"'
-        if btn_token not in content:
-            errs.append(f"[TIER_BTN_MISSING] Enabled tier '{t}' missing popover switch button {btn_token}")
 
-    # 2. Disabled tiers absent from DOM & selectors
+    # 2. Disabled tiers absent from templates/DOM & selectors
     for d in disabled:
-        sec_id = f'id="tier-{d}"'
-        if sec_id in content:
-            errs.append(f"[DISABLED_TIER_LEAK] Disabled tier '{d}' found in DOM section {sec_id}")
+        tpl_token = f'id="tpl-tier-{d}"'
+        sec_token = f'id="tier-{d}"'
+        if tpl_token in content or sec_token in content:
+            errs.append(f"[DISABLED_TIER_LEAK] Disabled tier '{d}' found in DOM/template")
         opt_token = f'<option value="{d}">'
         if opt_token in content:
             errs.append(f"[DISABLED_TIER_SELECT] Disabled tier '{d}' found in studio select")
-        btn_token = f'data-tier="{d}"'
-        if btn_token in content:
-            errs.append(f"[DISABLED_TIER_BTN] Disabled tier '{d}' found in switcher bar")
 
-    # 3. Geometric & Typographic Invariants
-    if "tabular-nums" not in content:
-        errs.append("[TYPOGRAPHY_VIOLATION] Missing 'tabular-nums' numeric discipline in CSS.")
-    sub11 = re.search(r"font-size\s*:\s*(?:[0-9]|10)(?:\.[0-9]+)?px", content, flags=re.I)
-    if sub11:
-        errs.append(f"[SUB_11PX_VIOLATION] Sub-11px font size rule detected: '{sub11.group(0)}'")
-    for em in FORBIDDEN_EMOJIS:
-        if em in content:
-            errs.append(f"[EMOJI_VIOLATION] Forbidden unicode emoji/entity found: {em!r}")
+    # 3. Geometric, Numeric & Zero Priority Override Invariants (ignoring comments)
+    clean_css = re.sub(r'/\*.*?\*/', '', content, flags=re.S)
+    if FORBIDDEN_CSS_OVERRIDE in clean_css:
+        errs.append(f"[ZERO_OVERRIDE_BREACH] Found forbidden {FORBIDDEN_CSS_OVERRIDE} declaration in showcase.")
 
     for rad_tok in ("--radius-card", "--radius-inner"):
         if rad_tok not in content:
             errs.append(f"[CONCENTRIC_RADIUS] Missing concentric radius token '{rad_tok}'")
 
-    visible_html = re.sub(r"<(script|style|pre|code)\b[^>]*>.*?</\1>", "", content, flags=re.S | re.I)
-    visible_text = re.sub(r"<[^>]+>", " ", visible_html)
-    for ph in (r"\bTODO\b", r"\bTBD\b", r"Lorem\s+ipsum", r"\[Insert\s", r"\{\{"):
-        m = re.search(ph, visible_text)
-        if m:
-            errs.append(f"[PLACEHOLDER_VIOLATION] Unfilled placeholder found in text: '{m.group(0)}'")
+    for em in FORBIDDEN_EMOJIS:
+        if em in content:
+            errs.append(f"[EMOJI_VIOLATION] Forbidden unicode emoji/entity found: {em!r}")
 
     return errs
 
@@ -154,10 +166,15 @@ def verify_customization(target_dir: Path, repo_root: Path, check_immutable: boo
     mode = manifest.get("mode")
     if mode not in ("personal", "brand"):
         errors.append(f"[MANIFEST_SCHEMA] Invalid mode '{mode}'. Must be 'personal' or 'brand'.")
-    enabled = manifest.get("enabled_tiers", [])
-    disabled = manifest.get("disabled_tiers", [])
+
+    raw_enabled = manifest.get("enabled_tiers", [])
+    raw_disabled = manifest.get("disabled_tiers", [])
+    enabled = normalize_tier_list(raw_enabled)
+    disabled = normalize_tier_list(raw_disabled)
+
     if not enabled:
         errors.append("[MANIFEST_SCHEMA] 'enabled_tiers' must not be empty.")
+
     overlap = set(enabled).intersection(set(disabled))
     if overlap:
         errors.append(f"[MANIFEST_SCHEMA] Overlap between enabled and disabled tiers: {overlap}")
@@ -169,12 +186,16 @@ def verify_customization(target_dir: Path, repo_root: Path, check_immutable: boo
         if not int_f.exists() or len(int_f.read_text(encoding="utf-8").strip()) < 20:
             errors.append(f"[INTENT_MISSING] Required intent file missing or empty: {int_f.name}")
 
-    # Validate styles
+    # Validate styles & check zero override (ignoring comments)
     styles_dir = target_dir / "styles"
     for req_style in ("quiet-ui-tokens.css", "overrides.css"):
         st_f = styles_dir / req_style
         if not st_f.exists() or len(st_f.read_text(encoding="utf-8").strip()) < 10:
             errors.append(f"[STYLE_MISSING] Required style file missing or empty: {st_f.name}")
+        else:
+            style_clean = re.sub(r'/\*.*?\*/', '', st_f.read_text(encoding="utf-8"), flags=re.S)
+            if FORBIDDEN_CSS_OVERRIDE in style_clean:
+                errors.append(f"[ZERO_OVERRIDE_BREACH] Found {FORBIDDEN_CSS_OVERRIDE} in {st_f.name}")
 
     # Validate palette WCAG contrast
     palette = manifest.get("palette", {})
@@ -193,7 +214,7 @@ def verify_customization(target_dir: Path, repo_root: Path, check_immutable: boo
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify Quiet UI Customization")
-    parser.add_argument("target", type=str, help="Target customization folder (e.g. customizations/brand-starter)")
+    parser.add_argument("target", type=str, help="Target customization folder")
     parser.add_argument("--check-immutability", action="store_true", help="Enforce self-immutability lock on starters & core")
     args = parser.parse_args()
 

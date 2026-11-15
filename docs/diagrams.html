@@ -14,12 +14,31 @@
   <script defer src="./atlas/atlas-app.js"></script>
 </head>
 <body>
+  <!-- Top Sticky 44px Studio Header (hides in ?embed=1 mode) -->
+  <header id="atlas-top-bar" class="atlas-top-bar" aria-label="Quiet UI Studio Controller Bar">
+    <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-top-btn" title="Back to 16 UI Tiers">&larr; 16 UI Tiers</a>
+    <select id="atlas-top-family-select" class="atlas-top-select" aria-label="Jump to Visual Family">
+      <option value="workbench">DSL Workbench</option>
+      <option value="systems">1. Systems &amp; Cloud (11)</option>
+      <option value="data">2. Data &amp; Schema (6)</option>
+      <option value="flows">3. Flows &amp; State (9)</option>
+      <option value="strategy">4. Product &amp; Strategy (8)</option>
+      <option value="charts">5. Quantitative Charts (11)</option>
+    </select>
+    <div class="atlas-swatches" role="group" aria-label="Surface Theme Switcher">
+      <button type="button" class="atlas-swatch-dot swatch-white active" data-theme="white" title="Pure White" onclick="applyTheme('white', true)" aria-label="Pure White Theme"></button>
+      <button type="button" class="atlas-swatch-dot swatch-paper" data-theme="paper" title="Warm Paper" onclick="applyTheme('paper', true)" aria-label="Warm Paper Theme"></button>
+      <button type="button" class="atlas-swatch-dot swatch-dark-paper" data-theme="dark-paper" title="Dark Paper" onclick="applyTheme('dark-paper', true)" aria-label="Dark Paper Theme"></button>
+      <button type="button" class="atlas-swatch-dot swatch-dark" data-theme="dark" title="Obsidian Dark" onclick="applyTheme('dark', true)" aria-label="Obsidian Dark Theme"></button>
+    </div>
+  </header>
+
   <div class="atlas-container">
     <!-- 1. Editorial Masthead -->
     <header class="atlas-header">
       <div class="atlas-header-top">
-        <span class="atlas-brand-badge">Quiet UI Skills v7.1 · Layer 2</span>
-        <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-dock-btn">&larr; Back to 17 UI Tiers</a>
+        <span class="atlas-brand-badge">Quiet UI Skills v8.0 &middot; Companion Atlas</span>
+        <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-top-btn">&larr; Back to 16 UI Tiers</a>
       </div>
       <h1 class="atlas-title">45-Type Diagram &amp; Chart Atlas</h1>
       <p class="atlas-subtitle">
@@ -31,7 +50,7 @@
         <span class="atlas-stat-pill"><strong>9</strong> Semantic Patterns</span>
         <span class="atlas-stat-pill"><strong>4</strong> Surface Themes</span>
         <span class="atlas-stat-pill"><strong>100%</strong> Offline SVG &amp; No CDN</span>
-        <span class="atlas-stat-pill"><strong>White Rabbit</strong> Phase-Lock Narrative</span>
+        <span class="atlas-stat-pill"><strong>Standalone</strong> SVG &amp; PNG Export</span>
       </div>
     </header>
 
@@ -39,7 +58,7 @@
     <section id="dsl-workbench" class="atlas-workbench" aria-label="DSL Import Before and After Workbench">
       <div class="wb-head">
         <div class="wb-title-group">
-          <h2>DSL Import Before &rarr; After Workbench</h2>
+          <h2>DSL Import Before <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:inline-block;vertical-align:middle;margin:0 4px;" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg> After Workbench</h2>
           <p>Deterministic AST extraction from Mermaid, draw.io, Excalidraw, and PlantUML into native Quiet UI SVGs.</p>
         </div>
         <div class="wb-tabs" role="tablist" aria-label="DSL Grammar Selectors">
@@ -51,11 +70,11 @@
       </div>
       <div class="wb-grid">
         <div class="wb-pane">
-          <div class="wb-pane-head"><span>Pane 1 · Raw DSL Source</span><span>Inert Text</span></div>
+          <div class="wb-pane-head"><span>Pane 1 &middot; Raw DSL Source</span><span>Inert Text</span></div>
           <pre id="wb-raw-source" class="wb-pane-code"></pre>
         </div>
         <div class="wb-pane">
-          <div class="wb-pane-head"><span>Pane 2 · Deterministic AST Extract</span><span>CLI Invocation</span></div>
+          <div class="wb-pane-head"><span>Pane 2 &middot; Deterministic AST Extract</span><span>CLI Invocation</span></div>
           <div class="wb-pane-ast">
             <div id="wb-cli-cmd" class="wb-cli-banner"></div>
             <pre id="wb-ast-extract" style="margin:0;"></pre>
@@ -63,7 +82,7 @@
         </div>
         <div class="wb-pane">
           <div class="wb-pane-head">
-            <span>Pane 3 · Rebuilt Quiet UI SVG</span>
+            <span>Pane 3 &middot; Rebuilt Quiet UI SVG</span>
             <button type="button" class="atlas-btn" onclick="downloadWbSvg()">Download Standalone .svg</button>
           </div>
           <div id="wb-svg-render" class="wb-svg-wrap"></div>
@@ -96,49 +115,49 @@
     <section id="fam-sec-systems" class="atlas-family-section">
       <div class="atlas-family-head">
         <h3>1. System &amp; Software Architecture</h3>
-        <span>11 Visual Types · References: type-architecture..type-dp-security-matrix</span>
+        <span>11 Visual Types &middot; References: type-architecture..type-dp-security-matrix</span>
       </div>
       <div id="fam-grid-systems" class="atlas-grid"></div>
     </section>
 
-    <!-- Family 2: Data & Schema (6 cards) — Modern Web Guidance #1 Deferred -->
+    <!-- Family 2: Data & Schema (6 cards) — Deferred Below-The-Fold -->
     <section id="fam-sec-data" class="atlas-family-section atlas-deferred-family">
       <div class="atlas-family-head">
         <h3>2. Data Pipelines &amp; Storage Schema</h3>
-        <span>6 Visual Types · References: type-data-flow..type-uml-class</span>
+        <span>6 Visual Types &middot; References: type-data-flow..type-uml-class</span>
       </div>
       <div id="fam-grid-data" class="atlas-grid"></div>
     </section>
 
-    <!-- Family 3: Flows & State (9 cards) — Modern Web Guidance #1 Deferred -->
+    <!-- Family 3: Flows & State (9 cards) — Deferred Below-The-Fold -->
     <section id="fam-sec-flows" class="atlas-family-section atlas-deferred-family">
       <div class="atlas-family-head">
         <h3>3. Processes, Logic &amp; Sequences</h3>
-        <span>9 Visual Types · References: type-flowchart..type-gantt</span>
+        <span>9 Visual Types &middot; References: type-flowchart..type-gantt</span>
       </div>
       <div id="fam-grid-flows" class="atlas-grid"></div>
     </section>
 
-    <!-- Family 4: Product & Strategy (8 cards) — Modern Web Guidance #1 Deferred -->
+    <!-- Family 4: Product & Strategy (8 cards) — Deferred Below-The-Fold -->
     <section id="fam-sec-strategy" class="atlas-family-section atlas-deferred-family">
       <div class="atlas-family-head">
         <h3>4. Product, Strategy &amp; Organization</h3>
-        <span>8 Visual Types · References: type-wardley..type-quadrant</span>
+        <span>8 Visual Types &middot; References: type-wardley..type-quadrant</span>
       </div>
       <div id="fam-grid-strategy" class="atlas-grid"></div>
     </section>
 
-    <!-- Family 5: Quantitative Charts (11 cards) — Modern Web Guidance #1 Deferred -->
+    <!-- Family 5: Quantitative Charts (11 cards) — Deferred Below-The-Fold -->
     <section id="fam-sec-charts" class="atlas-family-section atlas-deferred-family">
       <div class="atlas-family-head">
         <h3>5. Quantitative &amp; Statistical Charts</h3>
-        <span>11 Visual Types · References: type-bar..type-venn</span>
+        <span>11 Visual Types &middot; References: type-bar..type-venn</span>
       </div>
       <div id="fam-grid-charts" class="atlas-grid"></div>
     </section>
   </div>
 
-  <!-- 5. Modern Web Guidance #2: Inspect Dialog -->
+  <!-- 5. Inspect Dialog -->
   <dialog id="atlas-inspect-dialog" closedby="any" aria-labelledby="atlas-dialog-title">
     <div class="atlas-dialog-head">
       <div class="atlas-dialog-title-wrap">
@@ -160,24 +179,5 @@
       </div>
     </div>
   </dialog>
-
-  <!-- 6. Floating Studio Dock Matching quiet-ui-showcase.html -->
-  <aside id="atlas-dock" class="atlas-dock" aria-label="Quiet UI Studio Controller Bar">
-    <a href="./index.html" onclick="goToUiShowcase(); return false;" class="atlas-dock-btn" title="Back to 17 UI Tiers">&larr; 17 UI Tiers</a>
-    <select id="atlas-dock-family-select" class="atlas-dock-select" aria-label="Jump to Visual Family">
-      <option value="workbench">DSL Workbench</option>
-      <option value="systems">1. Systems &amp; Cloud (11)</option>
-      <option value="data">2. Data &amp; Schema (6)</option>
-      <option value="flows">3. Flows &amp; State (9)</option>
-      <option value="strategy">4. Product &amp; Strategy (8)</option>
-      <option value="charts">5. Quantitative Charts (11)</option>
-    </select>
-    <div class="atlas-swatches" role="group" aria-label="Surface Theme Switcher">
-      <span class="atlas-swatch-dot swatch-white active" data-theme="white" title="Pure White" onclick="applyTheme('white', true)"></span>
-      <span class="atlas-swatch-dot swatch-paper" data-theme="paper" title="Warm Paper" onclick="applyTheme('paper', true)"></span>
-      <span class="atlas-swatch-dot swatch-dark-paper" data-theme="dark-paper" title="Dark Paper" onclick="applyTheme('dark-paper', true)"></span>
-      <span class="atlas-swatch-dot swatch-dark" data-theme="dark" title="Obsidian Dark" onclick="applyTheme('dark', true)"></span>
-    </div>
-  </aside>
 </body>
 </html>

@@ -1,0 +1,345 @@
+<template id="tpl-tier-app-1" data-tier="app-1" data-num="10" data-title="App-1 · Flight Anomaly Queue" data-family="C" data-allowed-navs="n1,n2,n3,n4" data-default-nav="n1">
+  <section id="tier-app-1" class="va-tier va-tier-app-1" aria-label="10 · App-1 Flight Anomaly Queue">
+    <div class="app1-workspace">
+      <!-- Workspace Top Toolbar -->
+      <header class="app1-top-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div>
+          <span class="va-badge"><i class="fa-solid fa-triangle-exclamation"></i> PSYCHE-FLIGHT-OPS</span>
+          <h2 style="font-size:var(--ts-md);margin:4px 0 0;font-weight:600;color:var(--text-primary);">
+            Flight Discrepancy Queue &amp; Multi-Subsystem Anomaly Triage
+          </h2>
+        </div>
+        <div class="app1-filter-pills" role="group" aria-label="Anomaly Status Filter" style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button type="button" class="va-pill-btn active" onclick="filterApp1Queue('ALL', this)"><i class="fa-solid fa-layer-group"></i> ALL (12)</button>
+          <button type="button" class="va-pill-btn" onclick="filterApp1Queue('CRIT', this)"><i class="fa-solid fa-circle-exclamation" style="color:var(--status-err,#dc2626);"></i> CRIT (3)</button>
+          <button type="button" class="va-pill-btn" onclick="filterApp1Queue('WARN', this)"><i class="fa-solid fa-triangle-exclamation" style="color:var(--status-warn,#d97706);"></i> WARN (5)</button>
+          <button type="button" class="va-pill-btn" onclick="filterApp1Queue('RESOLVED', this)"><i class="fa-solid fa-circle-check" style="color:var(--status-ok,#16a34a);"></i> RESOLVED (4)</button>
+        </div>
+      </header>
+
+      <!-- Operational Status & Telemetry Strip -->
+      <div class="va-status-strip" style="background:var(--bg-elevated);border:1px solid var(--border-hairline);border-radius:var(--radius-sm);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;">
+        <span style="color:var(--text-primary);font-weight:500;">
+          <i class="fa-solid fa-satellite"></i> Psyche DSOC Optical Cruise &middot; 3 Active High-Priority Discrepancies &middot; 4 Under Engineering Review
+        </span>
+        <span class="mono" style="color:var(--text-secondary);font-size:11px;">
+          NASA NTRS 20240003670 &middot; MTTR 4.2m Rolling &middot; Subsystem Health 98.4%
+        </span>
+      </div>
+
+      <!-- 3-Pane Workbench Architecture -->
+      <div class="app1-3pane-grid">
+        <!-- Pane 1: Left Subsystem & Severity Filter Navigation -->
+        <aside class="va-card" style="padding:10px;background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);" aria-label="Subsystem Filters">
+          <div class="mono" style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;">
+            Subsystems
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:14px;">
+            <button type="button" class="va-pill-btn active" style="justify-content:space-between;width:100%;text-align:left;" onclick="filterApp1Queue('ALL', this)">
+              <span><i class="fa-solid fa-network-wired"></i> All Subsystems</span><span class="mono">12</span>
+            </button>
+            <button type="button" class="va-pill-btn" style="justify-content:space-between;width:100%;text-align:left;" onclick="filterApp1Queue('CRIT', this)">
+              <span><i class="fa-solid fa-tower-broadcast"></i> COMM // RF-OPT</span><span class="mono">5</span>
+            </button>
+            <button type="button" class="va-pill-btn" style="justify-content:space-between;width:100%;text-align:left;" onclick="filterApp1Queue('WARN', this)">
+              <span><i class="fa-solid fa-compass"></i> GNC // POINTING</span><span class="mono">3</span>
+            </button>
+            <button type="button" class="va-pill-btn" style="justify-content:space-between;width:100%;text-align:left;" onclick="filterApp1Queue('WARN', this)">
+              <span><i class="fa-solid fa-bolt"></i> POWER // SOLAR</span><span class="mono">2</span>
+            </button>
+            <button type="button" class="va-pill-btn" style="justify-content:space-between;width:100%;text-align:left;" onclick="filterApp1Queue('RESOLVED', this)">
+              <span><i class="fa-solid fa-microchip"></i> C&amp;DH // RECORDER</span><span class="mono">2</span>
+            </button>
+          </div>
+
+          <div class="mono" style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;">
+            Severity Tier
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:11.5px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 6px;border-radius:4px;background:var(--bg-elevated);">
+              <span style="color:var(--status-err,#dc2626);font-weight:600;"><i class="fa-solid fa-circle"></i> P1 Critical</span>
+              <span class="mono">3 items</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 6px;border-radius:4px;background:var(--bg-elevated);">
+              <span style="color:var(--status-warn,#d97706);font-weight:600;"><i class="fa-solid fa-circle"></i> P2 Warning</span>
+              <span class="mono">5 items</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 6px;border-radius:4px;background:var(--bg-elevated);">
+              <span style="color:var(--status-ok,#16a34a);font-weight:600;"><i class="fa-solid fa-circle"></i> P3 Resolved</span>
+              <span class="mono">4 items</span>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Pane 2: Center Discrepancy Queue (12 Items) -->
+        <main class="va-card" style="background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);overflow:hidden;" aria-label="Discrepancy Queue List">
+          <div style="padding:8px 12px;background:var(--bg-elevated);border-bottom:1px solid var(--border-hairline);display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:var(--text-muted);">
+            <span>DISCREPANCY INCIDENT RECORD</span>
+            <span>STATUS &middot; TIME</span>
+          </div>
+
+          <div class="app1-triage-list" style="max-height:540px;overflow-y:auto;">
+            <!-- Item 1 -->
+            <div class="app1-triage-row is-active" data-status="CRIT" onclick="selectApp1Discrepancy('DISC-0101', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-err,#dc2626);">DISC-0101</span>
+                <span class="va-badge" style="color:var(--status-err,#dc2626);font-size:11px;">P1 &middot; CRIT</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Carrier phase jitter excursion on Palomar Hale receiver</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">COMM // GROUND-RX &middot; Microphonic SNSPD array jitter</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Ground Ops</span>
+                <span class="mono" style="color:var(--text-muted);">14:22 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="app1-triage-row" data-status="WARN" onclick="selectApp1Discrepancy('DISC-0102', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-warn,#d97706);">DISC-0102</span>
+                <span class="va-badge" style="color:var(--status-warn,#d97706);font-size:11px;">P2 &middot; WARN</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Fine Steering Mirror point-ahead angle slew lag</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">GNC // OPT-POINTING &middot; Piezo actuator hysteresis</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Flight Dyn</span>
+                <span class="mono" style="color:var(--text-muted);">13:58 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="app1-triage-row" data-status="WARN" onclick="selectApp1Discrepancy('DISC-0103', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-warn,#d97706);">DISC-0103</span>
+                <span class="va-badge" style="color:var(--status-warn,#d97706);font-size:11px;">P2 &middot; WARN</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">BCJR soft decoder iteration budget exceeded (>10)</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">COMM // BASEBAND-FPGA &middot; Atmospheric scintillation dip</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Baseband</span>
+                <span class="mono" style="color:var(--text-muted);">12:45 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="app1-triage-row" data-status="CRIT" onclick="selectApp1Discrepancy('DISC-0104', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-err,#dc2626);">DISC-0104</span>
+                <span class="va-badge" style="color:var(--status-err,#dc2626);font-size:11px;">P1 &middot; CRIT</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">DSS-55 Madrid Cirrus Attenuation Drop (-4.8 dB)</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">COMM // GROUND-RX &middot; Weather handover to Goldstone</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Ground Ops</span>
+                <span class="mono" style="color:var(--text-muted);">11:30 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="app1-triage-row" data-status="WARN" onclick="selectApp1Discrepancy('DISC-0105', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-warn,#d97706);">DISC-0105</span>
+                <span class="va-badge" style="color:var(--status-warn,#d97706);font-size:11px;">P2 &middot; WARN</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Solar Array Drive Assembly stepping transient</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">POWER // SOLAR &middot; Micro-vibration on optical bench</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Power Ops</span>
+                <span class="mono" style="color:var(--text-muted);">10:14 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="app1-triage-row" data-status="CRIT" onclick="selectApp1Discrepancy('DISC-0106', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-err,#dc2626);">DISC-0106</span>
+                <span class="va-badge" style="color:var(--status-err,#dc2626);font-size:11px;">P1 &middot; CRIT</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Solid-State Flight Recorder DMA FIFO Overflow</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">C&amp;DH // RECORDER &middot; High-rate 267 Mbps ingest backpressure</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Flight SW</span>
+                <span class="mono" style="color:var(--text-muted);">09:02 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="app1-triage-row" data-status="WARN" onclick="selectApp1Discrepancy('DISC-0107', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-warn,#d97706);">DISC-0107</span>
+                <span class="va-badge" style="color:var(--status-warn,#d97706);font-size:11px;">P2 &middot; WARN</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">SPT-140 Plume Optical Sunshade Grazing Margin</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">PROP // HALL-THRUST &middot; Verified 8.2&deg; outside keep-out</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Propulsion</span>
+                <span class="mono" style="color:var(--text-muted);">08:41 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="app1-triage-row" data-status="WARN" onclick="selectApp1Discrepancy('DISC-0108', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-warn,#d97706);">DISC-0108</span>
+                <span class="va-badge" style="color:var(--status-warn,#d97706);font-size:11px;">P2 &middot; WARN</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Table Mountain Uplink Beacon Atmospheric Flare</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">COMM // GROUND-TX &middot; Laser output leveled to 1.25 kW</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Laser Safety</span>
+                <span class="mono" style="color:var(--text-muted);">07:19 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 9 (Resolved) -->
+            <div class="app1-triage-row" data-status="RESOLVED" onclick="selectApp1Discrepancy('DISC-0109', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-ok,#16a34a);">DISC-0109</span>
+                <span class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">P3 &middot; OK</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Helium Cryostat Compressor Thermal Stabilization</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">GROUND // CRYO &middot; Stable 0.84 K achieved on SNSPD stage</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Cryo Lead</span>
+                <span class="mono" style="color:var(--text-muted);">05:33 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 10 (Resolved) -->
+            <div class="app1-triage-row" data-status="RESOLVED" onclick="selectApp1Discrepancy('DISC-0110', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-ok,#16a34a);">DISC-0110</span>
+                <span class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">P3 &middot; OK</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">CCSDS 133.0 Blue Book Frame Sync Marker Jitter</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">COMM // BASEBAND-FPGA &middot; Correlation threshold tuned</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Telecom</span>
+                <span class="mono" style="color:var(--text-muted);">04:12 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 11 (Resolved) -->
+            <div class="app1-triage-row" data-status="RESOLVED" onclick="selectApp1Discrepancy('DISC-0111', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-ok,#16a34a);">DISC-0111</span>
+                <span class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">P3 &middot; OK</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Star Tracker Optical Glint during Reaction Wheel Desat</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">GNC // ATTITUDE &middot; Glint filter mask updated in RAM</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">GNC Ops</span>
+                <span class="mono" style="color:var(--text-muted);">03:05 UTC</span>
+              </div>
+            </div>
+
+            <!-- Item 12 (Resolved) -->
+            <div class="app1-triage-row" data-status="RESOLVED" onclick="selectApp1Discrepancy('DISC-0112', this)">
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:85px;">
+                <span class="mono" style="font-weight:700;font-size:12px;color:var(--status-ok,#16a34a);">DISC-0112</span>
+                <span class="va-badge" style="color:var(--status-ok,#16a34a);font-size:11px;">P3 &middot; OK</span>
+              </div>
+              <div style="flex:1 1 180px;">
+                <strong style="font-size:12.5px;color:var(--text-primary);display:block;">Canberra DSS-34 Ka-Band Dual Polarization Calibration</strong>
+                <span class="mono" style="font-size:11px;color:var(--text-secondary);">GROUND // DSN-CDSCC &middot; Polarizer phase angle zeroed</span>
+              </div>
+              <div style="text-align:right;font-size:11px;min-width:70px;">
+                <span class="mono" style="display:block;color:var(--text-primary);font-weight:600;">Station Lead</span>
+                <span class="mono" style="color:var(--text-muted);">01:45 UTC</span>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <!-- Pane 3: Right Live Anomaly Inspector -->
+        <aside class="va-card app1-detail-pane app1-inspector" style="padding:12px;background:var(--bg-surface);border:1px solid var(--border-hairline);border-radius:var(--radius-card);" aria-label="Selected Anomaly Details">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid var(--border-hairline);padding-bottom:6px;">
+            <span class="mono" id="app1-insp-id" style="font-size:13px;font-weight:700;color:var(--status-err,#dc2626);">DISC-0101</span>
+            <span class="va-badge"><i class="fa-solid fa-file-waveform"></i> TELEMETRY ACTIVE</span>
+          </div>
+
+          <h3 id="app1-insp-title" style="margin:0 0 10px 0;font-size:13.5px;line-height:1.3;color:var(--text-primary);">
+            Carrier phase jitter excursion on Palomar Hale receiver
+          </h3>
+
+          <div style="margin-bottom:12px;">
+            <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Identified Root Cause</span>
+            <p id="app1-insp-cause" style="margin:3px 0 0;font-size:11.5px;line-height:1.4;color:var(--text-secondary);">
+              Cryogenic compressor pressure oscillation induced microphonic vibration on SNSPD array.
+            </p>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;">Engineering Disposition</span>
+            <p id="app1-insp-disp" style="margin:3px 0 0;font-size:11.5px;line-height:1.4;color:var(--text-secondary);">
+              Activated spatial diversity mode; transitioned downlink tracking to DSS-13 Goldstone.
+            </p>
+          </div>
+
+          <!-- Anomaly Telemetry Waveform Trace -->
+          <div style="margin-bottom:12px;">
+            <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;margin-bottom:4px;">
+              Recorded Jitter Transient (ps vs T0)
+            </span>
+            <div style="background:#020617;border:1px solid #1E293B;border-radius:var(--radius-sm);padding:6px;">
+              <svg viewBox="0 0 240 50" style="inline-size:100%;max-inline-size:240px;block-size:auto;display:block;" role="img" aria-label="Anomaly Waveform">
+                <line x1="0" y1="25" x2="240" y2="25" stroke="#334155" stroke-width="1" stroke-dasharray="2,2"/>
+                <line x1="0" y1="10" x2="240" y2="10" stroke="rgba(220,38,38,0.4)" stroke-width="1" stroke-dasharray="3,3"/>
+                <polyline points="0,25 30,24 60,26 90,23 110,8 120,42 130,5 140,38 150,22 180,26 210,24 240,25" fill="none" stroke="#f43f5e" stroke-width="1.6"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Sign-Off & Disposition Checklist -->
+          <div style="border-top:1px solid var(--border-hairline);padding-top:8px;">
+            <span class="mono" style="font-size:11px;color:var(--text-muted);display:block;text-transform:uppercase;margin-bottom:6px;">
+              Review Board Approvals
+            </span>
+            <div style="display:flex;flex-direction:column;gap:5px;font-size:11px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Lead Optical Engineer</span>
+                <span class="sq-status sq-ok"></span><strong class="mono">CONCURRED</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Ground Operations Lead</span>
+                <span class="sq-status sq-ok"></span><strong class="mono">CONCURRED</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Psyche Flight Director</span>
+                <span class="sq-status sq-warn"></span><strong class="mono">PENDING SIGN</strong>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Footer -->
+      <footer style="margin-top:10px;padding:6px 2px;font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+        <span>NASA NTRS 20240003670 &middot; Psyche Deep Space Optical Communications Flight Triage</span>
+        <span>JPL Telecommunications &amp; Mission Operations Directorate</span>
+      </footer>
+    </div>
+  </section>
+</template>

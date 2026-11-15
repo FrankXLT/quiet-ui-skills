@@ -1,0 +1,202 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI v8.0.1 — Portal Stage Mat, Scaler & Labeled Studio Sheet Dialog
+   ========================================================================== */
+
+#va-portal-mat {
+  flex: 1;
+  min-block-size: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: #070B12;
+  user-select: none;
+}
+
+#va-portal-scaler {
+  position: relative;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+  transition: width 0.12s ease-out, height 0.12s ease-out;
+  background: #090D16;
+}
+
+#va-stage-portal {
+  border: none;
+  background: #090D16;
+  display: block;
+}
+
+/* Hinge Guide for 820x1180 Fold Diagnostics */
+.va-hinge-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  border-left: 2px dashed rgba(56, 189, 248, 0.55);
+  pointer-events: none;
+  z-index: 25;
+  display: none;
+}
+
+#va-portal-scaler.has-hinge .va-hinge-guide {
+  display: block;
+}
+
+/* Resize Drag Handles */
+.va-drag-handle {
+  position: absolute;
+  z-index: 30;
+}
+
+.va-drag-w {
+  left: -6px;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+.va-drag-e {
+  right: -6px;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  cursor: ew-resize;
+}
+
+.va-drag-s {
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  cursor: ns-resize;
+}
+
+/* Studio Settings Sheet (<700px bottom sheet | >=700px anchored popover) */
+dialog#va-customize-sheet {
+  border: 1px solid #334155;
+  background: #0F172A;
+  color: #F8FAFC;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.58);
+  margin: 50px 0.65rem auto auto;
+  inline-size: 360px;
+  max-inline-size: calc(100vw - 1.3rem);
+  max-block-size: calc(100dvh - 64px);
+  overflow-y: auto;
+  border-radius: 10px;
+}
+
+@media (max-width: 699px) {
+  dialog#va-customize-sheet {
+    margin: auto 0 0 0;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    max-block-size: 82dvh;
+    border-radius: 14px 14px 0 0;
+    border-bottom: 0;
+    padding: 1rem;
+  }
+}
+
+dialog#va-customize-sheet::backdrop {
+  background: rgba(7, 11, 18, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.va-customize-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #1E293B;
+  font-size: 13px;
+}
+
+.va-sheet-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.va-customize-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.va-customize-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.va-customize-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.va-sheet-seg {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.va-sheet-seg-btn {
+  min-block-size: 32px;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #1E293B;
+  color: #CBD5E1;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.va-sheet-seg-btn.is-active {
+  background: #2563EB;
+  border-color: #3B82F6;
+  color: #FFFFFF;
+}
+
+.va-sheet-stage-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.va-sheet-stage-row .va-studio-select {
+  flex: 1 1 auto;
+}
+
+.va-prompt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.va-prompt-preview {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: #94A3B8;
+  background: #070B12;
+  border: 1px solid #1E293B;
+  border-radius: 5px;
+  padding: 0.35rem 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+}

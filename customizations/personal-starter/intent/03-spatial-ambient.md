@@ -1,10 +1,9 @@
-# Personal Blueprint — 03 Spatial & Ambient Living
+# Personal Blueprint — 03 Optical Viewport HUD & Tactile Console
 
 ## 1. Scope & Tiers
-Brings Calm Technology into physical spaces through dedicated wall kiosks and companion controllers:
-- **15. HA-1 (Ambient Wall Screensaver):** Features open Monet canvas art beneath three floating optical glass panels with deep background blur (`blur(24px) saturate(180%)`), glass sliders, and a museum plaquette.
-- **16. HA-2 (Room-First Wall Control Panel):** Walk-up wall touch interface with compact room cards, circuit load gauges, and fixture controls.
-- **17. HA-3 (Foldable & Phone Companion):** Full-row slider tiles with dual-pane split on foldable screens and bottom thumb bar navigation on phones.
+Brings mission-critical spatial observation and direct subsystem control into high-consequence operational environments:
+- **15. HUD-1 (Optical Viewport / AR HUD):** Features `>= 65%` unobstructed central sightline with floating smoked-glass telemetry pods (`.va-hud-pod`), Apollo 8 Earthrise (`as08-14-2383`) backplate, and collimated optical readouts.
+- **16. Ctrl-1 (Tactile Subsystem Console):** Arm's-reach walk-up touch interface with 2-step guarded effector controls (`ARM` $\rightarrow$ `EXECUTE`), commanded-vs-actual state discrepancy badges, and subsystem rack selectors.
 
-## 2. Invariants
-Optical glass panels enforce subtle white borders and soft drop shadows, while all touch targets maintain a minimum 44px hit clearance for walk-up comfort.
+## 2. Invariants & Universal Responsive Support
+Smoked-glass pods enforce subtle white borders and backdrop blur (`backdrop-filter: blur(18px) saturate(150%)`), while interactive effectors provide distinct touch boundaries (`>= 44px` on coarse pointers). Dedicated mobile tiers are retired in favor of universal responsive layouts (`390×844` phone thumb bar, `820×1180` crease-aware tablet split) across all 16 tiers.
