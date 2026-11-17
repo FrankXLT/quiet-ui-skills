@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Static Visual Contract Gates for Quiet UI v8.0."""
+"""Static Visual Contract Gates for Quiet UI v9.0."""
 
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
 from typing import Sequence
@@ -15,10 +16,16 @@ from .constants import (
     FORBIDDEN_EMOJIS,
     FORBIDDEN_META_STRINGS,
     FORBIDDEN_PII_PATTERNS,
+    MARKDOWN_DOC_MAX_LINES,
+    MARKDOWN_SUBDOC_MIN_LINES,
     MAX_LINE_BUDGET,
+    OFFLINE_SCHEMA_URN_PREFIX,
+    PILLAR_SKILL_NAMES,
     REFERENCES_LINE_BUDGET,
+    SKILL_ROUTER_MAX_LINES,
     TIER_HTML_LINE_RANGE,
     TOKEN_MIRROR_PATHS,
+    WORKFLOWS_DOC_RANGE,
 )
 
 IGNORED_DIRS: set[str] = {".git", ".cache", "node_modules", "__pycache__", ".venv"}
@@ -36,9 +43,12 @@ def _is_excluded_from_budget(rel_path: str) -> bool:
 
 
 def verify_line_counts(repo_root: Path) -> list[str]:
-    """Gate: Rebalanced file budgets:
+    """Gate: v9.0 3-Pillar file budgets:
+    - docs/WORKFLOWS.md: 250-450 lines
+    - skills/*/SKILL.md: <= 140 lines
+    - skills/**/references/*.md: <= 450 lines (migration stubs)
+    - skills/**/*.md (sub-documents): 120-450 lines (substance band)
     - src/tiers/*.html: <= 550 lines (target 260-550L)
-    - skills/**/references/*.md: <= 450 lines
     - code/css/js/scripts: <= 350 lines
     """
     violations: list[str] = []
@@ -52,16 +62,37 @@ def verify_line_counts(repo_root: Path) -> list[str]:
             continue
         try:
             line_count = len(p.read_text(encoding="utf-8", errors="ignore").splitlines())
-            if rel.startswith("src/tiers/") and rel.endswith(".html"):
-                max_l = TIER_HTML_LINE_RANGE[1]
-                if line_count > max_l:
+            if rel == "docs/WORKFLOWS.md":
+                min_l, max_l = WORKFLOWS_DOC_RANGE
+                if line_count < min_l or line_count > max_l:
                     violations.append(
-                        f"[LINE_BUDGET] {rel} has {line_count} lines (max {max_l})"
+                        f"[LINE_BUDGET] {rel} has {line_count} lines (range {min_l}-{max_l})"
+                    )
+            elif p.name == "SKILL.md" and "skills" in p.parts:
+                if line_count > SKILL_ROUTER_MAX_LINES:
+                    violations.append(
+                        f"[LINE_BUDGET] {rel} has {line_count} lines (max {SKILL_ROUTER_MAX_LINES})"
                     )
             elif "references" in p.parts and rel.endswith(".md"):
                 if line_count > REFERENCES_LINE_BUDGET:
                     violations.append(
                         f"[LINE_BUDGET] {rel} has {line_count} lines (max {REFERENCES_LINE_BUDGET})"
+                    )
+            elif "skills" in p.parts and rel.endswith(".md"):
+                if line_count < MARKDOWN_SUBDOC_MIN_LINES or line_count > MARKDOWN_DOC_MAX_LINES:
+                    violations.append(
+                        f"[LINE_BUDGET] {rel} has {line_count} lines (target {MARKDOWN_SUBDOC_MIN_LINES}-{MARKDOWN_DOC_MAX_LINES})"
+                    )
+            elif rel.endswith(".md"):
+                if line_count > MARKDOWN_DOC_MAX_LINES:
+                    violations.append(
+                        f"[LINE_BUDGET] {rel} has {line_count} lines (max {MARKDOWN_DOC_MAX_LINES})"
+                    )
+            elif rel.startswith("src/tiers/") and rel.endswith(".html"):
+                max_l = TIER_HTML_LINE_RANGE[1]
+                if line_count > max_l:
+                    violations.append(
+                        f"[LINE_BUDGET] {rel} has {line_count} lines (max {max_l})"
                     )
             else:
                 limit = CODE_LINE_BUDGET
@@ -192,43 +223,136 @@ def verify_hygiene_static(repo_root: Path, showcase_path: Path) -> list[str]:
     return errors
 
 
-def verify_docs_contract(repo_root: Path, skill_dir: Path) -> list[str]:
-    """Check docs metadata, token usage, and banned brand terminology."""
+def verify_docs_contract(repo_root: Path, skill_dir: Path | None = None) -> list[str]:
+    """Check docs metadata, 3-pillar links, offline schema URNs, JSON blocks, tokens, and hygiene."""
     errors: list[str] = []
     tokens_file = repo_root / "tokens" / "quiet-ui-tokens.css"
     if not tokens_file.exists():
-        tokens_file = skill_dir / "tokens" / "quiet-ui-tokens.css"
-    if not tokens_file.exists():
-        return [f"[DOCS_CONTRACT] Tokens file not found near {skill_dir}"]
+        if skill_dir and (skill_dir / "tokens" / "quiet-ui-tokens.css").exists():
+            tokens_file = skill_dir / "tokens" / "quiet-ui-tokens.css"
+        else:
+            return [f"[DOCS_CONTRACT] Tokens file not found near {skill_dir}"]
 
     defined_tokens = set(re.findall(r"(--[a-zA-Z0-9_-]+)\s*:", tokens_file.read_text("utf-8")))
-    skill_md = skill_dir / "SKILL.md"
-    if skill_md.exists():
-        md_text = skill_md.read_text("utf-8")
-        desc_m = re.search(r"^description:\s*(.+)$", md_text, flags=re.M)
-        if not desc_m or len(desc_m.group(1).split()) > 55:
-            errors.append("[SKILL_DESC_LEN] SKILL.md YAML description must be <= 55 words.")
 
-    ref_files = sorted((skill_dir / "references").glob("*.md")) if (skill_dir / "references").exists() else []
-    if skill_md.exists():
-        md_text = skill_md.read_text("utf-8")
-        for rf in ref_files:
-            if f"references/{rf.name}" not in md_text:
-                errors.append(f"[UNLINKED_REF] Reference '{rf.name}' is not linked in SKILL.md.")
+    core_pillar_skills = ("quiet-ui", "quiet-evidence", "quiet-bridge")
+    all_skills = (
+        [skill_dir.name]
+        if (skill_dir and skill_dir.name not in PILLAR_SKILL_NAMES)
+        else list(PILLAR_SKILL_NAMES)
+    )
 
-    docs_to_check = [p for p in [skill_md, *ref_files, repo_root / "README.md", repo_root / "llms.txt"] if p.exists()]
-    for doc in docs_to_check:
+    pillar_md_files: list[Path] = []
+    workflows_doc = repo_root / "docs" / "WORKFLOWS.md"
+    if workflows_doc.exists():
+        pillar_md_files.append(workflows_doc)
+
+    for sk_name in all_skills:
+        sk_path = repo_root / "skills" / sk_name
+        if not sk_path.exists():
+            continue
+        skill_md = sk_path / "SKILL.md"
+        if skill_md.exists():
+            pillar_md_files.append(skill_md)
+            md_text = skill_md.read_text("utf-8")
+            desc_m = re.search(r"^description:\s*(.+)$", md_text, flags=re.M)
+            if not desc_m or len(desc_m.group(1).split()) > 55:
+                errors.append(f"[SKILL_DESC_LEN] {sk_name}/SKILL.md YAML description must be <= 55 words.")
+
+            # For active 3-pillar skills, verify all sub-documents are linked in SKILL.md
+            if sk_name in core_pillar_skills:
+                for sub_doc in sorted(sk_path.rglob("*.md")):
+                    if sub_doc == skill_md or any(ig in sub_doc.parts for ig in IGNORED_DIRS):
+                        continue
+                    pillar_md_files.append(sub_doc)
+                    rel_to_skill = sub_doc.relative_to(sk_path).as_posix()
+                    if rel_to_skill not in md_text:
+                        errors.append(f"[UNLINKED_DOC] {sk_name}: '{rel_to_skill}' is not linked in SKILL.md.")
+
+    # Check 3-pillar markdown files for relative link validity, valid JSON blocks, offline URNs, PII, brands, emojis, and tokens
+    for doc in set(pillar_md_files):
         txt = doc.read_text("utf-8", errors="ignore")
+        doc_rel = doc.relative_to(repo_root).as_posix()
+
+        # 1. Banned Brands
         for brand in FORBIDDEN_BRANDS:
             if re.search(rf"\b{re.escape(brand)}\b", txt, flags=re.I):
-                errors.append(f"[DOC_BRAND] {doc.name} contains banned brand '{brand}'")
+                errors.append(f"[DOC_BRAND] {doc_rel} contains banned brand '{brand}'")
+
+        # 2. Banned Emojis
+        for emoji in FORBIDDEN_EMOJIS:
+            if emoji in txt:
+                errors.append(f"[BANNED_EMOJI] {doc_rel} contains banned emoji '{emoji}'")
+
+        # 3. PII patterns
+        for pat in FORBIDDEN_PII_PATTERNS:
+            m = re.search(pat, txt, flags=re.IGNORECASE)
+            if m:
+                errors.append(f"[PII_LEAK] {doc_rel} matches forbidden pattern: '{m.group(0)}'")
+
+        # 4. Relative Link Validation
+        for label, link in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", txt):
+            if (
+                link.startswith("http://")
+                or link.startswith("https://")
+                or link.startswith("mailto:")
+                or link.startswith("#")
+                or link.startswith("file://")
+            ):
+                continue
+            clean_link = link.split("#")[0]
+            if not clean_link:
+                continue
+            target_path = (doc.parent / clean_link).resolve()
+            if not target_path.exists():
+                errors.append(f"[BROKEN_LINK] {doc_rel} links to non-existent target: '{clean_link}'")
+
+        # 5. Fenced JSON Block Validation & Offline Schema URNs
+        for json_block in re.findall(r"```json\s*\n(.*?)\n```", txt, flags=re.S):
+            stripped = json_block.strip()
+            if not stripped or stripped.startswith("//") or stripped.startswith("/*"):
+                continue
+            try:
+                parsed = json.loads(stripped)
+                if isinstance(parsed, dict):
+                    schema_id = parsed.get("$schema") or parsed.get("schema")
+                    if schema_id and isinstance(schema_id, str):
+                        if schema_id.startswith("http://") or schema_id.startswith("https://"):
+                            errors.append(
+                                f"[FORBIDDEN_WEB_SCHEMA] {doc_rel} uses web URL for schema: '{schema_id}'. Must use offline URN ('{OFFLINE_SCHEMA_URN_PREFIX}...')"
+                            )
+                        elif not schema_id.startswith(OFFLINE_SCHEMA_URN_PREFIX):
+                            errors.append(
+                                f"[INVALID_SCHEMA_URN] {doc_rel} schema '{schema_id}' must start with '{OFFLINE_SCHEMA_URN_PREFIX}'"
+                            )
+            except json.JSONDecodeError as exc:
+                errors.append(f"[INVALID_JSON_BLOCK] {doc_rel} has invalid JSON syntax: {exc}")
+
+        # 6. Token References in CSS/HTML blocks
         for block in re.findall(r"(?:```|~~~)(?:css|html)\n(.*?)(?:```|~~~)", txt, flags=re.S | re.I):
             for line in block.splitlines():
                 if "/* avoid */" in line:
                     continue
                 for var_name in re.findall(r"var\(\s*(--[a-zA-Z0-9_-]+)", line):
                     if var_name not in defined_tokens:
-                        errors.append(f"[UNDEFINED_TOKEN] {doc.name} references undefined token '{var_name}'")
+                        errors.append(f"[UNDEFINED_TOKEN] {doc_rel} references undefined token '{var_name}'")
+
+    # Check root docs (README.md, llms.txt) for banned brands and token usage
+    for root_doc in (repo_root / "README.md", repo_root / "llms.txt"):
+        if not root_doc.exists():
+            continue
+        txt = root_doc.read_text("utf-8", errors="ignore")
+        for brand in FORBIDDEN_BRANDS:
+            if re.search(rf"\b{re.escape(brand)}\b", txt, flags=re.I):
+                errors.append(f"[DOC_BRAND] {root_doc.name} contains banned brand '{brand}'")
+        for block in re.findall(r"(?:```|~~~)(?:css|html)\n(.*?)(?:```|~~~)", txt, flags=re.S | re.I):
+            for line in block.splitlines():
+                if "/* avoid */" in line:
+                    continue
+                for var_name in re.findall(r"var\(\s*(--[a-zA-Z0-9_-]+)", line):
+                    if var_name not in defined_tokens:
+                        errors.append(f"[UNDEFINED_TOKEN] {root_doc.name} references undefined token '{var_name}'")
+
     return errors
 
 
@@ -270,8 +394,7 @@ def run_static_gates(
     errors.extend(verify_no_raw_latex_or_ascii(repo_root))
 
     if check_docs:
-        skill_dir = repo_root / "skills" / "quiet-ui"
-        errors.extend(verify_docs_contract(repo_root, skill_dir))
+        errors.extend(verify_docs_contract(repo_root))
 
     return errors
 
