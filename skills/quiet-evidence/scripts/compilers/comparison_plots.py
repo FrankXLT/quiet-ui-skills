@@ -10,6 +10,7 @@ from .tokens_and_scales import (
     esc,
     format_tick_numeral,
     halo_text,
+    pill_halo_text,
 )
 
 
@@ -69,9 +70,10 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
         bh = max(4.0, yb - yt)
         fill = "var(--status-ok-bg)" if kind == "total" else ("var(--tint-indigo-bg)" if val < 0 else "var(--bg-card)")
         stroke = "var(--status-ok)" if kind == "total" else ("var(--accent-focal)" if val < 0 else "var(--border-strong)")
+        lbl_col = "var(--status-ok)" if kind == "total" else ("var(--accent-focal)" if val < 0 else "var(--text-primary)")
         parts.append(f'<rect x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.6"/>')
         val_txt = f"{val:+.1f}{sep}{unit}" if kind == "delta" else f"{val:.1f}{sep}{unit}"
-        parts.append(halo_text(bx + bw / 2.0, yt - 7.0, val_txt, anchor="middle", size=11.5, weight="700", fill=stroke if kind != "start" else "var(--text-primary)"))
+        parts.append(halo_text(bx + bw / 2.0, yt - 7.0, val_txt, anchor="middle", size=11.5, weight="700", fill=lbl_col))
         parts.append(halo_text(bx + bw / 2.0, y0 + ph + 19.0, lbl, anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
         if i < len(spans) - 1:
             run_end = lo if (val < 0 and kind == "delta") else hi
@@ -81,9 +83,9 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
 
     for env in envs:
         thr = float(env.get("threshold_value", 0.0))
-        ey = max(y0 + 8.0, min(y0 + ph - 8.0, _proj_lin_y(thr, sc, y0, ph)))
+        ey = max(y0 + 12.0, min(y0 + ph - 12.0, _proj_lin_y(thr, sc, y0, ph)))
         parts.append(f'<line x1="{x0}" y1="{ey:.1f}" x2="{x0 + pw}" y2="{ey:.1f}" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="6,3"/>')
-        parts.append(halo_text(x0 + pw - 6, ey - 6, f'{env.get("label", "Ceiling")} ({thr:g}{sep}{unit})', anchor="end", size=11.5, weight="700", fill="var(--status-danger)"))
+        parts.append(pill_halo_text(x0 + pw * 0.48, ey + 4.0, f'{env.get("label", "Ceiling")} ({thr:g}{sep}{unit})', anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", border="var(--status-danger)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
     parts.append(f'<text x="20" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 20 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">{esc(y_lbl)}</text>')
     parts.append("</svg>")
     return "\n".join(parts)

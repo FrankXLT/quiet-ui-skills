@@ -1,0 +1,205 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:corpus",
+  "world_id": "02-cloud-cyber-and-ai-ops",
+  "world_index": 2,
+  "title": "Cloud, Cyber & AI Ops",
+  "description": "Three-view distillation corpus covering real-time SRE tail-latency incident command, NIST SP 800-207 zero-trust ATO boundary governance, and NIST AI RMF 100-1 calibration drift and telemetry lineage.",
+  "canonical_metrics": {
+    "p99_threshold_ms": 250.0,
+    "p99_peak_ms": 420.0,
+    "scrape_dropout_s": 12.0,
+    "error_budget_burn_pct_hr": 16.8,
+    "error_budget_burn_limit_pct_hr": 14.4,
+    "cursor_a_s": 32.0,
+    "cursor_b_s": 60.0,
+    "cursor_delta_s": 28.0,
+    "enclave_count": 3,
+    "ppsm_cross_enclave_edges": 4,
+    "er_entity_count": 4,
+    "fips_policy_hex": "0x8003B104",
+    "fips_policy_reset_hex": "0x00000000",
+    "fips_policy_offset_hex": "0x0010",
+    "fips_strict_bit_index": 31,
+    "ece_drift_score": 0.050,
+    "ece_drift_threshold": 0.040,
+    "overconfidence_gate_offset": -0.08,
+    "sample_count": 1200
+  },
+  "evidence_bindings": {
+    "p99_threshold_ms": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.channels[0].threshold_envelopes[0].value",
+      "unit": "ms"
+    },
+    "p99_peak_ms": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.channels[0].samples[8][1]",
+      "unit": "ms"
+    },
+    "scrape_dropout_s": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.channels[*].samples[11..13] (56.0 - 44.0)",
+      "unit": "s"
+    },
+    "error_budget_burn_pct_hr": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.channels[1].samples[8][1]",
+      "unit": "%/h"
+    },
+    "error_budget_burn_limit_pct_hr": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.channels[1].threshold_envelopes[0].value",
+      "unit": "%/h"
+    },
+    "cursor_a_s": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.cursors.cursor_a.time",
+      "unit": "s"
+    },
+    "cursor_b_s": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.cursors.cursor_b.time",
+      "unit": "s"
+    },
+    "enclave_count": {
+      "file": "evidence/v05_zero_trust_and_er_schematics.json",
+      "json_path": "$.panels[0].enclaves.length",
+      "unit": "1"
+    },
+    "er_entity_count": {
+      "file": "evidence/v05_zero_trust_and_er_schematics.json",
+      "json_path": "$.panels[1].entities.length",
+      "unit": "1"
+    },
+    "fips_policy_hex": {
+      "file": "evidence/v05_tls_policy_bitfield.json",
+      "json_path": "$.metadata.current_value",
+      "unit": "hex"
+    },
+    "fips_policy_reset_hex": {
+      "file": "evidence/v05_tls_policy_bitfield.json",
+      "json_path": "$.metadata.reset_value",
+      "unit": "hex"
+    },
+    "fips_policy_offset_hex": {
+      "file": "evidence/v05_tls_policy_bitfield.json",
+      "json_path": "$.metadata.address_offset",
+      "unit": "hex"
+    },
+    "fips_strict_bit_index": {
+      "file": "evidence/v05_tls_policy_bitfield.json",
+      "json_path": "$.fields[0].bit_range[0]",
+      "unit": "bit"
+    },
+    "ece_drift_score": {
+      "file": "evidence/v06_ai_calibration_plot.json",
+      "json_path": "$.parametric_legend[0].value",
+      "unit": "1"
+    },
+    "ece_drift_threshold": {
+      "file": "evidence/v06_ai_calibration_plot.json",
+      "json_path": "$.parametric_legend[1].value",
+      "unit": "1"
+    },
+    "cursor_delta_s": {
+      "file": "evidence/v04_sre_latency_scope.json",
+      "json_path": "$.cursors.delta_readout.delta_t_s",
+      "unit": "s"
+    },
+    "ppsm_cross_enclave_edges": {
+      "file": "evidence/v05_zero_trust_and_er_schematics.json",
+      "json_path": "$.panels[0].edges",
+      "unit": "1"
+    },
+    "overconfidence_gate_offset": {
+      "file": "evidence/v06_ai_calibration_plot.json",
+      "json_path": "$.envelopes[0].equation",
+      "unit": "1"
+    },
+    "sample_count": {
+      "file": "evidence/v06_ai_calibration_plot.json",
+      "json_path": "$.parametric_legend[2].value",
+      "unit": "1"
+    }
+  },
+  "views": [
+    {
+      "id": "v04-sre-incident-workbench",
+      "title": "V04: SRE Incident Command & Tail-Latency Workbench",
+      "presenter": "Site Reliability Engineer",
+      "audience": "On-Call & VP Engineering",
+      "lenses": [
+        "Technician / Operator",
+        "Program Manager"
+      ],
+      "tempos": [
+        "T1"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": [
+        "N2"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v04_sre_latency_scope.json"
+      ],
+      "actionable_disposition": "Canary Traffic Gate tripped to 0 at t = 36.0 s after 420.0 ms p99 breach; hold canary isolated until 12.0 s OTel scrape dropout clears and burn rate settles below 14.4 %/h."
+    },
+    {
+      "id": "v05-zero-trust-ato-spec",
+      "title": "V05: Zero-Trust Enclave ATO Boundary & mTLS Policy Spec",
+      "presenter": "Security Architect",
+      "audience": "Authorizing Official (AO) & CISO",
+      "lenses": [
+        "Project / Systems Engineer",
+        "Discipline Engineer"
+      ],
+      "tempos": [
+        "T3"
+      ],
+      "mediums": [
+        "M1",
+        "M2"
+      ],
+      "chromatic_budget": "Archival Proof",
+      "nav_shells": [
+        "N1"
+      ],
+      "rigor_level": "L2",
+      "evidence_refs": [
+        "evidence/v05_zero_trust_and_er_schematics.json",
+        "evidence/v05_tls_policy_bitfield.json"
+      ],
+      "actionable_disposition": "Approve ATO boundary across 3 enclaves and 4 PPSM edges with CSR_MTLS_POLICY = 0x8003B104 (FIPS_STRICT bit [31] = 1, LEGACY_TLS_ALLOW bit [30] = 0)."
+    },
+    {
+      "id": "v06-ai-drift-and-lineage-ide",
+      "title": "V06: AI Calibration Drift & Telemetry Lineage IDE",
+      "presenter": "ML / Data Platform Engineer",
+      "audience": "Application Engineer",
+      "lenses": [
+        "Project / Systems Engineer",
+        "Discipline Engineer"
+      ],
+      "tempos": [
+        "T3"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Archival Proof",
+      "nav_shells": [
+        "N3"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v05_zero_trust_and_er_schematics.json",
+        "evidence/v06_ai_calibration_plot.json"
+      ],
+      "actionable_disposition": "ECE = 0.050 exceeds 0.040 drift ceiling across N = 1200 validation samples (overconfidence -0.120 at p_hat = 0.85); route p_hat >= 0.75 predictions to deterministic fallback."
+    }
+  ]
+}

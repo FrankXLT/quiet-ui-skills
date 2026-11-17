@@ -1,0 +1,242 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:schematic",
+  "id": "w02-v05-zero-trust-and-er-schematics",
+  "metadata": {
+    "title": "V05/V06: Zero-Trust Enclave Topology & ML Drift Lineage Schema",
+    "description": "Multi-panel schematic pairing Panel A (NIST SP 800-207 3-enclave zero-trust architecture with orthogonal cross-boundary PPSM flows) and Panel B (Crow's-Foot ER lineage from raw telemetry events to drift alerts).",
+    "rigor_level": "L2",
+    "drawing_number": "ATO-ZTA-2026-R3",
+    "timestamp_utc": "2026-11-17T04:15:00Z"
+  },
+  "panels": [
+    {
+      "schematic_kind": "topology",
+      "title": "Panel A: Zero-Trust Enclave Boundaries & 4 Cross-Enclave PPSM Flows",
+      "width": 720,
+      "height": 330,
+      "enclaves": [
+        {
+          "id": "enc-ingress",
+          "label": "ENCLAVE-INGRESS",
+          "fips_level": "NIST 800-207 PEP",
+          "x": 16,
+          "y": 20,
+          "w": 188,
+          "h": 286,
+          "border_style": "dashed",
+          "fill_token": "var(--bg-elevated)"
+        },
+        {
+          "id": "enc-compute",
+          "label": "ENCLAVE-COMPUTE",
+          "fips_level": "mTLS 1.3 Strict",
+          "x": 266,
+          "y": 20,
+          "w": 188,
+          "h": 286,
+          "border_style": "dashed",
+          "fill_token": "var(--bg-elevated)"
+        },
+        {
+          "id": "enc-hsm",
+          "label": "ENCLAVE-HSM-AUDIT",
+          "fips_level": "FIPS 140-3 L3",
+          "x": 516,
+          "y": 20,
+          "w": 188,
+          "h": 286,
+          "border_style": "dash-dot",
+          "fill_token": "var(--bg-elevated)"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "pep-gw",
+          "enclave_id": "enc-ingress",
+          "label": "Edge API PEP",
+          "sublabel": "TLS 1.3 + OIDC",
+          "x": 32,
+          "y": 78,
+          "w": 156,
+          "h": 58,
+          "focal": true
+        },
+        {
+          "id": "idp-pdp",
+          "enclave_id": "enc-ingress",
+          "label": "Policy Engine PDP",
+          "sublabel": "SPIFFE X.509",
+          "x": 32,
+          "y": 216,
+          "w": 156,
+          "h": 58
+        },
+        {
+          "id": "ml-infer",
+          "enclave_id": "enc-compute",
+          "label": "Inference Mesh",
+          "sublabel": "FIPS mTLS Proxy",
+          "x": 282,
+          "y": 78,
+          "w": 156,
+          "h": 58,
+          "focal": true
+        },
+        {
+          "id": "otel-col",
+          "enclave_id": "enc-compute",
+          "label": "OTel Collector",
+          "sublabel": "gRPC 4317 mTLS",
+          "x": 282,
+          "y": 216,
+          "w": 156,
+          "h": 58
+        },
+        {
+          "id": "hsm-kms",
+          "enclave_id": "enc-hsm",
+          "label": "Cloud HSM KMS",
+          "sublabel": "FIPS 140-3 Keying",
+          "x": 532,
+          "y": 78,
+          "w": 156,
+          "h": 58,
+          "focal": true
+        },
+        {
+          "id": "audit-vault",
+          "enclave_id": "enc-hsm",
+          "label": "Audit Vault",
+          "sublabel": "WORM Hash Log",
+          "x": 532,
+          "y": 216,
+          "w": 156,
+          "h": 58
+        }
+      ],
+      "edges": [
+        {
+          "from": "pep-gw",
+          "to": "ml-infer",
+          "label": "PPSM-443-mTLS",
+          "crosses_enclave_boundary": true,
+          "stroke_color": "var(--accent-focal)",
+          "mid_x": 235
+        },
+        {
+          "from": "idp-pdp",
+          "to": "ml-infer",
+          "label": "PPSM-8443-SVID",
+          "crosses_enclave_boundary": true,
+          "style": "dashed",
+          "stroke_color": "var(--status-warn)",
+          "mid_x": 235
+        },
+        {
+          "from": "ml-infer",
+          "to": "hsm-kms",
+          "label": "PPSM-9443-PKCS11",
+          "crosses_enclave_boundary": true,
+          "stroke_color": "var(--status-ok)",
+          "mid_x": 485
+        },
+        {
+          "from": "otel-col",
+          "to": "audit-vault",
+          "label": "PPSM-4317-WORM",
+          "crosses_enclave_boundary": true,
+          "stroke_color": "var(--text-secondary)",
+          "mid_x": 485
+        },
+        {
+          "from": "ml-infer",
+          "to": "otel-col",
+          "label": "OTLP Pipe",
+          "stroke_color": "var(--text-secondary)"
+        }
+      ]
+    },
+    {
+      "schematic_kind": "er_lineage",
+      "title": "Panel B: 4-Entity Crow's-Foot AI Telemetry & Drift Lineage Schema",
+      "entities": [
+        {
+          "id": "raw_events",
+          "label": "RAW_EVENTS",
+          "x": 12,
+          "y": 20,
+          "w": 162,
+          "h": 114,
+          "columns": [
+            "PK event_id : UUID",
+            "trace_id : TEXT",
+            "p99_ms : FLOAT",
+            "epoch_ns : INT8"
+          ]
+        },
+        {
+          "id": "feature_vectors",
+          "label": "FEATURE_VECTORS",
+          "x": 190,
+          "y": 20,
+          "w": 162,
+          "h": 114,
+          "columns": [
+            "PK vec_id : UUID",
+            "FK event_id : UUID",
+            "norm_hash : TEXT",
+            "window_s : INT"
+          ]
+        },
+        {
+          "id": "model_snapshots",
+          "label": "MODEL_SNAPSHOTS",
+          "x": 368,
+          "y": 20,
+          "w": 162,
+          "h": 114,
+          "focal": true,
+          "columns": [
+            "PK model_id : UUID",
+            "FK vec_id : UUID",
+            "ece_score : FLOAT",
+            "sha256 : CHAR64"
+          ]
+        },
+        {
+          "id": "drift_alerts",
+          "label": "DRIFT_ALERTS",
+          "x": 546,
+          "y": 20,
+          "w": 162,
+          "h": 114,
+          "columns": [
+            "PK alert_id : UUID",
+            "FK model_id : UUID",
+            "ece_delta : FLOAT",
+            "fallback : TEXT"
+          ]
+        }
+      ],
+      "relations": [
+        {
+          "from": "raw_events",
+          "to": "feature_vectors"
+        },
+        {
+          "from": "feature_vectors",
+          "to": "model_snapshots"
+        },
+        {
+          "from": "model_snapshots",
+          "to": "drift_alerts"
+        },
+        {
+          "from": "feature_vectors",
+          "to": "drift_alerts",
+          "route": "bottom"
+        }
+      ]
+    }
+  ]
+}

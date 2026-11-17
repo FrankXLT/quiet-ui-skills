@@ -1,0 +1,99 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v02-trial-adverse-events-table",
+  "metadata": {
+    "title": "CONSORT Phase III Primary Efficacy & Safety Adverse Events Ledger",
+    "description": "Booktabs intention-to-treat (n=1,240) primary mortality endpoint and KDIGO/IEC safety rates with 95% binomial uncertainty bounds and DSMB dispositions.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "columns": [
+    {
+      "key": "endpoint",
+      "label": "Clinical Endpoint / AE",
+      "data_type": "string",
+      "priority": 1
+    },
+    {
+      "key": "cohort_arm",
+      "label": "Arm / Cohort",
+      "data_type": "string",
+      "priority": 2
+    },
+    {
+      "key": "rate_pct",
+      "label": "Incidence Rate",
+      "unit": "%",
+      "quantity_calculus": "Incidence / %",
+      "data_type": "numeric",
+      "uncertainty_key": "rate_u_pct",
+      "priority": 1
+    },
+    {
+      "key": "control_rate_pct",
+      "label": "Control Rate",
+      "unit": "%",
+      "quantity_calculus": "Control / %",
+      "data_type": "numeric",
+      "priority": 2
+    },
+    {
+      "key": "effect_hr",
+      "label": "Hazard Ratio",
+      "unit": "1",
+      "quantity_calculus": "HR / 1",
+      "data_type": "numeric",
+      "uncertainty_key": "effect_hr_u",
+      "priority": 3
+    },
+    {
+      "key": "disposition",
+      "label": "DSMB Disposition",
+      "data_type": "status",
+      "priority": 1
+    }
+  ],
+  "rows": [
+    {
+      "endpoint": "28-Day All-Cause Mortality",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 18.4,
+      "rate_u_pct": 3.0,
+      "control_rate_pct": 24.1,
+      "effect_hr": 0.74,
+      "effect_hr_u": 0.145,
+      "disposition": "APPROVED"
+    },
+    {
+      "endpoint": "Acute Kidney Injury (KDIGO >=2)",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 11.4,
+      "rate_u_pct": 1.8,
+      "control_rate_pct": 14.8,
+      "effect_hr": 0.76,
+      "effect_hr_u": 0.12,
+      "disposition": "VERIFIED"
+    },
+    {
+      "endpoint": "Refractory Hypotension (MAP < 65 mmHg)",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 8.6,
+      "rate_u_pct": 1.5,
+      "control_rate_pct": 11.2,
+      "effect_hr": 0.77,
+      "effect_hr_u": 0.13,
+      "disposition": "WATCH",
+      "_row_status": "warn"
+    },
+    {
+      "endpoint": "Ventilator Barotrauma / Pneumothorax",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 1.9,
+      "rate_u_pct": 0.7,
+      "control_rate_pct": 2.1,
+      "effect_hr": 0.90,
+      "effect_hr_u": 0.28,
+      "disposition": "PASS"
+    }
+  ]
+}

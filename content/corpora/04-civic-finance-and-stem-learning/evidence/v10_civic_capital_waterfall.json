@@ -1,0 +1,76 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v10-civic-capital-waterfall",
+  "metadata": {
+    "title": "FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor",
+    "description": "GAO/USWDS capital fund flow reconciling Opening Reserve (48.0 M USD) plus State Grant (+16.5 M USD) and Utility Bond (+22.0 M USD) against School HVAC outlay 28.4 M USD (-28.4 M USD delta) and Water Main outlay 31.2 M USD (-31.2 M USD delta) to Closing Contingency (26.9 M USD) above the 15.0 M USD statutory floor.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "plot_kind": "waterfall",
+  "axes": {
+    "y_axis": {
+      "quantity": "B_cap",
+      "unit": "M USD",
+      "quantity_calculus": "Capital Fund Balance, B_cap / M USD"
+    }
+  },
+  "steps": [
+    {
+      "label": "Opening Res",
+      "value": 48.0,
+      "kind": "start"
+    },
+    {
+      "label": "State Grant",
+      "value": 16.5,
+      "kind": "delta"
+    },
+    {
+      "label": "Utility Bond",
+      "value": 22.0,
+      "kind": "delta"
+    },
+    {
+      "label": "School HVAC",
+      "value": -28.4,
+      "kind": "delta"
+    },
+    {
+      "label": "Water Main",
+      "value": -31.2,
+      "kind": "delta"
+    },
+    {
+      "label": "Closing Bal",
+      "value": 26.9,
+      "kind": "total"
+    }
+  ],
+  "envelopes": [
+    {
+      "id": "policy-reserve-floor",
+      "label": "Policy Reserve Floor",
+      "threshold_value": 15.0,
+      "type": "abort",
+      "direction": "lower"
+    }
+  ],
+  "parametric_legend": [
+    {
+      "symbol": "B_open",
+      "value": 48.0,
+      "unit": "M USD"
+    },
+    {
+      "symbol": "B_close",
+      "value": 26.9,
+      "unit": "M USD"
+    },
+    {
+      "symbol": "B_floor",
+      "value": 15.0,
+      "unit": "M USD"
+    }
+  ]
+}

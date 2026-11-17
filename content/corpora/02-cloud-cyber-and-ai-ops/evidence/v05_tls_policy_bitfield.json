@@ -1,0 +1,125 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:bitfield",
+  "id": "w02-v05-tls-policy-bitfield",
+  "metadata": {
+    "title": "V05: 32-Bit TLS 1.3 / mTLS Enclave Policy & Enforcement Register",
+    "description": "Hardware-backed enclave policy control and status register enforcing FIPS 140-3 strict cipher suites, mutual TLS attestation, OCSP stapling, and X.509 chain depth bounds.",
+    "mnemonic": "CSR_MTLS_POLICY",
+    "rigor_level": "L2",
+    "address_offset": "0x0010",
+    "register_width_bits": 32,
+    "reset_value": "0x00000000",
+    "current_value": "0x8003B104",
+    "timestamp_utc": "2026-11-17T04:15:00Z"
+  },
+  "fields": [
+    {
+      "name": "FIPS_STRICT",
+      "short_name": "FIPS",
+      "bit_range": [31, 31],
+      "access": "RW",
+      "reset": 0,
+      "safety_critical": true,
+      "description": "FIPS 140-3 Level 3 strict cipher enforcement safety interlock. 1 = non-FIPS algorithms rejected at PEP."
+    },
+    {
+      "name": "LEGACY_TLS_ALLOW",
+      "short_name": "LEG",
+      "bit_range": [30, 30],
+      "access": "RW",
+      "reset": 0,
+      "safety_critical": true,
+      "description": "TLS 1.2 fallback enable. Must remain 0 in ATO zero-trust enclave."
+    },
+    {
+      "name": "KEY_ROTATE_EPOCHS",
+      "short_name": "K_ROT",
+      "bit_range": [29, 24],
+      "access": "RW",
+      "reset": 0,
+      "description": "Ephemeral ECDHE key rotation interval override. 0 = default 3600 s cadence."
+    },
+    {
+      "name": "RESERVED",
+      "short_name": "RSVD",
+      "bit_range": [23, 20],
+      "access": "RO",
+      "reset": 0,
+      "description": "Reserved per NIST SP 800-52 Rev 2; hardware preserves as zero."
+    },
+    {
+      "name": "CERT_CHAIN_DEPTH",
+      "short_name": "DEPTH",
+      "bit_range": [19, 16],
+      "access": "RW",
+      "reset": 0,
+      "description": "Maximum permitted X.509 certificate verification depth (0x3 = 3 intermediate/root hops)."
+    },
+    {
+      "name": "OCSP_STAPLE_REQ",
+      "short_name": "OCSP",
+      "bit_range": [15, 15],
+      "access": "RW",
+      "reset": 0,
+      "description": "Mandatory signed OCSP stapling verification during TLS 1.3 handshake."
+    },
+    {
+      "name": "CRL_FAIL_OPEN",
+      "short_name": "CRL_O",
+      "bit_range": [14, 14],
+      "access": "RW",
+      "reset": 0,
+      "safety_critical": true,
+      "description": "Revocation timeout fallback mode. 0 = strict fail-closed rejection."
+    },
+    {
+      "name": "CIPHER_SUITE_ID",
+      "short_name": "CIPH",
+      "bit_range": [13, 12],
+      "access": "RW",
+      "reset": 0,
+      "description": "Approved AEAD cipher selector (0b11 = TLS_AES_256_GCM_SHA384)."
+    },
+    {
+      "name": "SPIFFE_TRUST_DOM",
+      "short_name": "TDOM",
+      "bit_range": [11, 8],
+      "access": "RO",
+      "reset": 0,
+      "description": "Active SPIFFE trust domain binding index (0x1 = prod-enclave-trust)."
+    },
+    {
+      "name": "REPLAY_WIN_LOG2",
+      "short_name": "RWIN",
+      "bit_range": [7, 4],
+      "access": "RW",
+      "reset": 0,
+      "description": "0-RTT early-data replay window log2 size. 0 = 0-RTT disabled."
+    },
+    {
+      "name": "HSM_TAMPER_LATCH",
+      "short_name": "TMPR",
+      "bit_range": [3, 3],
+      "access": "W1C",
+      "reset": 0,
+      "safety_critical": true,
+      "description": "HSM cryptographic boundary tamper latch. Write 1 to clear after zeroization audit."
+    },
+    {
+      "name": "MTLS_PEER_ATTEST",
+      "short_name": "MTLS",
+      "bit_range": [2, 2],
+      "access": "RO",
+      "reset": 0,
+      "description": "Hardware-attested mTLS 1.3 peer workload identity verified."
+    },
+    {
+      "name": "AUTH_ERR_CNT",
+      "short_name": "ERRC",
+      "bit_range": [1, 0],
+      "access": "RC",
+      "reset": 0,
+      "description": "Cumulative handshake policy rejection counter (read-to-clear)."
+    }
+  ]
+}

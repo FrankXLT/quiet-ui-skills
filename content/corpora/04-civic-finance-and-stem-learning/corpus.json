@@ -1,0 +1,226 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:corpus",
+  "world_id": "04-civic-finance-and-stem-learning",
+  "world_index": 4,
+  "title": "World 04: Civic Finance, Treasury Stress Testing & STEM Experimental Learning",
+  "version": "9.0.0",
+  "timestamp_utc": "2026-11-17T05:30:00Z",
+  "standards_basis": [
+    "GAO-14-704G",
+    "USWDS-v3",
+    "FRED-CPIU-DGS10",
+    "SEC-10Q-Liquidity",
+    "NIST-SP-811",
+    "NAVAIR-FTM-108",
+    "JCGM-100-GUM"
+  ],
+  "canonical_metrics": {
+    "opening_reserve_musd": {
+      "value": 48.0,
+      "unit": "M USD",
+      "description": "Opening municipal capital reserve balance"
+    },
+    "state_grant_musd": {
+      "value": 16.5,
+      "unit": "M USD",
+      "description": "Restricted state infrastructure grant inflow"
+    },
+    "utility_bond_musd": {
+      "value": 22.0,
+      "unit": "M USD",
+      "description": "Municipal utility revenue bond proceeds"
+    },
+    "school_hvac_musd": {
+      "value": 28.4,
+      "unit": "M USD",
+      "description": "School HVAC modernization capital outlay"
+    },
+    "water_main_musd": {
+      "value": 31.2,
+      "unit": "M USD",
+      "description": "Mainline water main replacement capital outlay"
+    },
+    "closing_contingency_musd": {
+      "value": 26.9,
+      "unit": "M USD",
+      "description": "Net closing contingency reserve balance"
+    },
+    "reserve_floor_musd": {
+      "value": 15.0,
+      "unit": "M USD",
+      "description": "Statutory minimum policy reserve floor"
+    },
+    "reserve_coverage_pct": {
+      "value": 179.3,
+      "unit": "%",
+      "description": "Closing contingency coverage ratio relative to 15.0 M USD floor"
+    },
+    "liquidity_floor_pct": {
+      "value": 20.0,
+      "unit": "%",
+      "description": "Minimum regulatory portfolio liquidity ratio floor"
+    },
+    "rate_shock_bps": {
+      "value": 250,
+      "unit": "bps",
+      "description": "Parallel Treasury yield-curve stress shock"
+    },
+    "q1_mc_median_liquidity_pct": {
+      "value": 36.4,
+      "unit": "%",
+      "description": "Quarter 1 Monte Carlo median portfolio liquidity ratio"
+    },
+    "q8_mc_median_liquidity_pct": {
+      "value": 25.1,
+      "unit": "%",
+      "description": "Quarter 8 Monte Carlo median portfolio liquidity ratio"
+    },
+    "rc_v0_v": {
+      "value": 5.0,
+      "unit": "V",
+      "description": "Initial RC capacitor voltage V_0"
+    },
+    "rc_tau_s": {
+      "value": 2.4,
+      "unit": "s",
+      "description": "First-order RC discharge time constant tau"
+    }
+  },
+  "evidence_bindings": [
+    {
+      "evidence_file": "evidence/v10_civic_capital_waterfall.json",
+      "metric_ids": [
+        "opening_reserve_musd",
+        "state_grant_musd",
+        "utility_bond_musd",
+        "school_hvac_musd",
+        "water_main_musd",
+        "closing_contingency_musd",
+        "reserve_floor_musd"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v10_civic_budget_table.json",
+      "metric_ids": [
+        "opening_reserve_musd",
+        "state_grant_musd",
+        "utility_bond_musd",
+        "school_hvac_musd",
+        "water_main_musd",
+        "closing_contingency_musd",
+        "reserve_floor_musd",
+        "reserve_coverage_pct"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v11_treasury_drawdown_plot.json",
+      "metric_ids": [
+        "rate_shock_bps",
+        "liquidity_floor_pct",
+        "q1_mc_median_liquidity_pct",
+        "q8_mc_median_liquidity_pct"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v12_stem_rc_cooling_lab.json",
+      "metric_ids": [
+        "rc_v0_v",
+        "rc_tau_s"
+      ]
+    }
+  ],
+  "views": [
+    {
+      "view_id": "v10-civic-capital-budget-deck",
+      "title": "FY2027 Civic Capital Budget & Reserve Policy Deck",
+      "domain_cluster": "Civic Finance & Risk",
+      "presenter": "Civic Policy Analyst",
+      "audience": "City/School Board & Citizens",
+      "lenses": [
+        "Program Manager",
+        "Consumer / Common Reader"
+      ],
+      "tempos": [
+        "T2"
+      ],
+      "mediums": [
+        "M2"
+      ],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": [
+        "N1"
+      ],
+      "rigor_level": "L2",
+      "evidence_refs": [
+        "evidence/v10_civic_capital_waterfall.json",
+        "evidence/v10_civic_budget_table.json"
+      ],
+      "decision_gate": {
+        "status": "REVIEW",
+        "primary_margin": "+11.9 M USD above 15.0 M USD policy reserve floor (179.3% coverage)",
+        "bounded_action": "Approve 28.4 M USD School HVAC GMP; hold Water Main (31.2 M USD) Option B split vote pending ductile-iron quote lock."
+      }
+    },
+    {
+      "view_id": "v11-treasury-stress-test-solver",
+      "title": "Treasury +250 bps Rate-Shock Liquidity Drawdown Solver",
+      "domain_cluster": "Civic Finance & Risk",
+      "presenter": "Quantitative Risk Analyst",
+      "audience": "Treasury & Investment Committee",
+      "lenses": [
+        "Program Manager",
+        "Discipline Engineer"
+      ],
+      "tempos": [
+        "T2"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": [
+        "N2"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v11_treasury_drawdown_plot.json"
+      ],
+      "decision_gate": {
+        "status": "NOMINAL",
+        "primary_margin": "+5.1% liquidity headroom above 20.0% regulatory floor at Q8 (25.1% ± 1.8% MC median)",
+        "bounded_action": "Maintain short-duration Treasury ladder; authorize Q3-Q4 coupon reinvestment schedule without emergency liquidation."
+      }
+    },
+    {
+      "view_id": "v12-stem-interactive-lab",
+      "title": "First-Order RC Discharge & Experimental Residual Lab",
+      "domain_cluster": "Earth Science & STEM Education",
+      "presenter": "STEM Educator",
+      "audience": "Student & Lab Peer",
+      "lenses": [
+        "Educator / Mentor",
+        "Student / Learner"
+      ],
+      "tempos": [
+        "T3"
+      ],
+      "mediums": [
+        "M1",
+        "M2"
+      ],
+      "chromatic_budget": "Pedagogical Flow",
+      "nav_shells": [
+        "N1"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v12_stem_rc_cooling_lab.json"
+      ],
+      "decision_gate": {
+        "status": "NOMINAL",
+        "primary_margin": "All 9 student oscilloscope samples within ±0.8 sigma of V_0 * exp(-t / tau) [V_0 = 5.00 V, tau = 2.40 s]",
+        "bounded_action": "Verify 1*tau = 2.40 s crossing at 1.84 V on bench oscilloscope and submit normalized residual check before Lab Section 2."
+      }
+    }
+  ]
+}

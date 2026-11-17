@@ -1,0 +1,215 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:corpus",
+  "world_id": "05-physical-systems-auto-and-aero",
+  "world_index": 5,
+  "title": "Physical Systems: Automotive Propulsion, CAN-FD Fieldbus & Aerospace Crew Displays",
+  "summary": "Four-view asymmetric translation corpus pairing Argonne D^3 brake thermal efficiency metrology and SAE J1939 CAN-FD bus/scope diagnostics with collimated HUD (M6) and transparent window overlay (M7) projections under strict numerical conservation.",
+  "canonical_metrics": {
+    "peak_bte_pct": 42.8,
+    "canfd_termination_ohm": 120,
+    "canfd_stub_max_m": 0.3,
+    "scope_dropout_us": 0.35,
+    "canfd_arb_frame_hex": "0x18FEF100",
+    "hud_sightline_keepout_pct": 65.0,
+    "window_scrim_min_contrast": 7.0
+  },
+  "evidence_bindings": {
+    "peak_bte_pct": {
+      "value": 42.8,
+      "unit": "%",
+      "quantity": "Brake Thermal Efficiency, eta_bte",
+      "evidence_file": "evidence/v13_propulsion_bte_plot.json",
+      "json_path": "$.series[1].data_points[6].y",
+      "views": [
+        "v13-propulsion-archival-monograph",
+        "v15-collimated-flight-hud"
+      ],
+      "notes": "Peak BTE 42.8 % measured at IMEP = 14.0 bar on Argonne D^3 dynamometer curve; conserved in v15 M6 peripheral propulsion band."
+    },
+    "canfd_termination_ohm": {
+      "value": 120,
+      "unit": "Ω",
+      "quantity": "Differential Bus Termination Resistance, R_T",
+      "evidence_file": "evidence/v14_canfd_bus_schematic.json",
+      "json_path": "$.bus_parameters.termination_ohm",
+      "views": [
+        "v14-fieldbus-and-scope-debugger",
+        "v16-transparent-window-overlay"
+      ],
+      "notes": "Dual end-of-line 120 Ω SAE J1939 / ISO 11898-2 termination resistors across CAN_H and CAN_L."
+    },
+    "canfd_stub_max_m": {
+      "value": 0.3,
+      "unit": "m",
+      "quantity": "Maximum Unterminated Stub Length, L_stub_max",
+      "evidence_file": "evidence/v14_canfd_bus_schematic.json",
+      "json_path": "$.bus_parameters.stub_max_m",
+      "views": [
+        "v14-fieldbus-and-scope-debugger",
+        "v16-transparent-window-overlay"
+      ],
+      "notes": "Direct stub drop ceiling Stub <= 0.3 m at 2 Mbps CAN-FD data phase to prevent impedance reflection."
+    },
+    "scope_dropout_us": {
+      "value": 0.35,
+      "unit": "µs",
+      "quantity": "Impedance Mismatch Dropout Duration, delta_t_drop",
+      "evidence_file": "evidence/v14_canfd_reflection_scope.json",
+      "json_path": "$.dropout_handling.dropout_duration_us",
+      "views": [
+        "v14-fieldbus-and-scope-debugger"
+      ],
+      "notes": "Synchronized null dropout from 0.90 µs to 1.25 µs across CH1/CH2/CH3 bounded by cursors T_A (0.90 µs) and T_B (1.25 µs)."
+    },
+    "hud_sightline_keepout_pct": {
+      "value": 65.0,
+      "unit": "%",
+      "quantity": "Central Boresight Keep-Out Diameter Ratio, D_clear",
+      "evidence_file": "evidence/v13_propulsion_bte_plot.json",
+      "json_path": "$.medium_constraints.hud_sightline_keepout_pct",
+      "views": [
+        "v15-collimated-flight-hud"
+      ],
+      "notes": "M6 collimated optical combiner requirement reserving >= 65.0 % unobstructed central boresight; propulsion BTE state is pushed to peripheral tape."
+    },
+    "window_scrim_min_contrast": {
+      "value": 7.0,
+      "unit": "1",
+      "quantity": "Minimum Luminance Scrim Contrast Ratio, CR_min",
+      "evidence_file": "evidence/v14_canfd_bus_schematic.json",
+      "json_path": "$.medium_constraints.window_scrim_min_contrast",
+      "views": [
+        "v16-transparent-window-overlay"
+      ],
+      "notes": "M7 transparent window overlay smoked scrim contrast floor >= 7.0:1 with paint-order stroke halos for bridge/vehicle crew legibility."
+    },
+    "canfd_arb_frame_hex": {
+      "value": "0x18FEF100",
+      "unit": "hex",
+      "quantity": "SAE J1939 CAN-FD 29-Bit Arbitration Frame ID",
+      "evidence_file": "evidence/v14_canfd_arb_bitfield.json",
+      "json_path": "$.metadata.current_value",
+      "views": [
+        "v14-fieldbus-and-scope-debugger"
+      ],
+      "notes": "32-bit aligned extended CAN-FD PGN 0xFEF1 header register binding bit [31] SOF_ARB_ERR interlock."
+    }
+  },
+  "views": [
+    {
+      "id": "v13-propulsion-archival-monograph",
+      "title": "Argonne D^3 Propulsion Efficiency Archival Monograph",
+      "presenter": "Propulsion / Systems Researcher",
+      "audience": "Peer Discipline Engineer",
+      "lenses": [
+        "Discipline Engineer"
+      ],
+      "tempos": [
+        "T3"
+      ],
+      "mediums": [
+        "M1",
+        "M2"
+      ],
+      "chromatic_budget": "Archival Proof",
+      "nav_shells": [
+        "N0",
+        "N1"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v13_propulsion_bte_plot.json"
+      ],
+      "medium_constraints": {
+        "max_prose_ch": 72,
+        "print_page_rule": "A4 / US Letter @media print unrolled"
+      }
+    },
+    {
+      "id": "v14-fieldbus-and-scope-debugger",
+      "title": "SAE J1939 CAN-FD Bus Topology, Arbitration Header & Reflection Scope Debugger",
+      "presenter": "Embedded Systems Engineer",
+      "audience": "Bench / Field Technician",
+      "lenses": [
+        "Technician / Operator",
+        "Project / Systems Engineer"
+      ],
+      "tempos": [
+        "T1"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": [
+        "N3"
+      ],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v14_canfd_bus_schematic.json",
+        "evidence/v14_canfd_arb_bitfield.json",
+        "evidence/v14_canfd_reflection_scope.json"
+      ],
+      "medium_constraints": {
+        "workspace_archetype": "dual-pane-bench-debugger",
+        "safety_interlock": "SOF_ARB_ERR"
+      }
+    },
+    {
+      "id": "v15-collimated-flight-hud",
+      "title": "Collimated Flight & Propulsion Peripheral Optical HUD",
+      "presenter": "Human-Factors Engineer",
+      "audience": "Pilot / Operator",
+      "lenses": [
+        "Technician / Operator"
+      ],
+      "tempos": [
+        "T1"
+      ],
+      "mediums": [
+        "M6"
+      ],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": [
+        "N0"
+      ],
+      "rigor_level": "L1",
+      "evidence_refs": [
+        "evidence/v13_propulsion_bte_plot.json"
+      ],
+      "medium_constraints": {
+        "hud_sightline_keepout_pct": 65.0,
+        "phosphor_mode": "narrowband-green-cyan-stroke-only",
+        "fill_opacity": 0.0
+      }
+    },
+    {
+      "id": "v16-transparent-window-overlay",
+      "title": "Bridge & Vehicle Transparent Window Overlay Bus Alert Pod",
+      "presenter": "Spatial Systems Designer",
+      "audience": "Bridge / Vehicle Crew",
+      "lenses": [
+        "Technician / Operator"
+      ],
+      "tempos": [
+        "T1"
+      ],
+      "mediums": [
+        "M7"
+      ],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": [
+        "N0"
+      ],
+      "rigor_level": "L1",
+      "evidence_refs": [
+        "evidence/v14_canfd_bus_schematic.json"
+      ],
+      "medium_constraints": {
+        "window_scrim_min_contrast": 7.0,
+        "halo_paint_order": "stroke fill",
+        "scrim_backdrop": "smoked-luminance-adaptive"
+      }
+    }
+  ]
+}

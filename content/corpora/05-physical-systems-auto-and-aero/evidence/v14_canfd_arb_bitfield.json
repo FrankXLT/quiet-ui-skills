@@ -1,0 +1,89 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:bitfield",
+  "id": "w05-v14-canfd-arb-bitfield",
+  "metadata": {
+    "title": "SAE J1939 CAN-FD 29-Bit Extended Arbitration Header (0x18FEF100)",
+    "description": "32-bit aligned CAN-FD extended ID arbitration buffer decoding PGN 0xFEF1 (CCVS1) from ECM Source Address 0x00 with hardware SOF_ARB_ERR safety interlock latch.",
+    "mnemonic": "CANFD_EXT_ARB_HDR",
+    "rigor_level": "L3",
+    "address_offset": "0x0100",
+    "register_width_bits": 32,
+    "reset_value": "0x00000000",
+    "current_value": "0x18FEF100"
+  },
+  "fields": [
+    {
+      "name": "SOF_ARB_ERR",
+      "short_name": "ERR",
+      "bit_range": [31, 31],
+      "access": "W1C",
+      "reset": 0,
+      "safety_critical": true,
+      "description": "Hardware arbitration / SOF framing error interlock latch. 1 = bus contention fault; write 1 to clear after LOTO bus check."
+    },
+    {
+      "name": "FDF_BRS",
+      "short_name": "FDF",
+      "bit_range": [30, 30],
+      "access": "RO",
+      "reset": 0,
+      "description": "CAN-FD extended frame format and bit-rate switch indicator."
+    },
+    {
+      "name": "IDE_EXT",
+      "short_name": "IDE",
+      "bit_range": [29, 29],
+      "access": "RO",
+      "reset": 0,
+      "description": "Extended Identifier mode bit in hardware mailbox shadow."
+    },
+    {
+      "name": "PRIORITY",
+      "short_name": "PRIO",
+      "bit_range": [28, 26],
+      "access": "RW",
+      "reset": 6,
+      "description": "3-bit SAE J1939 message priority (0b110 = Priority 6 nominal powertrain status)."
+    },
+    {
+      "name": "EDP",
+      "short_name": "EDP",
+      "bit_range": [25, 25],
+      "access": "RO",
+      "reset": 0,
+      "description": "Extended Data Page selector (0 = SAE J1939 standard parameter group space)."
+    },
+    {
+      "name": "DP",
+      "short_name": "DP",
+      "bit_range": [24, 24],
+      "access": "RO",
+      "reset": 0,
+      "description": "Data Page selector bit (0 = Page 0 PGN map)."
+    },
+    {
+      "name": "PF_PGN_HI",
+      "short_name": "PF",
+      "bit_range": [23, 16],
+      "access": "RW",
+      "reset": 0,
+      "description": "PDU Format high byte (0xFE = 254 PDU2 broadcast group)."
+    },
+    {
+      "name": "PS_PGN_LO",
+      "short_name": "PS",
+      "bit_range": [15, 8],
+      "access": "RW",
+      "reset": 0,
+      "description": "PDU Specific group extension low byte (0xF1 = PGN 0xFEF1 CCVS1)."
+    },
+    {
+      "name": "SOURCE_ADDR",
+      "short_name": "SA",
+      "bit_range": [7, 0],
+      "access": "RW",
+      "reset": 0,
+      "description": "8-bit originating node address (0x00 = Primary Engine Control Module ECM)."
+    }
+  ]
+}

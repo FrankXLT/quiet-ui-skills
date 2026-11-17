@@ -1,0 +1,102 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:waveform",
+  "id": "v01-icu-hemodynamic-scope",
+  "metadata": {
+    "title": "ICU Bed-04 Synchronized Multi-Channel Hemodynamic & Capnography Scope",
+    "description": "Time-synchronized CH1 Radial Arterial Line (65 mmHg resuscitation floor), CH2 SpO2 Pleth, and CH3 ETCO2 across a 2.4 s motion-artifact dropout with dual inspection cursors T_A and T_B.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z",
+    "subsystem": "ICU-BED-04-WAVEFORM-BUS"
+  },
+  "waveform_kind": "scope",
+  "test_environment": {
+    "dut_id": "MON-ICU-04-SYNTH",
+    "firmware_version": "v6.4.2",
+    "ambient_temperature_c": 21.5,
+    "reference_clock": "NTP-PTP-CLINICAL-01",
+    "sampling_rate_hz": 250.0
+  },
+  "timebase": {
+    "quantity": "t",
+    "quantity_calculus": "Elapsed Bedside Sweep Time, t / s",
+    "unit": "s",
+    "start_time": 0.0,
+    "total_span": 16.0,
+    "nominal_dt": 0.8
+  },
+  "cursors": {
+    "cursor_a": {
+      "time": 6.4,
+      "label": "T_A",
+      "stroke_color": "var(--tint-violet-fg)"
+    },
+    "cursor_b": {
+      "time": 8.8,
+      "label": "T_B",
+      "stroke_color": "var(--accent-primary)"
+    }
+  },
+  "dropout_handling": {
+    "detection_multiplier": 1.5,
+    "interpolate": false
+  },
+  "channels": [
+    {
+      "id": "ch1",
+      "name": "Arterial Line (ABP)",
+      "type": "analog",
+      "quantity_calculus": "P_art / mmHg",
+      "unit": "mmHg",
+      "vertical_scale_per_div": 60.0,
+      "trace_color": "var(--status-warn)",
+      "threshold_envelopes": [
+        {
+          "type": "lower_warn",
+          "value": 65.0,
+          "color": "var(--status-warn)"
+        }
+      ],
+      "samples": [
+        [0.0, 68.0], [0.4, 96.0], [0.8, 72.0], [1.2, 58.0], [1.6, 94.0], [2.0, 69.0],
+        [2.4, 57.0], [2.8, 92.0], [3.2, 67.0], [3.6, 56.0], [4.0, 90.0], [4.4, 66.0],
+        [4.8, 55.0], [5.2, 88.0], [5.6, 65.0], [6.0, 54.0], [6.4, 63.5],
+        [6.6, null],
+        [8.8, 63.5], [9.2, 86.0], [9.6, 64.0], [10.0, 54.0], [10.4, 87.0], [10.8, 64.5],
+        [11.2, 55.0], [11.6, 89.0], [12.0, 65.0], [12.4, 56.0], [12.8, 91.0], [13.2, 66.0],
+        [13.6, 57.0], [14.0, 92.0], [14.4, 67.0], [14.8, 58.0], [15.2, 93.0], [16.0, 68.0]
+      ]
+    },
+    {
+      "id": "ch2",
+      "name": "SpO2 Pleth",
+      "type": "analog",
+      "quantity_calculus": "SpO2_pleth / %",
+      "unit": "%",
+      "vertical_scale_per_div": 50.0,
+      "trace_color": "var(--accent-focal)",
+      "samples": [
+        [0.0, 95.1], [0.8, 95.0], [1.6, 94.9], [2.4, 94.8], [3.2, 94.6], [4.0, 94.5],
+        [4.8, 94.4], [5.6, 94.3], [6.4, 94.2],
+        [6.6, null],
+        [8.8, 94.0], [9.6, 94.1], [10.4, 94.1], [11.2, 94.2], [12.0, 94.2], [12.8, 94.3],
+        [13.6, 94.2], [14.4, 94.2], [15.2, 94.2], [16.0, 94.2]
+      ]
+    },
+    {
+      "id": "ch3",
+      "name": "End-Tidal CO2 (ETCO2)",
+      "type": "analog",
+      "quantity_calculus": "P_etCO2 / mmHg",
+      "unit": "mmHg",
+      "vertical_scale_per_div": 25.0,
+      "trace_color": "var(--status-ok)",
+      "samples": [
+        [0.0, 2.0], [0.8, 34.0], [1.6, 38.0], [2.4, 38.5], [3.2, 2.5], [4.0, 1.5],
+        [4.8, 35.0], [5.6, 38.2], [6.4, 38.4],
+        [6.6, null],
+        [8.8, 36.0], [9.6, 38.0], [10.4, 3.0], [11.2, 1.8], [12.0, 35.5], [12.8, 38.1],
+        [13.6, 38.4], [14.4, 2.2], [15.2, 34.8], [16.0, 38.0]
+      ]
+    }
+  ]
+}

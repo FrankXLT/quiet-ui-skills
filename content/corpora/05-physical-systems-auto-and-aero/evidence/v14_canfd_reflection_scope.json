@@ -1,0 +1,95 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:waveform",
+  "id": "w05-v14-canfd-reflection-scope",
+  "metadata": {
+    "title": "CAN-FD 2 Mbps Stub Reflection & 0.35 µs Impedance Mismatch Dropout Scope",
+    "description": "Time-synchronized 3-channel bench capture showing differential CAN_H - CAN_L ringing, common-mode noise spike, and ACK_DELIM frame gate across a 0.35 µs impedance mismatch null dropout bounded by cursors T_A and T_B.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "waveform_kind": "scope",
+  "test_environment": {
+    "dut_id": "CANFD-SCOPE-BENCH-05",
+    "standard_id": "ISO 11898-2 / SAE J1939",
+    "ambient_temperature_c": 23.5,
+    "temperature_uncertainty_c": 0.3,
+    "reference_clock": "OCXO-100MHz-SYNC",
+    "sampling_rate_hz": 1000000000.0
+  },
+  "timebase": {
+    "quantity": "t",
+    "quantity_calculus": "Elapsed Scope Time, t / µs",
+    "unit": "µs",
+    "start_time": 0.0,
+    "total_span_us": 2.0,
+    "nominal_dt": 0.05
+  },
+  "cursors": {
+    "cursor_a": {
+      "time_us": 0.90,
+      "label": "T_A",
+      "stroke_color": "var(--tint-violet-fg)"
+    },
+    "cursor_b": {
+      "time_us": 1.25,
+      "label": "T_B",
+      "stroke_color": "var(--accent-primary)"
+    }
+  },
+  "dropout_handling": {
+    "detection_multiplier": 1.5,
+    "interpolate": false,
+    "dropout_duration_us": 0.35
+  },
+  "channels": [
+    {
+      "id": "ch1",
+      "name": "Differential CAN_H - CAN_L",
+      "type": "analog",
+      "quantity_calculus": "V_diff / V",
+      "unit": "V",
+      "vertical_scale_per_div": 1.5,
+      "trace_color": "var(--accent-focal)",
+      "threshold_envelopes": [
+        {"type": "upper_abort", "value": 2.5, "color": "var(--status-danger)"},
+        {"type": "lower_abort", "value": -0.5, "color": "var(--status-warn)"}
+      ],
+      "samples": [
+        [0.00, 0.02], [0.10, 0.04], [0.20, 1.98], [0.30, 2.05], [0.40, 2.01],
+        [0.50, 0.03], [0.60, 1.96], [0.70, 2.38], [0.80, -0.42], [0.85, 2.68],
+        [0.90, 2.15], [0.95, null], [1.25, 1.94], [1.35, 2.02], [1.45, 0.05],
+        [1.55, 0.02], [1.65, 1.99], [1.75, 2.01], [1.85, 0.03], [2.00, 0.01]
+      ]
+    },
+    {
+      "id": "ch2",
+      "name": "Common-Mode Noise",
+      "type": "analog",
+      "quantity_calculus": "V_cm / mV",
+      "unit": "mV",
+      "vertical_scale_per_div": 250.0,
+      "trace_color": "var(--status-warn)",
+      "threshold_envelopes": [
+        {"type": "upper_abort", "value": 400.0, "color": "var(--status-danger)"}
+      ],
+      "samples": [
+        [0.00, 18.0], [0.10, 22.0], [0.20, 45.0], [0.30, 32.0], [0.40, 28.0],
+        [0.50, 40.0], [0.60, 88.0], [0.70, 210.0], [0.80, -290.0], [0.85, 425.0],
+        [0.90, 340.0], [0.95, null], [1.25, 110.0], [1.35, 55.0], [1.45, 30.0],
+        [1.55, 24.0], [1.65, 38.0], [1.75, 26.0], [1.85, 20.0], [2.00, 16.0]
+      ]
+    },
+    {
+      "id": "ch3",
+      "name": "Frame Gate ACK_DELIM",
+      "type": "digital",
+      "quantity_calculus": "ACK_DELIM",
+      "unit": "logic",
+      "trace_color": "var(--status-ok)",
+      "samples": [
+        [0.00, 0], [0.20, 1], [0.50, 0], [0.60, 1], [0.90, 1],
+        [0.95, null], [1.25, 1], [1.45, 0], [1.65, 1], [1.85, 0], [2.00, 0]
+      ]
+    }
+  ]
+}

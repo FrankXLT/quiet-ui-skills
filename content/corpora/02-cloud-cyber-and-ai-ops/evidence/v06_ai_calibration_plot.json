@@ -1,0 +1,93 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "w02-v06-ai-calibration-plot",
+  "metadata": {
+    "title": "V06: Classifier Reliability & Calibration Drift Curve with Normalized Residual Strip",
+    "description": "L3 AI metrology reliability diagram plotting predicted probability p_hat [0.05..0.95] against empirical validation frequency f_obs across 10 uniform bins (N = 1200 total, 120 samples/bin) with +/-u_y binomial uncertainty whiskers, ideal y = x diagonal, overconfidence drift gate, and bottom normalized residual strip.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T04:15:00Z"
+  },
+  "plot_kind": "cartesian",
+  "test_environment": {
+    "dut_id": "CLS-ROUTER-V4",
+    "firmware_version": "snap-2026.11-r2",
+    "reference_clock": "NIST-AI-RMF-100-1",
+    "sample_subgroup_size": 1200,
+    "calibration_id": "CAL-ECE-2026-1104"
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "p_hat",
+      "unit": "1",
+      "quantity_calculus": "Predicted Confidence, p_hat",
+      "scale_type": "linear",
+      "domain": [0.0, 1.0]
+    },
+    "y_axis": {
+      "quantity": "f_obs",
+      "unit": "1",
+      "quantity_calculus": "Observed Empirical Frequency, f_obs",
+      "scale_type": "linear",
+      "domain": [0.0, 1.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "overconfidence-gate",
+      "type": "warning",
+      "direction": "lower",
+      "label": "Overconfidence Gate (Δcal <= -0.080)",
+      "stroke_color": "var(--status-warn)",
+      "stroke_style": "dashed",
+      "equation": "x - 0.08"
+    }
+  ],
+  "series": [
+    {
+      "id": "ideal-cal-diag",
+      "name": "Ideal Calibration Diagonal (f_obs = p_hat)",
+      "epistemic_type": "analytical_model",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)",
+      "corridor_abs": 0.04,
+      "equation": "x"
+    },
+    {
+      "id": "val-bins-meas",
+      "name": "Validation Cohort Bins (120/bin)",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 0.05, "y": 0.06, "u_y": 0.022},
+        {"x": 0.15, "y": 0.16, "u_y": 0.033},
+        {"x": 0.25, "y": 0.24, "u_y": 0.039},
+        {"x": 0.35, "y": 0.36, "u_y": 0.044},
+        {"x": 0.45, "y": 0.43, "u_y": 0.045},
+        {"x": 0.55, "y": 0.52, "u_y": 0.046},
+        {"x": 0.65, "y": 0.59, "u_y": 0.045},
+        {"x": 0.75, "y": 0.66, "u_y": 0.043},
+        {"x": 0.85, "y": 0.73, "u_y": 0.041},
+        {"x": 0.95, "y": 0.81, "u_y": 0.036}
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "x": 0.85,
+      "y": 0.73,
+      "dx": -145,
+      "dy": -40,
+      "label": "OOD Drift (-0.120 @ p=0.85)",
+      "series_id": "val-bins-meas"
+    }
+  ],
+  "residual_strip": {
+    "enabled": true
+  },
+  "parametric_legend": [
+    {"symbol": "ECE", "value": 0.050, "unit": "1"},
+    {"symbol": "ECE_max", "value": 0.040, "unit": "1"},
+    {"symbol": "N_val", "value": 1200, "unit": "1"}
+  ]
+}

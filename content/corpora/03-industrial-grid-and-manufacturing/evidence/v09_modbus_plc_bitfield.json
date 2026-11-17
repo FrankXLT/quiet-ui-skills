@@ -1,0 +1,119 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:bitfield",
+  "id": "v09-modbus-plc-bitfield",
+  "metadata": {
+    "title": "16-Bit Modbus Holding Register 0x0104 (PLC_BREAKER_INTERLOCK_WORD)",
+    "mnemonic": "PLC_BREAKER_INTERLOCK_WORD",
+    "description": "L3 16-bit Modbus RTU PLC safety interlock register governing microgrid POI breaker 52-M, LOTO disconnect status, and guarded islanding arm state.",
+    "rigor_level": "L3",
+    "address_offset": "0x0104",
+    "register_width_bits": 16,
+    "reset_value": "0x0000",
+    "current_value": "0x0A15"
+  },
+  "fields": [
+    {
+      "name": "FAULT_CODE",
+      "short_name": "FLT",
+      "bit_range": [15, 12],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 0,
+      "description": "4-bit latched protection fault code (0x0 = No active protection trip)."
+    },
+    {
+      "name": "ISLAND_ARMED",
+      "short_name": "ISLD",
+      "bit_range": [11, 11],
+      "access": "RW",
+      "reset": 0,
+      "current_value": 1,
+      "description": "Two-step guarded microgrid islanding interlock armed (1 = Armed, 0 = Disarmed).",
+      "safety_critical": true
+    },
+    {
+      "name": "LOTO_LOCKOUT_ACTIVE",
+      "short_name": "LOTO",
+      "bit_range": [10, 10],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 0,
+      "description": "Physical Lockout/Tagout disconnect input (0 = Cleared, 1 = Locked out / inhibit close).",
+      "safety_critical": true
+    },
+    {
+      "name": "SYNC_CHECK_OK",
+      "short_name": "SYNC",
+      "bit_range": [9, 9],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 1,
+      "description": "IEEE 1547 synchrocheck 25 relay frequency/phase match (59.985 Hz within corridor)."
+    },
+    {
+      "name": "ESTOP_TRIP_LATCH",
+      "short_name": "ESTP",
+      "bit_range": [8, 8],
+      "access": "W1C",
+      "reset": 0,
+      "current_value": 0,
+      "description": "Hardwired E-Stop trip latch. Write 1 to clear after physical pushbutton reset.",
+      "safety_critical": true
+    },
+    {
+      "name": "RESERVED",
+      "short_name": "RSVD",
+      "bit_range": [7, 5],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 0,
+      "description": "Reserved Modbus holding bits; preserve as zero."
+    },
+    {
+      "name": "BESS_DISPATCH_EN",
+      "short_name": "BESS",
+      "bit_range": [4, 4],
+      "access": "RW",
+      "reset": 0,
+      "current_value": 1,
+      "description": "Grid-forming 24.0 MW BESS inverter active power dispatch enable."
+    },
+    {
+      "name": "REVERSE_PWR_TRIP",
+      "short_name": "RVPW",
+      "bit_range": [3, 3],
+      "access": "W1C",
+      "reset": 0,
+      "current_value": 0,
+      "description": "ANSI 32R reverse power protection latch. Write 1 to clear."
+    },
+    {
+      "name": "TURBINE_RUN_PERM",
+      "short_name": "TRUN",
+      "bit_range": [2, 2],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 1,
+      "description": "Gas turbine FCV-101 fuel safety chain permissive confirmed."
+    },
+    {
+      "name": "BREAKER_TRIP_CMD",
+      "short_name": "TRIP",
+      "bit_range": [1, 1],
+      "access": "WO",
+      "reset": 0,
+      "current_value": 0,
+      "description": "Guarded POI Breaker 52-M open trip coil command (write 1 to trip).",
+      "safety_critical": true
+    },
+    {
+      "name": "BREAKER_52M_CLOSED",
+      "short_name": "52M",
+      "bit_range": [0, 0],
+      "access": "RO",
+      "reset": 0,
+      "current_value": 1,
+      "description": "POI Breaker 52-M closed auxiliary contact (1 = Closed, 0 = Open)."
+    }
+  ]
+}
