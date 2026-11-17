@@ -1,0 +1,88 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:table",
+    "id": "bench-m2-l1-exec-summary",
+    "metadata": {
+      "title": "M2-L1: Civic Capital & Municipal Utility Readiness Summary",
+      "description": "L1 Orientation civic board summary table displaying Priority 1 columns, native units, and non-color-only GAO/USWDS status badges.",
+      "rigor_level": "L1",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "columns": [
+      {"key": "program", "label": "Capital Program", "data_type": "string", "priority": 1},
+      {"key": "authority", "label": "Operating Authority", "data_type": "string", "priority": 1},
+      {"key": "disposition", "label": "Board Status", "data_type": "status", "priority": 1},
+      {"key": "budget_note", "label": "Variance Note", "data_type": "string", "priority": 3}
+    ],
+    "rows": [
+      {"program": "WATERSHED-PLANT-02", "authority": "48.5 MGD Treatment Train", "disposition": "ACTIVE", "budget_note": "+$1.4M reserve"},
+      {"program": "SUBSTATION-BESS-04", "authority": "24.0 MW / 96 MWh Microgrid", "disposition": "ACTIVE", "budget_note": "60.00 Hz sync locked"},
+      {"program": "TRANSIT-BRIDGE-09", "authority": "Seismic Retrofit Phase II", "disposition": "DEGRADED", "budget_note": "Steel lead +14 days"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:table",
+    "id": "bench-m2-l2-ppsm-matrix",
+    "metadata": {
+      "title": "M2-L2: NIST Zero-Trust ATO Companion PPSM Matrix",
+      "description": "L2 Governance Ports, Protocols, and Services Management (PPSM) matrix paired directly with M6-L2 Trust Enclave Boundary Map.",
+      "rigor_level": "L2",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "columns": [
+      {"key": "ppsm_id", "label": "PPSM ID", "data_type": "string", "priority": 1},
+      {"key": "service_name", "label": "Service Designation", "data_type": "string", "priority": 1},
+      {"key": "source_enclave", "label": "Source Enclave", "data_type": "string", "priority": 2},
+      {"key": "dest_enclave", "label": "Destination Enclave", "data_type": "string", "priority": 2},
+      {"key": "port_protocol", "label": "Transport / Port", "data_type": "string", "priority": 1},
+      {"key": "crypto_standard", "label": "Cryptographic Boundary", "data_type": "string", "priority": 2},
+      {"key": "latency_ms", "label": "Latency", "unit": "ms", "quantity_calculus": "t_lat / ms", "data_type": "numeric", "priority": 3},
+      {"key": "disposition", "label": "ATO Disposition", "data_type": "status", "priority": 1}
+    ],
+    "rows": [
+      {"ppsm_id": "PPSM-0842-A", "service_name": "Precision Timing PTP", "source_enclave": "ENCLAVE-TIME-01", "dest_enclave": "ENCLAVE-OPTICAL", "port_protocol": "UDP / 319-320", "crypto_standard": "IEEE 1588-2019 Annex P", "latency_ms": 0.084, "disposition": "AUTHORIZED"},
+      {"ppsm_id": "PPSM-0842-B", "service_name": "Optical Telemetry Stream", "source_enclave": "ENCLAVE-OPTICAL", "dest_enclave": "ENCLAVE-CORE-ENG", "port_protocol": "TCP / 8443", "crypto_standard": "FIPS 140-3 TLS 1.3", "latency_ms": 1.420, "disposition": "AUTHORIZED"},
+      {"ppsm_id": "PPSM-0842-C", "service_name": "Legacy Bus Bridge", "source_enclave": "ENCLAVE-HIL-TEST", "dest_enclave": "ENCLAVE-OPTICAL", "port_protocol": "TCP / 2023", "crypto_standard": "VLAN Isolated + MACsec", "latency_ms": 8.650, "disposition": "CONDITIONAL", "_row_status": "warn"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:table",
+    "id": "bench-m2-l3-booktabs-heatmap",
+    "metadata": {
+      "title": "M2-L3: Booktabs Optical Syntonization Ledger & 3x8 Phase-Excursion Heatmap",
+      "description": "L3 Physical metrological ledger with NIST quantity calculus headers, +/- uncertainty alignment, and recovered v7.1 3x8 phase-excursion matrix.",
+      "rigor_level": "L3",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "heatmap": {
+      "title": "8-Node Optical Phase Excursion Matrix (-10m / -5m / Live)",
+      "col_labels": ["N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8"],
+      "rows": [
+        {"label": "-10 min", "cells": [
+          {"status": "ok", "text": "+41 ps"}, {"status": "ok", "text": "+38 ps"}, {"status": "ok", "text": "+52 ps"}, {"status": "ok", "text": "+28 ps"},
+          {"status": "ok", "text": "+44 ps"}, {"status": "ok", "text": "+61 ps"}, {"status": "ok", "text": "+35 ps"}, {"status": "ok", "text": "+47 ps"}
+        ]},
+        {"label": "-5 min", "cells": [
+          {"status": "ok", "text": "+42 ps"}, {"status": "ok", "text": "+39 ps"}, {"status": "ok", "text": "+50 ps"}, {"status": "ok", "text": "+29 ps"},
+          {"status": "ok", "text": "+45 ps"}, {"status": "warn", "text": "+118 ps"}, {"status": "ok", "text": "+36 ps"}, {"status": "ok", "text": "+48 ps"}
+        ]},
+        {"label": "Live", "cells": [
+          {"status": "ok", "text": "+64 ps"}, {"status": "ok", "text": "+41 ps"}, {"status": "ok", "text": "+53 ps"}, {"status": "ok", "text": "+29 ps"},
+          {"status": "ok", "text": "+46 ps"}, {"status": "warn", "text": "+134 ps"}, {"status": "ok", "text": "+34 ps"}, {"status": "ok", "text": "+49 ps"}
+        ]}
+      ]
+    },
+    "columns": [
+      {"key": "node_uuid", "label": "Node / Certificate ID", "data_type": "string", "priority": 1},
+      {"key": "state", "label": "Lock State", "data_type": "status", "priority": 1},
+      {"key": "skew_ps", "label": "Phase Skew", "quantity_calculus": "t_skew / ps", "data_type": "numeric", "uncertainty_key": "skew_u_ps", "priority": 3},
+      {"key": "sfp_rx_dbm", "label": "SFP Rx Power", "quantity_calculus": "P_rx / dBm", "data_type": "numeric", "uncertainty_key": "sfp_u_dbm", "priority": 3},
+      {"key": "ber", "label": "Measured BER", "data_type": "string", "priority": 3}
+    ],
+    "rows": [
+      {"node_uuid": "WR-NODE-01-A94F-8812", "state": "LOCKED", "skew_ps": 64.210, "skew_u_ps": 0.420, "sfp_rx_dbm": -9.840, "sfp_u_dbm": 0.080, "ber": "1.2e-14"},
+      {"node_uuid": "WR-NODE-04-C210-3304", "state": "LOCKED", "skew_ps": 29.405, "skew_u_ps": 0.390, "sfp_rx_dbm": -10.120, "sfp_u_dbm": 0.080, "ber": "8.4e-15"},
+      {"node_uuid": "WR-NODE-06-F802-991A", "state": "CAUTION", "skew_ps": 134.180, "skew_u_ps": 1.150, "sfp_rx_dbm": -13.600, "sfp_u_dbm": 0.120, "ber": "4.6e-12", "_row_status": "warn"}
+    ]
+  }
+]

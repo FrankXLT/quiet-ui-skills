@@ -8,13 +8,13 @@ This guide establishes the translation protocols, metric syntheses, and decision
 
 | Dimension | Program Management Specification |
 | :--- | :--- |
-| **Role Archetypes** | Program Manager (PM), IPT Director, Mission Acquisition Executive, Resource & Budget Authority |
-| **Primary Workflow** | Milestone gate reviews (PDR, CDR, MRR, FRR), critical path management, earned value analysis, risk reserve allocation |
-| **Cognitive Framework** | Schedule critical path variance ($\Delta \text{days}$), cost performance index (CPI), schedule performance index (SPI), risk burn-down dollars |
-| **Acceptance Standard** | Technical excellence is necessary but insufficient; every engineering finding must translate into cost, schedule, risk, or trade space |
+| **Role Archetypes** | Program Manager (PM), IPT Director, Clinical Trial Operations Lead (`CONSORT`, `FDA IEC 62366`), SRE / AI Platform Director (`OpenTelemetry`, `NIST AI RMF 100-1`), Plant Quality Director (`NIST/SEMATECH SPC C_pk`), Civic Capital / Treasury Director (`GAO`, `FRED/SEC`) |
+| **Primary Workflow** | Milestone gate reviews (PDR, CDR, IRB/DSMB, Production Cutover, Capital Release), critical path management, earned value / error-budget / liquidity analysis, risk reserve allocation |
+| **Cognitive Framework** | Schedule critical path variance ($\Delta \text{days}$), cost/schedule performance index (CPI/SPI), SLO error-budget burn, yield/scrap exposure, and obligated vs. reserve ratios |
+| **Acceptance Standard** | Technical excellence is necessary but insufficient; every domain finding must translate into cost, schedule, patient/operational risk, or bounded trade space |
 | **Review Velocity** | Rapid gate compression (1 to 5 minutes per milestone decision block) |
 
-Program Managers carry ultimate fiduciary and programmatic responsibility for mission delivery. They are constantly navigating the iron triangle of scope, cost, and schedule. When technical teams present raw physics derivations, register dumps, or academic dissertations without tying them to critical path variance or budget exposure, the PM cannot assess risk or authorize resource reallocations.
+Program Managers carry ultimate fiduciary and programmatic responsibility for mission delivery. They are constantly navigating the iron triangle of scope, cost, and schedule—whether delivering aerospace hardware, a Phase III clinical study, a zero-trust cloud migration, a factory line upgrade, or a municipal capital bond. When technical teams present raw physics derivations, register dumps, or statistical appendices without tying them to critical path variance, safety exposure, or budget reserves, the PM cannot assess risk or authorize resource reallocations.
 
 ---
 
@@ -22,16 +22,15 @@ Program Managers carry ultimate fiduciary and programmatic responsibility for mi
 
 To establish immediate decision readiness with a Program Manager, technical briefings must present the following native units of proof:
 
-1. **Critical Path Variance ($\Delta t_{\text{cp}}$)**: Variance expressed strictly in calendar working days relative to the baselined schedule network (e.g., `Critical Path Delta: -4.5 Days [Path: Payload Flight FPGA -> Subsystem HIL Integration]`).
-2. **Earned Value Management (EVM) Metrics**:
-   - Budgeted Cost of Work Scheduled ($\text{BCWS}$) vs. Budgeted Cost of Work Performed ($\text{BCWP}$).
-   - Actual Cost of Work Performed ($\text{ACWP}$).
-   - Cost Performance Index ($\text{CPI} = \text{BCWP} / \text{ACWP}$) and Schedule Performance Index ($\text{SPI} = \text{BCWP} / \text{BCWS}$).
-3. **Management Reserve and Risk Exposure**: Unallocated financial reserve dollars vs. expected monetary value (EMV) of open risks ($\sum P_i \times C_i$).
-4. **Milestone Go / No-Go Gate Criteria**: Binary, test-verified preconditions required to transition through major program milestones (e.g., CDR Gate 4: "100% of flight schematic reviews signed, thermal margin $\ge 15\%$, timing margin $\ge 20\%$").
-5. **Supply Chain Lead-Time Buffers**: Procurement lead time against inventory delivery thresholds (e.g., `Rad-Hard ADC: 26 weeks lead time, inventory buffer: 4 weeks reserve`).
-6. **Technical Debt Dollar Encumbrance**: Estimated remediation cost and schedule penalty if an architectural work-around is carried into production rather than resolved immediately.
-7. **Resource Burn-Rate Ratios**: Actual engineering hours burned per calendar week compared against the baselined staffing profile.
+1. **Critical Path Variance ($\Delta t_{\text{cp}}$)**: Variance expressed strictly in calendar working days relative to the baselined schedule network (e.g., `Critical Path Delta: -4.5 Days [Path: Payload Flight FPGA -> HIL Integration]` or `-6 Days [IRB Protocol Amendment -> Phase III Cohort Lock]`).
+2. **Earned Value & Capital Execution Metrics**:
+   - Budgeted Cost of Work Scheduled ($\text{BCWS}$) vs. Budgeted Cost of Work Performed ($\text{BCWP}$) and Actual Cost ($\text{ACWP}$).
+   - Cost Performance Index ($\text{CPI} = \text{BCWP} / \text{ACWP}$) and Schedule Performance Index ($\text{SPI} = \text{BCWP} / \text{BCWS}$), or `GAO` / `FRED/SEC` obligation-vs-disbursement burn rates.
+3. **Management Reserve and Risk Exposure**: Unallocated financial reserve dollars vs. expected monetary value (EMV) of open risks ($\sum P_i \times C_i$), including clinical recall exposure, SLA credit penalties, or scrap cost from low $C_{pk}$.
+4. **Milestone Go / No-Go Gate Criteria**: Binary, test-verified preconditions required to transition through major program milestones (e.g., CDR Gate 4 thermal/timing margin; `FDA IEC 62366` summative usability pass; `NIST SP 800-207` zero-trust cutover; `NIST/SEMATECH SPC` $C_{pk} \ge 1.33$).
+5. **Supply Chain & Capacity Buffers**: Procurement lead time against inventory delivery thresholds, cloud GPU quota headroom, or clinical site enrollment velocity.
+6. **Technical & Compliance Debt Encumbrance**: Estimated remediation cost and schedule penalty if a deferred architectural, `NIST AI RMF 100-1` governance, or SCADA `ISA-101` remediation item is carried forward.
+7. **Resource & Error-Budget Burn Ratios**: Actual engineering hours, treasury liquidity, or `OpenTelemetry` 28-day SLO error-budget burn rate compared against baseline.
 
 ---
 
@@ -77,6 +76,10 @@ The following matrix illustrates how discipline engineering findings must be tra
 | "Optical transceiver vendor notified us of an 8-week delay on custom hermetic DIP package." | **Critical Path Breach: -18 Days**. Subsystem delivery slips beyond environmental chamber reservation date. | Action: PM initiates secondary domestic vendor qualification; expedites $18,000 procurement fee. |
 | "Mass property rollup indicates total instrument dry mass is $14.2\text{ kg}$ against $15.0\text{ kg}$ allocation ($+0.8\text{ kg}$ margin)." | **Mass Margin Green**: 5.3% positive reserve. No launch vehicle payload penalties triggered. Design mass locked. | Action: Freeze mechanical interface drawings; close mass tracking action item. |
 | "Bit Error Rate test completed $10^{13}$ bits with zero errors at nominal power." | **Milestone Closure**: VCRM Requirement REQ-COMM-04 verified. Unlocks Milestone Progress Payment Gate 3 ($120,000). | Action: Sign milestone completion certificate; release vendor invoice. |
+| "DSMB interim analysis (`CONSORT`, $n=820$): primary endpoint $p=0.012$; 4 `FDA IEC 62366` pump UI near-misses." | **Clinical Gate Hold**: Efficacy met, but 4 UI use-errors block 510(k) filing. Remediation requires 3-week IFU/UI re-test ($68,000). | Action: Authorize human-factors patch sprint; hold commercial launch gate. |
+| "`OpenTelemetry` p99 error budget burned 78% in 9 days; `NIST AI RMF 100-1` drift + `NIST SP 800-207` cert expiry." | **Reliability Freeze**: Release freeze triggered (22% error-budget left). Delays feature launch **+10 Days**; SLA penalty risk **$95,000**. | Action: Divert 3 FTEs to latency/cert remediation; defer non-critical release. |
+| "Line 3 spindle bore $C_{pk}$ fell from 1.54 to 1.09 (`NIST/SEMATECH SPC`); `ISA-101` / `Modbus` alarm flood 42/hr." | **Yield & Scrap Exposure**: Defect rate rises to 0.11% (**$18,500/week** scrap); critical shipment slips **-4 Days** if unmitigated. | Action: Approve weekend spindle rebuild ($14,000) to protect Q4 delivery. |
+| "`FRED` CPI-U materials inflation +4.8%; `GAO` audit flags $1.2M unobligated balance near lapse (`SEC` 10-Q)." | **Capital Reallocation Risk**: Purchasing power shortfall **$420,000** on Phase 2 civil works; triggers contingency draw. | Action: Board votes scope re-phasing Option B vs. $420k reserve release. |
 
 ---
 

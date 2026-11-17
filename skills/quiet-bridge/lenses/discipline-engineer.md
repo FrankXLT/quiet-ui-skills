@@ -1,6 +1,6 @@
 # Audience Lens: Discipline Specialist Engineer
 
-This guide defines the analytical requirements, metrological rigor, and presentation protocols for interfaces delivered to discipline specialist engineers (RF, thermal, structural dynamics, optical, signal processing, and power electronics).
+This guide defines the analytical requirements, metrological rigor, and presentation protocols for interfaces delivered to discipline specialist engineers and domain analysts (RF, thermal, structural, optical, clinical biostatistics, site reliability / AI evaluation, industrial process quality, and quantitative fiscal risk).
 
 ---
 
@@ -8,27 +8,27 @@ This guide defines the analytical requirements, metrological rigor, and presenta
 
 | Dimension | Analytical Specification |
 | :--- | :--- |
-| **Role Archetypes** | RF Payload Engineer, Thermal Analysis Lead, Guidance/Navigation/Control (GNC) Specialist, Structural Dynamicist, Optical Metrology Lead |
-| **Primary Workflow** | Hardware-in-the-loop (HIL) testing, parameter extraction, simulation correlation, root-cause anomaly investigation, peer design reviews |
-| **Cognitive Framework** | First-principles conservation laws (mass, momentum, energy, charge); empirical validation via statistical inference |
-| **Acceptance Standard** | A claim does not exist without governing equations, error distributions, calibration coefficients, and measurement bounds |
+| **Role Archetypes** | RF/Thermal/GNC Specialist, Clinical Biostatistician / Human Factors Lead (`FDA IEC 62366`, `CONSORT`), Principal SRE / AI Eval Lead (`OpenTelemetry`, `NIST AI RMF 100-1`), Manufacturing SPC Lead (`NIST/SEMATECH SPC`), Quantitative Treasury Analyst (`GAO`, `FRED/SEC`) |
+| **Primary Workflow** | Hardware-in-the-loop (HIL) testing, clinical trial survival/adverse-event analysis, distributed trace tail-latency profiling, process capability ($C_{pk}$) studies, econometric variance correlation |
+| **Cognitive Framework** | First-principles conservation laws (mass, momentum, energy, charge), statistical inference, error-budget conservation, and heteroskedastic uncertainty propagation |
+| **Acceptance Standard** | A claim does not exist without governing equations, error distributions, calibration or audit provenance, and measurement bounds |
 | **Review Velocity** | Deliberate, methodical, deep-dive examination (10 to 45 minutes per figure or dataset) |
 
-Discipline specialists are unimpressed by clean UI chrome or polished summary cards. They view over-simplified representations with deep suspicion. If an interface suppresses error bars, omits the measurement bandwidth, or draws smooth splines through sparse discrete data points, the specialist immediately concludes the author is either mathematically naive or concealing unfavorable physics.
+Discipline specialists are unimpressed by clean UI chrome or polished summary cards. They view over-simplified representations with deep suspicion. If an interface suppresses error bars, omits sample size or measurement bandwidth, or draws smooth splines through sparse discrete data points, the specialist immediately concludes the author is either mathematically naive or concealing unfavorable variance.
 
 ---
 
 ## 2. Native Units of Proof
 
-To satisfy the evidentiary threshold of a discipline engineer, data presentations must include the following native units of proof:
+To satisfy the evidentiary threshold of a discipline specialist, data presentations must include the following native units of proof:
 
-1. **Governing Physical Equations**: Explicit formulas stating variables, boundary conditions, and constitutive relations (e.g., thermal dissipation $q = -k \nabla T$, Allan variance $\sigma_y^2(\tau) = \frac{1}{2(M-1)} \sum_{i=1}^{M-1} (\bar{y}_{i+1} - \bar{y}_i)^2$).
-2. **Confidence Intervals and Statistical Dispersion**: Point estimates paired with explicit confidence bands ($\pm 1\sigma, \pm 3\sigma$, 95% confidence intervals, Student's t degrees of freedom).
-3. **Log-Decade Frequency-Domain Curves**: Allan deviation plots $\sigma_y(\tau)$ over decades $10^{-2} \le \tau \le 10^5\text{ s}$, power spectral density (PSD) in $\text{dBc/Hz}$ or $g^2/\text{Hz}$ with stated windowing function (e.g., Hann, 64k FFT, 50% overlap).
-4. **Polynomial Calibration Coefficients**: Polynomial parameters ($a_0, a_1, a_2, \dots, a_n$) with residual sum of squares ($R^2$ or $\chi^2_{\text{red}}$) and calibration temperature reference ($T_{\text{ref}} = 293.15\text{ K}$).
-5. **Residual Error Distributions**: Difference plots $(y_{\text{measured}} - y_{\text{modeled}})$ presented adjacent to nominal fit lines to reveal unmodeled higher-order systematic errors.
-6. **Environmental Test Vectors**: Explicit test context including chamber pressure ($P_{\text{amb}} \le 1.0 \times 10^{-5}\text{ Torr}$), baseplate temperature ($T_{\text{plate}} = 25.0 \pm 0.5^\circ\text{C}$), and supply rail ripple ($V_{\text{rip}} \le 15\text{ mV}_{\text{p-p}}$).
-7. **Raw Sampling Rate and Filter Disclosures**: ADC sampling frequency ($f_s = 100.0\text{ MSPS}$), anti-aliasing filter cut-off (-3 dB at 42 MHz), and effective number of bits (ENOB = 11.4 bits).
+1. **Governing Physical & Statistical Equations**: Explicit formulas stating variables, boundary conditions, and constitutive relations (e.g., thermal dissipation $q = -k \nabla T$, Allan variance $\sigma_y^2(\tau)$, Cox proportional hazard model for `CONSORT` clinical cohorts, or process capability $C_{pk} = \min(\frac{\text{USL}-\mu}{3\sigma}, \frac{\mu-\text{LSL}}{3\sigma})$ under `NIST/SEMATECH SPC`).
+2. **Confidence Intervals and Statistical Dispersion**: Point estimates paired with explicit confidence bands ($\pm 1\sigma, \pm 3\sigma$, 95% confidence intervals, Student's t degrees of freedom, or exact sample counts $n$).
+3. **Frequency-Domain, Tail-Latency, & Capability Curves**: Allan deviation plots $\sigma_y(\tau)$, PSD in $\text{dBc/Hz}$, `OpenTelemetry` HDR latency histograms ($p50/p95/p99/p99.9$ with span counts), or `NIST AI RMF 100-1` calibration/drift curves.
+4. **Calibration & Audit Coefficients**: Polynomial parameters ($a_0 \dots a_n$) with $R^2$ or $\chi^2_{\text{red}}$, `NIST`/`ISO` cal certs, `FDA IEC 62366` sensor tolerances, or `FRED/SEC` seasonal-adjustment and deflator series IDs.
+5. **Residual Error Distributions**: Difference plots $(y_{\text{measured}} - y_{\text{modeled}})$ presented adjacent to nominal fit lines to reveal unmodeled systematic bias or drift.
+6. **Environmental & Cohort Context Vectors**: Explicit test context including chamber pressure ($P_{\text{amb}}$), temperature ($T_{\text{plate}}$), `CONSORT` inclusion/exclusion counts, deployment cluster/model version, or `GAO` fiscal baseline assumptions.
+7. **Raw Sampling Rate & Aggregation Disclosures**: ADC sampling frequency ($f_s$), FFT windowing (Hann/Welch), `OpenTelemetry` head/tail sampling rate, SPC subgroup size ($n=5$), or `SEC` reporting cadence.
 
 ---
 
@@ -74,6 +74,10 @@ Specialist findings must be translated into cross-subsystem interface allocation
 | "First structural resonance mode $f_1 = 38.4\text{ Hz}$ with $Q = 22.0$ (damping ratio $\zeta = 0.0227$). Dynamic amplification at launch load yields $14.2\text{ g}$ RMS." | **Structural ICD Alloc 2.4**: Subsystem bracket fundamental frequency must exceed $35.0\text{ Hz}$. Notched random vibration profile certified to $16.0\text{ g}$ RMS. | Tri-axial accelerometer survey during base-shake sine sweep. |
 | "Phase margin $\Phi_m = 42.1^\circ$ at gain crossover $f_c = 14.8\text{ kHz}$; gain margin $G_m = 9.8\text{ dB}$. Right-half-plane zero identified at $182\text{ kHz}$." | **Control Loop Stability Req 3.1**: DC-DC converter output regulation loop requires $\ge 40.0^\circ$ phase margin under full $0\text{ to }10\text{ A}$ step transient. | Network analyzer injection test across feedback isolation resistor. |
 | "Receiver optical sensitivity $P_{\text{sens}} = -23.8\text{ dBm}$ at $\text{BER} \le 10^{-9}$; inter-symbol interference penalty is $1.1\text{ dB}$ due to chromatic dispersion." | **Optical Link ICD Alloc 5.3**: Ground-to-vehicle optical transceiver link budget requires total path loss $\le 19.5\text{ dB}$ for $0\text{ dBm}$ launch power. | Automated bit error rate tester (BERT) with optical attenuator sweep. |
+| "Cohort ($n=1,240$): HR $= 0.71$ (95% CI $0.58\text{--}0.87$); pump occlusion trip latency $1.4\text{ s}$." | **Clinical Safety Boundary (`FDA IEC 62366`, `CONSORT`)**: Infusion occlusion alarm must latch $\le 2.0\text{ s}$ with zero silent bolus exceeding $0.5\text{ mL}$. | Summative human-factors simulation + Kaplan-Meier sensitivity audit. |
+| "`OpenTelemetry` p99 $= 412\text{ ms}$; `NIST AI RMF 100-1` calibration ECE $= 0.064$ (threshold $\le 0.04$)." | **Service & Zero-Trust SLA (`NIST SP 800-207`)**: Policy Enforcement Point routes low-confidence model outputs to deterministic rule fallback within $50\text{ ms}$. | Distributed trace replay + OOD shadow-traffic evaluation harness. |
+| "Bearing bore $\mu = 40.004\text{ mm}$, $\sigma = 0.0042\text{ mm}$ ($C_{pk} = 1.27 < 1.33$)." | **SCADA & Quality Gate (`NIST/SEMATECH SPC`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)**: `Modbus` Reg 40018 tool-wear offset triggers Tier-2 warning prior to USL breach. | X-bar/R control chart audit ($n=5$ subgroups) + PLC interlock check. |
+| "Real DSCR $= 1.19\times$ ($95\%$ CI $1.08\text{--}1.31\times$) after `FRED` CPI-U deflator adjustment." | **Treasury Covenant Allocation (`GAO`, `SEC`)**: Capital reserve floor requires $\ge 1.15\times$ stressed coverage under $+200\text{ bps}$ rate shock. | Quarterly `SEC` 10-Q cash-flow reconciliation & Monte Carlo stress run. |
 
 ---
 

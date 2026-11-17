@@ -38,7 +38,7 @@ Waveform scopes adapt their channel complexity and cursor metrology across the t
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | High-Level Systems Operator | Bus activity & operational health | Single composite activity trace, eye-diagram mask pass/fail badge, cycle duration overview, zero complex time cursors. |
 | **L2 Governance** | Hardware Quality Engineer, Systems Integrator | Protocol specification & setup/hold margins | Bus transaction decoded states, setup and hold margin bars, timing violation flags, contractual delay budgets. |
-| **L3 Physical / Metrological** | Silicon Validation Engineer, DSP/RF Specialist | Physical analog signals & cursor timing proof | Multi-channel synchronized analog/digital channels, dual time cursors ($t_A, t_B, \Delta t, 1/\Delta t$), discrete sample pips, dropout gaps, and raw voltage calibrations. |
+| **L3 · Physical, Clinical & Metrological** | Silicon Validation Engineer, ICU Intensivist, DSP Specialist | Physical analog signals, ICU capnography/art-line, & cursor timing | Multi-channel synchronized analog/digital channels, dual time cursors ($t_A, t_B, \Delta t, 1/\Delta t$), discrete sample pips, telemetry/lead dropout gaps, and raw sensor calibrations. |
 
 ---
 

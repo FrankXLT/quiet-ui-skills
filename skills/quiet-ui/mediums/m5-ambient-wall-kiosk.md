@@ -1,6 +1,6 @@
 # Quiet UI — Medium M5: Ambient Wall Kiosk & 10-Foot Overview
 
-Medium M5 governs large wall-mounted displays, mission control status boards, network operations center (NOC) overview arrays, and industrial plant monitors. These interfaces are viewed from distances of 3 to 5 meters by standing or walking teams.
+Medium M5 governs large wall-mounted displays across power grid control rooms (`ISA-101` / `NRC NUREG-0700`), hospital census/ICU command boards (`FDA IEC 62366`), mission operations centers (`NASA-STD-3001`), and industrial plant floors viewed from 3 to 5 meters by standing or walking teams.
 
 ---
 

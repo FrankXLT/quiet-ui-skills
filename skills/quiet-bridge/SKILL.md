@@ -16,7 +16,14 @@ Technical communication is not symmetric. Presenters habitually overload artifac
 $$\vec{V} = \text{Presenter Source} \longrightarrow \text{Audience Lens} \times \text{Decision Tempo}$$
 
 ### The Numerical Conservation Law
-When projecting a system across multiple audience views, the underlying physical truth (parameters, limits, citations, and timestamps) MUST derive from a single canonical JSON dataset. Presentation changes framing, pacing, and coordinate density—never the underlying numbers.
+When projecting a system across multiple audience views, the underlying physical, clinical, or statistical truth (parameters, limits, citations, and timestamps) MUST derive from a single canonical JSON dataset (`corpus.json`). Presentation changes framing, pacing, and coordinate density—never the underlying numbers.
+
+### The 4 Universal Audience Evaluation Invariants
+Across **6 Universal Domain Clusters (18 Pairs)** (Clinical & Life Sciences; Cloud/Cyber/AI Ops; Industrial Grid & Manufacturing; Automotive/Hardware/Field Test; Civic Finance & Risk; Earth Science & STEM Education), every distilled view MUST satisfy:
+1. **Baseline & Corridor**: Anchor every readout in a calibrated reference band (`healthy vitals`, `UCL/CL/LCL`, or policy envelope).
+2. **Epistemic Provenance**: Distinguish discrete measurements (`±1σ` / `95% CI`) from fitted models and flag stale/faulty feeds.
+3. **Margin & Consequence**: Expose headroom (`CMD vs ACT`, `C_pk`, error-budget burn, liquidity runway) explicitly without mental math.
+4. **Actionable Disposition**: Bind the quantitative state to the single bounded next action, escalation, or guarded control step.
 
 ---
 

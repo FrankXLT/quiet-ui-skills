@@ -6,24 +6,32 @@ This protocol establishes the adversarial red-team review procedure executed to 
 
 ## 1. Purpose & The Red-Team Mandate
 
-In aerospace, defense, and high-consequence infrastructure, formal milestone reviews (PDR, CDR, FRR, Safety Boards) are not collaborative brainstorms; they are adversarial audits where appointed reviewers actively search for ungrounded assumptions, unallocated margins, unmodeled physics, and compliance breaches.
+In aerospace, clinical medicine, cloud/AI operations, industrial process control, and public finance, formal milestone reviews (PDR, CDR, FRR, Clinical DSMB, Production Cutover, and Capital Boards) are not collaborative brainstorms; they are adversarial audits where appointed reviewers actively search for ungrounded assumptions, unallocated margins, unmodeled risks, and compliance breaches.
 
-The **Adversarial Murder Board** simulates this audit environment internally. A design team convenes four orthogonal red-team personas to systematically challenge the artifact against explicit failure rubrics. If an artifact trips any hard block criterion, it is rejected back to the author before it ever reaches the external board.
+The **Adversarial Murder Board** simulates this audit environment internally. Before examining role-specific redlines, every board enforces the **4 Universal Audience Evaluation Invariants**:
+1. **Baseline & Corridor**: Anchor every readout in a calibrated reference band (healthy vitals, `UCL/CL/LCL`, SLO threshold, or policy corridor).
+2. **Epistemic Provenance**: Distinguish discrete measurements ($\pm 1\sigma$ / 95% CI) from fitted models and flag stale or uncalibrated feeds.
+3. **Margin & Consequence**: Expose headroom (`CMD vs ACT`, $C_{pk}$, error-budget burn, liquidity runway) explicitly without mental math.
+4. **Actionable Disposition**: Bind the quantitative state to a single bounded next action, escalation, or guarded control step.
+
+A design team convenes orthogonal red-team personas to systematically challenge the artifact against explicit failure rubrics. If an artifact trips any hard block criterion, it is rejected back to the author before it ever reaches the external board.
 
 ```
 [PROPOSED DESIGN / PRESENTATION ARTIFACT]
                    |
                    v
 [ADVERSARIAL MURDER BOARD RED-TEAM REVIEW]
-   +-----------------------+-----------------------+
-   | Chief Engineer Rubric | Program Manager Rubric|
-   +-----------------------+-----------------------+
-   | ATO Assessor Rubric   | Field Tech Rubric     |
-   +-----------------------+-----------------------+
+   +----------------------------+----------------------------+
+   | Chief Engineer / SPC Lead  | Program Manager / Civic Bd |
+   +----------------------------+----------------------------+
+   | ISSM / ATO / SRE Incident  | Field Tech / Clinical Safety|
+   +----------------------------+----------------------------+
+   | Educator / Learner Scaffold| 4 Universal Invariants     |
+   +----------------------------+----------------------------+
                    |
      +-------------+-------------+
      |                           |
-     v (Any Hard Block Tripped)  v (All 4 Rubrics Cleared)
+     v (Any Hard Block Tripped)  v (All Applicable Rubrics Cleared)
 [FORMAL REJECTION NOTICE]   [BOARD PASS CERTIFICATE]
 - Remediation Task Assigned   - Authorized for Release
 - Re-run Intake Protocol      - Digital Signature Hash
@@ -89,23 +97,53 @@ The Murder Board evaluates the artifact through four orthogonal, adversarial per
 - **LR-4: Controlled Variables Table**: Does the experiment layout feature an unambiguous table listing independent, dependent, and strictly held constant variables?
 - **LR-5: Self-Check Diagnostics**: Are formative comprehension checkpoints embedded after each major derivation step before moving to advanced consequences?
 
+### 2.7 Clinical Trial & Bedside Safety Rubric (`FDA IEC 62366` & `CONSORT`)
+*Focus: Patient cohort integrity, use-related error guards, dosing corridors, alarm fatigue.*
+
+- **CL-1: CONSORT Flow & Confidence Bounds**: Are enrolled, excluded, and lost-to-follow-up cohort counts ($n$) paired with 95% confidence intervals rather than bare p-values?
+- **CL-2: Dose & Rate Hard-Stop Interlocks**: Per `FDA IEC 62366`, do infusion or therapeutic controls enforce unambiguous concentration units and dual-clinician confirmation for high-alert overrides?
+- **CL-3: Bedside Alarm Fatigue Suppression**: Are non-actionable physiological transients prevented from triggering Tier-1 audible alarms?
+
+### 2.8 SRE Incident Command & AI/Zero-Trust Rubric (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)
+*Focus: Tail latency provenance, SLO error-budget burn, AI calibration drift, zero-trust policy enforcement.*
+
+- **SR-6: OTel Trace & Percentile Fidelity**: Are `OpenTelemetry` p95/p99/p99.9 tail curves backed by span counts and sampling rates rather than masked by mean averages?
+- **SR-7: AI Calibration & Fallback Gate (`NIST AI RMF 100-1`)**: Does every probabilistic model surface report out-of-distribution drift / ECE bounds and route low-confidence outputs to deterministic fallback?
+- **SR-8: Zero-Trust PEP Provenance (`NIST SP 800-207`)**: Are east-west service calls attested via Policy Enforcement Points with short-lived identities rather than implicit flat-subnet trust?
+
+### 2.9 Manufacturing SPC & SCADA Quality Lead Rubric (`NIST/SEMATECH SPC`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)
+*Focus: Process capability margins, control-room situational awareness, field-bus safety interlocks.*
+
+- **MF-1: Unmasked Process Capability ($C_{pk}$)**: Are `NIST/SEMATECH SPC` $\bar{X}/R$ limits (`UCL/CL/LCL`) and $C_{pk}$ margins reported with subgroup sample size $n$ rather than raw pass/fail percentages?
+- **MF-2: Control-Room Situation Awareness (`ISA-101` / `NRC NUREG-0700`)**: Do operator consoles enforce low-chroma neutral backgrounds, suppress alarm floods, and bind `Modbus` register states to physical valve/interlock status?
+
+### 2.10 Civic Capital & Treasury Board Rubric (`GAO` & `FRED/SEC`)
+*Focus: Inflation-adjusted liquidity, obligated vs. reserve solvency, verifiable ledger provenance.*
+
+- **CC-1: Real-Terms Deflation & Coverage (`FRED/SEC`)**: Are multi-year capital projections deflated using cited `FRED` price indices and `SEC` 10-Q/bond covenants with stressed DSCR floors?
+- **CC-2: Appropriated Reserve & Audit Lineage (`GAO`)**: Are unobligated balances, contingency drawdowns, and grant expirations reconciled to `GAO` Green Book hash-verifiable ledgers?
+
 ---
 
 ## 3. Pass / Block Hard Rejection Triggers
 
-If an artifact triggers any of the following nine **Hard Block Triggers**, the Murder Board must immediately reject the presentation without proceeding to a general vote:
+If an artifact triggers any of the following **Hard Block Triggers**, the Murder Board must immediately reject the presentation without proceeding to a general vote:
 
 | Trigger ID | Failure Category | Hard Rejection Trigger Description |
 | :--- | :--- | :--- |
 | **TRG-01** | **Physical Metrology** | Smooth Bezier curve or spline interpolation drawn through sparse discrete data points without showing raw scatter glyphs and error bars. |
 | **TRG-02** | **Timing Closure** | Negative timing slack ($\Delta t < 0\text{ ps}$) or unallocated asynchronous clock domain crossing on a flight-critical bus. |
 | **TRG-03** | **Programmatic Float** | Critical path schedule variance reporting negative float ($\Delta t_{\text{cp}} < 0\text{ days}$) without an attached, costed recovery plan. |
-| **TRG-04** | **Security Boundary** | Undocumented open network port or unencrypted telemetry stream crossing a designated trust enclave boundary. |
-| **TRG-05** | **Human Factors** | Flashing or pulsing UI elements; or destructive high-energy effector lacking a guarded two-step confirmation latch. |
-| **TRG-06** | **Operational Safety** | Actuator switch control enabled in the UI while physical upstream Lockout/Tagout (LOTO) interlock is open or unconfirmed. |
-| **TRG-07** | **Traceability Breach** | Telemetry parameter or VCRM requirement lacking a direct reference to a test script, laboratory cal cert, or git commit hash. |
+| **TRG-04** | **Security Boundary** | Undocumented open network port, implicit subnet trust violating `NIST SP 800-207`, or unencrypted telemetry crossing a trust boundary. |
+| **TRG-05** | **Human Factors** | Flashing or pulsing UI elements; or destructive/high-alert clinical (`FDA IEC 62366`) or SCADA effector lacking a guarded two-step latch. |
+| **TRG-06** | **Operational Safety** | Actuator switch control enabled while physical upstream LOTO or `ISA-101` / `NRC NUREG-0700` / `Modbus` safety interlock is open or unconfirmed. |
+| **TRG-07** | **Traceability Breach** | Telemetry, VCRM row, `OpenTelemetry` SLI, or `GAO`/`SEC` ledger item lacking a direct reference to a test script, cal cert, trace, or commit hash. |
 | **TRG-08** | **Audience Mismatch** | Presenting raw register hex dumps to an executive board, or presenting unitless color blobs to a discipline specialist. |
 | **TRG-09** | **Pedagogical Overload** | Varying two independent variables simultaneously or unrolling dense equations without visual term-to-diagram color binding in an educational interface. |
+| **TRG-10** | **Clinical Integrity** | Omitting `CONSORT` sample attrition / 95% CI bounds or masking `FDA IEC 62366` dose-unit mismatches. |
+| **TRG-11** | **AI / Tail Blindspot** | Reporting mean latency instead of `OpenTelemetry` p99 tail bounds, or deploying probabilistic AI without `NIST AI RMF 100-1` drift/fallback gates. |
+| **TRG-12** | **SPC Capability Masking** | Reporting batch yield without `NIST/SEMATECH SPC` $C_{pk}$ and `UCL/CL/LCL` corridor limits. |
+| **TRG-13** | **Fiscal Illusion** | Presenting nominal multi-year civic capital returns without `FRED` inflation adjustment or `GAO`/`SEC` debt-coverage margins. |
 
 ---
 
@@ -162,11 +200,11 @@ When an artifact fails an Adversarial Murder Board audit, it follows a strict re
 
 Before certifying that a design package or briefing is ready for external delivery, verify against these six gates:
 
-1. **Role-Specific Red-Team Coverage**: Did independent reviewers represent the Chief Engineer, PM, ATO Assessor, Field Technician, and (if applicable) Master Educator/Learner perspectives?
-2. **Zero Hard Block Triggers**: Have all nine hard block triggers (TRG-01 through TRG-09) been explicitly checked and cleared?
+1. **4 Universal Invariants & Red-Team Coverage**: Did independent reviewers verify all 4 Universal Audience Evaluation Invariants across the applicable domain rubrics (Chief Engineer, PM, ATO/ISSM, Operator, Clinical Safety, SRE Incident Command, SPC Quality Lead, Civic Capital Board, and Educator/Learner)?
+2. **Zero Hard Block Triggers**: Have all thirteen hard block triggers (TRG-01 through TRG-13) been explicitly checked and cleared?
 3. **Composite Score $\ge 85$**: Does the composite score across all relevant audit sectors meet or exceed the 85-point threshold?
-4. **All Redlines Closed**: Have all action items from previous audit cycles been resolved with documented physical proof?
-5. **Calibrated Units Preserved**: Are all displayed parameters presented in explicit physical or financial SI units?
+4. **All Redlines Closed**: Have all action items from previous audit cycles been resolved with documented physical, clinical, or audit proof?
+5. **Calibrated Units Preserved**: Are all displayed parameters presented in explicit physical, clinical, statistical, or financial SI/audit units?
 6. **Signed Board Certificate**: Is the formal JSON audit certificate digitally signed and archived in the project repository?
 
 ---

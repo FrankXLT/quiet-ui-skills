@@ -8,13 +8,13 @@ This guide defines the translation principles, plain-language guidelines, and ca
 
 | Dimension | Common Reader Specification |
 | :--- | :--- |
-| **Role Archetypes** | Enterprise Product User, Public Oversight Inspector, Non-Technical Executive Sponsor, Homeowner / Facility Tenant |
-| **Context of Use** | Daily operational tracking, incident status inquiry, service health confirmation, routine billing or performance verification |
-| **Cognitive Framework** | Outcome-oriented ("Is my system working? What was delivered? Do I need to take action? How long will it take?") |
+| **Role Archetypes** | Patient / Caregiver, Cloud Service Subscriber, Plant Neighbor / Municipal Resident, Enterprise User, Public Oversight Inspector, Homeowner |
+| **Context of Use** | Daily operational tracking, bedside or outpatient care updates, service outage inquiry, municipal utility/budget oversight, routine verification |
+| **Cognitive Framework** | Outcome-oriented ("Is my system or care safe and working? What was delivered? Do I need to take action? How long will it take?") |
 | **Acceptance Standard** | Plain English, unambiguous status anchors, transparent explanations without condescension, clear actionable next steps |
 | **Reading Window** | 10 to 30 seconds for routine confirmation; 1 to 2 minutes during unexpected service degradation |
 
-The common reader does not possess an engineering degree in your discipline, nor should they be required to have one to understand whether their service is functional and safe. When technical systems present raw memory addresses, cryptographic handshake jargon, or cryptic internal abbreviations, users experience anxiety and cognitive overload. Conversely, when explanations are over-simplified into meaningless marketing platitudes, users feel distrustful and manipulated.
+The common reader does not possess an engineering, clinical, or financial degree in your discipline, nor should they be required to have one to understand whether their service, care, or public infrastructure is functional and safe. When technical systems present raw memory addresses, clinical trial hazard ratios, cryptographic handshake jargon, or cryptic internal abbreviations, users experience anxiety and cognitive overload. Conversely, when explanations are over-simplified into meaningless marketing platitudes, users feel distrustful and manipulated.
 
 ---
 
@@ -23,11 +23,11 @@ The common reader does not possess an engineering degree in your discipline, nor
 The common reader requires evidence rooted in human-scale reality and demonstrable utility:
 
 1. **Clear Status Anchors**: Deterministic health states expressed in everyday language (`Operating Normally`, `Performance Slightly Reduced`, `Action Required: Action Needed by You`, `Service Offline for Scheduled Maintenance`).
-2. **Plain-English Impact Summaries**: Quantified statements of delivered outcome (e.g., "All 42,000 files backed up safely to secondary storage at 3:15 AM", not "CRON job 14 completed with exit code 0").
+2. **Plain-English Impact Summaries**: Quantified statements of delivered outcome (e.g., "All 42,000 files backed up safely to secondary storage at 3:15 AM", not "CRON job 14 completed with exit code 0"; or "In a `CONSORT`-tracked trial of 400 patients, 82% recovered within 48 hours vs. 64% on standard care").
 3. **Direct Action Paths**: Unambiguous directives stating exactly who needs to do what, with an estimated duration (e.g., "Step 1 of 1: Check that the blue network cable is plugged firmly into the rear port. This takes 30 seconds.").
 4. **Human Time Formats**: Absolute local time and relative elapsed duration (e.g., "Today at 2:15 PM (14 minutes ago)", rather than raw epoch integers `1763320500`).
-5. **Real-World Physical Equivalents**: Converting abstract measurements into relatable dimensions (e.g., "1.2 GB of data — equivalent to roughly 300 high-resolution photos").
-6. **Transparent Diagnostic Context**: Explaining the *why* behind an anomaly in simple physical terms (e.g., "Network speed slowed because an automated system update was downloading").
+5. **Real-World Physical Equivalents**: Converting abstract measurements into relatable dimensions (e.g., "1.2 GB of data — equivalent to roughly 300 high-resolution photos", or "Reserve balance covers 4.5 months of municipal operating costs per `GAO` audit rules").
+6. **Transparent Diagnostic Context**: Explaining the *why* behind an anomaly in simple physical terms (e.g., "Network speed slowed because an automated system update was downloading", or "Infusion paused because `FDA IEC 62366` tubing occlusion sensor detected a kink").
 
 ---
 
@@ -73,6 +73,10 @@ The following translation matrix bridges raw engineering phenomena into clear, h
 | "Li-ion battery pack state of charge at 14%; cell balance delta 45 mV." | **Battery Low (14% Remaining)**: Estimated battery runtime is approximately 25 minutes under current usage. | "Plug in your charging adapter to avoid unexpected shutdown." |
 | "SHA-256 verification mismatch on downloaded firmware image package." | **Download Verification Incomplete**: The downloaded update file was corrupted in transit. | "Click 'Restart Download' to safely download a fresh copy." |
 | "HVAC compressor thermal tripwire open due to high head pressure." | **Cooling Temporarily Paused**: The air conditioning unit paused to protect its motor from overheating. | "Check the exterior intake filter for dust or debris; resumes in 10 min." |
+| "Smart pump occlusion >= 450 mmHg (`FDA IEC 62366`); `CONSORT` arm B AE rate 1.8%." | **Medication Delivery Paused**: The IV pump stopped safely because it detected resistance in the tubing. | "Keep your arm straight and call your nurse to inspect the tubing." |
+| "`OpenTelemetry` p99 > 4.2 s; `NIST AI RMF 100-1` fallback; `NIST SP 800-207` session re-auth." | **Slower Responses & Extra Sign-In**: Cloud AI search is running in safe mode during high load. | "Your saved work is intact; sign in again if prompted (~15 seconds)." |
+| "`Modbus` Reg 40012 turbidity 1.4 NTU (`ISA-101` / `NRC NUREG-0700` interlock; `SPC C_pk` 1.18)." | **Water Filtration Maintenance**: Plant filter line 2 switched to backup so drinking water stays crystal clear. | "No boil-water notice. Normal pressure returns by 4:00 PM today." |
+| "`GAO` fund balance covers 142 days; `FRED/SEC` municipal bond DSCR at 1.24x." | **City Capital Reserve Healthy**: Municipal reserve funds cover nearly five months of operations. | "No emergency tax surcharge needed; annual audit report is linked below." |
 
 ---
 

@@ -14,7 +14,7 @@ The **Educator & Mentor** lens evaluates technical communication through the len
 1. **Explicit Prerequisite Anchoring**: Clear identification of prior concepts required to comprehend the new model (Directed Acyclic Graph of dependencies).
 2. **Variable Isolation**: Controlled single-variable exploration before multi-parameter coupling is introduced.
 3. **Misconception Falsification**: Deliberate counter-examples exposing common mental traps before presenting normative solutions.
-4. **Honest Metrological Scaffolding**: Retention of authentic NIST units, $1\text{--}2\text{--}5$ intervals, and uncertainty corridors—scaffolded with plain-language callouts rather than watered down into cartoon plots.
+4. **Honest Metrological Scaffolding**: Retention of authentic domain units and uncertainty corridors—whether NIST $1\text{--}2\text{--}5$ scales, `FDA IEC 62366` / `CONSORT` clinical confidence intervals, `OpenTelemetry` tail distributions, `NIST/SEMATECH SPC C_pk` control bands, or `GAO` / `FRED/SEC` fiscal baselines—scaffolded with plain-language callouts rather than watered down into cartoon plots.
 
 ---
 
@@ -70,6 +70,15 @@ If an artifact triggers any of the following five redlines, the Educator will re
 - **Educator Framing**:
   > "Before we look at the mathematical equations for deep-space laser communications, look at this three-stage diagram. The transmitter sends light pulses across space; the atmosphere scatters some photons; and the cryogenic detector counts the arrival of individual particles of light. Watch what happens to signal quality when we change only the laser power while keeping atmospheric conditions constant."
 
+### 5.3 Cross-Domain Pedagogical Translation Examples
+
+| Domain | Specialist / Raw Concept | Educator Scaffolded Framing |
+| :--- | :--- | :--- |
+| **Clinical Safety / ICU (`FDA IEC 62366`, `CONSORT`)** | "Hazard ratio 0.72 (95% CI 0.58–0.89); pump rate error $\pm 2\%$." | Show a `CONSORT` two-arm patient flow beside a single-slider dose-error corridor before introducing Cox regression. |
+| **SRE / Cloud / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | "p99 tail latency 420 ms; zero-trust PEP drop; ECE drift 0.08." | Plot one `OpenTelemetry` request span waterfall first, then freeze traffic load to isolate model calibration drift. |
+| **Industrial Plant / SCADA (`NIST/SEMATECH SPC C_pk`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)** | "$C_{pk} = 1.12$ on `Modbus` Reg 40012 loop; `ISA-101` Tier-2 alarm." | Compare a centered vs. shifted Shewhart distribution against USL/LSL walls before computing $C_{pk}$ algebraically. |
+| **Civic Capital / Treasury (`GAO`, `FRED/SEC`)** | "Real DSCR $1.18\times$ deflated by `FRED` CPI-U; `SEC` 10-Q reserve." | Separate nominal cash flow from inflation adjustment using one frozen tax-base scenario before sweeping interest rates. |
+
 ---
 
 ## 6. Canonical Pedagogical Layout Patterns
@@ -91,7 +100,7 @@ When authoring educational interfaces, apply the canonical two-column pedagogica
     </div>
   </aside>
 
-  <!-- Right Column: Rigorous Metrological Instrument (L3 Physics) -->
+  <!-- Right Column: Rigorous Metrological Instrument (L3 · Physical, Clinical & Metrological) -->
   <div class="va-instrument-stage">
     <!-- Deterministically Compiled L3 Plot with Plain Annotations -->
     <figure class="va-figure-annotated">
@@ -130,7 +139,7 @@ In learning environments, technical rigor must never be dumbed down into toy car
 | :--- | :--- | :--- | :--- |
 | **Stage 1: Mental Model** | `L1 Orientation` | Simplified block schematic, plain language labels, single highlighted causal path. | Build intuitive cause-and-effect mental model. |
 | **Stage 2: Interface Architecture** | `L2 Governance` | Complete state machine, formal interface boundaries, discrete tabular states. | Understand structural rules, inputs, and outputs. |
-| **Stage 3: Calibrated Metrology** | `L3 Physical` | Exact NIST $1\text{--}2\text{--}5$ plots, log-decade Allan dev, discrete measured markers vs analytical models. | Achieve mastery of authentic laboratory data and error analysis. |
+| **Stage 3: Calibrated Metrology** | `L3 · Physical, Clinical & Metrological` | Exact NIST $1\text{--}2\text{--}5$ plots, `CONSORT` CI corridors, `OpenTelemetry` HDR histograms, `NIST/SEMATECH SPC` $C_{pk}$ charts, `FRED/SEC` real series, discrete markers vs analytical models. | Achieve mastery of authentic domain data and error analysis. |
 
 ---
 

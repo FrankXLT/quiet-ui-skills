@@ -1,0 +1,101 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:scalar",
+    "id": "bench-m1-l1-fleet-kpi",
+    "metadata": {
+      "title": "M1-L1: Clinical ICU Arterial Pressure (MAP) Orientation",
+      "description": "L1 Orientation clinical scalar readout with trend sparkline and non-color-only FDA IEC 62366 status state.",
+      "rigor_level": "L1",
+      "timestamp_utc": "2026-11-16T21:15:00Z",
+      "subsystem": "ICU-BED-04-HEMO"
+    },
+    "quantity": {"symbol": "MAP", "name": "Mean Arterial Pressure", "unit": "mmHg", "quantity_calculus": "MAP / mmHg"},
+    "measurement": {"nominal_value": 74.0},
+    "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL"},
+    "sparkline": [71.0, 72.5, 73.0, 74.2, 73.8, 75.1, 74.6, 73.9, 74.4, 74.0]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:scalar",
+    "id": "bench-m1-l2-link-margin",
+    "metadata": {
+      "title": "M1-L2: DWDM Incident Optical Drive Margin",
+      "description": "L2 Governance readout tracking contract target corridor and warning envelope margin.",
+      "rigor_level": "L2",
+      "timestamp_utc": "2026-11-16T21:15:00Z",
+      "subsystem": "DWDM-GOVERNANCE"
+    },
+    "quantity": {"symbol": "P_in", "name": "Incident Drive Power", "unit": "dBm", "quantity_calculus": "P_in / dBm"},
+    "measurement": {"nominal_value": 14.2},
+    "limits": {
+      "nominal_target": 14.0,
+      "tolerance_band": [-0.8, 0.8],
+      "warning_thresholds": {"lower": 12.6, "upper": 15.4},
+      "abort_thresholds": {"lower": 11.5, "upper": 16.5}
+    },
+    "status_annunciator": {"state": "NOMINAL", "margin_remaining_pct": 75.0},
+    "gauge": {"type": "linear_horizontal", "min_scale": 10.0, "max_scale": 18.0}
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:scalar",
+    "id": "bench-m1-l3-nasa-cmd-act",
+    "metadata": {
+      "title": "M1-L3: NASA-STD-3001 Dual-Marker CMD vs ACT Dewar & Stale Sensor Array",
+      "description": "L3 Physical readout pairing CMD vs ACT markers, NIST expanded uncertainty (k=2), sensor calibration provenance, and an active STALE DATA excursion.",
+      "rigor_level": "L3",
+      "timestamp_utc": "2026-11-16T21:15:00Z",
+      "subsystem": "CRYO-METROLOGY-BUS"
+    },
+    "items": [
+      {
+        "metadata": {
+          "title": "Primary Cold Finger Cryostat (Channel A)",
+          "rigor_level": "L3",
+          "timestamp_utc": "2026-11-16T21:15:00Z",
+          "subsystem": "THERMAL-CONTROL-A"
+        },
+        "quantity": {"symbol": "T_cryo", "name": "Absolute Temperature", "unit": "K", "quantity_calculus": "T_cryo / K"},
+        "measurement": {
+          "nominal_value": 77.342,
+          "expanded_uncertainty": 0.015,
+          "coverage_factor": 2.0,
+          "confidence_pct": 95.45,
+          "sensor_id": "PT100-PLAT-0842",
+          "calibration_id": "CAL-NIST-2026-8812A",
+          "raw_adc_counts": 24891
+        },
+        "limits": {
+          "nominal_target": 77.0,
+          "warning_thresholds": {"lower": 76.2, "upper": 77.8},
+          "abort_thresholds": {"lower": 75.0, "upper": 78.5}
+        },
+        "status_annunciator": {"state": "NOMINAL", "margin_remaining_pct": 82.5},
+        "gauge": {"type": "linear_horizontal", "min_scale": 74.0, "max_scale": 80.0}
+      },
+      {
+        "metadata": {
+          "title": "Sector-6 SFP+ Optical Return Power (Channel B)",
+          "rigor_level": "L3",
+          "timestamp_utc": "2026-11-16T21:11:04Z",
+          "subsystem": "WR-NODE-06-SFP"
+        },
+        "quantity": {"symbol": "P_rx", "name": "Optical Receive Power", "unit": "dBm", "quantity_calculus": "P_rx / dBm"},
+        "measurement": {
+          "nominal_value": -13.60,
+          "expanded_uncertainty": 0.12,
+          "coverage_factor": 2.0,
+          "confidence_pct": 95.45,
+          "sensor_id": "SFP-DDM-0602",
+          "calibration_id": "CAL-OPT-2026-019B",
+          "raw_adc_counts": 4108
+        },
+        "limits": {
+          "nominal_target": -10.0,
+          "warning_thresholds": {"lower": -13.5, "upper": -6.5},
+          "abort_thresholds": {"lower": -15.0, "upper": -4.0}
+        },
+        "status_annunciator": {"state": "STALE", "margin_remaining_pct": 18.0},
+        "gauge": {"type": "linear_horizontal", "min_scale": -16.0, "max_scale": -2.0}
+      }
+    ]
+  }
+]

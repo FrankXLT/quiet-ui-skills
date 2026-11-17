@@ -6,15 +6,15 @@ This protocol establishes the architectural layout, CSS container specifications
 
 ## 1. Purpose & The Dual-Audience Synchronization Problem
 
-Major program milestone reviews (such as Flight Readiness Reviews, Critical Design Reviews, and Operational Cutover Boards) assemble two radically different audiences in the same room:
-1. **Executive Decision Authorities**: Need rapid, high-level gate compression (1–3 minutes), clear BLUF disposition status, and unvarnished trade spaces.
-2. **Discipline Specialists & Technical Assessors**: Demand uncompromised Layer 3 (L3) physical proof, raw scatter data, error bounds, and mathematical derivations.
+Major program milestone reviews—including Flight Readiness Reviews (FRR), Critical Design Reviews (CDR), Clinical Trial DSMB & `FDA IEC 62366` Safety Boards, SRE / AI Ops Release & Postmortem Boards (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`), Industrial Plant `ISA-101` / `NRC NUREG-0700` / `NIST/SEMATECH SPC` Cutover Boards, and Civic Capital / Treasury Boards (`GAO`, `FRED/SEC`)—assemble two radically different audiences in the same room:
+1. **Executive & Board Decision Authorities**: Need rapid, high-level gate compression (1–3 minutes), clear BLUF disposition status, and unvarnished trade spaces.
+2. **Discipline Specialists & Technical Assessors**: Demand uncompromised Layer 3 (`L3 · Physical, Clinical & Metrological`) proof, raw scatter data, confidence bounds, and mathematical or audit provenance.
 
-Traditional presentations fail this environment completely: if the presenter displays high-level slides, the technical specialists distrust the assertions; if the presenter displays deep physics and code traces, the executives lose situational awareness and decision momentum.
+Traditional presentations fail this environment completely: if the presenter displays high-level slides, the technical specialists distrust the assertions; if the presenter displays deep physics, clinical tables, or trace waterfalls, the executives lose situational awareness and decision momentum.
 
 The **Review Room Dual-Layer Architecture** solves this through a vertically synchronized layout:
-- **Upper Executive Gate Band (180–240px)**: Pinned at the top of the viewport; presents the BLUF disposition pill, a 4-KPI metric strip in native SI units, and the critical path trade box.
-- **Lower Evidentiary Proof Stage**: A scrollable, high-density analytical workbench presenting governing equations, discrete scatter plots, residual distributions, and calibration provenance.
+- **Upper Executive Gate Band (180–240px)**: Pinned at the top of the viewport; presents the BLUF disposition pill, a 4-KPI metric strip in native domain units, and the bounded trade box.
+- **Lower Evidentiary Proof Stage**: A scrollable, high-density analytical workbench presenting governing models, discrete scatter/CI plots, residual or error-budget distributions, and calibration/audit provenance.
 
 ---
 
@@ -151,6 +151,17 @@ The following walkthrough illustrates the dual-layer architecture applied to a h
 |                   | Residual drift across 5 thermal cycles: +/- 0.12 dB (within 3-sigma).   | Format: HDF5 / CSV     |
 +----------------------------------------------------------------------------------------------------------------------+
 ```
+
+### 4.2 Cross-Domain Dual-Layer Mapping
+
+The same synchronized Upper Gate Band + Lower Proof Stage pattern applies identically across non-aerospace review boards:
+
+| Domain | Upper Executive Gate Band (180–240px) | Lower Evidentiary Proof Stage (`L3`) |
+| :--- | :--- | :--- |
+| **Clinical Safety / ICU (`FDA IEC 62366`, `CONSORT`)** | DSMB Disposition (`CONTINUE / HOLD`), cohort $N$, primary hazard ratio + 95% CI, serious AE delta. | `CONSORT` flow diagram, Kaplan-Meier survival curves, `FDA IEC 62366` use-error root-cause log. |
+| **SRE / Cloud / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | Release Gate (`GO / FREEZE`), p99 latency, 28-day SLO error-budget left, ECE drift, PEP pass %. | `OpenTelemetry` distributed span waterfall, HDR latency residuals, `NIST AI RMF 100-1` calibration plot. |
+| **Industrial Plant / SCADA (`NIST/SEMATECH SPC`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)** | Cutover Gate, line $C_{pk}$ vs 1.33 floor, `ISA-101` alarm rate (/10 min), safety PLC interlock status. | $\bar{X}/R$ control charts (`UCL/CL/LCL`), `Modbus` register scan timing log, EOP interlock verification. |
+| **Civic Capital / Treasury (`GAO`, `FRED/SEC`)** | Bond / Capital Vote, real DSCR (`FRED` CPI-U deflated), reserve runway (days), `GAO` audit exceptions. | Multi-year cash-flow sensitivity matrix, `SEC` 10-Q debt schedule, SHA-256 disbursement ledger proof. |
 
 ---
 

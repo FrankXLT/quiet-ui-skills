@@ -8,28 +8,37 @@ This guide defines the layout architecture, evidentiary density standards, and p
 
 | Dimension | Analytical Investigation Specification |
 | :--- | :--- |
-| **Review Window** | 10 to 45 minutes per subsystem or failure vignette |
-| **Operational Modes** | Preliminary Design Review (PDR), Critical Design Review (CDR), Failure Review Board (FRB), formal anomaly investigation, Root-Cause Corrective Action (RCCA) |
+| **Review Window** | 10 to 45 minutes per subsystem, cohort, service, or fiscal audit |
+| **Operational Modes** | Preliminary/Critical Design Review (PDR/CDR), Failure Review Board (FRB), `CONSORT` / `FDA IEC 62366` Clinical Safety Root-Cause, `OpenTelemetry` / `NIST AI RMF 100-1` Postmortem, `NIST/SEMATECH SPC` Capability & `NRC NUREG-0700` Audit, `GAO` / `FRED/SEC` Fiscal Variance Audit |
 | **Cognitive Framework** | Uncompromising evidentiary scrutiny; forensic examination of mathematical assumptions, raw data distributions, and error propagation |
-| **Information Density** | High-density Layer 3 (L3) physical proof; complete parameter matrices, mathematical formulas, raw scatter points, and residual plots |
+| **Information Density** | High-density `L3 · Physical, Clinical & Metrological` proof; complete parameter matrices, governing models, raw scatter/CI plots, and residual plots |
 | **Interaction Standard** | Synchronized cross-probing between equations, tables, and time-series plots; persistent metadata inspectability |
 
-In an analytical deep dive, summarization is viewed as a liability. Reviewers (discipline specialists, technical fellows, and independent audit teams) actively seek out the rawest available layer of physical truth. The presentation must expose every link in the evidentiary chain: from the physical transducer on the test stand to the signal conditioning filters, ADC quantization, polynomial calibration corrections, and final statistical regression models.
+In an analytical deep dive, summarization is viewed as a liability. Reviewers (discipline specialists, clinical biostatisticians, principal SREs, SPC quality leads, and `GAO` auditors) actively seek out the rawest available layer of truth. The presentation must expose every link in the evidentiary chain: from the physical transducer, clinical case report, `OpenTelemetry` span, `Modbus` register, or `SEC` filing down to filtering, calibration corrections, and final statistical models.
 
 ---
 
-## 2. Evidentiary Standards for Layer 3 (L3) Proof
+## 2. Evidentiary Standards for Layer 3 (`L3`) Proof
 
 An analytical deep-dive presentation must meet four unbending evidentiary standards:
 
-1. **Complete Mathematical Articulation**: Every model must be accompanied by its governing differential or constitutive equation, explicitly defining all variables, integration bounds, and coordinate references.
-2. **Synchronized Residual Channels**: Scatter plots and fitted curves must feature an aligned residual deviation sub-panel immediately below, displaying $(y_{\text{data}} - y_{\text{model}})$ against the $\pm 3\sigma$ noise floor.
+1. **Complete Mathematical Articulation**: Every model must be accompanied by its governing differential, statistical, or accounting equation, explicitly defining all variables, bounds, and sample sizes ($n$).
+2. **Synchronized Residual & Confidence Channels**: Scatter plots and fitted curves must feature an aligned residual deviation sub-panel immediately below, displaying $(y_{\text{data}} - y_{\text{model}})$ against $\pm 3\sigma$ or 95% confidence bounds.
 3. **Data Provenance & Cryptographic Traceability**: Every figure and data table must feature a provenance block containing:
    - Data collection timestamp (UTC) and duration.
-   - Test facility, environmental chamber ID, and atmospheric conditions ($P, T, \text{RH}$).
-   - Test instrument model numbers, serial numbers, and calibration certificate IDs.
+   - Test facility / clinical site / VPC region / plant line / fiscal ledger reference.
+   - Instrument serial numbers and `NIST` cal certs, `OpenTelemetry` trace IDs, `Modbus` tag revision, or `FRED/SEC` series IDs.
    - Raw data repository URL, commit hash, and dataset SHA-256 digest.
-4. **Error Budget Decomposition Trees**: Total measurement uncertainty must be broken down into systematic (bias) and random components, tracing error propagation using Root-Sum-Square (RSS) math.
+4. **Error Budget Decomposition Trees**: Total measurement or model uncertainty must be broken down into systematic (bias) and random components, tracing error propagation using Root-Sum-Square (RSS) or heteroskedastic variance math.
+
+### 2.1 Cross-Domain L3 Evidentiary Equivalents
+
+| Domain | Governing Model & Scatter | Residual / Provenance Anchor |
+| :--- | :--- | :--- |
+| **Clinical Safety / ICU (`FDA IEC 62366`, `CONSORT`)** | Kaplan-Meier survival & Cox hazard model with `CONSORT` attrition counts ($N$). | 95% CI funnel residuals; IRB protocol rev + `FDA IEC 62366` use-error trace log. |
+| **SRE / Cloud / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | HDR tail-latency distribution ($p50/p95/p99$) & ECE calibration reliability curve. | Span-level waterfall residuals; OTel `traceparent` + `NIST SP 800-207` PEP policy hash. |
+| **Industrial Plant / SCADA (`NIST/SEMATECH SPC C_pk`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)** | Shewhart $\bar{X}/R$ control chart with `UCL/CL/LCL` and $C_{pk}$ capability index. | Subgroup variance ($n=5$); `Modbus` register poll digest + `NIST` gauge cert ID. |
+| **Civic Capital / Treasury (`GAO`, `FRED/SEC`)** | Real cash-flow & DSCR stress model deflated by `FRED` CPI-U series. | Forecast-vs-actual variance bars; `SEC` 10-Q / `GAO` Green Book SHA-256 ledger digest. |
 
 ---
 

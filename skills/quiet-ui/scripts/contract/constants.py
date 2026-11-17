@@ -53,6 +53,7 @@ TIER_HTML_FLOOR: int = 240
 EXCLUDED_LINE_BUDGET_EXACT: set[str] = {
     "quiet-ui-showcase.html",
     "docs/index.html",
+    "docs/bench/evidence-bench.html",
 }
 
 # 3-Pillar Skill Registry

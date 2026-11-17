@@ -8,13 +8,13 @@ This guide defines the interface architecture, alarm management standards, and i
 
 | Parameter | Operational Specification |
 | :--- | :--- |
-| **Decision Window** | 5 to 15 seconds from visual stimulus to verified physical effector actuation |
-| **Operational Modes** | Anomaly triage, emergency containment, launch abort, hot-standby failover, power tripwire response |
+| **Decision Window** | 5 to 15 seconds from visual stimulus to verified effector or intervention actuation |
+| **Operational Modes** | Flight/test-stand abort, ICU bedside smart-pump & vitals triage (`FDA IEC 62366`, `CONSORT`), SRE / AI production incident containment (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`), SCADA / nuclear plant tripwire (`ISA-101`, `NRC NUREG-0700`, `Modbus`, `NIST/SEMATECH SPC`), treasury settlement circuit-breaker (`GAO`, `FRED/SEC`) |
 | **Cognitive Stress Level** | High acute stress, tunnel vision, degraded working memory, elevated heart rate |
 | **Sensory Channel** | Peripheral visual glance, high-contrast optical annunciator tiles, deterministic acoustic alerts |
 | **Interaction Standard** | Zero-latency rendering (< 16 ms), zero nested menus, guarded physical or software 2-step effectors |
 
-Under acute tactical conditions, human cognitive bandwidth collapses to immediate perceptual processing. Complex hierarchical navigation, hidden drawers, and ambiguous multi-state icons become catastrophic failure modes. The interface must act as an unvarnished transducer of physical reality, presenting unambiguous state and immediate action paths.
+Under acute tactical conditions, human cognitive bandwidth collapses to immediate perceptual processing. Complex hierarchical navigation, hidden drawers, and ambiguous multi-state icons become catastrophic failure modes—whether in an aerospace control room, an ICU bay (`FDA IEC 62366`), a cloud incident bridge, or a `NRC NUREG-0700` / `ISA-101` industrial console. The interface must act as an unvarnished transducer of real-time state, presenting unambiguous bounds and immediate guarded action paths.
 
 ---
 
@@ -22,11 +22,11 @@ Under acute tactical conditions, human cognitive bandwidth collapses to immediat
 
 In the tactical seconds tempo, information density is strictly calibrated to essential telemetry:
 
-1. **Zero Non-Critical Chrome**: Eliminate all decorative gradients, ambient drop shadows, brand headers, and promotional banners.
-2. **Glanceable State Dominance**: The primary operational state (NORMAL, DEGRADED, TRIPWIRE, ABORT) must occupy immediate visual hierarchy, readable from 2.0 meters away.
+1. **Zero Non-Critical Chrome**: Eliminate all decorative gradients, ambient drop shadows, brand headers, and promotional banners (`ISA-101` / `NRC NUREG-0700` dull-screen principle).
+2. **Glanceable State Dominance**: The primary operational state (`NORMAL`, `DEGRADED`, `TRIPWIRE`, `ABORT`) must occupy immediate visual hierarchy, readable from 2.0 meters away.
 3. **High Signal-to-Ink Ratio**: Every pixel on the screen must convey operational meaning. Grid lines, borders, and typography must serve functional grouping.
 4. **Deterministic Spatial Fixity**: Telemetry indicators must never shift position, reorder dynamically, or reflow during an anomaly. Spatial memory must remain 100% reliable.
-5. **Calibrated Color Tokens**: Colors are reserved strictly for operational state transitions according to ANSI/ISA-18.2 standards.
+5. **Calibrated Color Tokens**: Colors are reserved strictly for operational state transitions according to `ANSI/ISA-18.2` and `FDA IEC 62366` alarm-fatigue safeguards.
 
 ---
 
@@ -71,6 +71,15 @@ Tactical interfaces rely on a spatial annunciator grid where every cell represen
 | Required Response: Command Hot-Standby Pump A to active primary; depressurize Loop B return bypass.                 |
 +----------------------------------------------------------------------------------------------------------------------+
 ```
+
+### 4.1 Cross-Domain Tactical Annunciator & Guarded Effector Examples
+
+| Domain | Fixed Annunciator Telemetry & Corridor | Guarded Two-Step Effector (`Arm -> Actuate`) |
+| :--- | :--- | :--- |
+| **Clinical Safety / ICU (`FDA IEC 62366`, `CONSORT`)** | Pump Ch-2 Occlusion `480 mmHg [Limit <= 450]`; SpO2 `91% [Floor 92%]`. | Step 1: Arm Bolus Pause -> Step 2: Dual-clinician confirm & verify flow = `0.0 mL/hr`. |
+| **SRE / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | Auth PEP p99 `1,420 ms [Limit <= 250]`; AI ECE drift `0.09 [Fallback 0.05]`. | Step 1: Arm Pod-7 Drain / Rule Fallback -> Step 2: Confirm OTel traffic shift to Pod-8. |
+| **Industrial SCADA (`ISA-101`, `NRC NUREG-0700`, `Modbus`, `SPC C_pk`)** | `Modbus` Reg `40012` Temp `74 C [Redline 72]`; `SPC` $C_{pk}$ `1.08 [Min 1.33]`. | Step 1: Arm Bypass `BV-02` -> Step 2: Confirm `Modbus` limit-switch closed & temp drop. |
+| **Civic Treasury Settlement (`GAO`, `FRED/SEC`)** | Intraday Liquidity `104% [Floor 110%]`; Margin Reserve Delta `-$1.8M`. | Step 1: Arm Outbound Batch-14 Hold -> Step 2: Dual-officer HSM token sign-off. |
 
 ---
 

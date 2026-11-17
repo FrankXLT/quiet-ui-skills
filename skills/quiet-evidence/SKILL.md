@@ -5,7 +5,7 @@ description: Quantitative data metrology and structural topology skill compiling
 
 # Quiet UI Pillar 2 — Unified Quantitative Evidence & Metrology
 
-Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 Orientation`, `L2 Governance`, `L3 Physical/Metrological`).
+Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 · Orientation`, `L2 · Governance`, `L3 · Physical, Clinical & Metrological`).
 
 ---
 

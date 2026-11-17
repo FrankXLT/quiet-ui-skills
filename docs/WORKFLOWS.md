@@ -2,13 +2,13 @@
 
 > **Document Class**: Authoritative Architecture Specification  
 > **Target Version**: Quiet UI v9.0 (`3-Pillar Unified Continuum`)  
-> **Standards Basis**: NAVAIR FTM-108, NIST SP 811, NASA-STD-3001, CCSDS 142.0-B-1
+> **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.0 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.0 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
                                       QUIET UI v9.0
@@ -21,18 +21,23 @@ Quiet UI v9.0 abandons rigid monolithic page templates and artificial walls betw
 
 1. **Pillar 1 — Qualitative Delivery Medium Physics & Shells (`skills/quiet-ui/`)**:
    - Manages physical optical constraints, viewing distance, container bounds, and chromatic rations across seven operational mediums: `Paper/Print` (M1), `Editorial Web` (M2), `Stateful Web App` (M3), `Walk-Up Terminal` (M4), `Ambient Kiosk` (M5), `Collimated Optical HUD` (M6), and `Transparent Window Overlay` (M7).
-   - Rations color through four strict semantic budgets: *Archival Proof* (90% neutral ink), *Pedagogical Flow*, *Decision Contrast*, and *Quiet Cockpit* (monochrome nominal state; amber/crimson reserved exclusively for active off-nominal excursions).
+   - Rations color through four strict semantic budgets: *Archival Proof* (90% neutral ink), *Pedagogical Flow*, *Decision Contrast*, and *Quiet Cockpit* (monochrome nominal state grounded equally in `ISA-101`, `FDA IEC 62366`, and `NASA-STD-3001`; amber/crimson reserved exclusively for active off-nominal excursions).
    - Provides pre-built zero-`!important` `@layer` CSS and canonical HTML shells (`N0` to `N4`).
 
 2. **Pillar 2 — Unified Quantitative Evidence & Metrology (`skills/quiet-evidence/`)**:
    - Manages data fidelity, unit calculus, scale intervals, and physical topology from raw truth outward across six modalities: (1) *Scalars & Gauges*, (2) *Tables & Matrices*, (3) *Bitfields & Registers*, (4) *Analytical & Spectral Plots*, (5) *Waveforms & Timing*, and (6) *Schematics & Topologies*.
-   - Scales each modality across a three-level rigor continuum: `L1 Orientation` (Mermaid grade, rapid mental models), `L2 Governance & Architecture` (SysML/ATO grade, trust boundaries, PPSM matrices), and `L3 Physical & Metrological` (flight-test grade, NIST $1\text{--}2\text{--}5$ intervals, log-decade ticks, $\pm 1\sigma$ bands, discrete measured markers vs. continuous analytical models).
+   - Scales each modality across a three-level rigor continuum: `L1 · Orientation` (Mermaid grade, rapid mental models), `L2 · Governance & Architecture` (SysML/ATO/CONSORT grade, trust boundaries, PPSM matrices), and `L3 · Physical, Clinical & Metrological` (clinical, industrial & laboratory metrology grade: NIST $1\text{--}2\text{--}5$ intervals, log-decade ticks, Shewhart SPC `UCL/CL/LCL`, $\pm 1\sigma$/95% CI bands, discrete measured markers vs. continuous analytical models).
    - Enforces deterministic compilation via zero-dependency Python/JS builders consuming structured JSON specs (`urn:quiet-ui:schema:v9:*`), completely terminating freehand SVG coordinate guessing.
 
 3. **Pillar 3 — Directional Presenter-to-Audience Bridge & Murder Board (`skills/quiet-bridge/`)**:
-   - Formulates communication as an asymmetric vector: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
+   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (18 presenter-to-audience pairs)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
    - Projects across seven foundational audience lenses: *Technician/Operator*, *Discipline Engineer*, *Project/Systems Engineer*, *Program Manager*, *Consumer/Common Reader*, *Educator/Mentor*, and *Student/Learner*.
    - Operates across three decision tempos: *Tactical* (5–15s anomaly intervention), *Executive* (1–3m gate compression *within that leader's discipline*), and *Analytical* (10–45m full evidentiary proof).
+   - Enforces the **4 Universal Audience Evaluation Invariants** across every domain view:
+     1. **Baseline & Corridor**: Every live reading sits inside a calibrated reference band, healthy clinical/operating range, or `UCL/LCL` corridor.
+     2. **Epistemic Provenance**: Discrete empirical observations (`±1σ` / `95% CI`), continuous theoretical/analytical fits, and stale/faulty channels are optically distinct.
+     3. **Margin & Consequence**: Threshold distance and directional hazard (`CMD vs ACT`, titration headroom, `C_pk`, error-budget burn) remain legible without mental arithmetic.
+     4. **Actionable Disposition**: Each screen pairs evaluation truth with the single clear next decision, protocol escalation, or guarded `ARM -> EXECUTE` step.
    - Enforces active protocols: *"Grill Me" Audience Intake*, *Adversarial Murder Board*, and the *Review-Room Dual-Layer Pattern*.
 
 ---

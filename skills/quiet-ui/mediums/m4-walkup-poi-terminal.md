@@ -14,7 +14,7 @@ Medium M4 governs walkup touch kiosks, factory floor terminals, cleanroom dispat
 |  Display Hardware:  24" – 32" Projected Capacitive Touch    |
 |  Ambient Lighting:  Fluctuating overhead fluorescent / LED  |
 |  Input Modality:    Direct finger touch (Gloves, parallax)  |
-|  Hit Target Floor:  >= 48px x 48px (NASA-STD-3001 Grade)    |
+|  Hit Target Floor:  >= 48px x 48px (IEC 62366/ISA-101/3001) |
 |  Safety Protocol:   Guarded 2-Step Action (ARM -> EXECUTE)  |
 +-------------------------------------------------------------+
 ```

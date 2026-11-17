@@ -9,13 +9,13 @@
 
 ## 1. Native Unit of Proof & Learner Spectrum
 
-The **Student & Learner** lens spans STEM students (secondary through undergraduate) and junior engineers onboarding into complex physical disciplines. Unlike a Consumer who treats technology as an opaque black box, the Student seeks to construct an accurate internal representation of physical mechanisms.
+The **Student & Learner** lens spans STEM students (secondary through undergraduate), clinical/nursing trainees, junior SRE/AI apprentices, industrial instrumentation interns, and civic data analysts onboarding into complex evidence-driven disciplines. Unlike a Consumer who treats technology as an opaque black box, the Student seeks to construct an accurate internal representation of underlying mechanisms.
 
 The Student's native units of proof are:
-1. **Physical Cause-and-Effect Demonstration**: Direct observable correspondence between an input perturbation and an output response.
-2. **Explicit Unit Calculus**: Step-by-step unit dimensional analysis showing how compound units cancel (e.g., $[V] / [A] = [\Omega]$).
-3. **Controlled Empirical Comparison**: Discrete experimental measurements compared directly against a mathematical theoretical model.
-4. **Quantified Uncertainty**: Clear visualization of experimental repeatability ($\pm 1\sigma$ spread) and systematic instrument limits.
+1. **Physical & Causal Mechanism Demonstration**: Direct observable correspondence between an input perturbation and an output response (e.g., resistor divider voltage, infusion-pump flow rate, API queue depth under load, or interest-rate shock).
+2. **Explicit Unit & Dimensional Calculus**: Step-by-step dimensional analysis showing how compound units cancel (e.g., $[V] / [A] = [\Omega]$, $\text{mg/kg/hr}$, or inflation-adjusted real yield).
+3. **Controlled Empirical Comparison**: Discrete experimental or cohort measurements (`CONSORT` sample sizes, `OpenTelemetry` trace buckets, `NIST/SEMATECH SPC` subgroups, `FRED/SEC` series) compared directly against a theoretical model.
+4. **Quantified Uncertainty**: Clear visualization of repeatability ($\pm 1\sigma$ / 95% CI spread) and systematic instrument or measurement limits.
 
 ---
 
@@ -74,6 +74,15 @@ When a student reviews instructional materials or an instructor reviews a studen
   > "We tested the laser detector and it worked pretty well. The graph shows the voltage going up when we turned up the power."
 - **Scaffolded Scientific Translation**:
   > "We tested the cryogenic SNSPD receiver across optical power levels from $10\,\text{pW}$ to $1\,\text{nW}$ at $\lambda = 1550\,\text{nm}$. Figure 3 compares discrete count rate measurements against the theoretical quantum efficiency curve ($\eta = 78\%$). Measured saturation at $0.8\,\text{nW}$ matches predicted dead-time paralysis ($t_d = 12\,\text{ns}$)."
+
+### 5.3 Cross-Domain Learner Translation Examples
+
+| Domain | Senior Practitioner Input | Grounded Student / Apprentice Translation |
+| :--- | :--- | :--- |
+| **Clinical Safety (`FDA IEC 62366`, `CONSORT`)** | "Hazard ratio 0.72, p=0.01; verify rate limits per IEC 62366." | "In this `CONSORT` trial of 400 patients, the new protocol cut adverse events by 28% (95% CI: 11–42%). Check the infusion pump dose ceiling before starting." |
+| **SRE / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | "p99 tail spike on auth PEP; ECE calibration drift 0.08." | "The slowest 1% of login checks took over 400 ms at the zero-trust gateway (`OpenTelemetry` trace), and the AI classifier's confidence score drifted 8% off real accuracy." |
+| **Industrial SPC (`NIST/SEMATECH SPC C_pk`, `ISA-101`, `Modbus`)** | "`Modbus` Reg 40012 drift dropped $C_{pk}$ to 1.12; Tier-2 alarm." | "Sensor register 40012 drifted close to the upper safety limit (`ISA-101`), shrinking process safety margin ($C_{pk} = 1.12$, below the 1.33 target)." |
+| **Civic Capital (`GAO`, `FRED/SEC`)** | "Real DSCR 1.18x using `FRED` CPI-U; `SEC` 10-Q reserve." | "After adjusting revenue for inflation (`FRED` CPI-U), cash covers 1.18x annual debt payments—leaving an 18% cushion above default." |
 
 ---
 

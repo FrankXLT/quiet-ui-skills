@@ -12,7 +12,7 @@ Schematic topologies scale their abstraction and terminal detail across three ri
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | Program Executive, Non-Specialist | High-level system flows & operational concepts | Conceptual block diagrams, primary signal flow direction (left-to-right), subsystem bubbles, zero terminal pinouts or wire numbers. |
 | **L2 Governance** | Security Architect (ISSM), Project Systems Engineer | Boundary compliance, trust enclaves, & delta lanes | ATO trust enclave perimeters, FIPS 140-3 boundary tags, PPSM IDs, architecture delta lanes (Baseline vs. Proposed vs. Decommissioned), compliance gates. |
-| **L3 Physical / Metrological** | Electrical Engineer, Instrumentation Specialist | Physical hardware wiring, buses, & state interlocks | 78-ohm terminated MIL-STD-1553B dual-redundant transformer-coupled buses, P&ID fluid loops (ISA-5.1 symbols), normative FSM state machines, 4-lifeline safety interlocks, Crow's-foot ER diagrams. |
+| **L3 · Physical, Clinical & Metrological** | Electrical Engineer, Process/Grid Controls Specialist, ML Architect | Physical hardware wiring, industrial buses, & state interlocks | `120 Ω` SAE J1939 CAN-FD & RS-485/Modbus fieldbuses, `78 Ω` MIL-STD-1553B buses, `ISA-5.1` P&ID fluid/grid loops, normative FSM state machines, 4-lifeline safety interlocks, Crow's-foot ER lineage. |
 
 ---
 
@@ -176,11 +176,16 @@ Components marked `DECOMMISSIONED` are visually retained in place but rendered w
 
 ---
 
-## 6. Verification Checklist
+## 6. Parameterized Differential Fieldbuses (`bus_standard`) & Enclave Partitioning
+
+- **Parameterized `differential_bus` (`schematic_kind`)**: Set `"bus_standard"` to emit **`"can_fd"` / `"sae_j1939"`** (`120 Ω` split-termination automotive stubs `<= 0.3 m` on `CAN_H`/`CAN_L`), **`"rs485"` / `"modbus"`** (`120 Ω` end terminations + `560 Ω` fail-safe pull-up/down bias on `A`/`B`), or **`"mil1553b"`** (`78 Ω` twinaxial trunk + `58.5 Ω` transformer-coupled stubs).
+- **Zero-Contamination Enclaves**: Every distinct `enclave_id` receives its own bounded perimeter rectangle; cross-enclave edges carry opaque `--bg-surface` label pills.
+
+## 7. Verification Checklist
 
 Before emitting SVG markup:
 - [ ] Conforms to schema URI `urn:quiet-ui:schema:v9:schematic`.
-- [ ] Progression level matches the target audience (L1 orientation vs L2 ATO enclaves vs L3 physical MIL-STD wiring).
+- [ ] Progression level matches target audience (`L1` orientation vs `L2` isolated ATO enclaves vs `L3` CAN-FD/Modbus/MIL-STD physical wiring).
 - [ ] Non-connecting wire crossings utilize semi-circular bridge jumps ($\cap$).
 - [ ] Connected electrical junctions carry prominent solder dots.
 - [ ] Flow direction strictly follows left-to-right signal progression.

@@ -42,7 +42,7 @@ In Quiet UI, every scalar visual adapts across the three-tier rigor continuum de
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | Common Reader, Executive Briefing | High-level system state & qualitative health | Large formatted integer/decimal, status pill (`NOMINAL`, `ADVISORY`, `ALERT`), calm descriptive label, sparkline trend indicator without complex ticks. |
 | **L2 Governance** | Program Manager, Systems Engineer | Contract compliance & operating margins | Nominal value, tolerance window ($\pm \Delta$), delta relative to baseline target, remaining margin percentage, and governance disposition flag. |
-| **L3 Physical / Metrological** | Discipline Engineer, Metrologist, Operator | Traceable physical proof & uncertainty | Full NIST SP 811 quantity calculus ($Quantity / Unit$), nominal value with expanded uncertainty ($U = k \cdot u_c$), sensor serial number, calibration date, and raw sensor count. |
+| **L3 · Physical, Clinical & Metrological** | Discipline Engineer, Intensivist, Metrologist | Traceable physical proof & uncertainty | Full NIST SP 811 quantity calculus ($Quantity / Unit$), nominal value with expanded uncertainty ($U = k \cdot u_c$), sensor/bedside probe ID, calibration date, and raw sample count. |
 
 ---
 

@@ -8,27 +8,27 @@ This guide defines the interface architecture, traceability protocols, and metro
 
 | Dimension | Systems Engineering Specification |
 | :--- | :--- |
-| **Role Archetypes** | Project Systems Engineer (PSE), Chief Systems Architect, Interface Working Group (IWG) Chair, Security Control Assessor (SCA/ATO) |
-| **Primary Workflow** | Interface Control Document (ICD) baselining, Verification Cross-Reference Matrix (VCRM) closure, timing budget reconciliation, trust boundary auditing |
-| **Cognitive Framework** | Contractual interfaces, boundary enclaves, end-to-end timing chains, and total allocation conservation ($\sum \text{allocated} + \text{reserve} = \text{total capability}$) |
-| **Acceptance Standard** | No requirement exists without an unambiguous verification method; no interface exists without an explicit port, protocol, pin, and margin entry |
+| **Role Archetypes** | Project Systems Engineer (PSE), Chief Systems Architect, Medical Device Human-Factors Lead (`FDA IEC 62366`), Zero-Trust / Cloud Security Architect (`NIST SP 800-207`, `NIST AI RMF 100-1`), Industrial Controls Architect (`ISA-101`, `NRC NUREG-0700`, `Modbus`), Civic Audit Systems Lead (`GAO`, `FRED/SEC`) |
+| **Primary Workflow** | Interface Control Document (ICD) baselining, Verification Cross-Reference Matrix (VCRM) closure, timing/latency/SPC budget reconciliation, trust boundary auditing |
+| **Cognitive Framework** | Contractual interfaces, boundary enclaves, end-to-end timing and telemetry chains, and total allocation conservation ($\sum \text{allocated} + \text{reserve} = \text{total capability}$) |
+| **Acceptance Standard** | No requirement exists without an unambiguous verification method; no interface exists without an explicit port, protocol, pin or API/register contract, and margin entry |
 | **Review Velocity** | Systematic, cross-boundary verification audits (15 to 45 minutes per interface envelope) |
 
-Systems engineers and technical assessors operate at the physical and organizational seams between disciplines. They are acutely aware that multi-million dollar failures rarely happen within well-modeled subsystems; they occur at boundaries where assumptions drift, timing jitter is unallocated, pin assignments mismatch, or security enclaves fail to enforce mutual cryptographic authentication.
+Systems engineers and technical assessors operate at the physical, clinical, and digital seams between subsystems. They are acutely aware that multi-million dollar or life-safety failures rarely happen within well-modeled components; they occur at boundaries where assumptions drift, timing jitter or `OpenTelemetry` trace context is lost, `Modbus` registers or pin assignments mismatch, `FDA IEC 62366` use-error guards fail, or zero-trust enclaves fail to enforce mutual cryptographic authentication.
 
 ---
 
 ## 2. Native Units of Proof
 
-To satisfy a Project Systems Engineer or Security Assessor, documentation and UI displays must center on the following native units of proof:
+To satisfy a Project Systems Engineer or Technical Assessor, documentation and UI displays must center on the following native units of proof:
 
-1. **ICD Boundary Pin and Protocol Matrices**: Precise table definitions containing source subsystem, destination subsystem, physical connector/port, pin mapping, signal electrical standard (e.g. RS-422, LVDS, 1000BASE-T), baud rate, and framing format.
-2. **Verification Cross-Reference Matrices (VCRM)**: Direct mapping between subsystem requirement IDs, verification methods (Analysis, Inspection, Test, Demonstration), test procedure identifiers, and numerical margin status.
-3. **End-to-End Interface Timing Chains**: Chronological latency budgets itemizing serialization delay, flight time, buffer queuing, DSP pipelining, and setup/hold timing margin ($\Delta t_{\text{margin}}$ in ps or ns) against maximum clock skew.
-4. **Ports, Protocols, and Services Management (PPSM)**: Deterministic security table declaring IP transport protocol (TCP/UDP), network port, unidirectional traffic flow direction, cryptographic suite, and boundary filter enforcement rule.
-5. **FIPS 140-3 Cryptographic Boundary Enclaves**: Architectural delineations identifying hardware perimeter boundaries, cryptographic module certification numbers (CMVP certs), key management lifecycle states, and zeroization mechanisms.
-6. **Margin Conservation Trees**: Hierarchical rollups proving that allocations for mass, peak electrical power, thermal heat rejection, and bus bandwidth strictly conserve the total vehicle budget without negative margin.
-7. **Traceability Hash Chains**: Cryptographic SHA-256 hashes binding each line in an ICD to the exact software repository commit, test artifact, and verification dataset.
+1. **ICD Boundary Pin, Register, & API Matrices**: Precise table definitions containing source subsystem, destination subsystem, physical connector/port (`RS-422`, `LVDS`, `Modbus TCP` coil/register range, or `OpenTelemetry` gRPC/OTLP endpoint), schema version, and framing format.
+2. **Verification Cross-Reference Matrices (VCRM)**: Direct mapping between subsystem requirement IDs, verification methods (Analysis, Inspection, Test, `FDA IEC 62366` Summative Usability, `CONSORT` protocol check), test procedure identifiers, and numerical margin status.
+3. **End-to-End Interface Timing & Latency Chains**: Chronological budgets itemizing hardware serialization/setup/hold slack ($\Delta t_{\text{margin}}$ in ps/ns), `OpenTelemetry` cross-service p99 latency budgets, or `Modbus` SCADA polling scan cycles.
+4. **Ports, Protocols, Services & Zero-Trust Policy (PPSM / `NIST SP 800-207`)**: Deterministic security table declaring IP transport protocol, port, unidirectional flow or Policy Enforcement Point (PEP) rule, cryptographic suite, and `NIST AI RMF 100-1` model gateway guardrails.
+5. **Cryptographic & Safety Enclaves**: Architectural delineations identifying hardware perimeter boundaries (`FIPS 140-3` CMVP certs), `ISA-101` / `NRC NUREG-0700` safety-PLC air-gaps, or clinical PHI isolation zones.
+6. **Margin Conservation Trees**: Hierarchical rollups proving that allocations for mass, peak electrical power, cloud error budgets, `NIST/SEMATECH SPC C_pk` tolerances, or `GAO` / `FRED/SEC` capital encumbrances conserve total system budgets without negative margin.
+7. **Traceability Hash Chains**: Cryptographic SHA-256 hashes binding each interface line to the exact repository commit, test artifact, `SEC` filing/ledger snapshot, and verification dataset.
 
 ---
 
@@ -74,6 +74,10 @@ The following translation matrix bridges systems engineering architectural desig
 | "Chassis maintenance port allows diagnostic firmware updates during pre-flight integration." | **Physical Enclave Isolation PE-3 / MP-6**: Physical locking cover over RJ-45 connector; micro-switch interlock disconnects internal programming pins when flight plug is installed. | Port Disconnect: Mechanically isolated in flight configuration; zero remote access vector. |
 | "FPGA Bitstream loaded from non-volatile SPI Flash upon power-on reset." | **Supply Chain & Integrity SI-7**: Bitstream signed with ECDSA-P384; cryptographic signature verified by hard-wired secure boot ROM before release of system reset. | Boot Vector: SHA-384 hash validated in hardware engine; zero unauthenticated bitstream execution. |
 | "External serial sensor interface uses RS-422 differential signaling at 115.2 kbps." | **Interface Sanitization SI-10**: Ingress UART buffer enforces strict length bounds and schema verification; malformed packets dropped with error counter incremented. | PPSM Entry: Hardware Serial Port UART-3, Payload: Fixed-length 64-byte frame, Hardware CRC-16. |
+| "Smart infusion pump orders sync via HL7/FHIR from EHR pharmacy engine (`CONSORT` trial arm)." | **Clinical Use-Risk Guard (`FDA IEC 62366`)**: Dose ceiling hard-stop and dual-clinician confirmation enforced at pump UI boundary; mismatched units rejected. | Boundary Rule: TLS 1.3 + signed HL7 schema; soft/hard limit mismatch halts actuation. |
+| "AI triage inference gateway calls vector store and LLM service across multi-tenant VPC." | **Zero-Trust & AI Boundary (`NIST SP 800-207`, `NIST AI RMF 100-1`, `OpenTelemetry`)**: Per-request mTLS via Policy Enforcement Point; OTLP `traceparent` propagated; low-confidence outputs routed to deterministic fallback. | PPSM Entry: Port 443/gRPC, SPIFFE/mTLS, OTel span attestation, prompt-guard filter. |
+| "PLC Line 4 reads 64 pressure/temperature tags over `Modbus TCP` to Plant Historian." | **ICS Enclave & Control Room (`ISA-101`, `NRC NUREG-0700`, `NIST/SEMATECH SPC`)**: Unidirectional data diode separates Level 1 PLC from Level 3 Historian; `Modbus` write coils disabled from IT zone. | PPSM Entry: Port 502/TCP read-only diode; `SPC` tag scan <= 250 ms; alarm rate <= 6/10 min. |
+| "Municipal treasury ERP posts daily debt-service and grant drawdown feeds to public portal." | **Fiscal Integrity & Audit Boundary (`GAO`, `FRED/SEC`)**: Immutable append-only ledger hashes every disbursement against appropriated budget line and `FRED`/`SEC` benchmark feed. | Boundary Rule: Dual-key HSM sign-off; SHA-256 ledger digest archived per `GAO` Green Book. |
 
 ---
 

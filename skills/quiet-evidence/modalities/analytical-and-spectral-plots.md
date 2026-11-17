@@ -12,7 +12,7 @@ Analytical plots adapt across the three rigor levels depending on audience and d
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | Program Executive, Non-Specialist | Qualitative system stability & milestone performance | Single smoothed trend curve, primary stability floor callout (`Minimum Jitter at tau = 100 s`), simplified axis ticks, status badge (`STABLE`). |
 | **L2 Governance** | Project Systems Engineer, Mission Assurance | Specification compliance & contractual margins | Measured response curve overlaid against contractual requirement mask, shaded margin corridor, verification test pass/fail stamp, milestone signoff. |
-| **L3 Physical / Metrological** | Discipline Metrologist, RF/Clock Specialist | Traceable first-principles proof & residual statistics | Full log-decade graticules with mandatory minor ticks ($2\dots 9$), discrete data points with $\pm 1\sigma$ error bars, continuous analytical fit, synchronized residual strip ($y_i - \hat{y}_i$), and complete test conditions. |
+| **L3 · Physical, Clinical & Metrological** | Discipline Metrologist, Biostatistician, Quality Engineer | Traceable first-principles proof, SPC, CI & residual statistics | Full 1-2-5 or log-decade graticules with mandatory minor ticks ($2\dots 9$), discrete data points with $\pm 1\sigma$ or 95% CI whiskers, Shewhart SPC limits (`UCL/CL/LCL`, `USL/LSL`), continuous fits, residual strip ($y_i - \hat{y}_i$), and complete test conditions. |
 
 ---
 
@@ -162,14 +162,22 @@ Quiet UI mandates a split-panel configuration whenever measured data is compared
 
 ---
 
-## 5. Verification Checklist
+## 5. Cross-Domain Statistical Variants (`forest`, `waterfall`, `dumbbell`, Shewhart SPC)
+
+The plot compiler consumes `"plot_kind"` (`"cartesian"` default, `"forest"`, `"waterfall"`, `"dumbbell"`) and optional `"companions"` subpanels under `urn:quiet-ui:schema:v9:plot`:
+- **Shewhart SPC Control Charts** (`cartesian`): Pair empirical subgroup runs (`X_bar`) against `CL` centerline, dashed `UCL/LCL` (`±3σ`), and redline `USL/LSL` specification envelopes, tagging `C_pk` and subgroup size `n` in `test_environment`.
+- **Subgroup CI Forest Plots** (`forest`): Render point estimates, `95% CI` horizontal whiskers, and null-effect reference lines (`OR = 1.0` or `HR = 1.0`) calibrated on NAVAIR `1-2-5` ticks for `CONSORT` clinical and civic impact briefs.
+
+---
+
+## 6. Verification Checklist
 
 Before emitting SVG or Canvas renders:
 - [ ] Conforms to schema URI `urn:quiet-ui:schema:v9:plot`.
-- [ ] Progression level matches target audience (L1 executive summary vs L3 metrological proof).
+- [ ] Progression level matches target audience (`L1` executive summary vs `L3 · Physical, Clinical & Metrological`).
 - [ ] Logarithmic axes include minor ticks at $2, 3, 4, 5, 6, 7, 8, 9 \times 10^n$.
-- [ ] Empirical data is rendered with discrete markers; models use continuous lines.
-- [ ] Residual strip uses identical horizontal coordinate mapping to main plot.
+- [ ] Empirical data is rendered with discrete markers; models and SPC/CI bounds match legend swatches (`epistemic_type`).
+- [ ] Residual strip uses identical horizontal coordinate mapping and `3.5%` spine inset as main plot.
 
 ---
 

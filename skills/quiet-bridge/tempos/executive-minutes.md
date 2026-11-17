@@ -9,23 +9,26 @@ This guide defines the compression rules, disposition architecture, and progress
 | Dimension | Executive Decision Specification |
 | :--- | :--- |
 | **Review Window** | 60 to 180 seconds from first glance to binding executive authorization |
-| **Operational Modes** | Milestone Go / No-Go gates, Flight Readiness Reviews (FRR), major change authorizations, budget reserve releases |
-| **Core Principle** | **Compress presentation volume, never remove units.** Deliver exact physical or programmatic margins in the leader's native discipline. |
+| **Operational Modes** | Milestone Go / No-Go gates, Flight Readiness Reviews (FRR), Clinical DSMB (`CONSORT`, `FDA IEC 62366`), SRE / AI Release Gates (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`), Plant Cutover (`NIST/SEMATECH SPC C_pk`, `ISA-101`, `NRC NUREG-0700`, `Modbus`), Civic Capital Votes (`GAO`, `FRED/SEC`) |
+| **Core Principle** | **Compress presentation volume, never remove units.** Deliver exact physical, clinical, statistical, or fiscal margins in the leader's native discipline. |
 | **Cognitive Framework** | Bottom Line Up Front (BLUF), bounded trade spaces, quantified residual risk exposure, unambiguous exit criteria |
-| **Screen Architecture** | Single-screen view; zero vertical page jumping; click-to-expand progressive disclosure for L3 proof data |
+| **Screen Architecture** | Single-screen view; zero vertical page jumping; click-to-expand progressive disclosure for `L3` proof data |
 
-Executive leaders do not require simplistic consumer language, nor do they tolerate marketing summaries. An engineering vice president expects exact picosecond timing slack and thermal flux values; a program director expects exact schedule float days and cost variance. The executive tempo succeeds by ruthless prioritization of decision-critical parameters, not by dumbing down the underlying physical reality.
+Executive leaders do not require simplistic consumer language, nor do they tolerate marketing summaries. An engineering vice president expects exact picosecond timing slack; a DSMB chair expects `CONSORT` hazard ratios with 95% CI; a VP of Reliability expects `OpenTelemetry` error-budget burn; a plant director expects $C_{pk}$ capability margins; a municipal CFO expects `FRED`-deflated DSCR. The executive tempo succeeds by ruthless prioritization of decision-critical parameters, not by dumbing down the underlying reality.
 
 ---
 
 ## 2. The Preservation of Native Units Law
 
-A catastrophic failure pattern in technical leadership presentations is the replacement of physical metrics with arbitrary color badges or normalized progress bars (e.g. "Thermal: Green"). 
+A catastrophic failure pattern in leadership presentations is replacing native metrics with arbitrary color badges or normalized progress bars (e.g. "Safety: Green" or "Health: 85%").
 
 Under Quiet UI Pillar 3, the **Preservation of Native Units Law** mandates:
-- If the reviewer is an **Engineering Chief**, display exact physical units: $+18.6\text{ ps}$ timing margin, $+2.4\text{ dB}$ link margin, $89.2^\circ\text{C}$ junction ceiling.
-- If the reviewer is a **Program Director**, display programmatic units: $-3\text{ calendar days}$ critical path variance, $\$45,000$ risk exposure, $\text{CPI} = 1.04$.
-- If the reviewer is an **Operations Officer**, display operational units: $14.2\text{ psia}$ suction pressure, $28.2\text{ VDC}$ bus voltage, $100\%$ redundant pump availability.
+- **Engineering Chief**: $+18.6\text{ ps}$ timing margin, $+2.4\text{ dB}$ link margin, $89.2^\circ\text{C}$ junction ceiling.
+- **Program Director**: $-3\text{ calendar days}$ critical path variance, $\$45,000$ risk exposure, $\text{CPI} = 1.04$.
+- **Clinical / DSMB Chair (`FDA IEC 62366`, `CONSORT`)**: Hazard ratio $0.71$ ($95\%\text{ CI } 0.58\text{--}0.87$), $0$ high-alert dose-error near-misses.
+- **SRE / CISO (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)**: $22\%$ SLO error-budget left, p99 $= 185\text{ ms}$, ECE drift $= 0.024$, $100\%$ PEP mTLS enforcement.
+- **Plant Operations VP (`NIST/SEMATECH SPC`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)**: Line $C_{pk} = 1.48$ ($\ge 1.33$), alarm flood rate $= 3/10\text{ min}$, `Modbus` PLC safety interlocks verified.
+- **Civic Capital / Treasury Chair (`GAO`, `FRED/SEC`)**: Real DSCR $= 1.24\times$ (`FRED` CPI-U adjusted), $142\text{ days}$ unobligated cash runway, $0$ `GAO`/`SEC` audit exceptions.
 
 Never present a unitless score, a 1-to-5 star rating, or an arbitrary 0–100% health score to an executive decision-maker.
 
@@ -86,6 +89,15 @@ Executives must never be forced to leave the summary screen to inspect supportin
 | Link to Raw Metrology Dataset: [hash: 4f8a9e2c... / git: payload/optics@b4e18c]                                      |
 +----------------------------------------------------------------------------------------------------------------------+
 ```
+
+### 4.1 Cross-Domain Gate & L3 Drawer Equivalents
+
+| Domain | BLUF KPI Strip (Preserved Native Units) | In-Context `L3` Proof Drawer |
+| :--- | :--- | :--- |
+| **Clinical Safety / ICU (`FDA IEC 62366`, `CONSORT`)** | HR $0.71$ (95% CI $0.58\text{--}0.87$), cohort $N=1,240$, $0$ IEC 62366 use-errors. | `CONSORT` flow table, Kaplan-Meier survival residuals, summative simulation log. |
+| **SRE / Cloud / AI Ops (`OpenTelemetry`, `NIST AI RMF 100-1`, `NIST SP 800-207`)** | p99 $= 185\text{ ms}$, SLO budget left $= 22\%$, ECE drift $= 0.024$, PEP $= 100\%$. | `OpenTelemetry` span waterfall, OOD calibration curve, `NIST SP 800-207` PEP policy diff. |
+| **Industrial Plant / SCADA (`NIST/SEMATECH SPC C_pk`, `ISA-101`, `NRC NUREG-0700`, `Modbus`)** | Line $C_{pk} = 1.48$ ($\ge 1.33$), alarm rate $= 3/10\text{ min}$, `Modbus` interlocks PASS. | Shewhart $\bar{X}/R$ (`UCL/CL/LCL`), `Modbus` scan jitter log, EOP test sign-off. |
+| **Civic Capital / Treasury (`GAO`, `FRED/SEC`)** | Real DSCR $= 1.24\times$ (`FRED` CPI-U), cash runway $= 142\text{ days}$, $0$ `GAO` exceptions. | `SEC` 10-Q debt schedule, `+200 bps` stress table, SHA-256 ledger digest. |
 
 ---
 

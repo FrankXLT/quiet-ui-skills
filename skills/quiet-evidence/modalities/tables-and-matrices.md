@@ -12,7 +12,7 @@ Tables and matrices adapt their column density, cryptographic detail, and physic
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | Program Executive, Non-Specialist | High-level service catalog & operational state | Service Name, Endpoint / Domain, Operational Role, Status (`ACTIVE`, `DEGRADED`, `OFFLINE`). Minimal technical jargon, aggregated metrics. |
 | **L2 Governance** | Security Officer (ISSM/ISSO), Systems Engineer | Boundary compliance, PPSM, & ATO certification | PPSM Protocol ID, Boundary Interface, Trust Enclave Source/Dest, Transport Protocol / Port, Encryption Standard (e.g., FIPS 140-3 TLS 1.3), ATO Disposition, Approval Ticket. |
-| **L3 Physical / Metrological** | Network Architect, Communications Engineer | Physical socket, MTU, timing, & packet error metrology | Exact IP / CIDR, Physical MAC / NIC Port, MTU / Buffer Depth, Measured Latency with Uncertainty ($(4.12 \pm 0.08)\ \mathrm{ms}$), Packet Jitter, Bit Error Rate (BER). |
+| **L3 · Physical, Clinical & Metrological** | Network Architect, Clinical Trialist, Quality Lead | Physical socket, assay/SPC, timing, & packet error metrology | Exact IP / CIDR or sample stratum, Physical MAC / NIC Port, MTU / subgroup $n$, Measured Latency or endpoint with 95% CI / uncertainty ($(4.12 \pm 0.08)\ \mathrm{ms}$), Packet Jitter, BER / C_pk. |
 
 ---
 

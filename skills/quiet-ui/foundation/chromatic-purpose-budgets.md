@@ -5,7 +5,7 @@ Quiet UI treats color as an exhaustible cognitive budget rather than aesthetic d
 1. **Archival Proof** (High-integrity reports, RFC specifications, scientific evidence)
 2. **Pedagogical Flow** (Step-by-step tutorials, multi-stage pipelines, onboarding journeys)
 3. **Decision Contrast** (Comparison matrices, trade-off forks, branching logic)
-4. **Quiet Cockpit** (Mission operations, avionics telemetry, continuous monitoring)
+4. **Quiet Cockpit** (Grid SCADA, ICU bedside monitoring, operations centers)
 
 ---
 
@@ -52,10 +52,10 @@ Designed for architectural trade-off evaluations and bifurcated decision trees.
 - Baseline or discarded alternatives render in desaturated monochrome (`opacity: 0.55`, `color: var(--text-muted)`).
 - The recommended, selected, or active path renders with 100% opacity, crisp hairline border (`var(--accent-focal)`), and high-contrast callout chips.
 
-### Budget D: Quiet Cockpit (The "Dark Flight Deck" Rule)
-In an aerospace cockpit or critical operations center, "quiet" means no colored lights are illuminated during nominal flight:
-- **Nominal Operations**: All gauges, numbers, graphs, and labels render strictly in monochrome grey/white on dark glass.
-- **Out-of-Spec Excursions**: High-chroma Amber (`--status-warn`) triggers only upon threshold breach (> 85% load). High-chroma Crimson (`--status-err`) triggers only upon emergency trip or hard fault.
+### Budget D: Quiet Cockpit (`ISA-101` / `NRC NUREG-0700` / `FDA IEC 62366` / `NASA-STD-3001`)
+In a power grid control room, ICU bedside monitor, or mission operations center, "quiet" means no saturated colors are illuminated during nominal operations:
+- **Nominal Operations**: All gauges, numbers, graphs, and labels render strictly in monochrome grey/white on calm surface glass.
+- **Out-of-Spec Excursions**: High-chroma Amber (`--status-warn`) triggers only upon threshold breach (> 85% load or advisory vital shift). High-chroma Crimson (`--status-err`) triggers only upon emergency trip, critical vital alarm, or hard fault.
 - **Passive Label Ban**: Under no circumstances may passive section headers, static badges, or ornamental card trims employ red or yellow accents.
 
 ---

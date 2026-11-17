@@ -8,26 +8,26 @@ This guide defines the translation rules, verification criteria, and presentatio
 
 | Dimension | Operational Specification |
 | :--- | :--- |
-| **Role Archetypes** | Avionics Field Technician, Substation Operator, Network Operations Specialist, Integration & Test (I&T) Mechanic |
-| **Operational Environment** | Flight line, industrial switchgear vault, test stand, mobile operations van, high-noise and high-vibration bays |
-| **Physical Constraints** | Heavy nitrile or leather gloves, safety glasses with tint, direct sunlight or low-lux emergency lighting, 1.0 m to 1.8 m stand-off viewing distance |
+| **Role Archetypes** | Avionics Field Technician, ICU Bedside Clinician / Biomed Tech (`FDA IEC 62366`), On-Call SRE / AI Ops Responder (`OpenTelemetry`, `NIST SP 800-207`), Industrial SCADA / Control Room Operator (`ISA-101`, `NRC NUREG-0700`, `Modbus`), Treasury Settlement Operator (`GAO`, `FRED/SEC`) |
+| **Operational Environment** | Flight line, ICU bedside bay, cloud incident command bridge, industrial switchgear/SCADA console, clearinghouse operations desk |
+| **Physical Constraints** | Heavy nitrile/sterile gloves, tinted safety glasses, direct sunlight or dark-adapted clinical/control-room lighting, 1.0 m to 1.8 m stand-off viewing distance |
 | **Decision Window** | 5 seconds (alarm tripwire) to 3 minutes (step sign-off) |
-| **Cognitive Stance** | Skeptical of abstract software assertions; requires physical, verifiable proof before actuating switches or signing procedures |
+| **Cognitive Stance** | Skeptical of abstract software assertions; requires physical or trace-verified proof before actuating switches, titrating infusions, isolating clusters, or releasing funds |
 
-Field operators bear direct accountability for hardware survival, personal safety, and mission continuity. They do not trust synthesized health indices or ungrounded trendlines; they require discrete physical measurements mapped to identifiable test points, connector pins, and mechanical switch states.
+Field and bedside operators bear direct accountability for human safety, hardware survival, and operational continuity. They do not trust synthesized health indices or ungrounded trendlines; they require discrete measurements mapped to identifiable test points, infusion channels, `OpenTelemetry` span IDs, `Modbus` register tags, or settlement accounts.
 
 ---
 
 ## 2. Native Units of Proof
 
-To establish credibility with this audience, every displayed status must tie directly to measurable physical entities:
+To establish credibility with this audience, every displayed status must tie directly to measurable operational entities:
 
-1. **Connector Pins and Terminal Blocks**: Explicit designators conforming to interface wiring diagrams (e.g., `J3-Pin 14`, `TB-04-Pos 2`, `P102-B / CAN_H`).
-2. **Discrete Electrical Tolerances**: Raw voltage with explicit limits rather than binary "OK" (e.g., `28.2 VDC [26.0–30.0 VDC limit]`, not "Power Normal").
-3. **RF and Optical Margins**: Explicit signal levels and attenuation (e.g., `Rx Power: -14.2 dBm [Margin: +4.8 dB above receiver sensitivity]`).
-4. **Physical Switch and Interlock States**: Direct state telemetry (e.g., `Relay K4: ENERGIZED (NO Closed)`, `Interlock S2: OPEN (Tripped)`).
-5. **Procedure Step Bindings**: One-to-one mapping between UI actionable controls and numbered runbook operational steps (e.g., `Runbook SOP-704 Step 4.2.1`).
-6. **Calibration Traceability Stubs**: Displaying the active calibration certificate ID and expiration date for any measuring channel generating displayed numbers.
+1. **Physical Ports, Channels, & Tags**: Explicit designators conforming to wiring schematics or tag maps (`J3-Pin 14`, `Pump Ch-2 / Line B`, `Cluster prod-us-east / Pod-7`, `Modbus Reg 40012 / Valve XV-104`).
+2. **Discrete Tolerance Corridors**: Raw readings with explicit limits rather than binary "OK" (`28.2 VDC [26.0–30.0]`, `SpO2: 94% [92–100%]`, `p99: 180 ms [Limit <= 250 ms]`, `C_pk: 1.48 [Min 1.33]`).
+3. **RF, Optical, & Network Margins**: Explicit signal levels, packet drop rates, or `NIST AI RMF 100-1` confidence fallbacks (`Rx Power: -14.2 dBm [Margin: +4.8 dB]`).
+4. **Physical Switch, Interlock, & Breaker States**: Direct state telemetry (`Relay K4: ENERGIZED`, `FDA IEC 62366` Dose-Error Guard: ARMED, `NIST SP 800-207` PEP Isolate: READY).
+5. **Procedure Step Bindings**: One-to-one mapping between UI actionable controls and numbered runbook steps (`Runbook SOP-704 Step 4.2.1`, `ISA-101` / `NRC NUREG-0700` EOP-2 Step 3).
+6. **Calibration & Provenance Stubs**: Displaying active calibration cert IDs, `OpenTelemetry` trace timestamps, or `GAO` dual-control verification IDs for every displayed value.
 
 ---
 
@@ -73,6 +73,10 @@ The following translation matrix bridges theoretical discipline specifications i
 | "FPGA core junction temperature exceeds $85^\circ\text{C}$ margin ceiling." | **Processing Unit Heat Sink (Zone 2)**: Core temp is **$89^\circ\text{C}$** (Redline: $85^\circ\text{C}$, Abort: $95^\circ\text{C}$). Auxiliary cooling fan B must be energized. | Thermocouple channel TC-08. |
 | "Differential pressure sensor $\Delta P$ delta approaches cavitation boundary." | **Cooling Loop Pump 1**: Suction pressure is **14.2 psia** (Cavitation redline: $\le 12.0\text{ psia}$). Bleed accumulator valve V-102. | Analog pressure gauge PG-102. |
 | "CAN-bus physical layer frame CRC error rate exceeds 1.2e-4 errors/frame." | **Harness W-102 (Pins J2-7 / J2-8)**: High frame errors. Check termination resistor $R_T = 120\,\Omega \pm 2\,\Omega$ across lines CAN_H and CAN_L. | Digital Multimeter across pin 7 and pin 8 with power de-energized. |
+| "`FDA IEC 62366` smart pump upstream occlusion; `CONSORT` trial arm A infusion delayed." | **Bedside Pump Ch-2 (Line B)**: Occlusion at **480 mmHg** (Limit: $\le 450\text{ mmHg}$). Inspect IV roller clamp and catheter patency before resuming. | Bedside pump pressure readout & clamp check per Nursing SOP-IV-04. |
+| "`OpenTelemetry` p99 = 1.4 s; `NIST AI RMF 100-1` fallback active; `NIST SP 800-207` PEP alert." | **Auth Gateway Pod-7 (`us-east`)**: Latency **1,420 ms** (Limit: $\le 250\text{ ms}$). Arm two-step drain of Pod-7 and verify traffic shifts to Pod-8. | OTel trace ID `9f4a...` & PEP session count before/after drain. |
+| "`Modbus` Reg 40012 temp drift; `NIST/SEMATECH SPC` $C_{pk} = 1.08$; `ISA-101` / `NRC NUREG-0700`." | **Cooling Valve XV-104 (`Modbus` 40012)**: Bearing temp **$74^\circ\text{C}$** (Redline: $72^\circ\text{C}$, Trip: $80^\circ\text{C}$). Open bypass BV-02 per EOP-4 Step 2. | Local RTD gauge TE-104 & HMI limit-switch confirmation. |
+| "`GAO` intraday settlement reserve below 110% corridor; `FRED/SEC` margin call alert." | **Clearinghouse Wire Desk (Acct TR-09)**: Liquidity buffer **104%** (Floor: $110\%$). Hold outbound Batch-14 pending dual-officer collateral release. | Dual-key hardware token sign-off & ledger balance reconciliation. |
 
 ---
 

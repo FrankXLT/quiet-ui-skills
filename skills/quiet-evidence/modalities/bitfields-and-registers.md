@@ -32,7 +32,7 @@ Register visualizers adapt their technical depth across the three rigor levels:
 | :--- | :--- | :--- | :--- |
 | **L1 Orientation** | High-Level Systems Operator | Functional module readiness & operational state | High-level status pill (`TRANSMITTER READY`, `PLL LOCKED`), mode summary, zero raw bit manipulation. |
 | **L2 Governance** | Embedded Firmware Developer, FPGA Architect | Memory mapping, bit offsets, & access rules | Symbolic register name, hexadecimal address offset, bit range spans (`[31:28]`), access types (`RO`, `RW`, `W1C`), default reset values, and interlock masks. |
-| **L3 Physical / Metrological** | Silicon Validation Engineer, Driver Author | Bit-level truth, live memory dumps, & hardware hazards | Exact bit-level grid (31..0), live hexadecimal register value (`0x8004A01C`), side-effect flags (read-to-clear, self-clearing), bus latency, and errata references. |
+| **L3 · Physical, Clinical & Metrological** | Silicon Validation Engineer, Driver Author, PLC Specialist | Bit-level truth, live memory dumps, & hardware interlocks | Exact bit-level grid (31..0 or 16-bit Modbus coil/holding register), live hex value (`0x8004A01C`), side-effect flags (read-to-clear, write-1-to-clear), bus latency, and errata references. |
 
 ---
 

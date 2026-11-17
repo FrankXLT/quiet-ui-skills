@@ -1,0 +1,192 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "bench-m4-l1-pedagogical-link",
+    "metadata": {
+      "title": "M4-L1: Educator -> Student Pedagogical Flow Optical Link Budget (1-2-5)",
+      "description": "L1 Orientation pedagogical plot coupling semantic equation terms [data-term] directly to calibrated 1-2-5 range attenuation curves and discrete lab points.",
+      "rigor_level": "L1",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "pedagogical_equation": {
+      "lhs": "P_rx",
+      "terms": [
+        {"symbol": "P_tx (+14 dBm)", "term": "tx"},
+        {"symbol": "+", "term": ""},
+        {"symbol": "G_tx (+32 dBi)", "term": "gain_tx"},
+        {"symbol": "-", "term": ""},
+        {"symbol": "L_fs(R)", "term": "path_loss"},
+        {"symbol": "+", "term": ""},
+        {"symbol": "G_rx (+28 dBi)", "term": "gain_rx"}
+      ]
+    },
+    "axes": {
+      "x_axis": {"quantity": "R", "unit": "km", "quantity_calculus": "Link Distance, R / km", "scale_type": "linear", "domain": [0.0, 100.0]},
+      "y_axis": {"quantity": "P_rx", "unit": "dBm", "quantity_calculus": "Received Power, P_rx / dBm", "scale_type": "linear", "domain": [-50.0, 10.0]}
+    },
+    "series": [
+      {
+        "id": "link-model",
+        "name": "Friis / Fiber Attenuation Model",
+        "epistemic_type": "analytical_model",
+        "term": "path_loss",
+        "equation": "2.0 - 0.38 * x",
+        "corridor_rel": 0.08
+      },
+      {
+        "id": "link-measured",
+        "name": "Bench Spool Attenuation Runs",
+        "epistemic_type": "discrete_measurement",
+        "term": "gain_rx",
+        "marker_glyph": "circle",
+        "data_points": [
+          {"x": 10.0, "y": -1.8, "u_y": 0.8},
+          {"x": 25.0, "y": -7.6, "u_y": 0.9},
+          {"x": 50.0, "y": -17.1, "u_y": 1.1},
+          {"x": 75.0, "y": -26.5, "u_y": 1.2},
+          {"x": 95.0, "y": -34.2, "u_y": 1.4}
+        ]
+      }
+    ],
+    "annotations": [
+      {"x": 25.0, "y": -7.6, "dx": 28, "dy": -24, "label": "0.38 dB/km SMF-28e+ Loss", "term": "path_loss"},
+      {"x": 75.0, "y": -26.5, "dx": -34, "dy": 26, "label": "Cryo Rx Lock Floor (-38 dBm)", "term": "gain_rx"}
+    ],
+    "parametric_legend": [
+      {"symbol": "lambda", "value": 1550.12, "unit": "nm"},
+      {"symbol": "alpha_fiber", "value": 0.38, "unit": "dB/km"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "bench-m4-l2-waterfall-dumbbell",
+    "metadata": {
+      "title": "M4-L2: Recovered v7.1 SLA Jitter Waterfall & Sector Throughput Dumbbell",
+      "description": "L2 Governance trade-space waterfall reducing coax baseline (194.2 ps) to 81.4 ps net phase error below the 150.0 ps SLA ceiling, paired with 6-sector throughput dumbbell.",
+      "rigor_level": "L2",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "plot_kind": "waterfall",
+    "axes": {
+      "y_axis": {"quantity": "t_jitter", "unit": "ps", "quantity_calculus": "RMS Phase Jitter / ps"}
+    },
+    "steps": [
+      {"label": "Coax Base", "value": 194.2, "kind": "start"},
+      {"label": "DWDM Opt", "value": -74.0, "kind": "delta"},
+      {"label": "DDMTD", "value": -31.6, "kind": "delta"},
+      {"label": "Kalman", "value": -7.2, "kind": "delta"},
+      {"label": "Net Lock", "value": 81.4, "kind": "total"}
+    ],
+    "envelopes": [
+      {"label": "SLA Spec Ceiling", "threshold_value": 150.0, "type": "abort", "direction": "upper"}
+    ],
+    "companion": {
+      "title": "Companion A: Sector Throughput Delta (Baseline vs DWDM Zero-Copy)",
+      "plot_kind": "dumbbell",
+      "axes": {"y_axis": {"quantity": "R_net", "unit": "Gbps", "quantity_calculus": "Sector Net Rate / Gbps"}},
+      "dumbbells": [
+        {"label": "SEC-1", "before": 8.4, "after": 18.2},
+        {"label": "SEC-2", "before": 9.1, "after": 20.6},
+        {"label": "SEC-3", "before": 10.2, "after": 22.4},
+        {"label": "SEC-4", "before": 11.0, "after": 24.1},
+        {"label": "SEC-5", "before": 11.8, "after": 26.8},
+        {"label": "SEC-6", "before": 12.6, "after": 30.7}
+      ]
+    },
+    "companions": [
+      {
+        "title": "Companion B: Shewhart X_bar SPC Control Chart (UCL/CL/LCL ±3sigma, C_pk = 1.64)",
+        "plot_kind": "cartesian",
+        "axes": {
+          "x_axis": {"quantity": "lot", "unit": "1", "quantity_calculus": "Subgroup Lot Index, n = 5", "scale_type": "linear", "domain": [1.0, 10.0]},
+          "y_axis": {"quantity": "X_bar", "unit": "mm", "quantity_calculus": "X_bar Bore Diameter / mm", "scale_type": "linear", "domain": [24.94, 25.06]}
+        },
+        "envelopes": [
+          {"label": "USL 25.050 mm", "threshold_value": 25.050, "type": "abort", "direction": "upper", "stroke_style": "dash-dot", "stroke_color": "var(--status-danger)"},
+          {"label": "UCL 25.032 mm", "threshold_value": 25.032, "type": "warning", "direction": "none", "stroke_style": "dashed", "stroke_color": "var(--status-warn)"},
+          {"label": "CL 25.000 mm", "threshold_value": 25.000, "type": "nominal", "direction": "center", "stroke_style": "solid", "stroke_color": "var(--text-secondary)"},
+          {"label": "LCL 24.968 mm", "threshold_value": 24.968, "type": "warning", "direction": "none", "stroke_style": "dashed", "stroke_color": "var(--status-warn)"},
+          {"label": "LSL 24.950 mm", "threshold_value": 24.950, "type": "abort", "direction": "lower", "stroke_style": "dash-dot", "stroke_color": "var(--status-danger)"}
+        ],
+        "series": [
+          {
+            "id": "spc-xbar",
+            "name": "Subgroup Mean X_bar",
+            "epistemic_type": "discrete_measurement",
+            "connect_piecewise": true,
+            "marker_glyph": "circle",
+            "marker_color": "var(--accent-focal)",
+            "data_points": [
+              {"x": 1, "y": 24.996, "u_y": 0.008}, {"x": 2, "y": 25.004, "u_y": 0.007},
+              {"x": 3, "y": 25.011, "u_y": 0.009}, {"x": 4, "y": 24.992, "u_y": 0.008},
+              {"x": 5, "y": 25.001, "u_y": 0.007}, {"x": 6, "y": 25.015, "u_y": 0.009},
+              {"x": 7, "y": 24.998, "u_y": 0.008}, {"x": 8, "y": 25.006, "u_y": 0.007},
+              {"x": 9, "y": 24.989, "u_y": 0.009}, {"x": 10, "y": 25.002, "u_y": 0.007}
+            ]
+          }
+        ]
+      }
+    ],
+    "parametric_legend": [
+      {"symbol": "C_pk", "value": 1.64, "unit": "1"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "bench-m4-l3-allan-deviation",
+    "metadata": {
+      "title": "M4-L3: Log-Log Modified Allan Deviation Mod sigma_y(tau) & Residual Strip",
+      "description": "L3 Physical metrological log-log plot with mandatory 2..9 minor decades, +/-1sigma uncertainty corridor, discrete error whiskers, contract ceiling, and bottom normalized residual strip.",
+      "rigor_level": "L3",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "test_environment": {
+      "dut_id": "SYNTH-OPT-8810",
+      "firmware_version": "v3.8.4",
+      "ambient_temperature_c": 23.2,
+      "temperature_uncertainty_c": 0.2,
+      "reference_oscillator": "Rubidium-PRS10",
+      "sampling_rate_hz": 10000.0
+    },
+    "axes": {
+      "x_axis": {"quantity": "tau", "unit": "s", "quantity_calculus": "Averaging Interval, tau / s", "scale_type": "logarithmic", "domain": [0.001, 10000.0]},
+      "y_axis": {"quantity": "Mod_sigma_y", "unit": "1", "quantity_calculus": "Mod sigma_y(tau)", "scale_type": "logarithmic", "domain": [1e-15, 1e-11]}
+    },
+    "envelopes": [
+      {"id": "spec-ceil", "type": "abort", "direction": "upper", "label": "Contract Ceiling 2.0e-12*tau^-0.5", "stroke_color": "var(--status-danger)", "equation": "2.0e-12 * tau^(-0.5)"}
+    ],
+    "series": [
+      {
+        "id": "mvar-model",
+        "name": "White FM + Drift Model",
+        "epistemic_type": "analytical_model",
+        "stroke_style": "dashed",
+        "stroke_color": "var(--text-secondary)",
+        "corridor_rel": 0.16,
+        "equation": "1.28e-13 * tau^(-0.5) + 6.0e-18 * tau"
+      },
+      {
+        "id": "mvar-meas",
+        "name": "Measured DWDM Ring",
+        "epistemic_type": "discrete_measurement",
+        "marker_glyph": "circle",
+        "marker_color": "var(--accent-focal)",
+        "data_points": [
+          {"x": 0.001, "y": 4.12e-12, "u_y": 2.1e-13},
+          {"x": 0.01, "y": 1.30e-12, "u_y": 6.8e-14},
+          {"x": 0.1, "y": 4.10e-13, "u_y": 2.2e-14},
+          {"x": 1.0, "y": 1.25e-13, "u_y": 7.0e-15},
+          {"x": 10.0, "y": 3.95e-14, "u_y": 2.4e-15},
+          {"x": 100.0, "y": 1.32e-14, "u_y": 8.0e-16},
+          {"x": 1000.0, "y": 1.18e-14, "u_y": 1.2e-15},
+          {"x": 10000.0, "y": 6.45e-14, "u_y": 3.2e-15}
+        ]
+      }
+    ],
+    "residual_strip": {"enabled": true},
+    "parametric_legend": [
+      {"symbol": "f_0", "value": 193.41, "unit": "THz"},
+      {"symbol": "t_rms", "value": 0.81, "unit": "ps"}
+    ]
+  }
+]
