@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .tokens_and_scales import esc, halo_text
+from .svg_labels import halo_text, render_pill_html
+from .tokens_and_scales import esc
 
 ACCESS_STYLE: dict[str, dict[str, str]] = {
     "RO": {"fill": "var(--bg-elevated)", "stroke": "var(--border-strong)", "dash": "none", "fg": "var(--text-primary)"},
@@ -59,15 +60,17 @@ def _render_l1_overview(meta: dict[str, Any], fields: list[dict[str, Any]]) -> s
         label = name.replace("_", " ").title()
         is_fault = "FAULT" in name.upper() or "LOS" in name.upper() or "ERR" in name.upper()
         if is_fault:
-            cls, state_txt = ("va-badge-err", f"{label}: FAULT") if cur > 0 else ("va-badge-ok", f"{label}: CLEAR")
+            if cur > 0:
+                pills.append(render_pill_html(f"{label}: FAULT", variant="status", state="fault"))
+            else:
+                pills.append(render_pill_html(f"{label}: CLEAR", variant="status", state="nominal"))
         elif cur > 0:
-            cls, state_txt = "va-badge-ok", f"{label}: ACTIVE ({cur})"
+            pills.append(render_pill_html(f"{label}: ACTIVE ({cur})", variant="status", state="nominal"))
         else:
-            cls, state_txt = "va-badge-neutral", f"{label}: INACTIVE"
-        pills.append(f'<span class="va-badge {cls}">{esc(state_txt)}</span>')
+            pills.append(render_pill_html(f"{label}: INACTIVE", variant="tag"))
     title = meta.get("title", "Subsystem Readiness")
     return (
-        f'<div class="qe-bitfield-l1"><div class="qe-bf-hdr"><span class="va-kicker">SUBSYSTEM STATUS</span>'
+        f'<div class="qe-bitfield-l1"><div class="qe-bf-hdr qe-bit-meta"><span class="va-kicker">SUBSYSTEM STATUS</span>'
         f'<span class="qe-bf-meta">{esc(title)}</span></div>'
         f'<div class="qe-bf-pill-row">{"".join(pills)}</div></div>'
     )
@@ -100,7 +103,7 @@ def _render_bit_strip_svg(meta: dict[str, Any], fields: list[dict[str, Any]], ri
             if bit_idx < lsb_row:
                 break
             cx = x0 + col * cell_w
-            parts.append(f'<rect x="{cx:.1f}" y="{ry:.1f}" width="{cell_w:.1f}" height="{box_top:.1f}" fill="var(--bg-header)" stroke="var(--border-hairline)" stroke-width="0.8"/>')
+            parts.append(f'<rect data-role="bitheader" x="{cx:.1f}" y="{ry:.1f}" width="{cell_w:.1f}" height="{box_top:.1f}" fill="var(--bg-header)" stroke="var(--border-hairline)" stroke-width="0.8"/>')
             parts.append(halo_text(cx + cell_w / 2.0, ry + 15.0, str(bit_idx), anchor="middle", size=11.5, weight="600", fill="var(--text-muted)", halo=False))
 
         for f in fields:
@@ -116,7 +119,7 @@ def _render_bit_strip_svg(meta: dict[str, Any], fields: list[dict[str, Any]], ri
             acc = str(f.get("access", "RO")).upper()
             st = ACCESS_STYLE.get(acc, ACCESS_STYLE["RO"])
             dash = f' stroke-dasharray="{st["dash"]}"' if st["dash"] != "none" else ""
-            parts.append(f'<rect x="{fx:.1f}" y="{ry + box_top:.1f}" width="{fw:.1f}" height="{box_h:.1f}" fill="{st["fill"]}" stroke="{st["stroke"]}" stroke-width="1.4"{dash}/>')
+            parts.append(f'<rect data-role="bitcell" x="{fx:.1f}" y="{ry + box_top:.1f}" width="{fw:.1f}" height="{box_h:.1f}" fill="{st["fill"]}" stroke="{st["stroke"]}" stroke-width="1.4"{dash}/>')
 
             lbl = _fit_field_label(str(f.get("name", "")), f.get("short_name"), fw)
             parts.append(halo_text(fx + fw / 2.0, ry + box_top + 20.0, lbl, anchor="middle", size=11.5, weight="700", fill=st["fg"], halo=False))
@@ -152,11 +155,12 @@ def _render_decode_table(meta: dict[str, Any], fields: list[dict[str, Any]], rig
         rst = _parse_int(f.get("reset", 0))
         acc = str(f.get("access", "RO")).upper()
         note = str(f.get("description", "")) if rigor == "L3" else str(f.get("description", "")).split(".")[0]
-        safety = ' <span class="va-badge va-badge-warn">INTERLOCK</span>' if f.get("safety_critical") else ""
+        safety = render_pill_html("INTERLOCK", variant="tag") if f.get("safety_critical") else ""
+        acc_html = '<span class="qe-bf-access-ro">RO</span>' if acc == "RO" else render_pill_html(acc, variant="tag")
         out.append(
             f'<tr><th scope="row" class="va-nums" data-label="Bits">{esc(span_str)}</th>'
-            f'<td data-label="Field"><code>{esc(f.get("name", ""))}</code>{safety}</td>'
-            f'<td data-label="Access"><span class="va-badge va-badge-neutral">{esc(acc)}</span></td>'
+            f'<td data-label="Field"><span class="qe-bf-field"><code>{esc(f.get("name", ""))}</code>{safety}</span></td>'
+            f'<td data-label="Access">{acc_html}</td>'
             f'<td class="num" data-label="Reset">0x{rst:X}</td>'
             f'<td class="num" data-label="Value">{esc(val_fmt)}</td>'
             f'<td data-label="Decode">{esc(note)}</td></tr>'
@@ -174,8 +178,8 @@ def _compile_single_register(meta: dict[str, Any], fields: list[dict[str, Any]],
         f'<span class="qe-bf-addr va-nums">Reset: {esc(meta.get("reset_value", "0x0"))}</span>',
     ]
     if meta.get("current_value") is not None:
-        hdr_bits.append(f'<span class="va-badge va-badge-ok va-nums">Live: {esc(meta["current_value"])}</span>')
-    header = f'<div class="qe-bf-hdr">{"".join(hdr_bits)}</div>'
+        hdr_bits.append(render_pill_html(f'Live: {meta["current_value"]}', variant="tag", extra_cls="va-nums"))
+    header = f'<div class="qe-bf-hdr qe-bit-meta">{"".join(hdr_bits)}</div>'
     svg = f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Register Strip"))}">{_render_bit_strip_svg(meta, fields, eff_rigor)}</div>'
     table = _render_decode_table(meta, fields, eff_rigor)
     return f'<div class="qe-bitfield-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">{header}{svg}{table}</div>'

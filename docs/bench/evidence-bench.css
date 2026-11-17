@@ -116,10 +116,12 @@
   .qe-fig-title { margin: 0; font-size: var(--ts-base); font-weight: 700; line-height: 1.3; }
   .qe-fig-badges { display: inline-flex; gap: 0.35rem; align-items: center; }
   .qe-badge-info { background: var(--tint-indigo-bg); color: var(--tint-indigo-fg); border-color: var(--tint-indigo-fg); }
+  .qe-visible-count { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 500; color: var(--text-secondary); }
 
   .qe-m1-only { display: none; }
   :root[data-medium="m1"] .qe-m1-only { display: inline; }
 
+  .va-figure-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
   .qe-svg { display: block; block-size: auto; margin-inline: auto; }
   .qe-svg-680 { inline-size: min(100%, 760px); min-inline-size: 612px; }
   .qe-svg-720 { inline-size: min(100%, 820px); min-inline-size: 648px; }
@@ -133,24 +135,27 @@
     stroke-linecap: round;
   }
 
-  /* Modality 1: Scalar & Gauges */
+  /* Modality 1: Scalar & Gauges (Zero-Inflation Baseline Lock) */
   .qe-scalar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.85rem; }
   .qe-scalar-card {
     background: var(--bg-canvas);
     border: 1px solid var(--border-hairline);
     border-radius: var(--radius-inner);
     padding: 0.75rem 0.9rem;
+    min-inline-size: 0;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
-  .qe-scalar-zone1 { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
-  .qe-scalar-ts { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); }
-  .qe-scalar-title { margin: 0; font-size: var(--ts-base); font-weight: 600; }
-  .qe-scalar-zone2 { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+  .qe-scalar-zone1 { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 0.45rem; min-block-size: 1.375rem; }
+  .qe-scalar-ts { display: inline-flex; align-items: center; gap: 0.45rem; min-block-size: 1.375rem; font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); }
+  .qe-scalar-title { margin: 0; font-size: var(--ts-base); font-weight: 600; line-height: 1.3; }
+  .qe-scalar-zone2 { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; min-block-size: 2rem; }
   .qe-scalar-val-wrap { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; }
   .qe-scalar-val { font-family: var(--font-mono); font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); }
   .qe-scalar-calc { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); }
+  .qe-scalar-disp { display: inline-flex; align-items: center; gap: 0.5rem; min-block-size: 1.375rem; }
+  .qe-scalar-margin { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 500; color: var(--text-secondary); }
   .qe-scalar-meta, .qe-scalar-prov {
     font-family: var(--font-mono);
     font-size: var(--ts-xs);
@@ -208,9 +213,11 @@
   }
 
   .qe-bitfield-wrap, .qe-bitfield-l1 { display: flex; flex-direction: column; gap: 0.65rem; }
-  .qe-bf-hdr { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+  .qe-bf-hdr { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; min-block-size: 1.375rem; }
   .qe-bf-addr, .qe-bf-meta { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); }
-  .qe-bf-pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .qe-bf-pill-row { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+  .qe-bf-field { display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .qe-bf-access-ro { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 500; color: var(--text-muted); }
 
   .qe-cond-strip {
     display: flex;
@@ -224,6 +231,7 @@
   }
   .qe-cond-item { display: inline-flex; gap: 0.35rem; align-items: baseline; }
   .qe-cond-lbl { font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+  .qe-cond-lbl.qe-unit { text-transform: none; }
   .qe-cond-val { font-family: var(--font-mono); color: var(--text-primary); }
 
   /* Modality 4, 5, 6: Equations, Parametric Legends & Scope Readouts */
@@ -231,22 +239,12 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.45rem;
     padding: 0.5rem 0.75rem;
     background: var(--bg-elevated);
     border-radius: var(--radius-inner);
     font-family: var(--font-serif);
     font-size: var(--ts-md);
-  }
-  .qe-eq-term {
-    padding: 0.1rem 0.4rem;
-    border-radius: 4px;
-    background: var(--term-bg, var(--bg-surface));
-    color: var(--term-fg, var(--accent-focal));
-    font-weight: 700;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: transform 0.12s ease, opacity 0.12s ease;
   }
   .qe-term-tx { --term-fg: var(--tint-indigo-fg); --term-bg: var(--tint-indigo-bg); }
   .qe-term-gain_tx { --term-fg: var(--tint-emerald-fg); --term-bg: var(--tint-emerald-bg); }

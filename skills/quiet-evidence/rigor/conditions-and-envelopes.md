@@ -82,6 +82,12 @@ The text halo utilizes the CSS `paint-order` property to render an expanded stro
 
 This guarantees high contrast across dense multi-trace waveforms while preserving visibility of the underlying waveform trajectory.
 
+### Variant 4: Unboxed SVG Knockouts, Gutter Limits & Shared Dropout Banners
+- **Borderless `svg_knockout_label()` (`data-variant="svg-knockout"`)**: When labels cross schematic wires, differential buses, or pipe paths inside an enclave or surface, place an unstroked `<rect stroke="none" stroke-width="0">` filled with the exact underlying surface (`--bg-surface`, `--bg-canvas`, or `--bg-card`) behind `<text class="qe-halo-text">`. Never draw bordered pill boxes inside SVG schematics or plots.
+- **Horizontal Thresholds in Right Gutter**: For horizontal specification limits (`<= 18` chars, e.g., `USL 100.5`, `UCL 99.8`, `Contract Ceiling`), expand the right SVG plot margin and anchor plain unboxed labels in the right gutter (`text-anchor="start"`, collision-resolved with `avoid_label_overlaps()`). Longer limit prose centers horizontally via `svg_knockout_label()`.
+- **Diagonal Slope Labels**: Follow true curve geometry using `rotate(deg, x, y)` from `atan2(dy, dx)` in SVG pixel space with `dominant-baseline="central"` and `4.0px` `paint-order: stroke fill` halo so the curve never cuts through text.
+- **Single Shared Waveform Dropout Banner**: Multi-channel synchronized scopes render one top-of-column `DROPOUT` banner via `svg_knockout_label()` spanning the synchronized gap window rather than repeating `DROPOUT` across every channel lane.
+
 ### Leader Line Standards
 - When an annotation cannot sit directly adjacent to a feature without crowding, attach a leader line.
 - Leader lines must be straight lines or single 45-degree dog-leg bends.

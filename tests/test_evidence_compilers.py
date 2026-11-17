@@ -100,9 +100,10 @@ class TestEvidenceCompilers(unittest.TestCase):
     def test_all_css_tokens_are_defined(self) -> None:
         tok_css = (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text("utf-8")
         bench_css = (REPO_ROOT / "docs" / "bench" / "evidence-bench.css").read_text("utf-8")
-        defined = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css + "\n" + bench_css))
-        for ref in re.findall(r"var\((--[a-z0-9-]+)", bench_css):
-            self.assertIn(ref, defined, f"Undefined CSS var in evidence-bench.css: {ref}")
+        pills_css = (REPO_ROOT / "src" / "css" / "06-b-pills-and-annunciators.css").read_text("utf-8")
+        defined = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css + "\n" + bench_css + "\n" + pills_css))
+        for ref in re.findall(r"var\((--[a-z0-9-]+)", bench_css + "\n" + pills_css):
+            self.assertIn(ref, defined, f"Undefined CSS var in bench/pills CSS: {ref}")
         tok_only = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css))
         for jf in sorted((REPO_ROOT / "docs" / "bench" / "specimens").glob("*.json")):
             for sp in json.loads(jf.read_text("utf-8")):
@@ -189,10 +190,11 @@ class TestEvidenceCompilers(unittest.TestCase):
         self.assertIn('<span class="qe-unit">t<sub>skew</sub> / ps</span>', t_out)
         self.assertIn("qe-caption-sr", t_out)
 
-        # 2. Plot legend swatches & pills
+        # 2. Plot legend swatches & diagonal sloped halo curve label
         p_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_plots.json").read_text("utf-8"))
         p_out = compile_spec(p_specs[2], rigor="L3")
-        self.assertIn("qe-label-pill", p_out)
+        self.assertIn('transform="rotate(', p_out)
+        self.assertNotIn("qe-label-pill", p_out)
         m_leg = re.search(r'data-epistemic="model"[^>]*>.*?</svg>', p_out, re.S)
         d_leg = re.search(r'data-epistemic="discrete"[^>]*>.*?</svg>', p_out, re.S)
         self.assertIsNotNone(m_leg)
@@ -217,9 +219,11 @@ class TestEvidenceCompilers(unittest.TestCase):
         e_out = compile_spec(enclave_spec, rigor="L2")
         self.assertIn("ENC-1", e_out)
         self.assertIn("e2", e_out)
-        self.assertIn("qe-label-pill", e_out)
+        self.assertIn("va-svg-halo-text", e_out)
+        m6_l2 = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m6_schematics.json").read_text("utf-8"))[1], rigor="L2")
+        self.assertIn("qe-svg-knockout", m6_l2)
         # First enclave rect must not span down to y=216 (Node B)
-        enc_rects = re.findall(r'<rect x="([0-9.]+)" y="([0-9.]+)" width="([0-9.]+)" height="([0-9.]+)" rx="8"', e_out)
+        enc_rects = re.findall(r'<rect data-role="enclave" x="([0-9.]+)" y="([0-9.]+)" width="([0-9.]+)" height="([0-9.]+)" rx="8"', e_out)
         self.assertEqual(len(enc_rects), 2)
         self.assertLess(float(enc_rects[0][1]) + float(enc_rects[0][3]), 200.0)
 
@@ -241,14 +245,16 @@ class TestEvidenceCompilers(unittest.TestCase):
         }
         f_out = compile_spec(fsm_spec, rigor="L3")
         vb_h = int(re.search(r'viewBox="0 0 720 (\d+)"', f_out).group(1))
-        pill_bottoms = [float(y) + float(h) for y, h in re.findall(r'class="qe-label-pill"[^>]*\by="([0-9.]+)"[^>]*\bheight="([0-9.]+)"', f_out)]
+        pill_bottoms = [float(y) + float(h) for y, h in re.findall(r'class="qe-svg-knockout-bg"[^>]*\by="([0-9.]+)"[^>]*\bheight="([0-9.]+)"', f_out)]
         self.assertTrue(pill_bottoms and all(b <= vb_h for b in pill_bottoms))
 
-        # 6. Scalar single-responsibility annunciator
+        # 6. Scalar atomic annunciator & separate margin span
         s_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m1_scalars.json").read_text("utf-8"))
         s_out = compile_spec(s_specs[2], rigor="L3", include_wrapper=False)
         self.assertEqual(s_out.count("STALE DATA"), 1)
-        self.assertIn("CAUTION · Margin: +18.0%", s_out)
+        self.assertIn('data-variant="status"', s_out)
+        self.assertIn("CAUTION", s_out)
+        self.assertIn("Margin +18.0%", s_out)
 
         # 7. Cross-domain CAN-FD, RS-485/Modbus & Forest CI plot
         can_out = compile_spec({"$schema": "urn:quiet-ui:schema:v9:schematic", "id": "can", "metadata": {"title": "CAN", "rigor_level": "L3"}, "schematic_kind": "differential_bus", "bus_standard": "can_fd", "terminals": [{"label": "ECM"}, {"label": "BMS"}]})
@@ -259,6 +265,44 @@ class TestEvidenceCompilers(unittest.TestCase):
         self.assertIn("560 Ω Bias", mod_out)
         for_out = compile_spec({"$schema": "urn:quiet-ui:schema:v9:plot", "id": "for", "plot_kind": "forest", "metadata": {"title": "Trial"}, "axes": {"x_axis": {"quantity_calculus": "HR (95% CI)"}}, "null_value": 1.0, "items": [{"label": "Subgroup A", "estimate": 0.72, "ci_low": 0.58, "ci_high": 0.89}]})
         self.assertIn("0.72 (0.58–0.89)", for_out)
+
+    def test_gate31_pill_grammar_invariants(self) -> None:
+        for jf in sorted((REPO_ROOT / "docs" / "bench" / "specimens").glob("*.json")):
+            for sp in json.loads(jf.read_text("utf-8")):
+                out = compile_spec(sp, rigor="L3", medium="m3", theme="white")
+                self.assertNotIn("qe-label-pill", out, f"Legacy .qe-label-pill in {sp['id']}")
+                for bad in ("[ NOMINAL ]", "[ CAUTION ]", "[ STALE DATA ]", "[ TRIPWIRE ]"):
+                    self.assertNotIn(bad, out, f"Bracketed pill {bad} in {sp['id']}")
+                for ko_rect in re.findall(r'<rect class="qe-svg-knockout-bg"[^>]*>', out):
+                    self.assertIn('stroke="none"', ko_rect, f"Stroked knockout rect in {sp['id']}")
+        m1 = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m1_scalars.json").read_text("utf-8"))[2], rigor="L3")
+        self.assertIn('data-variant="status" data-state="nominal">Nominal</span>', m1)
+        self.assertIn('<span class="qe-scalar-margin va-nums">Margin +18.0%</span>', m1)
+        self.assertEqual(m1.count("va-figure-scroll"), 2)  # 1 per side-by-side scalar card (never double-nested)
+        m2 = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m2_tables.json").read_text("utf-8"))[2], rigor="L3")
+        nom_cells = re.findall(r'<rect class="qe-heatmap-cell"[^>]*data-state="nominal"[^>]*>', m2)
+        self.assertEqual(len(nom_cells), 22)
+        for nc in nom_cells:
+            self.assertIn('fill="var(--bg-elevated)"', nc)
+        m4 = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_plots.json").read_text("utf-8"))[0], rigor="L3")
+        self.assertIn('<button type="button" class="va-pill qe-eq-term', m4)
+        self.assertIn('data-variant="chip"', m4)
+        m5 = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m5_waveforms.json").read_text("utf-8"))[2], rigor="L3")
+        self.assertEqual(m5.count("DROPOUT "), 1)
+        w1c = compile_spec(json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m3_bitfields.json").read_text("utf-8"))[2], rigor="L3")
+        self.assertIn('data-variant="tag">W1C</span>', w1c)
+        self.assertIn('class="qe-bf-access-ro">RO</span>', w1c)
+        staggered = compile_spec({
+            "$schema": "urn:quiet-ui:schema:v9:waveform", "id": "w-stag",
+            "metadata": {"title": "Staggered", "rigor_level": "L3"},
+            "timebase": {"unit": "ms", "domain": [0, 10]},
+            "channels": [
+                {"id": "a", "name": "A", "unit": "V", "vertical_scale_per_div": 5, "threshold_envelopes": [{"value": "4.5"}], "samples": [[0, 1], [1, 1], [2, None], [5, 1], [6, 1], [10, 1]]},
+                {"id": "d", "name": "D", "type": "digital", "unit": "logic", "samples": [[0, 0], [1, 1], [2.5, None], [5.5, 0], [6, 1], [10, 1]]},
+            ],
+        }, rigor="L3")
+        self.assertEqual(staggered.count("DROPOUT "), 1)
+        self.assertIn("+4.5\u00a0V", staggered)
 
 
 if __name__ == "__main__":

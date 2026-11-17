@@ -123,14 +123,14 @@ When $x$ exceeds operational scale limits, the indicator pin clamps to $0$ or $W
 
 Annunciator pills must transition across six deterministic states with non-reliance on color alone:
 
-| State Code | Text Label | Foreground Token | Background Token | Operational Invariant |
+| State Code | Pill Label | Variant & State | Visual Rendering | Operational Invariant |
 | :--- | :--- | :--- | :--- | :--- |
-| `NOMINAL` | `[ NOMINAL ]` | `var(--status-ok)` | `var(--status-ok-bg)` | Value within $\pm 1\sigma$ target band |
-| `ADVISORY`| `[ ADVISORY ]` | `var(--tint-indigo-fg)` | `var(--tint-indigo-bg)` | Operating outside preferred regime |
-| `WARNING` | `[ CAUTION ]` | `var(--status-warn)` | `var(--status-warn-bg)` | Operating within warning envelope ($\ge 80\%$) |
-| `CRITICAL`| `[ TRIPWIRE ]` | `var(--status-danger)` | `var(--status-err-bg)` | Crossed hard abort threshold; interlock armed |
-| `STALE`   | `[ STALE DATA ]`| `var(--text-muted)` | `var(--bg-elevated)` | No sample update received within $2.0 \times \Delta t_{\mathrm{sample}}$ |
-| `FAULT`   | `[ SENSOR FAULT ]`| `var(--status-danger)` | `var(--status-err-bg)` | ADC open-circuit, short-circuit, or parity error |
+| `NOMINAL` | `Nominal` | `status` / `nominal` | Borderless transparent, `6px` dot (`::before`), `var(--text-secondary)` | Value within nominal target envelope (`ISA-101` quiet background) |
+| `ADVISORY`| `ADVISORY` | `status` / `warn` | `10%` warn wash, `2.5px` start bar, `▲`, `var(--status-warn)` | Operating outside preferred regime |
+| `WARNING` | `CAUTION` | `status` / `warn` | `10%` warn wash, `2.5px` start bar, `▲`, `var(--status-warn)` | Operating within warning envelope ($\ge 80\%$) |
+| `CRITICAL`| `TRIPWIRE` | `status` / `fault` | `12%` danger wash, `2.5px` start bar, `◆`, `var(--status-danger)` | Crossed hard abort threshold; interlock armed |
+| `STALE`   | `STALE DATA` | `status` / `warn` | `10%` warn wash, `2.5px` start bar, `▲`, `var(--status-warn)` | No sample update received within $2.0 \times \Delta t_{\mathrm{sample}}$ |
+| `FAULT`   | `SENSOR FAULT` | `status` / `fault` | `12%` danger wash, `2.5px` start bar, `◆`, `var(--status-danger)` | ADC open-circuit, short-circuit, or parity error |
 
 ---
 
@@ -140,7 +140,9 @@ The rendering engine adapts the scalar visual across different delivery surfaces
 
 ### Medium M1: Precision Static Print & PDF
 - **Typography**: Uses high-contrast tabular figures (`font-variant-numeric: tabular-nums;`). Units are explicitly attached using non-breaking spaces.
-- **Grayscale Redundancy**: Status annunciator pills must not rely on color alone. Status is printed with explicit alphanumeric text (`[ NOMINAL ]` or `[ TRIPWIRE ]`) and distinct border strokes.
+- **Baseline Alignment Lock & Atomic Separation**: Side-by-side `.qe-scalar-card` blocks lock `.qe-scalar-top` (`min-block-size: 1.375rem`), card title block, `.qe-scalar-val-row`, and `.qe-gauge-svg` baselines within `<= 1.0px` regardless of stale/warn annunciator presence. Quantitative margins (`Margin +18.0%`) live in `.qe-scalar-margin` adjacent to the `.va-pill`, never concatenated inside it.
+- **Quiet-Nominal Matrix Heatmaps**: Nominal `3×8` telemetry matrix cells (`data-role="bitcell" data-state="nominal"`) use calm `--bg-elevated` surfaces so isolated `warn` (`▲`) and `fault` (`◆`) excursions stand out cleanly.
+- **Grayscale Redundancy**: Status annunciator pills must not rely on color alone. Excursions combine distinct alphanumeric text (`CAUTION`, `TRIPWIRE`), shape prefixes (`▲`, `◆`), and `2.5px` start borders; nominal states render quietly in `var(--text-secondary)` with a subtle `6px` dot (`::before`).
 - **Footnotes**: In L3 mode, expanded uncertainty and calibration certificate IDs are printed as compact superscripted annotations directly below the scalar block.
 
 ### Medium M3: Stateful Web Application

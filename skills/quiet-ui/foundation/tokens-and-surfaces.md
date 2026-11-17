@@ -61,13 +61,20 @@ $$\text{Radius}_{\text{inner}} = \max(0\text{px}, \text{Radius}_{\text{card}} - 
 
 ### Radius Dial Values
 
-| Setting (`data-corners`) | `--radius-card` | `--inset-pad` | `--radius-inner` | `--radius-sm` | Use Case |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `sharp` | `0px` | `0px` | `0px` | `0px` | M1 High-density print, aerospace grids |
-| `subtle` | `6px` | `4px` | `2px` | `4px` | Compact telemetry dashboards |
-| `auto` (Default) | `8px` | `4px` | `4px` | `6px` | Standard stateful web applications |
-| `rounded` | `12px` | `4px` | `8px` | `8px` | Editorial web, walkup kiosks |
-| `soft` | `18px` | `4px` | `14px` | `10px` | Consumer portals, ambient wall views |
+| Setting (`data-corners`) | `--radius-card` | `--inset-pad` | `--radius-inner` | `--radius-sm` | `--radius-xs` | Use Case |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| `sharp` | `0px` | `0px` | `0px` | `0px` | `0px` | M1 High-density print, aerospace grids |
+| `subtle` | `6px` | `4px` | `2px` | `4px` | `2px` | Compact telemetry dashboards |
+| `auto` (Default) | `8px` | `4px` | `4px` | `6px` | `2px` | Standard stateful web applications |
+| `rounded` | `12px` | `4px` | `8px` | `8px` | `2px` | Editorial web, walkup kiosks |
+| `soft` | `18px` | `4px` | `14px` | `10px` | `2px` | Consumer portals, ambient wall views |
+
+### 4-Variant `.va-pill` Geometry & Baseline Alignment Lock
+Quiet UI replaces generic pill boxes with a deterministic 4-variant system (`@layer shell` in `src/css/06-b-pills-and-annunciators.css`):
+- **Round = Clickable Invariant**: Non-interactive status annunciators and metadata keycaps (`status`, `tag`) use `--radius-xs` (`2px`, or `0px` under `data-corners="sharp"`). Full stadium curvature (`--radius-pill: 999px`) is reserved strictly for interactive `chip` controls (`<button>`, `<a>`, `[role="button"]`).
+- **Zero-Inflation `18px` / `22px` Baseline Lock**: Every `.va-pill[data-variant="status"]` and `.va-pill[data-variant="tag"]` locks `block-size: 1.125rem` (`18px`), `line-height: 1`, `text-box: trim-both cap alphabetic`, `font-family: var(--font-mono)`, `font-variant-numeric: tabular-nums`, and lives inside a `.qe-scalar-top` / `.qe-bit-meta` / `.qe-card-head` flex row with `min-block-size: 1.375rem` (`22px`). Presence or absence of a stale/fault pill never shifts sibling baselines (`<= 1.0px`).
+- **Chromium-Safe Chroma Mixing**: Excursion borders and subtle surface washes mix semantic danger/warn tokens using `color-mix(in oklab, ...)` rather than `in oklch`, avoiding Chromium's neutral hue-interpolation collapse while preserving 4-theme parity.
+- **Border Token Parity**: Static keycaps (`data-variant="tag"`) bind to `var(--border-subtle)` (`var(--border-hairline)`) across all 4 `[data-theme]` blocks.
 
 ---
 
@@ -100,8 +107,8 @@ To prevent styling fragmentation across distributed tools and runtimes, canonica
 1. `tokens/quiet-ui-tokens.css` (Repository root canonical definition)
 2. `skills/quiet-ui/tokens/quiet-ui-tokens.css` (Skill bundle mirror)
 3. `docs/atlas/quiet-ui-tokens.css` (Documentation engine mirror)
-4. `customizations/default/styles/quiet-ui-tokens.css` (Distribution package mirror)
-5. `src/css/tokens/quiet-ui-tokens.css` (Build pipeline integration mirror)
+4. `customizations/personal-starter/styles/quiet-ui-tokens.css` (Personal starter mirror)
+5. `customizations/brand-starter/styles/quiet-ui-tokens.css` (Brand starter mirror)
 
 ### Mirror Verification Protocol
 Whenever tokens are modified or audited, run SHA-256 verification:
@@ -111,8 +118,8 @@ sha256sum \
   tokens/quiet-ui-tokens.css \
   skills/quiet-ui/tokens/quiet-ui-tokens.css \
   docs/atlas/quiet-ui-tokens.css \
-  customizations/default/styles/quiet-ui-tokens.css \
-  src/css/tokens/quiet-ui-tokens.css | awk '{print $1}' | uniq
+  customizations/personal-starter/styles/quiet-ui-tokens.css \
+  customizations/brand-starter/styles/quiet-ui-tokens.css | awk '{print $1}' | uniq
 ```
 
 If the output yields more than one unique hash, token mirror parity is broken and CI compilation halts.
@@ -150,7 +157,7 @@ If the output yields more than one unique hash, token mirror parity is broken an
   .va-chip-leaf {
     background-color: var(--bg-canvas);
     border: none; /* De-barnacled: zero 3rd border */
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-xs); /* Interactive <button> chips promote via .va-pill[data-variant="chip"] */
     padding: 0.25rem 0.5rem;
     font-size: var(--ts-xs);
     color: var(--text-secondary);

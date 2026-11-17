@@ -54,9 +54,10 @@ Designed for architectural trade-off evaluations and bifurcated decision trees.
 
 ### Budget D: Quiet Cockpit (`ISA-101` / `NRC NUREG-0700` / `FDA IEC 62366` / `NASA-STD-3001`)
 In a power grid control room, ICU bedside monitor, or mission operations center, "quiet" means no saturated colors are illuminated during nominal operations:
-- **Nominal Operations**: All gauges, numbers, graphs, and labels render strictly in monochrome grey/white on calm surface glass.
-- **Out-of-Spec Excursions**: High-chroma Amber (`--status-warn`) triggers only upon threshold breach (> 85% load or advisory vital shift). High-chroma Crimson (`--status-err`) triggers only upon emergency trip, critical vital alarm, or hard fault.
-- **Passive Label Ban**: Under no circumstances may passive section headers, static badges, or ornamental card trims employ red or yellow accents.
+- **Nominal Operations (`data-variant="status"` + Heatmaps)**: Nominal pills render strictly quiet — transparent fill, `0px` border, Title Case `Nominal` in `var(--text-secondary)` with a subtle `6px` CSS dot indicator (`::before`). Nominal telemetry cells (`data-role="bitcell"` / matrix heatmaps) render in neutral `var(--bg-elevated)` rather than green capsules so isolated excursions immediately pop.
+- **Out-of-Spec Excursions**: High-chroma Amber (`--status-warn` via `color-mix(in oklab, ...)`, `2.5px` start bar, `▲` glyph) triggers only upon advisory/warning/stale threshold breach. High-chroma Crimson (`--status-danger`, `2.5px` start bar, `◆` glyph) triggers only upon critical tripwire, emergency fault, or interlock violation.
+- **Atomic Label Purity**: Never concatenate `[ BRACKETED ]` wrappers or quantitative margins (`Margin +18.0%`) inside a status pill. Print atomic state text inside `.va-pill` and render quantitative margin in its own adjacent `.qe-scalar-margin` span.
+- **Monochrome Metadata Keycaps (`data-variant="tag"`)**: Hardware access bits (`W1C`, `RW`), interlocks, live hex values, and specimen provenance render exclusively in neutral surface/hairline contrast (`--bg-elevated`, `--border-subtle`, `--text-secondary`). Under no circumstances may passive labels, specimen counters, or read-only (`RO`) text borrow alarm hues or green badges.
 
 ---
 

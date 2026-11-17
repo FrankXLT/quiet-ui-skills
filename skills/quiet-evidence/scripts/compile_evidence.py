@@ -88,6 +88,7 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
         "tokens/quiet-ui-tokens.css",
         "src/css/00-layers-and-reset.css",
         "src/css/01-stage-and-containers.css",
+        "src/css/06-b-pills-and-annunciators.css",
         "docs/bench/evidence-bench.css",
     )) or _FALLBACK_TOKENS_CSS
     js = _load_asset_text(("src/js/evidence-runtime.js",))
@@ -139,10 +140,10 @@ def _compile_single_dict(
         f'<figure class="va-figure-card qe-figure" id="{fig_id}" '
         f'data-qe-modality="{esc(modality)}" data-qe-rigor="{esc(eff_rigor)}" '
         f'data-qe-medium="{esc(medium)}" data-qe-theme="{esc(theme)}">'
-        f'<div class="va-figure-hdr">'
+        f'<div class="va-figure-hdr qe-card-head">'
         f'<h2 class="qe-fig-title">{title}</h2>'
-        f'<span class="qe-fig-badges"><span class="va-badge va-badge-neutral">{esc(modality.upper())}</span>'
-        f'<span class="va-badge va-badge-neutral">{esc(eff_rigor)}</span></span>'
+        f'<span class="qe-fig-badges"><span class="va-pill" data-variant="tag">{esc(modality.upper())}</span>'
+        f'<span class="va-pill" data-variant="tag">{esc(eff_rigor)}</span></span>'
         f"</div>"
         f"{inner_html}"
         f"{caption}"

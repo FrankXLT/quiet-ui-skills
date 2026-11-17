@@ -5,13 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .tokens_and_scales import (
-    compute_linear_125_scale,
-    esc,
-    format_tick_numeral,
-    halo_text,
-    pill_halo_text,
-)
+from .svg_labels import halo_text, svg_knockout_label
+from .tokens_and_scales import compute_linear_125_scale, esc, format_tick_numeral
 
 
 def _proj_lin_y(val: float, sc: dict[str, Any], y0: float, ph: float) -> float:
@@ -71,7 +66,7 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
         fill = "var(--status-ok-bg)" if kind == "total" else ("var(--tint-indigo-bg)" if val < 0 else "var(--bg-card)")
         stroke = "var(--status-ok)" if kind == "total" else ("var(--accent-focal)" if val < 0 else "var(--border-strong)")
         lbl_col = "var(--status-ok)" if kind == "total" else ("var(--accent-focal)" if val < 0 else "var(--text-primary)")
-        parts.append(f'<rect x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.6"/>')
+        parts.append(f'<rect data-role="bar" x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.6"/>')
         val_txt = f"{val:+.1f}{sep}{unit}" if kind == "delta" else f"{val:.1f}{sep}{unit}"
         parts.append(halo_text(bx + bw / 2.0, yt - 7.0, val_txt, anchor="middle", size=11.5, weight="700", fill=lbl_col))
         parts.append(halo_text(bx + bw / 2.0, y0 + ph + 19.0, lbl, anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
@@ -85,7 +80,7 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
         thr = float(env.get("threshold_value", 0.0))
         ey = max(y0 + 12.0, min(y0 + ph - 12.0, _proj_lin_y(thr, sc, y0, ph)))
         parts.append(f'<line x1="{x0}" y1="{ey:.1f}" x2="{x0 + pw}" y2="{ey:.1f}" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="6,3"/>')
-        parts.append(pill_halo_text(x0 + pw * 0.48, ey + 4.0, f'{env.get("label", "Ceiling")} ({thr:g}{sep}{unit})', anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", border="var(--status-danger)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
+        parts.append(svg_knockout_label(x0 + pw * 0.48, ey + 4.0, f'{env.get("label", "Ceiling")} ({thr:g}{sep}{unit})', anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
     parts.append(f'<text x="20" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 20 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">{esc(y_lbl)}</text>')
     parts.append("</svg>")
     return "\n".join(parts)
@@ -161,7 +156,7 @@ def compile_forest(spec: dict[str, Any]) -> str:
         parts.append(halo_text(px, y0 + ph + 18.0, format_tick_numeral(xv, step=sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
     nx = px_map(null_v)
     parts.append(f'<line x1="{nx:.1f}" y1="{y0}" x2="{nx:.1f}" y2="{y0 + ph}" stroke="var(--text-primary)" stroke-width="1.4" stroke-dasharray="5,3"/>')
-    parts.append(f'<rect x="{x0}" y="{y0}" width="{pw}" height="{ph}" fill="none" stroke="var(--border-strong)" stroke-width="1"/>')
+    parts.append(f'<rect data-role="frame" x="{x0}" y="{y0}" width="{pw}" height="{ph}" fill="none" stroke="var(--border-strong)" stroke-width="1"/>')
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 38.0, x_ax.get("quantity_calculus", "Treatment Effect (95% CI)"), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
 
     for idx, it in enumerate(items):
@@ -174,7 +169,7 @@ def compile_forest(spec: dict[str, Any]) -> str:
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy:.1f}" x2="{px_hi:.1f}" y2="{cy:.1f}" stroke="{col}" stroke-width="1.8"/>')
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy - 4:.1f}" x2="{px_lo:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')
         parts.append(f'<line x1="{px_hi:.1f}" y1="{cy - 4:.1f}" x2="{px_hi:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')
-        parts.append(f'<rect x="{px_m - 4:.1f}" y="{cy - 4:.1f}" width="8" height="8" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
+        parts.append(f'<rect data-role="marker" x="{px_m - 4:.1f}" y="{cy - 4:.1f}" width="8" height="8" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
         parts.append(halo_text(x0 + pw + 10.0, cy + 4.0, f"{est:.2f} ({lo:.2f}–{hi:.2f})", anchor="start", size=11.5, weight="600", fill=col, halo=False))
     parts.append("</svg>")
     return "\n".join(parts)

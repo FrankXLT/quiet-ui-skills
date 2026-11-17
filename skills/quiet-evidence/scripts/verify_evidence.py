@@ -73,8 +73,8 @@ def verify_static_metrology(repo_root: Path) -> list[str]:
                     errs.append(f"[NO_BEZIER] {sp['id']} emitted cubic Bezier path in plot")
             if sp.get("id") == "bench-m1-l3-nasa-cmd-act":
                 body_out = compile_spec(sp, include_wrapper=False)
-                if body_out.count("STALE DATA") != 1 or "CAUTION · Margin: +18.0%" not in body_out:
-                    errs.append("[SCALAR_ANN] M1-L3 duplicated STALE DATA or dropped CAUTION disposition")
+                if body_out.count("STALE DATA") != 1 or 'data-variant="status"' not in body_out or "CAUTION" not in body_out or "Margin +18.0%" not in body_out:
+                    errs.append("[SCALAR_ANN] M1-L3 duplicated STALE DATA or broke atomic CAUTION + Margin")
             if sp.get("id") == "bench-m2-l3-booktabs-heatmap":
                 if 'class="qe-unit"' not in out or "qe-caption-sr" not in out:
                     errs.append("[TABLE_UNIT] M2-L3 missing .qe-unit case shield or .qe-caption-sr")
@@ -196,6 +196,60 @@ for (const svg of document.querySelectorAll('svg')) {
 }
 for (const eqTerm of document.querySelectorAll('.qe-eq-term[data-term]')) {
   if (eqTerm.tabIndex < 0) errs.push(`Equation term '${eqTerm.textContent}' is not keyboard focusable`);
+}
+for (const grid of document.querySelectorAll('.qe-scalar-grid')) {
+  const rows = new Map();
+  for (const card of grid.querySelectorAll(':scope > .qe-scalar-card')) {
+    const key = Math.round(card.getBoundingClientRect().top / 8);
+    if (!rows.has(key)) rows.set(key, []);
+    rows.get(key).push(card);
+  }
+  for (const cards of rows.values()) {
+    if (cards.length < 2) continue;
+    for (const sel of ['.qe-scalar-title', '.qe-scalar-val-row', 'svg.qe-gauge-svg']) {
+      const tops = cards.map(c => c.querySelector(sel)?.getBoundingClientRect().top).filter(v => Number.isFinite(v));
+      if (tops.length >= 2 && Math.max(...tops) - Math.min(...tops) > 1.0)
+        errs.push(`[BASELINE_LOCK] ${sel} sibling vertical drift ${(Math.max(...tops) - Math.min(...tops)).toFixed(2)}px > 1.0px`);
+    }
+  }
+}
+if (document.querySelectorAll('.qe-label-pill').length > 0) errs.push('[SVG_KNOCKOUT] Legacy .qe-label-pill detected');
+for (const r of document.querySelectorAll('svg .qe-svg-knockout rect')) {
+  const cs = getComputedStyle(r);
+  if (cs.stroke && cs.stroke !== 'none' && parseFloat(cs.strokeWidth || '0') > 0) errs.push('[SVG_KNOCKOUT] Stroked knockout rect found');
+}
+for (const p of document.querySelectorAll('.va-pill')) {
+  const cs = getComputedStyle(p);
+  const rad = parseFloat(cs.borderTopLeftRadius || '0');
+  const v = p.dataset.variant, st = p.dataset.state, txt = p.textContent || '';
+  if (/[\\x5b\\x5d]|\\bMargin\\b/.test(txt)) errs.push(`[ATOMIC_PILL] Non-atomic pill text: '${txt}'`);
+  if ((v === 'status' || v === 'tag') && rad >= 12) errs.push(`[ROUND_CLICK] Non-interactive pill '${txt}' (${v}) has radius ${rad}px`);
+  if (v === 'chip' && (!p.matches('button, a[href], input, [role="button"]') || rad < 99)) errs.push(`[ROUND_CLICK] Chip '${txt}' must be clickable & 999px pill`);
+  if (v === 'status' && st === 'nominal' && (parseFloat(cs.borderTopWidth) > 0 || (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent')))
+    errs.push(`[QUIET_NOMINAL] Nominal status pill '${txt}' has non-transparent bg or border`);
+}
+for (const el of document.querySelectorAll('#bench-gallery .va-card :is(span, div, p)')) {
+  if (el.closest('svg') || el.classList.contains('va-pill')) continue;
+  const r = el.getBoundingClientRect(), cs = getComputedStyle(el);
+  if (r.width > 14 && r.height > 14 && parseFloat(cs.borderTopLeftRadius || '0') >= 99 && !el.matches('[role="button"], button, a[href]'))
+    errs.push(`[ROUND_CLICK] Unmarked non-interactive rounded capsule: '${(el.textContent || '').trim().slice(0, 24)}'`);
+}
+for (const cell of document.querySelectorAll('rect.qe-heatmap-cell[data-state="nominal"]')) {
+  const m = getComputedStyle(cell).fill.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/);
+  if (m && (+m[2] - +m[1] > 18 && +m[2] - +m[3] > 15)) errs.push(`[QUIET_HEATMAP] Nominal heatmap cell has green fill ${m[0]}`);
+}
+for (const wsvg of document.querySelectorAll('svg.qe-waveform-svg')) {
+  const spans = [...wsvg.querySelectorAll('rect[data-role="dropout-zone"]')].map(r => {
+    const x = parseFloat(r.getAttribute('x') || '0');
+    return [x, x + parseFloat(r.getAttribute('width') || '0')];
+  }).sort((a, b) => a[0] - b[0]);
+  const merged = [];
+  for (const [a, b] of spans) {
+    if (!merged.length || a > merged[merged.length - 1][1] + 1.0) merged.push([a, b]);
+    else merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], b);
+  }
+  const labels = [...wsvg.querySelectorAll('text')].filter(t => (t.textContent || '').includes('DROPOUT')).length;
+  if (merged.length > 0 && labels !== merged.length) errs.push(`[SINGLE_DROPOUT] Expected ${merged.length} shared DROPOUT label(s), found ${labels}`);
 }
 return errs;
 """

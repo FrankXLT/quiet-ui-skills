@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .tokens_and_scales import avoid_label_overlaps, esc, halo_text, pill_halo_text, resolve_term_colors, resolve_token
+from .svg_labels import avoid_label_overlaps, halo_text, svg_knockout_label
+from .tokens_and_scales import esc, resolve_term_colors, resolve_token
 
 
 def _ortho_segments(p1: tuple[float, float], p2: tuple[float, float], mid_x: float | None = None) -> list[tuple[tuple[float, float], tuple[float, float]]]:
@@ -68,6 +69,15 @@ def _resolve_enclaves(enclaves: list[dict[str, Any]], nodes: list[dict[str, Any]
     return resolved
 
 
+def _surface_fill_at(x: float, y: float, enclaves: list[dict[str, Any]], rigor: str) -> str:
+    if rigor in {"L2", "L3"}:
+        for enc in enclaves:
+            ex, ey, ew, eh = float(enc["x"]), float(enc["y"]), float(enc["w"]), float(enc["h"])
+            if ex <= x <= ex + ew and ey <= y <= ey + eh:
+                return resolve_token(enc.get("fill_token"), "var(--bg-elevated)")
+    return "var(--bg-surface)"
+
+
 def compile_topology_enclave(spec: dict[str, Any], rigor: str) -> str:
     """Compile Manhattan orthogonal topology or NIST Zero-Trust ATO Enclave map."""
     nodes, edges = spec.get("nodes", []), spec.get("edges", [])
@@ -91,7 +101,7 @@ def compile_topology_enclave(spec: dict[str, Any], rigor: str) -> str:
             ex, ey, ew, eh = float(enc["x"]), float(enc["y"]), float(enc["w"]), float(enc["h"])
             dash = "6,3,2,3" if enc.get("border_style") == "dash-dot" else "5,4"
             fill = resolve_token(enc.get("fill_token"), "var(--bg-elevated)")
-            parts.append(f'<rect x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="{eh:.1f}" rx="8" fill="{fill}" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="{dash}"/>')
+            parts.append(f'<rect data-role="enclave" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="{eh:.1f}" rx="8" fill="{fill}" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="{dash}"/>')
             parts.append(halo_text(ex + 12.0, ey + 18.0, str(enc.get("label", "")), anchor="start", size=11.5, weight="700", fill="var(--text-primary)"))
             if enc.get("fips_level"):
                 parts.append(halo_text(ex + 12.0, ey + 34.0, str(enc["fips_level"]), anchor="start", size=11.5, weight="600", fill="var(--accent-focal)"))
@@ -130,20 +140,33 @@ def compile_topology_enclave(spec: dict[str, Any], rigor: str) -> str:
         if raw_lbl and not (rigor == "L1" and raw_lbl.upper().startswith("PPSM")):
             mx = (segs[0][0][0] + segs[-1][1][0]) / 2.0
             my = (segs[0][0][1] + segs[-1][1][1]) / 2.0 + 4.0
-            lbl_cands.append({"x": mx, "y": my, "text": raw_lbl, "anchor": "middle", "fill": col, "weight": "700", "border": col, "attrs": t_attr})
-
-    for lbl in avoid_label_overlaps(lbl_cands, min_y=28.0, max_y=vb_h - 14.0):
-        parts.append(pill_halo_text(lbl["x"], lbl["y"], lbl["text"], anchor=lbl["anchor"], size=11.5, weight=lbl["weight"], fill=lbl["fill"], border=lbl.get("border", "var(--border-hairline)"), x_bounds=(8.0, vb_w - 8.0), attrs=lbl.get("attrs", ""), math=False))
+            lbl_cands.append({"x": mx, "y": my, "text": raw_lbl, "anchor": "middle", "fill": col, "weight": "700", "attrs": t_attr})
 
     for nd in nodes:
         b = node_map[nd["id"]]
         term = nd.get("term")
         t_attr = f' data-term="{esc(term)}"' if term else ""
         stroke = resolve_term_colors(term)["fg"] if term else ("var(--accent-focal)" if nd.get("focal") else "var(--border-strong)")
-        parts.append(f'<rect x="{b["x"]:.1f}" y="{b["y"]:.1f}" width="{b["w"]:.1f}" height="{b["h"]:.1f}" rx="5" fill="var(--bg-card)" stroke="{stroke}" stroke-width="1.5"{t_attr}/>')
+        parts.append(f'<rect data-role="node" x="{b["x"]:.1f}" y="{b["y"]:.1f}" width="{b["w"]:.1f}" height="{b["h"]:.1f}" rx="5" fill="var(--bg-card)" stroke="{stroke}" stroke-width="1.5"{t_attr}/>')
         parts.append(halo_text(b["x"] + b["w"] / 2.0, b["y"] + 24.0, str(nd["label"]), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
         if nd.get("sublabel"):
             parts.append(halo_text(b["x"] + b["w"] / 2.0, b["y"] + 42.0, str(nd["sublabel"]), anchor="middle", size=11.5, fill="var(--text-muted)", halo=False))
+
+    for lbl in avoid_label_overlaps(lbl_cands, min_y=28.0, max_y=vb_h - 14.0):
+        surf_fill = _surface_fill_at(lbl["x"], lbl["y"], enclaves, rigor)
+        w = max(28.0, len(lbl["text"]) * (11.5 * 0.63) + 10.0)
+        x_lo = max(8.0, min(vb_w - 8.0 - w, lbl["x"] - w / 2.0))
+        y_lo, y_hi = lbl["y"] - 12.5, lbl["y"] + 4.5
+        spans_enclave = rigor in {"L2", "L3"} and any(
+            not (x_lo + w <= float(e["x"]) or x_lo >= float(e["x"]) + float(e["w"]))
+            and not (y_hi <= float(e["y"]) or y_lo >= float(e["y"]) + float(e["h"]))
+            and resolve_token(e.get("fill_token"), "var(--bg-elevated)") != surf_fill
+            for e in enclaves
+        )
+        if spans_enclave:
+            parts.append(halo_text(lbl["x"], lbl["y"], lbl["text"], anchor=lbl["anchor"], size=11.5, weight=lbl["weight"], fill=lbl["fill"], halo=True, stroke_width=3.8, attrs=lbl.get("attrs", ""), math=False))
+        else:
+            parts.append(svg_knockout_label(lbl["x"], lbl["y"], lbl["text"], anchor=lbl["anchor"], size=11.5, weight=lbl["weight"], fill=lbl["fill"], surface_fill=surf_fill, x_bounds=(8.0, vb_w - 8.0), attrs=lbl.get("attrs", ""), math=False))
 
     parts.append("</svg>")
     return "\n".join(parts)
@@ -206,7 +229,7 @@ def compile_differential_bus(spec: dict[str, Any]) -> str:
         parts.append(f'<circle cx="{xb:.1f}" cy="{yb}" r="3.2" fill="var(--text-primary)"/>')
 
         if prof["mode"] == "xfmr":
-            parts.append(f'<rect x="{cx - 46:.1f}" y="{yc - 16:.1f}" width="92" height="40" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/>')
+            parts.append(f'<rect data-role="coupler" x="{cx - 46:.1f}" y="{yc - 16:.1f}" width="92" height="40" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.2"/>')
             parts.append(f'<line x1="{xa:.1f}" y1="{yc - 12}" x2="{xa:.1f}" y2="{yc}" stroke="var(--accent-focal)" stroke-width="1.5" stroke-dasharray="2,2"/>')
             parts.append(f'<line x1="{xb:.1f}" y1="{yc - 12}" x2="{xb:.1f}" y2="{yc}" stroke="var(--tint-violet-fg)" stroke-width="1.5" stroke-dasharray="2,2"/>')
             parts.append(f'<line x1="{cx - 38:.1f}" y1="{yc + 2}" x2="{cx + 38:.1f}" y2="{yc + 2}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
@@ -214,10 +237,10 @@ def compile_differential_bus(spec: dict[str, Any]) -> str:
             parts.append(f'<line x1="{xa:.1f}" y1="{yc + 24}" x2="{xa:.1f}" y2="{yt}" stroke="var(--accent-focal)" stroke-width="1.5"/>')
             parts.append(f'<line x1="{xb:.1f}" y1="{yc + 24}" x2="{xb:.1f}" y2="{yt}" stroke="var(--tint-violet-fg)" stroke-width="1.5"/>')
         else:
-            parts.append(pill_halo_text(cx, yc + 4.0, prof["coupler"], anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)", border="var(--border-hairline)", x_bounds=(8.0, 712.0), math=False))
+            parts.append(svg_knockout_label(cx, yc + 4.0, prof["coupler"], anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)", surface_fill="var(--bg-surface)", x_bounds=(8.0, 712.0), math=False))
 
         st_col = "var(--status-warn)" if term.get("status") == "warn" else ("var(--accent-focal)" if term.get("role") in {"BC", "MASTER", "ECU"} else "var(--border-strong)")
-        parts.append(f'<rect x="{cx - 56:.1f}" y="{yt:.1f}" width="112" height="60" rx="5" fill="var(--bg-card)" stroke="{st_col}" stroke-width="1.6"/>')
+        parts.append(f'<rect data-role="node" x="{cx - 56:.1f}" y="{yt:.1f}" width="112" height="60" rx="5" fill="var(--bg-card)" stroke="{st_col}" stroke-width="1.6"/>')
         parts.append(halo_text(cx, yt + 24.0, str(term["label"]), anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False))
         parts.append(halo_text(cx, yt + 43.0, str(term.get("sublabel", "")), anchor="middle", size=11.5, fill="var(--text-muted)", halo=False))
     parts.append("</svg>")

@@ -278,6 +278,16 @@ To guarantee visual calm, metrological integrity, and accessibility, every Quiet
 3. **Table Truncation on Desktop ($\ge 1280\,\text{px}$)**: Tables must never produce horizontal scrollbars on desktop viewports. Wrap cells intelligently or split multi-attribute tables into linked panels.
 4. **Saturated Cockpit Alarms**: Amber and crimson tokens (`--status-warn`, `--status-err`) must never be used for passive branding, section headers, or decorative badges. They are strictly reserved for active out-of-spec excursions.
 5. **Freehand SVG Guessing**: Never ask an LLM to guess SVG coordinate numbers freehand. Author structured JSON specifications against `urn:quiet-ui:schema:v9:*` and compile through deterministic Python/JS builders.
+6. **4-Variant Pill Grammar & Baseline Alignment Lock**: Never use unstyled bordered capsules or `[ BRACKETED ]` prose for status, metadata, or chart annotations. Route every badge/tag/label through the 4 strict Quiet UI variants:
+
+| Variant | Class / API | Visual Shape & Chrome | Permitted Domain |
+| :--- | :--- | :--- | :--- |
+| **1. `status`** | `.va-pill[data-variant="status"]` | `18px` fixed box (`--radius-xs: 2px`). `nominal` is borderless (`transparent`, `6px` dot via CSS `::before`, Title Case `Nominal`). Excursions (`warn`/`fault`) use `10–12%` `in oklab` tint + `2.5px` start bar + `▲`/`◆`. | Live operational state (`Nominal`, `ADVISORY`, `CAUTION`, `TRIPWIRE`, `STALE DATA`, `SENSOR FAULT`). Keep `Margin +X.X%` outside the pill. |
+| **2. `tag`** | `.va-pill[data-variant="tag"]` | `18px` monochrome keycap (`--radius-xs: 2px`, `--bg-elevated`, `1px solid var(--border-subtle)`). | Hardware/protocol metadata (`W1C`, `RW`, `INTERLOCK`, `Live: 0x...`, modality/rigor badges). Plain counts & `RO` render unboxed. |
+| **3. `chip`** | `<button class="va-pill" data-variant="chip">` | `22px` stadium capsule (`--radius-pill: 999px`). **Round = Clickable**. | Interactive filter chips, modal triggers, clickable pedagogical equation terms (`<button>`, `<a>`, `[role="button"]`). |
+| **4. `svg-knockout`** | `svg_knockout_label()` / right-gutter | Borderless canvas/enclave-matched SVG `<rect stroke="none">` + `<text>` or right-gutter `text-anchor="start"`. | Chart envelopes, diagonal slope text (`atan2`), schematic wire labels, shared waveform `DROPOUT` banners. |
+
+   Side-by-side scalar cards MUST lock `.qe-scalar-top` (`min-block-size: 1.375rem`), title height, `.qe-scalar-val-row`, and `<svg class="qe-gauge-svg">` baselines within `<= 1.0px`.
 
 ---
 

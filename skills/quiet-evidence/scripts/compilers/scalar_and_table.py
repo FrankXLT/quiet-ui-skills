@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from .svg_labels import halo_text, render_pill_html
 from .tokens_and_scales import (
     ANNUNCIATOR_STATES,
     compute_linear_125_scale,
@@ -13,7 +14,6 @@ from .tokens_and_scales import (
     format_quantity_header,
     format_tick_numeral,
     format_value_unit,
-    halo_text,
 )
 
 
@@ -72,11 +72,11 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
 
     x0, x1, y_bar, bh = 38.0, 642.0, 38.0, 14.0
     bw = x1 - x0
+    g_title = esc(spec.get("metadata", {}).get("title", "Linear Gauge"))
     parts: list[str] = [
-        f'<svg class="qe-svg qe-svg-680" viewBox="0 0 680 92" role="img" '
-        f'aria-label="{esc(spec.get("metadata", {}).get("title", "Linear Gauge"))}">'
+        f'<svg class="qe-svg qe-svg-680 qe-gauge-svg" viewBox="0 0 680 92" role="img" aria-label="{g_title}">',
     ]
-    parts.append(f'<rect x="{x0}" y="{y_bar}" width="{bw}" height="{bh}" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>')
+    parts.append(f'<rect data-role="gauge-track" x="{x0}" y="{y_bar}" width="{bw}" height="{bh}" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>')
 
     def _zone(lo: float | None, hi: float | None, fill: str) -> None:
         if lo is None or hi is None:
@@ -84,7 +84,7 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
         zx0, _ = _clamp_x(float(lo), smin, smax, x0, bw)
         zx1, _ = _clamp_x(float(hi), smin, smax, x0, bw)
         if zx1 > zx0:
-            parts.append(f'<rect x="{zx0:.1f}" y="{y_bar + 1:.1f}" width="{zx1 - zx0:.1f}" height="{bh - 2:.1f}" fill="{fill}"/>')
+            parts.append(f'<rect data-role="gauge-zone" x="{zx0:.1f}" y="{y_bar + 1:.1f}" width="{zx1 - zx0:.1f}" height="{bh - 2:.1f}" fill="{fill}"/>')
 
     if lo_abort is not None:
         _zone(smin, lo_abort, "var(--status-err-bg)")
@@ -121,7 +121,7 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
     ax, ovf = _clamp_x(act, smin, smax, x0, bw)
     ann = spec.get("status_annunciator", {})
     st_code = _resolve_threshold_state(act, limits, ann, str(ann.get("state", "NOMINAL")).upper())
-    pin_col = ANNUNCIATOR_STATES.get(st_code, ANNUNCIATOR_STATES["NOMINAL"])["fg"]
+    pin_col = ANNUNCIATOR_STATES.get(st_code, ANNUNCIATOR_STATES["NOMINAL"])["gauge_fg"]
     parts.append(f'<polygon points="{ax:.1f},{y_bar + 2} {ax - 5.5:.1f},{y_bar + bh + 6} {ax + 5.5:.1f},{y_bar + bh + 6}" fill="{pin_col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
     act_lbl = f"ACT\u00a0{format_value_unit(act, unit)}" if ovf == 0 else ("◀ CLAMPED" if ovf < 0 else "CLAMPED ▶")
     lbl_anchor = "start" if ax < 110 else ("end" if ax > 570 else "middle")
@@ -150,19 +150,21 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
     ts = meta.get("timestamp_utc", "")
     margin = ann.get("margin_remaining_pct")
     if st_key == "STALE":
-        quality_badge = '<span class="va-stale-badge">[ STALE DATA ]</span>'
+        quality_pill = render_pill_html("STALE DATA", variant="status", state="warn")
     elif st_key == "FAULT":
-        quality_badge = '<span class="va-badge va-badge-err">[ SENSOR FAULT ]</span>'
+        quality_pill = render_pill_html("SENSOR FAULT", variant="status", state="fault")
     else:
-        quality_badge = ""
+        quality_pill = ""
 
     lines: list[str] = ['<div class="qe-scalar-card">']
-    lines.append(f'<div class="qe-scalar-zone1"><span class="va-kicker">{esc(subsys)}</span><span class="qe-scalar-ts va-nums">{esc(ts)} {quality_badge}</span></div>')
+    ts_part = f"{esc(ts)} {quality_pill}".strip() if quality_pill else esc(ts)
+    lines.append(f'<div class="qe-scalar-zone1 qe-scalar-top"><span class="va-kicker">{esc(subsys)}</span><span class="qe-scalar-ts va-nums">{ts_part}</span></div>')
     lines.append(f'<h3 class="qe-scalar-title">{esc(meta.get("title", "Scalar Readout"))}</h3>')
-    lines.append('<div class="qe-scalar-zone2">')
+    lines.append('<div class="qe-scalar-zone2 qe-scalar-val-row">')
     lines.append(f'  <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{esc(val_text)}</span><span class="qe-scalar-calc qe-unit">{format_math_html(calculus)}</span></div>')
-    margin_txt = f" · Margin: {margin:+.1f}%" if (margin is not None and rigor in {"L2", "L3"}) else ""
-    lines.append(f'  <span class="va-badge {disp_info["cls"]}" data-state="{esc(disp_key)}">{esc(disp_info["pill"])}{esc(margin_txt)}</span>')
+    disp_pill = render_pill_html(disp_info["pill"], variant="status", state=disp_info["state"])
+    margin_html = f'<span class="qe-scalar-margin va-nums">Margin {float(margin):+.1f}%</span>' if (margin is not None and rigor in {"L2", "L3"}) else ""
+    lines.append(f'  <div class="qe-scalar-disp">{disp_pill}{margin_html}</div>')
     lines.append("</div>")
 
     if rigor == "L1" and spec.get("sparkline"):
@@ -170,7 +172,7 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
         lo, hi = min(pts), max(pts)
         span = hi - lo if hi != lo else 1.0
         coords = " ".join(f"{16 + i * (288.0 / max(len(pts) - 1, 1)):.1f},{28 - ((v - lo) / span) * 20:.1f}" for i, v in enumerate(pts))
-        lines.append(f'<svg class="qe-svg qe-spark-svg" viewBox="0 0 320 34" role="img" aria-label="Trend sparkline"><polyline fill="none" stroke="{disp_info["fg"]}" stroke-width="1.8" points="{coords}"/></svg>')
+        lines.append(f'<svg class="qe-svg qe-spark-svg" viewBox="0 0 320 34" role="img" aria-label="Trend sparkline"><polyline fill="none" stroke="{disp_info["gauge_fg"]}" stroke-width="1.8" points="{coords}"/></svg>')
     elif rigor in {"L2", "L3"} and (spec.get("gauge") or limits):
         lines.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Gauge"))}">{_render_gauge_svg(spec, rigor)}</div>')
 
@@ -207,20 +209,20 @@ def compile_scalar(spec: dict[str, Any], rigor: str | None = None, medium: str =
 
 
 def _render_heatmap_svg(hm: dict[str, Any]) -> str:
-    """Render calibrated R x C phase-excursion heatmap (v7.1 recovery)."""
+    """Render calibrated R x C phase-excursion heatmap with ISA-101 quiet-nominal cells."""
     cols = hm.get("col_labels", [])
     rows = hm.get("rows", [])
-    cell_w, cell_h, x0, y0 = 62.0, 24.0, 96.0, 26.0
-    vb_w = int(max(620.0, x0 + len(cols) * cell_w + 24.0))
+    cell_w, cell_h, x0, y0 = 70.0, 24.0, 84.0, 26.0
+    vb_w = int(max(640.0, x0 + len(cols) * cell_w + 20.0))
     vb_h = int(y0 + len(rows) * (cell_h + 6.0) + 18.0)
     parts: list[str] = [f'<svg class="qe-svg qe-svg-680" viewBox="0 0 {vb_w} {vb_h}" role="img" aria-label="{esc(hm.get("title", "Excursion Heatmap"))}">']
     for ci, clbl in enumerate(cols):
         cx = x0 + ci * cell_w + cell_w / 2.0
         parts.append(halo_text(cx, 16.0, str(clbl), anchor="middle", size=11.5, weight="700", fill="var(--text-secondary)", halo=False))
     status_style = {
-        "ok": ("var(--status-ok-bg)", "var(--status-ok)", "1.0"),
-        "warn": ("var(--status-warn-bg)", "var(--status-warn)", "1.8"),
-        "err": ("var(--status-err-bg)", "var(--status-danger)", "2.0"),
+        "ok": ("nominal", "var(--bg-elevated)", "var(--border-hairline)", "1.0", "var(--text-primary)", "500", ""),
+        "warn": ("warn", "var(--status-warn-bg)", "var(--status-warn)", "1.8", "var(--status-warn)", "700", "▲ "),
+        "err": ("fault", "var(--status-err-bg)", "var(--status-danger)", "2.0", "var(--status-danger)", "700", "◆ "),
     }
     for ri, row in enumerate(rows):
         ry = y0 + ri * (cell_h + 6.0)
@@ -228,28 +230,31 @@ def _render_heatmap_svg(hm: dict[str, Any]) -> str:
         for ci, cell in enumerate(row.get("cells", [])):
             cx = x0 + ci * cell_w
             st = str(cell.get("status", "ok")).lower()
-            bg, stroke, sw = status_style.get(st, status_style["ok"])
+            st_attr, bg, stroke, sw, txt_col, txt_w, prefix = status_style.get(st, status_style["ok"])
             dash = ' stroke-dasharray="4,2"' if st == "warn" else ""
-            parts.append(f'<rect x="{cx + 2:.1f}" y="{ry:.1f}" width="{cell_w - 6:.1f}" height="{cell_h:.1f}" rx="3" fill="{bg}" stroke="{stroke}" stroke-width="{sw}"{dash}/>')
+            parts.append(
+                f'<rect class="qe-heatmap-cell" data-role="bitcell" data-state="{st_attr}" '
+                f'x="{cx + 2:.1f}" y="{ry:.1f}" width="{cell_w - 6:.1f}" height="{cell_h:.1f}" rx="3" '
+                f'fill="{bg}" stroke="{stroke}" stroke-width="{sw}"{dash}/>'
+            )
             val = str(cell.get("text", ""))
             if val:
-                parts.append(halo_text(cx + (cell_w - 2) / 2.0, ry + 16.0, val, anchor="middle", size=11.5, weight="600", fill=stroke, halo=False))
+                parts.append(halo_text(cx + (cell_w - 2) / 2.0, ry + 16.0, f"{prefix}{val}", anchor="middle", size=11.5, weight=txt_w, fill=txt_col, halo=False))
     parts.append("</svg>")
     return "\n".join(parts)
 
 
 def _status_badge_html(val: Any) -> str:
-    """Render non-color-only text status pill for table disposition cells."""
-    s = str(val).upper()
+    """Render ISA-101 quiet-nominal or framed excursion .va-pill for table cells."""
+    raw = str(val).strip()
+    s = raw.upper()
     if s in {"AUTHORIZED", "NOMINAL", "ACTIVE", "PASS", "GO", "LOCKED", "VERIFIED", "APPROVED"}:
-        cls = "va-badge-ok"
-    elif s in {"CONDITIONAL", "CAUTION", "WARNING", "DEGRADED", "MARGINAL", "WATCH"}:
-        cls = "va-badge-warn"
-    elif s in {"REJECTED", "CRITICAL", "ABORT", "OFFLINE", "FAULT", "FAIL", "HOLD"}:
-        cls = "va-badge-err"
-    else:
-        cls = "va-badge-neutral"
-    return f'<span class="va-badge {cls}">{esc(val)}</span>'
+        return render_pill_html(raw.title(), variant="status", state="nominal")
+    if s in {"CONDITIONAL", "CAUTION", "WARNING", "DEGRADED", "MARGINAL", "WATCH", "REVIEW"}:
+        return render_pill_html(s, variant="status", state="warn")
+    if s in {"REJECTED", "CRITICAL", "ABORT", "OFFLINE", "FAULT", "FAIL", "HOLD", "BREACH"}:
+        return render_pill_html(s, variant="status", state="fault")
+    return render_pill_html(raw, variant="tag")
 
 
 def _format_col_header_html(c: dict[str, Any]) -> str:

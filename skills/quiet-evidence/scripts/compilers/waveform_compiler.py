@@ -7,14 +7,13 @@ import json
 import math
 from typing import Any
 
+from .svg_labels import avoid_label_overlaps, halo_text, svg_knockout_label
 from .tokens_and_scales import (
     SERIES_STYLES,
     compute_linear_125_scale,
     esc,
     format_math_svg,
     format_tick_numeral,
-    halo_text,
-    pill_halo_text,
     render_test_condition_strip,
     resolve_token,
 )
@@ -36,19 +35,25 @@ def _format_freq_reciprocal(dt: float, t_unit: str) -> str:
     return f" (1/Δt = {freq:.3g}\u00a0Hz)"
 
 
+def _format_gap_dur(dur: float) -> str:
+    if abs(dur - round(dur, 1)) < 0.02:
+        return f"{dur:.1f}"
+    return f"{dur:.2f}".rstrip("0").rstrip(".")
+
+
 def _compile_day_arc(spec: dict[str, Any]) -> str:
     """Compile L1 24-hour operational phase-arc timeline."""
     phases = spec.get("phases", [])
     x0, y0, pw, bh = 54.0, 48.0, 612.0, 28.0
     parts: list[str] = [
         f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 132" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "24h Phase Timeline"))}">',
-        f'<rect x="{x0}" y="{y0}" width="{pw}" height="{bh}" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>',
+        f'<rect data-role="track" x="{x0}" y="{y0}" width="{pw}" height="{bh}" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>',
     ]
     for ph in phases:
         s_h, e_h = float(ph["start_h"]), float(ph["end_h"])
         px0, px1 = x0 + (s_h / 24.0) * pw, x0 + (e_h / 24.0) * pw
         col, bg = resolve_token(ph.get("color"), "var(--accent-focal)"), resolve_token(ph.get("bg"), "var(--tint-indigo-bg)")
-        parts.append(f'<rect x="{px0:.1f}" y="{y0 + 1:.1f}" width="{max(4.0, px1 - px0):.1f}" height="{bh - 2:.1f}" fill="{bg}" stroke="{col}" stroke-width="1.2"/>')
+        parts.append(f'<rect data-role="phase" x="{px0:.1f}" y="{y0 + 1:.1f}" width="{max(4.0, px1 - px0):.1f}" height="{bh - 2:.1f}" fill="{bg}" stroke="{col}" stroke-width="1.2"/>')
         lbl_txt = str(ph["label"])
         if px1 - px0 >= len(lbl_txt) * 8.0 + 12.0:
             parts.append(halo_text((px0 + px1) / 2.0, y0 + 18.0, lbl_txt, anchor="middle", size=11.5, weight="700", fill=col, halo=False))
@@ -60,7 +65,7 @@ def _compile_day_arc(spec: dict[str, Any]) -> str:
         ex = x0 + (float(ev["hour"]) / 24.0) * pw
         ecol = resolve_token(ev.get("color"), "var(--status-warn)")
         parts.append(f'<line x1="{ex:.1f}" y1="{y0 - 8}" x2="{ex:.1f}" y2="{y0 + bh + 2}" stroke="{ecol}" stroke-width="1.6" stroke-dasharray="3,2"/>')
-        parts.append(pill_halo_text(ex, y0 - 15.0, str(ev["label"]), anchor="middle", size=11.5, weight="700", fill=ecol, border=ecol, x_bounds=(8.0, 712.0), math=False))
+        parts.append(svg_knockout_label(ex, y0 - 15.0, str(ev["label"]), anchor="middle", size=11.5, weight="700", fill=ecol, surface_fill="var(--bg-surface)", x_bounds=(8.0, 712.0), math=False))
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -87,7 +92,7 @@ def _compile_sequence(spec: dict[str, Any]) -> str:
         cx = 40.0 + (i + 0.5) * col_w
         cx_map[act["id"]] = cx
         bw = min(136.0, col_w - 14.0)
-        parts.append(f'<rect x="{cx - bw / 2:.1f}" y="{y_hdr}" width="{bw:.1f}" height="{hdr_h}" rx="4" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.3"/>')
+        parts.append(f'<rect data-role="node" x="{cx - bw / 2:.1f}" y="{y_hdr}" width="{bw:.1f}" height="{hdr_h}" rx="4" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.3"/>')
         parts.append(halo_text(cx, y_hdr + 18.0, str(act["label"]), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
         parts.append(f'<line x1="{cx:.1f}" y1="{y_hdr + hdr_h}" x2="{cx:.1f}" y2="{vb_h - 14}" stroke="var(--border-strong)" stroke-width="1.2" stroke-dasharray="3,3"/>')
 
@@ -98,7 +103,7 @@ def _compile_sequence(spec: dict[str, Any]) -> str:
         stroke, mk = ("var(--accent-focal)", "qe-seq-focal") if status == "focal" else (("var(--status-ok)", "qe-seq-ok") if status == "ok" else ("var(--text-primary)", "qe-seq-arr"))
         dash = ' stroke-dasharray="5,3"' if st.get("style") == "dashed" else ""
         parts.append(f'<line x1="{x1:.1f}" y1="{sy:.1f}" x2="{x2:.1f}" y2="{sy:.1f}" stroke="{stroke}" stroke-width="1.6"{dash} marker-end="url(#{mk})"/>')
-        parts.append(pill_halo_text((x1 + x2) / 2.0, sy - 10.0, str(st["label"]), anchor="middle", size=11.5, weight="600", fill=stroke, border="var(--border-hairline)", x_bounds=(8.0, 712.0), math=False))
+        parts.append(svg_knockout_label((x1 + x2) / 2.0, sy - 10.0, str(st["label"]), anchor="middle", size=11.5, weight="600", fill=stroke, surface_fill="var(--bg-surface)", x_bounds=(8.0, 712.0), math=False))
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -198,28 +203,13 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
         t_min, t_span = (min(ts), max(ts) - min(ts)) if len(ts) >= 2 and max(ts) > min(ts) else (t_min, 1.0)
     t_max = t_min + t_span
 
-    x0, y0, pw = 84.0, 28.0, 548.0
+    x0, pw = 84.0, 536.0
     lane_h, hdr_h, lane_gap = 94.0, 22.0, 14.0
     wave_h = lane_h - hdr_h
-    tot_h = len(vis_ch) * lane_h + max(0, len(vis_ch) - 1) * lane_gap
-    vb_h = int(y0 + tot_h + 44.0)
     t_sc = compute_linear_125_scale(t_min, t_max, target_ticks=6)
     nom_dt = float(tb.get("nominal_dt", t_span / 40.0))
     mult = float(spec.get("dropout_handling", {}).get("detection_multiplier", 1.5))
     max_gap = max(1e-12, (nom_dt if (math.isfinite(nom_dt) and nom_dt > 0) else t_span / 40.0) * (mult if (math.isfinite(mult) and mult > 0) else 1.5))
-
-    parts: list[str] = [
-        f'<svg class="qe-svg qe-svg-720" data-qe-scope="true" tabindex="0" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Multi-Channel Scope"))}">',
-    ]
-    for xm in t_sc["minors"]:
-        if t_min <= xm <= t_max:
-            px = x0 + ((xm - t_min) / t_span) * pw
-            parts.append(f'<line x1="{px:.1f}" y1="{y0 + tot_h}" x2="{px:.1f}" y2="{y0 + tot_h + 4}" stroke="var(--border-strong)" stroke-width="0.8"/>')
-    for xmaj in t_sc["majors"]:
-        if t_min - 1e-9 <= xmaj <= t_max + 1e-9:
-            px = x0 + ((xmaj - t_min) / t_span) * pw
-            parts.append(halo_text(px, y0 + tot_h + 18.0, format_tick_numeral(xmaj, step=t_sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
-    parts.append(halo_text(x0 + pw / 2.0, y0 + tot_h + 36.0, tb.get("quantity_calculus", f"t / {t_unit}"), anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))
 
     cursors = spec.get("cursors", {}) if rigor == "L3" else {}
     cursor_xs: list[tuple[float, str, str]] = []
@@ -231,6 +221,39 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
             ccol = resolve_token(cur.get("stroke_color"), "var(--accent-primary)")
             cursor_xs.append((cx, ccol, f'{cur.get("label", ckey)}: {ct:.2f}\u00a0{t_unit}'))
 
+    raw_gaps: list[tuple[float, float]] = []
+    for ch in vis_ch:
+        samples = ch.get("samples", [])
+        if ch.get("type") == "digital":
+            _, g_list = _digital_segments(samples, t_min, t_span, x0, pw, 0.0, wave_h)
+        else:
+            _, g_list = _analog_segments(samples, t_min, t_span, x0, pw, wave_h / 2.0, float(ch.get("vertical_scale_per_div", 1.0)), wave_h, max_gap)
+        raw_gaps.extend(g_list)
+    unique_gaps: list[tuple[float, float]] = []
+    for gt0, gt1 in sorted(raw_gaps):
+        if not unique_gaps or gt0 > unique_gaps[-1][1] + t_span * 1e-3:
+            unique_gaps.append((gt0, gt1))
+        else:
+            unique_gaps[-1] = (unique_gaps[-1][0], max(unique_gaps[-1][1], gt1))
+
+    has_dropouts = bool(unique_gaps) and rigor in {"L2", "L3"}
+    y0 = 46.0 if (has_dropouts and cursor_xs) else (34.0 if (has_dropouts or cursor_xs) else 24.0)
+    tot_h = len(vis_ch) * lane_h + max(0, len(vis_ch) - 1) * lane_gap
+    vb_h = int(y0 + tot_h + 44.0)
+
+    parts: list[str] = [
+        f'<svg class="qe-svg qe-svg-720 qe-waveform-svg" data-qe-scope="true" tabindex="0" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Multi-Channel Scope"))}">',
+    ]
+    for xm in t_sc["minors"]:
+        if t_min <= xm <= t_max:
+            px = x0 + ((xm - t_min) / t_span) * pw
+            parts.append(f'<line x1="{px:.1f}" y1="{y0 + tot_h}" x2="{px:.1f}" y2="{y0 + tot_h + 4}" stroke="var(--border-strong)" stroke-width="0.8"/>')
+    for xmaj in t_sc["majors"]:
+        if t_min - 1e-9 <= xmaj <= t_max + 1e-9:
+            px = x0 + ((xmaj - t_min) / t_span) * pw
+            parts.append(halo_text(px, y0 + tot_h + 18.0, format_tick_numeral(xmaj, step=t_sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
+    parts.append(halo_text(x0 + pw / 2.0, y0 + tot_h + 36.0, tb.get("quantity_calculus", f"t / {t_unit}"), anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))
+
     scope_meta_channels: list[dict[str, Any]] = []
     minor_cls = "qe-grid-minor" if medium == "m1" else "qe-grid-minor qe-m1-only"
     for idx, ch in enumerate(vis_ch):
@@ -238,8 +261,8 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
         wave_top = ly + hdr_h
         ym = wave_top + wave_h / 2.0
         col = resolve_token(ch.get("trace_color"), SERIES_STYLES[idx % len(SERIES_STYLES)]["stroke"])
-        parts.append(f'<rect x="{x0}" y="{ly:.1f}" width="{pw}" height="{lane_h:.1f}" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>')
-        parts.append(f'<rect x="{x0 + 0.5:.1f}" y="{ly + 0.5:.1f}" width="{pw - 1:.1f}" height="{hdr_h - 0.5:.1f}" fill="var(--bg-elevated)"/>')
+        parts.append(f'<rect data-role="channel" x="{x0}" y="{ly:.1f}" width="{pw}" height="{lane_h:.1f}" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/>')
+        parts.append(f'<rect data-role="channel-hdr" x="{x0 + 0.5:.1f}" y="{ly + 0.5:.1f}" width="{pw - 1:.1f}" height="{hdr_h - 0.5:.1f}" fill="var(--bg-elevated)"/>')
         parts.append(f'<line x1="{x0}" y1="{wave_top:.1f}" x2="{x0 + pw}" y2="{wave_top:.1f}" stroke="var(--border-hairline)" stroke-width="0.8"/>')
         for xm in t_sc["minors"]:
             if t_min <= xm <= t_max:
@@ -278,28 +301,37 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
             segs, gaps = _analog_segments(samples, t_min, t_span, x0, pw, ym, scale_div, wave_h, max_gap)
 
         if rigor in {"L2", "L3"}:
+            thr_cands: list[dict[str, Any]] = []
             for env in ch.get("threshold_envelopes", []):
-                ev_y = max(wave_top + 6.0, min(ly + lane_h - 6.0, ym - float(env["value"]) * ((wave_h / 4.0) / max(abs(scale_div), 1e-12))))
+                ev_val = float(env["value"])
+                ev_y = max(wave_top + 6.0, min(ly + lane_h - 6.0, ym - ev_val * ((wave_h / 4.0) / max(abs(scale_div), 1e-12))))
                 ecol = resolve_token(env.get("color"), "var(--status-danger)")
                 parts.append(f'<line x1="{x0}" y1="{ev_y:.1f}" x2="{x0 + pw + 5:.1f}" y2="{ev_y:.1f}" stroke="{ecol}" stroke-width="1.2" stroke-dasharray="4,3"/>')
-                lbl_y = max(wave_top + 14.0, min(ly + lane_h - 4.0, ev_y + 4.0))
-                parts.append(pill_halo_text(x0 + pw + 7.0, lbl_y, f'{env["value"]:+g}\u00a0{ch.get("unit", "")}', anchor="start", size=11.5, weight="700", fill=ecol, border=ecol, x_bounds=(x0 + pw + 5.0, 718.0), math=False))
+                thr_cands.append({"x": x0 + pw + 8.0, "y": ev_y + 4.0, "text": f'{ev_val:+g}\u00a0{ch.get("unit", "")}', "anchor": "start", "fill": ecol, "w": 84.0})
+            for th in avoid_label_overlaps(thr_cands, min_y=wave_top + 11.0, max_y=ly + lane_h - 3.0, step_y=14.0):
+                parts.append(halo_text(th["x"], th["y"], th["text"], anchor="start", size=11.5, weight="700", fill=th["fill"], halo=False))
 
-        dropout_pills: list[str] = []
         for gt0, gt1 in gaps:
             gx0, gx1 = x0 + ((gt0 - t_min) / t_span) * pw, x0 + ((gt1 - t_min) / t_span) * pw
-            parts.append(f'<rect x="{gx0:.1f}" y="{wave_top + 1:.1f}" width="{max(4.0, gx1 - gx0):.1f}" height="{wave_h - 2:.1f}" fill="var(--status-err-bg)" opacity="0.55"/>')
-            if rigor in {"L2", "L3"} and (gx1 - gx0) >= 68.0:
-                dropout_pills.append(pill_halo_text((gx0 + gx1) / 2.0, ym + 4.0, f"DROPOUT {gt1 - gt0:.1f}\u00a0{t_unit}", anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", border="var(--status-danger)", x_bounds=(x0 + 4.0, x0 + pw - 4.0), math=False))
+            parts.append(f'<rect data-role="dropout-zone" x="{gx0:.1f}" y="{wave_top + 1:.1f}" width="{max(4.0, gx1 - gx0):.1f}" height="{wave_h - 2:.1f}" fill="var(--status-err-bg)" opacity="0.55"/>')
         for cx, ccol, _ in cursor_xs:
             parts.append(f'<line x1="{cx:.1f}" y1="{wave_top:.1f}" x2="{cx:.1f}" y2="{ly + lane_h:.1f}" stroke="{ccol}" stroke-width="1.4" stroke-dasharray="5,3"/>')
         if segs:
             parts.append(f'<path d="{" ".join(segs)}" fill="none" stroke="{col}" stroke-width="1.6" stroke-linejoin="round"/>')
-        parts.extend(dropout_pills)
         scope_meta_channels.append({"id": ch.get("id", f"ch{idx+1}"), "name": ch.get("name", ""), "unit": ch.get("unit", ""), "samples": samples})
 
     for cx, ccol, clbl in cursor_xs:
-        parts.append(halo_text(cx, y0 - 8.0, clbl, anchor="middle", size=11.5, weight="700", fill=ccol, math=True))
+        cy_lbl = 14.0 if has_dropouts else (y0 - 8.0)
+        parts.append(halo_text(cx, cy_lbl, clbl, anchor="middle", size=11.5, weight="700", fill=ccol, math=True))
+
+    if has_dropouts:
+        for gt0, gt1 in unique_gaps:
+            gx0, gx1 = x0 + ((gt0 - t_min) / t_span) * pw, x0 + ((gt1 - t_min) / t_span) * pw
+            span_y = y0 - 5.0
+            parts.append(f'<line x1="{gx0:.1f}" y1="{span_y - 4:.1f}" x2="{gx0:.1f}" y2="{span_y + 3:.1f}" stroke="var(--status-danger)" stroke-width="1.3"/>')
+            parts.append(f'<line x1="{gx1:.1f}" y1="{span_y - 4:.1f}" x2="{gx1:.1f}" y2="{span_y + 3:.1f}" stroke="var(--status-danger)" stroke-width="1.3"/>')
+            parts.append(f'<line x1="{gx0:.1f}" y1="{span_y:.1f}" x2="{gx1:.1f}" y2="{span_y:.1f}" stroke="var(--status-danger)" stroke-width="1.2"/>')
+            parts.append(svg_knockout_label((gx0 + gx1) / 2.0, span_y - 5.0, f"DROPOUT {_format_gap_dur(gt1 - gt0)}\u00a0{t_unit}", anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 4.0, x0 + pw - 4.0), math=False))
 
     parts.append(f'<line class="qe-live-cursor" x1="{x0}" y1="{y0}" x2="{x0}" y2="{y0 + tot_h}" stroke="var(--accent-focal)" stroke-width="1.3" visibility="hidden"/>')
     parts.append("</svg>")

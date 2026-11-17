@@ -56,6 +56,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <link rel="stylesheet" href="../../tokens/quiet-ui-tokens.css" />
   <link rel="stylesheet" href="../../src/css/00-layers-and-reset.css" />
   <link rel="stylesheet" href="../../src/css/01-stage-and-containers.css" />
+  <link rel="stylesheet" href="../../src/css/06-b-pills-and-annunciators.css" />
   <link rel="stylesheet" href="./evidence-bench.css" />
 </head>
 <body>
@@ -110,7 +111,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Qualification Overview">
       <div><strong>Zero-Dependency Compiler Verification</strong> · NAVAIR FTM-108 1-2-5 scales, mandatory 2..9 minor log decades, NIST SP 811 units, paint-order text halos, and Manhattan orthogonal routing.</div>
-      <span id="bench-visible-count" class="va-badge va-badge-ok va-nums">18 of 18 specimens visible</span>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">18 of 18 specimens visible</span>
     </section>
     <section class="qe-bench-grid" aria-label="18 Benchmark Specimens">{cards_markup}</section>
   </main>

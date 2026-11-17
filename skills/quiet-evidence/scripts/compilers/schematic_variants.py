@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from .tokens_and_scales import esc, halo_text, pill_halo_text, resolve_token
+from .svg_labels import halo_text, svg_knockout_label
+from .tokens_and_scales import esc, resolve_token
 
 
 def compile_optical_stack(spec: dict[str, Any]) -> str:
@@ -51,7 +52,7 @@ def compile_delta_lanes(spec: dict[str, Any]) -> str:
             bx = 22.0 + ni * slot
             by = ly + 20.0
             fill = "var(--status-ok-bg)" if kind == "proposed" else ("var(--status-err-bg)" if kind == "decommissioned" else "var(--bg-card)")
-            parts.append(f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="48" rx="5" fill="{fill}" stroke="{stroke}" stroke-width="1.5"{dash}/>')
+            parts.append(f'<rect data-role="node" x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="48" rx="5" fill="{fill}" stroke="{stroke}" stroke-width="1.5"{dash}/>')
             parts.append(halo_text(bx + bw / 2.0, by + 20.0, str(nd["label"]), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
             parts.append(halo_text(bx + bw / 2.0, by + 37.0, str(nd.get("sublabel", "")), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
             if ni < len(nodes) - 1:
@@ -91,9 +92,9 @@ def compile_fsm(spec: dict[str, Any]) -> str:
             "warn": ("var(--status-warn-bg)", "var(--status-warn)", "var(--status-warn)"),
             "err": ("var(--status-err-bg)", "var(--status-danger)", "var(--status-danger)"),
         }.get(tone, ("var(--bg-card)", "var(--border-strong)", "var(--text-primary)"))
-        parts.append(f'<rect x="{sx:.1f}" y="{y_row}" width="{bw:.1f}" height="{bh}" rx="5" fill="{t_style[0]}" stroke="{t_style[1]}" stroke-width="1.6"/>')
+        parts.append(f'<rect data-role="node" x="{sx:.1f}" y="{y_row}" width="{bw:.1f}" height="{bh}" rx="5" fill="{t_style[0]}" stroke="{t_style[1]}" stroke-width="1.6"/>')
         if tone == "err":
-            parts.append(f'<rect x="{sx + 3:.1f}" y="{y_row + 3}" width="{max(4.0, bw - 6):.1f}" height="{bh - 6}" rx="3" fill="none" stroke="{t_style[1]}" stroke-width="1"/>')
+            parts.append(f'<rect data-role="node-ring" x="{sx + 3:.1f}" y="{y_row + 3}" width="{max(4.0, bw - 6):.1f}" height="{bh - 6}" rx="3" fill="none" stroke="{t_style[1]}" stroke-width="1"/>')
         parts.append(halo_text(sx + bw / 2.0, y_row + 21.0, str(st["label"]), anchor="middle", size=11.5, weight="700", fill=t_style[2], halo=False))
         parts.append(halo_text(sx + bw / 2.0, y_row + 37.0, str(st.get("sublabel", "")), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
         if idx == 0:
@@ -112,7 +113,7 @@ def compile_fsm(spec: dict[str, Any]) -> str:
             loop_y = y_row + bh + 44.0 + ret_idx * 44.0
             d = f"M {cx_s:.1f} {y_row + bh} L {cx_s:.1f} {loop_y - 8.0:.1f} A 8 8 0 0 1 {cx_s - 8:.1f} {loop_y:.1f} L {cx_d + 8:.1f} {loop_y:.1f} A 8 8 0 0 1 {cx_d:.1f} {loop_y - 8.0:.1f} L {cx_d:.1f} {y_row + bh}"
             parts.append(f'<path d="{d}" fill="none" stroke="var(--text-secondary)" stroke-width="1.3" stroke-dasharray="4,3" marker-end="url(#qe-fsm-arr)"/>')
-            parts.append(pill_halo_text((cx_s + cx_d) / 2.0, loop_y + 20.0, str(tr["label"]), anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)", border="var(--border-hairline)", x_bounds=(8.0, 712.0), math=False))
+            parts.append(svg_knockout_label((cx_s + cx_d) / 2.0, loop_y + 20.0, str(tr["label"]), anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)", surface_fill="var(--bg-surface)", x_bounds=(8.0, 712.0), math=False))
             ret_idx += 1
     parts.append("</svg>")
     return "\n".join(parts)
@@ -172,7 +173,7 @@ def compile_sankey(spec: dict[str, Any]) -> str:
     for nd in nodes:
         nx, ny, nw, nh = float(nd["x"]), float(nd["y"]), float(nd.get("w", 140)), float(nd.get("h", 64))
         col = resolve_token(nd.get("stroke"), "var(--border-strong)")
-        parts.append(f'<rect x="{nx:.1f}" y="{ny:.1f}" width="{nw:.1f}" height="{nh:.1f}" rx="4" fill="var(--bg-card)" stroke="{col}" stroke-width="1.5"/>')
+        parts.append(f'<rect data-role="node" x="{nx:.1f}" y="{ny:.1f}" width="{nw:.1f}" height="{nh:.1f}" rx="4" fill="var(--bg-card)" stroke="{col}" stroke-width="1.5"/>')
         parts.append(halo_text(nx + nw / 2.0, ny + nh / 2.0 - 4.0, str(nd["label"]), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
         if nd.get("metric"):
             parts.append(halo_text(nx + nw / 2.0, ny + nh / 2.0 + 14.0, str(nd["metric"]), anchor="middle", size=11.5, fill=col, halo=False))
@@ -194,8 +195,8 @@ def compile_er_lineage(spec: dict[str, Any]) -> str:
         ex, ey, ew, eh = float(e["x"]), float(e["y"]), float(e.get("w", 190)), float(e.get("h", 120))
         hdr_bg = "var(--tint-indigo-bg)" if e.get("focal") else "var(--bg-header)"
         stroke = "var(--accent-focal)" if e.get("focal") else "var(--border-strong)"
-        parts.append(f'<rect x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="{eh:.1f}" rx="5" fill="var(--bg-card)" stroke="{stroke}" stroke-width="1.5"/>')
-        parts.append(f'<rect x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="24" rx="5" fill="{hdr_bg}"/>')
+        parts.append(f'<rect data-role="node" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="{eh:.1f}" rx="5" fill="var(--bg-card)" stroke="{stroke}" stroke-width="1.5"/>')
+        parts.append(f'<rect data-role="node-header" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="24" rx="5" fill="{hdr_bg}"/>')
         parts.append(halo_text(ex + ew / 2.0, ey + 16.0, str(e["label"]), anchor="middle", size=11.5, weight="700", fill=stroke if e.get("focal") else "var(--text-primary)", halo=False))
         for ci, col_txt in enumerate(e.get("columns", [])):
             parts.append(halo_text(ex + 10.0, ey + 42.0 + ci * 17.0, str(col_txt), anchor="start", size=11.5, fill="var(--text-secondary)", halo=False))
