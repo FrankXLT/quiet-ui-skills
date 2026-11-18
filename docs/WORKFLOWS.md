@@ -212,22 +212,18 @@ Quiet UI formalizes the **Review-Room Dual-Layer Pattern**:
 
 ---
 
-## 6. Workflow E — Backward-Compatible Diagram AST & Starter Customization Flows
+## 6. Workflow E — Clean-Room Open-Standards Schematic & Starter Customization Flows
 
-Quiet UI v9.0 maintains complete backward compatibility for existing diagram AST extractors and starter kits:
+Quiet UI v9.0 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
 
-### 6.1 Diagram AST Extractors
-The existing AST extraction tools in `skills/quiet-ui-diagrams/scripts/`:
-- `mermaid_extract.py` (flowcharts, sequence diagrams, state/ER diagrams)
-- `plantuml_extract.py` (class diagrams, component diagrams)
-- `drawio_extract.py` (compressed XML shapes, connections)
-- `excalidraw_extract.py` (handcrafted canvas primitives)
+### 6.1 Clean-Room Open-Standards Schematic Compilers (`quiet-evidence`)
+Structured topology and systems diagrams route through `skills/quiet-evidence/scripts/compilers/schematic_compiler.py` (`urn:quiet-ui:schema:v9:schematic`), covering:
+- **Timed Sequence Lifelines (`sequence`)** — ITU-T Z.120 actors, lifelines, activation bars, sync/reply arrows, and timing annotations.
+- **$N^2$ Interface Matrix (`n2_matrix`)** — NASA SP-2016-6105 diagonal subsystem blocks with upper/lower off-diagonal coupling callouts.
+- **Fault Tree Analysis (`fault_tree`)** — NRC NUREG-0492 top event, OR/AND gates, and primary basic events.
+- **Plant/Bus/Pipeline/ER (`pid`, `bus`, `pipeline`, `interlock`, `er_lineage`)** — Orthogonal process instrumentation, bus arbitration, data lineage, and interlock matrices.
 
-**Routing Strategy**: When an incoming file or prompt contains Mermaid or PlantUML AST code, the `quiet-ui-diagrams/SKILL.md` adapter:
-1. Ingests the AST via the appropriate parser.
-2. If the diagram represents system architecture or flow, routes to `quiet-evidence` Modality 6 (*Schematics & Topologies*).
-3. If the diagram represents numerical series or charts, routes to `quiet-evidence` Modality 4 (*Analytical & Spectral Plots*).
-4. Emits compliant SVG bound to the 4-theme token system.
+**Routing Strategy**: Author a structured JSON spec for the required system topology, validate conservation laws and bounds, and compile deterministic theme-bound `<svg>` output with halo labels and zero ungrounded freehand coordinates.
 
 ### 6.2 Starter Customization Kits (`personal-starter` & `brand-starter`)
 The customization workspaces under `customizations/`:

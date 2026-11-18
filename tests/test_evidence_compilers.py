@@ -58,7 +58,7 @@ class TestTokensAndScales(unittest.TestCase):
 
 
 class TestEvidenceCompilers(unittest.TestCase):
-    def test_all_18_bench_specimens_compile(self) -> None:
+    def test_all_21_bench_specimens_compile(self) -> None:
         spec_dir = REPO_ROOT / "docs" / "bench" / "specimens"
         count = 0
         for jf in sorted(spec_dir.glob("*.json")):
@@ -75,7 +75,7 @@ class TestEvidenceCompilers(unittest.TestCase):
                     # Every <path must declare fill=
                     for m in re.finditer(r"<path\b[^>]*>", out):
                         self.assertIn("fill=", m.group(0))
-        self.assertEqual(count, 18)
+        self.assertEqual(count, 21)
 
     def test_rigor_continuum_and_epistemic_truth(self) -> None:
         plot_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_plots.json").read_text("utf-8"))
@@ -303,6 +303,22 @@ class TestEvidenceCompilers(unittest.TestCase):
         }, rigor="L3")
         self.assertEqual(staggered.count("DROPOUT "), 1)
         self.assertIn("+4.5\u00a0V", staggered)
+
+        # 8. Open-standards clean-room systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492)
+        sys_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m6_systems_schematics.json").read_text("utf-8"))
+        self.assertEqual(len(sys_specs), 3)
+        compiled_sys = [compile_spec(sp, rigor="L3", medium="m2", theme="white") for sp in sys_specs]
+        self.assertIn("ClientHello + SPIFFE ID", compiled_sys[0])
+        self.assertIn("t = 0 ms", compiled_sys[0])
+        self.assertIn("NASA SP-2016-6105", compiled_sys[1])
+        self.assertIn("Valve Pulse cmd", compiled_sys[1])
+        self.assertIn("Loss of Core Coolant Flow", compiled_sys[2])
+        self.assertIn(">AND<", compiled_sys[2])
+        self.assertIn(">OR<", compiled_sys[2])
+        for out_svg in compiled_sys:
+            self.assertIn('viewBox="0 0 720', out_svg)
+            for path_tag in re.findall(r"<path\b[^>]*>", out_svg):
+                self.assertIn("fill=", path_tag)
 
 
 if __name__ == "__main__":

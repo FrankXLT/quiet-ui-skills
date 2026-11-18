@@ -22,6 +22,8 @@ except ImportError:
         assemble_world_bundle,
         cm_val,
         embed_compile,
+        esc,
+        format_math_html,
         load_world_inputs,
         render_params_aside,
     )
@@ -188,26 +190,24 @@ def _build_v15_html(corpus: dict[str, Any]) -> str:
 </div>"""
 
 
-def _build_v16_html(corpus: dict[str, Any]) -> str:
+def _build_v16_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> str:
     cm = corpus["canonical_metrics"]
     bte = float(cm_val(cm, "peak_bte_pct"))
     ohm = int(cm_val(cm, "canfd_termination_ohm"))
     stub_m = float(cm_val(cm, "canfd_stub_max_m"))
     scrim_min = float(cm_val(cm, "window_scrim_min_contrast"))
+    raw_bit = embed_compile(specs["canfd_bit"], "L3", "m7")
+    bit_panel = (
+        raw_bit.replace(
+            '<div class="va-bleed-wide va-table-wrap"',
+            '<details class="v16-bf-details"><summary class="v16-bf-summary">29-Bit Header Decode (0x18FEF100 · Inspect Fields)</summary><div class="va-bleed-wide va-table-wrap"',
+            1,
+        )
+        .replace("</table></div></section>", "</table></div></details></section>")
+        .replace("</table></div></div>", "</table></div></details></div>")
+    )
 
     return f"""<div class="v9-stage-inner v9-view-v16">
-  <header class="v9-masthead">
-    <div class="v9-masthead-eyebrow">
-      <span class="va-kicker">SPATIAL OPTICAL COMBINER · HIGH-CONTRAST GLASS OVERLAY</span>
-      <div class="v9-masthead-tags">
-        <span class="va-pill" data-variant="tag">MIN SCRIM {scrim_min:.1f}:1</span>
-        <span class="va-pill" data-variant="status" data-state="warn">MCU 0xEF WARN</span>
-      </div>
-    </div>
-    <h1 class="v9-masthead-title">Bridge &amp; Vehicle Transparent Smart-Glass Bus Alert Pod</h1>
-    <p class="v9-masthead-sub">Luminance-adaptive combiner overlay projecting CAN-FD MCU (0xEF) thermal warn and peak {bte:.1f}% propulsion efficiency without blocking forward sightline.</p>
-  </header>
-
   <div id="v16-glass-viewport" class="v16-glass-viewport" data-luminance="daylight">
     <div id="v16-top-scrim" class="v16-scrim-band">
       <div class="v16-metric-strip">
@@ -224,32 +224,33 @@ def _build_v16_html(corpus: dict[str, Any]) -> str:
           <span class="v16-metric-val" data-tone="accent">{bte:.1f}% BTE</span>
         </div>
       </div>
-      <span class="v16-scrim-pill">1 BUS WARN · NO FLASH</span>
+      <div class="v16-top-actions">
+        <span class="v16-scrim-pill">1 BUS WARN · NO FLASH</span>
+        <span class="v16-contrast-pill va-nums">SCRIM: <strong id="v16-contrast-val">10.6:1</strong> (&gt;= {scrim_min:.1f}:1)</span>
+      </div>
     </div>
 
     <div class="v16-corridor-spacer" aria-hidden="true">
       <div class="v16-lane-guide"></div>
     </div>
 
-    <div id="v16-bottom-scrim" class="v16-scrim-band">
-      <span class="v16-metric-lbl">PERIPHERAL SIGHTLINE CORRIDOR UNOBSTRUCTED</span>
-      <span class="va-nums">EFFECTIVE SCRIM CONTRAST: <strong id="v16-contrast-val">10.6:1</strong> (Floor {scrim_min:.1f}:1)</span>
+    <div id="v16-bottom-scrim" class="v16-scrim-band v16-bottom-stack">
+      <div class="v16-bottom-bar">
+        <div id="v16-luminance-chips" class="v16-ctrl-chips" role="group" aria-label="Ambient Luminance Test">
+          <button type="button" class="va-pill v9-chip v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.6:1" data-summary="Daylight Glare: darkened scrim preserves 10.6:1 contrast." aria-pressed="true">Daylight Glare</button>
+          <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.8:1" data-summary="Horizon Dusk: balanced scrim preserves 11.8:1 contrast." aria-pressed="false">Horizon Dusk</button>
+          <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" data-summary="Night Cabin: low-bloom scrim preserves 13.4:1 contrast." aria-pressed="false">Night Cabin</button>
+        </div>
+        <span id="v16-lum-readout" class="v16-lum-readout" aria-live="polite">Daylight Glare: darkened scrim preserves 10.6:1 contrast.</span>
+      </div>
+      <div id="v16-bitfield-host" class="v16-bitfield-host">{bit_panel}</div>
     </div>
-  </div>
-
-  <div class="v16-ctrl-bar va-sheet-hide">
-    <div id="v16-luminance-chips" class="v16-ctrl-chips" role="group" aria-label="Ambient Luminance Test">
-      <button type="button" class="va-pill v9-chip v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.6:1" data-summary="Daylight Glare: darkened scrim preserves 10.6:1 minimum contrast against bright road and sky." aria-pressed="true">Daylight Glare</button>
-      <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.8:1" data-summary="Horizon Dusk: balanced scrim preserves 11.8:1 minimum contrast in twilight transitions." aria-pressed="false">Horizon Dusk</button>
-      <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" data-summary="Night Vision: low-bloom scrim preserves 13.4:1 contrast while protecting ambient dark adaptation." aria-pressed="false">Night Cabin</button>
-    </div>
-    <span id="v16-lum-readout" class="v9-filter-readout" aria-live="polite">Daylight Glare: darkened scrim preserves 10.6:1 minimum contrast against bright road and sky.</span>
   </div>
 </div>"""
 
 
 def build_world_05(corpora_dir: Path) -> dict[str, Any]:
-    """Compile World 05 views, templates, and Quiet-Bridge provenance metadata."""
+    """Compile World 05 views, templates, and plain-English design rationale metadata."""
     spec_files = {
         "bte_plot": "v13_propulsion_bte_plot.json",
         "canfd_bus": "v14_canfd_bus_schematic.json",
@@ -260,13 +261,12 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
     cm = corpus["canonical_metrics"]
     bte = float(cm_val(cm, "peak_bte_pct"))
     ohm = int(cm_val(cm, "canfd_termination_ohm"))
-    frame_hex = esc(cm_val(cm, "canfd_arb_frame_hex"))
 
     html_map = {
         "v13-propulsion-archival-monograph": _build_v13_html(corpus, specs),
         "v14-fieldbus-and-scope-debugger": _build_v14_html(corpus, specs),
         "v15-collimated-flight-hud": _build_v15_html(corpus),
-        "v16-transparent-window-overlay": _build_v16_html(corpus),
+        "v16-transparent-window-overlay": _build_v16_html(corpus, specs),
     }
     v14_status = [
         {"text": "1 BUS WARN", "variant": "status", "state": "warn"},
@@ -275,9 +275,9 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v13-propulsion-archival-monograph": {
-            "option_label": "v13 · Propulsion Monograph (M2↔M1 · L3)", "default_medium": "m2",
+            "option_label": "v13 · Propulsion Monograph", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n0"],
-            "nav_icon": "fa-gauge-high", "nav_brand": "Argonne D³ Monograph",
+            "nav_icon": "gauge-high", "nav_brand": "Argonne D³ Monograph",
             "topbar_brand": "Argonne D³ Propulsion Efficiency", "rail_brand": "Monograph",
             "topbar_status": [], "nav_items": ["Efficiency Prose", "D³ Curve & Residuals"],
             "nav_anchors": ["v13-prose", "v13-plot"],
@@ -287,9 +287,9 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Peak BTE {bte:.1f}% at 14.0 bar IMEP; restrict continuous operation within [35.0%, 46.0%] envelope.",
         },
         "v14-fieldbus-and-scope-debugger": {
-            "option_label": "v14 · CAN-FD Fieldbus Debugger (M3 · L3)", "default_medium": "m3",
+            "option_label": "v14 · CAN-FD Fieldbus Debugger", "default_medium": "m3",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
-            "nav_icon": "fa-microchip", "nav_brand": "CAN-FD Bench",
+            "nav_icon": "microchip", "nav_brand": "CAN-FD Bench",
             "topbar_brand": f"SAE J1939 CAN-FD · {cm_val(cm, 'canfd_arb_frame_hex')}", "rail_brand": "Bench Tools",
             "topbar_status": v14_status, "nav_items": ["Bus Topology", "29-Bit Header", "Reflection Scope", "W1C Interlock"],
             "nav_anchors": ["v14-topology", "v14-header", "v14-scope", "v14-interlock"],
@@ -299,9 +299,9 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Inspect 0.35 µs stub reflection gap (0.90–1.25 µs) and verify 120 Ω EOL before clearing SOF_ARB_ERR [31].",
         },
         "v15-collimated-flight-hud": {
-            "option_label": "v15 · Collimated Flight HUD (M6 · L1)", "default_medium": "m6",
+            "option_label": "v15 · Collimated Flight HUD", "default_medium": "m6",
             "chromatic_code": "c4", "default_nav": "n0", "allowed_navs": ["n0"],
-            "nav_icon": "fa-crosshairs", "nav_brand": "Flight Optical HUD",
+            "nav_icon": "crosshairs", "nav_brand": "Flight Optical HUD",
             "topbar_brand": "Collimated Optical HUD", "rail_brand": "Flight HUD",
             "topbar_status": [], "nav_items": [], "nav_anchors": [],
             "inv_col": "v15-collimated-flight-hud", "short_tag": "v15",
@@ -310,9 +310,9 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Hold >= 65% central boresight clear; display {bte:.1f}% BTE & 14.0 bar peripheral telemetry over stroke phosphor.",
         },
         "v16-transparent-window-overlay": {
-            "option_label": "v16 · Smart-Glass Overlay Pod (M7 · L1)", "default_medium": "m7",
+            "option_label": "v16 · Smart-Glass Overlay Pod", "default_medium": "m7",
             "chromatic_code": "c4", "default_nav": "n0", "allowed_navs": ["n0"],
-            "nav_icon": "fa-glasses", "nav_brand": "Smart Glass Pod",
+            "nav_icon": "glasses", "nav_brand": "Smart Glass Pod",
             "topbar_brand": "Transparent Combiner Pod", "rail_brand": "Combiner Pod",
             "topbar_status": [], "nav_items": [], "nav_anchors": [],
             "inv_col": "v16-transparent-window-overlay", "short_tag": "v16",
@@ -321,4 +321,4 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Hold MCU (0xEF) 85 °C derate alert above >= 7.0:1 WCAG AAA smoked scrim across daylight glare.",
         },
     }
-    return assemble_world_bundle(corpus, bp, "05 · Auto, CAN-FD & Aero HUD", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "05 · Auto & Aerospace", view_cfg, html_map)

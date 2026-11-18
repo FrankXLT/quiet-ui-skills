@@ -99,9 +99,15 @@ def verify_static_metrology(repo_root: Path) -> list[str]:
             if sp.get("id") == "bench-m6-l3-1553b-and-variants":
                 if out.count("78 Ω") < 4 or "58.5 Ω XFMR" not in out or "120 Ω" not in out or "A 5 5" not in out:
                     errs.append("[BUS_STD] M6-L3 missing 78-ohm 1553B, 120-ohm CAN-FD, couplers, or bridges")
+            if sp.get("id") == "specimen-19-sequence" and ("SPIFFE ID" not in out or "WORM Audit Log" not in out):
+                errs.append("[SYS_SEQ] Specimen 19 sequence missing lifeline nodes/messages")
+            if sp.get("id") == "specimen-20-n2-matrix" and "NASA SP-2016-6105" not in out:
+                errs.append("[SYS_N2] Specimen 20 missing NASA N2 interface matrix header")
+            if sp.get("id") == "specimen-21-fault-tree" and ("NRC NUREG-0492" not in out or ">OR<" not in out or ">AND<" not in out):
+                errs.append("[SYS_FT] Specimen 21 fault tree missing NRC NUREG-0492 OR/AND gates")
 
-    if total != 18:
-        errs.append(f"[BENCH_COUNT] Expected 18 benchmark specimens, compiled {total}")
+    if total != 21:
+        errs.append(f"[BENCH_COUNT] Expected 21 component specimens, compiled {total}")
     return errs
 
 

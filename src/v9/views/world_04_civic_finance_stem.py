@@ -162,18 +162,17 @@ def _build_v12_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     return f"""<div class="v9-stage-inner v9-view-v12">
   <div class="va-m1-block-only v9-m1-folio">
     <span>FIRST-ORDER RC DISCHARGE LAB · RC-BENCH-RIG-04 · NIST-RC-LAB-2026</span>
-    <span>V_0={v0:.2f} V · TAU={tau:.2f} s · LETTER 8.5×11 IN</span>
+    <span>{format_math_html("V_0")}={v0:.2f} V · τ={tau:.2f} s · LETTER 8.5×11 IN</span>
   </div>
   <header class="v9-masthead">
     <div class="v9-masthead-eyebrow">
-      <span class="va-kicker">STEM PHYSICS LAB · FIRST-ORDER DECAY · <span class="qe-unit">f_s = 1.00 kHz</span></span>
+      <span class="va-kicker">STEM PHYSICS LAB · FIRST-ORDER DECAY · <span class="qe-unit">{format_math_html("f_s")} = 1.00 kHz</span></span>
       <div class="v9-masthead-tags">
-        <span class="va-pill" data-variant="tag">tau = {tau:.2f} s</span>
-        <span class="va-pill" data-variant="status" data-state="nominal">RESIDUALS &lt; 0.8 SIGMA</span>
+        <span class="va-pill" data-variant="status" data-state="nominal">RESIDUALS &lt; 0.8σ</span>
       </div>
     </div>
     <h1 class="v9-masthead-title">First-Order RC Discharge &amp; Experimental Residual Lab</h1>
-    <p class="v9-masthead-sub">Term-bound exponential decay V(t) = {v0:.2f} exp(-t / {tau:.2f}) compared with 9 student oscilloscope points (±{format_math_html("u_y")}).</p>
+    <p class="v9-masthead-sub">Term-bound exponential decay V(t) = {v0:.2f} · exp(−t / {tau:.2f}) compared with 9 student oscilloscope points (±{format_math_html("u_y")}).</p>
   </header>
 
   <div class="v9-filter-bar va-sheet-hide" id="v12-role-chips" role="group" aria-label="Switch Audience Perspective">
@@ -183,7 +182,7 @@ def _build_v12_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 
   <section id="v12-student-note" class="v12-rubric-card" aria-label="Student Lab Procedure">
     <h2>Bench Procedure: Click Either Equation Term to Trace Curve vs. Scope Data</h2>
-    <p>Check the oscilloscope crossing at 1·τ = {tau:.2f} s (predicted {format_math_html("V_c")} = 1.84 V vs observed 1.82 ± 0.05 V). Verify all 9 discrete voltage samples lie within the ±0.8 sigma normalized residual band before starting Lab Section 2.</p>
+    <p>Check the oscilloscope crossing at 1·τ = {tau:.2f} s (predicted {format_math_html("V_c")} = 1.84 V vs observed 1.82 ± 0.05 V). Verify all 9 discrete voltage samples lie within the ±0.8σ normalized residual band before starting Lab Section 2.</p>
   </section>
 
   <section id="v12-instructor-note" class="v12-rubric-card v12-panel-hidden" aria-label="Instructor Grading Rubric">
@@ -200,7 +199,7 @@ def _build_v12_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </article>
       <article class="v12-step-card" data-term="path_loss">
         <h3>Time-Constant Law (τ = {tau:.2f} s)</h3>
-        <p>Analytical decay exp(-t / {tau:.2f}) drops to 1/e ≈ 36.8% of initial charge ({v0:.2f} V) at 2.40 s = 1.84 V.</p>
+        <p>Analytical decay exp(−t / {tau:.2f}) drops to 1/e ≈ 36.8% of initial charge ({v0:.2f} V) at 2.40 s = 1.84 V.</p>
       </article>
     </div>
   </section>
@@ -208,7 +207,7 @@ def _build_v12_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 
 
 def build_world_04(corpora_dir: Path) -> dict[str, Any]:
-    """Compile World 04 views, templates, and Quiet-Bridge provenance metadata."""
+    """Compile World 04 views, templates, and plain-English design rationale metadata."""
     spec_files = {
         "waterfall": "v10_civic_capital_waterfall.json",
         "table": "v10_civic_budget_table.json",
@@ -223,40 +222,40 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
     }
     view_cfg = {
         "v10-civic-capital-budget-deck": {
-            "option_label": "v10 · Civic Capital Budget (M2 · L2)", "default_medium": "m2",
+            "option_label": "v10 · Civic Capital Budget", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
-            "nav_icon": "fa-landmark", "nav_brand": "Civic Budget FY27",
+            "nav_icon": "landmark", "nav_brand": "Civic Budget FY27",
             "topbar_brand": "Civic Capital Budget FY2027", "rail_brand": "Budget Sections",
             "topbar_status": [], "nav_items": ["Trade Gate", "Cash Waterfall", "Reserve Table"],
             "nav_anchors": ["v10-gate", "v10-waterfall", "v10-budget-table"],
             "inv_col": "v10-civic-capital-budget-deck", "short_tag": "v10",
             "bias_removed": "Opaque Municipal Fund Jargon & Fiscal Illusion",
             "bias_risk": "Masks declining net contingency behind gross bond receipts.",
-            "bias_replacement": "Six-step cash waterfall (48.0 -> 26.9 M USD) with explicit Water Main REVIEW flag.",
+            "bias_replacement": "Six-step cash waterfall (48.0 → 26.9 M USD) with explicit Water Main Review flag.",
         },
         "v11-treasury-stress-test-solver": {
-            "option_label": "v11 · Treasury Stress Solver (M3 · L3)", "default_medium": "m3",
+            "option_label": "v11 · Treasury Stress Solver", "default_medium": "m3",
             "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
-            "nav_icon": "fa-scale-balanced", "nav_brand": "Treasury Risk",
+            "nav_icon": "scale-balanced", "nav_brand": "Treasury Risk",
             "topbar_brand": "Treasury +250 bps Rate-Shock Solver", "rail_brand": "Solver Controls",
             "topbar_status": [], "nav_items": ["Shock Solver", "Drawdown Curve"],
             "nav_anchors": ["v11-solver", "v11-plot"],
             "inv_col": "v11-treasury-stress-test-solver", "short_tag": "v11",
             "bias_removed": "Deterministic Point-Forecast Masking",
             "bias_risk": "Hides Monte Carlo lower-tail liquidity dispersion.",
-            "bias_replacement": "n=10,000 Monte Carlo medians (±u_y) paired with deterministic corridor and 20.0% abort floor.",
+            "bias_replacement": "n=10,000 Monte Carlo medians (±u_y) paired with deterministic corridor and 20.0% minimum floor.",
         },
         "v12-stem-interactive-lab": {
-            "option_label": "v12 · STEM RC Discharge Lab (M2↔M1 · L3)", "default_medium": "m2",
+            "option_label": "v12 · STEM RC Discharge Lab", "default_medium": "m2",
             "chromatic_code": "c2", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
-            "nav_icon": "fa-flask", "nav_brand": "RC Physics Lab",
-            "topbar_brand": "RC Discharge Lab · tau = 2.40 s", "rail_brand": "Lab Sections",
+            "nav_icon": "flask", "nav_brand": "RC Physics Lab",
+            "topbar_brand": "RC Discharge Lab · τ = 2.40 s", "rail_brand": "Lab Sections",
             "topbar_status": [], "nav_items": ["Lens Guide", "Experiment Plot"],
             "nav_anchors": ["v12-role-chips", "v12-lab"],
             "inv_col": "v12-stem-interactive-lab", "short_tag": "v12",
             "bias_removed": "Notation-First Overload & Dot-Connecting",
             "bias_risk": "Learners mistake smoothed splines for physical oscilloscope data.",
-            "bias_replacement": "Term-bound V_0 and exp(-t/tau) pills coupled to discrete ±u_y samples + residuals.",
+            "bias_replacement": "Term-bound V₀ and exp(−t/τ) pills coupled to discrete ±u_y oscilloscope samples + residuals.",
         },
     }
-    return assemble_world_bundle(corpus, bp, "04 · Civic Finance & STEM", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "04 · Finance & STEM Lab", view_cfg, html_map)

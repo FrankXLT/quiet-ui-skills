@@ -17,7 +17,7 @@
   },
   "steps": [
     {
-      "label": "Opening Res",
+      "label": "Opening Reserve",
       "value": 48.0,
       "kind": "start"
     },
@@ -42,7 +42,7 @@
       "kind": "delta"
     },
     {
-      "label": "Closing Bal",
+      "label": "Closing Balance",
       "value": 26.9,
       "kind": "total"
     }

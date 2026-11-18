@@ -149,7 +149,7 @@ def _render_envelopes(
             interior = [i for i, (px, py) in enumerate(px_pts) if (y0 + 18.0 <= py <= y0 + ph - 18.0) and (dx0 + 60.0 <= px <= dx0 + dpw - 60.0)]
             if not interior:
                 interior = [i for i, (_, py) in enumerate(px_pts) if y0 + 14.0 <= py <= y0 + ph - 14.0]
-            mid_i = interior[len(interior) // 2] if interior else len(px_pts) // 2
+            mid_i = interior[int(len(interior) * 0.36)] if len(interior) > 4 else (interior[len(interior) // 2] if interior else len(px_pts) // 2)
             cx, cy = px_pts[mid_i]
             p0, p1 = px_pts[max(0, mid_i - 4)], px_pts[min(len(px_pts) - 1, mid_i + 4)]
             dx, dy = p1[0] - p0[0], p1[1] - p0[1]
@@ -162,8 +162,8 @@ def _render_envelopes(
             nx, ny = dy / ln, -dx / ln
             if (direc == "lower" and ny < 0) or (direc != "lower" and ny > 0):
                 nx, ny = -nx, -ny
-            lx = max(x0 + 55.0, min(x0 + pw - 55.0, cx + nx * 12.0))
-            ly = max(y0 + 14.0, min(y0 + ph - 14.0, cy + ny * 12.0))
+            lx = max(x0 + 72.0, min(x0 + pw - 72.0, cx + nx * 20.0))
+            ly = max(y0 + 18.0, min(y0 + ph - 18.0, cy + ny * 20.0))
             sloped.append(halo_text(lx, ly, raw_lbl, anchor="middle", size=11.5, weight="700", fill=col, halo=True, math=True, rotate_deg=theta, stroke_width=4.0, dominant_baseline="central"))
     return parts, labels, gutter, sloped
 
@@ -215,7 +215,7 @@ def _render_series_layers(
     glyph = sr.get("marker_glyph", st["marker"])
     msz = float(sr.get("marker_size_px", 6.5))
     pts = [
-        p for p in sr.get("data_points", [])
+        p for p in (sr.get("data_points") or [])
         if p.get("x") is not None and p.get("y") is not None
         and math.isfinite(float(p["x"])) and math.isfinite(float(p["y"]))
         and (not x_sc["is_log"] or float(p["x"]) > 0.0) and (not y_sc["is_log"] or float(p["y"]) > 0.0)
@@ -253,11 +253,11 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     show_res = bool(spec.get("residual_strip", {}).get("enabled")) and rigor == "L3"
     has_gutter = any(not e.get("equation") and e.get("threshold_value") is not None and len(str(e.get("label", ""))) <= 15 for e in envs)
 
-    xs = [float(p["x"]) for s in vis_series for p in (s.get("data_points", []) + s.get("points", [])) if p.get("x") is not None and math.isfinite(float(p["x"]))]
+    xs = [float(p["x"]) for s in vis_series for p in ((s.get("data_points") or []) + (s.get("points") or [])) if p.get("x") is not None and math.isfinite(float(p["x"]))]
     x_sc = _axis_scale(x_ax, xs)
     ys: list[float] = []
     for s in vis_series:
-        for p in s.get("data_points", []) + s.get("points", []):
+        for p in (s.get("data_points") or []) + (s.get("points") or []):
             if p.get("y") is None or not math.isfinite(float(p["y"])):
                 continue
             yv = float(p["y"])
@@ -270,12 +270,12 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     if not y_ax.get("domain"):
         ys.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
     y_sc = _axis_scale(y_ax, ys)
-    x0, y0, pw, ph = (92.0, 26.0, 504.0, 224.0) if has_gutter else (94.0, 26.0, 590.0, 224.0)
+    x0, y0, pw, ph = (78.0, 26.0, 404.0, 224.0) if has_gutter else (78.0, 26.0, 496.0, 224.0)
     inset_x = pw * 0.035
     data_x = (x0 + inset_x, pw - 2.0 * inset_x)
     vb_h = 402 if show_res else 306
     clip_uid = f"qe-clip-{abs(hash((str(spec.get('id', '')), str(x_ax.get('quantity', '')), str(y_ax.get('quantity', ''))))) % 999983}"
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Analytical Plot"))}">']
+    parts: list[str] = [f'<svg class="qe-svg qe-svg-600" viewBox="0 0 600 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Analytical Plot"))}">']
     parts.append(f'<defs><clipPath id="{clip_uid}"><rect x="{x0}" y="{y0}" width="{pw}" height="{ph}"/></clipPath></defs>')
     parts.extend(_render_graticule(x_sc, y_sc, x_ax, y_ax, (x0, y0, pw, ph), data_x, rigor, medium))
 
@@ -301,8 +301,14 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     for ann in spec.get("annotations", []):
         if ann.get("series_id") and ann["series_id"] not in vis_ids:
             continue
-        ax_p = _proj_x(float(ann["x"]), x_sc, data_x[0], data_x[1])
-        ay_p = _proj_y(float(ann["y"]), y_sc, y0, ph)
+        raw_x, raw_y = ann.get("x"), ann.get("y")
+        if raw_x is None or raw_y is None:
+            continue
+        xv_a, yv_a = float(raw_x), float(raw_y)
+        if not (math.isfinite(xv_a) and math.isfinite(yv_a)):
+            continue
+        ax_p = _proj_x(xv_a, x_sc, data_x[0], data_x[1])
+        ay_p = _proj_y(yv_a, y_sc, y0, ph)
         tx = max(x0 + 20, min(x0 + pw - 20, ax_p + float(ann.get("dx", 24))))
         ty = max(y0 + 18, min(y0 + ph - 12, ay_p + float(ann.get("dy", -20))))
         t_col = resolve_term_colors(ann.get("term"))["fg"] if ann.get("term") else "var(--accent-focal)"

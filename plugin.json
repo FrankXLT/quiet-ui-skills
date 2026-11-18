@@ -1,12 +1,12 @@
 {
   "name": "quiet-ui-skills",
   "displayName": "Quiet UI Skills",
-  "description": "Quiet UI v9.0 multi-medium design system (quiet-ui), quantitative evidence compilers (quiet-evidence), 45-type SVG diagram engine (quiet-ui-diagrams), and standalone/CMS customization toolkit.",
+  "description": "Quiet UI v9.0 3-pillar suite: 7-medium UI architecture (quiet-ui), calibrated metrology & open-standards SVG compilers (quiet-evidence), audience translation (quiet-bridge), and starter customization kits.",
   "logo": "assets/logo.svg",
   "version": "9.0.0",
   "suggestedPrompts": [
     "Turn these engineering notes and metrics into a clean Quiet UI page",
-    "Design an editorial SVG system architecture diagram from our codebase",
+    "Compile calibrated plots, bitfields, or sequence/N2/fault-tree SVG schematics from structured JSON",
     "Customize Quiet UI for my brand in customizations/my-brand/"
   ]
 }

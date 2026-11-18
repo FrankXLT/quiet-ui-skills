@@ -12,9 +12,9 @@ from .constants import ATLAS_FAMILY_EXPECTED_COUNTS, ATLAS_TOTAL_CARDS, HUD_BACK
 
 
 def check_gate_14_atlas_standalone(driver: webdriver.Chrome, base_url: str) -> list[str]:
-    """Test diagrams.html standalone at 390x844."""
+    """Deprecated Gate 14 stub retained for contract export compatibility (bench tested in Gate 17)."""
     errors: list[str] = []
-    atlas_url = urllib.parse.urljoin(base_url, "diagrams.html")
+    atlas_url = urllib.parse.urljoin(base_url, "bench/evidence-bench.html")
     driver.set_window_size(390, 844)
     driver.get(atlas_url)
     time.sleep(0.3)
@@ -213,10 +213,8 @@ def run_atlas_and_hud_gates(
     base_url: str,
     screenshots_dir: Any = None,
 ) -> list[str]:
-    """Execute live Selenium CDP Gates 14 and 15."""
+    """Execute live Selenium CDP Gate 15 (HUD-1 field of regard & contrast)."""
     errors: list[str] = []
-    errors.extend(check_gate_14_atlas_standalone(driver, base_url))
-    errors.extend(check_gate_14_atlas_embedded(driver, base_url))
 
     # Gate 15 across 4 key viewports: 820x1180, 1920x1080, 2560x1440, 3840x2160
     for w, h in [(820, 1180), (1920, 1080), (2560, 1440), (3840, 2160)]:

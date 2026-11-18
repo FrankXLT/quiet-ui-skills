@@ -75,7 +75,7 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div class="v9-kpi-tile">
         <span class="va-kicker">CANARY TRAFFIC GATE</span>
         <span class="v9-kpi-val va-nums" data-tone="danger">0 (TRIPPED)</span>
-        <span class="v9-kpi-sub">Cursors T_A={ca_s:.1f} s .. T_B={cb_s:.1f} s</span>
+        <span class="v9-kpi-sub">Cursors {format_math_html("T_A")}={ca_s:.1f} s .. {format_math_html("T_B")}={cb_s:.1f} s</span>
       </div>
     </div>
   </section>
@@ -104,7 +104,7 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         <span class="va-kicker">SRE INTERLOCK EVENT LOG</span>
         <div id="v04-audit-list" class="v9-audit-list">
           <div class="v9-audit-item">[04:15:00Z] Canary gate tripped to 0 at t = 36.0 s after {p99_peak:.1f} ms p99 breach.</div>
-          <div class="v9-audit-item">[04:14:48Z] Uninterpolated OTel scrape null gap ({drop_s:.1f} s) bracketed within T_A..T_B ({cb_s - ca_s:.1f} s).</div>
+          <div class="v9-audit-item">[04:14:48Z] Uninterpolated OTel scrape null gap ({drop_s:.1f} s) bracketed within {format_math_html("T_A")}..{format_math_html("T_B")} ({cb_s - ca_s:.1f} s).</div>
         </div>
       </div>
     </div>
@@ -120,7 +120,7 @@ def _build_v05_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     reg_off = esc(cm_val(cm, "fips_policy_offset_hex"))
     topo_spec = slice_schematic_panel(
         specs["schematics"], 0, "v05-zero-trust-topology",
-        title="V05: NIST SP 800-207 Zero-Trust Enclave & PPSM Boundary Topology",
+        title="NIST SP 800-207 Zero-Trust Enclave & PPSM Boundary Topology",
         description="Segmented 3-enclave trust topology enforcing orthogonal cross-boundary PPSM ports (443, 8443, 9443, 4317) and zero implicit subnet trust.",
     )
     topo_html = embed_compile(topo_spec, "L2", "m2")
@@ -208,9 +208,10 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     cal_html = embed_compile(specs["cal_plot"], "L3", "m3")
     er_spec = slice_schematic_panel(
         specs["schematics"], 1, "v06-telemetry-lineage",
-        title="V06: Crow's-Foot AI Telemetry & Drift Alert Lineage Schema",
-        description="End-to-end immutable audit lineage from RAW_EVENTS through FEATURE_VECTORS and MODEL_SNAPSHOTS to DRIFT_ALERTS.",
+        title="Crow's-Foot AI Telemetry & Drift Alert Lineage Schema",
+        description="End-to-end immutable audit lineage from Raw Events through Feature Vectors and Model Snapshots to Drift Alerts.",
     )
+    er_spec["metadata"] = {**er_spec.get("metadata", {}), "drawing_id": "AI-TELEMETRY-ER-06"}
     er_html = embed_compile(er_spec, "L3", "m3")
 
     return f"""<div class="v9-stage-inner v9-view-v06">
@@ -246,7 +247,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div class="v9-kpi-tile">
         <span class="va-kicker">TELEMETRY LINEAGE</span>
         <span class="v9-kpi-val va-nums">{er_cnt} Entities</span>
-        <span class="v9-kpi-sub">RAW_EVENTS -&gt; DRIFT_ALERTS</span>
+        <span class="v9-kpi-sub">Raw Events → Drift Alerts</span>
       </div>
     </div>
   </section>
@@ -259,7 +260,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 
 
 def build_world_02(corpora_dir: Path) -> dict[str, Any]:
-    """Compile World 02 views, templates, and Quiet-Bridge provenance metadata."""
+    """Compile World 02 views, templates, and plain-English design rationale metadata."""
     spec_files = {
         "scope": "v04_sre_latency_scope.json",
         "bitfield": "v05_tls_policy_bitfield.json",
@@ -284,9 +285,9 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v04-sre-incident-workbench": {
-            "option_label": "v04 · SRE Incident Workbench (M3 · L3)", "default_medium": "m3",
+            "option_label": "v04 · SRE Incident Workbench", "default_medium": "m3",
             "chromatic_code": "c4", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
-            "nav_icon": "fa-triangle-exclamation", "nav_brand": "SRE Incident",
+            "nav_icon": "alert-triangle", "nav_brand": "SRE Incident",
             "topbar_brand": "SRE Incident · API-EDGE-W2", "rail_brand": "SRE Console",
             "topbar_status": [], "nav_items": ["SLO Summary", "Latency Scope", "Canary Gate", "Event Log"],
             "nav_anchors": ["v04-incident", "v04-scope", "v04-interlock", "v04-log"],
@@ -294,19 +295,19 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Mean latency and smoothed gaps mask 420.0 ms p99 tail breaches and the 12.0 s OTel blindspot.",
         },
         "v05-zero-trust-ato-spec": {
-            "option_label": "v05 · Zero-Trust ATO Spec (M2↔M1 · L2)", "default_medium": "m2",
+            "option_label": "v05 · Zero-Trust Security Spec", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
-            "nav_icon": "fa-shield-halved", "nav_brand": "ATO Security Spec",
-            "topbar_brand": "ATO Security Spec", "rail_brand": "ATO Sections",
+            "nav_icon": "shield-halved", "nav_brand": "Zero-Trust Spec",
+            "topbar_brand": "Zero-Trust Security Spec", "rail_brand": "Security Sections",
             "topbar_status": [], "nav_items": ["Disposition", "Rationale", "Enclave Map", "Policy Reg"],
             "nav_anchors": ["v05-disposition", "v05-rationale", "v05-topology", "v05-bitfield"],
             "inv_col": "v05-zero-trust-ato-spec", "short_tag": "v05",
             "bias_risk": "Topological marketing diagrams and latency telemetry obscure boundary accreditation and FIPS latches.",
         },
         "v06-ai-drift-and-lineage-ide": {
-            "option_label": "v06 · AI Calibration & Lineage IDE (M3 · L3)", "default_medium": "m3",
+            "option_label": "v06 · AI Calibration & Lineage", "default_medium": "m3",
             "chromatic_code": "c3", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
-            "nav_icon": "fa-code-branch", "nav_brand": "AI Drift IDE",
+            "nav_icon": "code-branch", "nav_brand": "AI Drift IDE",
             "topbar_brand": "CLS-ROUTER-V4 · Calibration & Lineage", "rail_brand": "Model Telemetry",
             "topbar_status": v06_status, "nav_items": ["Fallback Gate", "Reliability", "ER Lineage"],
             "nav_anchors": ["v06-drift", "v06-cal", "v06-lineage"],
@@ -314,4 +315,4 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Aggregate accuracy scores mask severe high-confidence overconfidence (0.73 observed vs 0.85 predicted).",
         },
     }
-    return assemble_world_bundle(corpus, bp, "02 · Cloud, Cyber & AI Ops", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "02 · Cloud, Security & AI", view_cfg, html_map)

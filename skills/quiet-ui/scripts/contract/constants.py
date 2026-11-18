@@ -28,11 +28,10 @@ TIERS: list[str] = [
     "hud-1", "ctrl-1",
 ]
 
-# SHA-256 Parity Token Mirror Targets
+# SHA-256 Parity Token Mirror Targets (4-Way First-Party Parity)
 TOKEN_MIRROR_PATHS: list[str] = [
     "tokens/quiet-ui-tokens.css",
     "skills/quiet-ui/tokens/quiet-ui-tokens.css",
-    "docs/atlas/quiet-ui-tokens.css",
     "customizations/personal-starter/styles/quiet-ui-tokens.css",
     "customizations/brand-starter/styles/quiet-ui-tokens.css",
 ]
@@ -63,7 +62,6 @@ PILLAR_SKILL_NAMES: tuple[str, ...] = (
     "quiet-ui",
     "quiet-evidence",
     "quiet-bridge",
-    "quiet-ui-diagrams",
 )
 
 # Offline Schema URN Prefix

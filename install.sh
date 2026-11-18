@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for Quiet UI v9.0 Plugin & 4 Pillar Skills
+# quiet-ui-skills — 1-Command Installer for Quiet UI v9.0 Plugin & 3 Pillar Skills
 # Bundles:
 #   1. Antigravity Native Plugin -> ~/.gemini/config/plugins/quiet-ui-skills
-#   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge,quiet-ui-diagrams}
-# License: Apache 2.0 (Core Plugin) + MIT (Customizations, Tokens & Diagrams)
+#   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}
+# License: Apache 2.0 (Core Plugin) + MIT (Customizations, Tokens & Output)
 # Upstream: https://github.com/FrankXLT/quiet-ui-skills
 # Usage:
-#   bash install.sh                  # Default plugin + 4-pillar cross-agent install
-#   bash install.sh /custom/skills   # Installs all 4 pillar skills into dir
+#   bash install.sh                  # Default plugin + 3-pillar cross-agent install
+#   bash install.sh /custom/skills   # Installs all 3 pillar skills into dir
 # ==============================================================================
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UI_SKILL_SRC="${SCRIPT_DIR}/skills/quiet-ui"
-PILLAR_SKILLS=("quiet-ui" "quiet-evidence" "quiet-bridge" "quiet-ui-diagrams")
+PILLAR_SKILLS=("quiet-ui" "quiet-evidence" "quiet-bridge")
 
 for sk in "${PILLAR_SKILLS[@]}"; do
   if [[ ! -d "${SCRIPT_DIR}/skills/${sk}" ]]; then
@@ -68,16 +68,14 @@ if [[ $# -ge 1 ]]; then
     for sk in "${PILLAR_SKILLS[@]}"; do
       copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${TARGET_ROOT}/${sk}"
     done
-    echo "[OK] Installed 4 pillar skills v9.0 -> ${TARGET_ROOT}"
+    echo "[OK] Installed 3 pillar skills v9.0 -> ${TARGET_ROOT}"
   fi
 else
   # 1. Purge legacy loose skills so they never shadow the Antigravity plugin
   rm -rf \
     "${HOME}/.gemini/config/skills/visual-architecture-system" \
-    "${HOME}/.gemini/config/skills/quiet-ui" \
-    "${HOME}/.gemini/config/skills/quiet-evidence" \
-    "${HOME}/.gemini/config/skills/quiet-bridge" \
-    "${HOME}/.gemini/config/skills/quiet-ui-diagrams" \
+    "${HOME}/.gemini/config/skills/"quiet-* \
+    "${HOME}/.agents/skills/"quiet-* \
     "${HOME}/.agents/skills/visual-architecture-system"
 
   # 2. Install native Antigravity plugin bundle
@@ -88,5 +86,5 @@ else
   for sk in "${PILLAR_SKILLS[@]}"; do
     copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${HOME}/.agents/skills/${sk}"
   done
-  echo "[OK] Installed standalone skills -> ${HOME}/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge,quiet-ui-diagrams}"
+  echo "[OK] Installed standalone skills -> ${HOME}/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}"
 fi

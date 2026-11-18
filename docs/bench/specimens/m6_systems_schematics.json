@@ -1,0 +1,95 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "specimen-19-sequence",
+    "metadata": {
+      "title": "Specimen 19: ITU-T Z.120 Sequence Lifeline (Zero-Trust Handshake)",
+      "description": "Timed message exchange across field gateway, mutual-TLS proxy, policy engine, and audit log under <= 18 ms SLA budget.",
+      "rigor_level": "L2"
+    },
+    "schematic_kind": "sequence",
+    "phases": [
+      {
+        "label": "TLS 1.3 + Attestation",
+        "start_row": 0,
+        "end_row": 2,
+        "tone": "focal"
+      }
+    ],
+    "participants": [
+      {"id": "edge", "label": "Field Gateway", "tone": "neutral"},
+      {"id": "proxy", "label": "mTLS Proxy", "tone": "focal"},
+      {"id": "pdp", "label": "Policy Engine", "tone": "neutral"},
+      {"id": "audit", "label": "WORM Audit Log", "tone": "ok"}
+    ],
+    "messages": [
+      {"from": "edge", "to": "proxy", "label": "ClientHello + SPIFFE ID", "kind": "sync", "timing": "t = 0 ms", "active": ["proxy"]},
+      {"from": "proxy", "to": "pdp", "label": "Verify Cert + Nonce", "kind": "sync", "timing": "4 ms", "active": ["pdp"]},
+      {"from": "pdp", "to": "proxy", "label": "Permit (TTL = 300 s)", "kind": "reply", "timing": "11 ms"},
+      {"from": "proxy", "to": "audit", "label": "Append Auth Record", "kind": "async", "timing": "14 ms", "tone": "ok"},
+      {"from": "proxy", "to": "edge", "label": "Session Established", "kind": "reply", "timing": "17 ms"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "specimen-20-n2-matrix",
+    "metadata": {
+      "title": "Specimen 20: NASA SP-2016-6105 N² Interface Matrix",
+      "description": "Closed-loop attitude and thermal subsystem data coupling showing upper-triangle forward commands and lower-triangle telemetry feedback.",
+      "rigor_level": "L2"
+    },
+    "schematic_kind": "n2_matrix",
+    "subsystems": [
+      {"id": "imu", "label": "Inertial IMU", "tone": "focal"},
+      {"id": "gnc", "label": "Flight GNC", "tone": "focal"},
+      {"id": "rcs", "label": "Thruster RCS", "tone": "warn"},
+      {"id": "eps", "label": "Power EPS", "tone": "ok"}
+    ],
+    "interfaces": [
+      {"from": "imu", "to": "gnc", "label": "Body Rates \u03c9", "tone": "focal"},
+      {"from": "gnc", "to": "rcs", "label": "Valve Pulse cmd", "tone": "warn"},
+      {"from": "gnc", "to": "imu", "label": "Bias Trim Cal", "tone": "neutral"},
+      {"from": "rcs", "to": "gnc", "label": "Valve Ack State", "tone": "neutral"},
+      {"from": "eps", "to": "rcs", "label": "28 V Bus Enable", "tone": "ok"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "specimen-21-fault-tree",
+    "metadata": {
+      "title": "Specimen 21: NRC NUREG-0492 Fault Tree (Cooling Loss)",
+      "description": "Minimal cut-set fault tree coupling dual coolant pump starvation OR active valve freeze through AND/OR logic gates.",
+      "rigor_level": "L2"
+    },
+    "schematic_kind": "fault_tree",
+    "top_event": {
+      "id": "top",
+      "label": "Loss of Core Coolant Flow",
+      "prob": "P = 4.2\u00d710\u207b\u2076 / hr",
+      "gate": "OR",
+      "tone": "err"
+    },
+    "branches": [
+      {
+        "id": "pump",
+        "label": "Dual Pump Loss",
+        "gate": "AND",
+        "tone": "warn",
+        "children": [
+          {"label": "Pump A Trip", "prob": "1.4\u00d710\u207b\u00b3", "kind": "basic", "tone": "neutral"},
+          {"label": "Pump B Breaker", "prob": "2.1\u00d710\u207b\u00b3", "kind": "basic", "tone": "neutral"}
+        ]
+      },
+      {
+        "id": "path",
+        "label": "Loop Path Blocked",
+        "gate": "OR",
+        "tone": "warn",
+        "children": [
+          {"label": "Isolation Freeze", "prob": "8.0\u00d710\u207b\u2077", "kind": "basic", "tone": "warn"},
+          {"label": "Sensor Stuck", "prob": "4.6\u00d710\u207b\u2077", "kind": "undeveloped", "tone": "neutral"}
+        ]
+      }
+    ]
+  }
+]

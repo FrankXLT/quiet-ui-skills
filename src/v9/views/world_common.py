@@ -19,6 +19,20 @@ if str(EVIDENCE_SCRIPTS) not in sys.path:
 
 from compile_evidence import compile_spec  # noqa: E402
 from compilers.tokens_and_scales import esc, format_math_html  # noqa: E402
+try:
+    from rationale_formatter import (  # noqa: E402
+        format_ledger_rows,
+        format_vector_summary,
+        humanize_rubric_title,
+        scrub_prose,
+    )
+except ImportError:
+    from src.v9.views.rationale_formatter import (  # noqa: E402
+        format_ledger_rows,
+        format_vector_summary,
+        humanize_rubric_title,
+        scrub_prose,
+    )
 
 _INV_TOKENS = (("Baseline", "baseline"), ("Provenance", "provenance"), ("Margin", "margin"), ("Disposition", "disposition"))
 
@@ -223,23 +237,29 @@ def assemble_world_bundle(
                 any(k in finding or k in rubric for k in mb_kw) or not re.search(r"\bv\d{2}\b", finding)
             )
             if in_scope:
-                mb_list.append({"rubric": rubric, "finding": finding, "verdict": r.get("Verdict") or r.get("Status") or r.get("Disposition") or "PASS"})
+                clean_finding = scrub_prose(finding)
+                mb_list.append({
+                    "rubric": humanize_rubric_title(rubric, clean_finding),
+                    "finding": clean_finding,
+                    "verdict": scrub_prose(r.get("Verdict") or r.get("Status") or r.get("Disposition") or "PASS"),
+                })
+        clean_inv = {k: scrub_prose(v) for k, v in inv_dict.items()}
         views_meta.append({
-            "view_id": vid, "title": vw["title"], "option_label": cfg["option_label"],
+            "view_id": vid, "title": scrub_prose(vw["title"]), "option_label": cfg["option_label"],
             "default_medium": cfg["default_medium"], "chromatic_code": cfg["chromatic_code"],
             "default_nav": cfg["default_nav"], "allowed_navs": cfg["allowed_navs"],
             "nav_icon": cfg["nav_icon"], "nav_brand": cfg["nav_brand"], "topbar_brand": cfg["topbar_brand"],
             "rail_brand": cfg["rail_brand"], "topbar_status": cfg["topbar_status"],
             "nav_items": cfg["nav_items"], "nav_anchors": cfg["nav_anchors"],
-            "vector_summary": f'{vw["presenter"]} -> {vw["audience"]} × {"/".join(vw["tempos"])} × {"/".join(vw["mediums"])} × {vw["chromatic_budget"]} × {vw["rigor_level"]}',
-            "actionable_disposition": _format_disposition(vw, cfg),
-            "bias_removed": bias.get("Presenter Bias Identified") or bias.get("Habitual Presenter Bias") or pb.get("removed") or cfg.get("bias_removed", ""),
-            "bias_risk": bias.get("Risk to Target Audience") or pb.get("risk") or cfg.get("bias_risk", ""),
-            "bias_replacement": bias.get("Scrubbed / Distilled Replacement") or bias.get("Quiet Bridge Scrub Directive") or bias.get("Receiver Scrub Rule Applied") or pb.get("replacement") or cfg.get("bias_replacement", ""),
-            "invariants": inv_dict, "murder_board": mb_list,
+            "vector_summary": format_vector_summary(vw),
+            "actionable_disposition": scrub_prose(_format_disposition(vw, cfg)),
+            "bias_removed": scrub_prose(bias.get("Presenter Bias Identified") or bias.get("Habitual Presenter Bias") or pb.get("removed") or cfg.get("bias_removed", "")),
+            "bias_risk": scrub_prose(bias.get("Risk to Target Audience") or pb.get("risk") or cfg.get("bias_risk", "")),
+            "bias_replacement": scrub_prose(bias.get("Scrubbed / Distilled Replacement") or bias.get("Quiet Bridge Scrub Directive") or bias.get("Receiver Scrub Rule Applied") or pb.get("replacement") or cfg.get("bias_replacement", "")),
+            "invariants": clean_inv, "murder_board": mb_list,
         })
         templates[vid] = html_map[vid]
     return {
-        "world_meta": {"world_id": corpus["world_id"], "world_label": world_label, "title": corpus["title"], "views": views_meta, "conservation_ledger": ledger_rows},
+        "world_meta": {"world_id": corpus["world_id"], "world_label": world_label, "title": scrub_prose(corpus["title"]), "views": views_meta, "conservation_ledger": format_ledger_rows(ledger_rows)},
         "templates": templates,
     }

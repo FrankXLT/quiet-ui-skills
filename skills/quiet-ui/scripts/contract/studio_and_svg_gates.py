@@ -126,17 +126,19 @@ for (const svg of document.querySelectorAll('svg')) {
         const cs = window.getComputedStyle(t);
         if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0) continue;
         const ctm = t.getScreenCTM();
-        if (!ctm || ctm.a <= 0) continue;
+        const scale = ctm ? Math.hypot(ctm.a, ctm.b) : 0;
+        if (!ctm || scale <= 0) continue;
         const fs = parseFloat(cs.fontSize);
-        const rendered = fs * ctm.a;
+        const rendered = fs * scale;
         if (rendered < minPx - 0.05 || rendered > maxPx + 0.05) {
             errs.push(`SVG <text> '${t.textContent.trim().slice(0, 28)}' rendered=${rendered.toFixed(2)}px outside [${minPx}, ${maxPx}]`);
             break;
         }
         if (checkClip && vb) {
-            const bb = t.getBBox();
-            if (bb.width > 0 && (bb.x < -4 || bb.x + bb.width > vb.width + 6)) {
-                errs.push(`SVG <text> '${t.textContent.trim().slice(0, 28)}' clips viewBox [0..${vb.width}]: x=${bb.x.toFixed(1)}..${(bb.x + bb.width).toFixed(1)}`);
+            const tr = t.getBoundingClientRect();
+            const scaleX = sr.width / vb.width;
+            if (tr.width > 0 && (tr.left < sr.left - 4 * scaleX || tr.right > sr.right + 6 * scaleX)) {
+                errs.push(`SVG <text> '${t.textContent.trim().slice(0, 28)}' clips viewBox [0..${vb.width}]: x=${((tr.left - sr.left) / scaleX).toFixed(1)}..${((tr.right - sr.left) / scaleX).toFixed(1)}`);
                 break;
             }
         }
@@ -197,16 +199,15 @@ def check_gate_17_svg_and_figures(driver: webdriver.Chrome, base_url: str) -> li
                 """)
                 errors.extend([f"[GATE_17_FIG_{tier}_390] {e}" for e in fig_errs])
 
-    # 2. Audit all 45 Atlas cards + Workbench SVGs across all 5 canonical viewports
-    atlas_url = urllib.parse.urljoin(base_url, "diagrams.html")
-    driver.get(atlas_url)
+    # 2. Audit Evidence Component Library across all 5 canonical viewports
+    driver.get(urllib.parse.urljoin(base_url, "bench/evidence-bench.html"))
     time.sleep(0.25)
 
     for w, h in VIEWPORTS:
         driver.set_window_size(w, h)
         time.sleep(0.08)
         a_errs = driver.execute_script(_SVG_FONT_AUDIT_JS, 10.0, 16.0, w == 390, True)
-        errors.extend([f"[GATE_17_ATLAS_{w}] {e}" for e in a_errs])
+        errors.extend([f"[GATE_17_COMP_{w}] {e}" for e in a_errs])
 
     return errors
 

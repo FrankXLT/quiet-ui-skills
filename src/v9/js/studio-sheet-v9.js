@@ -26,8 +26,8 @@
 
   function buildContractPrompt(state) {
     return (
-      'World: ' + state.world + ' · View: ' + state.view +
-      ' · Medium: ' + state.medium + ' · Nav: ' + state.nav +
+      'Domain: ' + state.world + ' · View: ' + state.view +
+      ' · Format: ' + state.medium + ' · Shell: ' + state.nav +
       ' · Theme: ' + state.theme + ' · Density: ' + state.density +
       ' · Scale: ' + state.scale + '%'
     );
@@ -51,9 +51,8 @@
     const dot = document.getElementById('va-settings-dot');
     if (dot) dot.hidden = !hasNonDefaultSettings(state);
 
-    document.querySelectorAll('[data-theme-dot], [data-sheet-theme]').forEach(function (btn) {
-      const val = btn.dataset.themeDot || btn.dataset.sheetTheme;
-      const active = val === state.theme;
+    document.querySelectorAll('[data-sheet-theme]').forEach(function (btn) {
+      const active = btn.dataset.sheetTheme === state.theme;
       btn.classList.toggle('is-active', active);
       btn.setAttribute('aria-checked', active ? 'true' : 'false');
     });
@@ -65,7 +64,7 @@
     });
 
     const syncPairs = {
-      'va-sheet-world-select': state.world,
+      'va-sheet-domain-select': state.world,
       'va-sheet-medium-select': state.medium,
       'va-density-select': state.density,
       'va-corners-select': state.corners,
@@ -139,12 +138,9 @@
     bindDialogLightDismissFallback(document.getElementById('va-customize-sheet'));
     bindDialogLightDismissFallback(document.getElementById('va-bridge-dialog'));
 
-    const cycleBtn = document.getElementById('va-theme-cycle-btn');
-    if (cycleBtn) cycleBtn.addEventListener('click', function () { state.theme = cycleTheme(state.theme); applyState(); });
-
-    document.querySelectorAll('[data-theme-dot], [data-sheet-theme]').forEach(function (btn) {
+    document.querySelectorAll('[data-sheet-theme]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        state.theme = btn.dataset.themeDot || btn.dataset.sheetTheme;
+        state.theme = btn.dataset.sheetTheme;
         applyState();
       });
     });
@@ -153,8 +149,8 @@
       btn.addEventListener('click', function () { state.scale = btn.dataset.sheetScale || '100'; applyState(); });
     });
 
-    const sw = document.getElementById('va-sheet-world-select');
-    if (sw) sw.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
+    const sd = document.getElementById('va-sheet-domain-select');
+    if (sd) sd.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
 
     const sm = document.getElementById('va-sheet-medium-select');
     if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; applyState(); });
@@ -200,9 +196,9 @@
     const body = document.getElementById('va-bridge-body');
     const title = document.getElementById('va-bridge-title');
     if (!dlg || !body || !worldObj || !viewMeta) return;
-    if (title) title.textContent = 'Why This View? — ' + viewMeta.title;
+    if (title) title.textContent = 'Design Rationale — ' + viewMeta.title;
     const ledgerRows = (worldObj.conservation_ledger || []).map(function (row) {
-      return '<tr><td><code>' + escHtml(row.metric_id) + '</code></td><td>' + escHtml(row.canonical_value) +
+      return '<tr><td>' + escHtml(row.metric_id) + '</td><td class="va-bridge-pass">' + escHtml(row.canonical_value) +
         '</td><td>' + escHtml(row.unit) + '</td><td>' + escHtml(row.views) + '</td></tr>';
     }).join('');
     const mbRows = (viewMeta.murder_board || []).map(function (m) {
@@ -211,21 +207,21 @@
     }).join('');
     const inv = viewMeta.invariants || {};
     body.innerHTML =
-      '<section class="va-bridge-card"><h3>1. Active Presenter -> Audience Vector</h3>' +
+      '<section class="va-bridge-card"><h3>1. Audience &amp; Format Match</h3>' +
       '<div class="va-bridge-vector">' + escHtml(viewMeta.vector_summary) + '</div>' +
-      '<div class="va-bridge-item"><strong>Actionable Disposition</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
-      '<section class="va-bridge-card"><h3>2. Scrubbed Sender Bias</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>Raw Bias Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
-      '<div class="va-bridge-item"><strong>Audience Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
-      '<div class="va-bridge-item"><strong>Distilled Replacement</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>3. Four Universal Audience Invariants</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>1. Baseline &amp; Corridor</strong>' + escHtml(inv.baseline || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>2. Epistemic Provenance</strong>' + escHtml(inv.provenance || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>3. Margin &amp; Consequence</strong>' + escHtml(inv.margin || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>4. Actionable Disposition</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>4. Murder-Board Red-Team Verdict</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
-      '<section class="va-bridge-card"><h3>5. Canonical Numerical Conservation Ledger</h3>' +
-      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric ID</th><th>Canonical Value</th><th>Unit</th><th>Consuming Views</th></tr></thead>' +
+      '<div class="va-bridge-item"><strong>Operational Decision</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
+      '<section class="va-bridge-card"><h3>2. Clutter &amp; Pitfalls Avoided</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>Pitfall Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
+      '<div class="va-bridge-item"><strong>Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
+      '<div class="va-bridge-item"><strong>Design Choice</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>3. Core Engineering Safeguards</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>1. Baseline &amp; Bounds</strong>' + escHtml(inv.baseline || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>2. Measurement Source</strong>' + escHtml(inv.provenance || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>3. Safety Margin</strong>' + escHtml(inv.margin || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>4. Operator Action</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>4. Peer Review Checks</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
+      '<section class="va-bridge-card"><h3>5. Shared Data Consistency Across Views</h3>' +
+      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric</th><th>Verified Value</th><th>Unit</th><th>Shown In Views</th></tr></thead>' +
       '<tbody>' + ledgerRows + '</tbody></table></div></section>';
     if (typeof dlg.showModal === 'function') dlg.showModal();
   }
@@ -242,7 +238,7 @@
         doc.dataset.theme = state.theme;
         doc.dataset.density = state.density;
         doc.dataset.corners = state.corners;
-        if (state.studioView === 'bench') doc.dataset.medium = state.medium === 'm1' ? 'm1' : 'm2';
+        if (state.studioView === 'components') doc.dataset.medium = state.medium === 'm1' ? 'm1' : 'm2';
       }
     } catch (_e) {}
   }

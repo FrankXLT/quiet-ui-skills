@@ -394,5 +394,5 @@
   thead { display: table-header-group; }
   p, li, td, th { orphans: 3; widows: 3; }
   .va-figure-scroll, .va-table-wrap, .va-bleed-wide { overflow: visible; }
-  .qe-svg-560, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
+  .qe-svg-560, .qe-svg-600, .qe-svg-640, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
 }

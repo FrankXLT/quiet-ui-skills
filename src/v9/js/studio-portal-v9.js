@@ -6,7 +6,7 @@
   'use strict';
 
   const state = {
-    studioView: 'worlds', world: '', view: '', medium: 'auto', theme: 'white',
+    studioView: 'examples', world: '', view: '', medium: 'auto', theme: 'white',
     nav: 'auto', vp: 'fill', zoom: 'fit', density: 'd2',
     corners: 'auto', scale: '100', isMounted: false, renderedView: '',
   };
@@ -36,11 +36,16 @@
   function readUrlParams() {
     const p = new URLSearchParams(window.location.search);
     const rules = {
-      mode: ['worlds', 'bench', 'atlas'], medium: ['auto', 'm1'],
-      theme: ['white', 'paper', 'dark-paper', 'dark'], nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
-      zoom: ['fit', '1:1'], density: ['d1', 'd2', 'd3', 'd4'], corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+      medium: ['auto', 'm1'],
+      theme: ['white', 'paper', 'dark-paper', 'dark'],
+      nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
+      zoom: ['fit', '1:1'],
+      density: ['d1', 'd2', 'd3', 'd4'],
+      corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
     };
-    if (rules.mode.indexOf(p.get('mode')) !== -1) state.studioView = p.get('mode');
+    const rawMode = (p.get('mode') || '').toLowerCase();
+    if (rawMode === 'examples' || rawMode === 'worlds') state.studioView = 'examples';
+    else if (rawMode === 'components' || rawMode === 'bench' || rawMode === 'atlas') state.studioView = 'components';
     ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
       if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
@@ -48,9 +53,10 @@
     if (vp === 'fill' || /^\d{3,4}x\d{3,4}$/.test(vp)) state.vp = vp;
     const sc = parseInt(p.get('scale') || '', 10);
     if (!isNaN(sc)) state.scale = String(Math.max(75, Math.min(150, sc)));
-    if (p.has('world')) state.world = p.get('world') || '';
+    if (p.has('domain')) state.world = p.get('domain') || '';
+    else if (p.has('world')) state.world = p.get('world') || '';
     if (p.has('view')) state.view = p.get('view') || '';
-    if (!p.get('world') && state.view) {
+    if (!state.world && state.view) {
       const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === state.view; }); });
       if (hitW) state.world = hitW.world_id;
     }
@@ -64,8 +70,8 @@
 
   function syncUrlParams() {
     const p = new URLSearchParams();
-    if (state.studioView !== 'worlds') p.set('mode', state.studioView);
-    p.set('world', state.world);
+    if (state.studioView !== 'examples') p.set('mode', state.studioView);
+    p.set('domain', state.world);
     p.set('view', state.view);
     p.set('medium', state.medium);
     p.set('theme', state.theme);
@@ -115,6 +121,36 @@
     return (viewMeta && viewMeta.default_medium) ? viewMeta.default_medium : 'm2';
   }
 
+  const NAV_ICONS = {
+    'compass': '<circle cx="8" cy="8" r="6"/><path d="M10.5 5.5 9 9l-3.5 1.5L7 7z" fill="none"/>',
+    'bars': '<path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" fill="none"/>',
+    'close': '<path d="M4 4l8 8M12 4l-8 8" fill="none"/>',
+    'activity': '<path d="M1.5 8h3l1.8-4.5 2.4 9 1.8-4.5h4" fill="none"/>',
+    'layers': '<path d="M8 2 14 5 8 8 2 5zM2 8l6 3 6-3M2 11l6 3 6-3" fill="none"/>',
+    'sliders': '<path d="M3 4h10M3 8h10M3 12h10M6 2.5v3M10 6.5v3M7 10.5v3" fill="none"/>',
+    'bell': '<path d="M4.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5l1.5 1.5H3zM6.5 13.5h3" fill="none"/>',
+    'heart-pulse': '<path d="M8 13.5S2.5 9.8 2.5 5.8a3 3 0 0 1 5.5-1.6 3 3 0 0 1 5.5 1.6c0 4-5.5 7.7-5.5 7.7zM4.5 8h2l1-2 1.2 3.5L10 8h1.5" fill="none"/>',
+    'file-medical': '<path d="M4 2h5.5L13 5.5V14H4zM9.5 2v3.5H13M8 7v4M6 9h4" fill="none"/>',
+    'hand-holding-medical': '<path d="M2 10.5h4l2 1.5h4.5M5 4.5h6M8 1.5v6" fill="none"/>',
+    'alert-triangle': '<path d="M8 2.2 14 13H2zM8 6.5v3M8 11.2v.4" fill="none"/>',
+    'shield-halved': '<path d="M8 2 13.5 4v4c0 3.2-2.2 5.2-5.5 6.2C4.7 13.2 2.5 11.2 2.5 8V4zM8 2v12" fill="none"/>',
+    'code-branch': '<path d="M5 3v10M11 4v2.5c0 1.5-2 2.5-6 2.5" fill="none"/><circle cx="5" cy="3.5" r="1.3"/><circle cx="5" cy="12.5" r="1.3"/><circle cx="11" cy="4" r="1.3"/>',
+    'bolt': '<path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none"/>',
+    'tv': '<rect x="2" y="3" width="12" height="8" rx="1"/><path d="M5.5 13.5h5M8 11v2.5" fill="none"/>',
+    'chart-line': '<path d="M2.5 2.5v11h11M4.5 10.5 7.5 7l2.2 2 3.5-4" fill="none"/>',
+    'landmark': '<path d="M2 6 8 2.5 14 6zM3.5 6v6M6.5 6v6M9.5 6v6M12.5 6v6M2 13.5h12" fill="none"/>',
+    'scale-balanced': '<path d="M8 2.5v11M4.5 13.5h7M3 5l5-1 5 1M2 9.5 3.5 5 5 9.5zM11 9.5 12.5 5 14 9.5z" fill="none"/>',
+    'flask': '<path d="M6 2.5h4M7 2.5V6l-3.5 7.5h9L9 6V2.5M5 10.5h6" fill="none"/>',
+    'gauge-high': '<path d="M3 11.5a5.5 5.5 0 1 1 10 0M8 8.5l2.8-2.8" fill="none"/>',
+    'microchip': '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/><path d="M6.5 2v2.5M9.5 2v2.5M6.5 11.5V14M9.5 11.5V14M2 6.5h2.5M2 9.5h2.5M11.5 6.5H14M11.5 9.5H14" fill="none"/>',
+    'crosshairs': '<circle cx="8" cy="8" r="5"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" fill="none"/>',
+    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>',
+  };
+  function svgIcon(name) {
+    const body = NAV_ICONS[name] || NAV_ICONS.compass;
+    return '<svg class="va-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none" aria-hidden="true">' + body + '</svg>';
+  }
+
   function buildIframeSrcDoc(viewMeta) {
     const cssEl = document.getElementById('va-bundled-portal-css');
     const jsEl = document.getElementById('va-bundled-stage-js');
@@ -134,7 +170,6 @@
       '" data-nav-shell="' + escHtml(state.nav) + '" data-effective-nav="n0" data-form-factor="desktop">\n<head>\n' +
       '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n' +
       '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
-      '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">\n' +
       customTok +
       '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
       '<div class="va-app-shell">\n' +
@@ -142,13 +177,13 @@
       '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav>' +
       '<div class="va-shell-topbar-status" aria-label="Unit Telemetry Status"></div>' +
       '<button type="button" id="va-drawer-open-btn" class="va-btn-ghost" aria-label="Open Navigation Drawer" onclick="openShellDrawer()">' +
-      '<i class="fa-solid fa-bars" aria-hidden="true"></i></button></header>\n' +
+      svgIcon('bars') + '</button></header>\n' +
       '  <aside id="va-shell-rail" class="va-shell-rail" aria-label="Section Spine"></aside>\n' +
       '  <main id="va-stage-main" class="va-stage" tabindex="-1"></main>\n' +
       '  <nav id="va-shell-bottomdock" class="va-shell-bottomdock" aria-label="Mobile Dock"></nav>\n' +
       '  <dialog id="va-shell-drawer" closedby="any" aria-label="Navigation Drawer">' +
       '<div class="va-drawer-header"><strong>View Navigation</strong>' +
-      '<button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()" autofocus><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>' +
+      '<button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()" autofocus>' + svgIcon('close') + '</button></div>' +
       '<nav class="va-drawer-nav"></nav></dialog>\n' +
       '</div>\n<script>\n' +
       'window.openShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.showModal)d.showModal();};\n' +
@@ -157,18 +192,18 @@
   }
 
   function syncShellNav(doc, viewMeta) {
-    const icon = (viewMeta && viewMeta.nav_icon) ? viewMeta.nav_icon : 'fa-compass';
+    const icon = (viewMeta && viewMeta.nav_icon) ? viewMeta.nav_icon : 'compass';
     const brandLbl = (viewMeta && viewMeta.nav_brand) ? viewMeta.nav_brand : 'Quiet UI';
     const topBrandLbl = (viewMeta && viewMeta.topbar_brand) ? viewMeta.topbar_brand : brandLbl;
     const railBrandLbl = (viewMeta && viewMeta.rail_brand) ? viewMeta.rail_brand : brandLbl;
     const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : ['Overview'];
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
-    const icons = ['fa-heart-pulse', 'fa-lungs', 'fa-syringe', 'fa-bell'];
+    const icons = ['activity', 'layers', 'sliders', 'bell'];
     const hrefFor = function (i) { return anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage'; };
     const mapLinks = function (list, render) { return list.map(function (lbl, i) { return render(lbl, i, hrefFor(i)); }).join(''); };
 
     const brand = doc.querySelector('#va-shell-topbar .va-shell-brand');
-    if (brand) brand.innerHTML = '<i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> ' + escHtml(topBrandLbl);
+    if (brand) brand.innerHTML = svgIcon(icon) + ' <span>' + escHtml(topBrandLbl) + '</span>';
 
     const statusEl = doc.querySelector('#va-shell-topbar .va-shell-topbar-status');
     const topStatus = (viewMeta && Array.isArray(viewMeta.topbar_status)) ? viewMeta.topbar_status : [];
@@ -191,14 +226,14 @@
     }
     const rail = doc.getElementById('va-shell-rail');
     if (rail) {
-      rail.innerHTML = '<div class="va-rail-brand"><i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> <span>' + escHtml(railBrandLbl) + '</span></div>' +
-        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '"><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i> ' + escHtml(lbl) + '</a>'; });
+      rail.innerHTML = '<div class="va-rail-brand">' + svgIcon(icon) + ' <span>' + escHtml(railBrandLbl) + '</span></div>' +
+        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + svgIcon(icons[i % 4]) + ' <span>' + escHtml(lbl) + '</span></a>'; });
     }
     const dock = doc.getElementById('va-shell-bottomdock');
     if (dock) {
       dock.innerHTML = mapLinks(items.slice(0, 3), function (lbl, i, href) {
-        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i>' + escHtml(lbl.split(' ')[0]) + '</a>';
-      }) + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
+        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '>' + svgIcon(icons[i % 4]) + '<span>' + escHtml(lbl.split(' ')[0]) + '</span></a>';
+      }) + '<button type="button" onclick="openShellDrawer()">' + svgIcon('bars') + '<span>Menu</span></button>';
     }
     const drawerNav = doc.querySelector('#va-shell-drawer .va-drawer-nav');
     if (drawerNav) {
@@ -233,23 +268,27 @@
     const iframe = document.getElementById('va-stage-portal');
     const worldObj = findWorld(state.world);
     const viewMeta = findView(worldObj, state.view);
-    if (!iframe || !iframe.contentDocument || !viewMeta) return;
+    if (!state.isMounted || !iframe || !iframe.contentDocument || !iframe.contentDocument.documentElement || !viewMeta) return;
     syncIframeAttributes();
-    const main = iframe.contentDocument.getElementById('va-stage-main');
+    const doc = iframe.contentDocument;
+    const win = iframe.contentWindow;
+    const main = doc.getElementById('va-stage-main');
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
-      syncShellNav(iframe.contentDocument, viewMeta);
+      syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
-      state.renderedNav = iframe.contentDocument.documentElement.dataset.effectiveNav;
-      if (iframe.contentWindow.QuietEvidenceRuntime) iframe.contentWindow.QuietEvidenceRuntime.boot();
-      if (iframe.contentWindow.QuietWorld01Runtime) iframe.contentWindow.QuietWorld01Runtime.boot(iframe.contentDocument);
-      if (iframe.contentWindow.QuietWorlds02To05Runtime) iframe.contentWindow.QuietWorlds02To05Runtime.boot(iframe.contentDocument);
+      state.renderedNav = doc.documentElement.dataset.effectiveNav;
+      if (win) {
+        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
+        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc);
+        if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        win.scrollTo(0, 0);
+      }
       main.scrollTop = 0;
-      if (iframe.contentWindow) iframe.contentWindow.scrollTo(0, 0);
-    } else if (iframe.contentDocument.documentElement.dataset.effectiveNav !== state.renderedNav) {
-      syncShellNav(iframe.contentDocument, viewMeta);
-      state.renderedNav = iframe.contentDocument.documentElement.dataset.effectiveNav;
+    } else if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) {
+      syncShellNav(doc, viewMeta);
+      state.renderedNav = doc.documentElement.dataset.effectiveNav;
     }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.bindPortalScrollTuck(iframe);
   }
@@ -266,8 +305,8 @@
       tab.setAttribute('aria-selected', active ? 'true' : 'false');
     });
 
-    const wSel = document.getElementById('va-world-select');
-    if (wSel && wSel.value !== state.world) wSel.value = state.world;
+    const dSel = document.getElementById('va-domain-select');
+    if (dSel && dSel.value !== state.world) dSel.value = state.world;
 
     const vSel = document.getElementById('va-view-select');
     if (vSel && worldObj) {
@@ -281,38 +320,15 @@
       vSel.value = state.view;
     }
 
-    const sheetBtn = document.getElementById('va-sheet-toggle-btn');
-    if (sheetBtn) {
-      const isSheet = state.medium === 'm1';
-      sheetBtn.classList.toggle('is-active', isSheet);
-      sheetBtn.setAttribute('aria-pressed', isSheet ? 'true' : 'false');
-    }
-
-    const navSel = document.getElementById('va-nav-select');
     const allowed = viewMeta ? viewMeta.allowed_navs : ['n0', 'n1', 'n2', 'n3', 'n4'];
-    if (navSel) {
-      navSel.value = state.nav;
-      Array.from(navSel.options).forEach(function (opt) {
-        if (opt.value === 'auto') return;
-        opt.disabled = allowed.indexOf(opt.value) === -1;
-      });
-    }
-
-    const vpSel = document.getElementById('va-vp-select');
-    if (vpSel) vpSel.value = state.vp;
-    const stageTools = document.getElementById('va-stage-tools');
-    if (stageTools) stageTools.hidden = state.vp === 'fill';
-    const zoomBtn = document.getElementById('va-zoom-btn');
-    if (zoomBtn) zoomBtn.textContent = state.zoom.toUpperCase();
-
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, allowed);
   }
 
   function syncExternalMode(iframe) {
-    const isBench = state.studioView === 'bench';
-    const base = resolveDocsAsset(isBench ? 'bench/evidence-bench.html' : 'diagrams.html');
+    const base = resolveDocsAsset('bench/evidence-bench.html');
     const med = state.medium === 'm1' ? 'm1' : 'm2';
-    const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) + '&corners=' + encodeURIComponent(state.corners) + (isBench ? '&medium=' + med : '');
+    const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) +
+      '&corners=' + encodeURIComponent(state.corners) + '&medium=' + med;
     const doSync = function () {
       const d = getActiveDimensions();
       if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
@@ -331,19 +347,15 @@
 
   function applyState(worldChanged) {
     const worldObj = findWorld(state.world);
-    if (worldObj && (worldChanged || !findView(worldObj, state.view))) {
-      state.view = worldObj.views[0].view_id;
-    }
+    if (worldObj && (worldChanged || !findView(worldObj, state.view))) state.view = worldObj.views[0].view_id;
     const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
-    if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) {
-      window.QuietStudioSheetV9.untuckStudioBar();
-    }
+    if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
     state.lastViewKey = viewKey;
     const viewMeta = findView(worldObj, state.view);
     const iframe = document.getElementById('va-stage-portal');
     if (!iframe) return;
     updatePortalDimensions();
-    if (state.studioView !== 'worlds') {
+    if (state.studioView !== 'examples') {
       syncExternalMode(iframe);
       syncBarControls();
       syncUrlParams();
@@ -374,10 +386,7 @@
 
   function printActiveStage() {
     const iframe = document.getElementById('va-stage-portal');
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }
+    if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
   }
 
   function stepView(delta) {
@@ -397,17 +406,17 @@
     if (tablist) {
       tablist.addEventListener('click', function (ev) {
         const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
-        if (btn && ['worlds', 'bench', 'atlas'].indexOf(btn.dataset.studioTab) !== -1) {
+        if (btn && ['examples', 'components'].indexOf(btn.dataset.studioTab) !== -1) {
           state.studioView = btn.dataset.studioTab;
           applyState(false);
         }
       });
     }
-    const wSel = document.getElementById('va-world-select');
-    if (wSel) wSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
+    const dSel = document.getElementById('va-domain-select');
+    if (dSel) dSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
     const vSel = document.getElementById('va-view-select');
     if (vSel) vSel.addEventListener('change', function (e) { state.view = e.target.value; applyState(false); });
-    ['vp', 'density', 'corners', 'nav'].forEach(function (k) {
+    ['density', 'corners'].forEach(function (k) {
       const el = document.getElementById('va-' + k + '-select');
       if (el) el.addEventListener('change', function (e) { state[k] = e.target.value; applyState(false); });
     });
@@ -415,20 +424,18 @@
     const onZoomToggle = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
     [
       ['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
-      ['va-sheet-toggle-btn', function () { state.medium = (state.medium === 'm1') ? 'auto' : 'm1'; applyState(false); }],
-      ['va-print-btn', printActiveStage], ['va-bridge-btn', openBridgeDialog],
-      ['va-rotate-btn', onRotate], ['va-zoom-btn', onZoomToggle],
+      ['va-bridge-btn', openBridgeDialog],
       ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }],
     ].forEach(function (pair) { bind(pair[0], pair[1]); });
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoomToggle, printActiveStage);
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 700 && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
       updatePortalDimensions();
-      if (state.studioView === 'worlds') syncIframeDOM();
+      if (state.studioView === 'examples') syncIframeDOM();
     });
     window.QuietPortalResize.initResizeHandles(
       document.getElementById('va-portal-scaler'), document.getElementById('va-stage-portal'), document.getElementById('va-portal-mat'),
-      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'worlds') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
+      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'examples') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
     );
   }
 

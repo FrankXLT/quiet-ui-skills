@@ -120,7 +120,7 @@ def build_v9_showcase(repo_root: Path, world_ids: list[str]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build Quiet UI v9.0 Modular World Showcase")
+    parser = argparse.ArgumentParser(description="Build Quiet UI v9.0 Multi-Domain Showcase")
     parser.add_argument("--worlds", default="01-clinical-icu-and-trials", help="Comma-separated world IDs or 'all'")
     parser.add_argument("--output", default="docs/pilot/world-01-pilot.html", help="Output HTML file path")
     args = parser.parse_args()

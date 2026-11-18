@@ -1,44 +1,25 @@
-# Third-Party Licenses & Upstream Attributions
+# Third-Party Licenses & Provenance Declaration
 
-Quiet UI Skills incorporates and adapts open-source components under permissive licenses. All original copyright and permission notices are preserved below.
-
----
-
-## 1. Diagram Design (`skills/quiet-ui-diagrams/`)
-
-`skills/quiet-ui-diagrams/` incorporates refactored diagram specifications, DSL extraction logic, and SVG/geometry verification components adapted from **`diagram-design`** (`https://github.com/cathrynlavery/diagram-design`), originally created by Cathryn Lavery and released under the MIT License:
-
-```text
-MIT License
-
-Copyright (c) 2025 Cathryn Lavery
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+Quiet UI Skills v9.0 contains **zero third-party runtime dependencies, zero vendored CDN stylesheets, and zero third-party source code** across its 3-pillar architecture (`skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`).
 
 ---
 
-## 2. Bundled Vector Icon Primitives (`skills/quiet-ui-diagrams/assets/` & `references/`)
+## 1. First-Party Deterministic Engine
 
-Vector icon paths curated for inline schematic diagrams derive from the following permissively licensed open-source icon sets:
+All UI layout shells, Studio chrome, inline `<svg>` control glyphs, and deterministic Python SVG compilers (`skills/quiet-evidence/scripts/compilers/`) are 100% first-party authored under the repository's Apache 2.0 / MIT split license (`LICENSE`).
 
-- **Tabler Icons** — MIT License (`https://github.com/tabler/tabler-icons`)
-- **Simple Icons** — CC0 1.0 Universal (`https://github.com/simple-icons/simple-icons`)
-- **Devicon** — MIT License (`https://github.com/devicons/devicon`)
-- **log-z/logos** — MIT License (`https://github.com/log-z/logos`)
+---
+
+## 2. Open Technical Notation Standards Implemented (Clean-Room)
+
+The clean-room systems schematic compilers in `skills/quiet-evidence/scripts/compilers/schematic_systems.py` implement non-proprietary open engineering notation standards directly in Python:
+
+- **Timed Sequence Lifelines (`sequence`)** — ITU-T Recommendation Z.120 Message Sequence Chart (MSC) semantics
+- **$N^2$ Interface Matrix (`n2_matrix`)** — NASA Systems Engineering Handbook (`NASA/SP-2016-6105`) $N^2$ coupling matrix conventions
+- **Fault Tree Logic (`fault_tree`)** — U.S. Nuclear Regulatory Commission Fault Tree Handbook (`NUREG-0492`) standard logic gate topology
+
+---
+
+## 3. Verification Environment Dependencies (Dev / CI Only)
+
+Browser-based Chrome DevTools Protocol (CDP) contract verification runs locally via Python (`selenium` / Chromium WebDriver) and never embeds third-party packages inside generated HTML or SVG deliverables.

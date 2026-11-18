@@ -23,11 +23,12 @@ SPECIMEN_FILES: tuple[tuple[str, str], ...] = (
     ("M4", "m4_plots.json"),
     ("M5", "m5_waveforms.json"),
     ("M6", "m6_schematics.json"),
+    ("M6", "m6_systems_schematics.json"),
 )
 
 
 def _compile_bench_cards(spec_dir: Path) -> str:
-    """Compile all 18 JSON specimens into grid article cards."""
+    """Compile all 21 JSON specimens into grid article cards."""
     cards_html: list[str] = []
     for mod_code, fname in SPECIMEN_FILES:
         items = json.loads((spec_dir / fname).read_text(encoding="utf-8"))
@@ -52,7 +53,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.0 Phase 2 — Evidence Qualification Bench (18 Specimens)</title>
+  <title>Quiet UI v9.0 — Evidence Component Library (21 Specimens)</title>
   <link rel="stylesheet" href="../../tokens/quiet-ui-tokens.css" />
   <link rel="stylesheet" href="../../src/css/00-layers-and-reset.css" />
   <link rel="stylesheet" href="../../src/css/01-stage-and-containers.css" />
@@ -60,14 +61,14 @@ def _render_bench_shell(cards_markup: str) -> str:
   <link rel="stylesheet" href="./evidence-bench.css" />
 </head>
 <body>
-  <a href="#bench-main" class="qe-skip-link">Skip to evidence specimens</a>
+  <a href="#bench-main" class="qe-skip-link">Skip to evidence components</a>
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.0 PILLAR 2 · DETERMINISTIC EVIDENCE BENCH</span>
-        <h1>Visual Metrology Qualification Bench (6 Modalities × L1 / L2 / L3)</h1>
+        <span class="va-kicker">QUIET UI v9.0 · EVIDENCE COMPONENT LIBRARY</span>
+        <h1>Evidence Component Library (21 Specimens × 4 Themes)</h1>
       </div>
-      <nav class="qe-controls" aria-label="Bench Controls">
+      <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
           <label class="qe-ctrl-label" for="bench-theme-select">Theme</label>
           <select id="bench-theme-select" class="qe-select">
@@ -78,42 +79,42 @@ def _render_bench_shell(cards_markup: str) -> str:
           </select>
         </div>
         <div class="qe-ctrl-group">
-          <label class="qe-ctrl-label" for="bench-medium-select">Medium</label>
+          <label class="qe-ctrl-label" for="bench-medium-select">Format</label>
           <select id="bench-medium-select" class="qe-select">
-            <option value="m2">Screen (M2/M3)</option>
-            <option value="m1">M1 Paper Sheet</option>
+            <option value="m2">Screen Layout</option>
+            <option value="m1">Print Sheet</option>
           </select>
         </div>
         <div class="qe-ctrl-group">
-          <label class="qe-ctrl-label" for="bench-modality-filter">Modality</label>
+          <label class="qe-ctrl-label" for="bench-modality-filter">Component</label>
           <select id="bench-modality-filter" class="qe-select">
-            <option value="all">All (M1–M6)</option>
-            <option value="M1">M1 · Scalars &amp; Gauges</option>
-            <option value="M2">M2 · Tables &amp; Matrices</option>
-            <option value="M3">M3 · Bitfields &amp; Registers</option>
-            <option value="M4">M4 · Analytical Plots</option>
-            <option value="M5">M5 · Waveforms &amp; Timing</option>
-            <option value="M6">M6 · Schematics &amp; Topologies</option>
+            <option value="all">All Types</option>
+            <option value="M1">Scalars &amp; Gauges</option>
+            <option value="M2">Tables &amp; Matrices</option>
+            <option value="M3">Bitfields &amp; Registers</option>
+            <option value="M4">Analytical Plots</option>
+            <option value="M5">Waveforms &amp; Timing</option>
+            <option value="M6">Schematics &amp; Systems</option>
           </select>
         </div>
         <div class="qe-ctrl-group">
-          <label class="qe-ctrl-label" for="bench-rigor-filter">Rigor</label>
+          <label class="qe-ctrl-label" for="bench-rigor-filter">Detail</label>
           <select id="bench-rigor-filter" class="qe-select">
-            <option value="all">All (L1–L3)</option>
-            <option value="L1">L1 · Orientation</option>
-            <option value="L2">L2 · Governance</option>
-            <option value="L3">L3 · Physical, Clinical &amp; Metrological</option>
+            <option value="all">All Levels</option>
+            <option value="L1">Executive Summary</option>
+            <option value="L2">Operational Spec</option>
+            <option value="L3">Detailed Metrology</option>
           </select>
         </div>
       </nav>
     </div>
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
-    <section class="qe-bench-summary" aria-label="Qualification Overview">
-      <div><strong>Zero-Dependency Compiler Verification</strong> · NAVAIR FTM-108 1-2-5 scales, mandatory 2..9 minor log decades, NIST SP 811 units, paint-order text halos, and Manhattan orthogonal routing.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">18 of 18 specimens visible</span>
+    <section class="qe-bench-summary" aria-label="Component Library Overview">
+      <div><strong>Zero-Dependency Compiler Library</strong> · 1–2–5 scale ticks, mandatory log decades, SI/NIST units, paint-order text halos, and clean-room systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492).</div>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">21 of 21 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="18 Benchmark Specimens">{cards_markup}</section>
+    <section class="qe-bench-grid" aria-label="21 Evidence Components">{cards_markup}</section>
   </main>
   <script src="../../src/js/evidence-runtime.js"></script>
   <script src="./bench.js"></script>
@@ -123,7 +124,7 @@ def _render_bench_shell(cards_markup: str) -> str:
 
 
 def build_bench(out_path: Path | None = None) -> Path:
-    """Compile all 18 JSON benchmark specimens into docs/bench/evidence-bench.html."""
+    """Compile all 21 JSON component specimens into docs/bench/evidence-bench.html."""
     cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
     target = out_path or (REPO_ROOT / "docs" / "bench" / "evidence-bench.html")
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -133,4 +134,4 @@ def build_bench(out_path: Path | None = None) -> Path:
 
 if __name__ == "__main__":
     written = build_bench()
-    print(f"[OK] Built standalone qualification bench -> {written}")
+    print(f"[OK] Built Evidence Component Library (21 specimens) -> {written}")

@@ -125,6 +125,8 @@
   .va-figure-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
   .qe-svg { display: block; block-size: auto; margin-inline: auto; }
   .qe-svg-560 { inline-size: min(100%, 620px); min-inline-size: 490px; }
+  .qe-svg-600 { inline-size: min(100%, 720px); min-inline-size: 540px; }
+  .qe-svg-640 { inline-size: min(100%, 760px); min-inline-size: 576px; }
   .qe-svg-680 { inline-size: min(100%, 760px); min-inline-size: 612px; }
   .qe-svg-720 { inline-size: min(100%, 820px); min-inline-size: 648px; }
   .qe-gauge-svg { inline-size: min(100%, 360px); min-inline-size: 0; }
@@ -343,5 +345,5 @@
   .qe-bench-grid { grid-template-columns: minmax(0, 1fr); gap: 10pt; }
   .qe-figure { border: 1px solid #94A3B8; background: #FFFFFF; color: #0F172A; }
   .va-figure-scroll, .va-table-wrap { overflow: visible; }
-  .qe-svg-560, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
+  .qe-svg-560, .qe-svg-600, .qe-svg-640, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
 }

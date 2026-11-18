@@ -372,31 +372,31 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v01-icu-bedside-terminal": {
-            "option_label": "v01 · ICU Bedside Terminal (M4 · L3)", "default_medium": "m4",
+            "option_label": "v01 · ICU Bedside Terminal", "default_medium": "m4",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
-            "nav_icon": "fa-heart-pulse", "nav_brand": "Bed ICU-04",
+            "nav_icon": "heart-pulse", "nav_brand": "Bed ICU-04",
             "topbar_brand": "BED ICU-04 · PT-0482 · Sepsis Protocol", "rail_brand": "Monitor Subsystems",
             "topbar_status": v01_status, "nav_items": ["Hemodynamics", "Ventilator", "Infusions", "Event Log"],
             "nav_anchors": ["v01-hemo", "v01-vent", "v01-infusions", "v01-alarms"],
             "inv_col": "v01-icu-bedside-terminal (L3)", "short_tag": "v01",
         },
         "v02-trial-regulatory-brief": {
-            "option_label": "v02 · Trial Regulatory Brief (M2↔M1 · L3)", "default_medium": "m2",
+            "option_label": "v02 · Trial Regulatory Brief", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
-            "nav_icon": "fa-file-medical", "nav_brand": "CONSORT Brief",
+            "nav_icon": "file-medical", "nav_brand": "CONSORT Brief",
             "topbar_brand": "CONSORT Brief", "rail_brand": "CONSORT Brief",
             "topbar_status": [], "nav_items": ["Disposition", "Cohort & Methods", "Subgroup Forest", "KDIGO Safety", "SAP Appendix"],
             "nav_anchors": ["v02-disposition", "v02-methods", "v02-forest", "v02-safety", "v02-sap"],
             "inv_col": "v02-trial-regulatory-brief (L3)", "short_tag": "v02",
         },
         "v03-patient-recovery-companion": {
-            "option_label": "v03 · Patient Recovery (M3 · L1)", "default_medium": "m3",
+            "option_label": "v03 · Patient Recovery Guide", "default_medium": "m3",
             "chromatic_code": "c2", "default_nav": "n2", "allowed_navs": ["n2", "n4", "n0"],
-            "nav_icon": "fa-hand-holding-medical", "nav_brand": "Recovery Guide",
+            "nav_icon": "hand-holding-medical", "nav_brand": "Recovery Guide",
             "topbar_brand": "Recovery Guide", "rail_brand": "Recovery Guide",
             "topbar_status": [], "nav_items": ["Today", "Vitals Log", "Care Guide", "Care Team"],
             "nav_anchors": ["v03-today", "v03-vitals", "v03-guide", "v03-care-team"],
             "inv_col": "v03-patient-recovery-companion (L1)", "short_tag": "v03",
         },
     }
-    return assemble_world_bundle(corpus, bp, "01 · Clinical ICU & Trials", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "01 · Clinical & Trials", view_cfg, html_map)

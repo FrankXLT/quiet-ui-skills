@@ -89,6 +89,9 @@ def verify_static(all_worlds: bool = False) -> list[str]:
             errs.append(f"[IMPORTANT_VIOLATION] {html_p.relative_to(REPO_ROOT)} contains !important")
         if "●" in htxt:
             errs.append(f"[BANNED_GLYPH] {html_p.relative_to(REPO_ROOT)} contains literal U+25CF")
+        for bad_cdn in ("cdnjs.cloudflare.com", "font-awesome", "fa-solid"):
+            if bad_cdn in htxt.lower():
+                errs.append(f"[THIRD_PARTY_ICON] {html_p.relative_to(REPO_ROOT)} references '{bad_cdn}'")
     return errs
 
 
@@ -160,7 +163,7 @@ def _verify_interactions_and_conservation(driver: Any, base_url: str) -> list[st
     if dark_print != "#065F46":
         errs.append(f"[DARK_PRINT_TOKENS] Expected #065F46, got {dark_print}")
 
-    driver.execute_script("document.getElementById('va-sheet-toggle-btn').click();")
+    driver.execute_script("document.getElementById('va-customize-btn').click();const m=document.getElementById('va-sheet-medium-select');m.value='m1';m.dispatchEvent(new Event('change'));document.getElementById('va-customize-sheet').close();")
     time.sleep(0.18)
     driver.switch_to.frame("va-stage-portal")
     if not driver.execute_script("return document.documentElement.dataset.medium + '|' + getComputedStyle(document.querySelector('.va-stage')).backgroundColor;").startswith("m1|rgb(255, 255, 255)"):
@@ -169,8 +172,8 @@ def _verify_interactions_and_conservation(driver: Any, base_url: str) -> list[st
 
     driver.execute_script("document.getElementById('va-bridge-btn').click();")
     time.sleep(0.15)
-    if not driver.execute_script("const d=document.getElementById('va-bridge-dialog');return !!(d&&d.open&&d.innerText.includes('0.74'));"):
-        errs.append("[BRIDGE_DIALOG] Why This View? dialog failed")
+    if not driver.execute_script("const d=document.getElementById('va-bridge-dialog'),t=d?d.innerText:'';return !!(d&&d.open&&t.includes('0.74')&&!/Murder-Board|QUIET-BRIDGE|Scrubbed|\\.json|_row_status|\\b(?:CL|CR|CC|PR|ER|TRG)-/.test(t));"):
+        errs.append("[BRIDGE_DIALOG] Why? Design Rationale dialog missing or leaked jargon")
 
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white&vp=fill")
     time.sleep(0.2)
@@ -214,19 +217,22 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
     for wid, vid in (("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec"), ("03-industrial-grid-and-manufacturing", "v09-spc-quality-and-modbus-report"), ("05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph")):
         errs.extend(_audit_stage(driver, f"{base_url}?world={wid}&view={vid}&medium=m1&theme=white", 1440, 900, f"M1_{vid[:3].upper()}"))
 
-    # Studio 3-Mode Tab switching: Worlds -> Bench -> Atlas -> Worlds
-    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
+    # Studio 2-Mode switching: Examples -> Components (21 Specimens) -> Examples
+    driver.get(f"{base_url}?domain=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
     time.sleep(0.28)
-    for tab_id, mode, needle in (("va-tab-bench", "bench", "bench/evidence-bench.html"), ("va-tab-atlas", "atlas", "diagrams.html")):
-        driver.execute_script(f"document.getElementById('{tab_id}').click();")
-        time.sleep(0.55)
-        ok = driver.execute_script(f"const p=document.getElementById('va-stage-portal'),w=document.querySelector('.va-world-ctrl');return document.documentElement.dataset.studioView==='{mode}' && p.src.includes('{needle}') && getComputedStyle(w).display==='none';")
-        if not ok:
-            errs.append(f"[STUDIO_MODE] Tab {mode} failed to mount or hide World selector")
-    driver.execute_script("document.getElementById('va-tab-worlds').click();")
+    driver.execute_script("document.getElementById('va-tab-components').click();")
+    time.sleep(0.6)
+    comp_ok = driver.execute_script(
+        "const p=document.getElementById('va-stage-portal'),d=document.querySelector('.va-domain-ctrl'),pd=p&&p.contentDocument;"
+        "return !!(document.documentElement.dataset.studioView==='components' && p.src.includes('bench/evidence-bench.html') && "
+        "getComputedStyle(d).display==='none' && pd && pd.querySelectorAll('.qe-specimen').length===21 && pd.querySelectorAll('[data-schema-modality=\"schematic\"] svg').length>=6);"
+    )
+    if not comp_ok:
+        errs.append("[STUDIO_MODE] Components tab failed to mount 21-specimen library or hide Domain selector")
+    driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.35)
-    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='worlds' && !p.hasAttribute('src');"):
-        errs.append("[STUDIO_MODE] Failed to return from Atlas to Worlds")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples' && !p.hasAttribute('src');"):
+        errs.append("[STUDIO_MODE] Failed to return from Components to Examples")
 
     # Starters check
     for rel, min_views in (("customizations/personal-starter/showcase-v9.html", 16), ("customizations/brand-starter/showcase-v9.html", 14)):
@@ -241,7 +247,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
 def _verify_phase5_edge_cases(driver: Any, base_url: str, root_url: str) -> list[str]:
     errs: list[str] = []
     # 1. v12 click-to-pin across sibling pedagogy cards & equation bar
-    driver.get(f"{base_url}?world=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white")
+    driver.get(f"{base_url}?domain=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white")
     time.sleep(0.28)
     driver.switch_to.frame("va-stage-portal")
     pin_ok = driver.execute_script(
@@ -269,30 +275,41 @@ def _verify_phase5_edge_cases(driver: Any, base_url: str, root_url: str) -> list
         if res["th"] != th or res["cr"] < 4.5 or (th == "dark" and res["l1"] > max_lum):
             errs.append(f"[STARTER_POLARITY] {rel}?theme={th} failed: {res}")
 
-    # 3. Direct ?mode=bench/atlas, medium restore to auto, and ?view= without ?world=
-    driver.get(f"{base_url}?mode=bench&theme=dark&medium=m1")
+    # 3. Direct ?mode=components, legacy ?mode=bench alias, ?domain= & ?view= resolution
+    driver.get(f"{base_url}?mode=components&theme=dark&medium=m1")
     time.sleep(0.6)
     driver.execute_script("const m=document.getElementById('va-sheet-medium-select');m.value='auto';m.dispatchEvent(new Event('change'));")
     time.sleep(0.15)
-    bench_ok = driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='bench' && p.contentDocument.documentElement.dataset.theme==='dark' && p.contentDocument.documentElement.dataset.medium==='m2';")
-    if not bench_ok:
-        errs.append("[STUDIO_DEEPLINK] ?mode=bench failed theme/medium auto restore sync")
-    driver.get(f"{base_url}?mode=atlas&theme=dark")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components' && p.contentDocument.documentElement.dataset.theme==='dark' && p.contentDocument.documentElement.dataset.medium==='m2';"):
+        errs.append("[STUDIO_DEEPLINK] ?mode=components failed theme/medium auto restore sync")
+    driver.get(f"{base_url}?mode=bench&theme=dark")
     time.sleep(0.6)
-    atlas_ok = driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='atlas' && p.src.includes('diagrams.html') && p.contentDocument.documentElement.dataset.theme==='dark';")
-    if not atlas_ok:
-        errs.append("[STUDIO_DEEPLINK] ?mode=atlas failed onload dark theme sync")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components' && p.src.includes('evidence-bench.html');"):
+        errs.append("[STUDIO_DEEPLINK] Legacy ?mode=bench alias failed")
     driver.get(f"{base_url}?view=v10-civic-capital-budget-deck")
     time.sleep(0.3)
     if not driver.execute_script("const s=window.QuietStudioPortalV9.state;return s.world==='04-civic-finance-and-stem-learning' && s.view==='v10-civic-capital-budget-deck';"):
-        errs.append("[STUDIO_DEEPLINK] ?view=v10 without ?world= failed to resolve World 04")
+        errs.append("[STUDIO_DEEPLINK] ?view=v10 without ?domain= failed to resolve Domain 04")
 
-    # 4. 390px mobile studio bar width check
-    set_viewport(driver, 390, 844, 1)
-    time.sleep(0.15)
-    bar_ok = driver.execute_script("const b=document.getElementById('va-studio-bar'),s=document.getElementById('va-view-select');return b.scrollWidth<=b.clientWidth+1 && s.getBoundingClientRect().width>=80;")
-    if not bar_ok:
-        errs.append("[MOBILE_STUDIO_BAR] 390px Studio bar overflow or view select squeezed < 80px")
+    # 4. Decluttered topbar, Settings theme swatch cards, 840px foldable & 390px mobile bar checks
+    chrome_err = driver.execute_script(
+        "const b=document.getElementById('va-studio-bar'),txt=b?b.innerText:'';"
+        "for(const j of ['Worlds','Bench','Atlas','Corpus']) if(txt.includes(j)) return 'Jargon in topbar: '+j;"
+        "for(const gone of ['va-sheet-toggle-btn','va-print-btn','va-nav-select','va-vp-select','va-rotate-btn','va-zoom-btn']) if(document.getElementById(gone)) return 'Clutter id: '+gone;"
+        "if(document.querySelectorAll('#va-studio-bar .va-theme-dot').length) return 'Theme dots still in topbar';"
+        "const sw=document.querySelectorAll('#va-customize-sheet .va-theme-card[data-sheet-theme]');"
+        "if(sw.length!==4) return 'Expected 4 theme swatches, got '+sw.length;"
+        "for(const c of sw){c.click();if(document.getElementById('va-stage-portal').contentDocument.documentElement.dataset.theme!==c.dataset.sheetTheme) return 'Swatch fail '+c.dataset.sheetTheme;}"
+        "return '';"
+    )
+    if chrome_err:
+        errs.append(f"[GATE51_CHROME] {chrome_err}")
+    for vp_w, vp_h, min_vw in ((840, 1050, 180), (390, 844, 100)):
+        set_viewport(driver, vp_w, vp_h, 1)
+        time.sleep(0.15)
+        bar_ok = driver.execute_script(f"const b=document.getElementById('va-studio-bar'),s=document.getElementById('va-view-select');return b.scrollWidth<=b.clientWidth+1 && b.getBoundingClientRect().height<=48.5 && s.getBoundingClientRect().width>={min_vw};")
+        if not bar_ok:
+            errs.append(f"[STUDIO_BAR_{vp_w}] Overflow or view select < {min_vw}px at {vp_w}x{vp_h}")
     return errs
 
 

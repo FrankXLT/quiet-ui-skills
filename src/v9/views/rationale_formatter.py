@@ -1,0 +1,142 @@
+# SPDX-License-Identifier: Apache-2.0
+"""Plain-English formatting and jargon scrubbing for Quiet UI v9.0 Design Rationale."""
+
+from __future__ import annotations
+
+import re
+from typing import Any
+
+_MEDIUM_PLAIN: dict[str, str] = {
+    "M1": "Print Sheet",
+    "M2": "Article / Document",
+    "M3": "Interactive App",
+    "M4": "Operator Console",
+    "M5": "Wall Display",
+    "M6": "Optical HUD",
+    "M7": "Smart-Glass Overlay",
+}
+
+_RIGOR_PLAIN: dict[str, str] = {
+    "L1": "Executive Summary",
+    "L2": "Operational Spec",
+    "L3": "Detailed Metrology",
+}
+
+_RUBRIC_PLAIN_RULES: tuple[tuple[str, str], ...] = (
+    ("Conservation", "Numerical Consistency & Units"),
+    ("Bezier", "Honest Discrete Data Plotting"),
+    ("Spline", "Honest Discrete Data Plotting"),
+    ("Calibration", "Instrument Calibration & Traceability"),
+    ("Baseline", "Baseline & Safety Bounds"),
+    ("Cognit", "Clarity & Reader Pacing"),
+    ("Term", "Equation-to-Plot Highlighting"),
+    ("Error Bars", "Uncertainty Whiskers & Residuals"),
+    ("Residual", "Uncertainty Whiskers & Residuals"),
+    ("Audience", "Audience & Format Suitability"),
+    ("Interlock", "Two-Step Safety Interlock"),
+    ("LOTO", "Two-Step Safety Interlock"),
+    ("Enclave", "Network Boundary Separation"),
+    ("FIPS", "Cryptographic Policy Enforcement"),
+    ("Typography", "Type Scale & Legibility"),
+    ("Contrast", "Daylight & Low-Light Contrast"),
+    ("Sightline", "Unobstructed Sightline Geometry"),
+    ("Dropout", "Missing-Signal Gap Honesty"),
+    ("Bus", "Fieldbus Topology & Termination"),
+    ("Trade", "Budget & Risk Trade-Space"),
+)
+
+_RUBRIC_CODE_RE = re.compile(
+    r"\b(?:CL|CR|CC|PR|ER|LR|SR|TR|TRG|SC|MB)-[A-Za-z0-9]+(?:\s*(?:&|,|\.\.|and)\s*(?:(?:CL|CR|CC|PR|ER|LR|SR|TR|TRG|SC|MB)-)?[A-Za-z0-9]+)*\b"
+)
+_JSON_PATH_RE = re.compile(
+    r"`?(?:evidence/)?([a-z0-9_*]+)\.json`?(?:\s*\([^)]*\$\.[^)]*\))?"
+)
+_ROW_STATUS_RE = re.compile(r"\(\s*_row_status\s*:\s*([a-z]+)\s*\)", re.I)
+_LOWER_SNAKE_RE = re.compile(r"\b([a-z][a-z0-9]*(?:_[a-z0-9]+)+)\b")
+
+_UNIT_SUFFIXES: dict[str, str] = {
+    "mw": "MW", "hz": "Hz", "pct": "%", "ms": "ms", "us": "µs",
+    "v": "V", "s": "s", "mmhg": "mmHg", "ohm": "Ω", "m": "m",
+    "hrs": "hr", "hr": "hr", "usd": "USD", "bps": "bps", "hex": "Hex",
+}
+
+
+def humanize_identifier(raw: Any) -> str:
+    """Turn lowercase snake_case keys into concise Title Case names."""
+    s = str(raw or "").strip()
+    if not s or "_" not in s:
+        return s
+    parts = [p for p in s.split("_") if p]
+    acronyms = {"icu", "bess", "poi", "spc", "p99", "ece", "canfd", "map", "spo2", "oee", "rc", "bte"}
+    if len(parts) > 1 and parts[-1].lower() in _UNIT_SUFFIXES:
+        unit = _UNIT_SUFFIXES[parts[-1].lower()]
+        body = " ".join(p.upper() if p.lower() in acronyms else p.capitalize() for p in parts[:-1])
+        return f"{body} ({unit})"
+    return " ".join(p.upper() if p.lower() in acronyms else p.capitalize() for p in parts)
+
+
+def scrub_prose(text: Any) -> str:
+    """Convert internal markup, JSON filenames, and rubric codes into clean plain English."""
+    s = str(text or "").strip()
+    if not s:
+        return ""
+    s = re.sub(r"^V\d{2}:\s*", "", s)
+    s = s.replace("**", "").replace("`", "").replace("$", "")
+    s = s.replace("<->", "↔").replace("->", "→")
+    for raw_m, sym_m in (("X_bar", "X̄"), ("C_pk", "Cpk"), ("p_hat", "p̂"), ("f_obs", "observed frequency (fₒ)"), ("u_y", "uᵧ"), ("U_y", "uᵧ"), ("U_Y", "uᵧ")):
+        s = s.replace(raw_m, sym_m)
+    s = _ROW_STATUS_RE.sub(lambda m: "(status: Review Needed)" if m.group(1).lower() == "warn" else f"(status: {m.group(1).title()})", s)
+    s = _JSON_PATH_RE.sub(lambda m: "supporting data specs" if "*" in m.group(1) else humanize_identifier(m.group(1)) + " spec", s)
+    s = _RUBRIC_CODE_RE.sub("", s)
+    s = re.sub(r"\(\s*[·,&\s]*\)", "", s)
+    s = re.sub(r"\b(?:Quiet[- ]Bridge|QUIET[- ]BRIDGE|Murder[- ]Board|MURDER[- ]BOARD)\b", "Design Review", s)
+    s = re.sub(r"\bScrubbed\b", "Clarified", s, flags=re.I)
+    s = _LOWER_SNAKE_RE.sub(lambda m: humanize_identifier(m.group(1)), s)
+    s = re.sub(r"\s{2,}", " ", s).strip(" ·,:-")
+    return s
+
+
+def humanize_rubric_title(raw_rubric: Any, finding: Any = "") -> str:
+    """Convert cryptic audit gate / rubric code headers into human-readable check names."""
+    s = scrub_prose(raw_rubric)
+    paren = re.search(r"\(([^()]{3,})\)", s)
+    if paren:
+        return paren.group(1).strip()
+    cleaned = re.sub(r"^[\s&:·\-]+|[\s&:·\-]+$", "", s)
+    if len(cleaned) >= 4 and not re.fullmatch(r"[A-Z0-9\s.&\-/]+", cleaned):
+        return cleaned
+    joined = f"{raw_rubric} {finding}"
+    for needle, label in _RUBRIC_PLAIN_RULES:
+        if needle.lower() in joined.lower():
+            return label
+    return "Design Quality Check"
+
+
+def format_vector_summary(vw: dict[str, Any]) -> str:
+    """Format presenter -> audience metadata in plain English without framework codes."""
+    presenter = scrub_prose(vw.get("presenter", ""))
+    audience = scrub_prose(vw.get("audience", ""))
+    meds = [_MEDIUM_PLAIN.get(m, m) for m in vw.get("mediums", [])]
+    tempos = [scrub_prose(t) for t in vw.get("tempos", []) if t]
+    rigor = _RIGOR_PLAIN.get(str(vw.get("rigor_level", "")).upper(), "")
+    parts = [f"{presenter} to {audience}".strip()]
+    if tempos:
+        parts.append(" / ".join(tempos))
+    if meds:
+        parts.append(" & ".join(meds))
+    if rigor:
+        parts.append(rigor)
+    return " · ".join(p for p in parts if p)
+
+
+def format_ledger_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Convert raw ledger metric_ids and file sources to readable labels."""
+    out: list[dict[str, str]] = []
+    for row in rows:
+        out.append({
+            "metric_id": humanize_identifier(row.get("metric_id", "")),
+            "canonical_value": str(row.get("canonical_value", "")),
+            "unit": str(row.get("unit", "")),
+            "views": scrub_prose(row.get("views", "")),
+        })
+    return out

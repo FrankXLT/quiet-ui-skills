@@ -154,13 +154,10 @@ def verify_svg_static_rules(repo_root: Path) -> list[str]:
                 rel = p.relative_to(repo_root).as_posix()
                 errors.append(f"[SVG_ASPECT] {rel} contains preserveAspectRatio='none'")
 
-    # Check for <path lacking fill= across HTML and docs/atlas/*.js
-    atlas_js_dir = repo_root / "docs" / "atlas"
+    # Check for <path lacking fill= across HTML files
     scan_files: list[Path] = [
         p for p in repo_root.rglob("*.html") if not any(ig in p.parts for ig in IGNORED_DIRS)
     ]
-    if atlas_js_dir.exists():
-        scan_files.extend(atlas_js_dir.glob("*.js"))
 
     for p in scan_files:
         txt = p.read_text(encoding="utf-8", errors="ignore")

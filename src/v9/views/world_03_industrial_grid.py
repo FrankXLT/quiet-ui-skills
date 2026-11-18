@@ -35,7 +35,7 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     p_cmd = float(cm_val(cm, "bess_power_cmd_mw"))
     freq = float(cm_val(cm, "grid_freq_hz"))
     soc = float(cm_val(cm, "bess_soc_pct"))
-    reg_val = str(cm_val(cm, "modbus_reg_value"))
+    reg_val = esc(cm_val(cm, "modbus_reg_value"))
     scalars_html = embed_compile(specs["scalars"], "L3", "m4")
     pid_bus_html = embed_compile(specs["pid_bus"], "L3", "m4")
 
@@ -96,7 +96,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     return f"""<div class="v9-stage-inner v9-view-v08">
   <header class="v08-wall-header">
     <div>
-      <span class="v08-wall-kicker">PLANT FLOOR CELL-03 &amp; MICROGRID POI · 10-FT WALL DISPLAY</span>
+      <span class="v08-wall-kicker">PLANT FLOOR CELL-03 &amp; MICROGRID POI</span>
       <h1 class="v08-wall-title">Live Microgrid &amp; Production Yield Overview</h1>
     </div>
     <div class="v08-wall-status">
@@ -120,7 +120,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
         <span class="v08-kpi-target va-nums">Reference {freq_cmd:.3f} Hz</span>
       </div>
     </article>
-    <article class="v08-kpi-card" data-accent="emerald">
+    <article class="v08-kpi-card">
       <span class="v08-kpi-label">Battery Storage Charge (BESS)</span>
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{soc:.1f}%</span>
@@ -247,9 +247,9 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v07-grid-scada-poi-console": {
-            "option_label": "v07 · Grid SCADA POI Console (M4 · L3)", "default_medium": "m4",
+            "option_label": "v07 · Grid SCADA POI Console", "default_medium": "m4",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
-            "nav_icon": "fa-bolt", "nav_brand": "Microgrid POI-03",
+            "nav_icon": "bolt", "nav_brand": "Microgrid POI-03",
             "topbar_brand": "Microgrid POI-03 · IEEE 1547 · TIA-485", "rail_brand": "SCADA Views",
             "topbar_status": v07_status, "nav_items": ["PMU Scalars", "P&ID & Fieldbus", "52-M Interlock", "Event Log"],
             "nav_anchors": ["v07-scalars", "v07-topology", "v07-interlock", "v07-log"],
@@ -258,19 +258,19 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Hold POI Breaker 52-M closed at {p_act:.1f} MW / {freq:.3f} Hz; require LOTO bit [10]=0 before islanding transfer.",
         },
         "v08-plant-floor-wall-kiosk": {
-            "option_label": "v08 · Plant-Floor Wall Kiosk (M5 · L1)", "default_medium": "m5",
+            "option_label": "v08 · Plant-Floor Wall Display", "default_medium": "m5",
             "chromatic_code": "c3", "default_nav": "n0", "allowed_navs": ["n0"],
-            "nav_icon": "fa-tv", "nav_brand": "Plant Wall Kiosk",
-            "topbar_brand": "Plant Wall Kiosk", "rail_brand": "Plant Wall Kiosk",
+            "nav_icon": "tv", "nav_brand": "Plant Wall Display",
+            "topbar_brand": "Plant Wall Display", "rail_brand": "Plant Wall Display",
             "topbar_status": [], "nav_items": [], "nav_anchors": [],
             "inv_col": "v08-plant-floor-wall-kiosk", "short_tag": "v08",
-            "bias_risk": "Raw hexadecimal Modbus registers and C_pk calculus cannot be scanned across a 10-foot factory floor.",
+            "bias_risk": "Raw hexadecimal Modbus registers and capability ratios cannot be scanned across a 10-foot factory floor.",
             "actionable_disposition": "Ambient 10-ft display: confirm 94.2% OEE and 78.4% BESS SoC across shift change.",
         },
         "v09-spc-quality-and-modbus-report": {
-            "option_label": "v09 · SPC Quality & Modbus Audit (M2↔M1 · L3)", "default_medium": "m2",
+            "option_label": "v09 · SPC Quality & Modbus Audit", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
-            "nav_icon": "fa-chart-line", "nav_brand": "SPC & Modbus Audit",
+            "nav_icon": "chart-line", "nav_brand": "SPC & Modbus Audit",
             "topbar_brand": "SPC & Modbus Audit", "rail_brand": "Audit Sections",
             "topbar_status": [], "nav_items": ["Capability Gate", "Analysis", "Shewhart SPC", "Modbus Reg"],
             "nav_anchors": ["v09-capability", "v09-methods", "v09-spc", "v09-modbus"],
@@ -279,4 +279,4 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Authorize release of 12 bearing bore lots (C_pk = 1.64 >= 1.33, 0 USL/LSL breaches).",
         },
     }
-    return assemble_world_bundle(corpus, bp, "03 · Industrial Grid & Quality", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "03 · Grid & Manufacturing", view_cfg, html_map)

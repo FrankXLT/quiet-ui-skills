@@ -2,7 +2,7 @@
   "$schema": "urn:quiet-ui:schema:v9:schematic",
   "id": "w02-v05-zero-trust-and-er-schematics",
   "metadata": {
-    "title": "V05/V06: Zero-Trust Enclave Topology & ML Drift Lineage Schema",
+    "title": "Zero-Trust Enclave Topology & ML Drift Lineage Schema",
     "description": "Multi-panel schematic pairing Panel A (NIST SP 800-207 3-enclave zero-trust architecture with orthogonal cross-boundary PPSM flows) and Panel B (Crow's-Foot ER lineage from raw telemetry events to drift alerts).",
     "rigor_level": "L2",
     "drawing_number": "ATO-ZTA-2026-R3",

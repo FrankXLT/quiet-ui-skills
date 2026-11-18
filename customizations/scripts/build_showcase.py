@@ -90,7 +90,7 @@ def _filter_v9_showcase(html: str, manifest: dict, disabled_tiers: list[str], mo
         f'        <option value="{_html.escape(str(vw["view_id"]), quote=True)}">{_html.escape(str(vw["option_label"]))}</option>'
         for vw in first_views
     )
-    for sid in ("va-world-select", "va-sheet-world-select"):
+    for sid in ("va-domain-select", "va-sheet-domain-select"):
         html = re.sub(
             rf'(<select\s+id="{sid}"[^>]*>)(.*?)(</select>)',
             lambda match: f"{match.group(1)}\n{w_opts}\n        {match.group(3)}",

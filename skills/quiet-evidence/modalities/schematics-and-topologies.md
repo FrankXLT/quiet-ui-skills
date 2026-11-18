@@ -181,6 +181,12 @@ Components marked `DECOMMISSIONED` are visually retained in place but rendered w
 - **Parameterized `differential_bus` (`schematic_kind`)**: Set `"bus_standard"` to emit **`"can_fd"` / `"sae_j1939"`** (`120 Ω` split-termination automotive stubs `<= 0.3 m` on `CAN_H`/`CAN_L`), **`"rs485"` / `"modbus"`** (`120 Ω` end terminations + `560 Ω` fail-safe pull-up/down bias on `A`/`B`), or **`"mil1553b"`** (`78 Ω` twinaxial trunk + `58.5 Ω` transformer-coupled stubs).
 - **Zero-Contamination Enclaves**: Every distinct `enclave_id` receives its own bounded perimeter rectangle; cross-enclave edges carry opaque `--bg-surface` label pills.
 
+### Open-Standards Systems Compilers (`sequence`, `n2_matrix`, `fault_tree`)
+Clean-room deterministic renderers in `compilers/schematic_systems.py` implement three open systems engineering standards:
+- **`sequence` (`ITU-T Z.120`):** Actor headers, dashed lifelines, active execution bars, sync/async/reply message arrows, left timing gutter, and horizontal phase bands.
+- **`n2_matrix` (`NASA SP-2016-6105`):** Diagonal subsystem nodes with orthogonally routed forward outputs (upper triangle) and telemetry/calibration feedback (lower triangle).
+- **`fault_tree` (`NRC NUREG-0492`):** Top hazard box, standard geometric `OR`/`AND` logic gates, intermediate fault branches, circular basic events, and diamond undeveloped events.
+
 ## 7. Verification Checklist
 
 Before emitting SVG markup:

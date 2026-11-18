@@ -1,6 +1,6 @@
 # Quiet UI — Tokens and Surfaces
 
-Surface polarity tokens, concentric corner geometry, and border hierarchy establish the physical substrate of every Quiet UI interface. This specification defines the 4-theme token contract, concentric radius math, the de-barnacling border depth rule, and the 5-way mirror parity governance system.
+Surface polarity tokens, concentric corner geometry, and border hierarchy establish the physical substrate of every Quiet UI interface. This specification defines the 4-theme token contract, concentric radius math, the de-barnacling border depth rule, and the 4-way mirror parity governance system.
 
 ---
 
@@ -100,15 +100,14 @@ Card nesting often introduces visual clutter termed "barnacles" (excessive borde
 
 ---
 
-## 4. 5-Way SHA-256 Token Mirror Parity
+## 4. 4-Way SHA-256 Token Mirror Parity
 
-To prevent styling fragmentation across distributed tools and runtimes, canonical design tokens reside in 5 strictly synchronized files:
+To prevent styling fragmentation across distributed tools and runtimes, canonical design tokens reside in 4 strictly synchronized files:
 
 1. `tokens/quiet-ui-tokens.css` (Repository root canonical definition)
 2. `skills/quiet-ui/tokens/quiet-ui-tokens.css` (Skill bundle mirror)
-3. `docs/atlas/quiet-ui-tokens.css` (Documentation engine mirror)
-4. `customizations/personal-starter/styles/quiet-ui-tokens.css` (Personal starter mirror)
-5. `customizations/brand-starter/styles/quiet-ui-tokens.css` (Brand starter mirror)
+3. `customizations/personal-starter/styles/quiet-ui-tokens.css` (Personal starter mirror)
+4. `customizations/brand-starter/styles/quiet-ui-tokens.css` (Brand starter mirror)
 
 ### Mirror Verification Protocol
 Whenever tokens are modified or audited, run SHA-256 verification:
@@ -117,7 +116,6 @@ Whenever tokens are modified or audited, run SHA-256 verification:
 sha256sum \
   tokens/quiet-ui-tokens.css \
   skills/quiet-ui/tokens/quiet-ui-tokens.css \
-  docs/atlas/quiet-ui-tokens.css \
   customizations/personal-starter/styles/quiet-ui-tokens.css \
   customizations/brand-starter/styles/quiet-ui-tokens.css | awk '{print $1}' | uniq
 ```
@@ -183,4 +181,4 @@ If the output yields more than one unique hash, token mirror parity is broken an
 | Uniform 12px Radius on Outer & Inner | Causes optical corner jamming where inner element cuts through margin. | Apply concentric formula: `var(--radius-inner) = max(0, card - inset)`. |
 | 3+ Nested Border Lines | Creates visual noise ("barnacle cage") that degrades scan speed. | Replace inner borders with surface elevation tints (`var(--bg-elevated)`). |
 | Per-Component Custom Themes | Destroys cognitive predictability across multi-panel interfaces. | Restrict surface tokens to the global `data-theme` scope. |
-| Divergent Local Token Copies | Causes drift between local prototypes and production renders. | Enforce 5-way SHA-256 mirror parity check before commits. |
+| Divergent Local Token Copies | Causes drift between local prototypes and production renders. | Enforce 4-way SHA-256 mirror parity check before commits. |

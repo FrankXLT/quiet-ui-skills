@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 Phase 2 — Standalone Visual Qualification Bench Controls.
+ * Quiet UI v9.0 — Evidence Component Library Interactive Controls.
  */
 (function (window, document) {
   'use strict';
@@ -31,9 +31,10 @@
     const rigSel = document.getElementById('bench-rigor-filter');
     const modVal = modSel ? modSel.value : 'all';
     const rigVal = rigSel ? rigSel.value : 'all';
+    const cards = document.querySelectorAll('.qe-specimen');
     let visible = 0;
 
-    document.querySelectorAll('.qe-specimen').forEach(function (card) {
+    cards.forEach(function (card) {
       const m = card.getAttribute('data-modality') || '';
       const r = card.getAttribute('data-rigor') || '';
       const ok = (modVal === 'all' || m === modVal) && (rigVal === 'all' || r === rigVal);
@@ -47,7 +48,7 @@
 
     const countEl = document.getElementById('bench-visible-count');
     if (countEl) {
-      countEl.textContent = String(visible) + ' of 18 specimens visible';
+      countEl.textContent = String(visible) + ' of ' + String(cards.length) + ' specimens visible';
     }
   }
 

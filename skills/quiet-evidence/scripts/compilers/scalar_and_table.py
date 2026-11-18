@@ -293,7 +293,7 @@ def compile_scalar(spec: dict[str, Any], rigor: str | None = None, medium: str =
     items = spec.get("items")
     if isinstance(items, list) and items:
         grid = "\n".join(_render_single_scalar(it, eff_rigor, medium, chrome=chrome) for it in items)
-        return f'<div class="qe-scalar-grid" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">{grid}</div>'
+        return f'<div class="qe-scalar-grid" data-count="{len(items)}" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">{grid}</div>'
     return _render_single_scalar(spec, eff_rigor, medium, chrome=chrome)
 
 

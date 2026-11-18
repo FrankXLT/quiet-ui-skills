@@ -89,6 +89,13 @@ class TestV9World01Pilot(unittest.TestCase):
             self.assertTrue(vw["bias_removed"])
             self.assertTrue(vw["invariants"].get("baseline"))
             self.assertGreaterEqual(len(vw["murder_board"]), 1)
+            blob = " ".join([
+                vw["vector_summary"], vw["bias_removed"], vw["bias_risk"], vw["bias_replacement"], vw["actionable_disposition"],
+                *vw["invariants"].values(),
+                *(f"{m['rubric']} {m['finding']} {m['verdict']}" for m in vw["murder_board"]),
+            ])
+            for leak in (".json", "_row_status", "QUIET-BRIDGE", "Murder-Board", "Scrubbed"):
+                self.assertNotIn(leak, blob, f"Jargon '{leak}' leaked in {vw['view_id']}")
 
     def test_write_to_temp_path_leaves_v8_untouched(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -165,9 +172,13 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
                     self.assertTrue(str(inv.get(ikey, "")).strip(), f"Blank invariant {ikey} in {vw['view_id']}")
                 mb = vw.get("murder_board", [])
                 self.assertTrue(mb and all(x.get("rubric") and x.get("finding") and x.get("verdict") for x in mb), f"Incomplete murder_board in {vw['view_id']}")
-        self.assertIn('id="va-tab-worlds"', self.unified_html)
-        self.assertIn('id="va-tab-bench"', self.unified_html)
-        self.assertIn('id="va-tab-atlas"', self.unified_html)
+                blob = " ".join([vw["vector_summary"], vw["bias_removed"], vw["bias_risk"], vw["bias_replacement"], vw["actionable_disposition"], *inv.values(), *(f"{m['rubric']} {m['finding']}" for m in mb)])
+                for leak in (".json", "_row_status", "QUIET-BRIDGE", "Murder-Board", "Scrubbed"):
+                    self.assertNotIn(leak, blob, f"Jargon '{leak}' in {vw['view_id']}")
+        for must_id in ('id="va-tab-examples"', 'id="va-tab-components"', 'id="va-domain-select"', 'data-sheet-theme="white"', 'data-sheet-theme="paper"', 'data-sheet-theme="dark-paper"', 'data-sheet-theme="dark"'):
+            self.assertIn(must_id, self.unified_html)
+        for gone in ('id="va-tab-worlds"', 'id="va-tab-bench"', 'id="va-tab-atlas"', 'va-sheet-toggle-btn', 'va-world-select', 'diagrams.html', 'font-awesome', 'cdnjs.cloudflare.com', 'fa-solid'):
+            self.assertNotIn(gone, self.unified_html)
         self.assertIn('aria-selected="true"', self.unified_html)
         self.assertNotIn("!important", self.unified_html.lower())
         self.assertNotIn("●", self.unified_html)
@@ -175,8 +186,10 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
     def test_worlds_02_to_05_conservation_and_zero_leakage(self) -> None:
         for num in ("420.0", "16.8", "0x8003B104", "0.050", "23.6", "59.985", "78.4", "1.64", "26.9", "179.3", "25.1", "2.40", "42.8", "0.35", "0x18FEF100"):
             self.assertIn(num, self.unified_html, f"Missing conserved metric {num}")
+        self.assertIn("V<sub>0</sub>", self.unified_html)
+        self.assertIn("f<sub>obs</sub>", self.unified_html)
         tpl_body = "".join(re.findall(r'<template\s+id="tpl-view-[^"]*">(.*?)</template>', self.unified_html, flags=re.S))
-        for leak in ("Quiet Cockpit", "Pedagogical Flow", "Decision Contrast", "EXPECTED TICK", "FROSTED HUD", "CREASE-AWARE", "T1 GATE", "STROKE-ONLY PHOSPHOR", "WCAG AAA"):
+        for leak in ("Quiet Cockpit", "Pedagogical Flow", "Decision Contrast", "EXPECTED TICK", "FROSTED HUD", "CREASE-AWARE", "T1 GATE", "STROKE-ONLY PHOSPHOR", "WCAG AAA", "10-FT WALL DISPLAY", "V06:"):
             self.assertNotIn(leak, tpl_body, f"Taxonomy/meta string leaked into stage template: {leak}")
 
     def test_compiler_math_negative_edge_and_standalone_themes(self) -> None:

@@ -257,6 +257,44 @@ for (const wsvg of document.querySelectorAll('svg.qe-waveform-svg')) {
   const labels = [...wsvg.querySelectorAll('text')].filter(t => (t.textContent || '').includes('DROPOUT')).length;
   if (merged.length > 0 && labels !== merged.length) errs.push(`[SINGLE_DROPOUT] Expected ${merged.length} DROPOUT label(s), got ${labels}`);
 }
+for (const badTxt of ['QUIET-BRIDGE', 'Murder-Board', 'Murder-board', 'Qualification Bench']) {
+  if (visBody.includes(badTxt)) errs.push(`[PLAIN_ENGLISH] ${view} leaked '${badTxt}'`);
+}
+if (view === 'v06-ai-drift-and-lineage-ide') {
+  for (const rawTok of ['V06:', 'p_hat', 'f_obs', '+/- u_y']) {
+    if (visBody.includes(rawTok)) errs.push(`[V06_POLISH] Raw token '${rawTok}' leaked`);
+  }
+}
+if (view === 'v07-grid-scada-poi-console' && w >= 1400) {
+  const cards4 = [...document.querySelectorAll('.qe-scalar-grid[data-count="4"] > .qe-scalar-card')];
+  if (cards4.length === 4) {
+    const tops = cards4.map(c => c.getBoundingClientRect().top);
+    if (Math.max(...tops) - Math.min(...tops) > 2.0) errs.push(`[V07_4UP] Expected 1 row of 4 scalars, got y=${tops.map(v => v.toFixed(0)).join(',')}`);
+  }
+  const topo = document.getElementById('v07-topology');
+  if (!topo || topo.getBoundingClientRect().top >= 900) errs.push(`[V07_FOLD] Topology top=${topo ? topo.getBoundingClientRect().top.toFixed(0) : 'missing'} >= 900`);
+}
+if (view === 'v08-plant-floor-wall-kiosk' && w >= 1900) {
+  if (visBody.includes('10-FT WALL DISPLAY')) errs.push('[V08_KICKER] Unwanted 10-FT WALL DISPLAY tag');
+  for (const kc of document.querySelectorAll('.v08-kpi-card')) {
+    if (parseFloat(getComputedStyle(kc).borderTopWidth || '0') > 1.5) errs.push('[V08_BORDER] Heavy colored top border on v08 card');
+  }
+}
+if (view === 'v12-stem-interactive-lab') {
+  for (const rawTok of ['V12:', 'tau =', 'tau_s', 'u_y', '+/-']) {
+    if (visBody.includes(rawTok)) errs.push(`[V12_MATH] Raw ASCII token '${rawTok}' leaked`);
+  }
+  if (!visBody.includes('τ') || !visBody.includes('V0')) errs.push('[V12_MATH] Expected formatted Unicode τ and V₀');
+}
+if (view === 'v16-transparent-window-overlay' && w >= 1400) {
+  const tb = document.getElementById('va-shell-topbar');
+  if (tb && getComputedStyle(tb).display !== 'none') errs.push('[V16_FULLBLEED] Top shell bar not hidden on M7');
+  const bfHost = document.getElementById('v16-bitfield-host');
+  const det = document.querySelector('#v16-bitfield-host details.v16-bf-details');
+  const foldLimit = window.innerHeight * 0.92;
+  if (!bfHost || bfHost.getBoundingClientRect().top >= foldLimit) errs.push(`[V16_FOLD] Bitfield top=${bfHost ? bfHost.getBoundingClientRect().top.toFixed(0) : 'missing'} >= ${foldLimit.toFixed(0)}`);
+  if (!det || det.open) errs.push('[V16_DETAILS] Expected collapsed decode details by default');
+}
 return errs;
 """
 
@@ -296,39 +334,23 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
 def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     shots_dir.mkdir(parents=True, exist_ok=True)
     shots = [
-        ("01_studio_unified_worlds_v04_desktop.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white"),
-        ("02_studio_mode_bench_embedded.png", 1440, 900, "mode=bench&theme=white"),
-        ("03_studio_mode_atlas_embedded.png", 1440, 900, "mode=atlas&theme=white"),
-        ("04_v05_zero_trust_ato_m1_sheet.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v05-zero-trust-ato-spec&medium=m1&theme=white"),
-        ("05_v06_ai_drift_lineage_ide_oled.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark"),
-        ("06_v07_scada_poi_console_desktop.png", 1440, 900, "world=03-industrial-grid-and-manufacturing&view=v07-grid-scada-poi-console&theme=white"),
-        ("07_v08_plant_floor_wall_kiosk_m5.png", 1920, 1080, "world=03-industrial-grid-and-manufacturing&view=v08-plant-floor-wall-kiosk&theme=dark"),
-        ("08_v10_civic_budget_waterfall_paper.png", 1440, 900, "world=04-civic-finance-and-stem-learning&view=v10-civic-capital-budget-deck&theme=paper"),
-        ("09_v12_stem_rc_lab_mobile_390x844.png", 390, 844, "world=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white"),
+        ("01_studio_topbar_v04_desktop.png", 1440, 900, "mode=examples&domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", None),
+        ("02_settings_swatch_drawer_open.png", 1440, 900, "mode=examples&domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", "document.getElementById('va-customize-btn').click();"),
+        ("03_components_systems_schematics.png", 1440, 900, "mode=components&theme=white", "const d=document.getElementById('va-stage-portal').contentDocument;if(d){const f=d.getElementById('bench-modality-filter');if(f){f.value='M6';f.dispatchEvent(new Event('change'));}const cards=d.querySelectorAll('.qe-specimen[data-modality=\"M6\"]');if(cards[3])cards[3].scrollIntoView({block:'start'});}"),
+        ("04_why_design_rationale_dialog.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark-paper", "document.getElementById('va-bridge-btn').click();"),
+        ("05_v06_ai_drift_er_oled.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark", None),
+        ("06_v07_scada_4up_desktop.png", 1440, 900, "domain=03-industrial-grid-and-manufacturing&view=v07-grid-scada-poi-console&theme=white", None),
+        ("07_v08_plant_kiosk_1080p.png", 1920, 1080, "domain=03-industrial-grid-and-manufacturing&view=v08-plant-floor-wall-kiosk&theme=dark", None),
+        ("08_v10_civic_foldable_840x1050.png", 840, 1050, "domain=04-civic-finance-and-stem-learning&view=v10-civic-capital-budget-deck&theme=paper", None),
+        ("09_v12_stem_rc_mobile_390x844.png", 390, 844, "domain=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white", None),
+        ("10_v16_smart_glass_overlay.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
     ]
-    for fname, w, h, qs in shots:
+    for fname, w, h, qs, hook in shots:
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?{qs}")
-        time.sleep(0.55)
+        time.sleep(0.55 if "mode=components" in qs else 0.4)
+        if hook:
+            driver.execute_script(hook)
+            time.sleep(0.25)
         driver.save_screenshot(str(shots_dir / fname))
-    set_viewport(driver, 1440, 900, 2)
-    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=dark")
-    time.sleep(0.45)
-    p1 = shots_dir / "_tmp_v15.png"
-    driver.save_screenshot(str(p1))
-    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white")
-    time.sleep(0.45)
-    p2 = shots_dir / "_tmp_v16.png"
-    driver.save_screenshot(str(p2))
-    composite = shots_dir / "10_v15_m6_flight_hud_and_v16_m7_glass.png"
-    try:
-        from PIL import Image
-        im1, im2 = Image.open(p1), Image.open(p2)
-        canvas = Image.new("RGB", (im1.width + im2.width, max(im1.height, im2.height)))
-        canvas.paste(im1, (0, 0))
-        canvas.paste(im2, (im1.width, 0))
-        canvas.save(str(composite))
-        p1.unlink(missing_ok=True)
-        p2.unlink(missing_ok=True)
-    except Exception:
-        p1.rename(composite)
+

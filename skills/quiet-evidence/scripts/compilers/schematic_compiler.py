@@ -14,6 +14,11 @@ from .schematic_variants import (
     compile_sankey,
     compile_wardley,
 )
+from .schematic_systems import (
+    compile_fault_tree,
+    compile_n2_matrix,
+    compile_sequence,
+)
 from .tokens_and_scales import esc, render_test_condition_strip
 
 
@@ -37,6 +42,9 @@ def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: st
         "wardley": compile_wardley,
         "sankey": compile_sankey,
         "er_lineage": compile_er_lineage,
+        "sequence": compile_sequence,
+        "n2_matrix": compile_n2_matrix,
+        "fault_tree": compile_fault_tree,
     }
 
     panels: list[str] = []

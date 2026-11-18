@@ -137,7 +137,8 @@ def check_immutability(repo_root: Path) -> list[str]:
 
     protected_prefixes = (
         "skills/quiet-ui/",
-        "skills/quiet-ui-diagrams/",
+        "skills/quiet-evidence/",
+        "skills/quiet-bridge/",
         "customizations/personal-starter/",
         "customizations/brand-starter/",
     )

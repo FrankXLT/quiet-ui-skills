@@ -14,7 +14,7 @@ Quiet UI Pillar 1 manages physical optical constraints, viewing distance, contai
 Before proposing or generating any interface code, verify project scope isolation:
 1. **Never mutate core tokens or templates in an active feature chat**: Core files in `tokens/`, `src/css/`, and `src/chrome/` are immutable during feature development.
 2. **Project-Specific Customizations**: All custom styling must live in `customizations/<brand>/styles/overrides.css` and be declared in `customization.json`.
-3. **5-Way Token Mirror Parity**: Any authorized token addition must be synchronized across all 5 mirror targets with identical SHA-256 hashes.
+3. **4-Way Token Mirror Parity**: Any authorized token addition must be synchronized across all 4 mirror targets with identical SHA-256 hashes.
 
 ---
 
@@ -33,7 +33,7 @@ Every interface response MUST begin by explicitly declaring the **Pre-Edit Outpu
 Load ONLY the specific foundation and medium guides matching your active vector:
 
 ### Foundation Guides
-- [foundation/tokens-and-surfaces.md](foundation/tokens-and-surfaces.md): 4-theme OKLCH tokens, 5-way mirror parity, concentric radius math, and border depth rules.
+- [foundation/tokens-and-surfaces.md](foundation/tokens-and-surfaces.md): 4-theme OKLCH tokens, 4-way mirror parity, concentric radius math, and border depth rules.
 - [foundation/typography-and-hierarchy.md](foundation/typography-and-hierarchy.md): 3-role font stack, fluid 4K scale, 72ch prose vs. `.va-bleed-wide`, table clipping rules.
 - [foundation/chromatic-purpose-budgets.md](foundation/chromatic-purpose-budgets.md): Archival Proof, Pedagogical Flow, Decision Contrast, and Quiet Cockpit token rations.
 - [foundation/navigation-morphing.md](foundation/navigation-morphing.md): Polymorphic shells `N0–N4`, foldable 820px eyebrow nav, mobile 390px touch hit targets, and `@media print`.

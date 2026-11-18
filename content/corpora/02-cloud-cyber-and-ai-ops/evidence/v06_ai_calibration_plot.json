@@ -2,7 +2,7 @@
   "$schema": "urn:quiet-ui:schema:v9:plot",
   "id": "w02-v06-ai-calibration-plot",
   "metadata": {
-    "title": "V06: Classifier Reliability & Calibration Drift Curve with Normalized Residual Strip",
+    "title": "Classifier Reliability & Calibration Drift Curve with Normalized Residual Strip",
     "description": "L3 AI metrology reliability diagram plotting predicted probability p_hat [0.05..0.95] against empirical validation frequency f_obs across 10 uniform bins (N = 1200 total, 120 samples/bin) with +/-u_y binomial uncertainty whiskers, ideal y = x diagonal, overconfidence drift gate, and bottom normalized residual strip.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T04:15:00Z"
@@ -36,7 +36,7 @@
       "id": "overconfidence-gate",
       "type": "warning",
       "direction": "lower",
-      "label": "Overconfidence Gate (Δcal <= -0.080)",
+      "label": "Overconfidence Gate (Δcal ≤ −0.080)",
       "stroke_color": "var(--status-warn)",
       "stroke_style": "dashed",
       "equation": "x - 0.08"

@@ -65,7 +65,7 @@ _FALLBACK_TOKENS_CSS = (
     '--bg-card:#FFFFFF;--bg-elevated:#F8FAFC;--bg-header:#F8FAFC;--text-primary:#0F172A;'
     '--text-secondary:#334155;--text-muted:#475569;--border-hairline:#E2E8F0;--border-strong:#CBD5E1;'
     '--accent-primary:#1D4ED8;--accent-focal:#1D4ED8;--status-ok:#15803D;--status-ok-bg:#ECFDF5;'
-    '--status-warn:#B45309;--status-warn-bg:#FFFBEB;--status-danger:#B91C1C;--status-err-bg:#FFF1F2;'
+    '--status-warn:#B45309;--status-warn-bg:#FFFBEB;--status-danger:#B91C1C;--status-err:var(--status-danger);--status-err-bg:#FFF1F2;'
     '--tint-indigo-bg:#EEF2FF;--tint-indigo-fg:#3730A3;--tint-emerald-bg:#ECFDF5;--tint-emerald-fg:#065F46;'
     '--tint-amber-bg:#FFFBEB;--tint-amber-fg:#92400E;--tint-rose-bg:#FFF1F2;--tint-rose-fg:#9F1239;'
     '--tint-violet-bg:#F5F3FF;--tint-violet-fg:#5B21B6;--font-sans:system-ui,sans-serif;'
@@ -75,17 +75,17 @@ _FALLBACK_TOKENS_CSS = (
     '--bg-card:#FCFBF8;--bg-elevated:#EFECE5;--bg-header:#EFECE5;--text-primary:#1C1917;'
     '--text-secondary:#44403C;--text-muted:#57534E;--border-hairline:#E5E0D6;--border-strong:#D6CFC5;'
     '--accent-primary:#1E40AF;--accent-focal:#1E40AF;--status-ok:#15803D;--status-ok-bg:#E8F5EE;'
-    '--status-warn:#92400E;--status-warn-bg:#FDF5E6;--status-danger:#9F1239;--status-err-bg:#FCEEEF;}'
+    '--status-warn:#92400E;--status-warn-bg:#FDF5E6;--status-danger:#9F1239;--status-err:var(--status-danger);--status-err-bg:#FCEEEF;}'
     '[data-theme="dark-paper"]{--bg-shell:#121110;--bg-canvas:#1A1816;--bg-surface:#23201D;'
     '--bg-card:#23201D;--bg-elevated:#2D2925;--bg-header:#2D2925;--text-primary:#F5F5F4;'
     '--text-secondary:#D6D3D1;--text-muted:#A8A29E;--border-hairline:#332F2B;--border-strong:#44403C;'
     '--accent-primary:#60A5FA;--accent-focal:#60A5FA;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,.16);'
-    '--status-warn:#FBBF24;--status-warn-bg:rgba(245,158,11,.16);--status-danger:#FB7185;--status-err-bg:rgba(244,63,94,.16);}'
+    '--status-warn:#FBBF24;--status-warn-bg:rgba(245,158,11,.16);--status-danger:#FB7185;--status-err:var(--status-danger);--status-err-bg:rgba(244,63,94,.16);}'
     '[data-theme="dark"]{--bg-shell:#05070B;--bg-canvas:#090D16;--bg-surface:#0F1624;--bg-card:#0F1624;'
     '--bg-elevated:#172135;--bg-header:#172135;--text-primary:#F1F5F9;--text-secondary:#CBD5E1;'
     '--text-muted:#94A3B8;--border-hairline:#1E293B;--border-strong:#334155;--accent-primary:#38BDF8;'
     '--accent-focal:#38BDF8;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,.16);--status-warn:#FBBF24;'
-    '--status-warn-bg:rgba(245,158,11,.16);--status-danger:#F87171;--status-err-bg:rgba(239,68,68,.16);'
+    '--status-warn-bg:rgba(245,158,11,.16);--status-danger:#F87171;--status-err:var(--status-danger);--status-err-bg:rgba(239,68,68,.16);'
     '--tint-indigo-bg:rgba(99,102,241,.18);--tint-indigo-fg:#C7D2FE;--tint-emerald-bg:rgba(16,185,129,.18);'
     '--tint-emerald-fg:#A7F3D0;--tint-amber-bg:rgba(245,158,11,.18);--tint-amber-fg:#FDE68A;'
     '--tint-rose-bg:rgba(244,63,94,.18);--tint-rose-fg:#FECDD3;--tint-violet-bg:rgba(139,92,246,.18);'
@@ -136,7 +136,17 @@ def _compile_single_dict(
 
     fig_id = esc(data.get("id", f"qe-{modality}"))
     title = esc(meta.get("title", modality.title()))
-    desc = meta.get("description", "")
+    desc = str(meta.get("description", ""))
+    desc_html = ""
+    if desc:
+        import re as _re
+        d_uni = desc.replace("+/-", "±").replace("p_hat", "p̂").replace("y_hat", "ŷ").replace("tau", "τ")
+        d_html = _re.sub(
+            r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|[A-Za-z]))_([a-z0-9]{1,3})(?![A-Za-z0-9_])",
+            r"\1<sub>\2</sub>",
+            esc(d_uni),
+        )
+        desc_html = f'<figcaption class="va-figure-caption">{d_html}</figcaption>'
     drawer = ""
     if include_spec_drawer:
         drawer = (
@@ -153,7 +163,7 @@ def _compile_single_dict(
         if chrome == "bench"
         else ""
     )
-    caption = f'<figcaption class="va-figure-caption">{esc(desc)}</figcaption>' if desc else ""
+    caption = desc_html
     return (
         f'<figure class="va-figure-card qe-figure" id="{fig_id}" '
         f'data-qe-modality="{esc(modality)}" data-qe-rigor="{esc(eff_rigor)}" '

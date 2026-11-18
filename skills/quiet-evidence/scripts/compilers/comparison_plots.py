@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from .svg_labels import halo_text, svg_knockout_label
@@ -34,8 +35,8 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
             running = nxt
         bounds.extend((lo, hi))
 
-    envs = spec.get("envelopes", []) if rigor in {"L2", "L3"} else []
-    bounds.extend(float(e.get("threshold_value", 0.0)) for e in envs)
+    envs = spec.get("envelopes") or [] if rigor in {"L2", "L3"} else []
+    bounds.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
     lo_b, hi_b = min(bounds), max(bounds)
     if lo_b == hi_b:
         hi_b = lo_b + 1.0
@@ -45,8 +46,8 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
         target_ticks=5,
     )
 
-    x0, y0, pw, ph = 84.0, 26.0, 600.0, 210.0
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 294" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Waterfall Plot"))}">']
+    x0, y0, pw, ph = 78.0, 26.0, 536.0, 206.0
+    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 296" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Waterfall Plot"))}">']
     for yv in sc["majors"]:
         py = _proj_lin_y(yv, sc, y0, ph)
         parts.append(f'<line x1="{x0}" y1="{py:.1f}" x2="{x0 + pw}" y2="{py:.1f}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
@@ -56,10 +57,11 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
     parts.append(f'<line x1="{x0}" y1="{y_axis_base:.1f}" x2="{x0 + pw}" y2="{y_axis_base:.1f}" stroke="var(--text-primary)" stroke-width="1.1"/>')
 
     slot = pw / max(len(spans), 1)
-    bw = min(84.0, slot * 0.62)
+    bw = min(68.0, slot * 0.62)
     sep = "" if unit in {"%", "°"} else "\u00a0"
     for i, (lo, hi, val, kind, lbl) in enumerate(spans):
         bx = x0 + i * slot + (slot - bw) / 2.0
+        cx = bx + bw / 2.0
         yt = _proj_lin_y(hi, sc, y0, ph)
         yb = _proj_lin_y(lo, sc, y0, ph)
         bh = max(4.0, yb - yt)
@@ -68,10 +70,19 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
         lbl_col = "var(--status-ok)" if kind == "total" else ("var(--accent-focal)" if val < 0 else "var(--text-primary)")
         parts.append(f'<rect data-role="bar" x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="3" fill="{fill}" stroke="{stroke}" stroke-width="1.6"/>')
         val_txt = f"{val:+.1f}{sep}{unit}" if kind == "delta" else f"{val:.1f}{sep}{unit}"
-        yb = _proj_lin_y(lo, sc, y0, ph)
         ly = max(y0 + 12.0, min(y0 + ph - 8.0, (yb + 14.0 if (val < 0 and yb + 22.0 < y0 + ph) else yt - 7.0)))
-        parts.append(halo_text(bx + bw / 2.0, ly, val_txt, anchor="middle", size=11.5, weight="700", fill=lbl_col))
-        parts.append(halo_text(bx + bw / 2.0, y0 + ph + 19.0, lbl, anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
+        parts.append(halo_text(cx, ly, val_txt, anchor="middle", size=11.5, weight="700", fill=lbl_col))
+        words = lbl.split()
+        if len(words) >= 2 and len(lbl) > 9:
+            mid = len(words) // 2
+            l1, l2 = " ".join(words[:mid]), " ".join(words[mid:])
+            parts.append(
+                f'<text x="{cx:.1f}" y="{y0 + ph + 18.0:.1f}" text-anchor="middle" font-family="var(--font-mono)" '
+                f'font-size="11.5" font-weight="500" fill="var(--text-secondary)">'
+                f'<tspan x="{cx:.1f}">{esc(l1)}</tspan><tspan x="{cx:.1f}" dy="14">{esc(l2)}</tspan></text>'
+            )
+        else:
+            parts.append(halo_text(cx, y0 + ph + 19.0, lbl, anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
         if i < len(spans) - 1:
             run_end = lo if val < 0 else hi
             end_y = _proj_lin_y(run_end, sc, y0, ph)
@@ -79,7 +90,10 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
             parts.append(f'<line x1="{bx + bw:.1f}" y1="{end_y:.1f}" x2="{nx:.1f}" y2="{end_y:.1f}" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3,3"/>')
 
     for env in envs:
-        thr = float(env.get("threshold_value", 0.0))
+        raw_thr = env.get("threshold_value")
+        if raw_thr is None or not math.isfinite(float(raw_thr)):
+            continue
+        thr = float(raw_thr)
         ey = max(y0 + 12.0, min(y0 + ph - 12.0, _proj_lin_y(thr, sc, y0, ph)))
         parts.append(f'<line x1="{x0}" y1="{ey:.1f}" x2="{x0 + pw}" y2="{ey:.1f}" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="6,3"/>')
         parts.append(svg_knockout_label(x0 + pw * 0.48, ey + 4.0, f'{env.get("label", "Ceiling")} ({thr:g}{sep}{unit})', anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
