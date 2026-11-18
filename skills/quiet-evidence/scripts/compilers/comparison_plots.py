@@ -148,13 +148,14 @@ def compile_forest(spec: dict[str, Any]) -> str:
     vb_h = int(y0 + ph + 48.0)
     span = sc["max"] - sc["min"] or 1.0
     px_map = lambda v: x0 + ((v - sc["min"]) / span) * pw
+    px_clamp = lambda v: max(x0, min(x0 + pw, px_map(v)))
 
     parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Forest CI Plot"))}">']
     for xv in sc["majors"]:
         px = px_map(xv)
         parts.append(f'<line x1="{px:.1f}" y1="{y0}" x2="{px:.1f}" y2="{y0 + ph}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
         parts.append(halo_text(px, y0 + ph + 18.0, format_tick_numeral(xv, step=sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
-    nx = px_map(null_v)
+    nx = px_clamp(null_v)
     parts.append(f'<line x1="{nx:.1f}" y1="{y0}" x2="{nx:.1f}" y2="{y0 + ph}" stroke="var(--text-primary)" stroke-width="1.4" stroke-dasharray="5,3"/>')
     parts.append(f'<rect data-role="frame" x="{x0}" y="{y0}" width="{pw}" height="{ph}" fill="none" stroke="var(--border-strong)" stroke-width="1"/>')
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 38.0, x_ax.get("quantity_calculus", "Treatment Effect (95% CI)"), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
@@ -164,7 +165,7 @@ def compile_forest(spec: dict[str, Any]) -> str:
         est, lo, hi = float(it["estimate"]), float(it["ci_low"]), float(it["ci_high"])
         sig = (hi < null_v) or (lo > null_v)
         col = "var(--accent-focal)" if sig else "var(--text-secondary)"
-        px_lo, px_m, px_hi = px_map(lo), px_map(est), px_map(hi)
+        px_lo, px_m, px_hi = px_clamp(lo), px_clamp(est), px_clamp(hi)
         parts.append(halo_text(x0 - 10.0, cy + 4.0, str(it["label"]), anchor="end", size=11.5, weight="600", fill="var(--text-primary)", halo=False))
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy:.1f}" x2="{px_hi:.1f}" y2="{cy:.1f}" stroke="{col}" stroke-width="1.8"/>')
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy - 4:.1f}" x2="{px_lo:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')

@@ -92,7 +92,8 @@ def _render_graticule(
     xlbl = x_ax.get("quantity_calculus") or format_quantity_header(x_ax.get("quantity", "x"), None, x_ax.get("unit", ""))
     ylbl = y_ax.get("quantity_calculus") or format_quantity_header(y_ax.get("quantity", "y"), None, y_ax.get("unit", ""))
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 40.0, xlbl, anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))
-    parts.append(f'<text x="18" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 18 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">{format_math_svg(ylbl, 9.2)}</text>')
+    y_lbl_sz = 11.0 if len(str(ylbl)) > 28 else 12.0
+    parts.append(f'<text x="22" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 22 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="{y_lbl_sz:.1f}" font-weight="700" fill="var(--text-primary)">{format_math_svg(ylbl, 9.2)}</text>')
     return parts
 
 
@@ -139,7 +140,7 @@ def _render_envelopes(
 
         raw_lbl = str(env.get("label", "Limit"))
         if is_horiz:
-            if len(raw_lbl) <= 18:
+            if len(raw_lbl) <= 15:
                 parts.append(f'<line x1="{x0 + pw:.1f}" y1="{px_pts[0][1]:.1f}" x2="{x0 + pw + 5.0:.1f}" y2="{px_pts[0][1]:.1f}" stroke="{col}" stroke-width="1.5"/>')
                 gutter.append({"x": x0 + pw + 8.0, "y": px_pts[0][1] + 4.0, "text": raw_lbl, "anchor": "start", "fill": col, "weight": "700", "w": 110.0})
             else:
@@ -220,11 +221,17 @@ def _render_series_layers(
         and (not x_sc["is_log"] or float(p["x"]) > 0.0) and (not y_sc["is_log"] or float(p["y"]) > 0.0)
     ]
     if sr.get("connect_piecewise") and len(pts) >= 2:
-        d = " ".join(f'{"M" if i == 0 else "L"} {_proj_x(float(p["x"]), x_sc, dx0, dpw):.1f} {_proj_y(float(p["y"]), y_sc, y0, ph):.1f}' for i, p in enumerate(pts))
+        pts_px = [
+            (max(x0, min(x0 + pw, _proj_x(float(p["x"]), x_sc, dx0, dpw))),
+             max(y0, min(y0 + ph, _proj_y(float(p["y"]), y_sc, y0, ph))))
+            for p in pts
+        ]
+        d = " ".join(f'{"M" if i == 0 else "L"} {cx:.1f} {cy:.1f}' for i, (cx, cy) in enumerate(pts_px))
         strokes.append(f'<path d="{d}" fill="none" stroke="{stroke}" stroke-width="1.3" opacity="0.65"{term_attr}/>')
     for p in pts:
         xv, yv = float(p["x"]), float(p["y"])
-        px, py = _proj_x(xv, x_sc, dx0, dpw), _proj_y(yv, y_sc, y0, ph)
+        px = max(x0, min(x0 + pw, _proj_x(xv, x_sc, dx0, dpw)))
+        py = max(y0, min(y0 + ph, _proj_y(yv, y_sc, y0, ph)))
         uy = p.get("u_y")
         if uy is not None and rigor in {"L2", "L3"} and math.isfinite(float(uy)):
             u_val = abs(float(uy))
@@ -242,9 +249,9 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     axes = spec.get("axes", {})
     x_ax, y_ax = axes.get("x_axis", {}), axes.get("y_axis", {})
     vis_series = _visible_series(spec, rigor)
-    envs = spec.get("envelopes", []) if rigor in {"L2", "L3"} else []
+    envs = spec.get("envelopes", []) if (rigor in {"L2", "L3"} or spec.get("show_l1_envelopes")) else []
     show_res = bool(spec.get("residual_strip", {}).get("enabled")) and rigor == "L3"
-    has_gutter = any(not e.get("equation") and e.get("threshold_value") is not None and len(str(e.get("label", ""))) <= 18 for e in envs)
+    has_gutter = any(not e.get("equation") and e.get("threshold_value") is not None and len(str(e.get("label", ""))) <= 15 for e in envs)
 
     xs = [float(p["x"]) for s in vis_series for p in s.get("data_points", []) if p.get("x") is not None and math.isfinite(float(p["x"]))]
     ys = [float(p["y"]) for s in vis_series for p in s.get("data_points", []) if p.get("y") is not None and math.isfinite(float(p["y"]))]
@@ -299,7 +306,7 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
 # Legend swatch builder moved to plot_helpers.legend_swatch_svg
 
 
-def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white") -> str:
+def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 4 (urn:quiet-ui:schema:v9:plot) into NIST-calibrated HTML/SVG."""
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()
@@ -339,14 +346,19 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
 
     vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else spec.get("series", [])
     legend_items: list[str] = []
-    for idx, sr in enumerate(vis_series):
-        st = SERIES_STYLES[idx % len(SERIES_STYLES)]
-        term = sr.get("term")
-        col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), resolve_term_colors(term)["fg"] if term else st["stroke"])
-        ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
-        ep_lbl = "Discrete Sample (&#177;u<sub>y</sub>)" if ep_kind == "discrete" else "Analytical Model"
-        swatch = _legend_swatch_svg(sr, st, col)
-        legend_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
+    omit_l1_legend = eff_rigor == "L1" and chrome == "embedded" and len(vis_series) <= 1 and not spec.get("parametric_legend")
+    if not omit_l1_legend:
+        for idx, sr in enumerate(vis_series):
+            st = SERIES_STYLES[idx % len(SERIES_STYLES)]
+            term = sr.get("term")
+            col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), resolve_term_colors(term)["fg"] if term else st["stroke"])
+            ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
+            ep_lbl = "Discrete Sample (&#177;u<sub>y</sub>)" if ep_kind == "discrete" else "Analytical Model"
+            swatch = _legend_swatch_svg(sr, st, col)
+            if eff_rigor == "L1" and chrome == "embedded":
+                legend_items.append(f'<span class="qe-leg-item">{swatch}{format_math_html(sr.get("name", "Series"))}</span>')
+            else:
+                legend_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
     for param in spec.get("parametric_legend", []):
         u = str(param.get("unit", ""))
         legend_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], u))}</span>')

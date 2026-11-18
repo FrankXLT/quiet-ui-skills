@@ -113,12 +113,13 @@ def _compile_single_dict(
     theme: str,
     include_wrapper: bool,
     include_spec_drawer: bool,
+    chrome: str = "bench",
 ) -> str:
     modality = detect_modality(data)
     meta = data.get("metadata") or {}
     eff_rigor = (rigor or meta.get("rigor_level", "L2")).upper()
     compiler = MODALITY_DISPATCH[modality]
-    inner_html = compiler(data, rigor=eff_rigor, medium=medium, theme=theme)
+    inner_html = compiler(data, rigor=eff_rigor, medium=medium, theme=theme, chrome=chrome)
     if not include_wrapper:
         return inner_html
 
@@ -135,6 +136,12 @@ def _compile_single_dict(
             f'<pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for {title}"><code>{esc(raw_text)}</code></pre>'
             "</details>"
         )
+    badges = (
+        f'<span class="qe-fig-badges"><span class="va-pill" data-variant="tag">{esc(modality.upper())}</span>'
+        f'<span class="va-pill" data-variant="tag">{esc(eff_rigor)}</span></span>'
+        if chrome == "bench"
+        else ""
+    )
     caption = f'<figcaption class="va-figure-caption">{esc(desc)}</figcaption>' if desc else ""
     return (
         f'<figure class="va-figure-card qe-figure" id="{fig_id}" '
@@ -142,8 +149,7 @@ def _compile_single_dict(
         f'data-qe-medium="{esc(medium)}" data-qe-theme="{esc(theme)}">'
         f'<div class="va-figure-hdr qe-card-head">'
         f'<h2 class="qe-fig-title">{title}</h2>'
-        f'<span class="qe-fig-badges"><span class="va-pill" data-variant="tag">{esc(modality.upper())}</span>'
-        f'<span class="va-pill" data-variant="tag">{esc(eff_rigor)}</span></span>'
+        f'{badges}'
         f"</div>"
         f"{inner_html}"
         f"{caption}"
@@ -160,6 +166,7 @@ def compile_spec(
     include_wrapper: bool = True,
     include_spec_drawer: bool = True,
     standalone: bool = False,
+    chrome: str = "bench",
 ) -> str:
     """Compile a JSON evidence spec (or list of specs) into semantic HTML/SVG."""
     if isinstance(spec, (str, Path)):
@@ -171,13 +178,13 @@ def compile_spec(
 
     if isinstance(data, list):
         frags = [
-            _compile_single_dict(item, json.dumps(item, indent=2), rigor, medium, theme, include_wrapper, include_spec_drawer)
+            _compile_single_dict(item, json.dumps(item, indent=2), rigor, medium, theme, include_wrapper, include_spec_drawer, chrome)
             for item in data if isinstance(item, dict)
         ]
         body = "\n".join(frags)
         doc_title = "Quiet UI Compiled Evidence Collection"
     elif isinstance(data, dict):
-        body = _compile_single_dict(data, raw_text, rigor, medium, theme, include_wrapper, include_spec_drawer)
+        body = _compile_single_dict(data, raw_text, rigor, medium, theme, include_wrapper, include_spec_drawer, chrome)
         doc_title = str((data.get("metadata") or {}).get("title", "Quiet UI Evidence"))
     else:
         raise ValueError(f"Expected JSON object or array of objects, got {type(data).__name__}")
@@ -193,6 +200,7 @@ def main() -> None:
     parser.add_argument("--rigor", choices=["L1", "L2", "L3"], default=None)
     parser.add_argument("--medium", choices=["m1", "m2", "m3", "m4", "m5", "m6", "m7"], default="m2")
     parser.add_argument("--theme", choices=["white", "paper", "dark-paper", "dark"], default="white")
+    parser.add_argument("--chrome", choices=["bench", "embedded"], default="bench")
     parser.add_argument("--standalone", action="store_true", help="Wrap output in full self-contained HTML5 doc")
     parser.add_argument("--fragment", action="store_true", help="Force HTML fragment output even when writing --out .html")
     parser.add_argument("--out", default=None, help="Optional output HTML path")
@@ -205,6 +213,7 @@ def main() -> None:
         medium=args.medium,
         theme=args.theme,
         standalone=use_standalone,
+        chrome=args.chrome,
     )
     if args.out:
         Path(args.out).write_text(html_out, encoding="utf-8")

@@ -185,7 +185,7 @@ def _compile_single_register(meta: dict[str, Any], fields: list[dict[str, Any]],
     return f'<div class="qe-bitfield-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">{header}{svg}{table}</div>'
 
 
-def compile_bitfield(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white") -> str:
+def compile_bitfield(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 3 (urn:quiet-ui:schema:v9:bitfield) into semantic HTML/SVG."""
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .svg_labels import halo_text, render_pill_html
@@ -16,13 +17,62 @@ from .tokens_and_scales import (
     format_value_unit,
 )
 
+_ISO_TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2})(?::\d{2})?Z?$")
+_SI_UNIT_WRAP_RE = re.compile(r"\b(mmHg|cmH2O|mmol/L|mEq/L|mg/dL|kPa|hPa|kHz|MHz|GHz|mrad|dBm|ps|ms|mV|kW|MW|mA)\b")
+
+
+def _format_l1_timestamp(ts: str) -> str:
+    """Convert ISO-8601 UTC stamp to plain-language time for L1 consumer views."""
+    s = str(ts).strip()
+    m = _ISO_TS_RE.match(s)
+    if not m:
+        return s
+    h24, mins = int(m.group(1)), int(m.group(2))
+    ampm = "AM" if h24 < 12 else "PM"
+    h12 = h24 % 12 or 12
+    return f"Checked Today · {h12}:{mins:02d} {ampm}"
+
+
+def _format_l1_goal(qty: dict[str, Any], limits: dict[str, Any], unit: str) -> str:
+    """Render plain-language target text instead of NIST slash calculus for L1."""
+    if qty.get("target_label"):
+        return str(qty["target_label"])
+    warn = limits.get("warning_thresholds", {})
+    if warn.get("lower") is not None:
+        return f"Goal: {format_value_unit(float(warn['lower']), unit)} or higher"
+    if warn.get("upper") is not None:
+        return f"Goal: {format_value_unit(float(warn['upper']), unit)} or lower"
+    if limits.get("nominal_target") is not None:
+        return f"Goal: {format_value_unit(float(limits['nominal_target']), unit)}"
+    return str(qty.get("name", ""))
+
+
+def _l1_status_label(disp_key: str, ann: dict[str, Any]) -> str:
+    if ann.get("l1_label"):
+        return str(ann["l1_label"])
+    return {
+        "NOMINAL": "On Track",
+        "ADVISORY": "Recheck in 15 min",
+        "WARNING": "Recheck in 15 min",
+        "CRITICAL": "Call Clinic Now",
+        "STALE": "Check Sensor",
+        "FAULT": "Check Sensor",
+    }.get(disp_key, "On Track")
+
 
 def _wrap_id(text: str) -> str:
-    """Insert <wbr> break hints in long identifiers to prevent desktop clipping."""
+    """Insert <wbr> break hints in long identifiers and shield SI units from uppercase CSS."""
     escaped = esc(text)
-    for sep in ("-", "/", ":", "_"):
-        escaped = escaped.replace(sep, f"{sep}<wbr>")
-    return escaped
+    parts = _SI_UNIT_WRAP_RE.split(escaped)
+    out: list[str] = []
+    for idx, seg in enumerate(parts):
+        if idx % 2 == 1:
+            out.append(f'<span class="qe-unit">{seg}</span>')
+            continue
+        for sep in ("-", "/", ":", "_"):
+            seg = seg.replace(sep, f"{sep}<wbr>")
+        out.append(seg)
+    return "".join(out)
 
 
 def _clamp_x(val: float, xmin: float, xmax: float, x0: float, width: float) -> tuple[float, int]:
@@ -67,8 +117,12 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
     abort = limits.get("abort_thresholds", {})
     lo_abort, hi_abort = abort.get("lower"), abort.get("upper")
     lo_warn, hi_warn = warn.get("lower"), warn.get("upper")
-    smin = float(gauge["min_scale"]) if gauge.get("min_scale") is not None else ((float(lo_abort) if lo_abort is not None else act - 5.0) - 1.0)
-    smax = float(gauge["max_scale"]) if gauge.get("max_scale") is not None else ((float(hi_abort) if hi_abort is not None else act + 5.0) + 1.0)
+    lo_bound = float(lo_abort) if lo_abort is not None else None
+    hi_bound = float(hi_abort) if hi_abort is not None else None
+    base_lo = min(act, lo_bound) if lo_bound is not None else (min(act, hi_bound) - 5.0 if hi_bound is not None else act - 5.0)
+    base_hi = max(act, hi_bound) if hi_bound is not None else (max(act, lo_bound) + 5.0 if lo_bound is not None else act + 5.0)
+    smin = float(gauge["min_scale"]) if gauge.get("min_scale") is not None else (base_lo - 1.0)
+    smax = float(gauge["max_scale"]) if gauge.get("max_scale") is not None else (base_hi + 1.0)
 
     x0, x1, y_bar, bh = 38.0, 642.0, 38.0, 14.0
     bw = x1 - x0
@@ -110,13 +164,13 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
         parts.append(f'<line x1="{tx:.1f}" y1="{y_bar + bh}" x2="{tx:.1f}" y2="{y_bar + bh + 5}" stroke="var(--border-strong)" stroke-width="1"/>')
         if tx - last_lx >= 48.0:
             lbl = format_tick_numeral(tick, step=scale["step"])
-            parts.append(halo_text(tx, y_bar + bh + 19, lbl, anchor="middle", size=11.5, fill="var(--text-muted)", halo=False))
+            parts.append(halo_text(tx, y_bar + bh + 19, lbl, anchor="middle", size=12.5, fill="var(--text-muted)", halo=False))
             last_lx = tx
 
     if cmd is not None and rigor in {"L2", "L3"}:
         cx, _ = _clamp_x(float(cmd), smin, smax, x0, bw)
         parts.append(f'<polygon points="{cx:.1f},{y_bar - 1} {cx - 5:.1f},{y_bar - 9} {cx + 5:.1f},{y_bar - 9}" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.4"/>')
-        parts.append(halo_text(cx, y_bar - 14, f"CMD\u00a0{float(cmd):g}", anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)"))
+        parts.append(halo_text(cx, y_bar - 14, f"CMD\u00a0{float(cmd):g}", anchor="middle", size=12.5, weight="600", fill="var(--text-secondary)"))
 
     ax, ovf = _clamp_x(act, smin, smax, x0, bw)
     ann = spec.get("status_annunciator", {})
@@ -125,12 +179,12 @@ def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
     parts.append(f'<polygon points="{ax:.1f},{y_bar + 2} {ax - 5.5:.1f},{y_bar + bh + 6} {ax + 5.5:.1f},{y_bar + bh + 6}" fill="{pin_col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
     act_lbl = f"ACT\u00a0{format_value_unit(act, unit)}" if ovf == 0 else ("◀ CLAMPED" if ovf < 0 else "CLAMPED ▶")
     lbl_anchor = "start" if ax < 110 else ("end" if ax > 570 else "middle")
-    parts.append(halo_text(ax, 88.0, act_lbl, anchor=lbl_anchor, size=11.5, weight="700", fill=pin_col))
+    parts.append(halo_text(ax, 88.0, act_lbl, anchor=lbl_anchor, size=12.5, weight="700", fill=pin_col))
     parts.append("</svg>")
     return "\n".join(parts)
 
 
-def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
+def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str, chrome: str = "bench") -> str:
     """Compile one scalar readout card across L1, L2, and L3 rigor."""
     meta = spec.get("metadata", {})
     qty = spec.get("quantity", {})
@@ -146,8 +200,8 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
     unc = meas.get("expanded_uncertainty") if rigor == "L3" else None
     val_text = format_value_unit(nom, unit, unc)
     calculus = qty.get("quantity_calculus") or format_quantity_header(qty.get("symbol", "x"), None, unit)
-    subsys = meta.get("subsystem", "TELEMETRY")
-    ts = meta.get("timestamp_utc", "")
+    subsys = meta.get("plain_label", "") if rigor == "L1" else meta.get("subsystem", "TELEMETRY")
+    ts = _format_l1_timestamp(meta.get("timestamp_utc", "")) if rigor == "L1" else meta.get("timestamp_utc", "")
     margin = ann.get("margin_remaining_pct")
     if st_key == "STALE":
         quality_pill = render_pill_html("STALE DATA", variant="status", state="warn")
@@ -158,11 +212,14 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
 
     lines: list[str] = ['<div class="qe-scalar-card">']
     ts_part = f"{esc(ts)} {quality_pill}".strip() if quality_pill else esc(ts)
-    lines.append(f'<div class="qe-scalar-zone1 qe-scalar-top"><span class="va-kicker">{esc(subsys)}</span><span class="qe-scalar-ts va-nums">{ts_part}</span></div>')
+    left_kicker = f'<span class="va-kicker">{esc(subsys)}</span>' if subsys else "<span></span>"
+    lines.append(f'<div class="qe-scalar-zone1 qe-scalar-top">{left_kicker}<span class="qe-scalar-ts va-nums">{ts_part}</span></div>')
     lines.append(f'<h3 class="qe-scalar-title">{esc(meta.get("title", "Scalar Readout"))}</h3>')
     lines.append('<div class="qe-scalar-zone2 qe-scalar-val-row">')
-    lines.append(f'  <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{esc(val_text)}</span><span class="qe-scalar-calc qe-unit">{format_math_html(calculus)}</span></div>')
-    disp_pill = render_pill_html(disp_info["pill"], variant="status", state=disp_info["state"])
+    calc_html = esc(_format_l1_goal(qty, limits, unit)) if rigor == "L1" else format_math_html(calculus)
+    lines.append(f'  <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{esc(val_text)}</span><span class="qe-scalar-calc qe-unit">{calc_html}</span></div>')
+    pill_txt = _l1_status_label(disp_key, ann) if rigor == "L1" else disp_info["pill"]
+    disp_pill = render_pill_html(pill_txt, variant="status", state=disp_info["state"])
     margin_html = f'<span class="qe-scalar-margin va-nums">Margin {float(margin):+.1f}%</span>' if (margin is not None and rigor in {"L2", "L3"}) else ""
     lines.append(f'  <div class="qe-scalar-disp">{disp_pill}{margin_html}</div>')
     lines.append("</div>")
@@ -184,7 +241,7 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
     if rigor == "L3":
         k_cov = meas.get("coverage_factor", 2.0)
         conf = meas.get("confidence_pct", 95.45)
-        lines.append(f'<div class="qe-scalar-meta va-nums">Expanded Uncertainty: {esc(val_text)} | k={esc(k_cov)} | {esc(conf)}% CI</div>')
+        meta_div = f'<div class="qe-scalar-meta va-nums">Expanded Uncertainty: {esc(val_text)} | k={esc(k_cov)} | {esc(conf)}% CI</div>'
         prov: list[str] = []
         if meas.get("sensor_id"):
             prov.append(f'Sensor: {meas["sensor_id"]}')
@@ -192,20 +249,33 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str) -> str:
             prov.append(f'Cal: {meas["calibration_id"]}')
         if meas.get("raw_adc_counts") is not None:
             prov.append(f'Raw ADC: {meas["raw_adc_counts"]} cts')
-        if prov:
-            lines.append(f'<div class="qe-scalar-prov va-nums">{esc(" | ".join(prov))}</div>')
+        prov_div = f'<div class="qe-scalar-prov va-nums">{esc(" | ".join(prov))}</div>' if prov else ""
+        if chrome == "embedded":
+            try:
+                k_txt = f"{float(k_cov):g}" if k_cov is not None else "2"
+            except (TypeError, ValueError):
+                k_txt = str(k_cov)
+            lines.append(
+                f'<details class="qe-cal-footer"><summary class="qe-cal-summary va-nums">'
+                f'Calibration &amp; Sensor Provenance (k={esc(k_txt)} · NIST)</summary>'
+                f'{meta_div}{prov_div}</details>'
+            )
+        else:
+            lines.append(meta_div)
+            if prov_div:
+                lines.append(prov_div)
     lines.append("</div>")
     return "\n".join(lines)
 
 
-def compile_scalar(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white") -> str:
+def compile_scalar(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 1 (urn:quiet-ui:schema:v9:scalar) into semantic HTML/SVG."""
     eff_rigor = (rigor or spec.get("metadata", {}).get("rigor_level", "L2")).upper()
     items = spec.get("items")
     if isinstance(items, list) and items:
-        grid = "\n".join(_render_single_scalar(it, eff_rigor, medium) for it in items)
+        grid = "\n".join(_render_single_scalar(it, eff_rigor, medium, chrome=chrome) for it in items)
         return f'<div class="qe-scalar-grid" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">{grid}</div>'
-    return _render_single_scalar(spec, eff_rigor, medium)
+    return _render_single_scalar(spec, eff_rigor, medium, chrome=chrome)
 
 
 def _render_heatmap_svg(hm: dict[str, Any]) -> str:
@@ -265,13 +335,14 @@ def _format_col_header_html(c: dict[str, Any]) -> str:
     lbl = str(c.get("label", c.get("key", "")))
     unit = str(c.get("unit", "")).strip()
     if unit and unit != "1":
-        if unit not in lbl:
-            return f'{esc(lbl)} (<span class="qe-unit">{esc(unit)}</span>)'
-        return esc(lbl).replace(esc(unit), f'<span class="qe-unit">{esc(unit)}</span>', 1)
+        m = re.search(rf"(?<![A-Za-z0-9_]){re.escape(unit)}(?![A-Za-z0-9_])", lbl)
+        if m:
+            return f'{esc(lbl[:m.start()])}<span class="qe-unit">{esc(m.group(0))}</span>{esc(lbl[m.end():])}'
+        return f'{esc(lbl)} (<span class="qe-unit">{esc(unit)}</span>)'
     return esc(lbl)
 
 
-def compile_table(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white") -> str:
+def compile_table(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 2 (urn:quiet-ui:schema:v9:table) into responsive Booktabs/PPSM HTML."""
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L2")).upper()

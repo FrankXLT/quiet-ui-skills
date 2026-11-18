@@ -17,7 +17,7 @@ from .schematic_variants import (
 from .tokens_and_scales import esc, render_test_condition_strip
 
 
-def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white") -> str:
+def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 6 (urn:quiet-ui:schema:v9:schematic) into orthogonal HTML/SVG."""
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L2")).upper()

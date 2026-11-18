@@ -1,0 +1,236 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 — Deterministic Quantitative Evidence Component Styles */
+
+@layer evidence {
+  .qe-figure { margin: 0; color: var(--text-primary); }
+  .qe-fig-title { margin: 0; font-size: var(--ts-base); font-weight: 700; line-height: 1.3; }
+  .qe-fig-badges { display: inline-flex; gap: 0.35rem; align-items: center; }
+
+  .qe-m1-only { display: none; }
+  :root[data-medium="m1"] .qe-m1-only { display: inline; }
+
+  .qe-svg {
+    display: block;
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    block-size: auto;
+    margin-inline: auto;
+  }
+  .qe-svg-680 { max-inline-size: min(100%, 760px); }
+  .qe-svg-720 { max-inline-size: min(100%, 840px); }
+  .qe-spark-svg { max-inline-size: min(100%, 320px); }
+  .va-figure-scroll { overflow-x: hidden; }
+  :where(.va-figure-scroll) svg {
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: auto;
+    margin-inline: auto;
+  }
+
+  .va-svg-halo-text,
+  [data-halo="true"] {
+    paint-order: stroke fill;
+    stroke: var(--bg-surface);
+    stroke-width: 3.4px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  /* Modality 1: Scalar Readouts & Gauges (Baseline Alignment Lock <= 1.0px) */
+  .qe-scalar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.85rem;
+  }
+  .qe-scalar-card {
+    background: var(--bg-canvas);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.75rem 0.9rem;
+    min-inline-size: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .qe-scalar-zone1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    min-block-size: 1.45rem;
+    block-size: 1.45rem;
+    overflow: hidden;
+  }
+  .qe-scalar-zone1 .va-kicker {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-inline-size: 0;
+  }
+  .qe-scalar-ts {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-block-size: 1.375rem;
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .qe-scalar-title {
+    margin: 0;
+    font-size: var(--ts-base);
+    font-weight: 600;
+    line-height: 1.35;
+    min-block-size: 2.7em;
+  }
+  .qe-scalar-zone2 {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 0.35rem;
+    min-block-size: 4.65rem;
+  }
+  .qe-scalar-val-wrap {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.45rem;
+    flex-wrap: nowrap;
+  }
+  .qe-scalar-val {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 0.92rem + 0.25vw, 1.18rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+  .qe-scalar-calc { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); white-space: nowrap; }
+  .qe-scalar-disp { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-block-size: 1.375rem; }
+  .qe-scalar-margin { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 500; color: var(--text-secondary); }
+  .qe-scalar-meta,
+  .qe-scalar-prov {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-hairline);
+    padding-top: 0.35rem;
+  }
+  .qe-cal-footer {
+    border-top: 1px solid var(--border-hairline);
+    padding-top: 0.28rem;
+  }
+  .qe-cal-summary {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1.35;
+  }
+  .qe-cal-footer[open] .qe-cal-summary { margin-bottom: 0.28rem; color: var(--text-secondary); }
+
+  /* Modality 2: Tables & NIST Unit Case Shield */
+  .qe-unit {
+    text-transform: none;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: normal;
+  }
+  .qe-figure .qe-caption-sr {
+    position: absolute;
+    clip-path: inset(50%);
+    overflow: hidden;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    white-space: nowrap;
+  }
+  .qe-table-wrap { container-type: inline-size; }
+  .qe-cell-center { text-align: center; }
+  .qe-row-winner td { background: var(--tint-indigo-bg); }
+  @container (width < 580px) {
+    .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; }
+    .qe-table thead { display: none; }
+    .qe-table tbody tr {
+      margin: 0.5rem;
+      padding: 0.45rem;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+    }
+    .qe-table th.num, .qe-table td.num, .qe-table .qe-cell-center { text-align: start; }
+    .qe-table th[data-label]::before, .qe-table td[data-label]::before {
+      content: attr(data-label) ": ";
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-inline-end: 0.35rem;
+    }
+  }
+
+  /* Test-Condition Header Block */
+  .qe-cond-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.85rem;
+    padding: 0.42rem 0.65rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    font-size: var(--ts-xs);
+  }
+  .qe-cond-item { display: inline-flex; gap: 0.35rem; align-items: baseline; }
+  .qe-cond-lbl { font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+  .qe-cond-lbl.qe-unit { text-transform: none; }
+  .qe-cond-val { font-family: var(--font-mono); color: var(--text-primary); }
+
+  /* Modality 4 & 5: Pedagogical Terms, Legends & Scope Readouts */
+  .qe-equation-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-inner);
+    font-family: var(--font-sans);
+    font-size: var(--ts-sm);
+  }
+  .qe-term-tx,
+  .qe-term-hydration-check { --term-fg: var(--tint-indigo-fg); --term-bg: var(--tint-indigo-bg); }
+  .qe-term-gain_tx,
+  .qe-term-oxygen-goal { --term-fg: var(--tint-emerald-fg); --term-bg: var(--tint-emerald-bg); }
+  .qe-term-path_loss,
+  .qe-term-bp-threshold { --term-fg: var(--tint-amber-fg); --term-bg: var(--tint-amber-bg); }
+  .qe-term-gain_rx { --term-fg: var(--tint-violet-fg); --term-bg: var(--tint-violet-bg); }
+  .qe-term-noise { --term-fg: var(--tint-rose-fg); --term-bg: var(--tint-rose-bg); }
+  [data-term].is-term-active { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  [data-term].is-term-dimmed { opacity: 0.32; }
+
+  .qe-param-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 1rem;
+    padding: 0.45rem 0.65rem;
+    border-top: 1px solid var(--border-hairline);
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .qe-leg-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .qe-leg-svg { display: inline-block; flex-shrink: 0; }
+  .qe-scope-readout {
+    padding: 0.35rem 0.6rem;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .qe-waveform-wrap,
+  .qe-plot-wrap { display: flex; flex-direction: column; gap: 0.55rem; min-inline-size: 0; }
+}

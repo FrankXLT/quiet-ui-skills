@@ -46,6 +46,9 @@ PEDAGOGICAL_TERMS: dict[str, dict[str, str]] = {
     "gain_rx": {"fg": "var(--tint-violet-fg)", "bg": "var(--tint-violet-bg)"},
     "rx": {"fg": "var(--accent-focal)", "bg": "var(--tint-indigo-bg)"},
     "noise": {"fg": "var(--tint-rose-fg)", "bg": "var(--tint-rose-bg)"},
+    "oxygen-goal": {"fg": "var(--tint-emerald-fg)", "bg": "var(--tint-emerald-bg)"},
+    "hydration-check": {"fg": "var(--tint-indigo-fg)", "bg": "var(--tint-indigo-bg)"},
+    "bp-threshold": {"fg": "var(--tint-amber-fg)", "bg": "var(--tint-amber-bg)"},
 }
 
 ANNUNCIATOR_STATES: dict[str, dict[str, str]] = {

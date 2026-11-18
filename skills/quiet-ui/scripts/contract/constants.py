@@ -54,6 +54,7 @@ EXCLUDED_LINE_BUDGET_EXACT: set[str] = {
     "quiet-ui-showcase.html",
     "docs/index.html",
     "docs/bench/evidence-bench.html",
+    "docs/pilot/world-01-pilot.html",
 }
 
 # 3-Pillar Skill Registry
