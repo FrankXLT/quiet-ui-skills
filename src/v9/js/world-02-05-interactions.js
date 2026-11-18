@@ -129,16 +129,15 @@
       if (ins) ins.classList.toggle('v12-panel-hidden', role !== 'instructor');
     });
 
-    wireChipGroup(doc, 'v15-backplate-chips', 'v15-hud-readout', function (btn, d) {
+    wireChipGroup(doc, 'v15-backplate-chips', null, function (btn, d) {
       const stage = d.getElementById('v15-hud-stage');
       if (stage && btn.dataset.backplate) stage.setAttribute('data-backplate', btn.dataset.backplate);
     });
 
-    wireChipGroup(doc, 'v16-luminance-chips', 'v16-lum-readout', function (btn, d) {
+    wireChipGroup(doc, 'v16-luminance-chips', null, function (btn, d) {
       const vp = d.getElementById('v16-glass-viewport');
-      const cVal = d.getElementById('v16-contrast-val');
       if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
-      if (cVal && btn.dataset.contrast) cVal.textContent = btn.dataset.contrast;
+      if (vp && btn.dataset.contrast) vp.setAttribute('data-contrast', btn.dataset.contrast);
     });
   }
 

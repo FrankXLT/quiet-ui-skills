@@ -87,9 +87,13 @@
   function resolveDocsAsset(relPath) {
     const path = window.location.pathname || '';
     if (path.indexOf('/customizations/') !== -1) return '../../docs/' + relPath;
-    if (path.indexOf('/docs/pilot/') !== -1 || path.indexOf('/docs/v9/') !== -1) return '../' + relPath;
+    if (path.indexOf('/pilot/') !== -1 || path.indexOf('/v9/') !== -1) return '../' + relPath;
     if (path.indexOf('/quiet-ui-showcase') !== -1) return './docs/' + relPath;
     return './' + relPath;
+  }
+
+  function resolveAbsDocsAsset(relPath) {
+    try { return new URL(resolveDocsAsset(relPath), window.location.href).href; } catch (_e) { return resolveDocsAsset(relPath); }
   }
 
   function computeEffectiveNav(nav, viewMeta, width) {
@@ -99,21 +103,14 @@
       if (nav === 'n4' && width >= 700) return defNav;
       return allowed.indexOf(nav) !== -1 ? nav : defNav;
     }
-    if (width < 700 && allowed.indexOf('n4') !== -1) return 'n4';
-    return defNav;
+    return (width < 700 && allowed.indexOf('n4') !== -1) ? 'n4' : defNav;
   }
 
-  function getActiveDimensions() {
-    return window.QuietPortalResize.parseDimensions(state.vp);
-  }
+  function getActiveDimensions() { return window.QuietPortalResize.parseDimensions(state.vp); }
 
   function updatePortalDimensions() {
-    const mat = document.getElementById('va-portal-mat');
-    const scaler = document.getElementById('va-portal-scaler');
-    const iframe = document.getElementById('va-stage-portal');
-    if (mat && scaler && iframe) {
-      window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
-    }
+    const mat = document.getElementById('va-portal-mat'), scaler = document.getElementById('va-portal-scaler'), iframe = document.getElementById('va-stage-portal');
+    if (mat && scaler && iframe) window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
   }
 
   function effectiveMedium(viewMeta) {
@@ -157,7 +154,7 @@
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveDocsAsset('assets/as08-14-2383.jpg');
+    const earthriseUrl = resolveAbsDocsAsset('assets/as08-14-2383.jpg');
     const tokStyle = document.getElementById('custom-tokens');
     const ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
@@ -276,6 +273,8 @@
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
+      const hudImg = doc.getElementById('v15-earthrise-img');
+      if (hudImg) { hudImg.onerror = function () { hudImg.style.display = 'none'; }; hudImg.src = resolveAbsDocsAsset('assets/as08-14-2383.jpg'); }
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;

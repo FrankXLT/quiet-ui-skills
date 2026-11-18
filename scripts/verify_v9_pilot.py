@@ -202,7 +202,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
         ("04-civic-finance-and-stem-learning", "v12-stem-interactive-lab", "document.querySelector('#v12-role-chips [data-role=\"instructor\"]').click();return document.getElementById('v12-instructor-note').className;", "v12-rubric-card"),
         ("05-physical-systems-auto-and-aero", "v14-fieldbus-and-scope-debugger", "document.getElementById('v14-term-btn').click();document.getElementById('v14-arm-btn').click();document.getElementById('v14-exec-btn').click();return document.getElementById('v14-gate-pill').textContent;", "SOF_ARB_ERR W1C OK"),
         ("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "document.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();return document.getElementById('v15-hud-stage').dataset.backplate;", "daylight"),
-        ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "document.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();return document.getElementById('v16-contrast-val').textContent;", "13.4:1"),
+        ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "document.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();const vp=document.getElementById('v16-glass-viewport');return vp.dataset.luminance+'|'+vp.dataset.contrast;", "night|13.4:1"),
     ]
     for wid, vid, js, expect in checks:
         driver.get(f"{base_url}?world={wid}&view={vid}&theme=white")
@@ -212,6 +212,24 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
         driver.switch_to.default_content()
         if expect not in res:
             errs.append(f"[W25_INTERACT] {vid}: expected '{expect}', got '{res}'")
+
+    # Verify v16 >= 7.0:1 scrim contrast across all 3 ambient luminance modes & clean Why? dialog
+    driver.get(f"{base_url}?domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white")
+    time.sleep(0.24)
+    for lum_mode in ("daylight", "dusk", "night"):
+        driver.switch_to.frame("va-stage-portal")
+        driver.execute_script(f"document.querySelector('#v16-luminance-chips [data-luminance=\"{lum_mode}\"]').click();")
+        time.sleep(0.1)
+        errs.extend(f"[V16_{lum_mode.upper()}] {e}" for e in driver.execute_script(STAGE_AUDIT_JS))
+        driver.switch_to.default_content()
+    for wid, vid in (("02-cloud-cyber-and-ai-ops", "v04-sre-incident-workbench"), ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay")):
+        driver.get(f"{base_url}?domain={wid}&view={vid}&theme=white")
+        time.sleep(0.22)
+        driver.execute_script("document.getElementById('va-bridge-btn').click();")
+        time.sleep(0.12)
+        bad_dlg = driver.execute_script("const b=document.getElementById('va-bridge-body').innerText;const m=b.match(/\\bT[123]\\b|\\bv\\d{2}-[a-z0-9]+-[a-z0-9-]+|\\bV\\d{2}:/);return m?m[0]:'';")
+        if bad_dlg:
+            errs.append(f"[WHY_POLISH] {vid} #va-bridge-body leaked '{bad_dlg}'")
 
     # M1 unboxed checks across v05, v09, v13
     for wid, vid in (("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec"), ("03-industrial-grid-and-manufacturing", "v09-spc-quality-and-modbus-report"), ("05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph")):
@@ -336,6 +354,8 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
             errs.extend(_audit_stage(driver, f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme={th}", 1440, 900, f"TH_{th}"))
         errs.extend(_verify_interactions_and_conservation(driver, base_url))
         if all_worlds:
+            for th in ("dark-paper", "dark"):
+                errs.extend(_audit_stage(driver, f"{base_url}?world=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme={th}", 1440, 900, f"V15_{th}"))
             errs.extend(_verify_worlds_02_05_and_studio(driver, base_url, root_url))
             errs.extend(_verify_phase5_edge_cases(driver, base_url, root_url))
         if screenshots_dir is not None:

@@ -189,47 +189,80 @@ if (view === 'v08-plant-floor-wall-kiosk' && w >= 1900) {
     errs.push(`[M5_SINGLE_FRAME] v08 scrollHeight=${document.documentElement.scrollHeight} > ${window.innerHeight}`);
   }
 }
-if (view === 'v15-collimated-flight-hud' && w >= 1400) {
-  const h = window.innerHeight, kx0 = w * 0.175, kx1 = w * 0.825, ky0 = h * 0.15, ky1 = h * 0.85;
-  let occ = 0;
-  for (const el of document.querySelectorAll('.v15-hud-stage *')) {
-    if (el.closest('svg')) continue;
-    const bg = getComputedStyle(el).backgroundColor;
-    if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') continue;
-    const r = el.getBoundingClientRect();
-    const ix = Math.max(0, Math.min(r.right, kx1) - Math.max(r.left, kx0));
-    const iy = Math.max(0, Math.min(r.bottom, ky1) - Math.max(r.top, ky0));
-    occ += ix * iy;
+if (view === 'v15-collimated-flight-hud') {
+  const earthUrl = getComputedStyle(document.documentElement).getPropertyValue('--hud-earthrise-url').trim();
+  const hudImg = document.getElementById('v15-earthrise-img');
+  if (!earthUrl.includes('as08-14-2383.jpg') || !hudImg || !hudImg.complete || hudImg.naturalWidth <= 0) {
+    errs.push(`[M6_EARTHRISE] Missing or unloaded Earthrise image (${earthUrl})`);
   }
-  const clearPct = 100 * (1 - occ / ((kx1 - kx0) * (ky1 - ky0)));
-  if (clearPct < 65.0) errs.push(`[M6_KEEPOUT] Central boresight clear=${clearPct.toFixed(1)}% < 65%`);
+  const ret = document.querySelector('.v15-reticle-layer');
+  const retTxt = ret ? (ret.textContent || '') : '';
+  for (const sym of ['142', '8,520', '084', '+5', '-5', 'VS -650 FPM', '42.8%']) {
+    if (!retTxt.includes(sym)) errs.push(`[M6_RETICLE] Missing MIL-STD-1787B symbology '${sym}'`);
+  }
+  for (const bad of ['BORESIGHT', 'NAV/PROPULSION HUD', 'dual stroke halo']) {
+    if (visBody.includes(bad)) errs.push(`[M6_META_LEAK] v15 leaked '${bad}'`);
+  }
+  const pRgba = (s) => (s.match(/[\\d.]+/g) || [0, 0, 0, 1]).map(Number);
+  const cLum = ([r, g, b]) => { const f = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }; return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b); };
+  for (const ch of document.querySelectorAll('.v15-hud-chip, .v16-lum-chip')) {
+    const cs = getComputedStyle(ch), bg = pRgba(cs.backgroundColor), fg = pRgba(cs.color), a = bg.length >= 4 ? bg[3] : 1;
+    const comp = [bg[0] * a + 2 * (1 - a), bg[1] * a + 6 * (1 - a), bg[2] * a + 23 * (1 - a)];
+    const l1 = cLum(comp), l2 = cLum(fg), cr = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    if (cr < 4.5) errs.push(`[M6_CHIP_CONTRAST] '${ch.textContent.trim()}' contrast=${cr.toFixed(2)} < 4.5`);
+  }
+  if (w >= 1400) {
+    const h = window.innerHeight, kx0 = w * 0.175, kx1 = w * 0.825, ky0 = h * 0.15, ky1 = h * 0.85;
+    let occ = 0;
+    for (const el of document.querySelectorAll('.v15-hud-stage *')) {
+      if (el.closest('svg') || el.tagName === 'IMG') continue;
+      const bg = getComputedStyle(el).backgroundColor;
+      if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') continue;
+      const r = el.getBoundingClientRect();
+      occ += Math.max(0, Math.min(r.right, kx1) - Math.max(r.left, kx0)) * Math.max(0, Math.min(r.bottom, ky1) - Math.max(r.top, ky0));
+    }
+    const clearPct = 100 * (1 - occ / ((kx1 - kx0) * (ky1 - ky0)));
+    if (clearPct < 65.0) errs.push(`[M6_KEEPOUT] Central boresight clear=${clearPct.toFixed(1)}% < 65%`);
+  }
 }
 if (view === 'v16-transparent-window-overlay') {
-  const band = document.getElementById('v16-top-scrim');
-  if (band) {
-    const parseRgba = (s) => (s.match(/[\\d.]+/g) || [0, 0, 0, 1]).map(Number);
-    const over = (fg, bg) => {
-      const a = fg.length >= 4 ? fg[3] : 1;
-      return [fg[0] * a + bg[0] * (1 - a), fg[1] * a + bg[1] * (1 - a), fg[2] * a + bg[2] * (1 - a)];
-    };
-    const lum = ([r, g, b]) => {
-      const f = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
-      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-    };
-    const bandBg = over(parseRgba(getComputedStyle(band).backgroundColor), [255, 255, 255]);
-    for (const el of band.querySelectorAll('.v16-metric-val, .v16-metric-lbl, .v16-scrim-pill')) {
-      const cs = getComputedStyle(el);
-      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-      const elBg = over(parseRgba(cs.backgroundColor), bandBg), fg = parseRgba(cs.color);
+  const vp = document.getElementById('v16-glass-viewport');
+  const lumMode = vp ? (vp.dataset.luminance || 'daylight') : 'daylight';
+  const sceneBackdrop = lumMode === 'night' ? [15, 23, 42] : (lumMode === 'dusk' ? [180, 83, 9] : [224, 242, 254]);
+  const parseRgba = (s) => (s.match(/[\\d.]+/g) || [0, 0, 0, 1]).map(Number);
+  const over = (fg, bg) => {
+    const a = fg.length >= 4 ? fg[3] : 1;
+    return [fg[0] * a + bg[0] * (1 - a), fg[1] * a + bg[1] * (1 - a), fg[2] * a + bg[2] * (1 - a)];
+  };
+  const lum = ([r, g, b]) => {
+    const f = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  };
+  const h = window.innerHeight, kx0 = w * 0.24, kx1 = w * 0.76, ky0 = h * 0.24, ky1 = h * 0.68;
+  for (const pod of document.querySelectorAll('.v16-glass-pod')) {
+    const cs = getComputedStyle(pod), pr = pod.getBoundingClientRect();
+    const bf = cs.backdropFilter || cs.webkitBackdropFilter || '';
+    if (!bf.includes('blur(')) errs.push(`[M7_BLUR] Glass pod missing backdrop-filter blur (got '${bf}')`);
+    if (pr.width > 420.5) errs.push(`[M7_POD_WIDTH] Pod width ${pr.width.toFixed(1)}px > 420px`);
+    if (w >= 1400 && Math.min(pr.right, kx1) > Math.max(pr.left, kx0) + 1 && Math.min(pr.bottom, ky1) > Math.max(pr.top, ky0) + 1) {
+      errs.push(`[M7_CORRIDOR] Pod overlaps central windshield corridor at ${w}`);
+    }
+    const podBg = over(parseRgba(cs.backgroundColor), sceneBackdrop);
+    for (const el of pod.querySelectorAll('.v16-speed-val, .v16-speed-unit, .v16-speed-cap, .v16-route-line, .v16-eff-line, .v16-warn-title, .v16-warn-action, .va-pill')) {
+      const ecs = getComputedStyle(el);
+      if (ecs.display === 'none' || ecs.visibility === 'hidden') continue;
+      const elBg = over(parseRgba(ecs.backgroundColor), podBg), fg = parseRgba(ecs.color);
       const lBg = lum(elBg), lFg = lum(fg);
       const cr = (Math.max(lBg, lFg) + 0.05) / (Math.min(lBg, lFg) + 0.05);
-      if (cr < 7.0) errs.push(`[M7_SCRIM_AAA] '${el.textContent.trim()}' contrast=${cr.toFixed(2)} < 7.0`);
+      if (cr < 7.0) errs.push(`[M7_SCRIM_AAA] (${lumMode}) '${el.textContent.trim()}' contrast=${cr.toFixed(2)} < 7.0`);
     }
+  }
+  for (const bad of ['0x18FEF100', 'Offset: 0x', 'SCRIM:', 'NO FLASH', '>= 7.0:1', 'preserves', '120 Ω']) {
+    if (visBody.includes(bad)) errs.push(`[M7_META_LEAK] v16 leaked '${bad}'`);
   }
 }
 for (const p of document.querySelectorAll('.va-pill')) {
-  const cs = getComputedStyle(p);
-  const rad = parseFloat(cs.borderTopLeftRadius || '0');
+  const cs = getComputedStyle(p), rad = parseFloat(cs.borderTopLeftRadius || '0');
   const v = p.dataset.variant, st = p.dataset.state, txt = (p.textContent || '').trim();
   if (/[\\x5b\\x5d]|\\bMargin\\b/.test(txt)) errs.push(`[ATOMIC_PILL] Non-atomic pill '${txt}'`);
   if (v === 'status' && txt.length > 22) errs.push(`[ATOMIC_PILL] Status pill too long (${txt.length} > 22): '${txt}'`);
@@ -260,8 +293,9 @@ for (const wsvg of document.querySelectorAll('svg.qe-waveform-svg')) {
 for (const badTxt of ['QUIET-BRIDGE', 'Murder-Board', 'Murder-board', 'Qualification Bench']) {
   if (visBody.includes(badTxt)) errs.push(`[PLAIN_ENGLISH] ${view} leaked '${badTxt}'`);
 }
+if (/\\bV\\d{2}:/.test(visBody)) errs.push(`[PREFIX_LEAK] ${view} leaked VXX: prefix in visible content`);
 if (view === 'v06-ai-drift-and-lineage-ide') {
-  for (const rawTok of ['V06:', 'p_hat', 'f_obs', '+/- u_y']) {
+  for (const rawTok of ['p_hat', 'f_obs', '+/- u_y']) {
     if (visBody.includes(rawTok)) errs.push(`[V06_POLISH] Raw token '${rawTok}' leaked`);
   }
 }
@@ -281,7 +315,7 @@ if (view === 'v08-plant-floor-wall-kiosk' && w >= 1900) {
   }
 }
 if (view === 'v12-stem-interactive-lab') {
-  for (const rawTok of ['V12:', 'tau =', 'tau_s', 'u_y', '+/-']) {
+  for (const rawTok of ['tau =', 'tau_s', 'u_y', '+/-']) {
     if (visBody.includes(rawTok)) errs.push(`[V12_MATH] Raw ASCII token '${rawTok}' leaked`);
   }
   if (!visBody.includes('τ') || !visBody.includes('V0')) errs.push('[V12_MATH] Expected formatted Unicode τ and V₀');
@@ -289,11 +323,6 @@ if (view === 'v12-stem-interactive-lab') {
 if (view === 'v16-transparent-window-overlay' && w >= 1400) {
   const tb = document.getElementById('va-shell-topbar');
   if (tb && getComputedStyle(tb).display !== 'none') errs.push('[V16_FULLBLEED] Top shell bar not hidden on M7');
-  const bfHost = document.getElementById('v16-bitfield-host');
-  const det = document.querySelector('#v16-bitfield-host details.v16-bf-details');
-  const foldLimit = window.innerHeight * 0.92;
-  if (!bfHost || bfHost.getBoundingClientRect().top >= foldLimit) errs.push(`[V16_FOLD] Bitfield top=${bfHost ? bfHost.getBoundingClientRect().top.toFixed(0) : 'missing'} >= ${foldLimit.toFixed(0)}`);
-  if (!det || det.open) errs.push('[V16_DETAILS] Expected collapsed decode details by default');
 }
 return errs;
 """
@@ -334,21 +363,19 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
 def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     shots_dir.mkdir(parents=True, exist_ok=True)
     shots = [
-        ("01_studio_topbar_v04_desktop.png", 1440, 900, "mode=examples&domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", None),
-        ("02_settings_swatch_drawer_open.png", 1440, 900, "mode=examples&domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", "document.getElementById('va-customize-btn').click();"),
-        ("03_components_systems_schematics.png", 1440, 900, "mode=components&theme=white", "const d=document.getElementById('va-stage-portal').contentDocument;if(d){const f=d.getElementById('bench-modality-filter');if(f){f.value='M6';f.dispatchEvent(new Event('change'));}const cards=d.querySelectorAll('.qe-specimen[data-modality=\"M6\"]');if(cards[3])cards[3].scrollIntoView({block:'start'});}"),
-        ("04_why_design_rationale_dialog.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark-paper", "document.getElementById('va-bridge-btn').click();"),
-        ("05_v06_ai_drift_er_oled.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark", None),
-        ("06_v07_scada_4up_desktop.png", 1440, 900, "domain=03-industrial-grid-and-manufacturing&view=v07-grid-scada-poi-console&theme=white", None),
-        ("07_v08_plant_kiosk_1080p.png", 1920, 1080, "domain=03-industrial-grid-and-manufacturing&view=v08-plant-floor-wall-kiosk&theme=dark", None),
-        ("08_v10_civic_foldable_840x1050.png", 840, 1050, "domain=04-civic-finance-and-stem-learning&view=v10-civic-capital-budget-deck&theme=paper", None),
-        ("09_v12_stem_rc_mobile_390x844.png", 390, 844, "domain=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white", None),
-        ("10_v16_smart_glass_overlay.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
+        ("01_v15_hud_orbital_earthrise.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", None),
+        ("02_v15_hud_daylight_runway_clouds.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();"),
+        ("03_v15_hud_night_coastal_approach.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
+        ("04_v16_glass_daylight_causeway.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
+        ("05_v16_glass_horizon_dusk.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
+        ("06_v16_glass_night_cabin.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
+        ("07_v16_glass_mobile_390x844.png", 390, 844, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
+        ("08_v04_and_rationale_clean_strings.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", "document.getElementById('va-bridge-btn').click();"),
     ]
     for fname, w, h, qs, hook in shots:
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?{qs}")
-        time.sleep(0.55 if "mode=components" in qs else 0.4)
+        time.sleep(0.45)
         if hook:
             driver.execute_script(hook)
             time.sleep(0.25)

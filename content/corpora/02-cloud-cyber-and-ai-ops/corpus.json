@@ -125,7 +125,7 @@
   "views": [
     {
       "id": "v04-sre-incident-workbench",
-      "title": "V04: SRE Incident Command & Tail-Latency Workbench",
+      "title": "SRE Incident Command & Tail-Latency Workbench",
       "presenter": "Site Reliability Engineer",
       "audience": "On-Call & VP Engineering",
       "lenses": [
@@ -150,7 +150,7 @@
     },
     {
       "id": "v05-zero-trust-ato-spec",
-      "title": "V05: Zero-Trust Enclave ATO Boundary & mTLS Policy Spec",
+      "title": "Zero-Trust Enclave ATO Boundary & mTLS Policy Spec",
       "presenter": "Security Architect",
       "audience": "Authorizing Official (AO) & CISO",
       "lenses": [
@@ -177,7 +177,7 @@
     },
     {
       "id": "v06-ai-drift-and-lineage-ide",
-      "title": "V06: AI Calibration Drift & Telemetry Lineage IDE",
+      "title": "AI Calibration Drift & Telemetry Lineage IDE",
       "presenter": "ML / Data Platform Engineer",
       "audience": "Application Engineer",
       "lenses": [

@@ -171,10 +171,15 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
                 for ikey in ("baseline", "provenance", "margin", "disposition"):
                     self.assertTrue(str(inv.get(ikey, "")).strip(), f"Blank invariant {ikey} in {vw['view_id']}")
                 mb = vw.get("murder_board", [])
-                self.assertTrue(mb and all(x.get("rubric") and x.get("finding") and x.get("verdict") for x in mb), f"Incomplete murder_board in {vw['view_id']}")
+                self.assertTrue(mb and all(re.search(r"[A-Za-z]{3,}", x.get("rubric", "")) and x.get("finding") and x.get("verdict") for x in mb), f"Incomplete murder_board in {vw['view_id']}: {mb}")
                 blob = " ".join([vw["vector_summary"], vw["bias_removed"], vw["bias_risk"], vw["bias_replacement"], vw["actionable_disposition"], *inv.values(), *(f"{m['rubric']} {m['finding']}" for m in mb)])
-                for leak in (".json", "_row_status", "QUIET-BRIDGE", "Murder-Board", "Scrubbed"):
+                for leak in (".json", "_row_status", "QUIET-BRIDGE", "Murder-Board", "Scrubbed", "( clear)", "(clear)"):
                     self.assertNotIn(leak, blob, f"Jargon '{leak}' in {vw['view_id']}")
+                self.assertNotRegex(blob, r"\bT[123]\b", f"Raw tempo code in {vw['view_id']}")
+                self.assertNotRegex(blob, r"\bv\d{2}-[a-z0-9]+-", f"Raw view slug in {vw['view_id']}")
+                self.assertNotRegex(vw["title"], r"^V\d{2}:", f"Prefix leak in {vw['view_id']}")
+            ledger_txt = " ".join(f"{r['metric_id']} {r['views']}" for r in world["conservation_ledger"])
+            self.assertNotRegex(ledger_txt, r"\bv\d{2}-[a-z0-9]+-", f"Raw view slug in ledger for {world['world_id']}")
         for must_id in ('id="va-tab-examples"', 'id="va-tab-components"', 'id="va-domain-select"', 'data-sheet-theme="white"', 'data-sheet-theme="paper"', 'data-sheet-theme="dark-paper"', 'data-sheet-theme="dark"'):
             self.assertIn(must_id, self.unified_html)
         for gone in ('id="va-tab-worlds"', 'id="va-tab-bench"', 'id="va-tab-atlas"', 'va-sheet-toggle-btn', 'va-world-select', 'diagrams.html', 'font-awesome', 'cdnjs.cloudflare.com', 'fa-solid'):
@@ -189,8 +194,9 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIn("V<sub>0</sub>", self.unified_html)
         self.assertIn("f<sub>obs</sub>", self.unified_html)
         tpl_body = "".join(re.findall(r'<template\s+id="tpl-view-[^"]*">(.*?)</template>', self.unified_html, flags=re.S))
-        for leak in ("Quiet Cockpit", "Pedagogical Flow", "Decision Contrast", "EXPECTED TICK", "FROSTED HUD", "CREASE-AWARE", "T1 GATE", "STROKE-ONLY PHOSPHOR", "WCAG AAA", "10-FT WALL DISPLAY", "V06:"):
+        for leak in ("Quiet Cockpit", "Pedagogical Flow", "Decision Contrast", "EXPECTED TICK", "FROSTED HUD", "CREASE-AWARE", "T1 GATE", "STROKE-ONLY PHOSPHOR", "WCAG AAA", "10-FT WALL DISPLAY", "V04:", "V05:", "V06:"):
             self.assertNotIn(leak, tpl_body, f"Taxonomy/meta string leaked into stage template: {leak}")
+        self.assertNotRegex(tpl_body, r"\bV\d{2}:", "Card title prefix VXX: leaked into stage template")
 
     def test_compiler_math_negative_edge_and_standalone_themes(self) -> None:
         from compile_evidence import compile_spec
@@ -227,10 +233,19 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIn('data-theme="paper"', paper_doc)
 
     def test_m5_m6_m7_and_customization_filtering(self) -> None:
-        self.assertIn('id="v15-hud-stage"', self.unified_html)
-        self.assertIn('data-backplate="earthrise"', self.unified_html)
-        self.assertIn('id="v16-glass-viewport"', self.unified_html)
-        self.assertIn('data-luminance="daylight"', self.unified_html)
+        v15_m = re.search(r'<template id="tpl-view-v15-collimated-flight-hud">(.*?)</template>', self.unified_html, flags=re.S)
+        v16_m = re.search(r'<template id="tpl-view-v16-transparent-window-overlay">(.*?)</template>', self.unified_html, flags=re.S)
+        self.assertIsNotNone(v15_m)
+        self.assertIsNotNone(v16_m)
+        v15_html, v16_html = v15_m.group(1), v16_m.group(1)
+        for tok in ("v15-hud-stage", "v15-earthrise-img", "v15-scene-svg", "v15-reticle-layer", "084°", "142", "8,520", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR"):
+            self.assertIn(tok, v15_html)
+        for bad in ("BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip"):
+            self.assertNotIn(bad, v15_html)
+        for tok in ("v16-glass-viewport", "v16-scene-svg", "42", "45 mph DERATE LIMIT", "MCU Thermal Limit (85 °C)", "2.8 s · 53 m SAFE FOLLOWING GAP"):
+            self.assertIn(tok, v16_html)
+        for bad in ("0x18FEF100", "Offset: 0x", "SCRIM:", "NO FLASH", ">= 7.0:1", "preserves", "120 Ω", "v9-chip"):
+            self.assertNotIn(bad, v16_html)
         from customizations.scripts.build_showcase import build_showcase
         with tempfile.TemporaryDirectory() as tmp:
             tmp_p = Path(tmp)

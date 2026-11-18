@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from world_05_optics import build_v15_hud_html, build_v16_glass_html
     from world_common import (
         assemble_world_bundle,
         cm_val,
@@ -18,6 +19,7 @@ try:
         render_params_aside,
     )
 except ImportError:
+    from src.v9.views.world_05_optics import build_v15_hud_html, build_v16_glass_html
     from src.v9.views.world_common import (
         assemble_world_bundle,
         cm_val,
@@ -129,126 +131,6 @@ def _build_v14_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 </div>"""
 
 
-def _build_v15_html(corpus: dict[str, Any]) -> str:
-    cm = corpus["canonical_metrics"]
-    bte = float(cm_val(cm, "peak_bte_pct"))
-    keepout = float(cm_val(cm, "hud_sightline_keepout_pct"))
-
-    return f"""<div class="v9-stage-inner v9-view-v15">
-  <div id="v15-hud-stage" class="v15-hud-stage" data-backplate="earthrise">
-    <svg class="v15-reticle-layer" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-label="Collimated Optical Pitch Ladder">
-      <line x1="420" y1="240" x2="465" y2="240" stroke="#22FF88" stroke-width="2" fill="none"/>
-      <line x1="535" y1="240" x2="580" y2="240" stroke="#22FF88" stroke-width="2" fill="none"/>
-      <line x1="420" y1="360" x2="465" y2="360" stroke="#22FF88" stroke-width="2" fill="none"/>
-      <line x1="535" y1="360" x2="580" y2="360" stroke="#22FF88" stroke-width="2" fill="none"/>
-      <polyline points="484,300 494,300 500,308 506,300 516,300" fill="none" stroke="#22FF88" stroke-width="2.5"/>
-      <circle cx="500" cy="300" r="3" fill="none" stroke="#22FF88" stroke-width="2"/>
-      <text x="412" y="244" text-anchor="end" font-size="13" fill="#22FF88">+5</text>
-      <text x="588" y="244" text-anchor="start" font-size="13" fill="#22FF88">+5</text>
-      <text x="412" y="364" text-anchor="end" font-size="13" fill="#22FF88">-5</text>
-      <text x="588" y="364" text-anchor="start" font-size="13" fill="#22FF88">-5</text>
-    </svg>
-
-    <div class="v15-hud-top">
-      <span class="v15-hud-lbl">HDG 084° MAG · WAYPOINT FL085</span>
-      <span class="v15-hud-lbl">BORESIGHT {keepout:.0f}% CLEAR · NAV/PROPULSION HUD</span>
-    </div>
-
-    <div class="v15-hud-mids">
-      <div class="v15-hud-rail">
-        <div class="v15-hud-readout">
-          <span class="v15-hud-lbl">AIRSPEED IAS</span>
-          <span class="v15-hud-num">142 kt</span>
-        </div>
-        <div class="v15-hud-readout">
-          <span class="v15-hud-lbl">PROPULSION BTE</span>
-          <span class="v15-hud-num">{bte:.1f}%</span>
-        </div>
-      </div>
-
-      <div class="v15-hud-rail v15-hud-rail-right">
-        <div class="v15-hud-readout">
-          <span class="v15-hud-lbl">ALTITUDE MSL</span>
-          <span class="v15-hud-num">8,520 ft</span>
-        </div>
-        <div class="v15-hud-readout">
-          <span class="v15-hud-lbl">IMEP OPTIMUM</span>
-          <span class="v15-hud-num">14.0 bar</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="v15-hud-bottom">
-      <div id="v15-backplate-chips" class="v15-hud-mode-strip" role="group" aria-label="Optical Backplate Test">
-        <button type="button" class="va-pill v9-chip v15-hud-chip is-active" data-variant="chip" data-backplate="earthrise" data-summary="Earthrise Limb Backplate: dual stroke halo against orbital horizon." aria-pressed="true">Earthrise</button>
-        <button type="button" class="va-pill v9-chip v15-hud-chip" data-variant="chip" data-backplate="daylight" data-summary="High-Brightness Daylight Backplate: narrowband green phosphor holds stroke contrast." aria-pressed="false">Daylight</button>
-        <button type="button" class="va-pill v9-chip v15-hud-chip" data-variant="chip" data-backplate="lowlight" data-summary="NVG Lowlight Backplate: calm monochrome zero-bloom horizon." aria-pressed="false">Lowlight</button>
-      </div>
-      <span id="v15-hud-readout" class="v15-hud-lbl" aria-live="polite">Earthrise Limb Backplate: dual stroke halo against orbital horizon.</span>
-    </div>
-  </div>
-</div>"""
-
-
-def _build_v16_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> str:
-    cm = corpus["canonical_metrics"]
-    bte = float(cm_val(cm, "peak_bte_pct"))
-    ohm = int(cm_val(cm, "canfd_termination_ohm"))
-    stub_m = float(cm_val(cm, "canfd_stub_max_m"))
-    scrim_min = float(cm_val(cm, "window_scrim_min_contrast"))
-    raw_bit = embed_compile(specs["canfd_bit"], "L3", "m7")
-    bit_panel = (
-        raw_bit.replace(
-            '<div class="va-bleed-wide va-table-wrap"',
-            '<details class="v16-bf-details"><summary class="v16-bf-summary">29-Bit Header Decode (0x18FEF100 · Inspect Fields)</summary><div class="va-bleed-wide va-table-wrap"',
-            1,
-        )
-        .replace("</table></div></section>", "</table></div></details></section>")
-        .replace("</table></div></div>", "</table></div></details></div>")
-    )
-
-    return f"""<div class="v9-stage-inner v9-view-v16">
-  <div id="v16-glass-viewport" class="v16-glass-viewport" data-luminance="daylight">
-    <div id="v16-top-scrim" class="v16-scrim-band">
-      <div class="v16-metric-strip">
-        <div class="v16-metric">
-          <span class="v16-metric-lbl">CAN-FD HARNESS</span>
-          <span class="v16-metric-val">{ohm} Ω · Stub &lt;= {stub_m:.1f} m</span>
-        </div>
-        <div class="v16-metric">
-          <span class="v16-metric-lbl">MCU NODE (0xEF)</span>
-          <span class="v16-metric-val" data-tone="warn">85 °C DERATE WARN</span>
-        </div>
-        <div class="v16-metric">
-          <span class="v16-metric-lbl">CRUISE EFFICIENCY</span>
-          <span class="v16-metric-val" data-tone="accent">{bte:.1f}% BTE</span>
-        </div>
-      </div>
-      <div class="v16-top-actions">
-        <span class="v16-scrim-pill">1 BUS WARN · NO FLASH</span>
-        <span class="v16-contrast-pill va-nums">SCRIM: <strong id="v16-contrast-val">10.6:1</strong> (&gt;= {scrim_min:.1f}:1)</span>
-      </div>
-    </div>
-
-    <div class="v16-corridor-spacer" aria-hidden="true">
-      <div class="v16-lane-guide"></div>
-    </div>
-
-    <div id="v16-bottom-scrim" class="v16-scrim-band v16-bottom-stack">
-      <div class="v16-bottom-bar">
-        <div id="v16-luminance-chips" class="v16-ctrl-chips" role="group" aria-label="Ambient Luminance Test">
-          <button type="button" class="va-pill v9-chip v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.6:1" data-summary="Daylight Glare: darkened scrim preserves 10.6:1 contrast." aria-pressed="true">Daylight Glare</button>
-          <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.8:1" data-summary="Horizon Dusk: balanced scrim preserves 11.8:1 contrast." aria-pressed="false">Horizon Dusk</button>
-          <button type="button" class="va-pill v9-chip v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" data-summary="Night Cabin: low-bloom scrim preserves 13.4:1 contrast." aria-pressed="false">Night Cabin</button>
-        </div>
-        <span id="v16-lum-readout" class="v16-lum-readout" aria-live="polite">Daylight Glare: darkened scrim preserves 10.6:1 contrast.</span>
-      </div>
-      <div id="v16-bitfield-host" class="v16-bitfield-host">{bit_panel}</div>
-    </div>
-  </div>
-</div>"""
-
-
 def build_world_05(corpora_dir: Path) -> dict[str, Any]:
     """Compile World 05 views, templates, and plain-English design rationale metadata."""
     spec_files = {
@@ -265,8 +147,8 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
     html_map = {
         "v13-propulsion-archival-monograph": _build_v13_html(corpus, specs),
         "v14-fieldbus-and-scope-debugger": _build_v14_html(corpus, specs),
-        "v15-collimated-flight-hud": _build_v15_html(corpus),
-        "v16-transparent-window-overlay": _build_v16_html(corpus, specs),
+        "v15-collimated-flight-hud": build_v15_hud_html(corpus),
+        "v16-transparent-window-overlay": build_v16_glass_html(corpus),
     }
     v14_status = [
         {"text": "1 BUS WARN", "variant": "status", "state": "warn"},
@@ -317,8 +199,8 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "topbar_status": [], "nav_items": [], "nav_anchors": [],
             "inv_col": "v16-transparent-window-overlay", "short_tag": "v16",
             "mb_keywords": ("v16", "MCU"),
-            "bias_risk": "Unbacked transparent overlays and dense wiring tables drop below legible contrast against 100,000 lux daylight glare.",
-            "actionable_disposition": "Hold MCU (0xEF) 85 °C derate alert above >= 7.0:1 WCAG AAA smoked scrim across daylight glare.",
+            "bias_risk": "Unbacked transparent overlays and raw 32-bit hex bitfields obscure the forward road corridor and overload drivers under 100,000 lux daylight glare.",
+            "actionable_disposition": "Display conformal lane/gap cues with MCU 85 °C drivetrain derate (<= 45 mph) on high-contrast corner smoked glass (>= 7.0:1).",
         },
     }
     return assemble_world_bundle(corpus, bp, "05 · Auto & Aerospace", view_cfg, html_map)

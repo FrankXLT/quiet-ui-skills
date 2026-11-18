@@ -3075,219 +3075,280 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     min-block-size: calc(100dvh - 8px);
     border-radius: var(--radius-card);
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
     background-color: #020617;
     background-size: cover;
     background-position: center;
     color: #22FF88;
     --hud-phosphor: #22FF88;
-    --hud-amber: #FACC15;
-    --hud-halo: 0 0 2px #020617, 0 1px 4px rgba(2, 6, 23, 0.96), 0 0 8px rgba(2, 6, 23, 0.9);
   }
   .v15-hud-stage[data-backplate="earthrise"] {
     background-image:
-      linear-gradient(180deg, rgba(2, 6, 23, 0.32) 0%, rgba(2, 6, 23, 0.14) 50%, rgba(2, 6, 23, 0.42) 100%),
-      var(--hud-earthrise-url, radial-gradient(circle at 65% 38%, #1D4ED8 0%, #0F172A 46%, #020617 85%));
+      linear-gradient(180deg, rgba(2, 6, 23, 0.25) 0%, rgba(2, 6, 23, 0.08) 50%, rgba(2, 6, 23, 0.36) 100%),
+      var(--hud-earthrise-url),
+      radial-gradient(circle at 65% 38%, #1D4ED8 0%, #0F172A 46%, #020617 85%);
   }
   .v15-hud-stage[data-backplate="daylight"] {
-    background-image: linear-gradient(180deg, #60A5FA 0%, #DBEAFE 52%, #64748B 53%, #475569 100%);
     --hud-phosphor: #14FF72;
-    --hud-halo: 0 0 3px #020617, 0 1px 6px rgba(2, 6, 23, 0.98), 0 0 10px rgba(2, 6, 23, 0.96);
+    color: #14FF72;
   }
   .v15-hud-stage[data-backplate="lowlight"] {
-    background-image: linear-gradient(180deg, #020617 0%, #0B1324 58%, #1E293B 59%, #050811 100%);
+    --hud-phosphor: #22FF88;
+    color: #22FF88;
   }
+  .v15-earthrise-img {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.94;
+    display: none;
+  }
+  .v15-hud-stage[data-backplate="earthrise"] .v15-earthrise-img { display: block; }
+  .v15-scene-svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+    z-index: 1;
+    display: none;
+  }
+  .v15-hud-stage:is([data-backplate="daylight"], [data-backplate="lowlight"]) .v15-scene-svg { display: block; }
+  .v15-scene-day,
+  .v15-scene-night { display: none; }
+  .v15-hud-stage[data-backplate="daylight"] .v15-scene-day { display: block; }
+  .v15-hud-stage[data-backplate="lowlight"] .v15-scene-night { display: block; }
+
   .v15-reticle-layer {
     position: absolute;
     inset: 0;
     inline-size: 100%;
     block-size: 100%;
     pointer-events: none;
+    z-index: 3;
+    color: var(--hud-phosphor);
   }
   .v15-reticle-layer text {
     paint-order: stroke fill;
     stroke: rgba(2, 6, 23, 0.94);
-    stroke-width: 3.5px;
+    stroke-width: 3.6px;
     stroke-linejoin: round;
     font-family: var(--font-mono);
     font-weight: 700;
+    fill: var(--hud-phosphor);
   }
-  .v15-hud-top,
-  .v15-hud-bottom {
-    position: relative;
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.45rem 0.9rem;
-    text-shadow: var(--hud-halo);
-    background: transparent;
-  }
-  .v15-hud-mids {
-    position: relative;
-    z-index: 4;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    flex: 1 1 auto;
-    pointer-events: none;
-  }
-  .v15-hud-rail {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-    max-inline-size: 170px;
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    color: var(--hud-phosphor);
-    text-shadow: var(--hud-halo);
-    background: transparent;
-  }
-  .v15-hud-rail-right { text-align: end; align-items: flex-end; }
-  .v15-hud-readout {
-    display: flex;
-    flex-direction: column;
-    gap: 0.05rem;
-    border-left: 2px solid var(--hud-phosphor);
-    padding-left: 0.45rem;
-    background: transparent;
-  }
-  .v15-hud-rail-right .v15-hud-readout { border-left: none; border-right: 2px solid var(--hud-phosphor); padding-left: 0; padding-right: 0.45rem; }
-  .v15-hud-lbl { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.95; }
-  .v15-hud-num { font-size: clamp(1.15rem, 1rem + 0.55cqi, 1.55rem); font-weight: 800; line-height: 1.05; }
   .v15-hud-mode-strip {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.85rem;
+    z-index: 5;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.38rem;
     pointer-events: auto;
   }
   .v15-hud-chip {
-    background: rgba(2, 6, 23, 0.72);
-    border-color: var(--hud-phosphor);
+    background: rgba(2, 6, 23, 0.68);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-color: rgba(34, 255, 136, 0.58);
     color: #F8FAFC;
-    min-block-size: 36px;
+    min-block-size: 32px;
   }
-  .v15-hud-chip.is-active { background: #065F46; border-color: #22FF88; color: #FFFFFF; }
+  .v15-hud-stage .v15-hud-chip.is-active {
+    background: rgba(6, 95, 70, 0.88);
+    border-color: #22FF88;
+    color: #FFFFFF;
+  }
 
   /* ------------------------------------------------------------------------
-     M7: Smart-Glass Combiner Overlay (v16 — Adaptive Scrim >= 7.0:1 AAA)
+     M7: Conformal Windshield Smart-Glass Overlay (v16 — Adaptive >= 7.0:1 AAA)
      ------------------------------------------------------------------------ */
-  .v9-stage-inner.v9-view-v16 { max-inline-size: 100%; padding: 0.25rem; gap: 0; min-block-size: 100dvh; }
+  .v9-stage-inner.v9-view-v16 {
+    max-inline-size: 100%;
+    padding: 0;
+    margin: 0;
+    min-block-size: calc(100dvh - 8px);
+  }
   .v16-glass-viewport {
     position: relative;
-    flex: 1 1 auto;
+    inline-size: 100%;
     min-block-size: calc(100dvh - 8px);
     border-radius: var(--radius-card);
     border: 1px solid var(--border-strong);
-    padding: 0.7rem 0.9rem;
+    overflow: hidden;
+    background-color: #0F172A;
+    --m7-scrim-alpha: 0.76;
+  }
+  .v16-glass-viewport[data-luminance="daylight"] { --m7-scrim-alpha: 0.76; }
+  .v16-glass-viewport[data-luminance="dusk"]     { --m7-scrim-alpha: 0.66; }
+  .v16-glass-viewport[data-luminance="night"]    { --m7-scrim-alpha: 0.56; }
+
+  .v16-only-day,
+  .v16-only-dusk,
+  .v16-only-night { display: none; }
+  .v16-glass-viewport[data-luminance="daylight"] .v16-only-day { display: block; }
+  .v16-glass-viewport[data-luminance="dusk"] .v16-only-dusk    { display: block; }
+  .v16-glass-viewport[data-luminance="night"] .v16-only-night  { display: block; }
+  .v16-glass-viewport[data-luminance="night"] .v16-clouds      { opacity: 0.14; }
+  .v16-glass-viewport[data-luminance="dusk"] .v16-clouds       { opacity: 0.36; }
+
+  .v16-scene-svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .v16-glass-pod {
+    position: absolute;
+    top: 1rem;
+    z-index: 4;
+    inline-size: max-content;
+    max-inline-size: min(332px, calc(50vw - 1.5rem));
+    padding: 0.72rem 0.92rem;
+    border-radius: var(--radius-card);
+    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
+    backdrop-filter: blur(18px) saturate(1.25);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    border: 1px solid rgba(248, 250, 252, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 12px 32px rgba(2, 6, 23, 0.42);
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.9);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 0.45rem;
-    overflow: hidden;
-    --m7-scrim-alpha: 0.90;
+    gap: 0.26rem;
   }
-  .v16-glass-viewport[data-luminance="daylight"] {
-    background: linear-gradient(180deg, #7DD3FC 0%, #E0F2FE 34%, #64748B 36%, #334155 68%, #1E293B 100%);
-    --m7-scrim-alpha: 0.92;
+  .v16-pod-left  { left: 1rem; }
+  .v16-pod-right { right: 1rem; }
+  .v16-pod-warn  { border-left: 3px solid #F59E0B; --status-warn: #FEF08A; }
+  .v16-pod-warn .va-pill[data-variant="status"][data-state="warn"] {
+    background-color: rgba(120, 53, 15, 0.84);
+    border-color: rgba(251, 191, 36, 0.72);
+    color: #FEF9C3;
+    align-self: flex-start;
   }
-  .v16-glass-viewport[data-luminance="dusk"] {
-    background: linear-gradient(180deg, #1E3A8A 0%, #D97706 48%, #334155 52%, #0F172A 100%);
-    --m7-scrim-alpha: 0.86;
-  }
-  .v16-glass-viewport[data-luminance="night"] {
-    background: linear-gradient(180deg, #020617 0%, #0F172A 55%, #1E293B 100%);
-    --m7-scrim-alpha: 0.82;
-  }
-  .v16-scrim-band {
-    --bg-surface: rgba(15, 23, 42, 0.94);
-    --bg-canvas: #0F172A;
-    --bg-elevated: rgba(30, 41, 59, 0.88);
-    --bg-card: rgba(15, 23, 42, 0.94);
-    --bg-header: rgba(30, 41, 59, 0.96);
-    --text-primary: #F8FAFC;
-    --text-secondary: #CBD5E1;
-    --text-muted: #94A3B8;
-    --border-hairline: rgba(248, 250, 252, 0.24);
-    --border-subtle: rgba(248, 250, 252, 0.26);
-    --border-strong: rgba(248, 250, 252, 0.40);
-    --accent-primary: #38BDF8;
-    --accent-focal: #38BDF8;
-    --tint-indigo-bg: rgba(56, 189, 248, 0.16);
-    --tint-indigo-fg: #E0F2FE;
-    --tint-amber-bg: rgba(217, 119, 6, 0.24);
-    --tint-amber-fg: #FEF3C7;
-    --status-warn: #FBBF24;
-    --status-warn-bg: rgba(217, 119, 6, 0.24);
-    --status-danger: #FCA5A5;
-    --status-err: #FCA5A5;
-    --status-err-bg: rgba(185, 28, 28, 0.30);
-    --status-ok: #34D399;
-    background-color: rgba(11, 18, 32, var(--m7-scrim-alpha));
-    backdrop-filter: blur(10px) saturate(1.2);
-    border: 1px solid rgba(248, 250, 252, 0.28);
-    border-radius: var(--radius-inner);
-    padding: 0.58rem 0.85rem;
-    color: #F8FAFC;
-    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.85);
+  .v16-speed-row {
     display: flex;
+    align-items: baseline;
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.45rem 1.1rem;
+    gap: 0.24rem 0.45rem;
   }
-  .v16-corridor-spacer {
-    flex: 1 1 auto;
-    min-block-size: clamp(160px, 32dvh, 290px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .v16-speed-val {
+    font-family: var(--font-mono);
+    font-size: clamp(1.85rem, 1.5rem + 1cqi, 2.35rem);
+    font-weight: 800;
+    line-height: 1;
+    color: #FFFFFF;
+  }
+  .v16-speed-unit {
+    font-family: var(--font-mono);
+    font-size: var(--ts-sm);
+    font-weight: 700;
+    color: #F1F5F9;
+  }
+  .v16-speed-cap {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    color: #FEF08A;
+    margin-inline-start: auto;
+  }
+  .v16-route-line { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
+  .v16-eff-line { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E0F2FE; }
+  .v16-warn-title { font-size: var(--ts-sm); font-weight: 700; color: #FFFFFF; line-height: 1.25; }
+  .v16-warn-action { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
+
+  .v16-road-gap-badge {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(4.2rem, 16dvh, 8.2rem);
+    transform: translateX(-50%);
+    z-index: 4;
+    padding: 0.3rem 0.78rem;
+    border-radius: var(--radius-inner);
+    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(125, 211, 252, 0.58);
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    color: #E0F2FE;
+    white-space: nowrap;
     pointer-events: none;
   }
-  .v16-lane-guide {
-    inline-size: min(100%, 420px);
-    block-size: 88px;
-    border-left: 2px dashed rgba(56, 189, 248, 0.75);
-    border-right: 2px dashed rgba(56, 189, 248, 0.75);
-    border-top: 1px solid rgba(56, 189, 248, 0.35);
-    border-radius: 6px;
-    background: transparent;
-  }
-  .v16-metric-strip {
+  .v16-ctrl-chips {
+    position: absolute;
+    right: 1rem;
+    bottom: 0.85rem;
+    z-index: 5;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    gap: 0.65rem 1.35rem;
-    align-items: baseline;
+    gap: 0.35rem;
+    padding: 0.32rem 0.42rem;
+    border-radius: var(--radius-inner);
+    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(248, 250, 252, 0.24);
   }
-  .v16-metric { display: flex; flex-direction: column; gap: 0.06rem; }
-  .v16-metric-lbl { font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; color: #CBD5E1; font-weight: 700; }
-  .v16-metric-val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: clamp(1.05rem, 0.96rem + 0.35cqi, 1.35rem); font-weight: 800; color: #FFFFFF; }
-  .v16-metric-val[data-tone="warn"] { color: #FDE047; }
-  .v16-metric-val[data-tone="accent"] { color: #7DD3FC; }
-  .v16-top-actions { display: inline-flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
-  .v16-scrim-pill { border-radius: 4px; background: rgba(180, 83, 9, 0.48); border: 1px solid #FBBF24; color: #FEF9C3; font-weight: 700; font-size: 0.78rem; padding: 0.18rem 0.55rem; }
-  .v16-contrast-pill { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E2E8F0; }
-  .v16-bottom-stack { flex-direction: column; align-items: stretch; gap: 0.45rem; }
-  .v16-bottom-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.45rem 0.85rem; }
-  .v16-ctrl-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 0.38rem; }
-  .v16-lum-chip { background: rgba(15, 23, 42, 0.86); color: #E2E8F0; border: 1px solid rgba(248, 250, 252, 0.32); }
-  .v16-lum-chip.is-active { background: #38BDF8; border-color: #7DD3FC; color: #090D16; }
-  .v16-lum-readout { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E2E8F0; }
-  .v16-bitfield-host { min-inline-size: 0; }
-  .v16-bitfield-host .qe-bf-hdr { padding-bottom: 0.15rem; }
-  .v16-bitfield-host .qe-svg-720 { max-inline-size: min(100%, 760px); }
-  .v16-bf-details { margin-top: 0.3rem; border-top: 1px solid rgba(248, 250, 252, 0.22); padding-top: 0.28rem; }
-  .v16-bf-summary { cursor: pointer; font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600; color: #7DD3FC; list-style: none; }
-  .v16-bf-summary::-webkit-details-marker { display: none; }
-  @media (max-width: 599px) {
+  .v16-lum-chip {
+    background: rgba(15, 23, 42, 0.86);
+    color: #F8FAFC;
+    border: 1px solid rgba(248, 250, 252, 0.32);
+    min-block-size: 32px;
+  }
+  .v16-lum-chip.is-active {
+    background: #38BDF8;
+    border-color: #BAE6FD;
+    color: #090D16;
+  }
+
+  @media (max-width: 639px) {
     .v15-hud-chip, .v16-lum-chip { min-block-size: 44px; }
-    .v15-hud-rail { max-inline-size: 138px; }
+    .v15-hud-mode-strip { left: 0.65rem; right: 0.65rem; justify-content: center; }
+    .v16-glass-viewport {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 0.65rem;
+      gap: 0.55rem;
+    }
+    .v16-glass-pod {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      inline-size: 100%;
+      max-inline-size: 100%;
+    }
+    .v16-road-gap-badge {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      transform: none;
+      align-self: center;
+      margin-top: auto;
+    }
+    .v16-ctrl-chips {
+      position: relative;
+      right: auto;
+      bottom: auto;
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .v16-glass-viewport[data-luminance] { --m7-scrim-alpha: 0.90; }
+    .v15-hud-chip:not(.is-active) { background: rgba(2, 6, 23, 0.90); }
   }
 }
 
@@ -3829,16 +3890,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (ins) ins.classList.toggle('v12-panel-hidden', role !== 'instructor');
     });
 
-    wireChipGroup(doc, 'v15-backplate-chips', 'v15-hud-readout', function (btn, d) {
+    wireChipGroup(doc, 'v15-backplate-chips', null, function (btn, d) {
       const stage = d.getElementById('v15-hud-stage');
       if (stage && btn.dataset.backplate) stage.setAttribute('data-backplate', btn.dataset.backplate);
     });
 
-    wireChipGroup(doc, 'v16-luminance-chips', 'v16-lum-readout', function (btn, d) {
+    wireChipGroup(doc, 'v16-luminance-chips', null, function (btn, d) {
       const vp = d.getElementById('v16-glass-viewport');
-      const cVal = d.getElementById('v16-contrast-val');
       if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
-      if (cVal && btn.dataset.contrast) cVal.textContent = btn.dataset.contrast;
+      if (vp && btn.dataset.contrast) vp.setAttribute('data-contrast', btn.dataset.contrast);
     });
   }
 
@@ -3847,7 +3907,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   </script>
   <script type="application/json" id="va-v9-manifest">
-{"worlds":[{"world_id":"01-clinical-icu-and-trials","world_label":"01 \u00b7 Clinical & Trials","title":"Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof","views":[{"view_id":"v01-icu-bedside-terminal","title":"ICU Bed-04 Tactical Hemodynamic & Ventilator Console","option_label":"v01 \u00b7 ICU Bedside Terminal","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"heart-pulse","nav_brand":"Bed ICU-04","topbar_brand":"BED ICU-04 \u00b7 PT-0482 \u00b7 Sepsis Protocol","rail_brand":"Monitor Subsystems","topbar_status":[{"text":"\u25b2 1 CAUTION","variant":"status","state":"warn"},{"text":"MAP 63.5 mmHg","variant":"plain","state":"warn"},{"text":"NTP Synced","variant":"status","state":"nominal"}],"nav_items":["Hemodynamics","Ventilator","Infusions","Event Log"],"nav_anchors":["v01-hemo","v01-vent","v01-infusions","v01-alarms"],"vector_summary":"ICU Informaticist to Bedside Nurse & Intensivist \u00b7 T1 \u00b7 Operator Console \u00b7 Detailed Metrology","actionable_disposition":"Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg.","bias_removed":"Raw HL7/ADC hex frames, rainbow-colored nominal vital tiles, and spline-interpolated flatline fills during motion artifact","bias_risk":"Alarm fatigue under T1 triage; clinicians mistake interpolated waveform for true perfusion","bias_replacement":"Quiet Cockpit monochrome nominal tiles; amber [ CAUTION ] reserved for MAP = 63.5 mmHg \u003c 65.0 mmHg; explicit 2.4 s null gap with T_A/T_B cursors","invariants":{"baseline":"MAP anchored to 75.0 mmHg target, 65.0 mmHg caution floor, 55.0 mmHg abort floor; PEEP anchored to 10.0 cmH2O CMD vs 10.2 cmH2O ACT","provenance":"k=2 95.45% expanded uncertainty (\u00b1 1.5 mmHg, \u00b1 0.2 cmH2O, \u00b1 0.8%), sensor/cal IDs, and un-interpolated 2.4 s dropout break","margin":"Explicit -2.3% margin excursion on MAP, +95.0% margin on PEEP, and +55.0% margin on SpO2 computed without mental math","disposition":"Verify arterial transducer zeroing post-dropout before titrating vasopressors"},"murder_board":[{"rubric":"/","finding":"cmH2O, mmHg, % isolated in .qe-unit headers; only MAP (63.5 \u003c= 65.0) triggers [ CAUTION ]","verdict":"PASS"},{"rubric":"/","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"},{"rubric":"/","finding":"PEEP renders CMD 10.0 vs ACT 10.2 cmH2O on linear horizontal gauge without radial dial clutter","verdict":"PASS"}]},{"view_id":"v02-trial-regulatory-brief","title":"CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief","option_label":"v02 \u00b7 Trial Regulatory Brief","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"file-medical","nav_brand":"CONSORT Brief","topbar_brand":"CONSORT Brief","rail_brand":"CONSORT Brief","topbar_status":[],"nav_items":["Disposition","Cohort & Methods","Subgroup Forest","KDIGO Safety","SAP Appendix"],"nav_anchors":["v02-disposition","v02-methods","v02-forest","v02-safety","v02-sap"],"vector_summary":"Clinical Biostatistician to FDA Reviewer & Hospital CMO \u00b7 T2 / T3 \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"Approve protocol adoption for SOFA \u003e= 8 and Lactate \u003e 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log.","bias_removed":"Cherry-picked p-value claims (p \u003c 0.01) divorced from subgroup variance, missing control-arm incidence, and unbracketed adverse events","bias_risk":"FDA reviewer / CMO cannot verify clinical net benefit or renal safety margins","bias_replacement":"Full CONSORT subgroup forest plot (HR + 95% CI vs 1.0 null) paired with Booktabs safety ledger (\u00b1 binomial uncertainty and DSMB status pills)","invariants":{"baseline":"Forest plot anchored to HR = 1.0 vertical null line; adverse event rows pair Protocol Arm against Control Arm (11.4% vs 14.8% AKI)","provenance":"SAP-v2.4-ITT (n=1,240) test-condition strip, exact 95% CI whiskers, and \u00b1 incidence uncertainties in Booktabs columns","margin":"Subgroups crossing null (Age \u003e= 65 CI [0.62, 1.01]) rendered in muted secondary ink vs statistically decisive SOFA \u003e= 8 ([0.52, 0.89])","disposition":"Authorize protocol for SOFA \u003e= 8 / Lactate \u003e 2 mmol/L with mandatory KDIGO renal monitoring"},"murder_board":[{"rubric":"Clinical Safety","finding":"All 4 subgroups state exact n (1,240, 612, 486, 704) and 95% CI whiskers against HR = 1.0","verdict":"PASS"},{"rubric":"/","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"}]},{"view_id":"v03-patient-recovery-companion","title":"Post-ICU Discharge Recovery & Vital Trend Companion","option_label":"v03 \u00b7 Patient Recovery Guide","default_medium":"m3","chromatic_code":"c2","default_nav":"n2","allowed_navs":["n2","n4","n0"],"nav_icon":"hand-holding-medical","nav_brand":"Recovery Guide","topbar_brand":"Recovery Guide","rail_brand":"Recovery Guide","topbar_status":[],"nav_items":["Today","Vitals Log","Care Guide","Care Team"],"nav_anchors":["v03-today","v03-vitals","v03-guide","v03-care-team"],"vector_summary":"Clinical Care Team to Discharged Patient & Family \u00b7 T3 \u00b7 Interactive App \u00b7 Executive Summary","actionable_disposition":"Continue home pulse-oximetry log targeting \u003e= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%.","bias_removed":"Unexplained ICU acronyms (PEEP, k=2, ADC counts, KDIGO) and dense calibration certificates on primary screen","bias_risk":"Patient/family anxiety and misinterpretation of discharge recovery targets","bias_replacement":"L1 progressive disclosure showing 10-point trend sparklines, plain-language home targets (SpO2 \u003e= 92%), and calm status pills without L3 probe noise","invariants":{"baseline":"SpO2 (94.2%) and MAP (63.5 mmHg) anchored to home-monitoring lower bounds with clear sparkline trajectory","provenance":"Discrete 10-sample trend sparkline derived identically from V01 ICU Ventilator Scalars spec without synthetic smoothing","margin":"Explicit recovery gap framing showing how close oxygen saturation remains above the 92% clinic-call threshold","disposition":"Continue home pulse-oximetry log; call triage nurse if SpO2 \u003c 92% or systolic/MAP drops persistently"},"murder_board":[{"rubric":"First-Time Learner","finding":"L1 compilation hides Raw Adc Counts, k=2, and Calibration Id while retaining conserved scalar truth","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"MAP (mmHg)","canonical_value":"63.5 (\u00b1 1.5, target 75.0, lower 65.0)","unit":"mmHg","views":"v01, v03"},{"metric_id":"Peep Cmd Cmh2o","canonical_value":"10.0","unit":"cmH2O","views":"v01, v03"},{"metric_id":"Peep Act Cmh2o","canonical_value":"10.2 (\u00b1 0.2)","unit":"cmH2O","views":"v01, v03"},{"metric_id":"SPO2 (%)","canonical_value":"94.2 (\u00b1 0.8, lower 92.0)","unit":"%","views":"v01, v03"},{"metric_id":"Dropout Duration (s)","canonical_value":"2.4 (T_A=6.4 s, T_B=8.8 s)","unit":"s","views":"v01"},{"metric_id":"Overall (hr)","canonical_value":"0.74 ([0.61, 0.90])","unit":"1","views":"v02"},{"metric_id":"Age Ge65 (hr)","canonical_value":"0.79 ([0.62, 1.01])","unit":"1","views":"v02"},{"metric_id":"Sofa Ge8 (hr)","canonical_value":"0.68 ([0.52, 0.89])","unit":"1","views":"v02"},{"metric_id":"Lactate Gt2 (hr)","canonical_value":"0.71 ([0.54, 0.93])","unit":"1","views":"v02"},{"metric_id":"Aki Rate (%)","canonical_value":"11.4 (\u00b1 1.8, control 14.8)","unit":"%","views":"v02"}]}]}
+{"worlds":[{"world_id":"01-clinical-icu-and-trials","world_label":"01 \u00b7 Clinical & Trials","title":"Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof","views":[{"view_id":"v01-icu-bedside-terminal","title":"ICU Bed-04 Tactical Hemodynamic & Ventilator Console","option_label":"v01 \u00b7 ICU Bedside Terminal","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"heart-pulse","nav_brand":"Bed ICU-04","topbar_brand":"BED ICU-04 \u00b7 PT-0482 \u00b7 Sepsis Protocol","rail_brand":"Monitor Subsystems","topbar_status":[{"text":"\u25b2 1 CAUTION","variant":"status","state":"warn"},{"text":"MAP 63.5 mmHg","variant":"plain","state":"warn"},{"text":"NTP Synced","variant":"status","state":"nominal"}],"nav_items":["Hemodynamics","Ventilator","Infusions","Event Log"],"nav_anchors":["v01-hemo","v01-vent","v01-infusions","v01-alarms"],"vector_summary":"ICU Informaticist to Bedside Nurse & Intensivist \u00b7 Immediate Glance (5\u201315 s) \u00b7 Operator Console \u00b7 Detailed Metrology","actionable_disposition":"Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg.","bias_removed":"Raw HL7/ADC hex frames, rainbow-colored nominal vital tiles, and spline-interpolated flatline fills during motion artifact","bias_risk":"Alarm fatigue under Immediate Glance (5\u201315 s) triage; clinicians mistake interpolated waveform for true perfusion","bias_replacement":"Quiet Cockpit monochrome nominal tiles; amber [ CAUTION ] reserved for MAP = 63.5 mmHg \u003c 65.0 mmHg; explicit 2.4 s null gap with T_A/T_B cursors","invariants":{"baseline":"MAP anchored to 75.0 mmHg target, 65.0 mmHg caution floor, 55.0 mmHg abort floor; PEEP anchored to 10.0 cmH2O CMD vs 10.2 cmH2O ACT","provenance":"k=2 95.45% expanded uncertainty (\u00b1 1.5 mmHg, \u00b1 0.2 cmH2O, \u00b1 0.8%), sensor/cal IDs, and un-interpolated 2.4 s dropout break","margin":"Explicit -2.3% margin excursion on MAP, +95.0% margin on PEEP, and +55.0% margin on SpO2 computed without mental math","disposition":"Verify arterial transducer zeroing post-dropout before titrating vasopressors"},"murder_board":[{"rubric":"Clinical Safety","finding":"cmH2O, mmHg, % isolated in .qe-unit headers; only MAP (63.5 \u003c= 65.0) triggers [ CAUTION ]","verdict":"PASS"},{"rubric":"Chief Engineer","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"},{"rubric":"Field Operator","finding":"PEEP renders CMD 10.0 vs ACT 10.2 cmH2O on linear horizontal gauge without radial dial clutter","verdict":"PASS"}]},{"view_id":"v02-trial-regulatory-brief","title":"CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief","option_label":"v02 \u00b7 Trial Regulatory Brief","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"file-medical","nav_brand":"CONSORT Brief","topbar_brand":"CONSORT Brief","rail_brand":"CONSORT Brief","topbar_status":[],"nav_items":["Disposition","Cohort & Methods","Subgroup Forest","KDIGO Safety","SAP Appendix"],"nav_anchors":["v02-disposition","v02-methods","v02-forest","v02-safety","v02-sap"],"vector_summary":"Clinical Biostatistician to FDA Reviewer & Hospital CMO \u00b7 Dual-Speed Brief & Deep Analysis \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"Approve protocol adoption for SOFA \u003e= 8 and Lactate \u003e 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log.","bias_removed":"Cherry-picked p-value claims (p \u003c 0.01) divorced from subgroup variance, missing control-arm incidence, and unbracketed adverse events","bias_risk":"FDA reviewer / CMO cannot verify clinical net benefit or renal safety margins","bias_replacement":"Full CONSORT subgroup forest plot (HR + 95% CI vs 1.0 null) paired with Booktabs safety ledger (\u00b1 binomial uncertainty and DSMB status pills)","invariants":{"baseline":"Forest plot anchored to HR = 1.0 vertical null line; adverse event rows pair Protocol Arm against Control Arm (11.4% vs 14.8% AKI)","provenance":"SAP-v2.4-ITT (n=1,240) test-condition strip, exact 95% CI whiskers, and \u00b1 incidence uncertainties in Booktabs columns","margin":"Subgroups crossing null (Age \u003e= 65 CI [0.62, 1.01]) rendered in muted secondary ink vs statistically decisive SOFA \u003e= 8 ([0.52, 0.89])","disposition":"Authorize protocol for SOFA \u003e= 8 / Lactate \u003e 2 mmol/L with mandatory KDIGO renal monitoring"},"murder_board":[{"rubric":"Clinical Safety","finding":"All 4 subgroups state exact n (1,240, 612, 486, 704) and 95% CI whiskers against HR = 1.0","verdict":"PASS"},{"rubric":"Chief Engineer","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"}]},{"view_id":"v03-patient-recovery-companion","title":"Post-ICU Discharge Recovery & Vital Trend Companion","option_label":"v03 \u00b7 Patient Recovery Guide","default_medium":"m3","chromatic_code":"c2","default_nav":"n2","allowed_navs":["n2","n4","n0"],"nav_icon":"hand-holding-medical","nav_brand":"Recovery Guide","topbar_brand":"Recovery Guide","rail_brand":"Recovery Guide","topbar_status":[],"nav_items":["Today","Vitals Log","Care Guide","Care Team"],"nav_anchors":["v03-today","v03-vitals","v03-guide","v03-care-team"],"vector_summary":"Clinical Care Team to Discharged Patient & Family \u00b7 Deep Analysis (10\u201345 min) \u00b7 Interactive App \u00b7 Executive Summary","actionable_disposition":"Continue home pulse-oximetry log targeting \u003e= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%.","bias_removed":"Unexplained ICU acronyms (PEEP, k=2, ADC counts, KDIGO) and dense calibration certificates on primary screen","bias_risk":"Patient/family anxiety and misinterpretation of discharge recovery targets","bias_replacement":"L1 progressive disclosure showing 10-point trend sparklines, plain-language home targets (SpO2 \u003e= 92%), and calm status pills without L3 probe noise","invariants":{"baseline":"SpO2 (94.2%) and MAP (63.5 mmHg) anchored to home-monitoring lower bounds with clear sparkline trajectory","provenance":"Discrete 10-sample trend sparkline derived identically from V01 ICU Ventilator Scalars spec without synthetic smoothing","margin":"Explicit recovery gap framing showing how close oxygen saturation remains above the 92% clinic-call threshold","disposition":"Continue home pulse-oximetry log; call triage nurse if SpO2 \u003c 92% or systolic/MAP drops persistently"},"murder_board":[{"rubric":"First-Time Learner","finding":"L1 compilation hides Raw Adc Counts, k=2, and Calibration Id while retaining conserved scalar truth","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"MAP (mmHg)","canonical_value":"63.5 (\u00b1 1.5, target 75.0, lower 65.0)","unit":"mmHg","views":"v01, v03"},{"metric_id":"Peep Cmd Cmh2o","canonical_value":"10.0","unit":"cmH2O","views":"v01, v03"},{"metric_id":"Peep Act Cmh2o","canonical_value":"10.2 (\u00b1 0.2)","unit":"cmH2O","views":"v01, v03"},{"metric_id":"SPO2 (%)","canonical_value":"94.2 (\u00b1 0.8, lower 92.0)","unit":"%","views":"v01, v03"},{"metric_id":"Dropout Duration (s)","canonical_value":"2.4 (T_A=6.4 s, T_B=8.8 s)","unit":"s","views":"v01"},{"metric_id":"Overall (hr)","canonical_value":"0.74 ([0.61, 0.90])","unit":"1","views":"v02"},{"metric_id":"Age Ge65 (hr)","canonical_value":"0.79 ([0.62, 1.01])","unit":"1","views":"v02"},{"metric_id":"Sofa Ge8 (hr)","canonical_value":"0.68 ([0.52, 0.89])","unit":"1","views":"v02"},{"metric_id":"Lactate Gt2 (hr)","canonical_value":"0.71 ([0.54, 0.93])","unit":"1","views":"v02"},{"metric_id":"Aki Rate (%)","canonical_value":"11.4 (\u00b1 1.8, control 14.8)","unit":"%","views":"v02"}]}]}
   </script>
 
   <template id="tpl-view-v01-icu-bedside-terminal">
@@ -4216,7 +4276,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v03-guide" class="v03-pedagogy-panel qe-pedagogy-scope" aria-label="Interactive Home Care Guide">
     <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Oxygen Level Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Oxygen Level Trend">
-<defs><clipPath id="qe-clip-351099"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-168611"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4312,7 +4372,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Oxygen Saturation (%)</text>
-<g clip-path="url(#qe-clip-351099)">
+<g clip-path="url(#qe-clip-168611)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--tint-emerald-fg)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/>
@@ -4332,7 +4392,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 </svg></div>
 </div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Resting Blood Pressure Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Resting Blood Pressure Trend">
-<defs><clipPath id="qe-clip-58148"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-381372"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4440,7 +4500,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Blood Pressure (mmHg)</text>
-<g clip-path="url(#qe-clip-58148)">
+<g clip-path="url(#qe-clip-381372)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--status-warn)" stroke-width="1.5"/>
@@ -4954,9 +5014,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   function resolveDocsAsset(relPath) {
     const path = window.location.pathname || '';
     if (path.indexOf('/customizations/') !== -1) return '../../docs/' + relPath;
-    if (path.indexOf('/docs/pilot/') !== -1 || path.indexOf('/docs/v9/') !== -1) return '../' + relPath;
+    if (path.indexOf('/pilot/') !== -1 || path.indexOf('/v9/') !== -1) return '../' + relPath;
     if (path.indexOf('/quiet-ui-showcase') !== -1) return './docs/' + relPath;
     return './' + relPath;
+  }
+
+  function resolveAbsDocsAsset(relPath) {
+    try { return new URL(resolveDocsAsset(relPath), window.location.href).href; } catch (_e) { return resolveDocsAsset(relPath); }
   }
 
   function computeEffectiveNav(nav, viewMeta, width) {
@@ -4966,21 +5030,14 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (nav === 'n4' && width >= 700) return defNav;
       return allowed.indexOf(nav) !== -1 ? nav : defNav;
     }
-    if (width < 700 && allowed.indexOf('n4') !== -1) return 'n4';
-    return defNav;
+    return (width < 700 && allowed.indexOf('n4') !== -1) ? 'n4' : defNav;
   }
 
-  function getActiveDimensions() {
-    return window.QuietPortalResize.parseDimensions(state.vp);
-  }
+  function getActiveDimensions() { return window.QuietPortalResize.parseDimensions(state.vp); }
 
   function updatePortalDimensions() {
-    const mat = document.getElementById('va-portal-mat');
-    const scaler = document.getElementById('va-portal-scaler');
-    const iframe = document.getElementById('va-stage-portal');
-    if (mat && scaler && iframe) {
-      window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
-    }
+    const mat = document.getElementById('va-portal-mat'), scaler = document.getElementById('va-portal-scaler'), iframe = document.getElementById('va-stage-portal');
+    if (mat && scaler && iframe) window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
   }
 
   function effectiveMedium(viewMeta) {
@@ -5024,7 +5081,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveDocsAsset('assets/as08-14-2383.jpg');
+    const earthriseUrl = resolveAbsDocsAsset('assets/as08-14-2383.jpg');
     const tokStyle = document.getElementById('custom-tokens');
     const ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
@@ -5143,6 +5200,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
+      const hudImg = doc.getElementById('v15-earthrise-img');
+      if (hudImg) { hudImg.onerror = function () { hudImg.style.display = 'none'; }; hudImg.src = resolveAbsDocsAsset('assets/as08-14-2383.jpg'); }
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;
