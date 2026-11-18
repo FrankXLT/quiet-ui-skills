@@ -18,9 +18,17 @@ if str(V9_VIEWS_DIR) not in sys.path:
     sys.path.insert(0, str(V9_VIEWS_DIR))
 
 from world_01_clinical import build_world_01  # noqa: E402
+from world_02_cloud_cyber_ai import build_world_02  # noqa: E402
+from world_03_industrial_grid import build_world_03  # noqa: E402
+from world_04_civic_finance_stem import build_world_04  # noqa: E402
+from world_05_physical_systems import build_world_05  # noqa: E402
 
 WORLD_BUILDERS: dict[str, Callable[[Path], dict[str, Any]]] = {
     "01-clinical-icu-and-trials": build_world_01,
+    "02-cloud-cyber-and-ai-ops": build_world_02,
+    "03-industrial-grid-and-manufacturing": build_world_03,
+    "04-civic-finance-and-stem-learning": build_world_04,
+    "05-physical-systems-auto-and-aero": build_world_05,
 }
 
 
@@ -38,6 +46,8 @@ def bundle_v9_stage_css(repo_root: Path) -> str:
         "src/v9/css/02-evidence-stage.css",
         "src/v9/css/03-stage-remediations.css",
         "src/v9/css/04-world-01-views.css",
+        "src/v9/css/05-world-02-05-views.css",
+        "src/v9/css/06-m5-m6-m7-physics.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():
@@ -51,7 +61,11 @@ def bundle_v9_stage_css(repo_root: Path) -> str:
 def bundle_v9_stage_js(repo_root: Path) -> str:
     return "\n\n".join(
         (repo_root / rel).read_text(encoding="utf-8")
-        for rel in ("src/js/evidence-runtime.js", "src/v9/js/world-01-interactions.js")
+        for rel in (
+            "src/js/evidence-runtime.js",
+            "src/v9/js/world-01-interactions.js",
+            "src/v9/js/world-02-05-interactions.js",
+        )
         if (repo_root / rel).exists()
     )
 

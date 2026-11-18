@@ -53,13 +53,29 @@
 
   function bootBench() {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('embed') === '1') {
+      document.documentElement.setAttribute('data-bench-embed', '1');
+    }
     const qTheme = params.get('theme');
     if (qTheme) {
       applyTheme(qTheme);
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       applyTheme('dark');
     }
+    const qDen = params.get('density');
+    if (['d1', 'd2', 'd3', 'd4'].includes(qDen)) document.documentElement.dataset.density = qDen;
+    const qCor = params.get('corners');
+    if (['auto', 'sharp', 'subtle', 'rounded', 'soft'].includes(qCor)) document.documentElement.dataset.corners = qCor;
     if (params.get('medium')) applyMedium(params.get('medium'));
+
+    window.addEventListener('message', function (ev) {
+      const msg = ev && ev.data;
+      if (!msg || msg.type !== 'quiet-ui-sync') return;
+      if (msg.theme) applyTheme(msg.theme);
+      if (msg.medium) applyMedium(msg.medium === 'auto' ? 'm2' : msg.medium);
+      if (['d1', 'd2', 'd3', 'd4'].includes(msg.density)) document.documentElement.dataset.density = msg.density;
+      if (['auto', 'sharp', 'subtle', 'rounded', 'soft'].includes(msg.corners)) document.documentElement.dataset.corners = msg.corners;
+    });
 
     const themeSel = document.getElementById('bench-theme-select');
     if (themeSel) {

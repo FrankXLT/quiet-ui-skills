@@ -140,28 +140,6 @@
     });
   }
 
-  function bindV03PedagogicalClick(doc) {
-    const scope = doc.querySelector('.v03-pedagogy-panel');
-    if (!scope || scope.dataset.bound === '1') return;
-    scope.dataset.bound = '1';
-    let pinnedTerm = null;
-
-    scope.querySelectorAll('button[data-term]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const t = btn.getAttribute('data-term');
-        pinnedTerm = (pinnedTerm === t) ? null : t;
-        if (pinnedTerm) scope.dataset.pinnedTerm = pinnedTerm;
-        else delete scope.dataset.pinnedTerm;
-        if (window.QuietEvidenceRuntime && typeof window.QuietEvidenceRuntime.setActiveTerm === 'function') {
-          window.QuietEvidenceRuntime.setActiveTerm(scope, pinnedTerm);
-        }
-        scope.querySelectorAll('button[data-term]').forEach(function (b) {
-          b.setAttribute('aria-pressed', (pinnedTerm && b.getAttribute('data-term') === pinnedTerm) ? 'true' : 'false');
-        });
-      });
-    });
-  }
-
   function bindShellSupport(doc) {
     if (doc.__quietShellSupportBound) return;
     doc.__quietShellSupportBound = true;
@@ -199,7 +177,6 @@
     bindShellSupport(d);
     bindV01Titration(d);
     bindV02SubgroupChips(d);
-    bindV03PedagogicalClick(d);
   }
 
   if (document.readyState === 'loading') {

@@ -6,16 +6,15 @@
   'use strict';
 
   const state = {
-    world: '', view: '', medium: 'auto', theme: 'white',
+    studioView: 'worlds', world: '', view: '', medium: 'auto', theme: 'white',
     nav: 'auto', vp: 'fill', zoom: 'fit', density: 'd2',
     corners: 'auto', scale: '100', isMounted: false, renderedView: '',
   };
   let manifest = { worlds: [] };
 
   function escHtml(val) {
-    return String(val == null ? '' : val)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (window.QuietStudioSheetV9 && window.QuietStudioSheetV9.escHtml) return window.QuietStudioSheetV9.escHtml(val);
+    return String(val == null ? '' : val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function loadManifest() {
@@ -36,9 +35,25 @@
 
   function readUrlParams() {
     const p = new URLSearchParams(window.location.search);
-    ['world', 'view', 'medium', 'theme', 'nav', 'vp', 'zoom', 'density', 'corners', 'scale'].forEach(function (k) {
-      if (p.has(k) && p.get(k)) state[k] = p.get(k);
+    const rules = {
+      mode: ['worlds', 'bench', 'atlas'], medium: ['auto', 'm1'],
+      theme: ['white', 'paper', 'dark-paper', 'dark'], nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
+      zoom: ['fit', '1:1'], density: ['d1', 'd2', 'd3', 'd4'], corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+    };
+    if (rules.mode.indexOf(p.get('mode')) !== -1) state.studioView = p.get('mode');
+    ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
+      if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
+    const vp = p.get('vp') || '';
+    if (vp === 'fill' || /^\d{3,4}x\d{3,4}$/.test(vp)) state.vp = vp;
+    const sc = parseInt(p.get('scale') || '', 10);
+    if (!isNaN(sc)) state.scale = String(Math.max(75, Math.min(150, sc)));
+    if (p.has('world')) state.world = p.get('world') || '';
+    if (p.has('view')) state.view = p.get('view') || '';
+    if (!p.get('world') && state.view) {
+      const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === state.view; }); });
+      if (hitW) state.world = hitW.world_id;
+    }
     const w = findWorld(state.world);
     if (w) {
       state.world = w.world_id;
@@ -49,6 +64,7 @@
 
   function syncUrlParams() {
     const p = new URLSearchParams();
+    if (state.studioView !== 'worlds') p.set('mode', state.studioView);
     p.set('world', state.world);
     p.set('view', state.view);
     p.set('medium', state.medium);
@@ -60,6 +76,14 @@
     if (state.corners !== 'auto') p.set('corners', state.corners);
     if (state.scale !== '100') p.set('scale', state.scale);
     window.history.replaceState(null, '', window.location.pathname + '?' + p.toString());
+  }
+
+  function resolveDocsAsset(relPath) {
+    const path = window.location.pathname || '';
+    if (path.indexOf('/customizations/') !== -1) return '../../docs/' + relPath;
+    if (path.indexOf('/docs/pilot/') !== -1 || path.indexOf('/docs/v9/') !== -1) return '../' + relPath;
+    if (path.indexOf('/quiet-ui-showcase') !== -1) return './docs/' + relPath;
+    return './' + relPath;
   }
 
   function computeEffectiveNav(nav, viewMeta, width) {
@@ -96,15 +120,23 @@
     const jsEl = document.getElementById('va-bundled-stage-js');
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
-    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
+    const baseHref = window.location.href.split('?')[0].split('#')[0];
+    const earthriseUrl = resolveDocsAsset('assets/as08-14-2383.jpg');
+    const tokStyle = document.getElementById('custom-tokens');
+    const ovrStyle = document.getElementById('custom-overrides');
+    const hasCustom = document.documentElement.dataset.customStyles === 'true';
+    const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
+    const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
+    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + escHtml(earthriseUrl) + '\');" data-theme="' + escHtml(state.theme) +
       '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
       '" data-nav-shell="' + escHtml(state.nav) + '" data-effective-nav="n0" data-form-factor="desktop">\n<head>\n' +
-      '<meta charset="utf-8">\n' +
+      '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n' +
       '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
       '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">\n' +
-      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n</head>\n<body>\n' +
+      customTok +
+      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
       '<div class="va-app-shell">\n' +
       '  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"></a>' +
       '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav>' +
@@ -132,6 +164,8 @@
     const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : ['Overview'];
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
     const icons = ['fa-heart-pulse', 'fa-lungs', 'fa-syringe', 'fa-bell'];
+    const hrefFor = function (i) { return anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage'; };
+    const mapLinks = function (list, render) { return list.map(function (lbl, i) { return render(lbl, i, hrefFor(i)); }).join(''); };
 
     const brand = doc.querySelector('#va-shell-topbar .va-shell-brand');
     if (brand) brand.innerHTML = '<i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> ' + escHtml(topBrandLbl);
@@ -140,8 +174,10 @@
     const topStatus = (viewMeta && Array.isArray(viewMeta.topbar_status)) ? viewMeta.topbar_status : [];
     if (statusEl) {
       statusEl.innerHTML = topStatus.map(function (st) {
-        return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' +
-          escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+        if ((st.variant || '') === 'plain') {
+          return '<span class="va-topbar-metric" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+        }
+        return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
       }).join('');
     }
 
@@ -149,36 +185,24 @@
     const hideTopLinks = effNav === 'n3' && topStatus.length > 0;
     const topLinks = doc.querySelector('#va-shell-topbar .va-shell-topbar-links');
     if (topLinks) {
-      topLinks.innerHTML = hideTopLinks ? '' : items.map(function (lbl, i) {
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
+      topLinks.innerHTML = hideTopLinks ? '' : mapLinks(items, function (lbl, i, href) {
         return '<a class="va-shell-topbar-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + escHtml(lbl) + '</a>';
-      }).join('');
+      });
     }
-
     const rail = doc.getElementById('va-shell-rail');
     if (rail) {
       rail.innerHTML = '<div class="va-rail-brand"><i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> <span>' + escHtml(railBrandLbl) + '</span></div>' +
-        items.map(function (lbl, i) {
-          const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-          return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '"><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i> ' + escHtml(lbl) + '</a>';
-        }).join('');
+        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '"><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i> ' + escHtml(lbl) + '</a>'; });
     }
-
     const dock = doc.getElementById('va-shell-bottomdock');
     if (dock) {
-      dock.innerHTML = items.slice(0, 3).map(function (lbl, i) {
-        const shortLbl = lbl.split(' ')[0];
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i>' + escHtml(shortLbl) + '</a>';
-      }).join('') + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
+      dock.innerHTML = mapLinks(items.slice(0, 3), function (lbl, i, href) {
+        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i>' + escHtml(lbl.split(' ')[0]) + '</a>';
+      }) + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
     }
-
     const drawerNav = doc.querySelector('#va-shell-drawer .va-drawer-nav');
     if (drawerNav) {
-      drawerNav.innerHTML = items.map(function (lbl, i) {
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-        return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>';
-      }).join('');
+      drawerNav.innerHTML = mapLinks(items, function (lbl, i, href) { return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>'; });
     }
   }
 
@@ -220,6 +244,7 @@
       state.renderedNav = iframe.contentDocument.documentElement.dataset.effectiveNav;
       if (iframe.contentWindow.QuietEvidenceRuntime) iframe.contentWindow.QuietEvidenceRuntime.boot();
       if (iframe.contentWindow.QuietWorld01Runtime) iframe.contentWindow.QuietWorld01Runtime.boot(iframe.contentDocument);
+      if (iframe.contentWindow.QuietWorlds02To05Runtime) iframe.contentWindow.QuietWorlds02To05Runtime.boot(iframe.contentDocument);
       main.scrollTop = 0;
       if (iframe.contentWindow) iframe.contentWindow.scrollTo(0, 0);
     } else if (iframe.contentDocument.documentElement.dataset.effectiveNav !== state.renderedNav) {
@@ -233,6 +258,13 @@
     const worldObj = findWorld(state.world);
     const viewMeta = findView(worldObj, state.view);
     document.documentElement.dataset.medium = state.medium;
+    document.documentElement.dataset.studioView = state.studioView;
+
+    document.querySelectorAll('[data-studio-tab]').forEach(function (tab) {
+      const active = tab.dataset.studioTab === state.studioView;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
 
     const wSel = document.getElementById('va-world-select');
     if (wSel && wSel.value !== state.world) wSel.value = state.world;
@@ -262,8 +294,7 @@
       navSel.value = state.nav;
       Array.from(navSel.options).forEach(function (opt) {
         if (opt.value === 'auto') return;
-        const ok = allowed.indexOf(opt.value) !== -1;
-        opt.disabled = !ok;
+        opt.disabled = allowed.indexOf(opt.value) === -1;
       });
     }
 
@@ -277,15 +308,53 @@
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, allowed);
   }
 
+  function syncExternalMode(iframe) {
+    const isBench = state.studioView === 'bench';
+    const base = resolveDocsAsset(isBench ? 'bench/evidence-bench.html' : 'diagrams.html');
+    const med = state.medium === 'm1' ? 'm1' : 'm2';
+    const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) + '&corners=' + encodeURIComponent(state.corners) + (isBench ? '&medium=' + med : '');
+    const doSync = function () {
+      const d = getActiveDimensions();
+      if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
+    };
+    if (iframe.dataset.externalMode !== state.studioView) {
+      state.isMounted = false;
+      state.renderedView = '';
+      iframe.removeAttribute('srcdoc');
+      iframe.dataset.externalMode = state.studioView;
+      iframe.onload = function () { state.isMounted = true; doSync(); };
+      iframe.src = base + q;
+      return;
+    }
+    doSync();
+  }
+
   function applyState(worldChanged) {
     const worldObj = findWorld(state.world);
     if (worldObj && (worldChanged || !findView(worldObj, state.view))) {
       state.view = worldObj.views[0].view_id;
     }
+    const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
+    if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) {
+      window.QuietStudioSheetV9.untuckStudioBar();
+    }
+    state.lastViewKey = viewKey;
     const viewMeta = findView(worldObj, state.view);
     const iframe = document.getElementById('va-stage-portal');
-    if (!iframe || !viewMeta) return;
+    if (!iframe) return;
     updatePortalDimensions();
+    if (state.studioView !== 'worlds') {
+      syncExternalMode(iframe);
+      syncBarControls();
+      syncUrlParams();
+      return;
+    }
+    if (!viewMeta) return;
+    if (iframe.dataset.externalMode) {
+      delete iframe.dataset.externalMode;
+      iframe.removeAttribute('src');
+      state.isMounted = false;
+    }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
       state.renderedView = '';
       iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
@@ -300,39 +369,7 @@
   function openBridgeDialog() {
     const worldObj = findWorld(state.world);
     const viewMeta = findView(worldObj, state.view);
-    const dlg = document.getElementById('va-bridge-dialog');
-    const body = document.getElementById('va-bridge-body');
-    const title = document.getElementById('va-bridge-title');
-    if (!dlg || !body || !viewMeta) return;
-    if (title) title.textContent = 'Why This View? — ' + viewMeta.title;
-
-    const ledgerRows = (worldObj.conservation_ledger || []).map(function (row) {
-      return '<tr><td><code>' + escHtml(row.metric_id) + '</code></td><td>' + escHtml(row.canonical_value) +
-        '</td><td>' + escHtml(row.unit) + '</td><td>' + escHtml(row.views) + '</td></tr>';
-    }).join('');
-    const mbRows = (viewMeta.murder_board || []).map(function (m) {
-      return '<div class="va-bridge-item"><strong>' + escHtml(m.rubric) + ' · <span class="va-bridge-pass">' +
-        escHtml(m.verdict) + '</span></strong>' + escHtml(m.finding) + '</div>';
-    }).join('');
-    const inv = viewMeta.invariants || {};
-    body.innerHTML =
-      '<section class="va-bridge-card"><h3>1. Active Presenter -> Audience Vector</h3>' +
-      '<div class="va-bridge-vector">' + escHtml(viewMeta.vector_summary) + '</div>' +
-      '<div class="va-bridge-item"><strong>Actionable Disposition</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
-      '<section class="va-bridge-card"><h3>2. Scrubbed Sender Bias</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>Raw Bias Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
-      '<div class="va-bridge-item"><strong>Audience Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
-      '<div class="va-bridge-item"><strong>Distilled Replacement</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>3. Four Universal Audience Invariants</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>1. Baseline &amp; Corridor</strong>' + escHtml(inv.baseline || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>2. Epistemic Provenance</strong>' + escHtml(inv.provenance || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>3. Margin &amp; Consequence</strong>' + escHtml(inv.margin || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>4. Actionable Disposition</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>4. Murder-Board Red-Team Verdict</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
-      '<section class="va-bridge-card"><h3>5. Canonical Numerical Conservation Ledger</h3>' +
-      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric ID</th><th>Canonical Value</th><th>Unit</th><th>Consuming Views</th></tr></thead>' +
-      '<tbody>' + ledgerRows + '</tbody></table></div></section>';
-    if (typeof dlg.showModal === 'function') dlg.showModal();
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
   }
 
   function printActiveStage() {
@@ -355,6 +392,17 @@
   }
 
   function initControls() {
+    const bind = function (id, fn) { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    const tablist = document.getElementById('va-studio-mode-tablist');
+    if (tablist) {
+      tablist.addEventListener('click', function (ev) {
+        const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
+        if (btn && ['worlds', 'bench', 'atlas'].indexOf(btn.dataset.studioTab) !== -1) {
+          state.studioView = btn.dataset.studioTab;
+          applyState(false);
+        }
+      });
+    }
     const wSel = document.getElementById('va-world-select');
     if (wSel) wSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
     const vSel = document.getElementById('va-view-select');
@@ -363,40 +411,24 @@
       const el = document.getElementById('va-' + k + '-select');
       if (el) el.addEventListener('change', function (e) { state[k] = e.target.value; applyState(false); });
     });
-    const prev = document.getElementById('va-step-prev');
-    const next = document.getElementById('va-step-next');
-    if (prev) prev.addEventListener('click', function () { stepView(-1); });
-    if (next) next.addEventListener('click', function () { stepView(1); });
-
-    const sheetBtn = document.getElementById('va-sheet-toggle-btn');
-    if (sheetBtn) sheetBtn.addEventListener('click', function () { state.medium = (state.medium === 'm1') ? 'auto' : 'm1'; applyState(false); });
-    const printBtn = document.getElementById('va-print-btn');
-    if (printBtn) printBtn.addEventListener('click', printActiveStage);
-    const bridgeBtn = document.getElementById('va-bridge-btn');
-    if (bridgeBtn) bridgeBtn.addEventListener('click', openBridgeDialog);
-
     const onRotate = function () { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; applyState(false); } };
     const onZoomToggle = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
-    const rotBtn = document.getElementById('va-rotate-btn');
-    const zoomBtn = document.getElementById('va-zoom-btn');
-    if (rotBtn) rotBtn.addEventListener('click', onRotate);
-    if (zoomBtn) zoomBtn.addEventListener('click', onZoomToggle);
-
-    const custBtn = document.getElementById('va-customize-btn');
-    if (custBtn) custBtn.addEventListener('click', function () {
-      const sheet = document.getElementById('va-customize-sheet');
-      if (sheet && typeof sheet.showModal === 'function') sheet.showModal();
-    });
+    [
+      ['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
+      ['va-sheet-toggle-btn', function () { state.medium = (state.medium === 'm1') ? 'auto' : 'm1'; applyState(false); }],
+      ['va-print-btn', printActiveStage], ['va-bridge-btn', openBridgeDialog],
+      ['va-rotate-btn', onRotate], ['va-zoom-btn', onZoomToggle],
+      ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }],
+    ].forEach(function (pair) { bind(pair[0], pair[1]); });
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoomToggle, printActiveStage);
-
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 700 && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
       updatePortalDimensions();
-      syncIframeDOM();
+      if (state.studioView === 'worlds') syncIframeDOM();
     });
     window.QuietPortalResize.initResizeHandles(
       document.getElementById('va-portal-scaler'), document.getElementById('va-stage-portal'), document.getElementById('va-portal-mat'),
-      function (w, h) { state.vp = w + 'x' + h; syncIframeDOM(); syncUrlParams(); syncBarControls(); }
+      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'worlds') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
     );
   }
 

@@ -68,9 +68,9 @@
     },
     {
       "id": "ch2",
-      "name": "SpO2 Pleth",
+      "name": "SpO2 Plethysmograph",
       "type": "analog",
-      "quantity_calculus": "SpO2_pleth / %",
+      "quantity_calculus": "Pleth / %",
       "unit": "%",
       "domain": [90.0, 100.0],
       "trace_color": "var(--accent-focal)",

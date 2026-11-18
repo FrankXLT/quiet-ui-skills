@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.0 Gate 4.1 — Stage CDP Audit Script & Gallery Helpers (<= 250L)."""
+"""Quiet UI v9.0 Gate 5 — Stage CDP Audit Script & Gallery Helpers (<= 400L)."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ if (w >= 3800) {
   const rfs = parseFloat(getComputedStyle(document.documentElement).fontSize);
   if (rfs < 21.0) errs.push(`[4K_SCALE] root fontSize=${rfs}px < 21.0px at ${w}px`);
 }
-if (w === 390 || w === 840 || w === 1440) {
+if ([390, 840, 1440, 1920, 3840].includes(w)) {
   for (const el of document.querySelectorAll('.va-figure-scroll, .qe-scalar-card')) {
     if (getComputedStyle(el).display === 'none' || el.clientWidth === 0) continue;
     if (el.scrollWidth > el.clientWidth + 1) errs.push(`[INNER_SCROLL] ${view} @${w}: ${el.className} scroll=${el.scrollWidth} > client=${el.clientWidth}`);
@@ -50,7 +50,7 @@ if (w === 390 || w === 840 || w === 1440) {
   }
 }
 const visBody = document.body.innerText || '';
-for (const leak of ['Quiet Cockpit', 'Pedagogical Flow', 'Decision Contrast', 'Walk-Up Bedside', 'PlainLanguage.gov', 'FDA IEC 62366']) {
+for (const leak of ['Quiet Cockpit', 'Pedagogical Flow', 'Decision Contrast', 'Walk-Up Bedside', 'PlainLanguage.gov', 'FDA IEC 62366', 'T1 GATE', 'STROKE-ONLY PHOSPHOR', 'WCAG AAA']) {
   if (visBody.includes(leak)) errs.push(`[FRAMEWORK_LEAK] ${view} leaked '${leak}'`);
 }
 for (const badBadge of document.querySelectorAll('.qe-card-head .va-pill')) {
@@ -158,11 +158,81 @@ for (const r of document.querySelectorAll('svg .qe-svg-knockout rect')) {
   const cs = getComputedStyle(r);
   if (cs.stroke && cs.stroke !== 'none' && parseFloat(cs.strokeWidth || '0') > 0) errs.push('[SVG_KNOCKOUT] Stroked knockout rect found');
 }
+for (const s of document.querySelectorAll('svg.qe-waveform-svg, svg.qe-plot-svg, svg.qe-gauge-svg')) {
+  for (const t of s.querySelectorAll('text')) {
+    const raw = (t.textContent || '').trim();
+    if (/\\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\\b/.test(raw)) errs.push(`[SVG_SNAKE_CASE] Unformatted identifier '${raw}'`);
+  }
+}
+if (medium === 'm1' && w >= 1200) {
+  for (const pc of document.querySelectorAll('.v9-prose-card, .v02-prose-col')) {
+    const pcs = getComputedStyle(pc);
+    if (pcs.borderTopWidth !== '0px' || pcs.columnCount !== '2') {
+      errs.push(`[M1_UNBOXED] ${view} expected unboxed 2-col prose, got border=${pcs.borderTopWidth} cols=${pcs.columnCount}`);
+    }
+  }
+}
+if (view === 'v08-plant-floor-wall-kiosk' && w >= 1900) {
+  for (const kv of document.querySelectorAll('.v08-kpi-val')) {
+    const fs = parseFloat(getComputedStyle(kv).fontSize);
+    if (fs < 32.0) errs.push(`[M5_KPI_SIZE] v08 KPI font=${fs.toFixed(1)}px < 32px`);
+  }
+  for (const kl of document.querySelectorAll('.v08-kpi-label, .v08-wall-kicker')) {
+    const fs = parseFloat(getComputedStyle(kl).fontSize);
+    if (fs < 18.0) errs.push(`[M5_LABEL_SIZE] v08 label font=${fs.toFixed(1)}px < 18px`);
+  }
+  for (const p of document.querySelectorAll('.v08-wall-status .va-pill')) {
+    const bh = p.getBoundingClientRect().height, pfs = parseFloat(getComputedStyle(p).fontSize);
+    if (p.scrollHeight > p.clientHeight + 2 || bh < pfs * 1.15) errs.push(`[M5_PILL_CLIP] box=${bh.toFixed(1)}px font=${pfs}`);
+  }
+  if (document.documentElement.scrollHeight > window.innerHeight + 16) {
+    errs.push(`[M5_SINGLE_FRAME] v08 scrollHeight=${document.documentElement.scrollHeight} > ${window.innerHeight}`);
+  }
+}
+if (view === 'v15-collimated-flight-hud' && w >= 1400) {
+  const h = window.innerHeight, kx0 = w * 0.175, kx1 = w * 0.825, ky0 = h * 0.15, ky1 = h * 0.85;
+  let occ = 0;
+  for (const el of document.querySelectorAll('.v15-hud-stage *')) {
+    if (el.closest('svg')) continue;
+    const bg = getComputedStyle(el).backgroundColor;
+    if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') continue;
+    const r = el.getBoundingClientRect();
+    const ix = Math.max(0, Math.min(r.right, kx1) - Math.max(r.left, kx0));
+    const iy = Math.max(0, Math.min(r.bottom, ky1) - Math.max(r.top, ky0));
+    occ += ix * iy;
+  }
+  const clearPct = 100 * (1 - occ / ((kx1 - kx0) * (ky1 - ky0)));
+  if (clearPct < 65.0) errs.push(`[M6_KEEPOUT] Central boresight clear=${clearPct.toFixed(1)}% < 65%`);
+}
+if (view === 'v16-transparent-window-overlay') {
+  const band = document.getElementById('v16-top-scrim');
+  if (band) {
+    const parseRgba = (s) => (s.match(/[\\d.]+/g) || [0, 0, 0, 1]).map(Number);
+    const over = (fg, bg) => {
+      const a = fg.length >= 4 ? fg[3] : 1;
+      return [fg[0] * a + bg[0] * (1 - a), fg[1] * a + bg[1] * (1 - a), fg[2] * a + bg[2] * (1 - a)];
+    };
+    const lum = ([r, g, b]) => {
+      const f = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const bandBg = over(parseRgba(getComputedStyle(band).backgroundColor), [255, 255, 255]);
+    for (const el of band.querySelectorAll('.v16-metric-val, .v16-metric-lbl, .v16-scrim-pill')) {
+      const cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+      const elBg = over(parseRgba(cs.backgroundColor), bandBg), fg = parseRgba(cs.color);
+      const lBg = lum(elBg), lFg = lum(fg);
+      const cr = (Math.max(lBg, lFg) + 0.05) / (Math.min(lBg, lFg) + 0.05);
+      if (cr < 7.0) errs.push(`[M7_SCRIM_AAA] '${el.textContent.trim()}' contrast=${cr.toFixed(2)} < 7.0`);
+    }
+  }
+}
 for (const p of document.querySelectorAll('.va-pill')) {
   const cs = getComputedStyle(p);
   const rad = parseFloat(cs.borderTopLeftRadius || '0');
-  const v = p.dataset.variant, st = p.dataset.state, txt = p.textContent || '';
+  const v = p.dataset.variant, st = p.dataset.state, txt = (p.textContent || '').trim();
   if (/[\\x5b\\x5d]|\\bMargin\\b/.test(txt)) errs.push(`[ATOMIC_PILL] Non-atomic pill '${txt}'`);
+  if (v === 'status' && txt.length > 22) errs.push(`[ATOMIC_PILL] Status pill too long (${txt.length} > 22): '${txt}'`);
   if ((v === 'status' || v === 'tag') && rad >= 12) errs.push(`[ROUND_CLICK] Non-interactive pill '${txt}' has radius ${rad}px`);
   if (v === 'chip' && (!p.matches('button, a[href], input, [role="button"]') || rad < 99)) errs.push(`[ROUND_CLICK] Chip '${txt}' invalid`);
   if (v === 'status' && st === 'nominal' && (parseFloat(cs.borderTopWidth) > 0 || (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent')))
@@ -215,10 +285,50 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
         driver.get(f"{base_url}?world=01-clinical-icu-and-trials&{qs}")
         time.sleep(0.35)
         driver.save_screenshot(str(shots_dir / fname))
-
     set_viewport(driver, 1440, 900, 2)
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark-paper")
     time.sleep(0.3)
     driver.execute_script("document.getElementById('va-bridge-btn').click();")
     time.sleep(0.2)
     driver.save_screenshot(str(shots_dir / "09_studio_why_this_view_bridge.png"))
+
+
+def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
+    shots_dir.mkdir(parents=True, exist_ok=True)
+    shots = [
+        ("01_studio_unified_worlds_v04_desktop.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white"),
+        ("02_studio_mode_bench_embedded.png", 1440, 900, "mode=bench&theme=white"),
+        ("03_studio_mode_atlas_embedded.png", 1440, 900, "mode=atlas&theme=white"),
+        ("04_v05_zero_trust_ato_m1_sheet.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v05-zero-trust-ato-spec&medium=m1&theme=white"),
+        ("05_v06_ai_drift_lineage_ide_oled.png", 1440, 900, "world=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=dark"),
+        ("06_v07_scada_poi_console_desktop.png", 1440, 900, "world=03-industrial-grid-and-manufacturing&view=v07-grid-scada-poi-console&theme=white"),
+        ("07_v08_plant_floor_wall_kiosk_m5.png", 1920, 1080, "world=03-industrial-grid-and-manufacturing&view=v08-plant-floor-wall-kiosk&theme=dark"),
+        ("08_v10_civic_budget_waterfall_paper.png", 1440, 900, "world=04-civic-finance-and-stem-learning&view=v10-civic-capital-budget-deck&theme=paper"),
+        ("09_v12_stem_rc_lab_mobile_390x844.png", 390, 844, "world=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white"),
+    ]
+    for fname, w, h, qs in shots:
+        set_viewport(driver, w, h, 2)
+        driver.get(f"{base_url}?{qs}")
+        time.sleep(0.55)
+        driver.save_screenshot(str(shots_dir / fname))
+    set_viewport(driver, 1440, 900, 2)
+    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=dark")
+    time.sleep(0.45)
+    p1 = shots_dir / "_tmp_v15.png"
+    driver.save_screenshot(str(p1))
+    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white")
+    time.sleep(0.45)
+    p2 = shots_dir / "_tmp_v16.png"
+    driver.save_screenshot(str(p2))
+    composite = shots_dir / "10_v15_m6_flight_hud_and_v16_m7_glass.png"
+    try:
+        from PIL import Image
+        im1, im2 = Image.open(p1), Image.open(p2)
+        canvas = Image.new("RGB", (im1.width + im2.width, max(im1.height, im2.height)))
+        canvas.paste(im1, (0, 0))
+        canvas.paste(im2, (im1.width, 0))
+        canvas.save(str(composite))
+        p1.unlink(missing_ok=True)
+        p2.unlink(missing_ok=True)
+    except Exception:
+        p1.rename(composite)

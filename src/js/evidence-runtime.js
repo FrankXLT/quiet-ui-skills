@@ -141,10 +141,24 @@
     termsBound = true;
     const resolveScope = function (ev) {
       const target = ev.target && ev.target.closest ? ev.target.closest('[data-term]') : null;
-      return target ? { target: target, scope: target.closest('.qe-figure, .qe-pedagogy-scope') || document } : null;
+      if (!target) return null;
+      return { target: target, scope: target.closest('.qe-pedagogy-scope') || target.closest('.qe-figure') || document };
     };
     document.addEventListener('pointerover', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.target.getAttribute('data-term')); });
     document.addEventListener('pointerout', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.scope.dataset.pinnedTerm || null); });
+    document.addEventListener('click', function (ev) {
+      const btn = ev.target && ev.target.closest ? ev.target.closest('button[data-term], .qe-eq-term[data-term]') : null;
+      if (!btn) return;
+      const scope = btn.closest('.qe-pedagogy-scope') || btn.closest('.qe-figure') || document;
+      const term = btn.getAttribute('data-term');
+      const next = (scope.dataset.pinnedTerm === term) ? '' : (term || '');
+      if (next) scope.dataset.pinnedTerm = next;
+      else delete scope.dataset.pinnedTerm;
+      setActiveTerm(scope, next || null);
+      scope.querySelectorAll('button[data-term], .qe-eq-term[data-term]').forEach(function (b) {
+        b.setAttribute('aria-pressed', (next && b.getAttribute('data-term') === next) ? 'true' : 'false');
+      });
+    });
     document.addEventListener('focusin', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.target.getAttribute('data-term')); });
     document.addEventListener('focusout', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.scope.dataset.pinnedTerm || null); });
   }

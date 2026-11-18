@@ -189,10 +189,71 @@
     }
   }
 
+  function escHtml(val) {
+    return String(val == null ? '' : val)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function openBridgeDialog(worldObj, viewMeta) {
+    const dlg = document.getElementById('va-bridge-dialog');
+    const body = document.getElementById('va-bridge-body');
+    const title = document.getElementById('va-bridge-title');
+    if (!dlg || !body || !worldObj || !viewMeta) return;
+    if (title) title.textContent = 'Why This View? — ' + viewMeta.title;
+    const ledgerRows = (worldObj.conservation_ledger || []).map(function (row) {
+      return '<tr><td><code>' + escHtml(row.metric_id) + '</code></td><td>' + escHtml(row.canonical_value) +
+        '</td><td>' + escHtml(row.unit) + '</td><td>' + escHtml(row.views) + '</td></tr>';
+    }).join('');
+    const mbRows = (viewMeta.murder_board || []).map(function (m) {
+      return '<div class="va-bridge-item"><strong>' + escHtml(m.rubric) + ' · <span class="va-bridge-pass">' +
+        escHtml(m.verdict) + '</span></strong>' + escHtml(m.finding) + '</div>';
+    }).join('');
+    const inv = viewMeta.invariants || {};
+    body.innerHTML =
+      '<section class="va-bridge-card"><h3>1. Active Presenter -> Audience Vector</h3>' +
+      '<div class="va-bridge-vector">' + escHtml(viewMeta.vector_summary) + '</div>' +
+      '<div class="va-bridge-item"><strong>Actionable Disposition</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
+      '<section class="va-bridge-card"><h3>2. Scrubbed Sender Bias</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>Raw Bias Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
+      '<div class="va-bridge-item"><strong>Audience Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
+      '<div class="va-bridge-item"><strong>Distilled Replacement</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>3. Four Universal Audience Invariants</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>1. Baseline &amp; Corridor</strong>' + escHtml(inv.baseline || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>2. Epistemic Provenance</strong>' + escHtml(inv.provenance || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>3. Margin &amp; Consequence</strong>' + escHtml(inv.margin || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>4. Actionable Disposition</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>4. Murder-Board Red-Team Verdict</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
+      '<section class="va-bridge-card"><h3>5. Canonical Numerical Conservation Ledger</h3>' +
+      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric ID</th><th>Canonical Value</th><th>Unit</th><th>Consuming Views</th></tr></thead>' +
+      '<tbody>' + ledgerRows + '</tbody></table></div></section>';
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+  }
+
+  function postExternalSync(iframe, state, stageW) {
+    const payload = {
+      type: 'quiet-ui-sync', theme: state.theme, medium: state.medium,
+      density: state.density, corners: state.corners, formFactor: stageW <= 480 ? 'touch' : 'desktop',
+    };
+    try {
+      if (iframe.contentWindow) iframe.contentWindow.postMessage(payload, '*');
+      const doc = iframe.contentDocument && iframe.contentDocument.documentElement;
+      if (doc) {
+        doc.dataset.theme = state.theme;
+        doc.dataset.density = state.density;
+        doc.dataset.corners = state.corners;
+        if (state.studioView === 'bench') doc.dataset.medium = state.medium === 'm1' ? 'm1' : 'm2';
+      }
+    } catch (_e) {}
+  }
+
   window.QuietStudioSheetV9 = {
+    escHtml: escHtml,
+    postExternalSync: postExternalSync,
     syncSheetControls: syncSheetControls,
     untuckStudioBar: untuckStudioBar,
     bindPortalScrollTuck: bindPortalScrollTuck,
     initSheetEvents: initSheetEvents,
+    openBridgeDialog: openBridgeDialog,
   };
 })(typeof window !== 'undefined' ? window : this);

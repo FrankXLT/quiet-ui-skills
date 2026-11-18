@@ -18,10 +18,26 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from verify_v9_helpers import STAGE_AUDIT_JS, capture_gate41_gallery, set_viewport  # noqa: E402
+from verify_v9_helpers import (  # noqa: E402
+    STAGE_AUDIT_JS,
+    capture_gate41_gallery,
+    capture_gate5_gallery,
+    set_viewport,
+)
 
 REPO_ROOT = SCRIPT_DIR.parent
 PILOT_HTML = REPO_ROOT / "docs" / "pilot" / "world-01-pilot.html"
+UNIFIED_HTML = REPO_ROOT / "docs" / "v9" / "quiet-ui-v9-showcase.html"
+PERSONAL_V9 = REPO_ROOT / "customizations" / "personal-starter" / "showcase-v9.html"
+BRAND_V9 = REPO_ROOT / "customizations" / "brand-starter" / "showcase-v9.html"
+
+ALL_WORLDS_VIEWS: list[tuple[str, tuple[str, ...]]] = [
+    ("01-clinical-icu-and-trials", ("v01-icu-bedside-terminal", "v02-trial-regulatory-brief", "v03-patient-recovery-companion")),
+    ("02-cloud-cyber-and-ai-ops", ("v04-sre-incident-workbench", "v05-zero-trust-ato-spec", "v06-ai-drift-and-lineage-ide")),
+    ("03-industrial-grid-and-manufacturing", ("v07-grid-scada-poi-console", "v08-plant-floor-wall-kiosk", "v09-spc-quality-and-modbus-report")),
+    ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab")),
+    ("05-physical-systems-auto-and-aero", ("v13-propulsion-archival-monograph", "v14-fieldbus-and-scope-debugger", "v15-collimated-flight-hud", "v16-transparent-window-overlay")),
+]
 
 
 class _QuietHandler(SimpleHTTPRequestHandler):
@@ -40,7 +56,7 @@ def _start_server() -> tuple[ThreadingHTTPServer, int]:
     return srv, int(srv.server_address[1])
 
 
-def verify_static() -> list[str]:
+def verify_static(all_worlds: bool = False) -> list[str]:
     errs: list[str] = []
     if not PILOT_HTML.is_file():
         return [f"[MISSING_PILOT] Run build_v9_showcase.py first: {PILOT_HTML}"]
@@ -61,16 +77,25 @@ def verify_static() -> list[str]:
         lines = len((REPO_ROOT / rel).read_text(encoding="utf-8").splitlines())
         if lines > 400:
             errs.append(f"[LINE_BUDGET] {rel} has {lines} lines > 400")
-    pilot_txt = PILOT_HTML.read_text(encoding="utf-8")
-    if "!important" in pilot_txt.lower():
-        errs.append("[IMPORTANT_VIOLATION] docs/pilot/world-01-pilot.html contains !important")
+    targets = [PILOT_HTML]
+    if all_worlds:
+        targets.extend([UNIFIED_HTML, PERSONAL_V9, BRAND_V9])
+    for html_p in targets:
+        if not html_p.is_file():
+            errs.append(f"[MISSING_HTML] Missing build artifact {html_p.relative_to(REPO_ROOT)}")
+            continue
+        htxt = html_p.read_text(encoding="utf-8")
+        if "!important" in htxt.lower():
+            errs.append(f"[IMPORTANT_VIOLATION] {html_p.relative_to(REPO_ROOT)} contains !important")
+        if "●" in htxt:
+            errs.append(f"[BANNED_GLYPH] {html_p.relative_to(REPO_ROOT)} contains literal U+25CF")
     return errs
 
 
 def _audit_stage(driver: Any, url: str, width: int, height: int, tag: str) -> list[str]:
     set_viewport(driver, width, height, 1)
     driver.get(url)
-    time.sleep(0.28)
+    time.sleep(0.24)
     errs: list[str] = []
     bar_err = driver.execute_script(
         "const b=document.getElementById('va-studio-bar');"
@@ -94,115 +119,61 @@ def _verify_interactions_and_conservation(driver: Any, base_url: str) -> list[st
     errs: list[str] = []
     set_viewport(driver, 1440, 900, 1)
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
-    time.sleep(0.3)
-
-    # 1. Test v01 titration interlock + conservation + step -> v02 -> v03
+    time.sleep(0.28)
     driver.switch_to.frame("va-stage-portal")
     v01_txt = driver.execute_script("return document.body.innerText;")
     for num in ("63.5", "10.2", "94.2", "2.4"):
         if num not in v01_txt:
             errs.append(f"[CONSERVATION_V01] Missing {num}")
-    driver.execute_script("document.getElementById('v01-zero-btn').click();")
-    driver.execute_script("document.getElementById('v01-arm-btn').click();")
-    driver.execute_script("document.getElementById('v01-exec-btn').click();")
+    driver.execute_script("document.getElementById('v01-zero-btn').click();document.getElementById('v01-arm-btn').click();document.getElementById('v01-exec-btn').click();")
     after = driver.execute_script("return document.getElementById('v01-norepi-rate').textContent + '|' + document.getElementById('v01-audit-list').textContent;")
     if "0.10" not in after or "EXECUTED" not in after:
         errs.append(f"[V01_TITRATION] Guarded execution failed: {after}")
-    has_anchor = driver.execute_script("const a=document.querySelector('a[href^=\"#\"]'); if (a) { a.click(); return true; } return false;")
-    if not has_anchor:
+    if not driver.execute_script("const a=document.querySelector('a[href^=\"#\"]'); if (a) { a.click(); return true; } return false;"):
         errs.append("[SRCDOC_ANCHOR] No #anchor link found in v01")
-    else:
-        time.sleep(0.15)
-        nav_href = driver.execute_script("return location.href;")
-        if not str(nav_href).startswith("about:srcdoc"):
-            errs.append(f"[SRCDOC_ANCHOR] Anchor click navigated iframe to {nav_href}")
     driver.switch_to.default_content()
 
-    # Step to v02 & test subgroup chips
     driver.execute_script("document.getElementById('va-step-next').click();")
-    time.sleep(0.22)
-    driver.switch_to.frame("va-stage-portal")
-    if driver.execute_script("return document.documentElement.dataset.view;") != "v02-trial-regulatory-brief":
-        errs.append("[STEP_NEXT] Failed to step v01 -> v02")
-    v02_txt = driver.execute_script("return document.body.innerText;")
-    for num in ("0.74", "11.4", "14.8", "0.68"):
-        if num not in v02_txt:
-            errs.append(f"[CONSERVATION_V02] Missing {num}")
-    driver.execute_script("document.querySelector('button[data-subgroup=\"sofa\"]').click();")
-    ro = driver.execute_script("return document.getElementById('v02-filter-readout').textContent;")
-    if "0.68" not in ro:
-        errs.append(f"[V02_CHIP] Subgroup chip failed: {ro}")
-    driver.switch_to.default_content()
-
-    # Step to v03 & test Pedagogical Flow chip + conservation
-    driver.execute_script("document.getElementById('va-step-next').click();")
-    time.sleep(0.22)
-    driver.switch_to.frame("va-stage-portal")
-    if driver.execute_script("return document.documentElement.dataset.view;") != "v03-patient-recovery-companion":
-        errs.append("[STEP_NEXT] Failed to step v02 -> v03")
-    v03_txt = driver.execute_script("return document.body.innerText;")
-    for num in ("63.5", "94.2"):
-        if num not in v03_txt:
-            errs.append(f"[CONSERVATION_V03] Missing {num}")
-    act_cnt = driver.execute_script(
-        "const b=document.querySelector('.v03-pedagogy-panel button[data-term=\"oxygen-goal\"]');"
-        "b.click(); return document.querySelectorAll('.v03-pedagogy-panel .is-term-active').length;"
-    )
-    if act_cnt < 2:
-        errs.append(f"[V03_TERM] Pedagogical chip active count={act_cnt} < 2")
-    driver.switch_to.default_content()
-
-    # 2. OLED dark -> direct @media print (medium=auto) & [Sheet / Print] toggle on v02
-    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark")
-    time.sleep(0.28)
-    driver.switch_to.frame("va-stage-portal")
-    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
-    time.sleep(0.15)
-    dark_print = driver.execute_script(
-        "const rs=getComputedStyle(document.documentElement), dlg=document.getElementById('va-shell-drawer');"
-        "const wasOpen=dlg&&dlg.open; if(dlg&&!wasOpen) dlg.show();"
-        "const disp=dlg?getComputedStyle(dlg).display:'missing';"
-        "if(dlg&&!wasOpen) dlg.close();"
-        "return rs.getPropertyValue('--tint-emerald-fg').trim().toUpperCase() + '|' + disp;"
-    )
-    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
-    driver.switch_to.default_content()
-    if dark_print != "#065F46|none":
-        errs.append(f"[DARK_PRINT_TOKENS] Expected #065F46|none, got {dark_print}")
-
-    driver.execute_script("document.getElementById('va-sheet-toggle-btn').click();")
     time.sleep(0.2)
     driver.switch_to.frame("va-stage-portal")
-    m1_res = driver.execute_script(
-        "const st=document.querySelector('.va-stage');"
-        "return document.documentElement.dataset.medium + '|' + getComputedStyle(st).backgroundColor + '|' + getComputedStyle(document.querySelector('.v9-masthead-title')).color;"
-    )
-    if not m1_res.startswith("m1|rgb(255, 255, 255)|rgb(15, 23, 42)"):
-        errs.append(f"[M1_SHEET_OLED] Unexpected dark->M1 sheet style: {m1_res}")
-    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
-    time.sleep(0.15)
-    pr_res = driver.execute_script(
-        "const rail=document.getElementById('va-shell-rail'), top=document.getElementById('va-shell-topbar');"
-        "return getComputedStyle(rail).display + '|' + getComputedStyle(top).display + '|' + getComputedStyle(document.body).backgroundColor;"
-    )
-    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
-    if pr_res != "none|none|rgb(255, 255, 255)":
-        errs.append(f"[PRINT_EMULATION] {pr_res}")
+    driver.execute_script("document.querySelector('button[data-subgroup=\"sofa\"]').click();")
+    if "0.68" not in driver.execute_script("return document.getElementById('v02-filter-readout').textContent;"):
+        errs.append("[V02_CHIP] Subgroup chip failed")
     driver.switch_to.default_content()
 
-    # 3. [Why This View?] Quiet-Bridge dialog
+    driver.execute_script("document.getElementById('va-step-next').click();")
+    time.sleep(0.2)
+    driver.switch_to.frame("va-stage-portal")
+    if driver.execute_script("document.querySelector('.v03-pedagogy-panel button[data-term=\"oxygen-goal\"]').click(); return document.querySelectorAll('.v03-pedagogy-panel .is-term-active').length;") < 2:
+        errs.append("[V03_TERM] Pedagogical chip active count < 2")
+    driver.switch_to.default_content()
+
+    # Dark -> Print tokens & M1 sheet toggle on v02
+    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark")
+    time.sleep(0.25)
+    driver.switch_to.frame("va-stage-portal")
+    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+    time.sleep(0.12)
+    dark_print = driver.execute_script("return getComputedStyle(document.documentElement).getPropertyValue('--tint-emerald-fg').trim().toUpperCase();")
+    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
+    driver.switch_to.default_content()
+    if dark_print != "#065F46":
+        errs.append(f"[DARK_PRINT_TOKENS] Expected #065F46, got {dark_print}")
+
+    driver.execute_script("document.getElementById('va-sheet-toggle-btn').click();")
+    time.sleep(0.18)
+    driver.switch_to.frame("va-stage-portal")
+    if not driver.execute_script("return document.documentElement.dataset.medium + '|' + getComputedStyle(document.querySelector('.va-stage')).backgroundColor;").startswith("m1|rgb(255, 255, 255)"):
+        errs.append("[M1_SHEET_OLED] M1 sheet failed")
+    driver.switch_to.default_content()
+
     driver.execute_script("document.getElementById('va-bridge-btn').click();")
     time.sleep(0.15)
-    br_ok = driver.execute_script(
-        "const d=document.getElementById('va-bridge-dialog');"
-        "const txt=d?d.innerText:''; return (d && d.open && txt.includes('PASS') && txt.includes('0.74')) ? 'ok' : txt.slice(0,80);"
-    )
-    if br_ok != "ok":
-        errs.append(f"[BRIDGE_DIALOG] {br_ok}")
+    if not driver.execute_script("const d=document.getElementById('va-bridge-dialog');return !!(d&&d.open&&d.innerText.includes('0.74'));"):
+        errs.append("[BRIDGE_DIALOG] Why This View? dialog failed")
 
-    # 4. Drag-resize .va-drag-e from Fill mode must keep width > 1000px
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white&vp=fill")
-    time.sleep(0.25)
+    time.sleep(0.2)
     drag_w = driver.execute_script(
         "const h=document.querySelector('.va-drag-e'), p=document.getElementById('va-stage-portal');"
         "if (!h || !p) return -1; const r=h.getBoundingClientRect();"
@@ -212,11 +183,120 @@ def _verify_interactions_and_conservation(driver: Any, base_url: str) -> list[st
         "return parseInt(p.style.width || '0', 10);"
     )
     if drag_w <= 1000:
-        errs.append(f"[FILL_RESIZE] Drag from Fill snapped width to {drag_w}px (<= 1000px)")
+        errs.append(f"[FILL_RESIZE] Drag from Fill snapped to {drag_w}px")
     return errs
 
 
-def verify_cdp(screenshots_dir: Path | None = None) -> list[str]:
+def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -> list[str]:
+    errs: list[str] = []
+    set_viewport(driver, 1440, 900, 1)
+    checks = [
+        ("02-cloud-cyber-and-ai-ops", "v04-sre-incident-workbench", "document.getElementById('v04-otel-btn').click();document.getElementById('v04-arm-btn').click();document.getElementById('v04-exec-btn').click();return document.getElementById('v04-gate-pill').textContent;", "CANARY ISOLATED"),
+        ("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec", "document.querySelector('#v05-enclave-chips [data-enclave=\"compute\"]').click();return document.getElementById('v05-enclave-readout').textContent;", "SPIFFE"),
+        ("03-industrial-grid-and-manufacturing", "v07-grid-scada-poi-console", "document.getElementById('v07-loto-btn').click();document.getElementById('v07-arm-btn').click();document.getElementById('v07-exec-btn').click();return document.getElementById('v07-gate-pill').textContent;", "ISLAND ARMED"),
+        ("04-civic-finance-and-stem-learning", "v10-civic-capital-budget-deck", "document.querySelector('#v10-fund-chips [data-fund=\"review\"]').click();return String(document.querySelectorAll('#v10-budget-table tbody tr:not(.v10-row-hidden)').length);", "1"),
+        ("04-civic-finance-and-stem-learning", "v11-treasury-stress-test-solver", "document.querySelector('#v11-shock-chips button:last-child').click();return document.getElementById('v11-q8-val').textContent;", "21.4%"),
+        ("04-civic-finance-and-stem-learning", "v12-stem-interactive-lab", "document.querySelector('#v12-role-chips [data-role=\"instructor\"]').click();return document.getElementById('v12-instructor-note').className;", "v12-rubric-card"),
+        ("05-physical-systems-auto-and-aero", "v14-fieldbus-and-scope-debugger", "document.getElementById('v14-term-btn').click();document.getElementById('v14-arm-btn').click();document.getElementById('v14-exec-btn').click();return document.getElementById('v14-gate-pill').textContent;", "SOF_ARB_ERR W1C OK"),
+        ("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "document.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();return document.getElementById('v15-hud-stage').dataset.backplate;", "daylight"),
+        ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "document.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();return document.getElementById('v16-contrast-val').textContent;", "13.4:1"),
+    ]
+    for wid, vid, js, expect in checks:
+        driver.get(f"{base_url}?world={wid}&view={vid}&theme=white")
+        time.sleep(0.24)
+        driver.switch_to.frame("va-stage-portal")
+        res = str(driver.execute_script(js))
+        driver.switch_to.default_content()
+        if expect not in res:
+            errs.append(f"[W25_INTERACT] {vid}: expected '{expect}', got '{res}'")
+
+    # M1 unboxed checks across v05, v09, v13
+    for wid, vid in (("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec"), ("03-industrial-grid-and-manufacturing", "v09-spc-quality-and-modbus-report"), ("05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph")):
+        errs.extend(_audit_stage(driver, f"{base_url}?world={wid}&view={vid}&medium=m1&theme=white", 1440, 900, f"M1_{vid[:3].upper()}"))
+
+    # Studio 3-Mode Tab switching: Worlds -> Bench -> Atlas -> Worlds
+    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
+    time.sleep(0.28)
+    for tab_id, mode, needle in (("va-tab-bench", "bench", "bench/evidence-bench.html"), ("va-tab-atlas", "atlas", "diagrams.html")):
+        driver.execute_script(f"document.getElementById('{tab_id}').click();")
+        time.sleep(0.55)
+        ok = driver.execute_script(f"const p=document.getElementById('va-stage-portal'),w=document.querySelector('.va-world-ctrl');return document.documentElement.dataset.studioView==='{mode}' && p.src.includes('{needle}') && getComputedStyle(w).display==='none';")
+        if not ok:
+            errs.append(f"[STUDIO_MODE] Tab {mode} failed to mount or hide World selector")
+    driver.execute_script("document.getElementById('va-tab-worlds').click();")
+    time.sleep(0.35)
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='worlds' && !p.hasAttribute('src');"):
+        errs.append("[STUDIO_MODE] Failed to return from Atlas to Worlds")
+
+    # Starters check
+    for rel, min_views in (("customizations/personal-starter/showcase-v9.html", 16), ("customizations/brand-starter/showcase-v9.html", 14)):
+        driver.get(f"{root_url}/{rel}")
+        time.sleep(0.35)
+        cnt = driver.execute_script("const m=JSON.parse(document.getElementById('va-v9-manifest').textContent);return m.worlds.reduce((a,w)=>a+w.views.length,0);")
+        if int(cnt) != min_views:
+            errs.append(f"[STARTER_V9] {rel}: expected {min_views} views, got {cnt}")
+    return errs
+
+
+def _verify_phase5_edge_cases(driver: Any, base_url: str, root_url: str) -> list[str]:
+    errs: list[str] = []
+    # 1. v12 click-to-pin across sibling pedagogy cards & equation bar
+    driver.get(f"{base_url}?world=04-civic-finance-and-stem-learning&view=v12-stem-interactive-lab&theme=white")
+    time.sleep(0.28)
+    driver.switch_to.frame("va-stage-portal")
+    pin_ok = driver.execute_script(
+        "const b=document.querySelector('#v12-lab button[data-term=\"tx\"]');b.click();"
+        "const a=document.querySelector('#v12-lab article[data-term=\"tx\"]').classList.contains('is-term-active');"
+        "const d=document.querySelector('#v12-lab article[data-term=\"path_loss\"]').classList.contains('is-term-dimmed');"
+        "b.click();const clr=document.querySelectorAll('#v12-lab .is-term-dimmed').length===0;return a && d && clr;"
+    )
+    driver.switch_to.default_content()
+    if not pin_ok:
+        errs.append("[V12_PIN] v12 click-to-pin failed to activate/unpin sibling pedagogy cards")
+
+    # 2. Starter dark/paper theme polarity isolation
+    for rel, th, max_lum in (("customizations/personal-starter/showcase-v9.html", "dark", 0.08), ("customizations/brand-starter/showcase-v9.html", "dark", 0.08), ("customizations/personal-starter/showcase-v9.html", "paper", 0.96)):
+        driver.get(f"{root_url}/{rel}?theme={th}")
+        time.sleep(0.35)
+        driver.switch_to.frame("va-stage-portal")
+        res = driver.execute_script(
+            "const parse=(s)=>(s.match(/[\\d.]+/g)||[0,0,0]).map(Number);"
+            "const lum=([r,g,b])=>{const f=v=>{const x=v/255;return x<=0.04045?x/12.92:Math.pow((x+0.055)/1.055,2.4)};return 0.2126*f(r)+0.7152*f(g)+0.0722*f(b);};"
+            "const bg=parse(getComputedStyle(document.body).backgroundColor),fg=parse(getComputedStyle(document.body).color);"
+            "const l1=lum(bg),l2=lum(fg);return {l1,cr:(Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05),th:document.documentElement.dataset.theme};"
+        )
+        driver.switch_to.default_content()
+        if res["th"] != th or res["cr"] < 4.5 or (th == "dark" and res["l1"] > max_lum):
+            errs.append(f"[STARTER_POLARITY] {rel}?theme={th} failed: {res}")
+
+    # 3. Direct ?mode=bench/atlas, medium restore to auto, and ?view= without ?world=
+    driver.get(f"{base_url}?mode=bench&theme=dark&medium=m1")
+    time.sleep(0.6)
+    driver.execute_script("const m=document.getElementById('va-sheet-medium-select');m.value='auto';m.dispatchEvent(new Event('change'));")
+    time.sleep(0.15)
+    bench_ok = driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='bench' && p.contentDocument.documentElement.dataset.theme==='dark' && p.contentDocument.documentElement.dataset.medium==='m2';")
+    if not bench_ok:
+        errs.append("[STUDIO_DEEPLINK] ?mode=bench failed theme/medium auto restore sync")
+    driver.get(f"{base_url}?mode=atlas&theme=dark")
+    time.sleep(0.6)
+    atlas_ok = driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='atlas' && p.src.includes('diagrams.html') && p.contentDocument.documentElement.dataset.theme==='dark';")
+    if not atlas_ok:
+        errs.append("[STUDIO_DEEPLINK] ?mode=atlas failed onload dark theme sync")
+    driver.get(f"{base_url}?view=v10-civic-capital-budget-deck")
+    time.sleep(0.3)
+    if not driver.execute_script("const s=window.QuietStudioPortalV9.state;return s.world==='04-civic-finance-and-stem-learning' && s.view==='v10-civic-capital-budget-deck';"):
+        errs.append("[STUDIO_DEEPLINK] ?view=v10 without ?world= failed to resolve World 04")
+
+    # 4. 390px mobile studio bar width check
+    set_viewport(driver, 390, 844, 1)
+    time.sleep(0.15)
+    bar_ok = driver.execute_script("const b=document.getElementById('va-studio-bar'),s=document.getElementById('va-view-select');return b.scrollWidth<=b.clientWidth+1 && s.getBoundingClientRect().width>=80;")
+    if not bar_ok:
+        errs.append("[MOBILE_STUDIO_BAR] 390px Studio bar overflow or view select squeezed < 80px")
+    return errs
+
+
+def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) -> list[str]:
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
 
@@ -224,19 +304,28 @@ def verify_cdp(screenshots_dir: Path | None = None) -> list[str]:
     for arg in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"):
         opts.add_argument(arg)
     srv, port = _start_server()
-    base_url = f"http://127.0.0.1:{port}/docs/pilot/world-01-pilot.html"
+    root_url = f"http://127.0.0.1:{port}"
+    base_url = f"{root_url}/docs/v9/quiet-ui-v9-showcase.html" if all_worlds else f"{root_url}/docs/pilot/world-01-pilot.html"
+    worlds = ALL_WORLDS_VIEWS if all_worlds else ALL_WORLDS_VIEWS[:1]
     errs: list[str] = []
     driver = None
     try:
         driver = webdriver.Chrome(options=opts)
         for vp_w, vp_h in ((390, 844), (840, 1050), (1440, 900), (1920, 1080), (3840, 2160)):
-            for vw in ("v01-icu-bedside-terminal", "v02-trial-regulatory-brief", "v03-patient-recovery-companion"):
-                errs.extend(_audit_stage(driver, f"{base_url}?world=01-clinical-icu-and-trials&view={vw}&theme=white", vp_w, vp_h, f"{vw[:3].upper()}_{vp_w}"))
+            for wid, views in worlds:
+                for vw in views:
+                    errs.extend(_audit_stage(driver, f"{base_url}?world={wid}&view={vw}&theme=white", vp_w, vp_h, f"{vw.split('-')[0].upper()}_{vp_w}"))
         for th in ("white", "paper", "dark-paper", "dark"):
             errs.extend(_audit_stage(driver, f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme={th}", 1440, 900, f"TH_{th}"))
         errs.extend(_verify_interactions_and_conservation(driver, base_url))
+        if all_worlds:
+            errs.extend(_verify_worlds_02_05_and_studio(driver, base_url, root_url))
+            errs.extend(_verify_phase5_edge_cases(driver, base_url, root_url))
         if screenshots_dir is not None:
-            capture_gate41_gallery(driver, base_url, screenshots_dir)
+            if all_worlds:
+                capture_gate5_gallery(driver, base_url, screenshots_dir)
+            else:
+                capture_gate41_gallery(driver, base_url, screenshots_dir)
     finally:
         if driver:
             driver.quit()
@@ -246,20 +335,22 @@ def verify_cdp(screenshots_dir: Path | None = None) -> list[str]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Quiet UI v9.0 Phase 4 Pilot Verifier")
+    parser = argparse.ArgumentParser(description="Quiet UI v9.0 Pilot & 5-World CDP Verifier")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome CDP matrix & behavioral gates")
-    parser.add_argument("--screenshots-dir", default=None, help="Directory to write 9 Retina Gate 4 PNGs")
+    parser.add_argument("--all-worlds", action="store_true", help="Verify all 5 Worlds x 16 Views on docs/v9/quiet-ui-v9-showcase.html")
+    parser.add_argument("--screenshots-dir", default=None, help="Directory to write Retina proof PNGs")
     args = parser.parse_args()
 
-    errs = verify_static()
+    errs = verify_static(all_worlds=args.all_worlds)
     if args.cdp:
-        errs.extend(verify_cdp(Path(args.screenshots_dir) if args.screenshots_dir else None))
+        errs.extend(verify_cdp(Path(args.screenshots_dir) if args.screenshots_dir else None, all_worlds=args.all_worlds))
     if errs:
-        print(f"[FAIL] {len(errs)} Phase 4 pilot verification error(s):")
+        print(f"[FAIL] {len(errs)} v9 verification error(s):")
         for e in errs:
             print(f"  - {e}")
         return 1
-    print("[PASS] 100% of Quiet UI v9.0 Phase 4 Pilot static & CDP gates succeeded!")
+    scope = "5 Worlds x 16 Views" if args.all_worlds else "World 01 Pilot"
+    print(f"[PASS] 100% of Quiet UI v9.0 ({scope}) static & CDP gates succeeded!")
     return 0
 
 

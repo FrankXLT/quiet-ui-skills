@@ -49,8 +49,9 @@
       "id": "ch1",
       "name": "API p99 Latency",
       "type": "analog",
-      "quantity_calculus": "p99_lat / ms",
+      "quantity_calculus": "L_p99 / ms",
       "unit": "ms",
+      "domain": [0.0, 500.0],
       "vertical_scale_per_div": 250.0,
       "trace_color": "var(--accent-focal)",
       "threshold_envelopes": [
@@ -87,8 +88,9 @@
       "id": "ch2",
       "name": "Error-Budget Burn Rate",
       "type": "analog",
-      "quantity_calculus": "burn_rate / (%/h)",
+      "quantity_calculus": "R_burn / (%/h)",
       "unit": "%/h",
+      "domain": [0.0, 20.0],
       "vertical_scale_per_div": 10.0,
       "trace_color": "var(--status-warn)",
       "threshold_envelopes": [
@@ -125,7 +127,7 @@
       "id": "ch3",
       "name": "Canary Traffic Gate",
       "type": "digital",
-      "quantity_calculus": "CANARY_GATE",
+      "quantity_calculus": "Gate (0/1)",
       "unit": "logic",
       "trace_color": "var(--status-ok)",
       "samples": [

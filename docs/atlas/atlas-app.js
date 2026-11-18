@@ -203,11 +203,12 @@
 
     window.addEventListener('message', (event) => {
       if (event.data && event.data.type === 'quiet-ui-sync') {
-        if (event.data.theme) applyTheme(event.data.theme, false);
-        if (event.data.density) document.documentElement.setAttribute('data-density', event.data.density);
-        if (event.data.corners) document.documentElement.setAttribute('data-corner', event.data.corners);
-        if (event.data.formFactor) document.documentElement.setAttribute('data-form-factor', event.data.formFactor);
-        if (event.data.atlasSection) handleFamJump(event.data.atlasSection);
+        const d = event.data;
+        if (['white', 'paper', 'dark-paper', 'dark'].includes(d.theme)) applyTheme(d.theme, false);
+        if (['d1', 'd2', 'd3', 'd4'].includes(d.density)) document.documentElement.setAttribute('data-density', d.density);
+        if (['auto', 'sharp', 'subtle', 'rounded', 'soft'].includes(d.corners)) document.documentElement.setAttribute('data-corners', d.corners);
+        if (['desktop', 'touch', 'tablet'].includes(d.formFactor)) document.documentElement.setAttribute('data-form-factor', d.formFactor);
+        if (d.atlasSection) handleFamJump(d.atlasSection);
       }
     });
   }

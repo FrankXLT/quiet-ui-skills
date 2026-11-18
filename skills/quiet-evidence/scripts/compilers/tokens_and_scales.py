@@ -17,14 +17,15 @@ _GREEK_MAP: dict[str, str] = {
     "Mod_sigma_y": "Mod σ_y", "Mod sigma_y": "Mod σ_y", "sigma_y": "σ_y", "sigma": "σ",
     "Delta_phi": "Δφ", "Delta": "Δ", "Lambda_LLR": "Λ_LLR", "Lambda": "Λ",
     "lambda": "λ", "tau": "τ", "phi": "φ", "alpha": "α", "beta": "β",
-    "gamma": "γ", "theta": "θ", "omega": "ω", "mu": "μ",
-    "y_hat_i": "ŷᵢ", "y_hat": "ŷ", "y_i": "yᵢ", "x_i": "xᵢ",
+    "gamma": "γ", "theta": "θ", "omega": "ω", "mu": "μ", "eta": "η",
+    "y_hat_i": "ŷᵢ", "y_hat": "ŷ", "p_hat": "p̂", "y_i": "yᵢ", "x_i": "xᵢ",
     "X_bar": "X̄", "x_bar": "x̄", "R_bar": "R̄",
 }
-_GREEK_RE = re.compile(r"\b(" + "|".join(re.escape(k) for k in _GREEK_MAP) + r")\b")
+_GREEK_KEYS = sorted(_GREEK_MAP, key=len, reverse=True)
+_GREEK_RE = re.compile(r"(?<![A-Za-z0-9_])(" + "|".join(re.escape(k) for k in _GREEK_KEYS) + r")(?![A-Za-z0-9])")
 _SCI_RE = re.compile(r"\b(\d+(?:\.\d+)?)[eE]([+-]?\d+)\b")
 _POW_RE = re.compile(r"\^\(?(-?\d+(?:\.\d+)?)\)?")
-_SUB_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9_])([A-Za-zσΔΛαβγθωλφŷX̄R̄])_([A-Za-z0-9]{1,6})\b")
+_SUB_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9_])((?:p̂|X̄|R̄|[A-Za-z0-9σΔΛαβγθωλφŷτμµη]){1,8})_([A-Za-z0-9]{1,8})(?![A-Za-z0-9_])")
 
 SI_PREFIXES: tuple[tuple[int, str], ...] = (
     (-15, "f"), (-12, "p"), (-9, "n"), (-6, "µ"), (-3, "m"),
@@ -94,12 +95,21 @@ def format_math_html(text: Any) -> str:
 
 
 def format_math_svg(text: Any, sub_size: float = 8.8) -> str:
-    """Format ASCII math notation into escaped SVG markup with <tspan> subscripts."""
-    uni = esc(format_math_unicode(text))
-    return _SUB_TOKEN_RE.sub(
-        lambda m: f'{m.group(1)}<tspan baseline-shift="sub" font-size="{sub_size:.1f}">{m.group(2)}</tspan>',
-        uni,
-    )
+    """Format ASCII math notation into escaped SVG markup with <tspan dy font-size=sub_size> subscripts."""
+    uni = format_math_unicode(text)
+    out: list[str] = []
+    pos, shifted = 0, False
+    sz = max(7.0, float(sub_size))
+    for m in _SUB_TOKEN_RE.finditer(uni):
+        pre = esc(uni[pos:m.start()]) + esc(m.group(1))
+        out.append(f'<tspan dy="-2.2">{pre}</tspan>' if shifted else pre)
+        out.append(f'<tspan dy="2.2" font-size="{sz:g}">{esc(m.group(2))}</tspan>')
+        shifted = True
+        pos = m.end()
+    tail = esc(uni[pos:])
+    if tail:
+        out.append(f'<tspan dy="-2.2">{tail}</tspan>' if shifted else tail)
+    return "".join(out)
 
 
 def resolve_token(value: str | None, fallback: str = "var(--accent-focal)") -> str:

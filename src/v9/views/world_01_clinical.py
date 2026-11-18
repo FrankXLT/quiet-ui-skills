@@ -5,48 +5,25 @@
 from __future__ import annotations
 
 import copy
-import json
-import re
-import sys
 from pathlib import Path
 from typing import Any
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-EVIDENCE_SCRIPTS = REPO_ROOT / "skills" / "quiet-evidence" / "scripts"
-if str(EVIDENCE_SCRIPTS) not in sys.path:
-    sys.path.insert(0, str(EVIDENCE_SCRIPTS))
-
-from compile_evidence import compile_spec  # noqa: E402
-
-
-def _embed_compile(spec: dict[str, Any], rigor: str, medium: str) -> str:
-    return compile_spec(spec, rigor=rigor, medium=medium, theme="white", include_spec_drawer=False, chrome="embedded")
-
-
-def _parse_blueprint_tables(md_text: str) -> dict[str, list[dict[str, str]]]:
-    """Parse markdown tables from distillation_blueprint.md by section heading."""
-    sections: dict[str, list[dict[str, str]]] = {}
-    cur_sec = ""
-    headers: list[str] = []
-    for raw in md_text.splitlines():
-        line = raw.strip()
-        if line.startswith("## "):
-            cur_sec = line[3:].strip()
-            headers = []
-            sections[cur_sec] = []
-        elif line.startswith("|") and cur_sec:
-            cells = [c.strip().replace("`", "").replace("**", "") for c in line.strip("|").split("|")]
-            if all(re.fullmatch(r":?-+:?", c) for c in cells if c):
-                continue
-            if not headers:
-                headers = cells
-            elif len(cells) == len(headers):
-                sections[cur_sec].append(dict(zip(headers, cells)))
-    return sections
-
-
-def _inject_fig_class(fig_html: str, extra_cls: str) -> str:
-    return fig_html.replace('class="va-figure-card qe-figure"', f'class="va-figure-card qe-figure {extra_cls}"', 1)
+try:
+    from world_common import (
+        assemble_world_bundle,
+        embed_compile,
+        inject_fig_class,
+        load_world_inputs,
+        render_params_aside,
+    )
+except ImportError:
+    from src.v9.views.world_common import (
+        assemble_world_bundle,
+        embed_compile,
+        inject_fig_class,
+        load_world_inputs,
+        render_params_aside,
+    )
 
 
 def _inject_mobile_tile(scalars_html: str, dropout_s: float) -> str:
@@ -71,12 +48,12 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     peep_act = cm["peep_act_cmh2o"]
     drop_m = cm["dropout_duration_s"]
 
-    scalars_html = _embed_compile(specs["scalars"], "L3", "m4")
-    scalars_html = _inject_fig_class(scalars_html, "v01-scalars-fig")
+    scalars_html = embed_compile(specs["scalars"], "L3", "m4")
+    scalars_html = inject_fig_class(scalars_html, "v01-scalars-fig")
     scalars_html = _inject_mobile_tile(scalars_html, float(drop_m["value"]))
 
-    scope_html = _embed_compile(specs["scope"], "L3", "m4")
-    scope_html = _inject_fig_class(scope_html, "v01-scope-fig")
+    scope_html = embed_compile(specs["scope"], "L3", "m4")
+    scope_html = inject_fig_class(scope_html, "v01-scope-fig")
 
     return f"""<div class="v9-stage-inner v9-view-v01">
   <div class="va-m1-block-only v9-m1-folio">
@@ -87,10 +64,6 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     <div class="v01-masthead-left">
       <span class="va-kicker">ADULT ICU · BED 04 · SEPSIS PROTOCOL</span>
       <h1 class="v9-masthead-title">Hemodynamic &amp; Ventilator Telemetry</h1>
-    </div>
-    <div class="v9-masthead-tags">
-      <span class="va-pill" data-variant="tag">PT-0482</span>
-      <span class="va-pill" data-variant="status" data-state="warn">CAUTION</span>
     </div>
   </header>
 
@@ -134,8 +107,8 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     cm = corpus["canonical_metrics"]
     ov, ag, sf, lc, aki = cm["overall_hr"], cm["age_ge65_hr"], cm["sofa_ge8_hr"], cm["lactate_gt2_hr"], cm["aki_rate_pct"]
-    forest_html = compile_spec(specs["forest"], rigor="L3", medium="m2", theme="white", include_spec_drawer=False, chrome="embedded")
-    table_html = compile_spec(specs["ae_table"], rigor="L3", medium="m2", theme="white", include_spec_drawer=False, chrome="embedded")
+    forest_html = embed_compile(specs["forest"], "L3", "m2")
+    table_html = embed_compile(specs["ae_table"], "L3", "m2")
 
     return f"""<div class="v9-stage-inner v9-view-v02">
   <div class="va-m1-block-only v9-m1-folio">
@@ -193,11 +166,20 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
         <div id="v02-filter-readout" class="v02-filter-readout va-sheet-hide" aria-live="polite">All 4 CONSORT strata shown (ITT n=1,240; Overall HR 0.74 [0.61, 0.90]).</div>
       </section>
 
-      <article id="v02-methods" class="v02-prose-col">
-        <h2>Cohort Design, Null-Crossing Stratification &amp; Renal Safety</h2>
-        <p>Across the intention-to-treat population (n = {ov["cohort_n"]:,}, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of {ov["value"]:.2f} (95% CI [{ov["ci_low"]:.2f}, {ov["ci_high"]:.2f}]). Decisive benefit concentrates in high-acuity strata: SOFA &gt;= 8 (n = {sf["cohort_n"]}, HR {sf["value"]:.2f} [{sf["ci_low"]:.2f}, {sf["ci_high"]:.2f}]) and Lactate &gt; 2 mmol/L (n = {lc["cohort_n"]}, HR {lc["value"]:.2f} [{lc["ci_low"]:.2f}, {lc["ci_high"]:.2f}]).</p>
-        <p>Conversely, the Age &gt;= 65 yr subgroup (n = {ag["cohort_n"]}, HR {ag["value"]:.2f} [{ag["ci_low"]:.2f}, {ag["ci_high"]:.2f}]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage &gt;= 2 acute kidney injury decreased to {aki["value"]:.1f} ± {aki["expanded_uncertainty"]:.1f}% versus {aki["control_value"]:.1f}% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
-      </article>
+      <div class="v9-editorial-grid">
+        <article id="v02-methods" class="v02-prose-col">
+          <h2>Cohort Design, Null-Crossing Stratification &amp; Renal Safety</h2>
+          <p>Across the intention-to-treat population (n = {ov["cohort_n"]:,}, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of {ov["value"]:.2f} (95% CI [{ov["ci_low"]:.2f}, {ov["ci_high"]:.2f}]). Decisive benefit concentrates in high-acuity strata: SOFA &gt;= 8 (n = {sf["cohort_n"]}, HR {sf["value"]:.2f} [{sf["ci_low"]:.2f}, {sf["ci_high"]:.2f}]) and Lactate &gt; 2 mmol/L (n = {lc["cohort_n"]}, HR {lc["value"]:.2f} [{lc["ci_low"]:.2f}, {lc["ci_high"]:.2f}]).</p>
+          <p>Conversely, the Age &gt;= 65 yr subgroup (n = {ag["cohort_n"]}, HR {ag["value"]:.2f} [{ag["ci_low"]:.2f}, {ag["ci_high"]:.2f}]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage &gt;= 2 acute kidney injury decreased to {aki["value"]:.1f} ± {aki["expanded_uncertainty"]:.1f}% versus {aki["control_value"]:.1f}% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
+        </article>
+        {render_params_aside("Protocol & DSMB Parameters", [
+            ("Trial Identifier", "TRIAL-SEPSIS-2026-P3"),
+            ("Analysis Set", "ITT (620 vs. 620, n = 1,240)"),
+            ("Regression Model", "Stratified Cox PH (95% CI)"),
+            ("Null Crossing Guard", f"Age >= 65 CI high = {ag['ci_high']:.2f}"),
+            ("Renal Safety WATCH", "MAP < 65 mmHg (8.6% vs 11.2%)"),
+        ])}
+      </div>
     </div>
 
     <div class="v02-right-page">
@@ -250,7 +232,7 @@ def _build_v03_vitals(specs: dict[str, Any]) -> tuple[str, dict[str, Any], dict[
         },
         "items": [spo2_item, map_item],
     }
-    html = compile_spec(l1_spec, rigor="L1", medium="m3", theme="white", include_spec_drawer=False, chrome="embedded")
+    html = embed_compile(l1_spec, "L1", "m3")
     return html, spo2_item, map_item
 
 
@@ -291,8 +273,8 @@ def _build_v03_charts(spo2_item: dict[str, Any], map_item: dict[str, Any]) -> st
             {"id": "map_home", "name": "Resting Blood Pressure (mmHg)", "epistemic_type": "discrete_measurement", "connect_piecewise": True, "term": "bp-threshold", "stroke_color": "var(--accent-focal)", "marker_glyph": "square", "data_points": map_pts},
         ],
     }
-    chart_a = compile_spec(spo2_plot, rigor="L1", medium="m3", theme="white", include_spec_drawer=False, chrome="embedded")
-    chart_b = compile_spec(bp_plot, rigor="L1", medium="m3", theme="white", include_spec_drawer=False, chrome="embedded")
+    chart_a = embed_compile(spo2_plot, "L1", "m3")
+    chart_b = embed_compile(bp_plot, "L1", "m3")
     return (
         '<div class="qe-equation-bar" aria-label="Daily Care Plan">'
         '<span class="qe-eq-lhs">Daily Plan = </span>'
@@ -370,21 +352,13 @@ def _build_v03_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
 
 def build_world_01(corpora_dir: Path) -> dict[str, Any]:
     """Compile World 01 views, templates, and Quiet-Bridge provenance metadata."""
-    wdir = corpora_dir / "01-clinical-icu-and-trials"
-    corpus = json.loads((wdir / "corpus.json").read_text(encoding="utf-8"))
-    bp = _parse_blueprint_tables((wdir / "distillation_blueprint.md").read_text(encoding="utf-8"))
     spec_files = {
-        "scalars": "v01_icu_ventilator_scalars.json", "scope": "v01_icu_hemodynamic_scope.json",
-        "forest": "v02_trial_consort_forest.json", "ae_table": "v02_trial_adverse_events_table.json",
+        "scalars": "v01_icu_ventilator_scalars.json",
+        "scope": "v01_icu_hemodynamic_scope.json",
+        "forest": "v02_trial_consort_forest.json",
+        "ae_table": "v02_trial_adverse_events_table.json",
     }
-    specs = {k: json.loads((wdir / "evidence" / fn).read_text(encoding="utf-8")) for k, fn in spec_files.items()}
-    bias_by_id = {r["View ID"]: r for r in bp.get("2. Scrubbed Bias Ledger", [])}
-    inv_rows = bp.get("3. Four Universal Audience Evaluation Invariants Audit", [])
-    mb_rows = bp.get("4. Adversarial Murder-Board Red-Team Audit", [])
-    ledger_rows = [
-        {"metric_id": r.get("metric_id", ""), "canonical_value": r.get("Canonical Value", ""), "unit": r.get("Unit", ""), "views": r.get("Views Consuming", "")}
-        for r in bp.get("5. Canonical Numerical Conservation Ledger", [])
-    ]
+    corpus, bp, specs = load_world_inputs(corpora_dir, "01-clinical-icu-and-trials", spec_files)
     html_map = {
         "v01-icu-bedside-terminal": _build_v01_html(corpus, specs),
         "v02-trial-regulatory-brief": _build_v02_html(corpus, specs),
@@ -392,46 +366,37 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
     }
     map_val = float(corpus["canonical_metrics"]["map_mmhg"]["value"])
     v01_status = [
-        {"text": f"1 Active Caution: MAP {map_val:.1f} mmHg", "variant": "status", "state": "warn"},
+        {"text": "▲ 1 CAUTION", "variant": "status", "state": "warn"},
+        {"text": f"MAP {map_val:.1f} mmHg", "variant": "plain", "state": "warn"},
         {"text": "NTP Synced", "variant": "status", "state": "nominal"},
     ]
     view_cfg = {
-        "v01-icu-bedside-terminal": ("v01 · ICU Bedside Terminal (M4 · L3)", "m4", "c4", "n3", ["n3", "n0", "n2"], "fa-heart-pulse", "Bed ICU-04", "BED ICU-04 · PT-0482 · Sepsis Protocol", "Monitor Subsystems", v01_status, ["Hemodynamics", "Ventilator", "Infusions", "Event Log"], ["v01-hemo", "v01-vent", "v01-infusions", "v01-alarms"], "v01-icu-bedside-terminal (L3)", "v01"),
-        "v02-trial-regulatory-brief": ("v02 · Trial Regulatory Brief (M2↔M1 · L3)", "m2", "c3", "n1", ["n1", "n2", "n0"], "fa-file-medical", "CONSORT Brief", "CONSORT Brief", "CONSORT Brief", [], ["Disposition", "Cohort & Methods", "Subgroup Forest", "KDIGO Safety", "SAP Appendix"], ["v02-disposition", "v02-methods", "v02-forest", "v02-safety", "v02-sap"], "v02-trial-regulatory-brief (L3)", "v02"),
-        "v03-patient-recovery-companion": ("v03 · Patient Recovery (M3 · L1)", "m3", "c2", "n2", ["n2", "n4", "n0"], "fa-hand-holding-medical", "Recovery Guide", "Recovery Guide", "Recovery Guide", [], ["Today", "Vitals Log", "Care Guide", "Care Team"], ["v03-today", "v03-vitals", "v03-guide", "v03-care-team"], "v03-patient-recovery-companion (L1)", "v03"),
-    }
-    inv_keys = (("Baseline", "baseline"), ("Provenance", "provenance"), ("Margin", "margin"), ("Disposition", "disposition"))
-    views_meta, templates = [], {}
-    for vw in corpus["views"]:
-        vid = vw["view_id"]
-        opt_lbl, def_med, chrom, def_nav, allowed, icon, brand, top_brand, rail_brand, top_status, nav_items, anchors, inv_col, short_tag = view_cfg[vid]
-        bias = bias_by_id.get(vid, {})
-        inv_dict = {dst: row.get(inv_col, "") for row in inv_rows for token, dst in inv_keys if token in row.get("Invariant", "")}
-        mb_list = [
-            {"rubric": r.get("Rubric / Persona", ""), "finding": r.get("Audit Finding", ""), "verdict": r.get("Verdict", "PASS")}
-            for r in mb_rows if short_tag in r.get("Audited View(s)", "")
-        ]
-        views_meta.append({
-            "view_id": vid, "title": vw["title"], "option_label": opt_lbl,
-            "default_medium": def_med, "chromatic_code": chrom, "default_nav": def_nav, "allowed_navs": allowed,
-            "nav_icon": icon, "nav_brand": brand, "topbar_brand": top_brand, "rail_brand": rail_brand,
-            "topbar_status": top_status, "nav_items": nav_items, "nav_anchors": anchors,
-            "vector_summary": f'{vw["presenter"]} -> {vw["audience"]} × {"/".join(vw["tempos"])} × {"/".join(vw["mediums"])} × {vw["chromatic_budget"]} × {vw["rigor_level"]}',
-            "actionable_disposition": vw["actionable_disposition"],
-            "bias_removed": bias.get("Presenter Bias Identified", ""),
-            "bias_risk": bias.get("Risk to Target Audience", ""),
-            "bias_replacement": bias.get("Scrubbed / Distilled Replacement", ""),
-            "invariants": inv_dict, "murder_board": mb_list,
-        })
-        templates[vid] = html_map[vid]
-
-    return {
-        "world_meta": {
-            "world_id": corpus["world_id"],
-            "world_label": "01 · Clinical ICU & Trials",
-            "title": corpus["title"],
-            "views": views_meta,
-            "conservation_ledger": ledger_rows,
+        "v01-icu-bedside-terminal": {
+            "option_label": "v01 · ICU Bedside Terminal (M4 · L3)", "default_medium": "m4",
+            "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
+            "nav_icon": "fa-heart-pulse", "nav_brand": "Bed ICU-04",
+            "topbar_brand": "BED ICU-04 · PT-0482 · Sepsis Protocol", "rail_brand": "Monitor Subsystems",
+            "topbar_status": v01_status, "nav_items": ["Hemodynamics", "Ventilator", "Infusions", "Event Log"],
+            "nav_anchors": ["v01-hemo", "v01-vent", "v01-infusions", "v01-alarms"],
+            "inv_col": "v01-icu-bedside-terminal (L3)", "short_tag": "v01",
         },
-        "templates": templates,
+        "v02-trial-regulatory-brief": {
+            "option_label": "v02 · Trial Regulatory Brief (M2↔M1 · L3)", "default_medium": "m2",
+            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "nav_icon": "fa-file-medical", "nav_brand": "CONSORT Brief",
+            "topbar_brand": "CONSORT Brief", "rail_brand": "CONSORT Brief",
+            "topbar_status": [], "nav_items": ["Disposition", "Cohort & Methods", "Subgroup Forest", "KDIGO Safety", "SAP Appendix"],
+            "nav_anchors": ["v02-disposition", "v02-methods", "v02-forest", "v02-safety", "v02-sap"],
+            "inv_col": "v02-trial-regulatory-brief (L3)", "short_tag": "v02",
+        },
+        "v03-patient-recovery-companion": {
+            "option_label": "v03 · Patient Recovery (M3 · L1)", "default_medium": "m3",
+            "chromatic_code": "c2", "default_nav": "n2", "allowed_navs": ["n2", "n4", "n0"],
+            "nav_icon": "fa-hand-holding-medical", "nav_brand": "Recovery Guide",
+            "topbar_brand": "Recovery Guide", "rail_brand": "Recovery Guide",
+            "topbar_status": [], "nav_items": ["Today", "Vitals Log", "Care Guide", "Care Team"],
+            "nav_anchors": ["v03-today", "v03-vitals", "v03-guide", "v03-care-team"],
+            "inv_col": "v03-patient-recovery-companion (L1)", "short_tag": "v03",
+        },
     }
+    return assemble_world_bundle(corpus, bp, "01 · Clinical ICU & Trials", view_cfg, html_map)

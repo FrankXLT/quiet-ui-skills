@@ -225,6 +225,48 @@ summary::-webkit-details-marker { display: none; }
   .va-phone-only { display: none; }
 }
 
+.va-mode-tablist {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: #070B12;
+  border: 1px solid #1E293B;
+  border-radius: 7px;
+}
+.va-mode-tab {
+  min-block-size: 26px;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #94A3B8;
+  font: 600 11.5px/1 inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.va-mode-tab:hover { color: #F8FAFC; }
+.va-mode-tab[aria-selected="true"],
+.va-mode-tab.is-active {
+  background: #1E293B;
+  color: #38BDF8;
+}
+html[data-studio-view="bench"] :is(.va-world-ctrl, .va-bar-center, #va-sheet-toggle-btn, #va-bridge-btn, .va-nav-ctrl, #va-print-btn, .va-worlds-only),
+html[data-studio-view="atlas"] :is(.va-world-ctrl, .va-bar-center, #va-sheet-toggle-btn, #va-bridge-btn, .va-nav-ctrl, #va-print-btn, .va-worlds-only, .va-atlas-hide) {
+  display: none;
+}
+@media (max-width: 699px) {
+  .va-mode-tab { padding: 0 0.36rem; font-size: 10.5px; }
+}
+@media (max-width: 519px) {
+  #va-studio-bar, .va-studio-bar { padding: 0 0.3rem; gap: 0.2rem; }
+  .va-bar-left, .va-bar-right { gap: 0.2rem; }
+  .va-mode-tab { padding: 0 0.3rem; font-size: 10px; }
+  .va-step-btn { inline-size: 22px; }
+  #va-bridge-btn .va-btn-lbl-short { display: none; }
+  .va-studio-btn { padding: 0.15rem 0.35rem; }
+}
+
 #va-portal-mat {
   flex: 1;
   min-block-size: 0;

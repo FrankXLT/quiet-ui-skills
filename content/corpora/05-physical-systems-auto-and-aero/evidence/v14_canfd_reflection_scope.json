@@ -81,9 +81,9 @@
     },
     {
       "id": "ch3",
-      "name": "Frame Gate ACK_DELIM",
+      "name": "Frame Gate ACK",
       "type": "digital",
-      "quantity_calculus": "ACK_DELIM",
+      "quantity_calculus": "ACK Delim / logic",
       "unit": "logic",
       "trace_color": "var(--status-ok)",
       "samples": [

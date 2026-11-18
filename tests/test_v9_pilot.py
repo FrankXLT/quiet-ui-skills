@@ -135,5 +135,105 @@ class TestV9World01Pilot(unittest.TestCase):
         self.assertIn("k=2", sc)
 
 
+class TestV9AllWorldsShowcase(unittest.TestCase):
+    """Validate Worlds 02-05 build, numerical conservation, M5/M6/M7 physics, and starters."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.all_world_ids = [
+            "01-clinical-icu-and-trials",
+            "02-cloud-cyber-and-ai-ops",
+            "03-industrial-grid-and-manufacturing",
+            "04-civic-finance-and-stem-learning",
+            "05-physical-systems-auto-and-aero",
+        ]
+        cls.unified_html = build_v9_showcase(REPO_ROOT, cls.all_world_ids)
+
+    def test_unified_5_world_manifest_and_3_mode_chrome(self) -> None:
+        m = re.search(r'<script[^>]*id="va-v9-manifest"[^>]*>(.*?)</script>', self.unified_html, flags=re.S)
+        self.assertIsNotNone(m)
+        manifest = json.loads(m.group(1))
+        self.assertEqual(len(manifest["worlds"]), 5)
+        self.assertEqual(sum(len(w["views"]) for w in manifest["worlds"]), 16)
+        for world in manifest["worlds"]:
+            self.assertTrue(world.get("conservation_ledger"), f"Missing conservation ledger for {world['world_id']}")
+            for vw in world["views"]:
+                for field in ("bias_removed", "bias_risk", "bias_replacement", "actionable_disposition"):
+                    self.assertTrue(str(vw.get(field, "")).strip(), f"Blank {field} in {vw['view_id']}")
+                inv = vw.get("invariants", {})
+                for ikey in ("baseline", "provenance", "margin", "disposition"):
+                    self.assertTrue(str(inv.get(ikey, "")).strip(), f"Blank invariant {ikey} in {vw['view_id']}")
+                mb = vw.get("murder_board", [])
+                self.assertTrue(mb and all(x.get("rubric") and x.get("finding") and x.get("verdict") for x in mb), f"Incomplete murder_board in {vw['view_id']}")
+        self.assertIn('id="va-tab-worlds"', self.unified_html)
+        self.assertIn('id="va-tab-bench"', self.unified_html)
+        self.assertIn('id="va-tab-atlas"', self.unified_html)
+        self.assertIn('aria-selected="true"', self.unified_html)
+        self.assertNotIn("!important", self.unified_html.lower())
+        self.assertNotIn("●", self.unified_html)
+
+    def test_worlds_02_to_05_conservation_and_zero_leakage(self) -> None:
+        for num in ("420.0", "16.8", "0x8003B104", "0.050", "23.6", "59.985", "78.4", "1.64", "26.9", "179.3", "25.1", "2.40", "42.8", "0.35", "0x18FEF100"):
+            self.assertIn(num, self.unified_html, f"Missing conserved metric {num}")
+        tpl_body = "".join(re.findall(r'<template\s+id="tpl-view-[^"]*">(.*?)</template>', self.unified_html, flags=re.S))
+        for leak in ("Quiet Cockpit", "Pedagogical Flow", "Decision Contrast", "EXPECTED TICK", "FROSTED HUD", "CREASE-AWARE", "T1 GATE", "STROKE-ONLY PHOSPHOR", "WCAG AAA"):
+            self.assertNotIn(leak, tpl_body, f"Taxonomy/meta string leaked into stage template: {leak}")
+
+    def test_compiler_math_negative_edge_and_standalone_themes(self) -> None:
+        from compile_evidence import compile_spec
+        from compilers.tokens_and_scales import format_math_svg
+        svg_txt = format_math_svg("tau_1 + mu_0 + p_hat_2", sub_size=9.5)
+        self.assertIn("τ", svg_txt)
+        self.assertIn("μ", svg_txt)
+        self.assertIn("p̂", svg_txt)
+        self.assertIn('font-size="9.5"', svg_txt)
+
+        deg_gauge = {
+            "$schema": "urn:quiet-ui:schema:v9:scalar", "id": "deg-g",
+            "metadata": {"title": "Inverted Gauge", "rigor_level": "L2"},
+            "quantity": {"symbol": "T", "unit": "°C"},
+            "measurement": {"nominal_value": -12.0},
+            "limits": {"nominal_target": -10.0, "warning_thresholds": {"lower": -20.0, "upper": 5.0}, "tolerance_band": [-5.0, -1.0]},
+            "gauge": {"min_scale": 10.0, "max_scale": 10.0},
+            "status_annunciator": {"state": "NOMINAL"},
+        }
+        g_out = compile_spec(deg_gauge, rigor="L2")
+        self.assertIn("[-5, -1]", g_out)
+        self.assertNotIn("+-", g_out)
+
+        neg_wf = {
+            "$schema": "urn:quiet-ui:schema:v9:plot", "plot_kind": "waterfall", "id": "neg-wf",
+            "metadata": {"title": "Deficit Bridge", "rigor_level": "L2"},
+            "axes": {"y_axis": {"unit": "M", "quantity_calculus": "Balance / M"}},
+            "steps": [{"label": "Open", "value": -12.0, "kind": "start"}, {"label": "Cut", "value": 4.0, "kind": "delta"}, {"label": "Close", "value": -8.0, "kind": "total"}],
+        }
+        wf_out = compile_spec(neg_wf)
+        self.assertIn("-12.0", wf_out)
+        self.assertIn('clipPath', compile_spec({"$schema": "urn:quiet-ui:schema:v9:plot", "id": "clip-test", "metadata": {"title": "Clip"}, "series": [{"id": "s1", "epistemic_type": "analytical_model", "equation": "2*x"}], "axes": {"x_axis": {"domain": [0, 5]}, "y_axis": {"domain": [0, 5]}}}))
+        paper_doc = compile_spec(deg_gauge, theme="paper", standalone=True)
+        self.assertIn('data-theme="paper"', paper_doc)
+
+    def test_m5_m6_m7_and_customization_filtering(self) -> None:
+        self.assertIn('id="v15-hud-stage"', self.unified_html)
+        self.assertIn('data-backplate="earthrise"', self.unified_html)
+        self.assertIn('id="v16-glass-viewport"', self.unified_html)
+        self.assertIn('data-luminance="daylight"', self.unified_html)
+        from customizations.scripts.build_showcase import build_showcase
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_p = Path(tmp)
+            src_p = tmp_p / "unified.html"
+            src_p.write_text(self.unified_html, encoding="utf-8")
+            p_out = tmp_p / "personal.html"
+            b_out = tmp_p / "brand.html"
+            build_showcase(REPO_ROOT / "customizations" / "personal-starter", src_p, p_out, bundle=False)
+            build_showcase(REPO_ROOT / "customizations" / "brand-starter", src_p, b_out, bundle=False)
+            self.assertIn("tpl-view-v16-transparent-window-overlay", p_out.read_text(encoding="utf-8"))
+            self.assertNotIn("tpl-view-v16-transparent-window-overlay", b_out.read_text(encoding="utf-8"))
+            self.assertIn("tpl-view-v14-fieldbus-and-scope-debugger", b_out.read_text(encoding="utf-8"))
+
+    def test_static_all_worlds_clean(self) -> None:
+        self.assertEqual(verify_static(all_worlds=True), [])
+
+
 if __name__ == "__main__":
     unittest.main()

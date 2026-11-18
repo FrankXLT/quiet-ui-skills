@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="va-studio-root" data-medium="auto">
+<html lang="en" class="va-studio-root" data-medium="auto" data-studio-view="worlds">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -233,6 +233,48 @@ summary::-webkit-details-marker { display: none; }
   .va-phone-only { display: none; }
 }
 
+.va-mode-tablist {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: #070B12;
+  border: 1px solid #1E293B;
+  border-radius: 7px;
+}
+.va-mode-tab {
+  min-block-size: 26px;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #94A3B8;
+  font: 600 11.5px/1 inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.va-mode-tab:hover { color: #F8FAFC; }
+.va-mode-tab[aria-selected="true"],
+.va-mode-tab.is-active {
+  background: #1E293B;
+  color: #38BDF8;
+}
+html[data-studio-view="bench"] :is(.va-world-ctrl, .va-bar-center, #va-sheet-toggle-btn, #va-bridge-btn, .va-nav-ctrl, #va-print-btn, .va-worlds-only),
+html[data-studio-view="atlas"] :is(.va-world-ctrl, .va-bar-center, #va-sheet-toggle-btn, #va-bridge-btn, .va-nav-ctrl, #va-print-btn, .va-worlds-only, .va-atlas-hide) {
+  display: none;
+}
+@media (max-width: 699px) {
+  .va-mode-tab { padding: 0 0.36rem; font-size: 10.5px; }
+}
+@media (max-width: 519px) {
+  #va-studio-bar, .va-studio-bar { padding: 0 0.3rem; gap: 0.2rem; }
+  .va-bar-left, .va-bar-right { gap: 0.2rem; }
+  .va-mode-tab { padding: 0 0.3rem; font-size: 10px; }
+  .va-step-btn { inline-size: 22px; }
+  #va-bridge-btn .va-btn-lbl-short { display: none; }
+  .va-studio-btn { padding: 0.15rem 0.35rem; }
+}
+
 #va-portal-mat {
   flex: 1;
   min-block-size: 0;
@@ -400,6 +442,11 @@ dialog#va-bridge-dialog {
         <i class="fa-solid fa-layer-group va-brand-icon" aria-hidden="true"></i>
         <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.0</span></span>
       </div>
+      <div id="va-studio-mode-tablist" class="va-mode-tablist" role="tablist" aria-label="Studio Surface Mode">
+        <button type="button" role="tab" id="va-tab-worlds" class="va-mode-tab is-active" data-studio-tab="worlds" aria-selected="true">Worlds</button>
+        <button type="button" role="tab" id="va-tab-bench" class="va-mode-tab" data-studio-tab="bench" aria-selected="false">Bench</button>
+        <button type="button" role="tab" id="va-tab-atlas" class="va-mode-tab" data-studio-tab="atlas" aria-selected="false">Atlas</button>
+      </div>
       <label class="va-inline-ctrl va-world-ctrl va-fold-up" for="va-world-select">
         <span class="va-ctrl-prefix">World:</span>
         <select id="va-world-select" class="va-ctrl-bare-select" aria-label="Select Corpus World">
@@ -436,11 +483,11 @@ dialog#va-bridge-dialog {
         <i class="fa-solid fa-print" aria-hidden="true"></i><span>Print</span>
       </button>
 
-      <button type="button" id="va-bridge-btn" class="va-studio-btn" title="Why This View? Quiet-Bridge Provenance">
+      <button type="button" id="va-bridge-btn" class="va-studio-btn" aria-label="Why This View?" title="Why This View? Quiet-Bridge Provenance">
         <i class="fa-solid fa-compass-drafting" aria-hidden="true"></i><span class="va-btn-lbl-short">Why?</span><span class="va-btn-lbl-wide">Why This View?</span>
       </button>
 
-      <label class="va-inline-ctrl va-fold-up" for="va-nav-select">
+      <label class="va-inline-ctrl va-nav-ctrl va-fold-up" for="va-nav-select">
         <span class="va-ctrl-prefix">Nav:</span>
         <select id="va-nav-select" class="va-ctrl-bare-select" aria-label="Navigation Shell">
           <option value="auto" selected>Auto</option>
@@ -491,7 +538,7 @@ dialog#va-bridge-dialog {
       <button type="button" class="va-studio-btn" aria-label="Close Settings" onclick="this.closest('dialog').close()" autofocus><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
     </div>
     <div class="va-sheet-sections">
-      <div class="va-customize-field">
+      <div class="va-customize-field va-worlds-only">
         <label class="va-customize-label" for="va-sheet-world-select">CORPUS WORLD</label>
         <select id="va-sheet-world-select" class="va-studio-select">
           <option value="01-clinical-icu-and-trials">01 · Clinical ICU &amp; Trials</option>
@@ -509,14 +556,14 @@ dialog#va-bridge-dialog {
       </div>
 
       <div class="va-customize-row-2">
-        <div class="va-customize-field">
+        <div class="va-customize-field va-atlas-hide">
           <label class="va-customize-label" for="va-sheet-medium-select">MEDIUM MODE</label>
           <select id="va-sheet-medium-select" class="va-studio-select">
             <option value="auto" selected>Screen (Auto)</option>
             <option value="m1">M1 Paper Sheet</option>
           </select>
         </div>
-        <div class="va-customize-field">
+        <div class="va-customize-field va-worlds-only">
           <label class="va-customize-label" for="va-sheet-nav-select">NAVIGATION SHELL</label>
           <select id="va-sheet-nav-select" class="va-studio-select">
             <option value="auto" selected>Auto (Adaptive)</option>
@@ -551,7 +598,7 @@ dialog#va-bridge-dialog {
         </div>
       </div>
 
-      <div class="va-customize-field">
+      <div class="va-customize-field va-worlds-only">
         <span class="va-customize-label">ROOT SCALE</span>
         <div class="va-sheet-seg" role="group" aria-label="Root Scale">
           <button type="button" class="va-sheet-seg-btn" data-sheet-scale="90">90%</button>
@@ -573,11 +620,11 @@ dialog#va-bridge-dialog {
           </select>
           <button type="button" id="va-sheet-rotate-btn" class="va-studio-btn" title="Rotate Stage"><i class="fa-solid fa-rotate" aria-hidden="true"></i></button>
           <button type="button" id="va-sheet-zoom-btn" class="va-studio-btn" title="Toggle Fit vs 1:1">FIT</button>
-          <button type="button" id="va-sheet-print-btn" class="va-studio-btn" title="Print or Export PDF"><i class="fa-solid fa-print" aria-hidden="true"></i></button>
+          <button type="button" id="va-sheet-print-btn" class="va-studio-btn va-worlds-only" title="Print or Export PDF"><i class="fa-solid fa-print" aria-hidden="true"></i></button>
         </div>
       </div>
 
-      <div class="va-customize-field">
+      <div class="va-customize-field va-worlds-only">
         <span class="va-customize-label">COPY CONTRACT</span>
         <div class="va-prompt-row">
           <code id="va-prompt-preview" class="va-prompt-preview">World: 01 · View: v01</code>
@@ -1775,8 +1822,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     block-size: auto;
     margin-inline: auto;
   }
+  .qe-svg-560 { max-inline-size: min(100%, 620px); }
   .qe-svg-680 { max-inline-size: min(100%, 760px); }
   .qe-svg-720 { max-inline-size: min(100%, 840px); }
+  .qe-gauge-svg { max-inline-size: min(100%, 360px); }
   .qe-spark-svg { max-inline-size: min(100%, 320px); }
   .va-figure-scroll { overflow-x: hidden; }
   :where(.va-figure-scroll) svg {
@@ -1909,11 +1958,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border: 0;
     white-space: nowrap;
   }
-  .qe-table-wrap { container-type: inline-size; }
+  .va-table-wrap,
+  .qe-table-wrap { container-type: inline-size; max-inline-size: 100%; min-inline-size: 0; overflow-x: auto; }
+  .qe-bitfield-wrap { display: flex; flex-direction: column; gap: 0.55rem; max-inline-size: 100%; min-inline-size: 0; }
+  .qe-bf-hdr { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; min-inline-size: 0; overflow-wrap: anywhere; }
+  .qe-bf-field { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; max-inline-size: 100%; overflow-wrap: anywhere; }
+  .qe-bf-field code { overflow-wrap: anywhere; word-break: break-word; }
   .qe-cell-center { text-align: center; }
   .qe-row-winner td { background: var(--tint-indigo-bg); }
-  @container (width < 580px) {
-    .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; }
+  @container (width < 360px) {
+    .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; max-inline-size: 100%; }
     .qe-table thead { display: none; }
     .qe-table tbody tr {
       margin: 0.5rem;
@@ -1991,6 +2045,54 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
   .qe-waveform-wrap,
   .qe-plot-wrap { display: flex; flex-direction: column; gap: 0.55rem; min-inline-size: 0; }
+
+  .v9-editorial-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem 1.25rem;
+    align-items: start;
+    min-inline-size: 0;
+  }
+  @container stage (width >= 1100px) {
+    .v9-editorial-grid { grid-template-columns: minmax(0, 68ch) minmax(220px, 1fr); }
+  }
+  .v9-prose-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    padding: 0.95rem 1.15rem;
+    font-family: var(--font-serif);
+    font-size: var(--ts-prose);
+    line-height: 1.68;
+    color: var(--text-primary);
+    min-inline-size: 0;
+  }
+  .v9-prose-card h2 {
+    font-family: var(--font-serif);
+    font-size: var(--ts-md);
+    margin: 0 0 0.55rem;
+    border-bottom: 1px solid var(--border-hairline);
+    padding-bottom: 0.25rem;
+  }
+  .v9-prose-card p { margin: 0 0 0.7rem; }
+  .v9-prose-card p:last-child { margin-bottom: 0; }
+  .v9-params-aside {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: var(--radius-inner);
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
+  .v9-params-aside h3 { margin: 0; font-size: var(--ts-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+  .v9-params-list { display: flex; flex-direction: column; gap: 0.42rem; margin: 0; }
+  .v9-param-row { display: flex; flex-direction: column; gap: 0.08rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.35rem; }
+  .v9-param-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .v9-param-row dt { font-size: var(--ts-xs); color: var(--text-muted); font-weight: 600; }
+  .v9-param-row dd { margin: 0; font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-primary); font-weight: 600; }
 }
 
 
@@ -2020,6 +2122,18 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     flex-wrap: nowrap;
     white-space: nowrap;
   }
+  .va-topbar-metric {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+  }
+  .va-topbar-metric[data-state="warn"] { color: var(--status-warn); }
+  .va-topbar-metric[data-state="err"],
+  .va-topbar-metric[data-state="fault"],
+  .va-topbar-metric[data-state="danger"] { color: var(--status-danger); }
   html[data-effective-nav="n3"] .va-shell-topbar {
     block-size: 40px;
     min-block-size: 40px;
@@ -2118,12 +2232,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      flex-wrap: nowrap;
-      gap: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
       padding-bottom: 0.42rem;
     }
     .v9-masthead-eyebrow { flex-wrap: nowrap; min-inline-size: 0; }
-    .v9-masthead-title { font-size: var(--ts-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .v9-masthead-title { font-size: var(--ts-md); line-height: 1.25; white-space: normal; overflow-wrap: break-word; }
     .v9-masthead-sub { display: none; }
   }
 
@@ -2238,7 +2352,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     .v9-view-v01 .qe-scalar-title { font-size: var(--ts-sm); line-height: 1.18; min-block-size: 2.36em; }
     .v9-view-v01 .qe-scalar-zone2 { min-block-size: 2.35rem; gap: 0.08rem; }
     .v9-view-v01 .qe-scalar-val { font-size: clamp(0.95rem, 0.88rem + 0.2vw, 1.08rem); }
-    .v9-view-v01 .qe-gauge-svg { max-inline-size: min(100%, 280px); }
+    .v9-view-v01 .qe-gauge-svg { max-inline-size: min(100%, 320px); }
     .v9-view-v01 .qe-cal-footer { padding-top: 0.14rem; }
     .v9-view-v01 .qe-cal-summary { font-size: 11px; line-height: 1.25; }
     .v9-view-v01 .v01-scope-fig { padding: 0.3rem 0.55rem; gap: 0.16rem; }
@@ -2323,71 +2437,62 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
   :root[data-medium="m1"] .v9-stage-inner { max-inline-size: 100%; padding: 0; }
   :root[data-medium="m1"] .v02-sap-appendix { display: block; }
+  :root[data-medium="m1"] .v9-editorial-grid { display: block; }
+  :root[data-medium="m1"] :is(.v9-prose-card, .v02-prose-col) {
+    background: transparent; border: none; border-radius: 0; padding: 0.25rem 0;
+    max-inline-size: none; inline-size: 100%; column-count: 2; column-gap: 1.5rem; font-size: 10.5pt; line-height: 1.54;
+  }
+  :root[data-medium="m1"] :is(.v9-prose-card, .v02-prose-col) h2 { column-span: all; }
+  :root[data-medium="m1"] .v12-rubric-card {
+    background: transparent; border: none; border-left: 3px solid var(--accent-focal);
+    border-radius: 0; padding: 0.25rem 0 0.25rem 0.75rem;
+  }
+  :root[data-medium="m1"] .v9-params-aside {
+    background: transparent; border: none; border-top: 1px solid var(--border-hairline);
+    border-radius: 0; padding: 0.45rem 0 0; margin-top: 0.5rem;
+  }
+  :root[data-medium="m1"] .v9-params-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 0.35rem 0.9rem; }
 }
 
-@page {
-  size: letter portrait;
-  margin: 15mm 15mm 20mm 15mm;
-}
+@page { size: letter portrait; margin: 15mm 15mm 20mm 15mm; }
 
 @media print {
   :root,
   :root[data-theme] {
     color-scheme: only light;
-    --bg-shell: #FFFFFF;
-    --bg-canvas: #FFFFFF;
-    --bg-surface: #FFFFFF;
-    --bg-card: #FFFFFF;
-    --bg-elevated: #F8FAFC;
-    --bg-header: #F8FAFC;
-    --text-primary: #0F172A;
-    --text-main: #0F172A;
-    --text-secondary: #334155;
-    --text-dim: #334155;
-    --text-muted: #475569;
-    --border-hairline: #CBD5E1;
-    --border-grid: #CBD5E1;
-    --border-subtle: #CBD5E1;
-    --border-strong: #64748B;
-    --accent-primary: #1D4ED8;
-    --accent-focal: #1D4ED8;
-    --status-ok: #15803D;
-    --status-ok-bg: #ECFDF5;
-    --status-warn: #B45309;
-    --status-warn-bg: #FFFBEB;
-    --status-danger: #B91C1C;
-    --status-err: #B91C1C;
-    --status-err-bg: #FFF1F2;
-    --tint-indigo-bg: #EEF2FF;
-    --tint-indigo-fg: #3730A3;
-    --tint-emerald-bg: #ECFDF5;
-    --tint-emerald-fg: #065F46;
-    --tint-amber-bg: #FFFBEB;
-    --tint-amber-fg: #92400E;
-    --tint-rose-bg: #FFF1F2;
-    --tint-rose-fg: #9F1239;
-    --tint-violet-bg: #F5F3FF;
-    --tint-violet-fg: #5B21B6;
+    --bg-shell: #FFFFFF; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
+    --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
+    --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
+    --border-hairline: #CBD5E1; --border-grid: #CBD5E1; --border-subtle: #CBD5E1; --border-strong: #64748B;
+    --accent-primary: #1D4ED8; --accent-focal: #1D4ED8;
+    --status-ok: #15803D; --status-ok-bg: #ECFDF5; --status-warn: #B45309; --status-warn-bg: #FFFBEB;
+    --status-danger: #B91C1C; --status-err: #B91C1C; --status-err-bg: #FFF1F2;
+    --tint-indigo-bg: #EEF2FF; --tint-indigo-fg: #3730A3; --tint-emerald-bg: #ECFDF5; --tint-emerald-fg: #065F46;
+    --tint-amber-bg: #FFFBEB; --tint-amber-fg: #92400E; --tint-rose-bg: #FFF1F2; --tint-rose-fg: #9F1239;
+    --tint-violet-bg: #F5F3FF; --tint-violet-fg: #5B21B6;
   }
   body { background: #FFFFFF; color: #0F172A; padding: 0; font-size: 10pt; }
   .va-app-shell { display: block; background: #FFFFFF; }
-  .va-shell-topbar,
-  .va-shell-rail,
-  .va-shell-bottomdock,
-  dialog#va-shell-drawer,
-  .va-sheet-hide,
-  .qe-spec-drawer { display: none; }
+  .va-shell-topbar, .va-shell-rail, .va-shell-bottomdock, dialog#va-shell-drawer, .va-sheet-hide, .qe-spec-drawer { display: none; }
   .qe-m1-only { display: inline; }
-  .va-m1-block-only,
-  .v02-sap-appendix { display: block; }
+  .va-m1-block-only, .v02-sap-appendix { display: block; }
   .v9-m1-folio { display: flex; }
   .va-stage { inline-size: 100%; padding: 0; margin: 0; border: none; box-shadow: none; background: #FFFFFF; }
   .v9-stage-inner { max-inline-size: 100%; padding: 0; }
+  .v9-editorial-grid { display: block; }
+  :is(.v9-prose-card, .v02-prose-col) {
+    background: transparent; border: none; border-radius: 0; padding: 0.2rem 0;
+    max-inline-size: none; inline-size: 100%; column-count: 2; column-gap: 1.5rem; font-size: 10.2pt; line-height: 1.5;
+  }
+  :is(.v9-prose-card, .v02-prose-col) h2 { column-span: all; }
+  .v12-rubric-card { background: transparent; border: none; border-left: 3px solid #1D4ED8; border-radius: 0; padding: 0.2rem 0 0.2rem 0.75rem; }
+  .v9-params-aside { background: transparent; border: none; border-top: 1px solid #CBD5E1; border-radius: 0; padding: 0.4rem 0 0; margin-top: 0.45rem; }
+  .v9-params-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 0.3rem 0.9rem; }
   .va-card, .va-figure-card, .qe-scalar-card, .va-test-condition-block, tr { break-inside: avoid; page-break-inside: avoid; }
   thead { display: table-header-group; }
   p, li, td, th { orphans: 3; widows: 3; }
   .va-figure-scroll, .va-table-wrap, .va-bleed-wide { overflow: visible; }
-  .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
+  .qe-svg-560, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
 }
 
 
@@ -2485,7 +2590,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
   .v01-zero-btn.is-verified { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--tint-indigo-bg); }
   .v01-arm-btn.is-armed { border-color: var(--status-warn); background: var(--status-warn-bg); color: var(--status-warn); }
-  .v01-exec-btn { border-color: transparent; background: var(--status-warn); color: #0F172A; }
+  .v01-exec-btn { border-color: transparent; background: var(--status-warn); color: #FFFFFF; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn { color: #090D16; }
   .v01-exec-btn:disabled { opacity: 0.45; cursor: not-allowed; background: var(--border-hairline); color: var(--text-muted); }
 
   .v01-audit-box {
@@ -2555,6 +2661,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   .v02-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
   .v02-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v02-chip.is-active { color: #090D16; }
   .v02-filter-readout { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); padding: 0.35rem 0.6rem; background: var(--bg-elevated); border-radius: var(--radius-xs); }
 
   .v02-prose-col {
@@ -2676,6 +2783,476 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     cursor: pointer;
   }
   .v03-check-label input[type="checkbox"] { inline-size: 18px; block-size: 18px; accent-color: var(--accent-primary); }
+}
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 Phase 5 — Worlds 02-05 View Layouts & Interactive Controls (Zero CSS Override Flags) */
+
+@layer evidence {
+  .v9-gate-band {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--accent-primary);
+    border-radius: var(--radius-card);
+    padding: 0.78rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-inline-size: 0;
+  }
+  .v9-gate-band[data-state="warn"] { border-left-color: var(--status-warn); }
+  .v9-gate-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .v9-gate-rec { margin: 0; font-size: var(--ts-base); font-weight: 700; color: var(--text-primary); overflow-wrap: anywhere; }
+  .v9-kpi-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  @container stage (width >= 760px) {
+    .v9-kpi-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .v9-kpi-tile {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.45rem 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-inline-size: 0;
+  }
+  .v9-kpi-val { font-family: var(--font-mono); font-size: var(--ts-md); font-weight: 700; color: var(--accent-focal); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .v9-kpi-val[data-tone="warn"] { color: var(--status-warn); }
+  .v9-kpi-val[data-tone="danger"] { color: var(--status-danger); }
+  .v9-kpi-val[data-tone="ok"] { color: var(--status-ok); }
+  .v9-kpi-sub { font-size: var(--ts-xs); color: var(--text-secondary); }
+
+  .v9-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+  .v9-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-chip.is-active { color: #090D16; }
+  .v9-filter-readout {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    padding: 0.35rem 0.6rem;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-xs);
+  }
+
+  .v9-interlock-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-left: 4px solid var(--status-warn);
+    border-radius: var(--radius-card);
+    padding: 0.72rem 0.9rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: center;
+  }
+  @container stage (width >= 900px) {
+    .v9-interlock-card { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+  }
+  .v9-interlock-ctrl { display: flex; flex-direction: column; gap: 0.45rem; }
+  .v9-interlock-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+  .v9-interlock-title { margin: 0; font-size: var(--ts-sm); font-weight: 700; color: var(--text-primary); }
+  .v9-interlock-note { margin: 0; font-size: var(--ts-xs); color: var(--text-secondary); line-height: 1.45; }
+  .v9-interlock-pad { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .v9-tactile-btn {
+    min-block-size: 38px;
+    padding: 0.42rem 0.85rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font: 600 var(--ts-xs)/1.2 var(--font-sans);
+    cursor: pointer;
+    transition: background-color 0.14s ease, border-color 0.14s ease;
+  }
+  .v9-tactile-btn[aria-pressed="true"] { background: var(--tint-amber-bg); border-color: var(--status-warn); color: var(--tint-amber-fg); }
+  .v9-tactile-exec { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; font-weight: 700; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-tactile-exec { color: #090D16; }
+  .v9-tactile-exec:disabled { opacity: 0.42; cursor: not-allowed; }
+  @media (max-width: 599px) {
+    .v9-tactile-btn { min-block-size: 44px; inline-size: 100%; }
+  }
+
+  .v9-audit-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.55rem 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+    min-inline-size: 0;
+  }
+  .v9-audit-list { display: flex; flex-direction: column; gap: 0.2rem; font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); }
+  .v9-audit-item { padding: 0.18rem 0; border-bottom: 1px dashed var(--border-hairline); }
+  .v9-audit-item:last-child { border-bottom: none; }
+
+  .v9-dual-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    min-inline-size: 0;
+  }
+  @container stage (width >= 960px) {
+    .v9-dual-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+  }
+  .v9-dual-col { display: flex; flex-direction: column; gap: 0.85rem; min-inline-size: 0; }
+  .v9-dual-col .va-figure-card { margin: 0; }
+
+  .v12-rubric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-left: 3px solid var(--accent-focal);
+    border-radius: var(--radius-card);
+    padding: 0.78rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .v12-rubric-card h2 { margin: 0; font-size: var(--ts-sm); }
+  .v12-rubric-card p { margin: 0; font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.55; }
+  .v12-step-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.65rem; }
+  .v12-step-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.65rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+  }
+  .v12-step-card h3 { margin: 0; font-size: var(--ts-sm); color: var(--text-primary); }
+  .v12-step-card p { margin: 0; font-size: var(--ts-xs); color: var(--text-secondary); line-height: 1.48; }
+
+  .v10-row-hidden,
+  .qe-table tbody tr.v10-row-hidden { display: none; }
+  .v12-panel-hidden { display: none; }
+  .qe-bit-card.is-enclave-match { border-color: var(--accent-primary); box-shadow: 0 0 0 2px var(--tint-indigo-bg); }
+  .qe-bit-card.is-enclave-dimmed { opacity: 0.45; }
+}
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 Phase 5 — M5 Wall Display, M6 Collimated HUD & M7 Optical Smart-Glass Physics */
+
+@layer evidence {
+  /* ------------------------------------------------------------------------
+     M5: Industrial Walk-Up Wall Kiosk (v08 — >= 32px KPI, >= 18px labels, 100dvh)
+     ------------------------------------------------------------------------ */
+  .v9-stage-inner.v9-view-v08 {
+    max-inline-size: min(100%, 104rem);
+    min-block-size: calc(100dvh - 16px);
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 1rem 1.35rem;
+  }
+  .v08-wall-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    border-bottom: 2px solid var(--border-strong);
+    padding-bottom: 0.65rem;
+  }
+  .v08-wall-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: clamp(0.9rem, 0.85rem + 0.35cqi, 1.2rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-focal);
+  }
+  .v08-wall-title {
+    margin: 0.15rem 0 0;
+    font-size: clamp(1.35rem, 1.1rem + 0.9cqi, 2.25rem);
+    line-height: 1.15;
+    color: var(--text-primary);
+  }
+  .v08-wall-status { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+  .v08-wall-status .va-pill { font-size: clamp(0.85rem, 0.8rem + 0.3cqi, 1.15rem); padding: 0.32rem 0.7rem; block-size: auto; min-block-size: 1.5rem; line-height: 1.25; }
+
+  .v08-kpi-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+    flex: 1 1 auto;
+    align-content: stretch;
+  }
+  @container stage (width >= 680px) {
+    .v08-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .v08-kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-top: 4px solid var(--accent-primary);
+    border-radius: var(--radius-card);
+    padding: 0.95rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
+  .v08-kpi-card[data-accent="emerald"] { border-top-color: var(--status-ok); }
+  .v08-kpi-label {
+    font-size: clamp(1rem, 0.92rem + 0.35cqi, 1.4rem);
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+  }
+  .v08-kpi-hero {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.9rem;
+  }
+  .v08-kpi-val {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(2rem, 1.85rem + 1.35cqi, 3.85rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--text-primary);
+  }
+  .v08-kpi-target {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.95rem, 0.9rem + 0.32cqi, 1.25rem);
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  .v08-wall-footer {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    padding: 0.65rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    font-size: clamp(0.9rem, 0.85rem + 0.3cqi, 1.2rem);
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+  }
+  @container stage (width >= 960px) {
+    .v08-wall-kicker,
+    .v08-kpi-label,
+    .v08-kpi-target,
+    .v08-wall-footer { font-size: clamp(1.125rem, 1rem + 0.28cqi, 1.45rem); }
+    .v08-kpi-val { font-size: clamp(2.2rem, 1.95rem + 1.35cqi, 4.1rem); }
+  }
+
+  /* ------------------------------------------------------------------------
+     M6: Collimated Flight HUD (v15 — >= 65% central sightline keep-out)
+     ------------------------------------------------------------------------ */
+  .v9-stage-inner.v9-view-v15 {
+    max-inline-size: 100%;
+    padding: 0;
+    margin: 0;
+    min-block-size: calc(100dvh - 8px);
+  }
+  .v15-hud-stage {
+    position: relative;
+    inline-size: 100%;
+    min-block-size: calc(100dvh - 8px);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: #020617;
+    background-size: cover;
+    background-position: center;
+    color: #22FF88;
+    --hud-phosphor: #22FF88;
+    --hud-amber: #FACC15;
+    --hud-halo: 0 0 2px #020617, 0 1px 4px rgba(2, 6, 23, 0.96), 0 0 8px rgba(2, 6, 23, 0.9);
+  }
+  .v15-hud-stage[data-backplate="earthrise"] {
+    background-image:
+      linear-gradient(180deg, rgba(2, 6, 23, 0.32) 0%, rgba(2, 6, 23, 0.14) 50%, rgba(2, 6, 23, 0.42) 100%),
+      var(--hud-earthrise-url, radial-gradient(circle at 65% 38%, #1D4ED8 0%, #0F172A 46%, #020617 85%));
+  }
+  .v15-hud-stage[data-backplate="daylight"] {
+    background-image: linear-gradient(180deg, #60A5FA 0%, #DBEAFE 52%, #64748B 53%, #475569 100%);
+    --hud-phosphor: #14FF72;
+    --hud-halo: 0 0 3px #020617, 0 1px 6px rgba(2, 6, 23, 0.98), 0 0 10px rgba(2, 6, 23, 0.96);
+  }
+  .v15-hud-stage[data-backplate="lowlight"] {
+    background-image: linear-gradient(180deg, #020617 0%, #0B1324 58%, #1E293B 59%, #050811 100%);
+  }
+  .v15-reticle-layer {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+  }
+  .v15-reticle-layer text {
+    paint-order: stroke fill;
+    stroke: rgba(2, 6, 23, 0.94);
+    stroke-width: 3.5px;
+    stroke-linejoin: round;
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .v15-hud-top,
+  .v15-hud-bottom {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.9rem;
+    text-shadow: var(--hud-halo);
+    background: transparent;
+  }
+  .v15-hud-mids {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex: 1 1 auto;
+    pointer-events: none;
+  }
+  .v15-hud-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    max-inline-size: 170px;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--hud-phosphor);
+    text-shadow: var(--hud-halo);
+    background: transparent;
+  }
+  .v15-hud-rail-right { text-align: end; align-items: flex-end; }
+  .v15-hud-readout {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    border-left: 2px solid var(--hud-phosphor);
+    padding-left: 0.45rem;
+    background: transparent;
+  }
+  .v15-hud-rail-right .v15-hud-readout { border-left: none; border-right: 2px solid var(--hud-phosphor); padding-left: 0; padding-right: 0.45rem; }
+  .v15-hud-lbl { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.95; }
+  .v15-hud-num { font-size: clamp(1.15rem, 1rem + 0.55cqi, 1.55rem); font-weight: 800; line-height: 1.05; }
+  .v15-hud-mode-strip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    pointer-events: auto;
+  }
+  .v15-hud-chip {
+    background: rgba(2, 6, 23, 0.72);
+    border-color: var(--hud-phosphor);
+    color: #F8FAFC;
+    min-block-size: 36px;
+  }
+  .v15-hud-chip.is-active { background: #065F46; border-color: #22FF88; color: #FFFFFF; }
+
+  /* ------------------------------------------------------------------------
+     M7: Smart-Glass Combiner Overlay (v16 — Adaptive Scrim >= 7.0:1 AAA)
+     ------------------------------------------------------------------------ */
+  .v9-stage-inner.v9-view-v16 { max-inline-size: min(100%, 96rem); gap: 0.75rem; }
+  .v16-glass-viewport {
+    position: relative;
+    min-block-size: clamp(540px, 78dvh, 780px);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border-strong);
+    padding: 0.95rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    --m7-scrim-alpha: 0.88;
+  }
+  .v16-glass-viewport[data-luminance="daylight"] {
+    background: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 50%, #CBD5E1 51%, #94A3B8 100%);
+    --m7-scrim-alpha: 0.90;
+  }
+  .v16-glass-viewport[data-luminance="dusk"] {
+    background: linear-gradient(180deg, #1E3A8A 0%, #D97706 48%, #334155 52%, #0F172A 100%);
+    --m7-scrim-alpha: 0.84;
+  }
+  .v16-glass-viewport[data-luminance="night"] {
+    background: linear-gradient(180deg, #020617 0%, #0F172A 55%, #1E293B 100%);
+    --m7-scrim-alpha: 0.78;
+  }
+  .v16-scrim-band {
+    background-color: rgba(11, 18, 32, var(--m7-scrim-alpha));
+    backdrop-filter: blur(10px) saturate(1.2);
+    border: 1px solid rgba(248, 250, 252, 0.28);
+    border-radius: var(--radius-inner);
+    padding: 0.65rem 0.95rem;
+    color: #F8FAFC;
+    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.9);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem 1.25rem;
+  }
+  .v16-corridor-spacer {
+    flex: 1 1 auto;
+    min-block-size: clamp(220px, 38dvh, 420px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .v16-lane-guide {
+    inline-size: min(100%, 420px);
+    block-size: 96px;
+    border-left: 2px dashed rgba(56, 189, 248, 0.75);
+    border-right: 2px dashed rgba(56, 189, 248, 0.75);
+    border-top: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 6px;
+    background: transparent;
+  }
+  .v16-metric-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.45rem;
+    align-items: baseline;
+  }
+  .v16-metric { display: flex; flex-direction: column; gap: 0.08rem; }
+  .v16-metric-lbl { font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; color: #CBD5E1; font-weight: 700; }
+  .v16-metric-val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: clamp(1.1rem, 1rem + 0.35cqi, 1.4rem); font-weight: 800; color: #FFFFFF; }
+  .v16-metric-val[data-tone="warn"] { color: #FDE047; }
+  .v16-metric-val[data-tone="accent"] { color: #7DD3FC; }
+  .v16-scrim-pill { border-radius: 4px; background: rgba(180, 83, 9, 0.42); border: 1px solid #FBBF24; color: #FEF9C3; font-weight: 700; font-size: 0.78rem; padding: 0.2rem 0.55rem; }
+  .v16-ctrl-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.55rem 0.85rem;
+  }
+  .v16-ctrl-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
+  .v16-lum-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v16-lum-chip.is-active { color: #090D16; }
+  @media (max-width: 599px) {
+    .v15-hud-chip, .v16-lum-chip { min-block-size: 44px; }
+    .v15-hud-rail { max-inline-size: 138px; }
+  }
 }
 
   </script>
@@ -2823,10 +3400,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     termsBound = true;
     const resolveScope = function (ev) {
       const target = ev.target && ev.target.closest ? ev.target.closest('[data-term]') : null;
-      return target ? { target: target, scope: target.closest('.qe-figure, .qe-pedagogy-scope') || document } : null;
+      if (!target) return null;
+      return { target: target, scope: target.closest('.qe-pedagogy-scope') || target.closest('.qe-figure') || document };
     };
     document.addEventListener('pointerover', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.target.getAttribute('data-term')); });
     document.addEventListener('pointerout', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.scope.dataset.pinnedTerm || null); });
+    document.addEventListener('click', function (ev) {
+      const btn = ev.target && ev.target.closest ? ev.target.closest('button[data-term], .qe-eq-term[data-term]') : null;
+      if (!btn) return;
+      const scope = btn.closest('.qe-pedagogy-scope') || btn.closest('.qe-figure') || document;
+      const term = btn.getAttribute('data-term');
+      const next = (scope.dataset.pinnedTerm === term) ? '' : (term || '');
+      if (next) scope.dataset.pinnedTerm = next;
+      else delete scope.dataset.pinnedTerm;
+      setActiveTerm(scope, next || null);
+      scope.querySelectorAll('button[data-term], .qe-eq-term[data-term]').forEach(function (b) {
+        b.setAttribute('aria-pressed', (next && b.getAttribute('data-term') === next) ? 'true' : 'false');
+      });
+    });
     document.addEventListener('focusin', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.target.getAttribute('data-term')); });
     document.addEventListener('focusout', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.scope.dataset.pinnedTerm || null); });
   }
@@ -3022,28 +3613,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     });
   }
 
-  function bindV03PedagogicalClick(doc) {
-    const scope = doc.querySelector('.v03-pedagogy-panel');
-    if (!scope || scope.dataset.bound === '1') return;
-    scope.dataset.bound = '1';
-    let pinnedTerm = null;
-
-    scope.querySelectorAll('button[data-term]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const t = btn.getAttribute('data-term');
-        pinnedTerm = (pinnedTerm === t) ? null : t;
-        if (pinnedTerm) scope.dataset.pinnedTerm = pinnedTerm;
-        else delete scope.dataset.pinnedTerm;
-        if (window.QuietEvidenceRuntime && typeof window.QuietEvidenceRuntime.setActiveTerm === 'function') {
-          window.QuietEvidenceRuntime.setActiveTerm(scope, pinnedTerm);
-        }
-        scope.querySelectorAll('button[data-term]').forEach(function (b) {
-          b.setAttribute('aria-pressed', (pinnedTerm && b.getAttribute('data-term') === pinnedTerm) ? 'true' : 'false');
-        });
-      });
-    });
-  }
-
   function bindShellSupport(doc) {
     if (doc.__quietShellSupportBound) return;
     doc.__quietShellSupportBound = true;
@@ -3081,7 +3650,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     bindShellSupport(d);
     bindV01Titration(d);
     bindV02SubgroupChips(d);
-    bindV03PedagogicalClick(d);
   }
 
   if (document.readyState === 'loading') {
@@ -3093,9 +3661,157 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   window.QuietWorld01Runtime = { boot: boot };
 })(window, document);
 
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 Phase 5 — Interactive Workbench & Optical HUD Handlers (Worlds 02-05) */
+
+(function (global) {
+  'use strict';
+
+  function updateExecButton(btnA, btnB, execBtn) {
+    if (!execBtn) return;
+    execBtn.disabled = !(btnA && btnA.getAttribute('aria-pressed') === 'true' && btnB && btnB.getAttribute('aria-pressed') === 'true');
+  }
+
+  function wireTwoStepInterlock(doc, opts) {
+    const btnA = doc.getElementById(opts.btnAId);
+    const btnB = doc.getElementById(opts.btnBId);
+    const execBtn = doc.getElementById(opts.execId);
+    const pill = doc.getElementById(opts.pillId);
+    const log = doc.getElementById(opts.logId);
+    if (!btnA || !btnB || !execBtn || execBtn.dataset.v9Bound === '1') return;
+    execBtn.dataset.v9Bound = '1';
+
+    function toggle(btn) {
+      btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      updateExecButton(btnA, btnB, execBtn);
+    }
+    btnA.addEventListener('click', function () { toggle(btnA); });
+    btnB.addEventListener('click', function () { toggle(btnB); });
+    execBtn.addEventListener('click', function () {
+      if (execBtn.disabled) return;
+      if (pill) {
+        pill.textContent = opts.doneLabel;
+        pill.setAttribute('data-variant', 'status');
+        pill.setAttribute('data-state', opts.doneState || 'nominal');
+      }
+      btnA.setAttribute('aria-pressed', 'false');
+      btnB.setAttribute('aria-pressed', 'false');
+      if (log) {
+        const entry = doc.createElement('div');
+        entry.className = 'v9-audit-item';
+        entry.textContent = opts.auditText;
+        log.insertBefore(entry, log.firstChild);
+        while (log.children.length > 5) log.removeChild(log.lastElementChild);
+      }
+      execBtn.disabled = true;
+    });
+  }
+
+  function wireChipGroup(doc, containerId, readoutId, onSelect) {
+    const bar = doc.getElementById(containerId);
+    const readout = readoutId ? doc.getElementById(readoutId) : null;
+    if (!bar || bar.dataset.v9Bound === '1') return;
+    bar.dataset.v9Bound = '1';
+    bar.addEventListener('click', function (ev) {
+      const btn = ev.target && ev.target.closest ? ev.target.closest('[data-variant="chip"]') : null;
+      if (!btn || !bar.contains(btn)) return;
+      bar.querySelectorAll('[data-variant="chip"]').forEach(function (b) {
+        const active = b === btn;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      if (readout && btn.dataset.summary) readout.textContent = btn.dataset.summary;
+      if (typeof onSelect === 'function') onSelect(btn, doc);
+    });
+  }
+
+  function wireWorlds02To05(doc) {
+    wireTwoStepInterlock(doc, {
+      btnAId: 'v04-otel-btn', btnBId: 'v04-arm-btn', execId: 'v04-exec-btn',
+      pillId: 'v04-gate-pill', logId: 'v04-audit-list',
+      doneLabel: 'CANARY ISOLATED', doneState: 'nominal',
+      auditText: '[04:15:08Z] OTel scrape verified and canary drained to 0% weight; production p99 stabilized.',
+    });
+    wireTwoStepInterlock(doc, {
+      btnAId: 'v07-loto-btn', btnBId: 'v07-arm-btn', execId: 'v07-exec-btn',
+      pillId: 'v07-gate-pill', logId: 'v07-audit-list',
+      doneLabel: 'ISLAND ARMED', doneState: 'nominal',
+      auditText: '[21:30:06Z] LOTO [10]=0 & Sync 59.985 Hz confirmed; POI 52-M islanding dispatch armed.',
+    });
+    wireTwoStepInterlock(doc, {
+      btnAId: 'v14-term-btn', btnBId: 'v14-arm-btn', execId: 'v14-exec-btn',
+      pillId: 'v14-gate-pill', logId: 'v14-audit-list',
+      doneLabel: 'SOF_ARB_ERR W1C OK', doneState: 'nominal',
+      auditText: '[05:30:04Z] 120 Ohm termination & stub <= 0.3 m verified; SOF_ARB_ERR [31] W1C latch cleared.',
+    });
+
+    wireChipGroup(doc, 'v05-enclave-chips', 'v05-enclave-readout', function (btn, d) {
+      const target = btn.dataset.enclave || 'all';
+      d.querySelectorAll('#v05-enclave-cards [data-enclave]').forEach(function (card) {
+        const hit = target === 'all' || card.dataset.enclave === target;
+        card.classList.toggle('is-enclave-match', target !== 'all' && hit);
+        card.classList.toggle('is-enclave-dimmed', target !== 'all' && !hit);
+      });
+    });
+
+    wireChipGroup(doc, 'v10-fund-chips', 'v10-fund-readout', function (btn, d) {
+      const f = btn.dataset.fund || 'all';
+      d.querySelectorAll('#v10-budget-table tbody tr').forEach(function (row) {
+        const txt = (row.textContent || '');
+        const show = f === 'all'
+          || (f === 'inflow' && (txt.includes('Opening') || txt.includes('Grant') || txt.includes('Bond')))
+          || (f === 'outlay' && (txt.includes('HVAC') || txt.includes('Water Main') || txt.includes('Closing')))
+          || (f === 'review' && txt.includes('REVIEW'));
+        row.classList.toggle('v10-row-hidden', !show);
+      });
+    });
+
+    wireChipGroup(doc, 'v11-shock-chips', 'v11-shock-readout', function (btn, d) {
+      const q1El = d.getElementById('v11-q1-val');
+      const q8El = d.getElementById('v11-q8-val');
+      const headEl = d.getElementById('v11-headroom-val');
+      const gatePill = d.getElementById('v11-gate-pill');
+      if (q1El && btn.dataset.q1) q1El.textContent = btn.dataset.q1;
+      if (q8El && btn.dataset.q8) q8El.textContent = btn.dataset.q8;
+      if (headEl && btn.dataset.headroom) {
+        headEl.textContent = btn.dataset.headroom;
+        const st = btn.dataset.state || '';
+        headEl.setAttribute('data-tone', st === 'err' ? 'danger' : (st === 'warn' ? 'warn' : (st === 'nominal' ? 'ok' : 'accent')));
+      }
+      if (gatePill && btn.dataset.state) {
+        gatePill.setAttribute('data-state', btn.dataset.state);
+        gatePill.textContent = btn.dataset.pill || 'NOMINAL';
+      }
+    });
+
+    wireChipGroup(doc, 'v12-role-chips', null, function (btn, d) {
+      const role = btn.dataset.role || 'student';
+      const stu = d.getElementById('v12-student-note');
+      const ins = d.getElementById('v12-instructor-note');
+      if (stu) stu.classList.toggle('v12-panel-hidden', role !== 'student');
+      if (ins) ins.classList.toggle('v12-panel-hidden', role !== 'instructor');
+    });
+
+    wireChipGroup(doc, 'v15-backplate-chips', 'v15-hud-readout', function (btn, d) {
+      const stage = d.getElementById('v15-hud-stage');
+      if (stage && btn.dataset.backplate) stage.setAttribute('data-backplate', btn.dataset.backplate);
+    });
+
+    wireChipGroup(doc, 'v16-luminance-chips', 'v16-lum-readout', function (btn, d) {
+      const vp = d.getElementById('v16-glass-viewport');
+      const cVal = d.getElementById('v16-contrast-val');
+      if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
+      if (cVal && btn.dataset.contrast) cVal.textContent = btn.dataset.contrast;
+    });
+  }
+
+  global.QuietWorlds02To05Runtime = { boot: wireWorlds02To05 };
+})(typeof window !== 'undefined' ? window : globalThis);
+
   </script>
   <script type="application/json" id="va-v9-manifest">
-{"worlds":[{"world_id":"01-clinical-icu-and-trials","world_label":"01 \u00b7 Clinical ICU & Trials","title":"Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof","views":[{"view_id":"v01-icu-bedside-terminal","title":"ICU Bed-04 Tactical Hemodynamic & Ventilator Console","option_label":"v01 \u00b7 ICU Bedside Terminal (M4 \u00b7 L3)","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"fa-heart-pulse","nav_brand":"Bed ICU-04","topbar_brand":"BED ICU-04 \u00b7 PT-0482 \u00b7 Sepsis Protocol","rail_brand":"Monitor Subsystems","topbar_status":[{"text":"1 Active Caution: MAP 63.5 mmHg","variant":"status","state":"warn"},{"text":"NTP Synced","variant":"status","state":"nominal"}],"nav_items":["Hemodynamics","Ventilator","Infusions","Event Log"],"nav_anchors":["v01-hemo","v01-vent","v01-infusions","v01-alarms"],"vector_summary":"ICU Informaticist -\u003e Bedside Nurse & Intensivist \u00d7 T1 \u00d7 M4 \u00d7 Quiet Cockpit \u00d7 L3","actionable_disposition":"Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg.","bias_removed":"Raw HL7/ADC hex frames, rainbow-colored nominal vital tiles, and spline-interpolated flatline fills during motion artifact","bias_risk":"Alarm fatigue under T1 triage; clinicians mistake interpolated waveform for true perfusion","bias_replacement":"Quiet Cockpit monochrome nominal tiles; amber [ CAUTION ] reserved for MAP = 63.5 mmHg \u003c 65.0 mmHg; explicit 2.4 s null gap with T_A/T_B cursors","invariants":{"baseline":"MAP anchored to 75.0 mmHg target, 65.0 mmHg caution floor, 55.0 mmHg abort floor; PEEP anchored to 10.0 cmH2O CMD vs 10.2 cmH2O ACT","provenance":"k=2 95.45% expanded uncertainty (\u00b1 1.5 mmHg, \u00b1 0.2 cmH2O, \u00b1 0.8%), sensor/cal IDs, and un-interpolated 2.4 s dropout break","margin":"Explicit -2.3% margin excursion on MAP, +95.0% margin on PEEP, and +55.0% margin on SpO2 computed without mental math","disposition":"Verify arterial transducer zeroing post-dropout before titrating vasopressors"},"murder_board":[{"rubric":"Clinical Safety (CL-2 / CL-3)","finding":"cmH2O, mmHg, % isolated in .qe-unit headers; only MAP (63.5 \u003c= 65.0) triggers [ CAUTION ]","verdict":"PASS"},{"rubric":"Chief Engineer (CR-2 / CR-5)","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"},{"rubric":"Field Operator (TR-2 / TR-3)","finding":"PEEP renders CMD 10.0 vs ACT 10.2 cmH2O on linear horizontal gauge without radial dial clutter","verdict":"PASS"}]},{"view_id":"v02-trial-regulatory-brief","title":"CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief","option_label":"v02 \u00b7 Trial Regulatory Brief (M2\u2194M1 \u00b7 L3)","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"fa-file-medical","nav_brand":"CONSORT Brief","topbar_brand":"CONSORT Brief","rail_brand":"CONSORT Brief","topbar_status":[],"nav_items":["Disposition","Cohort & Methods","Subgroup Forest","KDIGO Safety","SAP Appendix"],"nav_anchors":["v02-disposition","v02-methods","v02-forest","v02-safety","v02-sap"],"vector_summary":"Clinical Biostatistician -\u003e FDA Reviewer & Hospital CMO \u00d7 T2/T3 \u00d7 M1/M2 \u00d7 Decision Contrast \u00d7 L3","actionable_disposition":"Approve protocol adoption for SOFA \u003e= 8 and Lactate \u003e 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log.","bias_removed":"Cherry-picked p-value claims (p \u003c 0.01) divorced from subgroup variance, missing control-arm incidence, and unbracketed adverse events","bias_risk":"FDA reviewer / CMO cannot verify clinical net benefit or renal safety margins","bias_replacement":"Full CONSORT subgroup forest plot (HR + 95% CI vs 1.0 null) paired with Booktabs safety ledger (\u00b1 binomial uncertainty and DSMB status pills)","invariants":{"baseline":"Forest plot anchored to HR = 1.0 vertical null line; adverse event rows pair Protocol Arm against Control Arm (11.4% vs 14.8% AKI)","provenance":"SAP-v2.4-ITT (n=1,240) test-condition strip, exact 95% CI whiskers, and \u00b1 incidence uncertainties in Booktabs columns","margin":"Subgroups crossing null (Age \u003e= 65 CI [0.62, 1.01]) rendered in muted secondary ink vs statistically decisive SOFA \u003e= 8 ([0.52, 0.89])","disposition":"Authorize protocol for SOFA \u003e= 8 / Lactate \u003e 2 mmol/L with mandatory KDIGO renal monitoring"},"murder_board":[{"rubric":"Clinical Safety (CL-1)","finding":"All 4 subgroups state exact n (1,240, 612, 486, 704) and 95% CI whiskers against HR = 1.0","verdict":"PASS"},{"rubric":"Chief Engineer (CR-2 / CR-5)","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"}]},{"view_id":"v03-patient-recovery-companion","title":"Post-ICU Discharge Recovery & Vital Trend Companion","option_label":"v03 \u00b7 Patient Recovery (M3 \u00b7 L1)","default_medium":"m3","chromatic_code":"c2","default_nav":"n2","allowed_navs":["n2","n4","n0"],"nav_icon":"fa-hand-holding-medical","nav_brand":"Recovery Guide","topbar_brand":"Recovery Guide","rail_brand":"Recovery Guide","topbar_status":[],"nav_items":["Today","Vitals Log","Care Guide","Care Team"],"nav_anchors":["v03-today","v03-vitals","v03-guide","v03-care-team"],"vector_summary":"Clinical Care Team -\u003e Discharged Patient & Family \u00d7 T3 \u00d7 M3 \u00d7 Pedagogical Flow \u00d7 L1","actionable_disposition":"Continue home pulse-oximetry log targeting \u003e= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%.","bias_removed":"Unexplained ICU acronyms (PEEP, k=2, ADC counts, KDIGO) and dense calibration certificates on primary screen","bias_risk":"Patient/family anxiety and misinterpretation of discharge recovery targets","bias_replacement":"L1 progressive disclosure showing 10-point trend sparklines, plain-language home targets (SpO2 \u003e= 92%), and calm status pills without L3 probe noise","invariants":{"baseline":"SpO2 (94.2%) and MAP (63.5 mmHg) anchored to home-monitoring lower bounds with clear sparkline trajectory","provenance":"Discrete 10-sample trend sparkline derived identically from v01_icu_ventilator_scalars.json without synthetic smoothing","margin":"Explicit recovery gap framing showing how close oxygen saturation remains above the 92% clinic-call threshold","disposition":"Continue home pulse-oximetry log; call triage nurse if SpO2 \u003c 92% or systolic/MAP drops persistently"},"murder_board":[{"rubric":"First-Time Learner (LR-3)","finding":"L1 compilation hides raw_adc_counts, k=2, and calibration_id while retaining conserved scalar truth","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"map_mmhg","canonical_value":"63.5 (\u00b1 1.5, target 75.0, lower 65.0)","unit":"mmHg","views":"v01, v03"},{"metric_id":"peep_cmd_cmh2o","canonical_value":"10.0","unit":"cmH2O","views":"v01, v03"},{"metric_id":"peep_act_cmh2o","canonical_value":"10.2 (\u00b1 0.2)","unit":"cmH2O","views":"v01, v03"},{"metric_id":"spo2_pct","canonical_value":"94.2 (\u00b1 0.8, lower 92.0)","unit":"%","views":"v01, v03"},{"metric_id":"dropout_duration_s","canonical_value":"2.4 (T_A=6.4 s, T_B=8.8 s)","unit":"s","views":"v01"},{"metric_id":"overall_hr","canonical_value":"0.74 ([0.61, 0.90])","unit":"1","views":"v02"},{"metric_id":"age_ge65_hr","canonical_value":"0.79 ([0.62, 1.01])","unit":"1","views":"v02"},{"metric_id":"sofa_ge8_hr","canonical_value":"0.68 ([0.52, 0.89])","unit":"1","views":"v02"},{"metric_id":"lactate_gt2_hr","canonical_value":"0.71 ([0.54, 0.93])","unit":"1","views":"v02"},{"metric_id":"aki_rate_pct","canonical_value":"11.4 (\u00b1 1.8, control 14.8)","unit":"%","views":"v02"}]}]}
+{"worlds":[{"world_id":"01-clinical-icu-and-trials","world_label":"01 \u00b7 Clinical ICU & Trials","title":"Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof","views":[{"view_id":"v01-icu-bedside-terminal","title":"ICU Bed-04 Tactical Hemodynamic & Ventilator Console","option_label":"v01 \u00b7 ICU Bedside Terminal (M4 \u00b7 L3)","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"fa-heart-pulse","nav_brand":"Bed ICU-04","topbar_brand":"BED ICU-04 \u00b7 PT-0482 \u00b7 Sepsis Protocol","rail_brand":"Monitor Subsystems","topbar_status":[{"text":"\u25b2 1 CAUTION","variant":"status","state":"warn"},{"text":"MAP 63.5 mmHg","variant":"plain","state":"warn"},{"text":"NTP Synced","variant":"status","state":"nominal"}],"nav_items":["Hemodynamics","Ventilator","Infusions","Event Log"],"nav_anchors":["v01-hemo","v01-vent","v01-infusions","v01-alarms"],"vector_summary":"ICU Informaticist -\u003e Bedside Nurse & Intensivist \u00d7 T1 \u00d7 M4 \u00d7 Quiet Cockpit \u00d7 L3","actionable_disposition":"Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg.","bias_removed":"Raw HL7/ADC hex frames, rainbow-colored nominal vital tiles, and spline-interpolated flatline fills during motion artifact","bias_risk":"Alarm fatigue under T1 triage; clinicians mistake interpolated waveform for true perfusion","bias_replacement":"Quiet Cockpit monochrome nominal tiles; amber [ CAUTION ] reserved for MAP = 63.5 mmHg \u003c 65.0 mmHg; explicit 2.4 s null gap with T_A/T_B cursors","invariants":{"baseline":"MAP anchored to 75.0 mmHg target, 65.0 mmHg caution floor, 55.0 mmHg abort floor; PEEP anchored to 10.0 cmH2O CMD vs 10.2 cmH2O ACT","provenance":"k=2 95.45% expanded uncertainty (\u00b1 1.5 mmHg, \u00b1 0.2 cmH2O, \u00b1 0.8%), sensor/cal IDs, and un-interpolated 2.4 s dropout break","margin":"Explicit -2.3% margin excursion on MAP, +95.0% margin on PEEP, and +55.0% margin on SpO2 computed without mental math","disposition":"Verify arterial transducer zeroing post-dropout before titrating vasopressors"},"murder_board":[{"rubric":"Clinical Safety (CL-2 / CL-3)","finding":"cmH2O, mmHg, % isolated in .qe-unit headers; only MAP (63.5 \u003c= 65.0) triggers [ CAUTION ]","verdict":"PASS"},{"rubric":"Chief Engineer (CR-2 / CR-5)","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"},{"rubric":"Field Operator (TR-2 / TR-3)","finding":"PEEP renders CMD 10.0 vs ACT 10.2 cmH2O on linear horizontal gauge without radial dial clutter","verdict":"PASS"}]},{"view_id":"v02-trial-regulatory-brief","title":"CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief","option_label":"v02 \u00b7 Trial Regulatory Brief (M2\u2194M1 \u00b7 L3)","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"fa-file-medical","nav_brand":"CONSORT Brief","topbar_brand":"CONSORT Brief","rail_brand":"CONSORT Brief","topbar_status":[],"nav_items":["Disposition","Cohort & Methods","Subgroup Forest","KDIGO Safety","SAP Appendix"],"nav_anchors":["v02-disposition","v02-methods","v02-forest","v02-safety","v02-sap"],"vector_summary":"Clinical Biostatistician -\u003e FDA Reviewer & Hospital CMO \u00d7 T2/T3 \u00d7 M1/M2 \u00d7 Decision Contrast \u00d7 L3","actionable_disposition":"Approve protocol adoption for SOFA \u003e= 8 and Lactate \u003e 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log.","bias_removed":"Cherry-picked p-value claims (p \u003c 0.01) divorced from subgroup variance, missing control-arm incidence, and unbracketed adverse events","bias_risk":"FDA reviewer / CMO cannot verify clinical net benefit or renal safety margins","bias_replacement":"Full CONSORT subgroup forest plot (HR + 95% CI vs 1.0 null) paired with Booktabs safety ledger (\u00b1 binomial uncertainty and DSMB status pills)","invariants":{"baseline":"Forest plot anchored to HR = 1.0 vertical null line; adverse event rows pair Protocol Arm against Control Arm (11.4% vs 14.8% AKI)","provenance":"SAP-v2.4-ITT (n=1,240) test-condition strip, exact 95% CI whiskers, and \u00b1 incidence uncertainties in Booktabs columns","margin":"Subgroups crossing null (Age \u003e= 65 CI [0.62, 1.01]) rendered in muted secondary ink vs statistically decisive SOFA \u003e= 8 ([0.52, 0.89])","disposition":"Authorize protocol for SOFA \u003e= 8 / Lactate \u003e 2 mmol/L with mandatory KDIGO renal monitoring"},"murder_board":[{"rubric":"Clinical Safety (CL-1)","finding":"All 4 subgroups state exact n (1,240, 612, 486, 704) and 95% CI whiskers against HR = 1.0","verdict":"PASS"},{"rubric":"Chief Engineer (CR-2 / CR-5)","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"}]},{"view_id":"v03-patient-recovery-companion","title":"Post-ICU Discharge Recovery & Vital Trend Companion","option_label":"v03 \u00b7 Patient Recovery (M3 \u00b7 L1)","default_medium":"m3","chromatic_code":"c2","default_nav":"n2","allowed_navs":["n2","n4","n0"],"nav_icon":"fa-hand-holding-medical","nav_brand":"Recovery Guide","topbar_brand":"Recovery Guide","rail_brand":"Recovery Guide","topbar_status":[],"nav_items":["Today","Vitals Log","Care Guide","Care Team"],"nav_anchors":["v03-today","v03-vitals","v03-guide","v03-care-team"],"vector_summary":"Clinical Care Team -\u003e Discharged Patient & Family \u00d7 T3 \u00d7 M3 \u00d7 Pedagogical Flow \u00d7 L1","actionable_disposition":"Continue home pulse-oximetry log targeting \u003e= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%.","bias_removed":"Unexplained ICU acronyms (PEEP, k=2, ADC counts, KDIGO) and dense calibration certificates on primary screen","bias_risk":"Patient/family anxiety and misinterpretation of discharge recovery targets","bias_replacement":"L1 progressive disclosure showing 10-point trend sparklines, plain-language home targets (SpO2 \u003e= 92%), and calm status pills without L3 probe noise","invariants":{"baseline":"SpO2 (94.2%) and MAP (63.5 mmHg) anchored to home-monitoring lower bounds with clear sparkline trajectory","provenance":"Discrete 10-sample trend sparkline derived identically from v01_icu_ventilator_scalars.json without synthetic smoothing","margin":"Explicit recovery gap framing showing how close oxygen saturation remains above the 92% clinic-call threshold","disposition":"Continue home pulse-oximetry log; call triage nurse if SpO2 \u003c 92% or systolic/MAP drops persistently"},"murder_board":[{"rubric":"First-Time Learner (LR-3)","finding":"L1 compilation hides raw_adc_counts, k=2, and calibration_id while retaining conserved scalar truth","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"map_mmhg","canonical_value":"63.5 (\u00b1 1.5, target 75.0, lower 65.0)","unit":"mmHg","views":"v01, v03"},{"metric_id":"peep_cmd_cmh2o","canonical_value":"10.0","unit":"cmH2O","views":"v01, v03"},{"metric_id":"peep_act_cmh2o","canonical_value":"10.2 (\u00b1 0.2)","unit":"cmH2O","views":"v01, v03"},{"metric_id":"spo2_pct","canonical_value":"94.2 (\u00b1 0.8, lower 92.0)","unit":"%","views":"v01, v03"},{"metric_id":"dropout_duration_s","canonical_value":"2.4 (T_A=6.4 s, T_B=8.8 s)","unit":"s","views":"v01"},{"metric_id":"overall_hr","canonical_value":"0.74 ([0.61, 0.90])","unit":"1","views":"v02"},{"metric_id":"age_ge65_hr","canonical_value":"0.79 ([0.62, 1.01])","unit":"1","views":"v02"},{"metric_id":"sofa_ge8_hr","canonical_value":"0.68 ([0.52, 0.89])","unit":"1","views":"v02"},{"metric_id":"lactate_gt2_hr","canonical_value":"0.71 ([0.54, 0.93])","unit":"1","views":"v02"},{"metric_id":"aki_rate_pct","canonical_value":"11.4 (\u00b1 1.8, control 14.8)","unit":"%","views":"v02"}]}]}
   </script>
 
   <template id="tpl-view-v01-icu-bedside-terminal">
@@ -3109,10 +3825,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       <span class="va-kicker">ADULT ICU · BED 04 · SEPSIS PROTOCOL</span>
       <h1 class="v9-masthead-title">Hemodynamic &amp; Ventilator Telemetry</h1>
     </div>
-    <div class="v9-masthead-tags">
-      <span class="va-pill" data-variant="tag">PT-0482</span>
-      <span class="va-pill" data-variant="status" data-state="warn">CAUTION</span>
-    </div>
   </header>
 
   <section id="v01-vent" aria-label="Bedside Vital and Ventilator Scalars">
@@ -3123,36 +3835,28 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">(63.5 ± 1.5) mmHg</span><span class="qe-scalar-calc qe-unit">MAP / mmHg</span></div>
   <div class="qe-scalar-disp"><span class="va-pill" data-variant="status" data-state="warn">CAUTION</span><span class="qe-scalar-margin va-nums">Margin -2.3%</span></div>
 </div>
-<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Mean Arterial Pressure (Radial Arterial Line)"><svg class="qe-svg qe-svg-680 qe-gauge-svg" viewBox="0 0 680 92" role="img" aria-label="Mean Arterial Pressure (Radial Arterial Line)">
-<rect data-role="gauge-track" x="38.0" y="38.0" width="604.0" height="14.0" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-<rect data-role="gauge-zone" x="38.0" y="39.0" width="43.1" height="12.0" fill="var(--status-err-bg)"/>
-<rect data-role="gauge-zone" x="598.9" y="39.0" width="43.1" height="12.0" fill="var(--status-err-bg)"/>
-<rect data-role="gauge-zone" x="81.1" y="39.0" width="86.3" height="12.0" fill="var(--status-warn-bg)"/>
-<rect data-role="gauge-zone" x="469.4" y="39.0" width="129.4" height="12.0" fill="var(--status-warn-bg)"/>
-<line x1="81.1" y1="35.0" x2="81.1" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="598.9" y1="35.0" x2="598.9" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="167.4" y1="35.0" x2="167.4" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="469.4" y1="35.0" x2="469.4" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="38.0" y1="52.0" x2="38.0" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="38.0" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">50</text>
-<line x1="124.3" y1="52.0" x2="124.3" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="124.3" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">60</text>
-<line x1="210.6" y1="52.0" x2="210.6" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="210.6" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">70</text>
-<line x1="296.9" y1="52.0" x2="296.9" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="296.9" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">80</text>
-<line x1="383.1" y1="52.0" x2="383.1" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="383.1" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">90</text>
-<line x1="469.4" y1="52.0" x2="469.4" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="469.4" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">100</text>
-<line x1="555.7" y1="52.0" x2="555.7" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="555.7" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">110</text>
-<line x1="642.0" y1="52.0" x2="642.0" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="642.0" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">120</text>
-<polygon points="253.7,37.0 248.7,29.0 258.7,29.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.4"/>
-<text x="253.7" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">CMD 75</text>
-<polygon points="154.5,40.0 149.0,58.0 160.0,58.0" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="154.5" y="88.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="700" fill="var(--status-warn)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">ACT 63.5 mmHg</text>
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Mean Arterial Pressure (Radial Arterial Line)"><svg class="qe-svg qe-gauge-svg" viewBox="0 0 340 72" role="img" aria-label="Mean Arterial Pressure (Radial Arterial Line)">
+<rect data-role="gauge-track" x="24.0" y="25.0" width="292.0" height="10.0" rx="2.5" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+<rect data-role="gauge-zone" x="24.0" y="26.0" width="20.9" height="8.0" fill="var(--status-err-bg)"/>
+<rect data-role="gauge-zone" x="295.1" y="26.0" width="20.9" height="8.0" fill="var(--status-err-bg)"/>
+<rect data-role="gauge-zone" x="44.9" y="26.0" width="41.7" height="8.0" fill="var(--status-warn-bg)"/>
+<rect data-role="gauge-zone" x="232.6" y="26.0" width="62.6" height="8.0" fill="var(--status-warn-bg)"/>
+<line x1="44.9" y1="22.5" x2="44.9" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="295.1" y1="22.5" x2="295.1" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="86.6" y1="22.5" x2="86.6" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="232.6" y1="22.5" x2="232.6" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="65.7" y1="35.0" x2="65.7" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="65.7" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">60</text>
+<line x1="149.1" y1="35.0" x2="149.1" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="149.1" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">80</text>
+<line x1="232.6" y1="35.0" x2="232.6" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="232.6" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">100</text>
+<line x1="316.0" y1="35.0" x2="316.0" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="316.0" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">120</text>
+<polygon points="128.3,24.0 124.3,18.0 132.3,18.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.2"/>
+<text x="128.3" y="15.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="600" fill="var(--text-secondary)">CMD 75</text>
+<polygon points="80.3,27.0 75.8,39.5 84.8,39.5" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="80.3" y="66.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.8" font-weight="700" fill="var(--status-warn)">ACT 63.5 mmHg</text>
 </svg></div>
 <details class="qe-cal-footer"><summary class="qe-cal-summary va-nums">Calibration &amp; Sensor Provenance (k=2 · NIST)</summary><div class="qe-scalar-meta va-nums">Expanded Uncertainty: (63.5 ± 1.5) mmHg | k=2.0 | 95.45% CI</div><div class="qe-scalar-prov va-nums">Sensor: ART-LINE-04A | Cal: CAL-NIST-ICU-2026-401 | Raw ADC: 16256 cts</div></details>
 </div>
@@ -3163,28 +3867,28 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">(10.20 ± 0.20) cmH2O</span><span class="qe-scalar-calc qe-unit">PEEP / cmH2O</span></div>
   <div class="qe-scalar-disp"><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span><span class="qe-scalar-margin va-nums">Margin +95.0%</span></div>
 </div>
-<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Ventilator PEEP (Commanded vs Actual Circuit Pressure)"><svg class="qe-svg qe-svg-680 qe-gauge-svg" viewBox="0 0 680 92" role="img" aria-label="Ventilator PEEP (Commanded vs Actual Circuit Pressure)">
-<rect data-role="gauge-track" x="38.0" y="38.0" width="604.0" height="14.0" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-<rect data-role="gauge-zone" x="38.0" y="39.0" width="37.8" height="12.0" fill="var(--status-err-bg)"/>
-<rect data-role="gauge-zone" x="566.5" y="39.0" width="75.5" height="12.0" fill="var(--status-err-bg)"/>
-<rect data-role="gauge-zone" x="75.8" y="39.0" width="113.2" height="12.0" fill="var(--status-warn-bg)"/>
-<rect data-role="gauge-zone" x="415.5" y="39.0" width="151.0" height="12.0" fill="var(--status-warn-bg)"/>
-<line x1="75.8" y1="35.0" x2="75.8" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="566.5" y1="35.0" x2="566.5" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="189.0" y1="35.0" x2="189.0" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="415.5" y1="35.0" x2="415.5" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="75.8" y1="52.0" x2="75.8" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="75.8" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">5</text>
-<line x1="264.5" y1="52.0" x2="264.5" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="264.5" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">10</text>
-<line x1="453.2" y1="52.0" x2="453.2" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="453.2" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">15</text>
-<line x1="642.0" y1="52.0" x2="642.0" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="642.0" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">20</text>
-<polygon points="264.5,37.0 259.5,29.0 269.5,29.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.4"/>
-<text x="264.5" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">CMD 10</text>
-<polygon points="272.0,40.0 266.5,58.0 277.5,58.0" fill="var(--status-ok)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="272.0" y="88.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="700" fill="var(--status-ok)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">ACT 10.2 cmH2O</text>
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Ventilator PEEP (Commanded vs Actual Circuit Pressure)"><svg class="qe-svg qe-gauge-svg" viewBox="0 0 340 72" role="img" aria-label="Ventilator PEEP (Commanded vs Actual Circuit Pressure)">
+<rect data-role="gauge-track" x="24.0" y="25.0" width="292.0" height="10.0" rx="2.5" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+<rect data-role="gauge-zone" x="24.0" y="26.0" width="18.2" height="8.0" fill="var(--status-err-bg)"/>
+<rect data-role="gauge-zone" x="279.5" y="26.0" width="36.5" height="8.0" fill="var(--status-err-bg)"/>
+<rect data-role="gauge-zone" x="42.2" y="26.0" width="54.8" height="8.0" fill="var(--status-warn-bg)"/>
+<rect data-role="gauge-zone" x="206.5" y="26.0" width="73.0" height="8.0" fill="var(--status-warn-bg)"/>
+<line x1="42.2" y1="22.5" x2="42.2" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="279.5" y1="22.5" x2="279.5" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="97.0" y1="22.5" x2="97.0" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="206.5" y1="22.5" x2="206.5" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="42.2" y1="35.0" x2="42.2" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="42.2" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">5</text>
+<line x1="133.5" y1="35.0" x2="133.5" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="133.5" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">10</text>
+<line x1="224.8" y1="35.0" x2="224.8" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="224.8" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">15</text>
+<line x1="316.0" y1="35.0" x2="316.0" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="316.0" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">20</text>
+<polygon points="133.5,24.0 129.5,18.0 137.5,18.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.2"/>
+<text x="133.5" y="15.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="600" fill="var(--text-secondary)">CMD 10</text>
+<polygon points="137.1,27.0 132.6,39.5 141.6,39.5" fill="var(--status-ok)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="137.1" y="66.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.8" font-weight="700" fill="var(--status-ok)">ACT 10.2 cmH2O</text>
 </svg></div>
 <details class="qe-cal-footer"><summary class="qe-cal-summary va-nums">Calibration &amp; Sensor Provenance (k=2 · NIST)</summary><div class="qe-scalar-meta va-nums">Expanded Uncertainty: (10.20 ± 0.20) cmH2O | k=2.0 | 95.45% CI</div><div class="qe-scalar-prov va-nums">Sensor: VENT-PNEUM-04B | Cal: CAL-ISO80601-VENT-2026-118 | Raw ADC: 8192 cts</div></details>
 </div>
@@ -3195,34 +3899,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">(94.20 ± 0.80)%</span><span class="qe-scalar-calc qe-unit">SpO2 / %</span></div>
   <div class="qe-scalar-disp"><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span><span class="qe-scalar-margin va-nums">Margin +55.0%</span></div>
 </div>
-<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Pulse Oximetry Oxygen Saturation (SpO2)"><svg class="qe-svg qe-svg-680 qe-gauge-svg" viewBox="0 0 680 92" role="img" aria-label="Pulse Oximetry Oxygen Saturation (SpO2)">
-<rect data-role="gauge-track" x="38.0" y="38.0" width="604.0" height="14.0" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
-<rect data-role="gauge-zone" x="38.0" y="39.0" width="120.8" height="12.0" fill="var(--status-err-bg)"/>
-<rect data-role="gauge-zone" x="158.8" y="39.0" width="161.1" height="12.0" fill="var(--status-warn-bg)"/>
-<line x1="158.8" y1="35.0" x2="158.8" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="642.0" y1="35.0" x2="642.0" y2="55.0" stroke="var(--status-danger)" stroke-width="1.6"/>
-<line x1="319.9" y1="35.0" x2="319.9" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="642.0" y1="35.0" x2="642.0" y2="55.0" stroke="var(--status-warn)" stroke-width="1.6"/>
-<line x1="78.3" y1="52.0" x2="78.3" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="78.3" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">86</text>
-<line x1="158.8" y1="52.0" x2="158.8" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="158.8" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">88</text>
-<line x1="239.3" y1="52.0" x2="239.3" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="239.3" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">90</text>
-<line x1="319.9" y1="52.0" x2="319.9" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="319.9" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">92</text>
-<line x1="400.4" y1="52.0" x2="400.4" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="400.4" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">94</text>
-<line x1="480.9" y1="52.0" x2="480.9" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="480.9" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">96</text>
-<line x1="561.5" y1="52.0" x2="561.5" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="561.5" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">98</text>
-<line x1="642.0" y1="52.0" x2="642.0" y2="57.0" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="642.0" y="71.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="500" fill="var(--text-muted)">100</text>
-<polygon points="480.9,37.0 475.9,29.0 485.9,29.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.4"/>
-<text x="480.9" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">CMD 96</text>
-<polygon points="408.5,40.0 403.0,58.0 414.0,58.0" fill="var(--status-ok)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="408.5" y="88.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.5" font-weight="700" fill="var(--status-ok)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">ACT 94.2%</text>
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Pulse Oximetry Oxygen Saturation (SpO2)"><svg class="qe-svg qe-gauge-svg" viewBox="0 0 340 72" role="img" aria-label="Pulse Oximetry Oxygen Saturation (SpO2)">
+<rect data-role="gauge-track" x="24.0" y="25.0" width="292.0" height="10.0" rx="2.5" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
+<rect data-role="gauge-zone" x="24.0" y="26.0" width="58.4" height="8.0" fill="var(--status-err-bg)"/>
+<rect data-role="gauge-zone" x="82.4" y="26.0" width="77.9" height="8.0" fill="var(--status-warn-bg)"/>
+<line x1="82.4" y1="22.5" x2="82.4" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="316.0" y1="22.5" x2="316.0" y2="37.5" stroke="var(--status-danger)" stroke-width="1.5"/>
+<line x1="160.3" y1="22.5" x2="160.3" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="316.0" y1="22.5" x2="316.0" y2="37.5" stroke="var(--status-warn)" stroke-width="1.5"/>
+<line x1="24.0" y1="35.0" x2="24.0" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="24.0" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">85</text>
+<line x1="121.3" y1="35.0" x2="121.3" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="121.3" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">90</text>
+<line x1="218.7" y1="35.0" x2="218.7" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="218.7" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">95</text>
+<line x1="316.0" y1="35.0" x2="316.0" y2="38.5" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="316.0" y="50.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="500" fill="var(--text-muted)">100</text>
+<polygon points="238.1,24.0 234.1,18.0 242.1,18.0" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.2"/>
+<text x="238.1" y="15.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.7" font-weight="600" fill="var(--text-secondary)">CMD 96</text>
+<polygon points="203.1,27.0 198.6,39.5 207.6,39.5" fill="var(--status-ok)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="203.1" y="66.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.8" font-weight="700" fill="var(--status-ok)">ACT 94.2%</text>
 </svg></div>
 <details class="qe-cal-footer"><summary class="qe-cal-summary va-nums">Calibration &amp; Sensor Provenance (k=2 · NIST)</summary><div class="qe-scalar-meta va-nums">Expanded Uncertainty: (94.20 ± 0.80)% | k=2.0 | 95.45% CI</div><div class="qe-scalar-prov va-nums">Sensor: OXI-PLETH-04C | Cal: CAL-ISO80601-OXI-2026-092 | Raw ADC: 12058 cts</div></details>
 </div>
@@ -3232,7 +3928,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v01-hemo" aria-label="Synchronized Hemodynamic Scope">
     <figure class="va-figure-card qe-figure v01-scope-fig" id="v01-icu-hemodynamic-scope" data-qe-modality="waveform" data-qe-rigor="L3" data-qe-medium="m4" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">ICU Bed-04 Synchronized Multi-Channel Hemodynamic &amp; Capnography Scope</h2></div><div class="qe-waveform-wrap" data-rigor="L3" data-medium="m4">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">MON-ICU-04-SYNTH</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">FW</span><span class="qe-cond-val va-nums">v6.4.2</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">21.5 °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">NTP-PTP-CLINICAL-01</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">250.00 Hz</span></div></div>
-<div class="va-figure-scroll qe-scope-scroll" tabindex="0" role="region" aria-label="ICU Bed-04 Synchronized Multi-Channel Hemodynamic &amp; Capnography Scope"><svg class="qe-svg qe-svg-720 qe-waveform-svg" data-qe-scope="true" tabindex="0" viewBox="0 0 720 400" role="img" aria-label="ICU Bed-04 Synchronized Multi-Channel Hemodynamic &amp; Capnography Scope"><line x1="100.8" y1="356.0" x2="100.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="117.5" y1="356.0" x2="117.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="134.2" y1="356.0" x2="134.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="167.8" y1="356.0" x2="167.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="184.5" y1="356.0" x2="184.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="201.2" y1="356.0" x2="201.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="234.8" y1="356.0" x2="234.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="251.5" y1="356.0" x2="251.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="268.2" y1="356.0" x2="268.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="301.8" y1="356.0" x2="301.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="318.5" y1="356.0" x2="318.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="335.2" y1="356.0" x2="335.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="368.8" y1="356.0" x2="368.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="385.5" y1="356.0" x2="385.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="402.2" y1="356.0" x2="402.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="435.8" y1="356.0" x2="435.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="452.5" y1="356.0" x2="452.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="469.2" y1="356.0" x2="469.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="502.8" y1="356.0" x2="502.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="519.5" y1="356.0" x2="519.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="536.2" y1="356.0" x2="536.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="569.8" y1="356.0" x2="569.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="586.5" y1="356.0" x2="586.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="603.2" y1="356.0" x2="603.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><text x="84.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><text x="151.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">2</text><text x="218.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">4</text><text x="285.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">6</text><text x="352.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">8</text><text x="419.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">10</text><text x="486.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">12</text><text x="553.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">14</text><text x="620.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">16</text><text x="352.0" y="392.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Elapsed Bedside Sweep Time, t / s</text><rect data-role="channel" x="84.0" y="46.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="46.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="68.0" x2="620.0" y2="68.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="68.0" x2="100.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="68.0" x2="117.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="68.0" x2="134.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="68.0" x2="167.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="68.0" x2="184.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="68.0" x2="201.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="68.0" x2="234.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="68.0" x2="251.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="68.0" x2="268.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="68.0" x2="301.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="68.0" x2="318.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="68.0" x2="335.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="68.0" x2="368.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="68.0" x2="385.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="68.0" x2="402.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="68.0" x2="435.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="68.0" x2="452.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="68.0" x2="469.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="68.0" x2="502.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="68.0" x2="519.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="68.0" x2="536.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="68.0" x2="569.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="68.0" x2="586.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="68.0" x2="603.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="68.0" x2="84.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="68.0" x2="151.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="68.0" x2="218.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="68.0" x2="285.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="68.0" x2="352.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="68.0" x2="419.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="68.0" x2="486.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="68.0" x2="553.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="68.0" x2="620.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="61.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">CH1</text><text x="92.0" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Arterial Line (ABP) (P<tspan baseline-shift="sub" font-size="8.8">art</tspan> / mmHg)</text><line x1="84.0" y1="104.0" x2="620.0" y2="104.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="72.0" x2="84.0" y2="72.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="104.0" x2="84.0" y2="104.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="136.0" x2="84.0" y2="136.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="81.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">160</text><text x="77.0" y="108.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">80</text><text x="77.0" y="137.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><line x1="84.0" y1="110.0" x2="625.0" y2="110.0" stroke="var(--status-warn)" stroke-width="1.2" stroke-dasharray="4,3"/><text x="628.0" y="114.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">65 mmHg</text><rect data-role="dropout-zone" x="298.4" y="69.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="68.0" x2="298.4" y2="140.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="68.0" x2="378.8" y2="140.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 108.8 L 97.4 97.6 L 110.8 107.2 L 124.2 112.8 L 137.6 98.4 L 151.0 108.4 L 164.4 113.2 L 177.8 99.2 L 191.2 109.2 L 204.6 113.6 L 218.0 100.0 L 231.4 109.6 L 244.8 114.0 L 258.2 100.8 L 271.6 110.0 L 285.0 114.4 L 298.4 110.6 M 378.8 110.6 L 392.2 101.6 L 405.6 110.4 L 419.0 114.4 L 432.4 101.2 L 445.8 110.2 L 459.2 114.0 L 472.6 100.4 L 486.0 110.0 L 499.4 113.6 L 512.8 99.6 L 526.2 109.6 L 539.6 113.2 L 553.0 99.2 L 566.4 109.2 L 579.8 112.8 L 593.2 98.8 L 620.0 108.8" fill="none" stroke="var(--status-warn)" stroke-width="1.6" stroke-linejoin="round"/><rect data-role="channel" x="84.0" y="154.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="154.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="176.0" x2="620.0" y2="176.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="176.0" x2="100.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="176.0" x2="117.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="176.0" x2="134.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="176.0" x2="167.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="176.0" x2="184.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="176.0" x2="201.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="176.0" x2="234.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="176.0" x2="251.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="176.0" x2="268.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="176.0" x2="301.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="176.0" x2="318.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="176.0" x2="335.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="176.0" x2="368.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="176.0" x2="385.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="176.0" x2="402.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="176.0" x2="435.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="176.0" x2="452.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="176.0" x2="469.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="176.0" x2="502.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="176.0" x2="519.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="176.0" x2="536.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="176.0" x2="569.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="176.0" x2="586.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="176.0" x2="603.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="176.0" x2="84.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="176.0" x2="151.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="176.0" x2="218.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="176.0" x2="285.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="176.0" x2="352.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="176.0" x2="419.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="176.0" x2="486.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="176.0" x2="553.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="176.0" x2="620.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="169.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">CH2</text><text x="92.0" y="169.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">SpO2 Pleth (SpO2_pleth / %)</text><line x1="84.0" y1="212.0" x2="620.0" y2="212.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="180.0" x2="84.0" y2="180.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="212.0" x2="84.0" y2="212.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="244.0" x2="84.0" y2="244.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="189.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">100</text><text x="77.0" y="216.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">95</text><text x="77.0" y="245.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">90</text><rect data-role="dropout-zone" x="298.4" y="177.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="176.0" x2="298.4" y2="248.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="176.0" x2="378.8" y2="248.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 232.5 L 90.7 217.1 L 97.4 192.2 L 104.1 213.3 L 110.8 206.9 L 117.5 224.2 L 124.2 233.8 L 130.9 218.4 L 137.6 193.4 L 144.3 214.6 L 151.0 208.2 L 157.7 224.8 L 164.4 234.4 L 171.1 219.7 L 177.8 194.7 L 184.5 215.2 L 191.2 208.8 L 197.9 225.4 L 204.6 235.0 L 211.3 220.3 L 218.0 196.0 L 224.7 215.8 L 231.4 210.1 L 238.1 226.1 L 244.8 235.0 L 251.5 221.0 L 258.2 196.6 L 264.9 216.5 L 271.6 210.7 L 278.3 226.7 L 285.0 234.4 L 291.7 221.6 L 298.4 217.1 M 378.8 218.4 L 385.5 211.4 L 392.2 196.6 L 398.9 216.5 L 405.6 210.7 L 412.3 226.1 L 419.0 234.4 L 425.7 220.3 L 432.4 195.4 L 439.1 215.2 L 445.8 209.4 L 452.5 225.4 L 459.2 233.8 L 465.9 219.0 L 472.6 194.1 L 479.3 214.6 L 486.0 208.8 L 492.7 224.8 L 499.4 233.1 L 506.1 218.4 L 512.8 192.8 L 519.5 213.9 L 526.2 208.2 L 532.9 224.2 L 539.6 233.1 L 546.3 217.8 L 553.0 192.2 L 559.7 213.3 L 566.4 207.5 L 573.1 224.2 L 579.8 232.5 L 586.5 217.8 L 593.2 192.8 L 599.9 213.9 L 606.6 208.2 L 620.0 217.1" fill="none" stroke="var(--accent-focal)" stroke-width="1.6" stroke-linejoin="round"/><rect data-role="channel" x="84.0" y="262.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="262.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="284.0" x2="620.0" y2="284.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="284.0" x2="100.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="284.0" x2="117.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="284.0" x2="134.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="284.0" x2="167.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="284.0" x2="184.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="284.0" x2="201.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="284.0" x2="234.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="284.0" x2="251.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="284.0" x2="268.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="284.0" x2="301.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="284.0" x2="318.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="284.0" x2="335.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="284.0" x2="368.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="284.0" x2="385.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="284.0" x2="402.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="284.0" x2="435.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="284.0" x2="452.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="284.0" x2="469.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="284.0" x2="502.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="284.0" x2="519.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="284.0" x2="536.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="284.0" x2="569.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="284.0" x2="586.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="284.0" x2="603.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="284.0" x2="84.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="284.0" x2="151.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="284.0" x2="218.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="284.0" x2="285.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="284.0" x2="352.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="284.0" x2="419.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="284.0" x2="486.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="284.0" x2="553.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="284.0" x2="620.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="277.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-ok)">CH3</text><text x="92.0" y="277.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">End-Tidal CO2 (ETCO2) (P<tspan baseline-shift="sub" font-size="8.8">etCO2</tspan> / mmHg)</text><line x1="84.0" y1="320.0" x2="620.0" y2="320.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="288.0" x2="84.0" y2="288.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="320.0" x2="84.0" y2="320.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="352.0" x2="84.0" y2="352.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="297.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">50</text><text x="77.0" y="324.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">25</text><text x="77.0" y="353.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><rect data-role="dropout-zone" x="298.4" y="285.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="284.0" x2="298.4" y2="356.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="284.0" x2="378.8" y2="356.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 349.4 L 110.8 308.5 L 137.6 303.4 L 164.4 302.7 L 191.2 348.8 L 218.0 350.1 L 244.8 307.2 L 271.6 303.1 L 298.4 302.8 M 378.8 305.9 L 405.6 303.4 L 432.4 348.2 L 459.2 349.7 L 486.0 306.6 L 512.8 303.2 L 539.6 302.8 L 566.4 349.2 L 593.2 307.5 L 620.0 303.4" fill="none" stroke="var(--status-ok)" stroke-width="1.6" stroke-linejoin="round"/><text x="294.4" y="14.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--tint-violet-fg)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">T<tspan baseline-shift="sub" font-size="9.0">A</tspan>: 6.40 s</text><text x="382.8" y="14.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-primary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">T<tspan baseline-shift="sub" font-size="9.0">B</tspan>: 8.80 s</text><line x1="298.4" y1="37.0" x2="298.4" y2="44.0" stroke="var(--status-danger)" stroke-width="1.3"/><line x1="378.8" y1="37.0" x2="378.8" y2="44.0" stroke="var(--status-danger)" stroke-width="1.3"/><line x1="298.4" y1="41.0" x2="378.8" y2="41.0" stroke="var(--status-danger)" stroke-width="1.2"/><g class="qe-svg-knockout"><rect class="qe-svg-knockout-bg" x="286.5" y="23.5" width="104.2" height="17.0" rx="2" fill="var(--bg-surface)" stroke="none"/><text x="338.6" y="36.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)">DROPOUT 2.4 s</text></g><line class="qe-live-cursor" x1="84.0" y1="46.0" x2="84.0" y2="356.0" stroke="var(--accent-focal)" stroke-width="1.3" visibility="hidden"/></svg></div><div class="qe-scope-readout va-nums" data-default="T_A = 6.40 s  |  T_B = 8.80 s  |  Δt = 2.40 s (1/Δt = 0.417 Hz)" aria-live="polite">T_A = 6.40 s  |  T_B = 8.80 s  |  Δt = 2.40 s (1/Δt = 0.417 Hz)</div><script type="application/json" class="qe-scope-data">{"t_min":0.0,"t_span":16.0,"t_unit":"s","max_gap":1.2000000000000002,"x0":84.0,"pw":536.0,"channels":[{"id":"ch1","name":"Arterial Line (ABP)","unit":"mmHg","samples":[[0.0,68.0],[0.4,96.0],[0.8,72.0],[1.2,58.0],[1.6,94.0],[2.0,69.0],[2.4,57.0],[2.8,92.0],[3.2,67.0],[3.6,56.0],[4.0,90.0],[4.4,66.0],[4.8,55.0],[5.2,88.0],[5.6,65.0],[6.0,54.0],[6.4,63.5],[6.6,null],[8.8,63.5],[9.2,86.0],[9.6,64.0],[10.0,54.0],[10.4,87.0],[10.8,64.5],[11.2,55.0],[11.6,89.0],[12.0,65.0],[12.4,56.0],[12.8,91.0],[13.2,66.0],[13.6,57.0],[14.0,92.0],[14.4,67.0],[14.8,58.0],[15.2,93.0],[16.0,68.0]]},{"id":"ch2","name":"SpO2 Pleth","unit":"%","samples":[[0.0,91.8],[0.2,94.2],[0.4,98.1],[0.6,94.8],[0.8,95.8],[1.0,93.1],[1.2,91.6],[1.4,94.0],[1.6,97.9],[1.8,94.6],[2.0,95.6],[2.2,93.0],[2.4,91.5],[2.6,93.8],[2.8,97.7],[3.0,94.5],[3.2,95.5],[3.4,92.9],[3.6,91.4],[3.8,93.7],[4.0,97.5],[4.2,94.4],[4.4,95.3],[4.6,92.8],[4.8,91.4],[5.0,93.6],[5.2,97.4],[5.4,94.3],[5.6,95.2],[5.8,92.7],[6.0,91.5],[6.2,93.5],[6.4,94.2],[6.6,null],[8.8,94.0],[9.0,95.1],[9.2,97.4],[9.4,94.3],[9.6,95.2],[9.8,92.8],[10.0,91.5],[10.2,93.7],[10.4,97.6],[10.6,94.5],[10.8,95.4],[11.0,92.9],[11.2,91.6],[11.4,93.9],[11.6,97.8],[11.8,94.6],[12.0,95.5],[12.2,93.0],[12.4,91.7],[12.6,94.0],[12.8,98.0],[13.0,94.7],[13.2,95.6],[13.4,93.1],[13.6,91.7],[13.8,94.1],[14.0,98.1],[14.2,94.8],[14.4,95.7],[14.6,93.1],[14.8,91.8],[15.0,94.1],[15.2,98.0],[15.4,94.7],[15.6,95.6],[16.0,94.2]]},{"id":"ch3","name":"End-Tidal CO2 (ETCO2)","unit":"mmHg","samples":[[0.0,2.0],[0.8,34.0],[1.6,38.0],[2.4,38.5],[3.2,2.5],[4.0,1.5],[4.8,35.0],[5.6,38.2],[6.4,38.4],[6.6,null],[8.8,36.0],[9.6,38.0],[10.4,3.0],[11.2,1.8],[12.0,35.5],[12.8,38.1],[13.6,38.4],[14.4,2.2],[15.2,34.8],[16.0,38.0]]}]}</script>
+<div class="va-figure-scroll qe-scope-scroll" tabindex="0" role="region" aria-label="ICU Bed-04 Synchronized Multi-Channel Hemodynamic &amp; Capnography Scope"><svg class="qe-svg qe-svg-720 qe-waveform-svg" data-qe-scope="true" tabindex="0" viewBox="0 0 720 400" role="img" aria-label="ICU Bed-04 Synchronized Multi-Channel Hemodynamic &amp; Capnography Scope"><line x1="100.8" y1="356.0" x2="100.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="117.5" y1="356.0" x2="117.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="134.2" y1="356.0" x2="134.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="167.8" y1="356.0" x2="167.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="184.5" y1="356.0" x2="184.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="201.2" y1="356.0" x2="201.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="234.8" y1="356.0" x2="234.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="251.5" y1="356.0" x2="251.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="268.2" y1="356.0" x2="268.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="301.8" y1="356.0" x2="301.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="318.5" y1="356.0" x2="318.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="335.2" y1="356.0" x2="335.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="368.8" y1="356.0" x2="368.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="385.5" y1="356.0" x2="385.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="402.2" y1="356.0" x2="402.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="435.8" y1="356.0" x2="435.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="452.5" y1="356.0" x2="452.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="469.2" y1="356.0" x2="469.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="502.8" y1="356.0" x2="502.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="519.5" y1="356.0" x2="519.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="536.2" y1="356.0" x2="536.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="569.8" y1="356.0" x2="569.8" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="586.5" y1="356.0" x2="586.5" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><line x1="603.2" y1="356.0" x2="603.2" y2="360.0" stroke="var(--border-strong)" stroke-width="0.8"/><text x="84.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><text x="151.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">2</text><text x="218.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">4</text><text x="285.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">6</text><text x="352.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">8</text><text x="419.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">10</text><text x="486.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">12</text><text x="553.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">14</text><text x="620.0" y="374.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">16</text><text x="352.0" y="392.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Elapsed Bedside Sweep Time, t / s</text><rect data-role="channel" x="84.0" y="46.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="46.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="68.0" x2="620.0" y2="68.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="68.0" x2="100.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="68.0" x2="117.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="68.0" x2="134.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="68.0" x2="167.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="68.0" x2="184.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="68.0" x2="201.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="68.0" x2="234.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="68.0" x2="251.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="68.0" x2="268.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="68.0" x2="301.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="68.0" x2="318.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="68.0" x2="335.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="68.0" x2="368.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="68.0" x2="385.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="68.0" x2="402.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="68.0" x2="435.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="68.0" x2="452.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="68.0" x2="469.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="68.0" x2="502.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="68.0" x2="519.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="68.0" x2="536.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="68.0" x2="569.8" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="68.0" x2="586.5" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="68.0" x2="603.2" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="68.0" x2="84.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="68.0" x2="151.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="68.0" x2="218.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="68.0" x2="285.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="68.0" x2="352.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="68.0" x2="419.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="68.0" x2="486.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="68.0" x2="553.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="68.0" x2="620.0" y2="140.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="61.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">CH1</text><text x="92.0" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Arterial Line (ABP) (P<tspan dy="2.2" font-size="8.8">art</tspan><tspan dy="-2.2"> / mmHg)</tspan></text><line x1="84.0" y1="104.0" x2="620.0" y2="104.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="72.0" x2="84.0" y2="72.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="104.0" x2="84.0" y2="104.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="136.0" x2="84.0" y2="136.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="81.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">160</text><text x="77.0" y="108.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">80</text><text x="77.0" y="137.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><line x1="84.0" y1="110.0" x2="625.0" y2="110.0" stroke="var(--status-warn)" stroke-width="1.2" stroke-dasharray="4,3"/><text x="628.0" y="114.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">65 mmHg</text><rect data-role="dropout-zone" x="298.4" y="69.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="68.0" x2="298.4" y2="140.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="68.0" x2="378.8" y2="140.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 108.8 L 97.4 97.6 L 110.8 107.2 L 124.2 112.8 L 137.6 98.4 L 151.0 108.4 L 164.4 113.2 L 177.8 99.2 L 191.2 109.2 L 204.6 113.6 L 218.0 100.0 L 231.4 109.6 L 244.8 114.0 L 258.2 100.8 L 271.6 110.0 L 285.0 114.4 L 298.4 110.6 M 378.8 110.6 L 392.2 101.6 L 405.6 110.4 L 419.0 114.4 L 432.4 101.2 L 445.8 110.2 L 459.2 114.0 L 472.6 100.4 L 486.0 110.0 L 499.4 113.6 L 512.8 99.6 L 526.2 109.6 L 539.6 113.2 L 553.0 99.2 L 566.4 109.2 L 579.8 112.8 L 593.2 98.8 L 620.0 108.8" fill="none" stroke="var(--status-warn)" stroke-width="1.6" stroke-linejoin="round"/><rect data-role="channel" x="84.0" y="154.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="154.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="176.0" x2="620.0" y2="176.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="176.0" x2="100.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="176.0" x2="117.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="176.0" x2="134.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="176.0" x2="167.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="176.0" x2="184.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="176.0" x2="201.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="176.0" x2="234.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="176.0" x2="251.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="176.0" x2="268.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="176.0" x2="301.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="176.0" x2="318.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="176.0" x2="335.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="176.0" x2="368.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="176.0" x2="385.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="176.0" x2="402.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="176.0" x2="435.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="176.0" x2="452.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="176.0" x2="469.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="176.0" x2="502.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="176.0" x2="519.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="176.0" x2="536.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="176.0" x2="569.8" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="176.0" x2="586.5" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="176.0" x2="603.2" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="176.0" x2="84.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="176.0" x2="151.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="176.0" x2="218.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="176.0" x2="285.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="176.0" x2="352.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="176.0" x2="419.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="176.0" x2="486.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="176.0" x2="553.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="176.0" x2="620.0" y2="248.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="169.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">CH2</text><text x="92.0" y="169.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">SpO2 Plethysmograph (Pleth / %)</text><line x1="84.0" y1="212.0" x2="620.0" y2="212.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="180.0" x2="84.0" y2="180.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="212.0" x2="84.0" y2="212.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="244.0" x2="84.0" y2="244.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="189.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">100</text><text x="77.0" y="216.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">95</text><text x="77.0" y="245.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">90</text><rect data-role="dropout-zone" x="298.4" y="177.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="176.0" x2="298.4" y2="248.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="176.0" x2="378.8" y2="248.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 232.5 L 90.7 217.1 L 97.4 192.2 L 104.1 213.3 L 110.8 206.9 L 117.5 224.2 L 124.2 233.8 L 130.9 218.4 L 137.6 193.4 L 144.3 214.6 L 151.0 208.2 L 157.7 224.8 L 164.4 234.4 L 171.1 219.7 L 177.8 194.7 L 184.5 215.2 L 191.2 208.8 L 197.9 225.4 L 204.6 235.0 L 211.3 220.3 L 218.0 196.0 L 224.7 215.8 L 231.4 210.1 L 238.1 226.1 L 244.8 235.0 L 251.5 221.0 L 258.2 196.6 L 264.9 216.5 L 271.6 210.7 L 278.3 226.7 L 285.0 234.4 L 291.7 221.6 L 298.4 217.1 M 378.8 218.4 L 385.5 211.4 L 392.2 196.6 L 398.9 216.5 L 405.6 210.7 L 412.3 226.1 L 419.0 234.4 L 425.7 220.3 L 432.4 195.4 L 439.1 215.2 L 445.8 209.4 L 452.5 225.4 L 459.2 233.8 L 465.9 219.0 L 472.6 194.1 L 479.3 214.6 L 486.0 208.8 L 492.7 224.8 L 499.4 233.1 L 506.1 218.4 L 512.8 192.8 L 519.5 213.9 L 526.2 208.2 L 532.9 224.2 L 539.6 233.1 L 546.3 217.8 L 553.0 192.2 L 559.7 213.3 L 566.4 207.5 L 573.1 224.2 L 579.8 232.5 L 586.5 217.8 L 593.2 192.8 L 599.9 213.9 L 606.6 208.2 L 620.0 217.1" fill="none" stroke="var(--accent-focal)" stroke-width="1.6" stroke-linejoin="round"/><rect data-role="channel" x="84.0" y="262.0" width="536.0" height="94.0" fill="var(--bg-surface)" stroke="var(--border-strong)" stroke-width="1"/><rect data-role="channel-hdr" x="84.5" y="262.5" width="535.0" height="21.5" fill="var(--bg-elevated)"/><line x1="84.0" y1="284.0" x2="620.0" y2="284.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line class="qe-grid-minor qe-m1-only" x1="100.8" y1="284.0" x2="100.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="117.5" y1="284.0" x2="117.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="134.2" y1="284.0" x2="134.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="167.8" y1="284.0" x2="167.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="184.5" y1="284.0" x2="184.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="201.2" y1="284.0" x2="201.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="234.8" y1="284.0" x2="234.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="251.5" y1="284.0" x2="251.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="268.2" y1="284.0" x2="268.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="301.8" y1="284.0" x2="301.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="318.5" y1="284.0" x2="318.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="335.2" y1="284.0" x2="335.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="368.8" y1="284.0" x2="368.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="385.5" y1="284.0" x2="385.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="402.2" y1="284.0" x2="402.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="435.8" y1="284.0" x2="435.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="452.5" y1="284.0" x2="452.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="469.2" y1="284.0" x2="469.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="502.8" y1="284.0" x2="502.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="519.5" y1="284.0" x2="519.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="536.2" y1="284.0" x2="536.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="569.8" y1="284.0" x2="569.8" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="586.5" y1="284.0" x2="586.5" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line class="qe-grid-minor qe-m1-only" x1="603.2" y1="284.0" x2="603.2" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/><line x1="84.0" y1="284.0" x2="84.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="151.0" y1="284.0" x2="151.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="218.0" y1="284.0" x2="218.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="285.0" y1="284.0" x2="285.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="352.0" y1="284.0" x2="352.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="419.0" y1="284.0" x2="419.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="486.0" y1="284.0" x2="486.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="553.0" y1="284.0" x2="553.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><line x1="620.0" y1="284.0" x2="620.0" y2="356.0" stroke="var(--border-hairline)" stroke-width="0.8"/><text x="76.0" y="277.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-ok)">CH3</text><text x="92.0" y="277.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">End-Tidal CO2 (ETCO2) (P<tspan dy="2.2" font-size="8.8">etCO2</tspan><tspan dy="-2.2"> / mmHg)</tspan></text><line x1="84.0" y1="320.0" x2="620.0" y2="320.0" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/><line x1="80.0" y1="288.0" x2="84.0" y2="288.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="320.0" x2="84.0" y2="320.0" stroke="var(--border-strong)" stroke-width="1"/><line x1="80.0" y1="352.0" x2="84.0" y2="352.0" stroke="var(--border-strong)" stroke-width="1"/><text x="77.0" y="297.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">50</text><text x="77.0" y="324.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">25</text><text x="77.0" y="353.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text><rect data-role="dropout-zone" x="298.4" y="285.0" width="80.4" height="70.0" fill="var(--status-err-bg)" opacity="0.55"/><line x1="298.4" y1="284.0" x2="298.4" y2="356.0" stroke="var(--tint-violet-fg)" stroke-width="1.4" stroke-dasharray="5,3"/><line x1="378.8" y1="284.0" x2="378.8" y2="356.0" stroke="var(--accent-primary)" stroke-width="1.4" stroke-dasharray="5,3"/><path d="M 84.0 349.4 L 110.8 308.5 L 137.6 303.4 L 164.4 302.7 L 191.2 348.8 L 218.0 350.1 L 244.8 307.2 L 271.6 303.1 L 298.4 302.8 M 378.8 305.9 L 405.6 303.4 L 432.4 348.2 L 459.2 349.7 L 486.0 306.6 L 512.8 303.2 L 539.6 302.8 L 566.4 349.2 L 593.2 307.5 L 620.0 303.4" fill="none" stroke="var(--status-ok)" stroke-width="1.6" stroke-linejoin="round"/><text x="294.4" y="14.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--tint-violet-fg)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">T<tspan dy="2.2" font-size="8.97">A</tspan><tspan dy="-2.2">: 6.40 s</tspan></text><text x="382.8" y="14.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-primary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">T<tspan dy="2.2" font-size="8.97">B</tspan><tspan dy="-2.2">: 8.80 s</tspan></text><line x1="298.4" y1="37.0" x2="298.4" y2="44.0" stroke="var(--status-danger)" stroke-width="1.3"/><line x1="378.8" y1="37.0" x2="378.8" y2="44.0" stroke="var(--status-danger)" stroke-width="1.3"/><line x1="298.4" y1="41.0" x2="378.8" y2="41.0" stroke="var(--status-danger)" stroke-width="1.2"/><g class="qe-svg-knockout"><rect class="qe-svg-knockout-bg" x="286.5" y="23.5" width="104.2" height="17.0" rx="2" fill="var(--bg-surface)" stroke="none"/><text x="338.6" y="36.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)">DROPOUT 2.4 s</text></g><line class="qe-live-cursor" x1="84.0" y1="46.0" x2="84.0" y2="356.0" stroke="var(--accent-focal)" stroke-width="1.3" visibility="hidden"/></svg></div><div class="qe-scope-readout va-nums" data-default="T_A = 6.40 s  |  T_B = 8.80 s  |  Δt = 2.40 s (1/Δt = 0.417 Hz)" aria-live="polite">T_A = 6.40 s  |  T_B = 8.80 s  |  Δt = 2.40 s (1/Δt = 0.417 Hz)</div><script type="application/json" class="qe-scope-data">{"t_min":0.0,"t_span":16.0,"t_unit":"s","max_gap":1.2000000000000002,"x0":84.0,"pw":536.0,"channels":[{"id":"ch1","name":"Arterial Line (ABP)","unit":"mmHg","samples":[[0.0,68.0],[0.4,96.0],[0.8,72.0],[1.2,58.0],[1.6,94.0],[2.0,69.0],[2.4,57.0],[2.8,92.0],[3.2,67.0],[3.6,56.0],[4.0,90.0],[4.4,66.0],[4.8,55.0],[5.2,88.0],[5.6,65.0],[6.0,54.0],[6.4,63.5],[6.6,null],[8.8,63.5],[9.2,86.0],[9.6,64.0],[10.0,54.0],[10.4,87.0],[10.8,64.5],[11.2,55.0],[11.6,89.0],[12.0,65.0],[12.4,56.0],[12.8,91.0],[13.2,66.0],[13.6,57.0],[14.0,92.0],[14.4,67.0],[14.8,58.0],[15.2,93.0],[16.0,68.0]]},{"id":"ch2","name":"SpO2 Plethysmograph","unit":"%","samples":[[0.0,91.8],[0.2,94.2],[0.4,98.1],[0.6,94.8],[0.8,95.8],[1.0,93.1],[1.2,91.6],[1.4,94.0],[1.6,97.9],[1.8,94.6],[2.0,95.6],[2.2,93.0],[2.4,91.5],[2.6,93.8],[2.8,97.7],[3.0,94.5],[3.2,95.5],[3.4,92.9],[3.6,91.4],[3.8,93.7],[4.0,97.5],[4.2,94.4],[4.4,95.3],[4.6,92.8],[4.8,91.4],[5.0,93.6],[5.2,97.4],[5.4,94.3],[5.6,95.2],[5.8,92.7],[6.0,91.5],[6.2,93.5],[6.4,94.2],[6.6,null],[8.8,94.0],[9.0,95.1],[9.2,97.4],[9.4,94.3],[9.6,95.2],[9.8,92.8],[10.0,91.5],[10.2,93.7],[10.4,97.6],[10.6,94.5],[10.8,95.4],[11.0,92.9],[11.2,91.6],[11.4,93.9],[11.6,97.8],[11.8,94.6],[12.0,95.5],[12.2,93.0],[12.4,91.7],[12.6,94.0],[12.8,98.0],[13.0,94.7],[13.2,95.6],[13.4,93.1],[13.6,91.7],[13.8,94.1],[14.0,98.1],[14.2,94.8],[14.4,95.7],[14.6,93.1],[14.8,91.8],[15.0,94.1],[15.2,98.0],[15.4,94.7],[15.6,95.6],[16.0,94.2]]},{"id":"ch3","name":"End-Tidal CO2 (ETCO2)","unit":"mmHg","samples":[[0.0,2.0],[0.8,34.0],[1.6,38.0],[2.4,38.5],[3.2,2.5],[4.0,1.5],[4.8,35.0],[5.6,38.2],[6.4,38.4],[6.6,null],[8.8,36.0],[9.6,38.0],[10.4,3.0],[11.2,1.8],[12.0,35.5],[12.8,38.1],[13.6,38.4],[14.4,2.2],[15.2,34.8],[16.0,38.0]]}]}</script>
 </div><figcaption class="va-figure-caption">Time-synchronized CH1 Radial Arterial Line (65 mmHg resuscitation floor), CH2 SpO2 Pleth, and CH3 ETCO2 across a 2.4 s motion-artifact dropout with dual inspection cursors T_A and T_B.</figcaption></figure>
   </section>
 
@@ -3321,57 +4017,60 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         <div id="v02-filter-readout" class="v02-filter-readout va-sheet-hide" aria-live="polite">All 4 CONSORT strata shown (ITT n=1,240; Overall HR 0.74 [0.61, 0.90]).</div>
       </section>
 
-      <article id="v02-methods" class="v02-prose-col">
-        <h2>Cohort Design, Null-Crossing Stratification &amp; Renal Safety</h2>
-        <p>Across the intention-to-treat population (n = 1,240, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of 0.74 (95% CI [0.61, 0.90]). Decisive benefit concentrates in high-acuity strata: SOFA &gt;= 8 (n = 486, HR 0.68 [0.52, 0.89]) and Lactate &gt; 2 mmol/L (n = 704, HR 0.71 [0.54, 0.93]).</p>
-        <p>Conversely, the Age &gt;= 65 yr subgroup (n = 612, HR 0.79 [0.62, 1.01]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage &gt;= 2 acute kidney injury decreased to 11.4 ± 1.8% versus 14.8% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
-      </article>
+      <div class="v9-editorial-grid">
+        <article id="v02-methods" class="v02-prose-col">
+          <h2>Cohort Design, Null-Crossing Stratification &amp; Renal Safety</h2>
+          <p>Across the intention-to-treat population (n = 1,240, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of 0.74 (95% CI [0.61, 0.90]). Decisive benefit concentrates in high-acuity strata: SOFA &gt;= 8 (n = 486, HR 0.68 [0.52, 0.89]) and Lactate &gt; 2 mmol/L (n = 704, HR 0.71 [0.54, 0.93]).</p>
+          <p>Conversely, the Age &gt;= 65 yr subgroup (n = 612, HR 0.79 [0.62, 1.01]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage &gt;= 2 acute kidney injury decreased to 11.4 ± 1.8% versus 14.8% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
+        </article>
+        <aside class="v9-params-aside" aria-label="Protocol &amp; DSMB Parameters"><h3>Protocol &amp; DSMB Parameters</h3><dl class="v9-params-list"><div class="v9-param-row"><dt>Trial Identifier</dt><dd class="va-nums">TRIAL-SEPSIS-2026-P3</dd></div><div class="v9-param-row"><dt>Analysis Set</dt><dd class="va-nums">ITT (620 vs. 620, n = 1,240)</dd></div><div class="v9-param-row"><dt>Regression Model</dt><dd class="va-nums">Stratified Cox PH (95% CI)</dd></div><div class="v9-param-row"><dt>Null Crossing Guard</dt><dd class="va-nums">Age &gt;= 65 CI high = 1.01</dd></div><div class="v9-param-row"><dt>Renal Safety WATCH</dt><dd class="va-nums">MAP &lt; 65 mmHg (8.6% vs 11.2%)</dd></div></dl></aside>
+      </div>
     </div>
 
     <div class="v02-right-page">
       <section id="v02-forest" class="v02-bleed-block" aria-label="CONSORT Subgroup Forest Plot">
         <figure class="va-figure-card qe-figure" id="v02-trial-consort-forest" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">TRIAL-SEPSIS-2026-P3</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">FW</span><span class="qe-cond-val va-nums">SAP-v2.4-ITT</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">21.0 °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">DSMB-LOCK-2026-11</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">1.00 Hz</span></div></div>
-<div class="va-figure-scroll" tabindex="0" role="region" aria-label="CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 186" role="img" aria-label="CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot">
-<line x1="196.0" y1="26.0" x2="196.0" y2="138.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
-<text x="196.0" y="156.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0.4</text>
-<line x1="277.5" y1="26.0" x2="277.5" y2="138.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
-<text x="277.5" y="156.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0.6</text>
-<line x1="359.0" y1="26.0" x2="359.0" y2="138.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
-<text x="359.0" y="156.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0.8</text>
-<line x1="440.5" y1="26.0" x2="440.5" y2="138.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
-<text x="440.5" y="156.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">1.0</text>
-<line x1="522.0" y1="26.0" x2="522.0" y2="138.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
-<text x="522.0" y="156.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">1.2</text>
-<line x1="440.5" y1="26.0" x2="440.5" y2="138.0" stroke="var(--text-primary)" stroke-width="1.4" stroke-dasharray="5,3"/>
-<rect data-role="frame" x="196.0" y="26.0" width="326.0" height="112.0" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
-<text x="359.0" y="176.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">28-Day Mortality Hazard Ratio, HR (95% CI)</text>
-<text x="186.0" y="44.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Overall Cohort (n=1,240)</text>
-<line x1="281.6" y1="40.0" x2="399.8" y2="40.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
-<line x1="281.6" y1="36.0" x2="281.6" y2="44.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<line x1="399.8" y1="36.0" x2="399.8" y2="44.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<rect data-role="marker" x="330.5" y="36.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="532.0" y="44.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">0.74 (0.61–0.90)</text>
-<text x="186.0" y="72.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Age &gt;= 65 yr (n=612)</text>
-<line x1="285.6" y1="68.0" x2="444.6" y2="68.0" stroke="var(--text-secondary)" stroke-width="1.8"/>
-<line x1="285.6" y1="64.0" x2="285.6" y2="72.0" stroke="var(--text-secondary)" stroke-width="1.4"/>
-<line x1="444.6" y1="64.0" x2="444.6" y2="72.0" stroke="var(--text-secondary)" stroke-width="1.4"/>
-<rect data-role="marker" x="350.9" y="64.0" width="8" height="8" fill="var(--text-secondary)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="532.0" y="72.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)">0.79 (0.62–1.01)</text>
-<text x="186.0" y="100.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">SOFA &gt;= 8 (n=486)</text>
-<line x1="244.9" y1="96.0" x2="395.7" y2="96.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
-<line x1="244.9" y1="92.0" x2="244.9" y2="100.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<line x1="395.7" y1="92.0" x2="395.7" y2="100.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<rect data-role="marker" x="306.1" y="92.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="532.0" y="100.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">0.68 (0.52–0.89)</text>
-<text x="186.0" y="128.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Lactate &gt; 2 mmol/L (n=704)</text>
-<line x1="253.1" y1="124.0" x2="412.0" y2="124.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
-<line x1="253.1" y1="120.0" x2="253.1" y2="128.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<line x1="412.0" y1="120.0" x2="412.0" y2="128.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
-<rect data-role="marker" x="318.3" y="120.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
-<text x="532.0" y="128.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">0.71 (0.54–0.93)</text>
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot"><svg class="qe-svg qe-svg-560" viewBox="0 0 560 182" role="img" aria-label="CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot">
+<line x1="180.0" y1="22.0" x2="180.0" y2="134.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="180.0" y="152.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="500" fill="var(--text-secondary)">0.4</text>
+<line x1="240.0" y1="22.0" x2="240.0" y2="134.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="240.0" y="152.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="500" fill="var(--text-secondary)">0.6</text>
+<line x1="300.0" y1="22.0" x2="300.0" y2="134.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="300.0" y="152.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="500" fill="var(--text-secondary)">0.8</text>
+<line x1="360.0" y1="22.0" x2="360.0" y2="134.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="360.0" y="152.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="500" fill="var(--text-secondary)">1.0</text>
+<line x1="420.0" y1="22.0" x2="420.0" y2="134.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="420.0" y="152.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="500" fill="var(--text-secondary)">1.2</text>
+<line x1="360.0" y1="22.0" x2="360.0" y2="134.0" stroke="var(--text-primary)" stroke-width="1.4" stroke-dasharray="5,3"/>
+<rect data-role="frame" x="180.0" y="22.0" width="240.0" height="112.0" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
+<text x="300.0" y="172.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">28-Day Mortality Hazard Ratio, HR (95% CI)</text>
+<text x="172.0" y="40.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.8" font-weight="600" fill="var(--text-primary)">Overall Cohort (n=1,240)</text>
+<line x1="243.0" y1="36.0" x2="330.0" y2="36.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
+<line x1="243.0" y1="32.0" x2="243.0" y2="40.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<line x1="330.0" y1="32.0" x2="330.0" y2="40.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<rect data-role="marker" x="278.0" y="32.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="428.0" y="40.0" text-anchor="start" font-family="var(--font-mono)" font-size="12.0" font-weight="600" fill="var(--accent-focal)">0.74 (0.61–0.90)</text>
+<text x="172.0" y="68.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.8" font-weight="600" fill="var(--text-primary)">Age &gt;= 65 yr (n=612)</text>
+<line x1="246.0" y1="64.0" x2="363.0" y2="64.0" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<line x1="246.0" y1="60.0" x2="246.0" y2="68.0" stroke="var(--text-secondary)" stroke-width="1.4"/>
+<line x1="363.0" y1="60.0" x2="363.0" y2="68.0" stroke="var(--text-secondary)" stroke-width="1.4"/>
+<rect data-role="marker" x="293.0" y="60.0" width="8" height="8" fill="var(--text-secondary)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="428.0" y="68.0" text-anchor="start" font-family="var(--font-mono)" font-size="12.0" font-weight="600" fill="var(--text-secondary)">0.79 (0.62–1.01)</text>
+<text x="172.0" y="96.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.8" font-weight="600" fill="var(--text-primary)">SOFA &gt;= 8 (n=486)</text>
+<line x1="216.0" y1="92.0" x2="327.0" y2="92.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
+<line x1="216.0" y1="88.0" x2="216.0" y2="96.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<line x1="327.0" y1="88.0" x2="327.0" y2="96.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<rect data-role="marker" x="260.0" y="88.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="428.0" y="96.0" text-anchor="start" font-family="var(--font-mono)" font-size="12.0" font-weight="600" fill="var(--accent-focal)">0.68 (0.52–0.89)</text>
+<text x="172.0" y="124.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.8" font-weight="600" fill="var(--text-primary)">Lactate &gt; 2 mmol/L (n=704)</text>
+<line x1="222.0" y1="120.0" x2="339.0" y2="120.0" stroke="var(--accent-focal)" stroke-width="1.8"/>
+<line x1="222.0" y1="116.0" x2="222.0" y2="124.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<line x1="339.0" y1="116.0" x2="339.0" y2="124.0" stroke="var(--accent-focal)" stroke-width="1.4"/>
+<rect data-role="marker" x="269.0" y="116.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
+<text x="428.0" y="124.0" text-anchor="start" font-family="var(--font-mono)" font-size="12.0" font-weight="600" fill="var(--accent-focal)">0.71 (0.54–0.93)</text>
 </svg></div>
-<div class="qe-param-legend"><span class="qe-leg-param va-nums">HR_all = 0.74</span><span class="qe-leg-param va-nums">n<sub>ITT</sub> = 1240</span></div>
+<div class="qe-param-legend"><span class="qe-leg-param va-nums">HR<sub>all</sub> = 0.74</span><span class="qe-leg-param va-nums">n<sub>ITT</sub> = 1240</span></div>
 </div><figcaption class="va-figure-caption">28-day all-cause mortality Hazard Ratio (HR) and 95% confidence intervals across pre-specified clinical subgroups (null effect HR = 1.0).</figcaption></figure>
       </section>
 
@@ -3481,6 +4180,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v03-guide" class="v03-pedagogy-panel qe-pedagogy-scope" aria-label="Interactive Home Care Guide">
     <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Oxygen Level Trend"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 306" role="img" aria-label="Oxygen Level Trend">
+<defs><clipPath id="qe-clip-135642"><rect x="92.0" y="26.0" width="504.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="133.1" y1="26.0" x2="133.1" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="133.1" y1="250.0" x2="133.1" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="156.5" y1="26.0" x2="156.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -3576,6 +4276,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="92.0" y="26.0" width="504.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="344.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Oxygen Saturation (%)</text>
+<g clip-path="url(#qe-clip-135642)">
 <polygon points="92.0,175.3 596.0,175.3 596.0,250.0 92.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 92.0 175.3 L 596.0 175.3" fill="none" stroke="var(--tint-emerald-fg)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="596.0" y1="175.3" x2="601.0" y2="175.3" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/>
@@ -3590,10 +4291,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <g data-term="oxygen-goal"><circle cx="484.6" cy="130.5" r="3.2" fill="var(--bg-canvas)" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/></g>
 <g data-term="oxygen-goal"><circle cx="531.5" cy="136.1" r="3.2" fill="var(--bg-canvas)" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/></g>
 <g data-term="oxygen-goal"><circle cx="578.4" cy="134.3" r="3.2" fill="var(--bg-canvas)" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/></g>
+</g>
 <text x="604.0" y="179.3" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--tint-emerald-fg)">Goal &gt;= 92%</text>
 </svg></div>
 </div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Resting Blood Pressure Trend"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 306" role="img" aria-label="Resting Blood Pressure Trend">
+<defs><clipPath id="qe-clip-13241"><rect x="92.0" y="26.0" width="504.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="133.1" y1="26.0" x2="133.1" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="133.1" y1="250.0" x2="133.1" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="156.5" y1="26.0" x2="156.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -3701,6 +4404,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="92.0" y="26.0" width="504.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="344.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Blood Pressure (mmHg)</text>
+<g clip-path="url(#qe-clip-13241)">
 <polygon points="92.0,175.3 596.0,175.3 596.0,250.0 92.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 92.0 175.3 L 596.0 175.3" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="596.0" y1="175.3" x2="601.0" y2="175.3" stroke="var(--status-warn)" stroke-width="1.5"/>
@@ -3715,6 +4419,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <g data-term="bp-threshold"><rect data-role="marker" x="481.4" y="180.3" width="6.5" height="6.5" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></g>
 <g data-term="bp-threshold"><rect data-role="marker" x="528.2" y="182.5" width="6.5" height="6.5" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></g>
 <g data-term="bp-threshold"><rect data-role="marker" x="575.1" y="183.3" width="6.5" height="6.5" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></g>
+</g>
 <text x="604.0" y="179.3" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">Call &lt; 65 mmHg</text>
 </svg></div>
 </div></figure></div></div>
@@ -4058,11 +4763,72 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     }
   }
 
+  function escHtml(val) {
+    return String(val == null ? '' : val)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function openBridgeDialog(worldObj, viewMeta) {
+    const dlg = document.getElementById('va-bridge-dialog');
+    const body = document.getElementById('va-bridge-body');
+    const title = document.getElementById('va-bridge-title');
+    if (!dlg || !body || !worldObj || !viewMeta) return;
+    if (title) title.textContent = 'Why This View? — ' + viewMeta.title;
+    const ledgerRows = (worldObj.conservation_ledger || []).map(function (row) {
+      return '<tr><td><code>' + escHtml(row.metric_id) + '</code></td><td>' + escHtml(row.canonical_value) +
+        '</td><td>' + escHtml(row.unit) + '</td><td>' + escHtml(row.views) + '</td></tr>';
+    }).join('');
+    const mbRows = (viewMeta.murder_board || []).map(function (m) {
+      return '<div class="va-bridge-item"><strong>' + escHtml(m.rubric) + ' · <span class="va-bridge-pass">' +
+        escHtml(m.verdict) + '</span></strong>' + escHtml(m.finding) + '</div>';
+    }).join('');
+    const inv = viewMeta.invariants || {};
+    body.innerHTML =
+      '<section class="va-bridge-card"><h3>1. Active Presenter -> Audience Vector</h3>' +
+      '<div class="va-bridge-vector">' + escHtml(viewMeta.vector_summary) + '</div>' +
+      '<div class="va-bridge-item"><strong>Actionable Disposition</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
+      '<section class="va-bridge-card"><h3>2. Scrubbed Sender Bias</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>Raw Bias Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
+      '<div class="va-bridge-item"><strong>Audience Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
+      '<div class="va-bridge-item"><strong>Distilled Replacement</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>3. Four Universal Audience Invariants</h3><div class="va-bridge-grid">' +
+      '<div class="va-bridge-item"><strong>1. Baseline &amp; Corridor</strong>' + escHtml(inv.baseline || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>2. Epistemic Provenance</strong>' + escHtml(inv.provenance || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>3. Margin &amp; Consequence</strong>' + escHtml(inv.margin || '') + '</div>' +
+      '<div class="va-bridge-item"><strong>4. Actionable Disposition</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
+      '<section class="va-bridge-card"><h3>4. Murder-Board Red-Team Verdict</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
+      '<section class="va-bridge-card"><h3>5. Canonical Numerical Conservation Ledger</h3>' +
+      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric ID</th><th>Canonical Value</th><th>Unit</th><th>Consuming Views</th></tr></thead>' +
+      '<tbody>' + ledgerRows + '</tbody></table></div></section>';
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+  }
+
+  function postExternalSync(iframe, state, stageW) {
+    const payload = {
+      type: 'quiet-ui-sync', theme: state.theme, medium: state.medium,
+      density: state.density, corners: state.corners, formFactor: stageW <= 480 ? 'touch' : 'desktop',
+    };
+    try {
+      if (iframe.contentWindow) iframe.contentWindow.postMessage(payload, '*');
+      const doc = iframe.contentDocument && iframe.contentDocument.documentElement;
+      if (doc) {
+        doc.dataset.theme = state.theme;
+        doc.dataset.density = state.density;
+        doc.dataset.corners = state.corners;
+        if (state.studioView === 'bench') doc.dataset.medium = state.medium === 'm1' ? 'm1' : 'm2';
+      }
+    } catch (_e) {}
+  }
+
   window.QuietStudioSheetV9 = {
+    escHtml: escHtml,
+    postExternalSync: postExternalSync,
     syncSheetControls: syncSheetControls,
     untuckStudioBar: untuckStudioBar,
     bindPortalScrollTuck: bindPortalScrollTuck,
     initSheetEvents: initSheetEvents,
+    openBridgeDialog: openBridgeDialog,
   };
 })(typeof window !== 'undefined' ? window : this);
 
@@ -4075,16 +4841,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   'use strict';
 
   const state = {
-    world: '', view: '', medium: 'auto', theme: 'white',
+    studioView: 'worlds', world: '', view: '', medium: 'auto', theme: 'white',
     nav: 'auto', vp: 'fill', zoom: 'fit', density: 'd2',
     corners: 'auto', scale: '100', isMounted: false, renderedView: '',
   };
   let manifest = { worlds: [] };
 
   function escHtml(val) {
-    return String(val == null ? '' : val)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    if (window.QuietStudioSheetV9 && window.QuietStudioSheetV9.escHtml) return window.QuietStudioSheetV9.escHtml(val);
+    return String(val == null ? '' : val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function loadManifest() {
@@ -4105,9 +4870,25 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function readUrlParams() {
     const p = new URLSearchParams(window.location.search);
-    ['world', 'view', 'medium', 'theme', 'nav', 'vp', 'zoom', 'density', 'corners', 'scale'].forEach(function (k) {
-      if (p.has(k) && p.get(k)) state[k] = p.get(k);
+    const rules = {
+      mode: ['worlds', 'bench', 'atlas'], medium: ['auto', 'm1'],
+      theme: ['white', 'paper', 'dark-paper', 'dark'], nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
+      zoom: ['fit', '1:1'], density: ['d1', 'd2', 'd3', 'd4'], corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+    };
+    if (rules.mode.indexOf(p.get('mode')) !== -1) state.studioView = p.get('mode');
+    ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
+      if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
+    const vp = p.get('vp') || '';
+    if (vp === 'fill' || /^\d{3,4}x\d{3,4}$/.test(vp)) state.vp = vp;
+    const sc = parseInt(p.get('scale') || '', 10);
+    if (!isNaN(sc)) state.scale = String(Math.max(75, Math.min(150, sc)));
+    if (p.has('world')) state.world = p.get('world') || '';
+    if (p.has('view')) state.view = p.get('view') || '';
+    if (!p.get('world') && state.view) {
+      const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === state.view; }); });
+      if (hitW) state.world = hitW.world_id;
+    }
     const w = findWorld(state.world);
     if (w) {
       state.world = w.world_id;
@@ -4118,6 +4899,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function syncUrlParams() {
     const p = new URLSearchParams();
+    if (state.studioView !== 'worlds') p.set('mode', state.studioView);
     p.set('world', state.world);
     p.set('view', state.view);
     p.set('medium', state.medium);
@@ -4129,6 +4911,14 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (state.corners !== 'auto') p.set('corners', state.corners);
     if (state.scale !== '100') p.set('scale', state.scale);
     window.history.replaceState(null, '', window.location.pathname + '?' + p.toString());
+  }
+
+  function resolveDocsAsset(relPath) {
+    const path = window.location.pathname || '';
+    if (path.indexOf('/customizations/') !== -1) return '../../docs/' + relPath;
+    if (path.indexOf('/docs/pilot/') !== -1 || path.indexOf('/docs/v9/') !== -1) return '../' + relPath;
+    if (path.indexOf('/quiet-ui-showcase') !== -1) return './docs/' + relPath;
+    return './' + relPath;
   }
 
   function computeEffectiveNav(nav, viewMeta, width) {
@@ -4165,15 +4955,23 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const jsEl = document.getElementById('va-bundled-stage-js');
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
-    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
+    const baseHref = window.location.href.split('?')[0].split('#')[0];
+    const earthriseUrl = resolveDocsAsset('assets/as08-14-2383.jpg');
+    const tokStyle = document.getElementById('custom-tokens');
+    const ovrStyle = document.getElementById('custom-overrides');
+    const hasCustom = document.documentElement.dataset.customStyles === 'true';
+    const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
+    const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
+    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + escHtml(earthriseUrl) + '\');" data-theme="' + escHtml(state.theme) +
       '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
       '" data-nav-shell="' + escHtml(state.nav) + '" data-effective-nav="n0" data-form-factor="desktop">\n<head>\n' +
-      '<meta charset="utf-8">\n' +
+      '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n' +
       '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
       '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">\n' +
-      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n</head>\n<body>\n' +
+      customTok +
+      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
       '<div class="va-app-shell">\n' +
       '  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"></a>' +
       '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav>' +
@@ -4201,6 +4999,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : ['Overview'];
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
     const icons = ['fa-heart-pulse', 'fa-lungs', 'fa-syringe', 'fa-bell'];
+    const hrefFor = function (i) { return anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage'; };
+    const mapLinks = function (list, render) { return list.map(function (lbl, i) { return render(lbl, i, hrefFor(i)); }).join(''); };
 
     const brand = doc.querySelector('#va-shell-topbar .va-shell-brand');
     if (brand) brand.innerHTML = '<i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> ' + escHtml(topBrandLbl);
@@ -4209,8 +5009,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const topStatus = (viewMeta && Array.isArray(viewMeta.topbar_status)) ? viewMeta.topbar_status : [];
     if (statusEl) {
       statusEl.innerHTML = topStatus.map(function (st) {
-        return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' +
-          escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+        if ((st.variant || '') === 'plain') {
+          return '<span class="va-topbar-metric" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+        }
+        return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
       }).join('');
     }
 
@@ -4218,36 +5020,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const hideTopLinks = effNav === 'n3' && topStatus.length > 0;
     const topLinks = doc.querySelector('#va-shell-topbar .va-shell-topbar-links');
     if (topLinks) {
-      topLinks.innerHTML = hideTopLinks ? '' : items.map(function (lbl, i) {
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
+      topLinks.innerHTML = hideTopLinks ? '' : mapLinks(items, function (lbl, i, href) {
         return '<a class="va-shell-topbar-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + escHtml(lbl) + '</a>';
-      }).join('');
+      });
     }
-
     const rail = doc.getElementById('va-shell-rail');
     if (rail) {
       rail.innerHTML = '<div class="va-rail-brand"><i class="fa-solid ' + escHtml(icon) + '" aria-hidden="true"></i> <span>' + escHtml(railBrandLbl) + '</span></div>' +
-        items.map(function (lbl, i) {
-          const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-          return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '"><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i> ' + escHtml(lbl) + '</a>';
-        }).join('');
+        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '"><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i> ' + escHtml(lbl) + '</a>'; });
     }
-
     const dock = doc.getElementById('va-shell-bottomdock');
     if (dock) {
-      dock.innerHTML = items.slice(0, 3).map(function (lbl, i) {
-        const shortLbl = lbl.split(' ')[0];
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i>' + escHtml(shortLbl) + '</a>';
-      }).join('') + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
+      dock.innerHTML = mapLinks(items.slice(0, 3), function (lbl, i, href) {
+        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + icons[i % 4] + '" aria-hidden="true"></i>' + escHtml(lbl.split(' ')[0]) + '</a>';
+      }) + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
     }
-
     const drawerNav = doc.querySelector('#va-shell-drawer .va-drawer-nav');
     if (drawerNav) {
-      drawerNav.innerHTML = items.map(function (lbl, i) {
-        const href = anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage';
-        return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>';
-      }).join('');
+      drawerNav.innerHTML = mapLinks(items, function (lbl, i, href) { return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>'; });
     }
   }
 
@@ -4289,6 +5079,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       state.renderedNav = iframe.contentDocument.documentElement.dataset.effectiveNav;
       if (iframe.contentWindow.QuietEvidenceRuntime) iframe.contentWindow.QuietEvidenceRuntime.boot();
       if (iframe.contentWindow.QuietWorld01Runtime) iframe.contentWindow.QuietWorld01Runtime.boot(iframe.contentDocument);
+      if (iframe.contentWindow.QuietWorlds02To05Runtime) iframe.contentWindow.QuietWorlds02To05Runtime.boot(iframe.contentDocument);
       main.scrollTop = 0;
       if (iframe.contentWindow) iframe.contentWindow.scrollTo(0, 0);
     } else if (iframe.contentDocument.documentElement.dataset.effectiveNav !== state.renderedNav) {
@@ -4302,6 +5093,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const worldObj = findWorld(state.world);
     const viewMeta = findView(worldObj, state.view);
     document.documentElement.dataset.medium = state.medium;
+    document.documentElement.dataset.studioView = state.studioView;
+
+    document.querySelectorAll('[data-studio-tab]').forEach(function (tab) {
+      const active = tab.dataset.studioTab === state.studioView;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
 
     const wSel = document.getElementById('va-world-select');
     if (wSel && wSel.value !== state.world) wSel.value = state.world;
@@ -4331,8 +5129,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       navSel.value = state.nav;
       Array.from(navSel.options).forEach(function (opt) {
         if (opt.value === 'auto') return;
-        const ok = allowed.indexOf(opt.value) !== -1;
-        opt.disabled = !ok;
+        opt.disabled = allowed.indexOf(opt.value) === -1;
       });
     }
 
@@ -4346,15 +5143,53 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, allowed);
   }
 
+  function syncExternalMode(iframe) {
+    const isBench = state.studioView === 'bench';
+    const base = resolveDocsAsset(isBench ? 'bench/evidence-bench.html' : 'diagrams.html');
+    const med = state.medium === 'm1' ? 'm1' : 'm2';
+    const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) + '&corners=' + encodeURIComponent(state.corners) + (isBench ? '&medium=' + med : '');
+    const doSync = function () {
+      const d = getActiveDimensions();
+      if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
+    };
+    if (iframe.dataset.externalMode !== state.studioView) {
+      state.isMounted = false;
+      state.renderedView = '';
+      iframe.removeAttribute('srcdoc');
+      iframe.dataset.externalMode = state.studioView;
+      iframe.onload = function () { state.isMounted = true; doSync(); };
+      iframe.src = base + q;
+      return;
+    }
+    doSync();
+  }
+
   function applyState(worldChanged) {
     const worldObj = findWorld(state.world);
     if (worldObj && (worldChanged || !findView(worldObj, state.view))) {
       state.view = worldObj.views[0].view_id;
     }
+    const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
+    if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) {
+      window.QuietStudioSheetV9.untuckStudioBar();
+    }
+    state.lastViewKey = viewKey;
     const viewMeta = findView(worldObj, state.view);
     const iframe = document.getElementById('va-stage-portal');
-    if (!iframe || !viewMeta) return;
+    if (!iframe) return;
     updatePortalDimensions();
+    if (state.studioView !== 'worlds') {
+      syncExternalMode(iframe);
+      syncBarControls();
+      syncUrlParams();
+      return;
+    }
+    if (!viewMeta) return;
+    if (iframe.dataset.externalMode) {
+      delete iframe.dataset.externalMode;
+      iframe.removeAttribute('src');
+      state.isMounted = false;
+    }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
       state.renderedView = '';
       iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
@@ -4369,39 +5204,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   function openBridgeDialog() {
     const worldObj = findWorld(state.world);
     const viewMeta = findView(worldObj, state.view);
-    const dlg = document.getElementById('va-bridge-dialog');
-    const body = document.getElementById('va-bridge-body');
-    const title = document.getElementById('va-bridge-title');
-    if (!dlg || !body || !viewMeta) return;
-    if (title) title.textContent = 'Why This View? — ' + viewMeta.title;
-
-    const ledgerRows = (worldObj.conservation_ledger || []).map(function (row) {
-      return '<tr><td><code>' + escHtml(row.metric_id) + '</code></td><td>' + escHtml(row.canonical_value) +
-        '</td><td>' + escHtml(row.unit) + '</td><td>' + escHtml(row.views) + '</td></tr>';
-    }).join('');
-    const mbRows = (viewMeta.murder_board || []).map(function (m) {
-      return '<div class="va-bridge-item"><strong>' + escHtml(m.rubric) + ' · <span class="va-bridge-pass">' +
-        escHtml(m.verdict) + '</span></strong>' + escHtml(m.finding) + '</div>';
-    }).join('');
-    const inv = viewMeta.invariants || {};
-    body.innerHTML =
-      '<section class="va-bridge-card"><h3>1. Active Presenter -> Audience Vector</h3>' +
-      '<div class="va-bridge-vector">' + escHtml(viewMeta.vector_summary) + '</div>' +
-      '<div class="va-bridge-item"><strong>Actionable Disposition</strong>' + escHtml(viewMeta.actionable_disposition) + '</div></section>' +
-      '<section class="va-bridge-card"><h3>2. Scrubbed Sender Bias</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>Raw Bias Removed</strong>' + escHtml(viewMeta.bias_removed) + '</div>' +
-      '<div class="va-bridge-item"><strong>Audience Risk Prevented</strong>' + escHtml(viewMeta.bias_risk) + '</div>' +
-      '<div class="va-bridge-item"><strong>Distilled Replacement</strong>' + escHtml(viewMeta.bias_replacement) + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>3. Four Universal Audience Invariants</h3><div class="va-bridge-grid">' +
-      '<div class="va-bridge-item"><strong>1. Baseline &amp; Corridor</strong>' + escHtml(inv.baseline || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>2. Epistemic Provenance</strong>' + escHtml(inv.provenance || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>3. Margin &amp; Consequence</strong>' + escHtml(inv.margin || '') + '</div>' +
-      '<div class="va-bridge-item"><strong>4. Actionable Disposition</strong>' + escHtml(inv.disposition || '') + '</div></div></section>' +
-      '<section class="va-bridge-card"><h3>4. Murder-Board Red-Team Verdict</h3><div class="va-bridge-grid">' + mbRows + '</div></section>' +
-      '<section class="va-bridge-card"><h3>5. Canonical Numerical Conservation Ledger</h3>' +
-      '<div class="va-bridge-table-wrap"><table class="va-bridge-table"><thead><tr><th>Metric ID</th><th>Canonical Value</th><th>Unit</th><th>Consuming Views</th></tr></thead>' +
-      '<tbody>' + ledgerRows + '</tbody></table></div></section>';
-    if (typeof dlg.showModal === 'function') dlg.showModal();
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
   }
 
   function printActiveStage() {
@@ -4424,6 +5227,17 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   function initControls() {
+    const bind = function (id, fn) { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    const tablist = document.getElementById('va-studio-mode-tablist');
+    if (tablist) {
+      tablist.addEventListener('click', function (ev) {
+        const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
+        if (btn && ['worlds', 'bench', 'atlas'].indexOf(btn.dataset.studioTab) !== -1) {
+          state.studioView = btn.dataset.studioTab;
+          applyState(false);
+        }
+      });
+    }
     const wSel = document.getElementById('va-world-select');
     if (wSel) wSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
     const vSel = document.getElementById('va-view-select');
@@ -4432,40 +5246,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       const el = document.getElementById('va-' + k + '-select');
       if (el) el.addEventListener('change', function (e) { state[k] = e.target.value; applyState(false); });
     });
-    const prev = document.getElementById('va-step-prev');
-    const next = document.getElementById('va-step-next');
-    if (prev) prev.addEventListener('click', function () { stepView(-1); });
-    if (next) next.addEventListener('click', function () { stepView(1); });
-
-    const sheetBtn = document.getElementById('va-sheet-toggle-btn');
-    if (sheetBtn) sheetBtn.addEventListener('click', function () { state.medium = (state.medium === 'm1') ? 'auto' : 'm1'; applyState(false); });
-    const printBtn = document.getElementById('va-print-btn');
-    if (printBtn) printBtn.addEventListener('click', printActiveStage);
-    const bridgeBtn = document.getElementById('va-bridge-btn');
-    if (bridgeBtn) bridgeBtn.addEventListener('click', openBridgeDialog);
-
     const onRotate = function () { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; applyState(false); } };
     const onZoomToggle = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
-    const rotBtn = document.getElementById('va-rotate-btn');
-    const zoomBtn = document.getElementById('va-zoom-btn');
-    if (rotBtn) rotBtn.addEventListener('click', onRotate);
-    if (zoomBtn) zoomBtn.addEventListener('click', onZoomToggle);
-
-    const custBtn = document.getElementById('va-customize-btn');
-    if (custBtn) custBtn.addEventListener('click', function () {
-      const sheet = document.getElementById('va-customize-sheet');
-      if (sheet && typeof sheet.showModal === 'function') sheet.showModal();
-    });
+    [
+      ['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
+      ['va-sheet-toggle-btn', function () { state.medium = (state.medium === 'm1') ? 'auto' : 'm1'; applyState(false); }],
+      ['va-print-btn', printActiveStage], ['va-bridge-btn', openBridgeDialog],
+      ['va-rotate-btn', onRotate], ['va-zoom-btn', onZoomToggle],
+      ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }],
+    ].forEach(function (pair) { bind(pair[0], pair[1]); });
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoomToggle, printActiveStage);
-
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 700 && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
       updatePortalDimensions();
-      syncIframeDOM();
+      if (state.studioView === 'worlds') syncIframeDOM();
     });
     window.QuietPortalResize.initResizeHandles(
       document.getElementById('va-portal-scaler'), document.getElementById('va-stage-portal'), document.getElementById('va-portal-mat'),
-      function (w, h) { state.vp = w + 'x' + h; syncIframeDOM(); syncUrlParams(); syncBarControls(); }
+      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'worlds') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
     );
   }
 

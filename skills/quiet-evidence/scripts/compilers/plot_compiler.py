@@ -235,8 +235,8 @@ def _render_series_layers(
         uy = p.get("u_y")
         if uy is not None and rigor in {"L2", "L3"} and math.isfinite(float(uy)):
             u_val = abs(float(uy))
-            y_hi = max(y0, _proj_y(yv + u_val, y_sc, y0, ph))
-            y_lo = min(y0 + ph, _proj_y(max(yv - u_val, y_sc["min"] * 0.99) if y_sc["is_log"] else yv - u_val, y_sc, y0, ph))
+            y_hi = max(y0, min(y0 + ph, _proj_y(yv + u_val, y_sc, y0, ph)))
+            y_lo = max(y0, min(y0 + ph, _proj_y(max(yv - u_val, y_sc["min"] * 0.99) if y_sc["is_log"] else yv - u_val, y_sc, y0, ph)))
             markers.append(f'<line x1="{px:.1f}" y1="{y_hi:.1f}" x2="{px:.1f}" y2="{y_lo:.1f}" stroke="{stroke}" stroke-width="1.3"/>')
             markers.append(f'<line x1="{px - 3:.1f}" y1="{y_hi:.1f}" x2="{px + 3:.1f}" y2="{y_hi:.1f}" stroke="{stroke}" stroke-width="1.2"/>')
             markers.append(f'<line x1="{px - 3:.1f}" y1="{y_lo:.1f}" x2="{px + 3:.1f}" y2="{y_lo:.1f}" stroke="{stroke}" stroke-width="1.2"/>')
@@ -253,28 +253,45 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     show_res = bool(spec.get("residual_strip", {}).get("enabled")) and rigor == "L3"
     has_gutter = any(not e.get("equation") and e.get("threshold_value") is not None and len(str(e.get("label", ""))) <= 15 for e in envs)
 
-    xs = [float(p["x"]) for s in vis_series for p in s.get("data_points", []) if p.get("x") is not None and math.isfinite(float(p["x"]))]
-    ys = [float(p["y"]) for s in vis_series for p in s.get("data_points", []) if p.get("y") is not None and math.isfinite(float(p["y"]))]
-    x_sc, y_sc = _axis_scale(x_ax, xs), _axis_scale(y_ax, ys)
+    xs = [float(p["x"]) for s in vis_series for p in (s.get("data_points", []) + s.get("points", [])) if p.get("x") is not None and math.isfinite(float(p["x"]))]
+    x_sc = _axis_scale(x_ax, xs)
+    ys: list[float] = []
+    for s in vis_series:
+        for p in s.get("data_points", []) + s.get("points", []):
+            if p.get("y") is None or not math.isfinite(float(p["y"])):
+                continue
+            yv = float(p["y"])
+            ys.append(yv)
+            uy = p.get("u_y")
+            if uy is not None and rigor in {"L2", "L3"} and math.isfinite(float(uy)):
+                ys.extend((yv + abs(float(uy)), max(yv - abs(float(uy)), 1e-12) if y_ax.get("scale_type") == "logarithmic" else yv - abs(float(uy))))
+        if s.get("epistemic_type") == "analytical_model" and not y_ax.get("domain"):
+            ys.extend(yv for _, yv in _sample_model_points(s, x_sc, n=36) if math.isfinite(yv))
+    if not y_ax.get("domain"):
+        ys.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
+    y_sc = _axis_scale(y_ax, ys)
     x0, y0, pw, ph = (92.0, 26.0, 504.0, 224.0) if has_gutter else (94.0, 26.0, 590.0, 224.0)
     inset_x = pw * 0.035
     data_x = (x0 + inset_x, pw - 2.0 * inset_x)
     vb_h = 402 if show_res else 306
+    clip_uid = f"qe-clip-{abs(hash((str(spec.get('id', '')), str(x_ax.get('quantity', '')), str(y_ax.get('quantity', ''))))) % 999983}"
     parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Analytical Plot"))}">']
+    parts.append(f'<defs><clipPath id="{clip_uid}"><rect x="{x0}" y="{y0}" width="{pw}" height="{ph}"/></clipPath></defs>')
     parts.extend(_render_graticule(x_sc, y_sc, x_ax, y_ax, (x0, y0, pw, ph), data_x, rigor, medium))
 
     env_svg, labels, gutter_lbls, sloped_lbls = _render_envelopes(envs, x_sc, y_sc, (x0, y0, pw, ph), data_x)
-    parts.extend(env_svg)
-
     bands_all, strokes_all, markers_all = [], [], []
     for idx, sr in enumerate(vis_series):
         b, s, m = _render_series_layers(sr, idx, x_sc, y_sc, (x0, y0, pw, ph), data_x, rigor)
         bands_all.extend(b)
         strokes_all.extend(s)
         markers_all.extend(m)
+    parts.append(f'<g clip-path="url(#{clip_uid})">')
+    parts.extend(env_svg)
     parts.extend(bands_all)
     parts.extend(strokes_all)
     parts.extend(markers_all)
+    parts.append("</g>")
     parts.extend(sloped_lbls)
 
     for g in avoid_label_overlaps(gutter_lbls, min_y=y0 + 10.0, max_y=y0 + ph + 4.0, step_y=15.0):
@@ -321,7 +338,7 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
         eq = spec["pedagogical_equation"]
         tokens_html = " ".join(
             f'<button type="button" class="va-pill qe-eq-term qe-term-{esc(t["term"])}" data-variant="chip" data-term="{esc(t["term"])}">'
-            f'{format_math_html(t["symbol"])}</button>' if t.get("term") else f'<span class="qe-eq-op">{format_math_html(t["symbol"])}</span>'
+            f'<span>{format_math_html(t["symbol"])}</span></button>' if t.get("term") else f'<span class="qe-eq-op">{format_math_html(t["symbol"])}</span>'
             for t in eq.get("terms", [])
         )
         parts.append(f'<div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">{format_math_html(eq.get("lhs", ""))} = </span>{tokens_html}</div>')

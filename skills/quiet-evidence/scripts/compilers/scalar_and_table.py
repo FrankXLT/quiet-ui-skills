@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 from typing import Any
 
@@ -19,6 +20,21 @@ from .tokens_and_scales import (
 
 _ISO_TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2})(?::\d{2})?Z?$")
 _SI_UNIT_WRAP_RE = re.compile(r"\b(mmHg|cmH2O|mmol/L|mEq/L|mg/dL|kPa|hPa|kHz|MHz|GHz|mrad|dBm|ps|ms|mV|kW|MW|mA)\b")
+
+
+def _finite_num(val: Any, default: float | None = None) -> float | None:
+    try:
+        n = float(val)
+        return n if math.isfinite(n) else default
+    except (TypeError, ValueError):
+        return default
+
+
+def _fmt_signed(val: Any) -> str:
+    n = _finite_num(val)
+    if n is None:
+        return esc(val)
+    return "0" if n == 0.0 else esc(f"{n:+g}")
 
 
 def _format_l1_timestamp(ts: str) -> str:
@@ -107,79 +123,82 @@ def _resolve_threshold_state(nom: Any, limits: dict[str, Any], ann: dict[str, An
 
 def _render_gauge_svg(spec: dict[str, Any], rigor: str) -> str:
     """Render NASA/ISA/IEC linear envelope bar gauge with CMD vs ACT markers."""
-    gauge = spec.get("gauge", {})
-    limits = spec.get("limits", {})
-    meas = spec.get("measurement", {})
+    gauge, limits, meas = spec.get("gauge", {}), spec.get("limits", {}), spec.get("measurement", {})
     unit = spec.get("quantity", {}).get("unit", "")
-    act = float(meas.get("nominal_value", gauge.get("marker_position", 0.0)))
-    cmd = limits.get("nominal_target", gauge.get("commanded_value"))
-    warn = limits.get("warning_thresholds", {})
-    abort = limits.get("abort_thresholds", {})
-    lo_abort, hi_abort = abort.get("lower"), abort.get("upper")
-    lo_warn, hi_warn = warn.get("lower"), warn.get("upper")
-    lo_bound = float(lo_abort) if lo_abort is not None else None
-    hi_bound = float(hi_abort) if hi_abort is not None else None
-    base_lo = min(act, lo_bound) if lo_bound is not None else (min(act, hi_bound) - 5.0 if hi_bound is not None else act - 5.0)
-    base_hi = max(act, hi_bound) if hi_bound is not None else (max(act, lo_bound) + 5.0 if lo_bound is not None else act + 5.0)
-    smin = float(gauge["min_scale"]) if gauge.get("min_scale") is not None else (base_lo - 1.0)
-    smax = float(gauge["max_scale"]) if gauge.get("max_scale") is not None else (base_hi + 1.0)
+    act = _finite_num(meas.get("nominal_value"), _finite_num(gauge.get("marker_position"), 0.0)) or 0.0
+    cmd = _finite_num(limits.get("nominal_target"), _finite_num(gauge.get("commanded_value")))
+    warn, abort = limits.get("warning_thresholds", {}), limits.get("abort_thresholds", {})
+    lo_abort, hi_abort = _finite_num(abort.get("lower")), _finite_num(abort.get("upper"))
+    lo_warn, hi_warn = _finite_num(warn.get("lower")), _finite_num(warn.get("upper"))
+    bnd_vals = [v for v in (act, lo_abort, hi_abort, lo_warn, hi_warn, cmd if rigor in {"L2", "L3"} else None) if v is not None]
+    span_guess = max((max(bnd_vals) - min(bnd_vals)) * 0.2, abs(act) * 0.1, 2.0)
+    smin = _finite_num(gauge.get("min_scale"), min(bnd_vals) - span_guess)
+    smax = _finite_num(gauge.get("max_scale"), max(bnd_vals) + span_guess)
+    if smin > smax:
+        smin, smax = smax, smin
+    if math.isclose(smin, smax, rel_tol=1e-12, abs_tol=1e-12):
+        pad = abs(smin) * 0.1 or 1.0
+        smin, smax = smin - pad, smax + pad
 
-    x0, x1, y_bar, bh = 38.0, 642.0, 38.0, 14.0
+    x0, x1, y_bar, bh = 24.0, 316.0, 25.0, 10.0
     bw = x1 - x0
-    g_title = esc(spec.get("metadata", {}).get("title", "Linear Gauge"))
     parts: list[str] = [
-        f'<svg class="qe-svg qe-svg-680 qe-gauge-svg" viewBox="0 0 680 92" role="img" aria-label="{g_title}">',
+        f'<svg class="qe-svg qe-gauge-svg" viewBox="0 0 340 72" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Linear Gauge"))}">',
+        f'<rect data-role="gauge-track" x="{x0}" y="{y_bar}" width="{bw}" height="{bh}" rx="2.5" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>',
     ]
-    parts.append(f'<rect data-role="gauge-track" x="{x0}" y="{y_bar}" width="{bw}" height="{bh}" rx="3" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>')
 
     def _zone(lo: float | None, hi: float | None, fill: str) -> None:
-        if lo is None or hi is None:
-            return
-        zx0, _ = _clamp_x(float(lo), smin, smax, x0, bw)
-        zx1, _ = _clamp_x(float(hi), smin, smax, x0, bw)
-        if zx1 > zx0:
-            parts.append(f'<rect data-role="gauge-zone" x="{zx0:.1f}" y="{y_bar + 1:.1f}" width="{zx1 - zx0:.1f}" height="{bh - 2:.1f}" fill="{fill}"/>')
+        if lo is not None and hi is not None:
+            zx0, _ = _clamp_x(lo, smin, smax, x0, bw)
+            zx1, _ = _clamp_x(hi, smin, smax, x0, bw)
+            if zx1 > zx0:
+                parts.append(f'<rect data-role="gauge-zone" x="{zx0:.1f}" y="{y_bar + 1:.1f}" width="{zx1 - zx0:.1f}" height="{bh - 2:.1f}" fill="{fill}"/>')
 
-    if lo_abort is not None:
-        _zone(smin, lo_abort, "var(--status-err-bg)")
-    if hi_abort is not None:
-        _zone(hi_abort, smax, "var(--status-err-bg)")
-    if lo_warn is not None:
-        _zone(lo_abort if lo_abort is not None else smin, lo_warn, "var(--status-warn-bg)")
-    if hi_warn is not None:
-        _zone(hi_warn, hi_abort if hi_abort is not None else smax, "var(--status-warn-bg)")
-
-    for thr, col in ((lo_abort, "var(--status-danger)"), (hi_abort, "var(--status-danger)"),
-                     (lo_warn, "var(--status-warn)"), (hi_warn, "var(--status-warn)")):
+    for lo_z, hi_z, col in (
+        (smin, lo_abort, "var(--status-err-bg)"), (hi_abort, smax, "var(--status-err-bg)"),
+        (lo_abort if lo_abort is not None else smin, lo_warn, "var(--status-warn-bg)"),
+        (hi_warn, hi_abort if hi_abort is not None else smax, "var(--status-warn-bg)"),
+    ):
+        if (col == "var(--status-err-bg)" and ((lo_z == smin and lo_abort is not None) or (hi_z == smax and hi_abort is not None))) or (
+            col == "var(--status-warn-bg)" and ((lo_z is not None and hi_z == lo_warn and lo_warn is not None) or (lo_z == hi_warn and hi_warn is not None))
+        ):
+            _zone(lo_z, hi_z, col)
+    for thr, col in ((lo_abort, "var(--status-danger)"), (hi_abort, "var(--status-danger)"), (lo_warn, "var(--status-warn)"), (hi_warn, "var(--status-warn)")):
         if thr is not None:
-            tx, _ = _clamp_x(float(thr), smin, smax, x0, bw)
-            parts.append(f'<line x1="{tx:.1f}" y1="{y_bar - 3}" x2="{tx:.1f}" y2="{y_bar + bh + 3}" stroke="{col}" stroke-width="1.6"/>')
+            tx, _ = _clamp_x(thr, smin, smax, x0, bw)
+            parts.append(f'<line x1="{tx:.1f}" y1="{y_bar - 2.5}" x2="{tx:.1f}" y2="{y_bar + bh + 2.5}" stroke="{col}" stroke-width="1.5"/>')
 
-    scale = compute_linear_125_scale(smin, smax, target_ticks=5)
-    last_lx = -999.0
+    scale, last_lx = compute_linear_125_scale(smin, smax, target_ticks=4), -999.0
     for tick in scale["majors"]:
-        if tick < smin - 1e-9 or tick > smax + 1e-9:
-            continue
-        tx, _ = _clamp_x(tick, smin, smax, x0, bw)
-        parts.append(f'<line x1="{tx:.1f}" y1="{y_bar + bh}" x2="{tx:.1f}" y2="{y_bar + bh + 5}" stroke="var(--border-strong)" stroke-width="1"/>')
-        if tx - last_lx >= 48.0:
-            lbl = format_tick_numeral(tick, step=scale["step"])
-            parts.append(halo_text(tx, y_bar + bh + 19, lbl, anchor="middle", size=12.5, fill="var(--text-muted)", halo=False))
-            last_lx = tx
+        if smin - 1e-9 <= tick <= smax + 1e-9:
+            tx, _ = _clamp_x(tick, smin, smax, x0, bw)
+            parts.append(f'<line x1="{tx:.1f}" y1="{y_bar + bh}" x2="{tx:.1f}" y2="{y_bar + bh + 3.5}" stroke="var(--border-strong)" stroke-width="1"/>')
+            if tx - last_lx >= 42.0:
+                parts.append(halo_text(tx, y_bar + bh + 15.5, format_tick_numeral(tick, step=scale["step"]), anchor="middle", size=12.7, fill="var(--text-muted)", halo=False))
+                last_lx = tx
 
     if cmd is not None and rigor in {"L2", "L3"}:
-        cx, _ = _clamp_x(float(cmd), smin, smax, x0, bw)
-        parts.append(f'<polygon points="{cx:.1f},{y_bar - 1} {cx - 5:.1f},{y_bar - 9} {cx + 5:.1f},{y_bar - 9}" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.4"/>')
-        parts.append(halo_text(cx, y_bar - 14, f"CMD\u00a0{float(cmd):g}", anchor="middle", size=12.5, weight="600", fill="var(--text-secondary)"))
+        cx, _ = _clamp_x(cmd, smin, smax, x0, bw)
+        cmd_lbl = f"CMD\u00a0{cmd:g}"
+        hw = min(158.0, len(cmd_lbl) * 3.8)
+        cx_txt = max(8.0 + hw, min(332.0 - hw, cx))
+        parts.append(f'<polygon points="{cx:.1f},{y_bar - 1} {cx - 4:.1f},{y_bar - 7} {cx + 4:.1f},{y_bar - 7}" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.2"/>')
+        parts.append(halo_text(cx_txt, 15.5, cmd_lbl, anchor="middle", size=12.7, weight="600", fill="var(--text-secondary)", halo=False))
 
     ax, ovf = _clamp_x(act, smin, smax, x0, bw)
     ann = spec.get("status_annunciator", {})
     st_code = _resolve_threshold_state(act, limits, ann, str(ann.get("state", "NOMINAL")).upper())
     pin_col = ANNUNCIATOR_STATES.get(st_code, ANNUNCIATOR_STATES["NOMINAL"])["gauge_fg"]
-    parts.append(f'<polygon points="{ax:.1f},{y_bar + 2} {ax - 5.5:.1f},{y_bar + bh + 6} {ax + 5.5:.1f},{y_bar + bh + 6}" fill="{pin_col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
+    parts.append(f'<polygon points="{ax:.1f},{y_bar + 2} {ax - 4.5:.1f},{y_bar + bh + 4.5} {ax + 4.5:.1f},{y_bar + bh + 4.5}" fill="{pin_col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
     act_lbl = f"ACT\u00a0{format_value_unit(act, unit)}" if ovf == 0 else ("◀ CLAMPED" if ovf < 0 else "CLAMPED ▶")
-    lbl_anchor = "start" if ax < 110 else ("end" if ax > 570 else "middle")
-    parts.append(halo_text(ax, 88.0, act_lbl, anchor=lbl_anchor, size=12.5, weight="700", fill=pin_col))
+    act_w = min(320.0, len(act_lbl) * 7.7)
+    if ax < 80.0:
+        lbl_anchor, tx_act = "start", max(6.0, min(max(6.0, 334.0 - act_w), ax))
+    elif ax > 260.0:
+        lbl_anchor, tx_act = "end", min(334.0, max(min(334.0, 6.0 + act_w), ax))
+    else:
+        lbl_anchor, tx_act = "middle", max(min(170.0, 6.0 + act_w / 2.0), min(max(170.0, 334.0 - act_w / 2.0), ax))
+    parts.append(halo_text(tx_act, 66.5, act_lbl, anchor=lbl_anchor, size=12.8, weight="700", fill=pin_col, halo=False))
     parts.append("</svg>")
     return "\n".join(parts)
 
@@ -233,10 +252,10 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str, chrome:
     elif rigor in {"L2", "L3"} and (spec.get("gauge") or limits):
         lines.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Gauge"))}">{_render_gauge_svg(spec, rigor)}</div>')
 
-    if rigor == "L2" and limits.get("tolerance_band"):
+    if rigor == "L2" and isinstance(limits.get("tolerance_band"), (list, tuple)) and len(limits["tolerance_band"]) >= 2:
         tol = limits["tolerance_band"]
         tgt = limits.get("nominal_target", "")
-        lines.append(f'<div class="qe-scalar-meta va-nums">Target: {esc(format_value_unit(tgt, unit))} | Tolerance Band: [{esc(tol[0])}, +{esc(tol[1])}] {esc(unit)}</div>')
+        lines.append(f'<div class="qe-scalar-meta va-nums">Target: {esc(format_value_unit(tgt, unit))} | Tolerance Band: [{_fmt_signed(tol[0])}, {_fmt_signed(tol[1])}] {esc(unit)}</div>')
 
     if rigor == "L3":
         k_cov = meas.get("coverage_factor", 2.0)

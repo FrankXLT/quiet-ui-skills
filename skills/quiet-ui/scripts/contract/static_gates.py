@@ -39,7 +39,7 @@ def _is_excluded_from_budget(rel_path: str) -> bool:
     if rel_path in EXCLUDED_LINE_BUDGET_EXACT:
         return True
     parts = rel_path.split("/")
-    return len(parts) >= 3 and parts[0] == "customizations" and parts[-1] == "showcase.html"
+    return len(parts) >= 3 and parts[0] == "customizations" and parts[-1] in {"showcase.html", "showcase-v9.html"}
 
 
 def verify_line_counts(repo_root: Path) -> list[str]:

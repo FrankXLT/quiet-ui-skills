@@ -18,7 +18,7 @@
 }
 
 @layer shell {
-  :root[data-theme="white"], :root[data-theme="paper"] { color-scheme: light; }
+  :root:not([data-theme]), :root[data-theme="white"], :root[data-theme="paper"] { color-scheme: light; }
   :root[data-theme="dark"], :root[data-theme="dark-paper"] { color-scheme: dark; }
 
   .qe-skip-link {
@@ -42,6 +42,7 @@
     border-bottom: 1px solid var(--border-hairline);
     padding: 0.6rem 1.25rem;
   }
+  html[data-bench-embed="1"] .qe-topbar { display: none; }
   .qe-topbar-inner {
     max-inline-size: 86rem;
     margin-inline: auto;
@@ -123,8 +124,10 @@
 
   .va-figure-scroll { overflow-x: auto; max-inline-size: 100%; min-inline-size: 0; }
   .qe-svg { display: block; block-size: auto; margin-inline: auto; }
+  .qe-svg-560 { inline-size: min(100%, 620px); min-inline-size: 490px; }
   .qe-svg-680 { inline-size: min(100%, 760px); min-inline-size: 612px; }
   .qe-svg-720 { inline-size: min(100%, 820px); min-inline-size: 648px; }
+  .qe-gauge-svg { inline-size: min(100%, 360px); min-inline-size: 0; }
   .qe-spark-svg { inline-size: min(100%, 320px); min-inline-size: 240px; }
 
   .va-svg-halo-text, [data-halo="true"] {
@@ -194,7 +197,7 @@
   .qe-table-wrap { container-type: inline-size; }
   .qe-cell-center { text-align: center; }
   .qe-row-winner td { background: var(--tint-indigo-bg); }
-  @container (width < 580px) {
+  @container (width < 360px) {
     .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; }
     .qe-table thead { display: none; }
     .qe-table tbody tr {
@@ -298,6 +301,7 @@
 
 :root[data-medium="m1"],
 :root[data-medium="m1"][data-theme] {
+  color-scheme: only light;
   --bg-shell: #CBD5E1; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
   --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
   --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
@@ -317,6 +321,7 @@
 
 @media print {
   :root, :root[data-theme] {
+    color-scheme: only light;
     --bg-shell: #FFFFFF; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
     --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
     --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
@@ -338,5 +343,5 @@
   .qe-bench-grid { grid-template-columns: minmax(0, 1fr); gap: 10pt; }
   .qe-figure { border: 1px solid #94A3B8; background: #FFFFFF; color: #0F172A; }
   .va-figure-scroll, .va-table-wrap { overflow: visible; }
-  .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
+  .qe-svg-560, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
 }
