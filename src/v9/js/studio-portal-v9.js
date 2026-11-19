@@ -141,7 +141,7 @@
     'gauge-high': '<path d="M3 11.5a5.5 5.5 0 1 1 10 0M8 8.5l2.8-2.8" fill="none"/>',
     'microchip': '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/><path d="M6.5 2v2.5M9.5 2v2.5M6.5 11.5V14M9.5 11.5V14M2 6.5h2.5M2 9.5h2.5M11.5 6.5H14M11.5 9.5H14" fill="none"/>',
     'crosshairs': '<circle cx="8" cy="8" r="5"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" fill="none"/>',
-    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>',
+    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>', 'home': '<path d="M2.5 7.5 8 2.5l5.5 5v6H10V9.5H6v4H2.5z" fill="none"/>', 'frame': '<rect x="2" y="3" width="12" height="10" rx="1"/><path d="M4.5 10.5 7 7.5l2 2 1.5-1.5 2 2.5" fill="none"/>',
   };
   function svgIcon(name) {
     const body = NAV_ICONS[name] || NAV_ICONS.compass;
@@ -270,6 +270,7 @@
     const win = iframe.contentWindow;
     const main = doc.getElementById('va-stage-main');
     if (main && state.renderedView !== state.view) {
+      if (win && win.QuietEChartsAdapter && win.QuietEChartsAdapter.disposeAll) win.QuietEChartsAdapter.disposeAll(doc);
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
       doc.querySelectorAll('img[data-asset]').forEach(function (img) {
@@ -280,14 +281,14 @@
       state.renderedNav = doc.documentElement.dataset.effectiveNav;
       if (win) {
         if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
-        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc);
-        if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc); if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc); if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
         win.scrollTo(0, 0);
       }
       main.scrollTop = 0;
-    } else if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) {
-      syncShellNav(doc, viewMeta);
-      state.renderedNav = doc.documentElement.dataset.effectiveNav;
+    } else {
+      if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) { syncShellNav(doc, viewMeta); state.renderedNav = doc.documentElement.dataset.effectiveNav; }
+      if (win && win.QuietEChartsAdapter) win.QuietEChartsAdapter.refresh(doc);
     }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.bindPortalScrollTuck(iframe);
   }
@@ -333,10 +334,9 @@
       if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
     };
     if (iframe.dataset.externalMode !== state.studioView) {
-      state.isMounted = false;
-      state.renderedView = '';
-      iframe.removeAttribute('srcdoc');
-      iframe.dataset.externalMode = state.studioView;
+      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+      state.isMounted = false; state.renderedView = '';
+      iframe.removeAttribute('srcdoc'); iframe.dataset.externalMode = state.studioView;
       iframe.onload = function () { state.isMounted = true; doSync(); };
       iframe.src = base + q;
       return;
@@ -355,16 +355,13 @@
     if (!iframe) return;
     updatePortalDimensions();
     if (state.studioView !== 'examples') {
-      syncExternalMode(iframe);
-      syncBarControls();
-      syncUrlParams();
+      syncExternalMode(iframe); syncBarControls(); syncUrlParams();
       return;
     }
     if (!viewMeta) return;
     if (iframe.dataset.externalMode) {
-      delete iframe.dataset.externalMode;
-      iframe.removeAttribute('src');
-      state.isMounted = false;
+      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+      delete iframe.dataset.externalMode; iframe.removeAttribute('src'); state.isMounted = false;
     }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
       state.renderedView = '';
@@ -439,10 +436,8 @@
   }
 
   window.addEventListener('DOMContentLoaded', function () {
-    loadManifest();
-    readUrlParams();
-    initControls();
-    applyState(false);
+    loadManifest(); readUrlParams(); initControls(); applyState(false);
+    if (!window.echarts) { const s = document.createElement('script'); s.id = 'va-echarts-vendor'; s.src = resolveAbsDocsAsset('assets/vendor/echarts.min.js'); s.onload = function () { if (state.studioView === 'examples') syncIframeDOM(); }; document.head.appendChild(s); }
   });
   window.QuietStudioPortalV9 = { state: state, applyState: applyState, openBridgeDialog: openBridgeDialog };
 })(window, document);

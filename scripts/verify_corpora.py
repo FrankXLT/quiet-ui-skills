@@ -208,8 +208,8 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
     if not corpora_dir.is_dir():
         return {"ok": False, "errors": [f"Missing corpora directory: {corpora_dir}"], "stats": {}}
     world_dirs = sorted(d for d in corpora_dir.iterdir() if d.is_dir() and not d.name.startswith("."))
-    if len(world_dirs) < 5:
-        errors.append(f"Expected >= 5 worlds under {corpora_dir}, found {len(world_dirs)}")
+    if len(world_dirs) < 6:
+        errors.append(f"Expected >= 6 worlds under {corpora_dir}, found {len(world_dirs)}")
 
     cov = {"mediums": set(), "lenses": set(), "tempos": set(), "budgets": set(), "modalities": set()}
     total_views = total_evidence = conserved_checks = 0
@@ -314,8 +314,8 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
         errors.extend(f"[{wrel}] Evidence spec '{ub}' lacks any entry in evidence_bindings" for ub in sorted(set(parsed_evidence) - bound_files))
         errors.extend(f"[{wrel}] Canonical metric '{um}' lacks any entry in evidence_bindings" for um in sorted(set(metrics) - bound_metrics))
 
-    if total_views != 16:
-        errors.append(f"Expected 16 total views across 5 worlds, found {total_views}")
+    if total_views != 18:
+        errors.append(f"Expected 18 total views across 6 worlds, found {total_views}")
     for key, req in (("mediums", REQUIRED_MEDIUMS), ("lenses", REQUIRED_LENSES), ("tempos", REQUIRED_TEMPOS), ("budgets", REQUIRED_BUDGETS), ("modalities", REQUIRED_MODALITIES)):
         if (miss := sorted(req - cov[key])) or (extra := sorted(cov[key] - req)):
             errors.append(f"Matrix coverage mismatch for {key}: missing={miss}, unexpected={extra}")

@@ -26,13 +26,17 @@ you must:
   (d) Comply with the Trademark Policy set forth in TRADEMARKS.md.
 
 ------------------------------------------------------------------------------
-2. First-Party Provenance & Open Technical Standards
+2. First-Party Provenance, Open Standards & Vendored Apache ECharts
 ------------------------------------------------------------------------------
 All SVG schematic, bitfield, waveform, scalar, table, and analytical plot
 compilers in 'skills/quiet-evidence/' are clean-room first-party Python modules
 implementing open engineering notation standards (including ITU-T Z.120 sequence
 lifelines, NASA SP-2016-6105 N^2 interface matrices, and NRC NUREG-0492 fault
-trees). See THIRD_PARTY_LICENSES.md for verification of zero third-party code.
+trees). The offline Apache ECharts bundle vendored at
+'docs/assets/vendor/echarts.min.js' (v5.6.0, Apache License 2.0, Copyright
+2017-2024 The Apache Software Foundation) provides optional progressive
+interactive rendering with zero external CDN requests. See
+THIRD_PARTY_LICENSES.md for complete license and public-domain media details.
 
 ------------------------------------------------------------------------------
 3. MIT Customizations, Tokens & Unconditional Commercial Output Exemption

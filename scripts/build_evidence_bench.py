@@ -116,7 +116,9 @@ def _render_bench_shell(cards_markup: str) -> str:
     </section>
     <section class="qe-bench-grid" aria-label="21 Evidence Components">{cards_markup}</section>
   </main>
+  <script src="../assets/vendor/echarts.min.js"></script>
   <script src="../../src/js/evidence-runtime.js"></script>
+  <script src="../../src/v9/js/echarts-quiet-adapter.js"></script>
   <script src="./bench.js"></script>
 </body>
 </html>

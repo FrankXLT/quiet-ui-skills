@@ -62,6 +62,8 @@ def _filter_v9_showcase(html: str, manifest: dict, disabled_tiers: list[str], mo
             brand_excluded.add("v15-collimated-flight-hud")
         if "ctrl-1" in disabled_tiers or "hud-1" in disabled_tiers:
             brand_excluded.add("v16-transparent-window-overlay")
+        if "app-5" in disabled_tiers:
+            brand_excluded.update({"v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console"})
     kept_worlds, disabled_views = [], []
     for w in v9_data.get("worlds", []):
         if enabled_worlds and w["world_id"] not in enabled_worlds:

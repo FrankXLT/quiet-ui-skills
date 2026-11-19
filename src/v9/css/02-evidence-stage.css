@@ -312,4 +312,46 @@
   .v9-param-row:last-child { border-bottom: none; padding-bottom: 0; }
   .v9-param-row dt { font-size: var(--ts-xs); color: var(--text-muted); font-weight: 600; }
   .v9-param-row dd { margin: 0; font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-primary); font-weight: 600; }
+
+  /* Progressive Apache ECharts SVG Host & M1 Print Fallback */
+  .qe-plot-wrap[data-echarts-active="true"] .qe-svg-fallback { display: none; }
+  .qe-echarts-host { inline-size: 100%; overflow: visible; }
+  :root[data-medium="m1"] .qe-plot-wrap .qe-svg-fallback,
+  .qe-plot-wrap[data-medium="m1"] .qe-svg-fallback { display: block; }
+  :root[data-medium="m1"] .qe-plot-wrap .qe-echarts-host,
+  .qe-plot-wrap[data-medium="m1"] .qe-echarts-host { display: none; }
+  @media print {
+    .qe-plot-wrap[data-echarts-active] .qe-svg-fallback,
+    .qe-plot-wrap .qe-svg-fallback { display: block; }
+    .qe-plot-wrap .qe-echarts-host, .qe-plot-modebar, .qe-eco-drawer { display: none; }
+  }
+  .qe-plot-modebar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+  .qe-modebar-label { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); margin-right: 0.25rem; }
+  .qe-mode-btn {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border-radius: var(--radius-inner);
+    padding: 0.22rem 0.55rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 28px;
+  }
+  .qe-mode-btn.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  .qe-eco-drawer { margin-top: 0.5rem; border-top: 1px dashed var(--border-hairline); padding-top: 0.45rem; }
+  .qe-eco-summary { cursor: pointer; font-size: var(--ts-xs); font-weight: 600; color: var(--text-secondary); list-style: none; }
+  .qe-eco-summary::-webkit-details-marker { display: none; }
+  .qe-eco-summary::before { content: '+ '; font-family: var(--font-mono); }
+  .qe-eco-drawer[open] .qe-eco-summary::before { content: '- '; }
+  .qe-eco-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; margin-top: 0.45rem; }
+  .qe-eco-block { background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: var(--radius-inner); padding: 0.45rem 0.6rem; min-inline-size: 0; }
+  .qe-eco-head { margin: 0 0 0.28rem; font-size: var(--ts-xs); color: var(--text-secondary); }
+  .qe-eco-block pre { margin: 0; overflow-x: auto; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.4; color: var(--text-primary); }
 }

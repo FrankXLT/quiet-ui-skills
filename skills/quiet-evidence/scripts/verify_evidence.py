@@ -383,6 +383,36 @@ def verify_live_cdp(repo_root: Path, screenshots_dir: Path | None = None) -> lis
             errs.append(f"[PRINT_EMULATION] {pr_err}")
         driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
 
+        driver.get(f"{base_url}?theme=white")
+        time.sleep(0.25)
+        ec_bench_err = driver.execute_script("""
+            const wrap = document.querySelector('.qe-plot-wrap[data-quiet-echarts]');
+            const btn = wrap && wrap.querySelector('.qe-mode-btn[data-qe-mode="echarts"]');
+            const drw = document.querySelector('.qe-eco-drawer');
+            if (!wrap || !btn || !drw) return 'missing bench echarts controls';
+            btn.click(); drw.open = true;
+            if (wrap.dataset.echartsActive !== 'true' || !wrap.querySelector('.qe-echarts-host svg')) return 'echarts did not activate';
+            if (!drw.textContent.includes('Plotly')) return 'ecosystem drawer missing Plotly snippet';
+            return '';
+        """)
+        if ec_bench_err:
+            errs.append(f"[BENCH_ECHARTS] {ec_bench_err}")
+        else:
+            driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+            time.sleep(0.15)
+            pr_ec_err = driver.execute_script("""
+                const wrap = document.querySelector('.qe-plot-wrap[data-quiet-echarts]');
+                if (!wrap) return 'plot wrap missing in print';
+                const fb = wrap.querySelector('.qe-svg-fallback');
+                const host = wrap.querySelector('.qe-echarts-host');
+                if (!fb || getComputedStyle(fb).display === 'none') return 'static fallback stayed hidden on active echarts print';
+                if (host && getComputedStyle(host).display !== 'none') return 'echarts host visible during print';
+                return '';
+            """)
+            if pr_ec_err:
+                errs.append(f"[BENCH_ECHARTS_PRINT] {pr_ec_err}")
+            driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
+
         if screenshots_dir is not None:
             _capture_proof_shots(driver, base_url, screenshots_dir)
     finally:

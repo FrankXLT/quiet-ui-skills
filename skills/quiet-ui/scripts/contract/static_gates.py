@@ -28,7 +28,7 @@ from .constants import (
     WORKFLOWS_DOC_RANGE,
 )
 
-IGNORED_DIRS: set[str] = {".git", ".cache", "node_modules", "__pycache__", ".venv"}
+IGNORED_DIRS: set[str] = {".git", ".cache", "node_modules", "__pycache__", ".venv", "vendor"}
 BINARY_EXTS: set[str] = {
     ".jpg", ".jpeg", ".png", ".svg", ".ico", ".woff", ".woff2",
     ".ttf", ".eot", ".gif", ".webp", ".so", ".pyc",

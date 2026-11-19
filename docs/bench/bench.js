@@ -14,6 +14,7 @@
     }
     const sel = document.getElementById('bench-theme-select');
     if (sel) sel.value = val;
+    if (window.QuietEChartsAdapter) window.QuietEChartsAdapter.refresh(document);
   }
 
   function applyMedium(medium) {
@@ -24,6 +25,7 @@
     document.querySelectorAll('.qe-figure').forEach(function (fig) {
       fig.setAttribute('data-qe-medium', val);
     });
+    if (window.QuietEChartsAdapter) window.QuietEChartsAdapter.refresh(document);
   }
 
   function applyFilters() {
@@ -94,6 +96,7 @@
     if (params.get('modality') && modSel) modSel.value = params.get('modality');
     if (params.get('rigor') && rigSel) rigSel.value = params.get('rigor');
     applyFilters();
+    if (window.QuietEChartsAdapter) window.QuietEChartsAdapter.boot(document);
   }
 
   if (document.readyState === 'loading') {

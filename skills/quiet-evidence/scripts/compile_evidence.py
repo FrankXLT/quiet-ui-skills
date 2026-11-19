@@ -26,6 +26,7 @@ from compilers import (  # noqa: E402
     compile_table,
     compile_waveform,
 )
+from compilers.echarts_adapter import render_ecosystem_drawer  # noqa: E402
 from compilers.tokens_and_scales import esc  # noqa: E402
 
 URN_PREFIX = "urn:quiet-ui:schema:v9:"
@@ -157,6 +158,7 @@ def _compile_single_dict(
             f'<pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for {title}"><code>{esc(raw_text)}</code></pre>'
             "</details>"
         )
+    eco_drawer = render_ecosystem_drawer(data) if (include_spec_drawer and chrome == "bench" and modality == "plot") else ""
     badges = (
         f'<span class="qe-fig-badges"><span class="va-pill" data-variant="tag">{esc(modality.upper())}</span>'
         f'<span class="va-pill" data-variant="tag">{esc(eff_rigor)}</span></span>'
@@ -174,6 +176,7 @@ def _compile_single_dict(
         f"</div>"
         f"{inner_html}"
         f"{caption}"
+        f"{eco_drawer}"
         f"{drawer}"
         "</figure>"
     )

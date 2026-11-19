@@ -32,6 +32,7 @@ Load ONLY the specific rigor and modality guides matching your active visualizat
 - [rigor/metrology-and-nist-units.md](rigor/metrology-and-nist-units.md): NIST SP 811 unit calculus, SI prefixes, Roman vs. italic symbols, significant figures, and parameter blocks.
 - [rigor/scales-ticks-and-uncertainty.md](rigor/scales-ticks-and-uncertainty.md): NAVAIR FTM-108 $1\text{--}2\text{--}5$ intervals, minor log ticks, $\pm 1\sigma$ corridors, dropout gaps, and interpolation grids.
 - [rigor/conditions-and-envelopes.md](rigor/conditions-and-envelopes.md): Test-condition headers, discrete test markers vs. model curves, limit envelopes, and stroke halos.
+- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): Standards-compliant adapters for Apache ECharts (SVG + CSS tokens), Plotly, Matplotlib, Bokeh, and Mermaid.
 
 ### The 6 Visual Modalities
 - [modalities/scalar-readouts-and-gauges.md](modalities/scalar-readouts-and-gauges.md): Scalar readouts, single-value callouts, dynamic gauges, and status annunciator pills.

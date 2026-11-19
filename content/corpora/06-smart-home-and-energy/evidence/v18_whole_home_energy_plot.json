@@ -1,0 +1,136 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v18-whole-home-energy-plot",
+  "plot_kind": "cartesian",
+  "metadata": {
+    "title": "24-Hour Residential Solar PV, Whole-Home Load & Net Grid Exchange",
+    "description": "Discrete 2-hour interval metering (+/-u_y) across PV-STRING-SOUTH, PANEL-MAIN-200A, and utility net exchange showing -1.68 kW export at 14:00 ahead of the $0.34 / kWh peak TOU window.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-18T14:00:00Z"
+  },
+  "test_environment": {
+    "dut_id": "PANEL-MAIN-200A",
+    "standard_id": "IEEE-2030.5 / ANSI C12.20",
+    "ambient_temperature_c": 21.5,
+    "temperature_uncertainty_c": 0.2,
+    "peak_tou_window": "16:00-21:00 ($0.34 / kWh)"
+  },
+  "tariff_schedule": {
+    "off_peak_usd_kwh": 0.14,
+    "peak_evening_usd_kwh": 0.34,
+    "peak_window_hours": [16, 21]
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "t_hr",
+      "unit": "h",
+      "quantity_calculus": "Local Solar Time, t / h",
+      "scale_type": "linear",
+      "domain": [0.0, 24.0]
+    },
+    "y_axis": {
+      "quantity": "P",
+      "unit": "kW",
+      "quantity_calculus": "Active Electrical Power, P / kW",
+      "scale_type": "linear",
+      "domain": [-3.0, 7.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-pv-export-floor",
+      "label": "Peak Export -1.68 kW",
+      "threshold_value": -1.68,
+      "type": "reference",
+      "direction": "none",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)"
+    },
+    {
+      "id": "env-evening-warn",
+      "label": "Peak TOU Load Watch (4.5 kW)",
+      "threshold_value": 4.5,
+      "type": "warning",
+      "direction": "upper",
+      "stroke_style": "dash-dot",
+      "stroke_color": "var(--status-warn)"
+    }
+  ],
+  "series": [
+    {
+      "id": "solar-pv-kw",
+      "name": "Solar PV Generation (P_pv)",
+      "epistemic_type": "discrete_measurement",
+      "connect_piecewise": true,
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 0.0, "y": 0.0, "u_y": 0.05},
+        {"x": 2.0, "y": 0.0, "u_y": 0.05},
+        {"x": 4.0, "y": 0.0, "u_y": 0.05},
+        {"x": 6.0, "y": 0.28, "u_y": 0.08},
+        {"x": 8.0, "y": 1.85, "u_y": 0.12},
+        {"x": 10.0, "y": 3.92, "u_y": 0.15},
+        {"x": 12.0, "y": 4.94, "u_y": 0.18},
+        {"x": 14.0, "y": 5.1, "u_y": 0.18},
+        {"x": 16.0, "y": 3.64, "u_y": 0.14},
+        {"x": 18.0, "y": 1.12, "u_y": 0.1},
+        {"x": 20.0, "y": 0.0, "u_y": 0.05},
+        {"x": 22.0, "y": 0.0, "u_y": 0.05},
+        {"x": 24.0, "y": 0.0, "u_y": 0.05}
+      ]
+    },
+    {
+      "id": "home-load-kw",
+      "name": "Whole-Home Load (P_load)",
+      "epistemic_type": "discrete_measurement",
+      "connect_piecewise": true,
+      "marker_glyph": "square",
+      "marker_color": "var(--status-warn)",
+      "data_points": [
+        {"x": 0.0, "y": 0.92, "u_y": 0.08},
+        {"x": 2.0, "y": 0.84, "u_y": 0.08},
+        {"x": 4.0, "y": 0.88, "u_y": 0.08},
+        {"x": 6.0, "y": 1.46, "u_y": 0.1},
+        {"x": 8.0, "y": 2.34, "u_y": 0.12},
+        {"x": 10.0, "y": 2.75, "u_y": 0.12},
+        {"x": 12.0, "y": 3.18, "u_y": 0.14},
+        {"x": 14.0, "y": 3.42, "u_y": 0.14},
+        {"x": 16.0, "y": 3.85, "u_y": 0.16},
+        {"x": 18.0, "y": 4.18, "u_y": 0.18},
+        {"x": 20.0, "y": 2.95, "u_y": 0.14},
+        {"x": 22.0, "y": 1.62, "u_y": 0.1},
+        {"x": 24.0, "y": 1.05, "u_y": 0.08}
+      ]
+    },
+    {
+      "id": "net-grid-kw",
+      "name": "Net Utility Grid (-Export / +Import)",
+      "epistemic_type": "discrete_measurement",
+      "connect_piecewise": true,
+      "marker_glyph": "triangle",
+      "marker_color": "var(--text-secondary)",
+      "data_points": [
+        {"x": 0.0, "y": 0.92, "u_y": 0.09},
+        {"x": 2.0, "y": 0.84, "u_y": 0.09},
+        {"x": 4.0, "y": 0.88, "u_y": 0.09},
+        {"x": 6.0, "y": 1.18, "u_y": 0.11},
+        {"x": 8.0, "y": 0.49, "u_y": 0.14},
+        {"x": 10.0, "y": -1.17, "u_y": 0.16},
+        {"x": 12.0, "y": -1.76, "u_y": 0.17},
+        {"x": 14.0, "y": -1.68, "u_y": 0.16},
+        {"x": 16.0, "y": 0.21, "u_y": 0.15},
+        {"x": 18.0, "y": 3.06, "u_y": 0.18},
+        {"x": 20.0, "y": 2.95, "u_y": 0.14},
+        {"x": 22.0, "y": 1.62, "u_y": 0.11},
+        {"x": 24.0, "y": 1.05, "u_y": 0.09}
+      ]
+    }
+  ],
+  "parametric_legend": [
+    {"symbol": "P_pv", "value": 5.1, "unit": "kW"},
+    {"symbol": "P_load", "value": 3.42, "unit": "kW"},
+    {"symbol": "P_grid", "value": -1.68, "unit": "kW"},
+    {"symbol": "R_peak", "value": 0.34, "unit": "USD/kWh"}
+  ]
+}

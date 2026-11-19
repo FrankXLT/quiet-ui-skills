@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+import json
 import math
 from typing import Any
 
 from .comparison_plots import compile_dumbbell, compile_forest, compile_waterfall
+from .echarts_adapter import build_echarts_payload, render_echarts_toggle_bar
 from .plot_helpers import (
     DASH_RE as _DASH_RE,
     STYLE_DASHES as _STYLE_DASHES,
@@ -334,7 +336,12 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()
     kind = spec.get("plot_kind", "cartesian")
-    parts: list[str] = [f'<div class="qe-plot-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}">']
+    payload = build_echarts_payload(spec, eff_rigor, medium)
+    payload_attr = f' data-quiet-echarts="{esc(json.dumps(payload, separators=(",", ":")))}"' if payload is not None else ""
+    parts: list[str] = [f'<div class="qe-plot-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}"{payload_attr}>']
+
+    if chrome == "bench" and payload is not None:
+        parts.append(render_echarts_toggle_bar())
 
     cond_html = render_test_condition_strip(spec.get("test_environment"), eff_rigor)
     if cond_html:
@@ -358,7 +365,11 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             return compile_forest(sub)
         return _compile_cartesian(sub, eff_rigor, medium)
 
-    parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Analytical Plot"))}">{_emit_plot(spec, kind)}</div>')
+    echarts_host = '<div class="qe-echarts-host" hidden></div>' if payload is not None else ""
+    parts.append(
+        f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Analytical Plot"))}">'
+        f'<div class="qe-svg-fallback">{_emit_plot(spec, kind)}</div>{echarts_host}</div>'
+    )
     comps = list(spec.get("companions", []))
     if spec.get("companion"):
         comps.insert(0, spec["companion"])

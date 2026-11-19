@@ -35,9 +35,9 @@ class TestCorporaConservation(unittest.TestCase):
         res = audit_corpora(CORPORA_DIR)
         self.assertTrue(res["ok"], "Corpora audit failed:\n" + "\n".join(res["errors"]))
         s = res["stats"]
-        self.assertEqual(s["worlds"], 5)
-        self.assertEqual(s["views"], 16)
-        self.assertEqual(s["evidence_specs"], 20)
+        self.assertEqual(s["worlds"], 6)
+        self.assertEqual(s["views"], 18)
+        self.assertEqual(s["evidence_specs"], 23)
         self.assertEqual(set(s["mediums"]), REQUIRED_MEDIUMS)
         self.assertEqual(set(s["lenses"]), REQUIRED_LENSES)
         self.assertEqual(set(s["tempos"]), REQUIRED_TEMPOS)
@@ -70,7 +70,7 @@ class TestCorporaConservation(unittest.TestCase):
 
     def test_conservation_gate_rejects_drifted_value_and_path_escape(self) -> None:
         sample_worlds = sorted(CORPORA_DIR.glob("*/corpus.json"))
-        self.assertEqual(len(sample_worlds), 5)
+        self.assertEqual(len(sample_worlds), 6)
         with tempfile.TemporaryDirectory() as tmp:
             tmp_root = Path(tmp)
             for idx, src_corp in enumerate(sample_worlds):

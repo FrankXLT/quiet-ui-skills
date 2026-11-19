@@ -54,20 +54,20 @@ BACKPLATE_MANIFEST: list[dict[str, Any]] = [
         "view": "v15",
         "mode": "lowlight",
         "filename": "opt_hud_night_rwy.jpg",
-        "commons_title": "File:KC-10 landing at night 130811-F-AB304-254.jpg",
-        "agency": "U.S. Air Force / DVIDS",
-        "crop_box": (0.0, 0.12, 0.78, 0.74),
-        "centering": (0.45, 0.45),
+        "commons_title": "File:Illuminated Runway in EDSZ at night in the center.jpg",
+        "agency": "Wikimedia Commons (CC0 1.0 Dedications)",
+        "crop_box": (0.0, 0.04, 1.0, 0.96),
+        "centering": (0.5, 0.5),
     },
     {
         "id": "glass_day_hwy",
         "view": "v16",
         "mode": "daylight",
         "filename": "opt_glass_day_hwy.jpg",
-        "commons_title": "File:Catskill, United States (Unsplash).jpg",
+        "commons_title": "File:10th Street Bridge, Pittsburgh, United States (Unsplash).jpg",
         "agency": "Wikimedia Commons / Unsplash CC0 Archive",
-        "crop_box": (0.10, 0.22, 0.96, 0.80),
-        "centering": (0.5, 0.5),
+        "crop_box": (0.14, 0.24, 0.86, 0.71),
+        "centering": (0.5, 0.48),
     },
     {
         "id": "glass_dusk_hwy",
@@ -84,10 +84,30 @@ BACKPLATE_MANIFEST: list[dict[str, Any]] = [
         "view": "v16",
         "mode": "night",
         "filename": "opt_glass_night_hwy.jpg",
-        "commons_title": "File:Highway light trains at night (Unsplash).jpg",
+        "commons_title": "File:Highway Architecture (Unsplash).jpg",
         "agency": "Wikimedia Commons / Unsplash CC0 Archive",
-        "crop_box": (0.04, 0.18, 0.96, 0.94),
-        "centering": (0.5, 0.5),
+        "crop_box": (0.02, 0.08, 0.98, 0.92),
+        "centering": (0.5, 0.55),
+    },
+    {
+        "id": "frame_art",
+        "view": "v17",
+        "mode": "art",
+        "filename": "opt_frame_art.jpg",
+        "commons_title": "File:Albert Bierstadt, Mount Corcoran, c. 1876-1877, NGA 166428.jpg",
+        "agency": "National Gallery of Art (CC0 Open Access)",
+        "crop_box": None,
+        "centering": (0.5, 0.48),
+    },
+    {
+        "id": "frame_landscape",
+        "view": "v17",
+        "mode": "landscape",
+        "filename": "opt_frame_landscape.jpg",
+        "commons_title": "File:Beautiful mountain reflection (Unsplash).jpg",
+        "agency": "Wikimedia Commons / Unsplash CC0 Archive",
+        "crop_box": None,
+        "centering": (0.5, 0.50),
     },
 ]
 
@@ -180,12 +200,14 @@ def fetch_all_backplates(repo_root: Path, offline_ok: bool) -> list[dict[str, An
     for item in BACKPLATE_MANIFEST:
         meta_cache = cache_dir / f"{item['id']}.json"
         raw_cache = cache_dir / f"{item['id']}_orig.jpg"
-        if meta_cache.exists() and raw_cache.exists():
-            info = json.loads(meta_cache.read_text(encoding="utf-8"))
+        cached_info = json.loads(meta_cache.read_text(encoding="utf-8")) if (meta_cache.exists() and raw_cache.exists()) else None
+        if cached_info is not None and cached_info.get("_commons_title") == item["commons_title"]:
+            info = cached_info
         elif offline_ok:
-            raise FileNotFoundError(f"Offline mode requested but cache missing for {item['id']}")
+            raise FileNotFoundError(f"Offline mode requested or cache stale for {item['id']} ({item['commons_title']})")
         else:
             info = _query_commons_imageinfo(item["commons_title"])
+            info["_commons_title"] = item["commons_title"]
             _verify_zero_attribution_license(info, item["commons_title"])
             img_url = str(info["url"])
             raw_bytes = _http_get_bytes(img_url, timeout=45)

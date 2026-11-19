@@ -18,12 +18,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from verify_v9_helpers import (  # noqa: E402
-    STAGE_AUDIT_JS,
-    capture_gate41_gallery,
-    capture_gate5_gallery,
-    set_viewport,
-)
+from verify_v9_gallery import capture_gate54_gallery, run_domain06_and_echarts_checks  # noqa: E402
+from verify_v9_helpers import STAGE_AUDIT_JS, capture_gate41_gallery, set_viewport  # noqa: E402
 
 REPO_ROOT = SCRIPT_DIR.parent
 PILOT_HTML = REPO_ROOT / "docs" / "pilot" / "world-01-pilot.html"
@@ -37,6 +33,7 @@ ALL_WORLDS_VIEWS: list[tuple[str, tuple[str, ...]]] = [
     ("03-industrial-grid-and-manufacturing", ("v07-grid-scada-poi-console", "v08-plant-floor-wall-kiosk", "v09-spc-quality-and-modbus-report")),
     ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab")),
     ("05-physical-systems-auto-and-aero", ("v13-propulsion-archival-monograph", "v14-fieldbus-and-scope-debugger", "v15-collimated-flight-hud", "v16-transparent-window-overlay")),
+    ("06-smart-home-and-energy", ("v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console")),
 ]
 
 
@@ -256,7 +253,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
         errs.append("[STUDIO_MODE] Failed to return from Components to Examples")
 
     # Starters check
-    for rel, min_views in (("customizations/personal-starter/showcase-v9.html", 16), ("customizations/brand-starter/showcase-v9.html", 14)):
+    for rel, min_views in (("customizations/personal-starter/showcase-v9.html", 18), ("customizations/brand-starter/showcase-v9.html", 14)):
         driver.get(f"{root_url}/{rel}")
         time.sleep(0.35)
         cnt = driver.execute_script("const m=JSON.parse(document.getElementById('va-v9-manifest').textContent);return m.worlds.reduce((a,w)=>a+w.views.length,0);")
@@ -361,9 +358,10 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
                 errs.extend(_audit_stage(driver, f"{base_url}?world=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme={th}", 1440, 900, f"V15_{th}"))
             errs.extend(_verify_worlds_02_05_and_studio(driver, base_url, root_url))
             errs.extend(_verify_phase5_edge_cases(driver, base_url, root_url))
+            errs.extend(run_domain06_and_echarts_checks(driver, base_url, root_url))
         if screenshots_dir is not None:
             if all_worlds:
-                capture_gate5_gallery(driver, base_url, screenshots_dir)
+                capture_gate54_gallery(driver, base_url, screenshots_dir)
             else:
                 capture_gate41_gallery(driver, base_url, screenshots_dir)
     finally:
@@ -375,9 +373,9 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Quiet UI v9.0 Pilot & 5-World CDP Verifier")
+    parser = argparse.ArgumentParser(description="Quiet UI v9.0 Pilot & 6-World CDP Verifier")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome CDP matrix & behavioral gates")
-    parser.add_argument("--all-worlds", action="store_true", help="Verify all 5 Worlds x 16 Views on docs/v9/quiet-ui-v9-showcase.html")
+    parser.add_argument("--all-worlds", action="store_true", help="Verify all 6 Worlds x 18 Views on docs/v9/quiet-ui-v9-showcase.html")
     parser.add_argument("--screenshots-dir", default=None, help="Directory to write Retina proof PNGs")
     args = parser.parse_args()
 
@@ -389,7 +387,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}")
         return 1
-    scope = "5 Worlds x 16 Views" if args.all_worlds else "World 01 Pilot"
+    scope = "6 Worlds x 18 Views" if args.all_worlds else "World 01 Pilot"
     print(f"[PASS] 100% of Quiet UI v9.0 ({scope}) static & CDP gates succeeded!")
     return 0
 

@@ -1,0 +1,205 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 Phase 5.4 — World 06: Smart Home Ambient Frame (v17) & Companion Console (v18) */
+
+@layer evidence {
+  /* v17 Ambient Picture-Frame Kiosk (M5/M7 · >= 68% unobstructed canvas) */
+  .v9-stage-inner.v9-view-v17 {
+    max-inline-size: min(100%, 96rem);
+    padding: 0.75rem;
+  }
+  .v17-frame-viewport {
+    position: relative;
+    inline-size: 100%;
+    min-block-size: min(74dvh, 640px);
+    max-block-size: calc(100dvh - 1.75rem);
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    background: #141923;
+    border: 1px solid var(--border-strong);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.24);
+  }
+  .v17-art-photo {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.25s ease, filter 0.25s ease;
+    pointer-events: none;
+  }
+  .v17-art-photo.is-active { opacity: 1; }
+  .v17-frame-viewport[data-v17-scene="cinema-dim"] .v17-art-photo.is-active { filter: brightness(0.76) saturate(0.92); }
+  .v17-frame-viewport[data-v17-scene="night-quiet"] .v17-art-photo.is-active { filter: brightness(0.62) saturate(0.84); }
+  .v17-ambient-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.28) 0%, transparent 24%, transparent 78%, rgba(15, 23, 42, 0.36) 100%);
+  }
+  .v17-visor-bar { display: contents; }
+  .v17-glass-pod {
+    position: absolute;
+    top: 0.9rem;
+    z-index: 2;
+    padding: 0.56rem 0.85rem;
+    border-radius: var(--radius-card);
+    background-color: rgba(16, 22, 34, 0.68);
+    backdrop-filter: blur(22px) saturate(1.25);
+    -webkit-backdrop-filter: blur(22px) saturate(1.25);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.32);
+    color: #F8FAFC;
+    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.85);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    max-inline-size: min(360px, calc(50vw - 1.5rem));
+  }
+  .v17-clock-pod  { left: 0.9rem; }
+  .v17-energy-pod { right: 0.9rem; text-align: end; }
+  .v17-clock-row  { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; }
+  .v17-clock-time { font-family: var(--font-mono); font-size: clamp(1.35rem, 1.15rem + 0.6cqi, 1.75rem); font-weight: 700; line-height: 1; color: #FFFFFF; }
+  .v17-clock-meta { font-size: var(--ts-xs); color: #E2E8F0; }
+  .v17-comfort-row, .v17-energy-line, .v17-energy-sub {
+    display: flex;
+    align-items: center;
+    gap: 0.42rem;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    color: #F1F5F9;
+  }
+  .v17-energy-sub { justify-content: flex-end; }
+  .v17-energy-sub .va-pill[data-variant="status"][data-state="nominal"] {
+    color: #D1FAE5;
+    font-weight: 700;
+  }
+  .v17-scene-bar {
+    position: absolute;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.85rem;
+    z-index: 3;
+    padding: 0.42rem 0.65rem;
+    border-radius: var(--radius-card);
+    background-color: rgba(16, 22, 34, 0.72);
+    backdrop-filter: blur(22px) saturate(1.25);
+    -webkit-backdrop-filter: blur(22px) saturate(1.25);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.75rem;
+    color: #F8FAFC;
+  }
+  .v17-btn-group { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .v17-scene-btn {
+    border: 1px solid rgba(248, 250, 252, 0.28);
+    background: rgba(15, 23, 42, 0.72);
+    color: #F8FAFC;
+    border-radius: var(--radius-inner);
+    padding: 0.34rem 0.65rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 32px;
+  }
+  .v17-scene-btn:focus-visible { outline: 2px solid #FDE68A; outline-offset: 2px; }
+  .v17-scene-btn.is-active { background: #FDE68A; border-color: #FEF3C7; color: #0F172A; }
+  .v17-readout { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E2E8F0; }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .v17-glass-pod, .v17-scene-bar { background-color: rgba(16, 22, 34, 0.90); }
+  }
+
+  /* v18 Companion & Desktop Home Assistant Console */
+  .v9-stage-inner.v9-view-v18 { gap: 0.85rem; }
+  .v18-section-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card);
+    padding: 0.72rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.58rem;
+    min-inline-size: 0;
+  }
+  .v18-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+  }
+  .v18-card-title { margin: 0; font-size: var(--ts-md); color: var(--text-primary); }
+  .v18-filter-bar { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .v18-filter-btn {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border-radius: var(--radius-inner);
+    padding: 0.32rem 0.65rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 34px;
+  }
+  .v18-filter-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .v18-filter-btn.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  .v18-room-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.65rem; }
+  .v18-security-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+  .v18-ledger-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; }
+  @container stage (width >= 640px) {
+    .v18-room-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .v18-security-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @container stage (width >= 1020px) {
+    .v18-room-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .v18-ledger-grid { grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); }
+  }
+  .v18-zone-tile {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    padding: 0.68rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-inline-size: 0;
+  }
+  .v18-zone-tile[hidden] { display: none; }
+  .v18-zone-top { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
+  .v18-zone-id { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; color: var(--text-secondary); }
+  .v18-zone-val { font-family: var(--font-mono); font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
+  .v18-zone-meta { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.35; }
+  .v18-sec-log { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); }
+
+  @media (max-width: 639px) {
+    .v9-stage-inner.v9-view-v18 { padding-bottom: 5.5rem; }
+    .v17-scene-btn, .v18-filter-btn, .v18-security-grid .v9-tactile-btn {
+      min-block-size: 44px;
+      min-inline-size: 44px;
+    }
+    .v17-frame-viewport {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      aspect-ratio: auto;
+      min-block-size: min(82dvh, 660px);
+      padding: 0.55rem;
+      gap: 0.45rem;
+    }
+    .v17-visor-bar { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 0.45rem; position: relative; z-index: 2; }
+    .v17-glass-pod, .v17-scene-bar {
+      position: static;
+      max-inline-size: none;
+      flex: 0 0 auto;
+      inline-size: 100%;
+      text-align: start;
+    }
+    .v17-energy-sub { justify-content: flex-start; }
+  }
+}
