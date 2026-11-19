@@ -66,6 +66,7 @@ def bundle_v9_stage_js(repo_root: Path) -> str:
         (repo_root / rel).read_text(encoding="utf-8")
         for rel in (
             "src/js/evidence-runtime.js",
+            "src/v9/js/echarts-layers.js",
             "src/v9/js/echarts-quiet-adapter.js",
             "src/v9/js/world-01-interactions.js",
             "src/v9/js/world-02-05-interactions.js",
@@ -126,8 +127,8 @@ def build_v9_showcase(repo_root: Path, world_ids: list[str]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build Quiet UI v9.0 Multi-Domain Showcase")
-    parser.add_argument("--worlds", default="01-clinical-icu-and-trials", help="Comma-separated world IDs or 'all'")
-    parser.add_argument("--output", default="docs/pilot/world-01-pilot.html", help="Output HTML file path")
+    parser.add_argument("--worlds", default="all", help="Comma-separated world IDs or 'all' (default: all)")
+    parser.add_argument("--output", default="quiet-ui-showcase.html", help="Output HTML file path")
     args = parser.parse_args()
 
     selected = list(WORLD_BUILDERS.keys()) if args.worlds == "all" else [w.strip() for w in args.worlds.split(",") if w.strip()]

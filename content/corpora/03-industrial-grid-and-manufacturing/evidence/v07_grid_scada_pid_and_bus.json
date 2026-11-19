@@ -3,7 +3,7 @@
   "id": "v07-grid-scada-pid-and-bus",
   "metadata": {
     "title": "Microgrid POI ISA-5.1 P&ID Loop & 120 Ω RS-485/Modbus PLC Fieldbus",
-    "description": "L3 physical topology pairing the ISA-5.1 Gas Turbine and 24.0 MW BESS Point-of-Interconnection loop with the 120-ohm terminated TIA-485/Modbus RTU PLC fieldbus.",
+    "description": "Physical topology pairing the ISA-5.1 Gas Turbine and 24.0 MW BESS Point-of-Interconnection loop with the 120-ohm terminated TIA-485/Modbus RTU PLC fieldbus.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-16T21:30:00Z",
     "drawing_number": "DWG-SCADA-POI-0307-R2"

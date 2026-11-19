@@ -53,7 +53,6 @@ EXCLUDED_LINE_BUDGET_EXACT: set[str] = {
     "quiet-ui-showcase.html",
     "docs/index.html",
     "docs/bench/evidence-bench.html",
-    "docs/pilot/world-01-pilot.html",
     "docs/v9/quiet-ui-v9-showcase.html",
 }
 

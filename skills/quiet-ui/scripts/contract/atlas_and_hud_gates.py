@@ -1,226 +1,163 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Gates 14 (Diagram Atlas Parity) and 15 (HUD-1 Field-of-Regard) for Quiet UI v8.0."""
+"""Gates 14 (21-Specimen Components Library + ECharts) and 15 (v15 HUD & v16 Optics) for Quiet UI v9.0."""
 
 from __future__ import annotations
 
 import time
 import urllib.parse
-from typing import Any
 from selenium import webdriver
 
-from .constants import ATLAS_FAMILY_EXPECTED_COUNTS, ATLAS_TOTAL_CARDS, HUD_BACKPLATES
+from .selenium_gates import select_tier, set_cdp_viewport, switch_to_outer, switch_to_portal
 
 
 def check_gate_14_atlas_standalone(driver: webdriver.Chrome, base_url: str) -> list[str]:
-    """Deprecated Gate 14 stub retained for contract export compatibility (bench tested in Gate 17)."""
+    """Gate 14A: Standalone 21-specimen Components Library (evidence-bench.html) parity & mobile overflow."""
     errors: list[str] = []
-    atlas_url = urllib.parse.urljoin(base_url, "bench/evidence-bench.html")
-    driver.set_window_size(390, 844)
-    driver.get(atlas_url)
-    time.sleep(0.3)
-
-    # 1. Check browser console logs for SEVERE errors
-    try:
-        logs = driver.get_log("browser")
-        severe_logs = [
-            log for log in logs
-            if log.get("level") == "SEVERE" and "favicon.ico" not in log.get("message", "")
-        ]
-        if severe_logs:
-            errors.append(f"[GATE_14_LOGS] Found {len(severe_logs)} SEVERE console log(s): {severe_logs[0].get('message')}")
-    except Exception:
-        pass  # Some webdrivers don't support log retrieval
-
-    # 2. Check 45 cards rendered, content-visibility, human titles, and dock overlap
-    eval_res = driver.execute_script("""
+    bench_url = urllib.parse.urljoin(base_url, "docs/bench/evidence-bench.html")
+    set_cdp_viewport(driver, 390, 844)
+    driver.get(bench_url)
+    time.sleep(0.35)
+    res = driver.execute_script("""
         const errs = [];
-        const cards = document.querySelectorAll('.atlas-card');
-        if (cards.length !== 45) {
-            errs.push(`Card count ${cards.length} !== 45`);
+        const cards = document.querySelectorAll('.qe-specimen');
+        if (cards.length !== 21) errs.push(`Expected 21 specimens, got ${cards.length}`);
+        if (document.documentElement.scrollWidth > window.innerWidth + 2) {
+            errs.push(`Mobile 390px overflow: ${document.documentElement.scrollWidth} > ${window.innerWidth}`);
         }
         for (const c of cards) {
-            const h = c.querySelector('h4, .atlas-card-title');
-            if (h) {
-                const t = h.textContent.trim();
-                if (t.startsWith('dp-') || t.startsWith('type-')) {
-                    errs.push(`Raw slug used as title: '${t}'`);
-                    break;
-                }
-            }
-        }
-        for (const def of document.querySelectorAll('.atlas-deferred-family')) {
-            const cv = window.getComputedStyle(def).contentVisibility;
-            if (cv !== 'auto') {
-                errs.push(`.atlas-deferred-family missing content-visibility: auto (got '${cv}')`);
-                break;
-            }
-        }
-        const dock = document.getElementById('atlas-dock');
-        if (dock) {
-            const dr = dock.getBoundingClientRect();
-            for (const c of cards) {
-                const cr = c.getBoundingClientRect();
-                if (cr.bottom > dr.top && cr.top < dr.bottom && cr.right > dr.left && cr.left < dr.right) {
-                    errs.push('Card overlaps bottom floating dock');
-                    break;
-                }
+            const h = c.querySelector('.qe-fig-title');
+            if (h && /^M[1-6]-L[1-3]:/.test(h.textContent.trim())) {
+                errs.push(`Leaked specimen prefix in title: '${h.textContent.trim()}'`); break;
             }
         }
         return errs;
     """)
-    errors.extend([f"[GATE_14_STANDALONE] {e}" for e in eval_res])
-
-    # 3. Test <dialog id="atlas-inspect-dialog" closedby="any"> opens on card click
-    dlg_res = driver.execute_script("""
-        const card = document.querySelector('.atlas-card');
-        const dlg = document.getElementById('atlas-inspect-dialog');
-        if (!dlg) return ['Missing #atlas-inspect-dialog element'];
-        if (dlg.getAttribute('closedby') !== 'any') return ['Dialog missing closedby="any" attribute'];
-        if (card) {
-            card.click();
-            if (!dlg.open) return ['Dialog did not open after card click'];
-            const closeBtn = dlg.querySelector('.atlas-close-btn');
-            if (closeBtn) closeBtn.click();
-        }
-        return [];
-    """)
-    errors.extend([f"[GATE_14_DIALOG] {e}" for e in dlg_res])
+    errors.extend(f"[GATE_14_BENCH_STANDALONE] {e}" for e in res)
+    set_cdp_viewport(driver, 1440, 900)
     return errors
 
 
 def check_gate_14_atlas_embedded(driver: webdriver.Chrome, base_url: str) -> list[str]:
-    """Test diagrams view inside #va-stage-portal via ?view=diagrams."""
+    """Gate 14B: Components tab inside Studio Shell loads 21 specimens, Live ECharts & 5-tab Eco Drawer."""
     errors: list[str] = []
-    embedded_url = urllib.parse.urljoin(base_url, "?view=diagrams")
-    driver.set_window_size(1920, 1080)
-    driver.get(embedded_url)
-    time.sleep(0.3)
-
-    driver.switch_to.default_content()
-    portals = driver.find_elements("id", "va-stage-portal")
-    if portals:
-        driver.switch_to.frame(portals[0])
-
-    res = driver.execute_script("""
-        const cards = document.querySelectorAll('.atlas-card');
-        return cards.length > 0 && cards.length !== 45 ? [`Embedded card count ${cards.length} !== 45`] : [];
-    """)
-    errors.extend([f"[GATE_14_EMBEDDED] {e}" for e in res])
-    return errors
-
-
-def check_gate_15_field_of_regard(driver: webdriver.Chrome, w: int, h: int) -> list[str]:
-    """Gate 15: HUD-1 >= 65% unobstructed central field-of-regard and pod area < 35%."""
-    errors: list[str] = []
-    driver.switch_to.default_content()
-    # Switch tier to hud-1
-    driver.execute_script("""
-        if (typeof switchTier === 'function') switchTier('hud-1');
-        else {
-            const b = document.querySelector('[data-tier="hud-1"]');
-            if (b) b.click();
-        }
-    """)
-    time.sleep(0.08)
-
-    portals = driver.find_elements("id", "va-stage-portal")
-    if portals:
-        driver.switch_to.frame(portals[0])
-
-    res = driver.execute_script("""
-        const vp = document.getElementById('hud1-viewport') || document.querySelector('.hud1-viewport');
-        if (!vp) return ['[GATE_15_HUD] Missing #hud1-viewport on hud-1 tier'];
-        const r = vp.getBoundingClientRect();
-        const W = r.width, H = r.height;
-        if (W <= 0 || H <= 0) return ['[GATE_15_HUD] hud1-viewport has 0 width or height'];
-
-        // Central keep-out core: [0.175*W, 0.825*W] x [0.15*H, 0.85*H]
-        const kx1 = 0.175 * W, kx2 = 0.825 * W;
-        const ky1 = 0.15 * H, ky2 = 0.85 * H;
-
-        let totalPodArea = 0;
-        const pods = document.querySelectorAll('.va-hud-pod, [class*="hud1-top-"], [class*="hud1-bottom-"]');
-        const errs = [];
-
-        for (const pod of pods) {
-            if (pod.offsetParent === null) continue;
-            const pr = pod.getBoundingClientRect();
-            // Relative to vp
-            const px1 = pr.left - r.left, px2 = pr.right - r.left;
-            const py1 = pr.top - r.top, py2 = pr.bottom - r.top;
-            totalPodArea += pr.width * pr.height;
-
-            // Check overlap with central keep-out core
-            const ox = Math.max(0, Math.min(px2, kx2) - Math.max(px1, kx1));
-            const oy = Math.max(0, Math.min(py2, ky2) - Math.max(py1, ky1));
-            if (ox > 4 && oy > 4) {
-                errs.push(`Pod overlaps central keep-out core: ${pod.className} (${ox.toFixed(1)}x${oy.toFixed(1)}px overlap)`);
-                break;
-            }
-        }
-
-        const maxAllowedArea = 0.35 * W * H;
-        if (totalPodArea > maxAllowedArea) {
-            const ratio = (totalPodArea / (W * H) * 100).toFixed(1);
-            errs.push(`Total pod area exceeds 35% of viewport (${ratio}% occupied, need >=65% unobstructed)`);
-        }
-        return errs;
-    """)
-    errors.extend([f"[GATE_15_HUD_{w}] {e}" for e in res])
-    return errors
-
-
-def check_gate_15_backplates_contrast(driver: webdriver.Chrome) -> list[str]:
-    """Test setHudBackplate across earthrise, daylight, and lowlight for >= 4.5:1 text contrast."""
-    errors: list[str] = []
-    for bp in HUD_BACKPLATES:
-        c_res = driver.execute_script("""
-            const bp = arguments[0];
-            if (typeof setHudBackplate === 'function') setHudBackplate(bp);
-            else {
-                const vp = document.getElementById('hud1-viewport') || document.querySelector('.hud1-viewport');
-                if (vp) vp.setAttribute('data-backplate', bp);
-            }
-            // Luminance helper
-            function getLum(rgbStr) {
-                const m = rgbStr.match(/\\d+/g);
-                if (!m || m.length < 3) return 1.0;
-                const a = m.slice(0, 3).map(v => {
-                    const c = parseInt(v, 10) / 255;
-                    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-                });
-                return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
-            }
-            const pods = document.querySelectorAll('.va-hud-pod');
-            for (const pod of pods) {
-                const cs = window.getComputedStyle(pod);
-                const bgLum = getLum(cs.backgroundColor);
-                const fgLum = getLum(cs.color);
-                const hi = Math.max(bgLum, fgLum), lo = Math.min(bgLum, fgLum);
-                const cr = (hi + 0.05) / (lo + 0.05);
-                if (cr < 4.4) {
-                    return [`Backplate '${bp}' low contrast on pod: ${cr.toFixed(2)}:1 (need >= 4.5:1)`];
-                }
-            }
-            return [];
-        """, bp)
-        errors.extend([f"[GATE_15_CONTRAST] {e}" for e in c_res])
-    return errors
-
-
-def run_atlas_and_hud_gates(
-    driver: webdriver.Chrome,
-    base_url: str,
-    screenshots_dir: Any = None,
-) -> list[str]:
-    """Execute live Selenium CDP Gate 15 (HUD-1 field of regard & contrast)."""
-    errors: list[str] = []
-
-    # Gate 15 across 4 key viewports: 820x1180, 1920x1080, 2560x1440, 3840x2160
-    for w, h in [(820, 1180), (1920, 1080), (2560, 1440), (3840, 2160)]:
-        driver.set_window_size(w, h)
+    set_cdp_viewport(driver, 1440, 900)
+    driver.get(base_url)
+    time.sleep(0.25)
+    driver.execute_script("document.getElementById('va-tab-components').click();")
+    for _ in range(25):
         time.sleep(0.08)
-        errors.extend(check_gate_15_field_of_regard(driver, w, h))
+        if driver.execute_script("const p=document.getElementById('va-stage-portal');return p?.contentDocument?.querySelectorAll('.qe-specimen').length===21;"):
+            break
+    bench_ok = driver.execute_script("""
+        const doc = document.getElementById('va-stage-portal')?.contentDocument;
+        if (!doc) return 'missing portal document';
+        if (doc.querySelectorAll('.qe-specimen').length !== 21) return 'specimen count !== 21';
+        const wraps = [...doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]')];
+        if (wraps.length < 3) return 'expected >=3 ECharts specimens, found ' + wraps.length;
+        for (const wrap of wraps) {
+            wrap.querySelector('.qe-mode-btn[data-qe-mode="echarts"]')?.click();
+            if (wrap.dataset.echartsActive !== 'true' || !wrap.querySelector('.qe-echarts-host svg')) return 'Live ECharts failed to mount on specimen';
+            const ls = wrap.querySelector('.qe-legend-series');
+            if (ls && getComputedStyle(ls).display !== 'none') return 'Duplicate HTML legend visible under ECharts';
+        }
+        const fig = wraps[0].closest('.qe-figure');
+        const drw = fig?.querySelector('.qe-eco-drawer');
+        if (!drw) return 'missing 5-tab Eco Drawer';
+        drw.open = true;
+        const tabs = [...drw.querySelectorAll('.qe-eco-tab[role="tab"]')];
+        if (tabs.length !== 5) return 'expected 5 Eco tabs, got ' + tabs.length;
+        tabs[1].click();
+        const pre = drw.querySelector('.qe-eco-panel:not([hidden]) pre');
+        if (!pre || pre.scrollWidth > pre.clientWidth + 2) return 'Eco code viewer missing or horizontally overflowing';
+        drw.querySelector('.qe-copy-btn')?.click();
+        return 'ok';
+    """)
+    if bench_ok != "ok":
+        errors.append(f"[GATE_14_COMPONENTS_TAB] {bench_ok}")
+    driver.execute_script("document.getElementById('va-tab-examples').click();")
+    time.sleep(0.25)
+    return errors
 
-    errors.extend(check_gate_15_backplates_contrast(driver))
+
+def check_gate_15_backplates_contrast(driver: webdriver.Chrome, base_url: str) -> list[str]:
+    """Gate 15A: Verify v15 HUD & v16 Maritime photographic backplates load (>= 1200px) with zero synthetic scenes."""
+    errors: list[str] = []
+    set_cdp_viewport(driver, 1440, 900)
+    driver.get(base_url)
+    for vid, min_photos in (("v15-collimated-flight-hud", 3), ("v16-transparent-window-overlay", 3)):
+        select_tier(driver, vid)
+        if not switch_to_portal(driver):
+            continue
+        res = driver.execute_script("""
+            const [vid, n] = arguments, errs = [];
+            const imgs = [...document.querySelectorAll('img.v9-opt-photo')];
+            if (imgs.length !== n) errs.push(`${vid}: expected ${n} photos, got ${imgs.length}`);
+            for (const i of imgs) if (!i.complete || i.naturalWidth < 1200) errs.push(`${vid}: unloaded photo ${i.dataset.asset}`);
+            if (document.querySelectorAll('.v15-scene-svg, .v16-scene-svg, .v16-corridor-svg').length) errs.push(`${vid}: legacy synthetic scenery SVG present`);
+            if (vid.startsWith('v15') && document.querySelectorAll('.v15-reticle-layer line[y1="360"][y2="360"]').length < 2) {
+                errs.push('v15 horizon lines missing at y=360 (50% center)');
+            }
+            return errs;
+        """, vid, min_photos)
+        errors.extend(f"[GATE_15_OPTICS] {e}" for e in res)
+    switch_to_outer(driver)
+    return errors
+
+
+def check_gate_15_field_of_regard(driver: webdriver.Chrome, base_url: str, screenshots_dir: str | None = None) -> list[str]:
+    """Gate 15B: Verify v15 >= 65% clear boresight & v16 AAA >= 7.0:1 smart-glass scrim contrast."""
+    errors: list[str] = []
+    set_cdp_viewport(driver, 1440, 900)
+    select_tier(driver, "v15-collimated-flight-hud")
+    if switch_to_portal(driver):
+        hud_err = driver.execute_script("""
+            const st = document.getElementById('v15-hud-stage');
+            if (!st) return 'missing #v15-hud-stage';
+            const sr = st.getBoundingClientRect(), tot = sr.width * sr.height;
+            let occ = 0;
+            for (const el of st.querySelectorAll('.v15-hud-mode-strip, button')) {
+                const r = el.getBoundingClientRect();
+                occ += Math.max(0, r.width) * Math.max(0, r.height);
+            }
+            const clearFrac = tot > 0 ? 1 - (occ / tot) : 0;
+            return clearFrac >= 0.65 ? '' : `v15 clear boresight ${(clearFrac * 100).toFixed(1)}% < 65%`;
+        """)
+        if hud_err:
+            errors.append(f"[GATE_15_BORESIGHT] {hud_err}")
+
+    select_tier(driver, "v16-transparent-window-overlay")
+    if switch_to_portal(driver):
+        glass_err = driver.execute_script("""
+            const w = window.innerWidth, h = window.innerHeight, kx0 = w * 0.24, kx1 = w * 0.76, ky0 = h * 0.24, ky1 = h * 0.68;
+            const parseRgb = (s) => { const m = s.match(/[0-9.]+/g) || [0,0,0,1]; return m.slice(0, 4).map(Number); };
+            const relLum = (r, g, b) => [r, g, b].map(c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+            for (const pod of document.querySelectorAll('.v16-glass-pod')) {
+                const cs = getComputedStyle(pod);
+                const bf = cs.backdropFilter || cs.webkitBackdropFilter || '';
+                if (!bf.includes('blur(')) return 'Pod missing backdrop blur';
+                const pr = pod.getBoundingClientRect();
+                if (Math.min(pr.right, kx1) > Math.max(pr.left, kx0) + 1 && Math.min(pr.bottom, ky1) > Math.max(pr.top, ky0) + 1) {
+                    return 'Pod invades central windshield sightline corridor';
+                }
+                const bg = parseRgb(cs.backgroundColor), fg = parseRgb(cs.color);
+                const a = bg.length >= 4 ? bg[3] : 1;
+                const l1 = relLum(fg[0], fg[1], fg[2]);
+                const l2 = relLum(bg[0] * a + 255 * (1 - a), bg[1] * a + 255 * (1 - a), bg[2] * a + 255 * (1 - a));
+                const ratio = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+                if (ratio < 7.0) return `v16 worst-case scrim contrast ${ratio.toFixed(1)}:1 < 7.0:1`;
+            }
+            return '';
+        """)
+        if glass_err:
+            errors.append(f"[GATE_15_GLASS] {glass_err}")
+    switch_to_outer(driver)
+    return errors
+
+
+def run_atlas_and_hud_gates(driver: webdriver.Chrome, base_url: str, screenshots_dir: str | None = None) -> list[str]:
+    errors: list[str] = []
+    errors.extend(check_gate_14_atlas_standalone(driver, base_url))
+    errors.extend(check_gate_14_atlas_embedded(driver, base_url))
+    errors.extend(check_gate_15_backplates_contrast(driver, base_url))
+    errors.extend(check_gate_15_field_of_regard(driver, base_url, screenshots_dir))
     return errors

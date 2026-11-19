@@ -141,7 +141,7 @@ def _compile_single_dict(
     desc_html = ""
     if desc:
         import re as _re
-        d_uni = desc.replace("+/-", "±").replace("p_hat", "p̂").replace("y_hat", "ŷ").replace("tau", "τ")
+        d_uni = _re.sub(r"\btau\b", "τ", desc.replace("+/-", "±").replace("p_hat", "p̂").replace("y_hat", "ŷ"))
         d_html = _re.sub(
             r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|[A-Za-z]))_([a-z0-9]{1,3})(?![A-Za-z0-9_])",
             r"\1<sub>\2</sub>",

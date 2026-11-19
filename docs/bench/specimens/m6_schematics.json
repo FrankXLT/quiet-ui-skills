@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:schematic",
     "id": "bench-m6-l1-heritage-triptych",
     "metadata": {
-      "title": "M6-L1: Recovered v7.1 Optical Stack, Wardley Map & Zero-Copy Telemetry Sankey",
-      "description": "L1 Orientation structural trio recovering the v7.1 exploded 3-plane optical stack, Wardley value-chain evolution map, and zero-copy telemetry Sankey.",
+      "title": "Recovered v7.1 Optical Stack, Wardley Map & Zero-Copy Telemetry Sankey",
+      "description": "Orientation structural trio recovering the v7.1 exploded 3-plane optical stack, Wardley value-chain evolution map, and zero-copy telemetry Sankey.",
       "rigor_level": "L1",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -58,8 +58,8 @@
     "$schema": "urn:quiet-ui:schema:v9:schematic",
     "id": "bench-m6-l2-ato-enclave",
     "metadata": {
-      "title": "M6-L2: NIST Zero-Trust ATO Enclave & FIPS 140-3 Boundary Map",
-      "description": "L2 Governance enclave topology matching M2-L2 PPSM Matrix with FIPS 140-3 boundaries, Manhattan orthogonal flows, and wire-crossing bridge arcs.",
+      "title": "NIST Zero-Trust ATO Enclave & FIPS 140-3 Boundary Map",
+      "description": "Governance enclave topology matching the PPSM Matrix with FIPS 140-3 boundaries, Manhattan orthogonal flows, and wire-crossing bridge arcs.",
       "rigor_level": "L2",
       "drawing_number": "ATO-BOUNDARY-0842-R2"
     },
@@ -67,10 +67,10 @@
     "width": 720,
     "height": 330,
     "enclaves": [
-      {"id": "e-time", "label": "ENCLAVE-TIME-01", "fips_level": "FIPS 140-3 L3", "border_style": "dash-dot", "fill_token": "var(--bg-elevated)"},
+      {"id": "e-time", "label": "ENCLAVE-TIME-01", "fips_level": "FIPS 140-3 Level 3", "border_style": "dash-dot", "fill_token": "var(--bg-elevated)"},
       {"id": "e-hil", "label": "ENCLAVE-HIL-TEST", "fips_level": "VLAN Isolated", "border_style": "dashed", "fill_token": "var(--status-warn-bg)"},
-      {"id": "e-opt", "label": "ENCLAVE-OPTICAL", "fips_level": "FIPS 140-3 L2", "x": 266, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"},
-      {"id": "e-core", "label": "ENCLAVE-CORE-ENG", "fips_level": "FIPS 140-3 L2", "x": 516, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"}
+      {"id": "e-opt", "label": "ENCLAVE-OPTICAL", "fips_level": "FIPS 140-3 Level 2", "x": 266, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"},
+      {"id": "e-core", "label": "ENCLAVE-CORE-ENG", "fips_level": "FIPS 140-3 Level 2", "x": 516, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"}
     ],
     "nodes": [
       {"id": "gm", "enclave_id": "e-time", "label": "Grandmaster PTP", "sublabel": "PRS10 + IEEE 1588", "x": 32, "y": 78, "w": 156, "h": 58, "focal": true},
@@ -90,8 +90,8 @@
     "$schema": "urn:quiet-ui:schema:v9:schematic",
     "id": "bench-m6-l3-1553b-and-variants",
     "metadata": {
-      "title": "M6-L3: 78 Ω MIL-STD-1553B & 120 Ω CAN-FD Buses, Delta Lanes, FSM & ER Lineage",
-      "description": "L3 Physical, Clinical & Metrological multi-panel schematic featuring 78-ohm MIL-STD-1553B and 120-ohm SAE J1939 CAN-FD differential buses, plus Delta Lanes, FSM, and Crow's-Foot ER lineage.",
+      "title": "78 Ω MIL-STD-1553B & 120 Ω CAN-FD Buses, Delta Lanes, FSM & ER Lineage",
+      "description": "Physical, Clinical & Metrological multi-panel schematic featuring 78-ohm MIL-STD-1553B and 120-ohm SAE J1939 CAN-FD differential buses, plus Delta Lanes, FSM, and Crow's-Foot ER lineage.",
       "rigor_level": "L3",
       "drawing_number": "DWG-1553B-SYNTH-8812"
     },

@@ -21,7 +21,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageFilter, ImageOps
 
 USER_AGENT = "quiet-ui-skills-fetcher/9.0 (https://github.com/FrankXLT/quiet-ui-skills)"
 ALLOWED_LICENSES: frozenset[str] = frozenset(
@@ -46,8 +46,9 @@ BACKPLATE_MANIFEST: list[dict[str, Any]] = [
         "filename": "opt_hud_daylight_rwy.jpg",
         "commons_title": "File:DF-ST-83-04217 An aerial view of the runway approach.jpeg",
         "agency": "U.S. Department of Defense (Defense Visual Information Center)",
-        "crop_box": None,
-        "centering": (0.5, 0.08),
+        "crop_box": (0.0, 0.0, 0.86, 0.61),
+        "sky_pad_top_frac": 0.202,
+        "centering": (0.5, 0.50),
     },
     {
         "id": "hud_night_rwy",
@@ -56,8 +57,8 @@ BACKPLATE_MANIFEST: list[dict[str, Any]] = [
         "filename": "opt_hud_night_rwy.jpg",
         "commons_title": "File:KBTP at dusk.jpg",
         "agency": "Wikimedia Commons (CC0 1.0 Public Domain Dedication)",
-        "crop_box": (0.0, 0.0, 1.0, 0.76),
-        "centering": (0.5, 0.52),
+        "crop_box": (0.04, 0.0, 0.89, 0.741),
+        "centering": (0.5, 0.50),
     },
     {
         "id": "glass_day_hwy",
@@ -163,13 +164,40 @@ def _verify_zero_attribution_license(info: dict[str, Any], title: str) -> tuple[
     return lic_short, width, height
 
 
-def _encode_exif_free_jpeg(src_path: Path, out_path: Path, crop_box: tuple[float, float, float, float] | None, centering: tuple[float, float]) -> int:
+def _pad_sky_top(rgb: Image.Image, pad_h: int) -> Image.Image:
+    """Seamlessly extend upper sky band by mirroring real sky grain so horizon sits at 50%."""
+    if pad_h <= 0:
+        return rgb
+    w, h = rgb.size
+    sample_h = min(pad_h, h, 240)
+    sky_fill = ImageOps.flip(rgb.crop((0, 0, w, sample_h))).resize((w, pad_h), Image.Resampling.BICUBIC)
+    canvas = Image.new("RGB", (w, h + pad_h))
+    canvas.paste(sky_fill, (0, 0))
+    canvas.paste(rgb, (0, pad_h))
+    blend_h = min(10, h, pad_h)
+    seam = canvas.crop((0, pad_h - blend_h, w, pad_h + blend_h)).filter(ImageFilter.GaussianBlur(radius=3))
+    alpha_col = Image.new("L", (1, blend_h * 2), 0)
+    for yy in range(blend_h * 2):
+        alpha_col.putpixel((0, yy), int(255 * max(0.0, 1.0 - abs(yy - blend_h) / max(blend_h, 1))))
+    canvas.paste(seam, (0, pad_h - blend_h), alpha_col.resize((w, blend_h * 2)))
+    return canvas
+
+
+def _encode_exif_free_jpeg(
+    src_path: Path,
+    out_path: Path,
+    crop_box: tuple[float, float, float, float] | None,
+    centering: tuple[float, float],
+    sky_pad_top_frac: float = 0.0,
+) -> int:
     with Image.open(src_path) as src_img:
         rgb = src_img.convert("RGB")
         if crop_box is not None:
             w, h = rgb.size
             x0, y0, x1, y1 = crop_box
             rgb = rgb.crop((int(w * x0), int(h * y0), int(w * x1), int(h * y1)))
+        if sky_pad_top_frac > 0.0:
+            rgb = _pad_sky_top(rgb, int(rgb.height * sky_pad_top_frac))
         fitted = ImageOps.fit(rgb, TARGET_SIZE, method=Image.Resampling.LANCZOS, centering=centering)
         stripped = Image.frombytes("RGB", fitted.size, fitted.tobytes())
 
@@ -216,7 +244,7 @@ def fetch_all_backplates(repo_root: Path, offline_ok: bool) -> list[dict[str, An
 
         lic_short, src_w, src_h = _verify_zero_attribution_license(info, item["commons_title"])
         out_path = assets_dir / item["filename"]
-        size_bytes = _encode_exif_free_jpeg(raw_cache, out_path, item["crop_box"], item["centering"])
+        size_bytes = _encode_exif_free_jpeg(raw_cache, out_path, item["crop_box"], item["centering"], float(item.get("sky_pad_top_frac") or 0.0))
         records.append(
             {
                 "id": item["id"],

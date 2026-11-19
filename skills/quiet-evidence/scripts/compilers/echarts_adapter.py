@@ -8,8 +8,15 @@ import math
 import re
 from typing import Any
 
-from .math_eval import eval_equation
-from .plot_helpers import axis_scale
+from .plot_helpers import (
+    axis_scale,
+    build_corridor_band,
+    clip_curve_to_y,
+    compute_normalized_residuals,
+    round_coord,
+    sample_model_points,
+    visible_series,
+)
 from .tokens_and_scales import compute_linear_125_scale, esc
 
 _MATH_SUBS: tuple[tuple[str, str], ...] = (
@@ -43,38 +50,8 @@ _SIGMA_WORD_RE = re.compile(r"\bsigma\b")
 
 
 def _sample_analytical_series(spec: dict[str, Any], s: dict[str, Any], x_min: float, x_max: float, log_x: bool) -> list[list[float]]:
-    pts_raw = s.get("data_points") or s.get("points")
-    if pts_raw:
-        return [[float(p["x"]), float(p["y"])] for p in pts_raw if p.get("y") is not None]
-    eq = str(s.get("equation") or "").strip()
-    if not eq:
-        return []
-    eq_rhs = eq.split("=")[-1].strip()
-    env_base: dict[str, float] = {}
-    for p in spec.get("parametric_legend", []):
-        sym = str(p.get("symbol") or "").strip()
-        val = p.get("value")
-        if sym.isidentifier() and isinstance(val, (int, float)) and not isinstance(val, bool):
-            env_base[sym] = float(val)
-    for k, v in (s.get("params") or {}).items():
-        if isinstance(v, (int, float)) and not isinstance(v, bool):
-            env_base[str(k)] = float(v)
-    out: list[list[float]] = []
-    steps = 36
-    for i in range(steps + 1):
-        t = i / steps
-        xv = x_min * ((x_max / x_min) ** t) if (log_x and x_min > 0 and x_max > x_min) else (x_min + (x_max - x_min) * t)
-        env = dict(env_base)
-        for alias in ("x", "tau", "f", "t", "IMEP", "L", "N"):
-            env.setdefault(alias, xv)
-        env["x"] = xv
-        try:
-            yv = eval_equation(eq_rhs, **env)
-            if math.isfinite(yv):
-                out.append([round(xv, 10) if abs(xv) < 1e-3 else round(xv, 5), round(yv, 15) if abs(yv) < 1e-3 else round(yv, 5)])
-        except Exception:
-            continue
-    return out
+    pts = sample_model_points(s, {"min": x_min, "max": x_max, "is_log": log_x}, n=37, legend=spec.get("parametric_legend"))
+    return [[round_coord(xv), round_coord(yv)] for xv, yv in pts]
 
 
 def _extract_token(color: Any, fallback: str = "--accent-focal") -> str:
@@ -95,34 +72,58 @@ def _plain_text(val: Any) -> str:
 
 
 def _build_waterfall_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict[str, Any]:
-    cats, bases, pos_vals, neg_vals, bounds = [], [], [], [], [0.0]
+    cats, bases, totals, pos_vals, neg_vals, kinds, signed_vals, spans, bounds = [], [], [], [], [], [], [], [], [0.0]
     running = 0.0
     ya = (spec.get("axes") or {}).get("y_axis") or {}
     for step in spec.get("steps", []):
         cats.append(_plain_text(step.get("label") or ""))
         val = float(step.get("delta") if "delta" in step else step.get("value", 0.0))
         step_kind = str(step.get("kind") or ("total" if step.get("is_total") else "delta")).lower()
+        kinds.append(step_kind)
         if step_kind in {"start", "total"}:
+            if step_kind == "total" and ("value" in step or "delta" in step) and abs(val - running) > 1e-4:
+                raise ValueError(f"Waterfall conservation violated at '{step.get('label')}': expected {running:.4f}, got {val:.4f}")
             running = val if ("value" in step or step_kind == "start") else running
+            lo, hi = min(0.0, running), max(0.0, running)
             bases.append(0.0)
-            pos_vals.append(round(running, 4) if running >= 0 else "-")
-            neg_vals.append(round(abs(running), 4) if running < 0 else "-")
-            bounds.extend((min(0.0, running), max(0.0, running)))
+            totals.append(round(running, 4))
+            pos_vals.append("-")
+            neg_vals.append("-")
+            signed_vals.append(round(running, 4))
+            spans.append([round(lo, 4), round(hi, 4), round(running, 4), step_kind])
+            bounds.extend((lo, hi))
         elif val >= 0:
+            nxt = running + val
             bases.append(round(running, 4))
+            totals.append("-")
             pos_vals.append(round(val, 4))
             neg_vals.append("-")
-            bounds.extend((running, running + val))
-            running += val
+            signed_vals.append(round(val, 4))
+            spans.append([round(running, 4), round(nxt, 4), round(val, 4), "inc"])
+            bounds.extend((running, nxt))
+            running = nxt
         else:
             nxt = running + val
             bases.append(round(nxt, 4))
+            totals.append("-")
             pos_vals.append("-")
             neg_vals.append(round(abs(val), 4))
+            signed_vals.append(round(val, 4))
+            spans.append([round(nxt, 4), round(running, 4), round(val, 4), "dec"])
             bounds.extend((nxt, running))
             running = nxt
-    envs = spec.get("envelopes") or [] if rigor in {"L2", "L3"} else []
-    bounds.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None)
+    envs = spec.get("envelopes") or [] if (rigor in {"L2", "L3"} or spec.get("show_l1_envelopes")) else []
+    env_out = [
+        {
+            "label": _plain_text(e.get("label") or ""),
+            "value": float(e["threshold_value"]),
+            "type": str(e.get("type") or "abort"),
+            "direction": str(e.get("direction") or "lower"),
+            "token": _extract_token(e.get("stroke_color"), "--status-warn" if e.get("type") == "warning" else "--status-danger"),
+        }
+        for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"]))
+    ]
+    bounds.extend(e["value"] for e in env_out)
     lo_b, hi_b = min(bounds), max(bounds)
     sc = compute_linear_125_scale(lo_b * (1.12 if lo_b < 0 else 1.0), hi_b * (1.12 if hi_b > 0 else 1.0), target_ticks=5)
     return {
@@ -130,12 +131,18 @@ def _build_waterfall_payload(spec: dict[str, Any], rigor: str, medium: str) -> d
         "title": _plain_text((spec.get("metadata") or {}).get("title") or "Waterfall Budget"),
         "rigor": rigor,
         "medium": medium,
+        "unit": str(ya.get("unit") or ""),
         "yName": _plain_text(ya.get("quantity_calculus") or "Value"),
         "y": {"name": _plain_text(ya.get("quantity_calculus") or "Value"), "min": sc["min"], "max": sc["max"], "interval": sc["step"]},
         "categories": cats,
+        "stepKinds": kinds,
+        "signedValues": signed_vals,
+        "spans": spans,
         "bases": bases,
+        "totals": totals,
         "positive": pos_vals,
         "negative": neg_vals,
+        "envelopes": env_out,
     }
 
 
@@ -204,39 +211,63 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
     x_dom, y_dom = xa.get("domain"), ya.get("domain")
     x_vals: list[float] = [float(x_dom[0]), float(x_dom[1])] if x_dom else []
     y_vals: list[float] = [float(y_dom[0]), float(y_dom[1])] if y_dom else []
-    raw_series = spec.get("series", [])
+    raw_series = visible_series(spec, rigor)
+    show_u = rigor in {"L2", "L3"}
     for s in raw_series:
         if str(s.get("epistemic_type") or "discrete_measurement") != "analytical_model":
             for p in (s.get("data_points") or s.get("points") or []):
                 x_vals.append(float(p["x"]))
                 if p.get("y") is not None:
-                    y_vals.append(float(p["y"]))
+                    yv = float(p["y"])
+                    y_vals.append(yv)
+                    raw_u = p.get("u_y")
+                    if show_u and raw_u is not None and math.isfinite(float(raw_u)):
+                        uv = abs(float(raw_u))
+                        y_vals.extend((yv + uv, max(yv - uv, 1e-12) if log_y else (yv - uv)))
     x_sc = axis_scale(xa, x_vals)
     x_min, x_max = float(x_sc["min"]), float(x_sc["max"])
     series_out: list[dict[str, Any]] = []
+    analyt_specs: list[tuple[int, dict[str, Any]]] = []
     for s in raw_series:
         stype = str(s.get("epistemic_type") or "discrete_measurement")
-        tok = _extract_token(s.get("marker_color") or s.get("stroke_color"), "--accent-focal")
+        raw_col = s.get("marker_color") or s.get("stroke_color")
+        tok = _extract_token(raw_col, "--accent-focal")
+        col_exp = bool(raw_col)
         if stype == "analytical_model":
             pts = _sample_analytical_series(spec, s, x_min, x_max, log_x)
             if not pts:
                 continue
-            series_out.append({"id": str(s.get("id") or "model"), "name": _plain_text(s.get("name") or "Model"), "epistemic": "analytical_model", "term": str(s.get("term") or s.get("id") or ""), "token": tok, "dashed": str(s.get("stroke_style") or "dashed") != "solid", "data": pts})
+            analyt_specs.append((len(series_out), s))
+            series_out.append({"id": str(s.get("id") or "model"), "name": _plain_text(s.get("name") or "Model"), "epistemic": "analytical_model", "term": str(s.get("term") or s.get("id") or ""), "token": tok, "colorExplicit": col_exp, "dashed": str(s.get("stroke_style") or "dashed") != "solid", "data": pts})
             if not y_dom:
                 y_vals.extend(p[1] for p in pts)
         else:
-            pts_err = [[float(p["x"]), None if p.get("y") is None else float(p["y"]), float(p.get("u_y") or 0.0)] for p in (s.get("data_points") or s.get("points") or [])]
-            series_out.append({"id": str(s.get("id") or "meas"), "name": _plain_text(s.get("name") or "Measurement"), "epistemic": "discrete_measurement", "term": str(s.get("term") or s.get("id") or ""), "token": tok, "connect": bool(s.get("connect_piecewise", True)), "symbol": str(s.get("marker_glyph") or "circle"), "data": pts_err})
+            pts_err = [[float(p["x"]), None if p.get("y") is None else float(p["y"]), float(p.get("u_y") or 0.0) if show_u else 0.0] for p in (s.get("data_points") or s.get("points") or [])]
+            series_out.append({"id": str(s.get("id") or "meas"), "name": _plain_text(s.get("name") or "Measurement"), "epistemic": "discrete_measurement", "term": str(s.get("term") or s.get("id") or ""), "token": tok, "colorExplicit": col_exp, "connectPiecewise": bool(s.get("connect_piecewise", False)), "symbol": str(s.get("marker_glyph") or "circle"), "data": pts_err})
     if not series_out:
         return None
-    env_out = [
-        {"label": _plain_text(e.get("label") or ""), "value": float(e["threshold_value"]), "type": str(e.get("type") or "warning"), "token": _extract_token(e.get("stroke_color"), "--status-warn" if e.get("type") != "abort" else "--status-danger")}
-        for e in spec.get("envelopes", []) if "threshold_value" in e and math.isfinite(float(e["threshold_value"]))
-    ]
+    envs_raw = spec.get("envelopes") or [] if (rigor in {"L2", "L3"} or spec.get("show_l1_envelopes")) else []
     if not y_dom:
-        y_vals.extend(e["value"] for e in env_out)
+        y_vals.extend(float(e["threshold_value"]) for e in envs_raw if "threshold_value" in e and math.isfinite(float(e["threshold_value"])))
     y_sc = axis_scale(ya, y_vals)
-    return {
+    y_lo, y_hi = float(y_sc["min"]), float(y_sc["max"])
+    if rigor in {"L2", "L3"}:
+        for s_idx, s_raw in analyt_specs:
+            band = build_corridor_band(series_out[s_idx]["data"], s_raw, y_lo, y_hi)
+            if band:
+                series_out[s_idx]["corridor"] = band
+    env_out: list[dict[str, Any]] = []
+    for e in envs_raw:
+        etyp = str(e.get("type") or "warning")
+        etok = _extract_token(e.get("stroke_color"), "--status-warn" if etyp != "abort" else "--status-danger")
+        edef = {"label": _plain_text(e.get("label") or ""), "type": etyp, "direction": str(e.get("direction") or "upper"), "token": etok}
+        if e.get("equation"):
+            cpts = clip_curve_to_y(_sample_analytical_series(spec, {"equation": e["equation"]}, x_min, x_max, log_x), y_lo, y_hi, log_x=log_x, log_y=log_y)
+            if len(cpts) >= 2:
+                env_out.append({**edef, "points": cpts, "strokeStyle": str(e.get("stroke_style") or "dashed")})
+        elif "threshold_value" in e and math.isfinite(float(e["threshold_value"])):
+            env_out.append({**edef, "value": float(e["threshold_value"])})
+    out: dict[str, Any] = {
         "kind": "cartesian",
         "title": _plain_text((spec.get("metadata") or {}).get("title") or "Analytical Plot"),
         "rigor": rigor,
@@ -246,6 +277,11 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
         "series": series_out,
         "envelopes": env_out,
     }
+    if bool((spec.get("residual_strip") or {}).get("enabled")) and rigor == "L3":
+        r_pts = compute_normalized_residuals(raw_series, log_x=log_x, legend=spec.get("parametric_legend"))
+        if r_pts:
+            out["residuals"] = {"label": "Normalized Residuals (y\u1d62 \u2212 y\u0302\u1d62) / u", "bound": 2.0, "points": [[round_coord(xv), round(rv, 3)] for xv, rv in r_pts]}
+    return out
 
 
 def render_echarts_toggle_bar() -> str:
@@ -267,7 +303,7 @@ def _eco_snippets(payload: dict[str, Any]) -> list[tuple[str, str, str]]:
         "renderer": "svg",
         "xAxis": {"name": x_lbl, "type": "log" if payload.get("x", {}).get("log") else ("category" if kind in {"waterfall", "stacked_bar"} else "value")},
         "yAxis": {"name": y_lbl, "type": "log" if payload.get("y", {}).get("log") else "value", "min": payload.get("y", {}).get("min"), "max": payload.get("y", {}).get("max"), "interval": payload.get("y", {}).get("interval")},
-        "markLine": [{"yAxis": e["value"], "name": e["label"]} for e in payload.get("envelopes", [])],
+        "markLine": [{"yAxis": e["value"], "name": e["label"]} for e in payload.get("envelopes", []) if "value" in e],
     }, indent=2, ensure_ascii=False)
     if kind == "stacked_bar":
         plotly = f"for s in stack_series:\n    fig.add_bar(x=hours, y=s['data'], name=s['name'])\nfig.update_layout(barmode='relative', template='plotly_white', yaxis_title='{y_lbl}')"

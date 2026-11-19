@@ -2,8 +2,8 @@
 
 > 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
-- **v9.0 Multi-Domain Interactive Studio (`5 Domains · 16 Views`):** `docs/v9/quiet-ui-v9-showcase.html`
-- **Evidence Component Library (`21 Compiled Specimens`):** `docs/bench/evidence-bench.html`
+- **v9.0 Multi-Domain Interactive Studio (`6 Domains · 18 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
+- **Evidence Component Library (`21 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
 - **License:** Apache 2.0 (Core 3-Pillar Plugin) + MIT (Customizations, Tokens & 100% of Generated UI/SVG Deliverables)

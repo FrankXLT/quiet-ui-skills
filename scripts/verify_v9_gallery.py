@@ -259,3 +259,56 @@ def capture_gate54_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
     time.sleep(0.45)
     driver.save_screenshot(str(out_dir / "08_components_5tab_ecosystem_drawer.png"))
     set_viewport(driver, 1440, 900, 1)
+
+
+def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
+    shots_dir.mkdir(parents=True, exist_ok=True)
+    for fname, w, h, qs in (
+        ("01_v01_icu_desktop_white.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=white"),
+        ("02_v01_icu_desktop_oled.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=dark"),
+        ("03_v01_icu_mobile_390x844.png", 390, 844, "view=v01-icu-bedside-terminal&theme=white"),
+        ("04_v02_trial_desktop_paper.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=paper"),
+        ("05_v02_trial_foldable_840x1050.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=white&vp=840x1050"),
+        ("06_v02_trial_m1_print_sheet.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=dark&medium=m1"),
+        ("07_v03_patient_desktop_white.png", 1440, 900, "view=v03-patient-recovery-companion&theme=white"),
+        ("08_v03_patient_mobile_390x844.png", 390, 844, "view=v03-patient-recovery-companion&theme=white"),
+    ):
+        set_viewport(driver, w, h, 2)
+        driver.get(f"{base_url}?world=01-clinical-icu-and-trials&{qs}")
+        time.sleep(0.35)
+        driver.save_screenshot(str(shots_dir / fname))
+    set_viewport(driver, 1440, 900, 2)
+    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark-paper")
+    time.sleep(0.3)
+    driver.execute_script("document.getElementById('va-bridge-btn').click();")
+    time.sleep(0.2)
+    driver.save_screenshot(str(shots_dir / "09_studio_why_this_view_bridge.png"))
+
+
+def capture_phase6_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
+    """Capture 8 Phase 6 Retina (deviceScaleFactor=2) proof PNGs from live :8788 showcase."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    shots = [
+        ("01_v02_foldable_840x1050_masthead.png", "01-clinical-icu-and-trials", "v02-trial-regulatory-brief", "white", 840, 1050, ""),
+        ("02_v10_civic_waterfall_echarts.png", "04-civic-finance-and-stem-learning", "v10-civic-capital-budget-deck", "white", 1440, 900, ""),
+        ("03_v12_stem_rc_lab_residuals.png", "04-civic-finance-and-stem-learning", "v12-stem-interactive-lab", "white", 1440, 900, ""),
+        ("04_v13_propulsion_bte_residuals.png", "05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph", "paper", 1440, 900, ""),
+        ("05_v15_hud_daylight_horizon50.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "white", 1440, 900, ""),
+        ("06_v15_hud_nightfall_ils_horizon50.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", 1440, 900,
+         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-backplate='lowlight']\");if(b)b.click();"),
+        ("07_v18_ha_companion_stacked_energy.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "white", 1440, 900,
+         "const d=document.getElementById('va-stage-portal').contentDocument;const e=d.getElementById('v18-energy');if(e)e.scrollIntoView({block:'center'});"),
+    ]
+    for fname, wid, vw, theme, w, h, hook in shots:
+        set_viewport(driver, w, h, 2)
+        driver.get(f"{base_url}?world={wid}&view={vw}&theme={theme}")
+        time.sleep(0.55)
+        if hook:
+            driver.execute_script(hook)
+            time.sleep(0.45)
+        driver.save_screenshot(str(out_dir / fname))
+    set_viewport(driver, 1440, 900, 2)
+    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white")
+    time.sleep(0.55)
+    driver.save_screenshot(str(out_dir / "08_v16_maritime_glass_daylight.png"))
+    set_viewport(driver, 1440, 900, 1)

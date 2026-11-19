@@ -125,6 +125,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script src="../../src/js/evidence-runtime.js"></script>
+  <script src="../../src/v9/js/echarts-layers.js"></script>
   <script src="../../src/v9/js/echarts-quiet-adapter.js"></script>
   <script src="./bench.js"></script>
 </body>

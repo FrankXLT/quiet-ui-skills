@@ -80,7 +80,7 @@ class TestDomain06AndECharts(unittest.TestCase):
             self.assertNotIn(b"Exif\x00\x00", p.read_bytes())
 
     def test_starter_filtering_18_vs_14_views(self) -> None:
-        unified = (REPO_ROOT / "docs" / "v9" / "quiet-ui-v9-showcase.html").read_text(encoding="utf-8")
+        unified = (REPO_ROOT / "quiet-ui-showcase.html").read_text(encoding="utf-8")
         with tempfile.TemporaryDirectory() as tmp:
             src_p = Path(tmp) / "unified.html"
             src_p.write_text(unified, encoding="utf-8")
@@ -102,9 +102,17 @@ class TestDomain06AndECharts(unittest.TestCase):
         self.assertTrue(a_pay["x"]["log"])
         self.assertTrue(a_pay["y"]["log"])
         self.assertGreaterEqual(len(a_pay["series"]), 2)
+        self.assertFalse(a_pay["series"][1]["connectPiecewise"])
+        self.assertIn("corridor", a_pay["series"][0])
+        self.assertIn("residuals", a_pay)
+        self.assertGreaterEqual(len(a_pay["residuals"]["points"]), 6)
+        self.assertTrue(any("points" in e and len(e["points"]) >= 2 for e in a_pay["envelopes"]))
         wf = next(s for s in plots if s.get("plot_kind") == "waterfall")
         w_pay = build_echarts_payload(wf, rigor="L2", medium="m2")
         self.assertEqual(w_pay["bases"][-1], 0.0)
+        self.assertEqual(w_pay["totals"][0], 194.2)
+        self.assertEqual(w_pay["totals"][-1], 81.4)
+        self.assertEqual(w_pay["envelopes"][0]["value"], 150.0)
         evil = {
             "$schema": "urn:quiet-ui:schema:v9:plot", "plot_kind": "cartesian", "id": "dos",
             "axes": {"x_axis": {"domain": [0, 1]}, "y_axis": {"domain": [0, 1]}},

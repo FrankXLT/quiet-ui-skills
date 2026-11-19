@@ -3,7 +3,7 @@
   "id": "v07-synchrophasor-scalars",
   "metadata": {
     "title": "Microgrid POI Dispatch, Synchrophasor Frequency, BESS SoC & OEE Readouts",
-    "description": "Conserved telemetry array pairing L3 CMD-vs-ACT NIST uncertainty gauges for control-room dispatch with L1 wall-kiosk readiness sparklines.",
+    "description": "Conserved telemetry array pairing CMD-vs-ACT NIST uncertainty gauges for control-room dispatch with wall-kiosk readiness sparklines.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-16T21:30:00Z",
     "subsystem": "POI-SYNCHROPHASOR-BUS"

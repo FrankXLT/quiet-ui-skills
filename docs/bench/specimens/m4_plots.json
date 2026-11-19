@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:plot",
     "id": "bench-m4-l1-pedagogical-link",
     "metadata": {
-      "title": "M4-L1: Educator -> Student Pedagogical Flow Optical Link Budget (1-2-5)",
-      "description": "L1 Orientation pedagogical plot coupling semantic equation terms [data-term] directly to calibrated 1-2-5 range attenuation curves and discrete lab points.",
+      "title": "Educator -> Student Pedagogical Flow Optical Link Budget (1-2-5)",
+      "description": "Orientation pedagogical plot coupling interactive equation terms directly to calibrated 1-2-5 range attenuation curves and discrete lab points.",
       "rigor_level": "L1",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -61,8 +61,8 @@
     "$schema": "urn:quiet-ui:schema:v9:plot",
     "id": "bench-m4-l2-waterfall-dumbbell",
     "metadata": {
-      "title": "M4-L2: Recovered v7.1 SLA Jitter Waterfall & Sector Throughput Dumbbell",
-      "description": "L2 Governance trade-space waterfall reducing coax baseline (194.2 ps) to 81.4 ps net phase error below the 150.0 ps SLA ceiling, paired with 6-sector throughput dumbbell.",
+      "title": "Recovered v7.1 SLA Jitter Waterfall & Sector Throughput Dumbbell",
+      "description": "Governance trade-space waterfall reducing coax baseline (194.2 ps) to 81.4 ps net phase error below the 150.0 ps SLA ceiling, paired with 6-sector throughput dumbbell.",
       "rigor_level": "L2",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -135,8 +135,8 @@
     "$schema": "urn:quiet-ui:schema:v9:plot",
     "id": "bench-m4-l3-allan-deviation",
     "metadata": {
-      "title": "M4-L3: Log-Log Modified Allan Deviation Mod sigma_y(tau) & Residual Strip",
-      "description": "L3 Physical metrological log-log plot with mandatory 2..9 minor decades, +/-1sigma uncertainty corridor, discrete error whiskers, contract ceiling, and bottom normalized residual strip.",
+      "title": "Log-Log Modified Allan Deviation Mod sigma_y(tau) & Residual Strip",
+      "description": "Physical metrological log-log plot with mandatory 2..9 minor decades, +/-1sigma uncertainty corridor, discrete error whiskers, contract ceiling, and bottom normalized residual strip.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },

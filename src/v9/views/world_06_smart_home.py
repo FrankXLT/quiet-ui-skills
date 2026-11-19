@@ -170,10 +170,10 @@ def _v18_access_cards() -> str:
           <div class="v18-access-label"><span class="v18-mush-icon v18-tone-emerald">{_icon("lock")}</span><h3 class="v9-interlock-title">Front Door</h3></div>
           <span id="v18-lock-pill" class="va-pill" data-variant="status" data-state="nominal">LOCKED</span>
         </div>
-        <p class="v9-interlock-note">Deadbolt engaged. Tap Arm before unlocking entry door.</p>
+        <p class="v9-interlock-note">Deadbolt engaged. Two-step check prevents accidental taps.</p>
         <div class="v9-interlock-pad">
-          <button type="button" id="v18-lock-arm" class="v9-tactile-btn" aria-pressed="false">1. Unlock Arm</button>
-          <button type="button" id="v18-lock-exec" class="v9-tactile-btn v9-tactile-exec" disabled>2. Unlock Door</button>
+          <button type="button" id="v18-lock-arm" class="v9-tactile-btn" aria-pressed="false">1. Tap to Unlock</button>
+          <button type="button" id="v18-lock-exec" class="v9-tactile-btn v9-tactile-exec" disabled>2. Confirm Unlock</button>
         </div>
       </div>
 
@@ -182,10 +182,10 @@ def _v18_access_cards() -> str:
           <div class="v18-access-label"><span class="v18-mush-icon v18-tone-sky">{_icon("garage")}</span><h3 class="v9-interlock-title">Garage Door</h3></div>
           <span id="v18-garage-pill" class="va-pill" data-variant="status" data-state="nominal">CLOSED</span>
         </div>
-        <p class="v9-interlock-note">Optical beam clear. Confirm before raising overhead door.</p>
+        <p class="v9-interlock-note">Optical beam clear. Two-step check prevents accidental taps.</p>
         <div class="v9-interlock-pad">
-          <button type="button" id="v18-garage-arm" class="v9-tactile-btn" aria-pressed="false">1. Arm Door</button>
-          <button type="button" id="v18-garage-exec" class="v9-tactile-btn v9-tactile-exec" disabled>2. Open Garage</button>
+          <button type="button" id="v18-garage-arm" class="v9-tactile-btn" aria-pressed="false">1. Tap to Open</button>
+          <button type="button" id="v18-garage-exec" class="v9-tactile-btn v9-tactile-exec" disabled>2. Confirm Open</button>
         </div>
       </div>
     </div>
@@ -226,7 +226,7 @@ def _build_v18_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
           <button type="button" class="v18-unit-btn is-active" data-v18-unit="c" aria-pressed="true">°C</button>
           <button type="button" class="v18-unit-btn" data-v18-unit="f" aria-pressed="false">°F</button>
         </div>
-        <span class="va-pill" data-variant="status" data-state="nominal">Home Nominal</span>
+        <span class="va-pill" data-variant="status" data-state="nominal">All Systems Normal</span>
       </div>
     </div>
     <h1 class="v9-masthead-title">Home Assistant &amp; Daily Energy</h1>

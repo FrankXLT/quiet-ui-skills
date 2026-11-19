@@ -3,7 +3,7 @@
   "id": "v12-stem-rc-cooling-lab",
   "metadata": {
     "title": "First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]",
-    "description": "L3 STEM Interactive Lab pairing color-coupled exponential decay with discrete student oscilloscope measurements (±1σ uncertainty), 1–2–5 NIST axes, and bottom normalized residual strip.",
+    "description": "STEM Interactive Lab pairing color-coupled exponential decay with discrete student oscilloscope measurements (±1σ uncertainty), 1–2–5 NIST axes, and bottom normalized residual strip.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z"
   },

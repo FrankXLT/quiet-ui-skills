@@ -14,7 +14,8 @@
 
   function bootV17(doc) {
     var vp = doc.getElementById('v17-kiosk');
-    if (!vp) return;
+    if (!vp || vp.dataset.v06Bound === '1') return;
+    vp.dataset.v06Bound = '1';
 
     vp.querySelectorAll('button[data-v17-backdrop]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -68,7 +69,7 @@
       armBtn.setAttribute('aria-pressed', armed ? 'true' : 'false');
       execBtn.disabled = !armed;
       if (log && armed) {
-        log.textContent = cfg.name + ' armed — tap Step 2 to confirm';
+        log.textContent = cfg.name + ' ready \u2014 tap Step 2 to confirm';
       }
     });
 
@@ -77,6 +78,7 @@
       active = !active;
       pill.textContent = active ? cfg.openLabel : cfg.closedLabel;
       pill.dataset.state = active ? 'warn' : 'nominal';
+      armBtn.textContent = active ? cfg.recloseArmText : cfg.openArmText;
       execBtn.textContent = active ? cfg.recloseBtnText : cfg.openBtnText;
       armBtn.setAttribute('aria-pressed', 'false');
       execBtn.disabled = true;
@@ -88,6 +90,8 @@
 
   function bootV18(doc) {
     var v18Root = doc.querySelector('.v9-view-v18');
+    if (!v18Root || v18Root.dataset.v06Bound === '1') return;
+    v18Root.dataset.v06Bound = '1';
     var filterBtns = doc.querySelectorAll('button[data-v18-filter]');
     var tiles = doc.querySelectorAll('.v18-zone-tile[data-v18-cat]');
     if (filterBtns.length && tiles.length) {
@@ -127,8 +131,10 @@
       pillId: 'v18-lock-pill',
       closedLabel: 'LOCKED',
       openLabel: 'UNLOCKED',
-      openBtnText: '2. Unlock Door',
-      recloseBtnText: '2. Lock Door',
+      openArmText: '1. Tap to Unlock',
+      recloseArmText: '1. Tap to Lock',
+      openBtnText: '2. Confirm Unlock',
+      recloseBtnText: '2. Confirm Lock',
     });
     wireTwoStep(doc, {
       name: 'Garage door',
@@ -137,8 +143,10 @@
       pillId: 'v18-garage-pill',
       closedLabel: 'CLOSED',
       openLabel: 'OPEN',
-      openBtnText: '2. Open Garage',
-      recloseBtnText: '2. Close Garage',
+      openArmText: '1. Tap to Open',
+      recloseArmText: '1. Tap to Close',
+      openBtnText: '2. Confirm Open',
+      recloseBtnText: '2. Confirm Close',
     });
   }
 

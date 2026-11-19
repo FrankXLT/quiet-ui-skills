@@ -238,7 +238,7 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIsNotNone(v15_m)
         self.assertIsNotNone(v16_m)
         v15_html, v16_html = v15_m.group(1), v16_m.group(1)
-        for tok in ("v15-hud-stage", "v9-opt-photo", "assets/as08-14-2383.jpg", "assets/opt_hud_daylight_rwy.jpg", "assets/opt_hud_night_rwy.jpg", "v15-reticle-layer", "084°", "138", "1,180", "640 FT AGL · 3.0° GS", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR", "Night ILS", "Orbital Limb", 'y="616"', 'y1="350"'):
+        for tok in ("v15-hud-stage", "v9-opt-photo", "assets/as08-14-2383.jpg", "assets/opt_hud_daylight_rwy.jpg", "assets/opt_hud_night_rwy.jpg", "v15-reticle-layer", "084°", "138", "1,180", "640 FT AGL · 3.0° GS", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR", "Night ILS", "Orbital Limb", 'y="624"', 'y1="360"'):
             self.assertIn(tok, v15_html)
         for bad in ("v15-scene-svg", "v15-earthrise-img", "BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip", "Night NVG"):
             self.assertNotIn(bad, v15_html)
@@ -266,6 +266,45 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
 
     def test_static_all_worlds_clean(self) -> None:
         self.assertEqual(verify_static(all_worlds=True), [])
+
+    def test_echarts_conservation_rigor_and_rationale_scrubbing(self) -> None:
+        from compilers.echarts_adapter import build_echarts_payload
+        from compilers.plot_compiler import compile_plot
+        from src.v9.views.rationale_formatter import scrub_prose
+
+        cross_wf = {
+            "$schema": "urn:quiet-ui:schema:v9:plot", "plot_kind": "waterfall", "id": "cross-wf",
+            "metadata": {"title": "Zero Crossing Bridge", "rigor_level": "L2"},
+            "axes": {"y_axis": {"unit": "M", "quantity_calculus": "Balance / M"}},
+            "steps": [{"label": "Open", "value": 20.0, "kind": "start"}, {"label": "Draw", "delta": -35.0, "kind": "delta"}, {"label": "Close", "value": -15.0, "kind": "total"}],
+        }
+        pay = build_echarts_payload(cross_wf, "L2", "m3")
+        self.assertEqual(pay["spans"][1], [-15.0, 20.0, -35.0, "dec"])
+        self.assertIn("-15.0", compile_plot(cross_wf, rigor="L2"))
+        bad_wf = {**cross_wf, "steps": [{"label": "Open", "value": 20.0, "kind": "start"}, {"label": "Close", "value": 99.0, "kind": "total"}]}
+        with self.assertRaises(ValueError):
+            compile_plot(bad_wf, rigor="L2")
+        with self.assertRaises(ValueError):
+            build_echarts_payload(bad_wf, "L2", "m3")
+
+        eq_spec = {
+            "$schema": "urn:quiet-ui:schema:v9:plot", "id": "eq-sync", "metadata": {"title": "Eq"},
+            "parametric_legend": [{"symbol": "V_0", "value": 5.0, "unit": "V"}, {"symbol": "tau", "value": 2.0, "unit": "s"}],
+            "axes": {"x_axis": {"domain": [0, 4]}, "y_axis": {"domain": [0, 6]}},
+            "series": [
+                {"id": "m", "epistemic_type": "analytical_model", "equation": "y = V_0 * exp(-x / tau)"},
+                {"id": "d", "epistemic_type": "discrete_measurement", "marker_color": "var(--accent-focal)", "data_points": [{"x": 0.0, "y": 5.0, "u_y": 0.5}]},
+            ],
+            "residual_strip": {"enabled": True},
+        }
+        l1_pay = build_echarts_payload(eq_spec, "L1", "m2")
+        self.assertEqual(len(l1_pay["series"]), 1)
+        l3_pay = build_echarts_payload(eq_spec, "L3", "m3")
+        self.assertTrue(l3_pay["series"][1]["colorExplicit"])
+        self.assertTrue(l3_pay["residuals"]["points"])
+        self.assertEqual(l3_pay["residuals"]["points"][0][1], 0.0)
+        self.assertNotIn("PANEL-MAIN-200A", scrub_prose("PANEL-MAIN-200A uses M7 and L3 Booktabs for N4"))
+        self.assertNotIn("Booktabs", scrub_prose("L3 Booktabs table in v18-home-assistant-companion-console"))
 
 
 if __name__ == "__main__":

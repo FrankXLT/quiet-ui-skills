@@ -19,6 +19,7 @@ from .plot_helpers import (
     render_residual_strip as _render_residual_strip,
     resolve_series_dash as _resolve_series_dash,
     sample_model_points as _sample_model_points,
+    visible_series as _visible_series,
 )
 from .svg_labels import (
     avoid_label_overlaps,
@@ -38,13 +39,6 @@ from .tokens_and_scales import (
     resolve_term_colors,
     resolve_token,
 )
-
-
-def _visible_series(spec: dict[str, Any], rigor: str) -> list[dict[str, Any]]:
-    series = spec.get("series", [])
-    if rigor in {"L2", "L3"} or spec.get("pedagogical_equation"):
-        return series
-    return series[:1]
 
 
 def _render_graticule(
@@ -181,6 +175,7 @@ def _render_series_layers(
     box: tuple[float, float, float, float],
     data_x: tuple[float, float],
     rigor: str,
+    legend: list[dict[str, Any]] | None = None,
 ) -> tuple[list[str], list[str], list[str]]:
     """Render one series split into (corridors, curves, markers) paint layers."""
     x0, y0, pw, ph = box
@@ -193,7 +188,7 @@ def _render_series_layers(
     bands, strokes, markers = [], [], []
 
     if ep == "analytical_model":
-        pts = [(x, y) for x, y in _sample_model_points(sr, x_sc) if (not x_sc["is_log"] or x > 0.0) and (not y_sc["is_log"] or y > 0.0)]
+        pts = [(x, y) for x, y in _sample_model_points(sr, x_sc, legend=legend) if (not x_sc["is_log"] or x > 0.0) and (not y_sc["is_log"] or y > 0.0)]
         if rigor in {"L2", "L3"} and (sr.get("corridor_rel") or sr.get("corridor_abs")) and pts:
             rel, abs_c = float(sr.get("corridor_rel") or 0.0), float(sr.get("corridor_abs") or 0.0)
             up, lo = [], []
@@ -268,7 +263,7 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
             if uy is not None and rigor in {"L2", "L3"} and math.isfinite(float(uy)):
                 ys.extend((yv + abs(float(uy)), max(yv - abs(float(uy)), 1e-12) if y_ax.get("scale_type") == "logarithmic" else yv - abs(float(uy))))
         if s.get("epistemic_type") == "analytical_model" and not y_ax.get("domain"):
-            ys.extend(yv for _, yv in _sample_model_points(s, x_sc, n=36) if math.isfinite(yv))
+            ys.extend(yv for _, yv in _sample_model_points(s, x_sc, n=36, legend=spec.get("parametric_legend")) if math.isfinite(yv))
     if not y_ax.get("domain"):
         ys.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
     y_sc = _axis_scale(y_ax, ys)
@@ -284,7 +279,7 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     env_svg, labels, gutter_lbls, sloped_lbls = _render_envelopes(envs, x_sc, y_sc, (x0, y0, pw, ph), data_x)
     bands_all, strokes_all, markers_all = [], [], []
     for idx, sr in enumerate(vis_series):
-        b, s, m = _render_series_layers(sr, idx, x_sc, y_sc, (x0, y0, pw, ph), data_x, rigor)
+        b, s, m = _render_series_layers(sr, idx, x_sc, y_sc, (x0, y0, pw, ph), data_x, rigor, legend=spec.get("parametric_legend"))
         bands_all.extend(b)
         strokes_all.extend(s)
         markers_all.extend(m)
@@ -323,7 +318,7 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
         parts.append(svg_knockout_label(lbl["x"], lbl["y"], lbl["text"], anchor=lbl["anchor"], size=11.5, weight=lbl.get("weight", "600"), fill=lbl["fill"], surface_fill="var(--bg-surface)", x_bounds=(x0 + 4.0, x0 + pw - 4.0), attrs=lbl.get("attrs", "")))
 
     if show_res:
-        parts.extend(_render_residual_strip(vis_series, x_sc, (x0, y0 + ph + 56.0, pw, 72.0), data_x))
+        parts.extend(_render_residual_strip(vis_series, x_sc, (x0, y0 + ph + 56.0, pw, 72.0), data_x, legend=spec.get("parametric_legend")))
     parts.append("</svg>")
     return "\n".join(parts)
 

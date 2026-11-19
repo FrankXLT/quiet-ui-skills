@@ -203,6 +203,9 @@ if (view === 'v15-collimated-flight-hud') {
   for (const sym of ['138', '1,180', '084', '+5', '-5', 'VS -650 FPM', '42.8%']) {
     if (!retTxt.includes(sym)) errs.push(`[M6_RETICLE] Missing MIL-STD-1787B symbology '${sym}'`);
   }
+  if (ret && ret.querySelectorAll('line[y1="360"][y2="360"]').length < 2) {
+    errs.push('[HUD_HORIZON_50] Expected 0 deg horizon wing lines at y=360 (50% of 720)');
+  }
   for (const bad of ['BORESIGHT', 'NAV/PROPULSION HUD', 'dual stroke halo']) {
     if (visBody.includes(bad)) errs.push(`[M6_META_LEAK] v15 leaked '${bad}'`);
   }
@@ -307,10 +310,22 @@ for (const wsvg of document.querySelectorAll('svg.qe-waveform-svg')) {
   const labels = [...wsvg.querySelectorAll('text')].filter(t => (t.textContent || '').includes('DROPOUT')).length;
   if (merged.length > 0 && labels !== merged.length) errs.push(`[SINGLE_DROPOUT] Expected ${merged.length} DROPOUT label(s), got ${labels}`);
 }
-for (const badTxt of ['QUIET-BRIDGE', 'Murder-Board', 'Murder-board', 'Qualification Bench']) {
+for (const badTxt of ['QUIET-BRIDGE', 'Murder-Board', 'Murder-board', 'Qualification Bench', 'Booktabs', 'Home Nominal', 'Unlock Arm', 'Arm Door']) {
   if (visBody.includes(badTxt)) errs.push(`[PLAIN_ENGLISH] ${view} leaked '${badTxt}'`);
 }
+const taxHit = visBody.match(/\\b(?:L[123]|M[1-7])\\b|\\[data-term\\]/);
+if (taxHit) errs.push(`[TAXONOMY_LEAK] ${view} exposed '${taxHit[0]}'`);
 if (/\\bV\\d{2}:/.test(visBody)) errs.push(`[PREFIX_LEAK] ${view} leaked VXX: prefix in visible content`);
+if (w >= 700 && w < 1100 && medium !== 'm1') {
+  const mh = document.querySelector('.v9-masthead');
+  if (mh && getComputedStyle(mh).display !== 'none') {
+    const eb = mh.querySelector('.v9-masthead-eyebrow'), h1 = mh.querySelector('.v9-masthead-title');
+    if (eb && h1) {
+      const er = eb.getBoundingClientRect(), hr = h1.getBoundingClientRect();
+      if (hr.left - er.left > 8.0 || hr.top < er.bottom - 2.0) errs.push(`[FOLD_MASTHEAD_SPLIT] ${view} title left-offset=${(hr.left - er.left).toFixed(1)}px top=${hr.top.toFixed(1)} vs eyebrow.bottom=${er.bottom.toFixed(1)}`);
+    }
+  }
+}
 if (view === 'v06-ai-drift-and-lineage-ide') {
   for (const rawTok of ['p_hat', 'f_obs', '+/- u_y']) {
     if (visBody.includes(rawTok)) errs.push(`[V06_POLISH] Raw token '${rawTok}' leaked`);
@@ -345,56 +360,29 @@ for (const pw of document.querySelectorAll('.qe-plot-wrap[data-echarts-active="t
   const ls = pw.querySelector('.qe-legend-series');
   if (ls && getComputedStyle(ls).display !== 'none') errs.push('[SINGLE_LEGEND] Duplicate HTML legend visible over ECharts');
   if (/\\b[A-Za-z]\\((?:pv|load|grid|rx|obs|bte)\\)/i.test(pw.innerText || '')) errs.push('[ECHARTS_ASCII] ASCII pseudo-subscript in plot');
+  try {
+    const pld = JSON.parse(pw.dataset.quietEcharts || '{}');
+    const hostTxt = pw.querySelector('.qe-echarts-host svg')?.textContent || '';
+    if (['v06-ai-drift-and-lineage-ide', 'v11-treasury-stress-test-solver', 'v12-stem-interactive-lab', 'v13-propulsion-archival-monograph'].includes(view)) {
+      if (!pld.residuals || !pld.residuals.points || pld.residuals.points.length < 5) errs.push(`[ECHARTS_RESIDUAL] ${view} missing residual points payload`);
+      if (!hostTxt.includes('+2σ') || !hostTxt.includes('−2σ')) errs.push(`[ECHARTS_RESIDUAL_SVG] ${view} residual strip ticks missing in ECharts SVG`);
+      for (const s of (pld.series || [])) {
+        if (s.epistemic === 'discrete_measurement' && s.connectPiecewise) errs.push(`[ECHARTS_DISCRETE_LINE] ${view} discrete series unexpectedly connected`);
+        if (s.epistemic === 'analytical_model' && (!Array.isArray(s.corridor) || s.corridor.length < 2)) errs.push(`[ECHARTS_CORRIDOR] ${view} missing shaded corridor`);
+      }
+      if (view === 'v06-ai-drift-and-lineage-ide' && !(pld.envelopes || []).some(e => Array.isArray(e.points) && e.points.length >= 2)) {
+        errs.push('[ECHARTS_SLOPED_ENV] v06 missing sloped calibration gate envelope');
+      }
+    }
+    if (view === 'v10-civic-capital-budget-deck') {
+      if (!Array.isArray(pld.totals) || !(pld.envelopes || []).length || !hostTxt.includes('Policy Reserve Floor')) {
+        errs.push('[ECHARTS_WATERFALL] v10 missing total bars or Policy Reserve Floor markLine');
+      }
+    }
+  } catch (_e) { errs.push('[ECHARTS_PAYLOAD] Invalid JSON descriptor'); }
 }
 return errs;
 """
 
 def set_viewport(driver: Any, width: int, height: int, scale: int = 1) -> None:
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": width, "height": height, "deviceScaleFactor": scale, "mobile": width < 600})
-
-def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
-    shots_dir.mkdir(parents=True, exist_ok=True)
-    for fname, w, h, qs in (
-        ("01_v01_icu_desktop_white.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=white"),
-        ("02_v01_icu_desktop_oled.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=dark"),
-        ("03_v01_icu_mobile_390x844.png", 390, 844, "view=v01-icu-bedside-terminal&theme=white"),
-        ("04_v02_trial_desktop_paper.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=paper"),
-        ("05_v02_trial_foldable_840x1050.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=white&vp=840x1050"),
-        ("06_v02_trial_m1_print_sheet.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=dark&medium=m1"),
-        ("07_v03_patient_desktop_white.png", 1440, 900, "view=v03-patient-recovery-companion&theme=white"),
-        ("08_v03_patient_mobile_390x844.png", 390, 844, "view=v03-patient-recovery-companion&theme=white"),
-    ):
-        set_viewport(driver, w, h, 2)
-        driver.get(f"{base_url}?world=01-clinical-icu-and-trials&{qs}")
-        time.sleep(0.35)
-        driver.save_screenshot(str(shots_dir / fname))
-    set_viewport(driver, 1440, 900, 2)
-    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark-paper")
-    time.sleep(0.3)
-    driver.execute_script("document.getElementById('va-bridge-btn').click();")
-    time.sleep(0.2)
-    driver.save_screenshot(str(shots_dir / "09_studio_why_this_view_bridge.png"))
-
-def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
-    shots_dir.mkdir(parents=True, exist_ok=True)
-    v15_q = "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white"
-    v16_q = "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white"
-    for fname, w, h, qs, hook in (
-        ("01_v15_hud_daylight_runway.png", 1440, 900, v15_q, None),
-        ("02_v15_hud_night_ils.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
-        ("03_v15_hud_orbital_limb.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"earthrise\"]').click();"),
-        ("04_v16_glass_maritime_daylight.png", 1440, 900, v16_q, None),
-        ("05_v16_glass_maritime_sunset.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
-        ("06_v16_glass_maritime_night.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
-        ("07_v16_glass_mobile_390x844_compact.png", 390, 844, v16_q, None),
-    ):
-        set_viewport(driver, w, h, 2)
-        driver.get(f"{base_url}?{qs}")
-        for _ in range(12):
-            time.sleep(0.15)
-            if driver.execute_script("const d=document.getElementById('va-stage-portal')?.contentDocument;const imgs=d?[...d.querySelectorAll('img.v9-opt-photo')]:[];return imgs.length===3&&imgs.every(i=>i.complete&&i.naturalWidth>=1200);"):
-                break
-        if hook:
-            driver.execute_script(hook)
-        time.sleep(0.35)
-        driver.save_screenshot(str(shots_dir / fname))

@@ -63,19 +63,62 @@ def proj_y(val: float, sc: dict[str, Any], y0: float, h: float) -> float:
     return y0 + h - ((val - sc["min"]) / (span if span else 1.0)) * h
 
 
-def sample_model_points(sr: dict[str, Any], x_sc: dict[str, Any], n: int = 90) -> list[tuple[float, float]]:
+def visible_series(spec: dict[str, Any], rigor: str) -> list[dict[str, Any]]:
+    """Return rigor-filtered plot series (L1 shows primary curve/series only unless pedagogical equation)."""
+    series = spec.get("series", [])
+    if rigor in {"L2", "L3"} or spec.get("pedagogical_equation"):
+        return series
+    return series[:1]
+
+
+def build_eq_env(legend: list[dict[str, Any]] | None = None, sr: dict[str, Any] | None = None) -> dict[str, float]:
+    """Collect numeric parameter constants from parametric_legend and series params."""
+    env: dict[str, float] = {}
+    for p in (legend or []):
+        sym, val = str(p.get("symbol") or "").strip(), p.get("value")
+        if sym.isidentifier() and isinstance(val, (int, float)) and not isinstance(val, bool):
+            env[sym] = float(val)
+    if sr:
+        for k, v in (sr.get("params") or {}).items():
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                env[str(k)] = float(v)
+    return env
+
+
+def sample_model_points(
+    sr: dict[str, Any],
+    x_sc: dict[str, Any],
+    n: int = 90,
+    legend: list[dict[str, Any]] | None = None,
+) -> list[tuple[float, float]]:
     """Sample analytical model curve over linear or log-spaced X domain."""
-    if sr.get("points"):
-        return [(float(p["x"]), float(p["y"])) for p in sr["points"] if p.get("x") is not None and p.get("y") is not None and math.isfinite(float(p["x"])) and math.isfinite(float(p["y"]))]
-    eq = sr.get("equation")
+    pts_raw = sr.get("points") or sr.get("data_points")
+    if pts_raw:
+        return [
+            (float(p["x"]), float(p["y"]))
+            for p in pts_raw
+            if p.get("x") is not None and p.get("y") is not None
+            and math.isfinite(float(p["x"])) and math.isfinite(float(p["y"]))
+        ]
+    eq = str(sr.get("equation") or "").strip()
     if not eq:
         return []
+    eq_rhs = eq.split("=")[-1].strip()
+    env_base = build_eq_env(legend, sr)
     pts: list[tuple[float, float]] = []
     for i in range(n):
-        t = i / (n - 1)
-        xv = 10.0 ** (math.log10(x_sc["min"]) + t * (math.log10(x_sc["max"]) - math.log10(x_sc["min"]))) if x_sc["is_log"] else x_sc["min"] + t * (x_sc["max"] - x_sc["min"])
+        t = i / max(1, n - 1)
+        xv = (
+            10.0 ** (math.log10(x_sc["min"]) + t * (math.log10(x_sc["max"]) - math.log10(x_sc["min"])))
+            if x_sc["is_log"]
+            else x_sc["min"] + t * (x_sc["max"] - x_sc["min"])
+        )
+        env = dict(env_base)
+        for alias in ("x", "tau", "f", "t", "IMEP", "L", "N"):
+            env.setdefault(alias, xv)
+        env["x"] = xv
         try:
-            yv = eval_equation(eq, x=xv, tau=xv, f=xv)
+            yv = eval_equation(eq_rhs, **env)
             if math.isfinite(yv):
                 pts.append((xv, yv))
         except Exception:
@@ -83,34 +126,100 @@ def sample_model_points(sr: dict[str, Any], x_sc: dict[str, Any], n: int = 90) -
     return pts
 
 
-def render_residual_strip(series: list[dict[str, Any]], x_sc: dict[str, Any], box: tuple[float, float, float, float], data_x: tuple[float, float]) -> list[str]:
-    """Render synchronized bottom residual strip r_i = (y_i - y_hat) / u_y."""
-    x0, ry0, pw, rh = box
-    dx0, dpw = data_x
-    model_eq = next((s.get("equation") for s in series if s.get("epistemic_type") == "analytical_model" and s.get("equation")), None)
-    meas_s = next((s for s in series if s.get("epistemic_type") == "discrete_measurement"), None)
-    if not meas_s or not meas_s.get("data_points"):
+def round_coord(val: float) -> float:
+    """Round small scientific floats without losing sub-milli precision."""
+    return round(val, 15) if 0.0 < abs(val) < 1e-3 else round(val, 6)
+
+
+def clip_curve_to_y(pts: list[list[float]], y_min: float, y_max: float, log_x: bool = False, log_y: bool = False) -> list[list[float]]:
+    """Clip sampled polyline to [y_min, y_max] with boundary intersections so sloped envelopes stop cleanly on the frame."""
+    clean = [p for p in pts if math.isfinite(p[0]) and math.isfinite(p[1]) and (not log_x or p[0] > 0.0) and (not log_y or p[1] > 0.0)]
+    if len(clean) < 2:
+        return [p for p in clean if y_min <= p[1] <= y_max]
+
+    def _cross(p0: list[float], p1: list[float], yb: float) -> list[float] | None:
+        if (p0[1] - yb) * (p1[1] - yb) > 0 or p0[1] == p1[1]:
+            return None
+        t = ((math.log10(yb) - math.log10(p0[1])) / (math.log10(p1[1]) - math.log10(p0[1]))) if (log_y and p0[1] > 0 and p1[1] > 0 and yb > 0) else ((yb - p0[1]) / (p1[1] - p0[1]))
+        xv = 10.0 ** (math.log10(p0[0]) + t * (math.log10(p1[0]) - math.log10(p0[0]))) if (log_x and p0[0] > 0 and p1[0] > 0) else (p0[0] + t * (p1[0] - p0[0]))
+        return [round_coord(xv), round_coord(yb)]
+
+    out: list[list[float]] = []
+    for i, cur in enumerate(clean):
+        in_cur = y_min <= cur[1] <= y_max
+        if i > 0:
+            prv = clean[i - 1]
+            if (y_min <= prv[1] <= y_max) != in_cur:
+                cross_pts = [cp for yb in (y_min, y_max) if (cp := _cross(prv, cur, yb)) is not None]
+                cross_pts.sort(key=lambda pt: abs(pt[0] - prv[0]))
+                out.extend(cross_pts)
+        if in_cur:
+            out.append([round_coord(cur[0]), round_coord(cur[1])])
+    return out
+
+
+def build_corridor_band(pts: list[list[float]], s: dict[str, Any], y_min: float, y_max: float) -> list[list[float]]:
+    """Build [x, lo_y, hi_y] analytical uncertainty envelope band clamped to [y_min, y_max]."""
+    rel, abs_c = float(s.get("corridor_rel") or 0.0), float(s.get("corridor_abs") or 0.0)
+    if (rel == 0.0 and abs_c == 0.0) or not pts:
         return []
+    band: list[list[float]] = []
+    for xv, yv in pts:
+        hi_y = min(y_max, max(yv * (1.0 + rel), yv * (1.0 - rel)) + abs_c)
+        lo_y = max(y_min, min(yv * (1.0 + rel), yv * (1.0 - rel)) - abs_c)
+        if hi_y >= lo_y:
+            band.append([round_coord(xv), round_coord(lo_y), round_coord(hi_y)])
+    return band
+
+
+def compute_normalized_residuals(series: list[dict[str, Any]], log_x: bool = False, legend: list[dict[str, Any]] | None = None) -> list[tuple[float, float]]:
+    """Compute r_i = clamp((y_i - y_hat_i) / u_y, -2.8, 2.8) for discrete measurements."""
+    model_s = next((s for s in series if s.get("epistemic_type") == "analytical_model" and s.get("equation")), None)
+    meas_s = next((s for s in series if s.get("epistemic_type") == "discrete_measurement"), None)
+    if not meas_s or not (meas_s.get("data_points") or meas_s.get("points")):
+        return []
+    env_base = build_eq_env(legend, model_s)
+    eq_rhs = str((model_s or {}).get("equation") or "").split("=")[-1].strip()
     res_pts: list[tuple[float, float]] = []
-    for p in meas_s["data_points"]:
+    for p in (meas_s.get("data_points") or meas_s.get("points") or []):
         if p.get("x") is None or p.get("y") is None:
             continue
         xv, yv = float(p["x"]), float(p["y"])
-        if not (math.isfinite(xv) and math.isfinite(yv)) or (x_sc["is_log"] and xv <= 0.0):
+        if not (math.isfinite(xv) and math.isfinite(yv)) or (log_x and xv <= 0.0):
             continue
         raw_u = p.get("u_y")
         uv = abs(float(raw_u)) if (raw_u is not None and math.isfinite(float(raw_u)) and float(raw_u) != 0.0) else (abs(yv) * 0.05 or 1.0)
         if p.get("residual") is not None:
             rv = float(p["residual"])
-        elif model_eq:
+        elif eq_rhs:
+            env = dict(env_base)
+            for alias in ("x", "tau", "f", "t", "IMEP", "L", "N"):
+                env.setdefault(alias, xv)
+            env["x"] = xv
             try:
-                rv = (yv - eval_equation(model_eq, x=xv, tau=xv, f=xv)) / max(uv, 1e-30)
+                rv = (yv - eval_equation(eq_rhs, **env)) / max(uv, 1e-30)
             except (ValueError, ArithmeticError):
                 continue
         else:
             rv = 0.0
         if math.isfinite(rv):
             res_pts.append((xv, max(-2.8, min(2.8, rv))))
+    return res_pts
+
+
+def render_residual_strip(
+    series: list[dict[str, Any]],
+    x_sc: dict[str, Any],
+    box: tuple[float, float, float, float],
+    data_x: tuple[float, float],
+    legend: list[dict[str, Any]] | None = None,
+) -> list[str]:
+    """Render synchronized bottom residual strip r_i = (y_i - y_hat) / u_y."""
+    x0, ry0, pw, rh = box
+    dx0, dpw = data_x
+    res_pts = compute_normalized_residuals(series, log_x=bool(x_sc["is_log"]), legend=legend)
+    if not res_pts and not next((s for s in series if s.get("epistemic_type") == "discrete_measurement" and s.get("data_points")), None):
+        return []
 
     r_sc = {"min": -3.0, "max": 3.0, "is_log": False}
     y_top, y_bot, y_zero = proj_y(2.0, r_sc, ry0, rh), proj_y(-2.0, r_sc, ry0, rh), proj_y(0.0, r_sc, ry0, rh)

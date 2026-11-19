@@ -46,6 +46,16 @@ _VIEW_SLUG_PLAIN: dict[str, str] = {
     "v14-fieldbus-and-scope-debugger": "v14 · CAN-FD Fieldbus Debugger",
     "v15-collimated-flight-hud": "v15 · Collimated Flight HUD",
     "v16-transparent-window-overlay": "v16 · Smart-Glass Overlay Pod",
+    "v17-picture-frame-home-kiosk": "v17 · Picture-Frame Home Kiosk",
+    "v18-home-assistant-companion-console": "v18 · Home Assistant Companion Console",
+}
+
+_NAV_PLAIN: dict[str, str] = {
+    "N0": "immersive full-canvas view",
+    "N1": "minimal pill navigation",
+    "N2": "left rail navigation",
+    "N3": "hierarchical sidebar",
+    "N4": "compact action header",
 }
 
 _RUBRIC_PLAIN_RULES: tuple[tuple[str, str], ...] = (
@@ -80,6 +90,10 @@ _JSON_PATH_RE = re.compile(
 _ROW_STATUS_RE = re.compile(r"\(\s*_row_status\s*:\s*([a-z]+)\s*\)", re.I)
 _VIEW_SLUG_RE = re.compile(r"\bv\d{2}-[a-z0-9]+(?:-[a-z0-9]+)+\b")
 _TEMPO_CODE_RE = re.compile(r"\b(?:T2\s*/\s*T3|T1|T2|T3)\b")
+_RIGOR_CODE_RE = re.compile(r"\b(L[123])\b")
+_MEDIUM_CODE_RE = re.compile(r"\b(M[1-7])\b")
+_NAV_CODE_RE = re.compile(r"\b(N[0-4])\b")
+_HW_SLUG_RE = re.compile(r"\b(?:PANEL-MAIN-200A|EVSE-GARAGE-48A|LOCK-FRONT-01|GARAGE-BAY-01|ZONE-LIVING|ZONE-STUDY)\b")
 _LOWER_SNAKE_RE = re.compile(r"\b([a-z][a-z0-9]*(?:_[a-z0-9]+)+)\b")
 
 _UNIT_SUFFIXES: dict[str, str] = {
@@ -104,7 +118,7 @@ def humanize_identifier(raw: Any) -> str:
 
 
 def scrub_prose(text: Any) -> str:
-    """Convert internal markup, JSON filenames, tempo codes, view slugs, and rubric codes into plain English."""
+    """Convert internal markup, JSON filenames, tempo codes, view slugs, and taxonomy codes into plain English."""
     s = str(text or "").strip()
     if not s:
         return ""
@@ -117,6 +131,11 @@ def scrub_prose(text: Any) -> str:
     s = _JSON_PATH_RE.sub(lambda m: "supporting data specs" if "*" in m.group(1) else humanize_identifier(m.group(1)) + " spec", s)
     s = _VIEW_SLUG_RE.sub(lambda m: _VIEW_SLUG_PLAIN.get(m.group(0), m.group(0).replace("-", " ").title()), s)
     s = _TEMPO_CODE_RE.sub(lambda m: _TEMPO_PLAIN.get(re.sub(r"\s+", "", m.group(0)), m.group(0)), s)
+    s = _RIGOR_CODE_RE.sub(lambda m: _RIGOR_PLAIN.get(m.group(1), m.group(1)), s)
+    s = _MEDIUM_CODE_RE.sub(lambda m: _MEDIUM_PLAIN.get(m.group(1), m.group(1)), s)
+    s = _NAV_CODE_RE.sub(lambda m: _NAV_PLAIN.get(m.group(1), m.group(1)), s)
+    s = re.sub(r"\bBooktabs\b", "aligned ledger", s, flags=re.I)
+    s = _HW_SLUG_RE.sub(lambda m: {"PANEL-MAIN-200A": "Main Panel", "EVSE-GARAGE-48A": "Garage Charger", "LOCK-FRONT-01": "Front Door", "GARAGE-BAY-01": "Garage Door", "ZONE-LIVING": "Living Room", "ZONE-STUDY": "Study"}.get(m.group(0), m.group(0)), s)
     s = _RUBRIC_CODE_RE.sub("", s)
     s = re.sub(r"\s*\(\s*clear\s*\)", "", s, flags=re.I)
     s = re.sub(r"\(\s*[·,&/\s]*\)", "", s)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v8.0.1 Static + 17-Gate Headless Selenium CDP Verifier.
+"""Quiet UI v9.0 Static + 21-Gate Headless Selenium CDP Verifier.
 
 Usage:
   python3 -B skills/quiet-ui/scripts/verify_visual_contract.py [showcase_html] [--check-docs] [--live-url URL] [--cdp] [--screenshots-dir DIR]
@@ -102,7 +102,7 @@ def find_repo_root(start_dir: Path) -> Path:
 
 def parse_cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Quiet UI v8.0.1 Static + 17-Gate Headless Selenium CDP Verifier"
+        description="Quiet UI v9.0 Static + 21-Gate Headless Selenium CDP Verifier"
     )
     parser.add_argument(
         "showcase_html_path",
@@ -123,7 +123,7 @@ def parse_cli_args() -> argparse.Namespace:
     parser.add_argument(
         "--cdp",
         action="store_true",
-        help="Run live Headless Selenium CDP Gates 1-17 (starts local server if --live-url omitted)",
+        help="Run live Headless Selenium CDP Gates 1-21 (starts local server if --live-url omitted)",
     )
     parser.add_argument(
         "--screenshots-dir",
@@ -141,7 +141,7 @@ def main() -> None:
         showcase_path = (repo_root / showcase_path).resolve()
 
     print("================================================================================")
-    print("  Quiet UI v8.2.0 Visual Contract & 21-Gate Selenium CDP Verifier")
+    print("  Quiet UI v9.0 Visual Contract & 21-Gate Selenium CDP Verifier")
     print("================================================================================")
     print(f"Repo Root:      {repo_root}")
     print(f"Showcase HTML:  {showcase_path}")
@@ -176,11 +176,11 @@ def main() -> None:
             driver = create_headless_driver()
             print(f"  Running CDP Gates 1-13 against {target_url}...")
             all_errors.extend(run_selenium_gates_1_to_13(driver, target_url, args.screenshots_dir))
-            print(f"  Running CDP Gates 14-15 (Atlas & HUD) against {target_url}...")
+            print(f"  Running CDP Gates 14-15 (Components & HUD Optics) against {target_url}...")
             all_errors.extend(run_atlas_and_hud_gates(driver, target_url, args.screenshots_dir))
-            print(f"  Running CDP Gates 16-17 (Studio Bar & SVG Ceiling) against {target_url}...")
+            print(f"  Running CDP Gates 16-17 (Studio Bar & ECharts/SVG) against {target_url}...")
             all_errors.extend(run_studio_and_svg_gates(driver, target_url))
-            print(f"  Running CDP Gates 18-21 (Craftsmanship & Substance) against {target_url}...")
+            print(f"  Running CDP Gates 18-21 (6-Domain x 18-View Craft) against {target_url}...")
             all_errors.extend(run_flagship_craft_gates(driver, target_url, repo_root))
         except Exception as e:
             all_errors.append(f"[SELENIUM_EXECUTION_ERROR] {e}")
@@ -201,7 +201,7 @@ def main() -> None:
             print(f"  - {err}")
         sys.exit(1)
     else:
-        print("[PASS] 100% of Quiet UI v8.2 Visual Contract & 21 CDP Gates Succeeded!")
+        print("[PASS] 100% of Quiet UI v9.0 Visual Contract & 21 CDP Gates Succeeded!")
         sys.exit(0)
 
 

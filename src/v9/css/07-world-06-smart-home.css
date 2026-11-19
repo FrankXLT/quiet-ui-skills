@@ -189,8 +189,10 @@
   }
   .v18-filter-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
   .v18-filter-btn.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) :is(.v18-unit-btn.is-active, .v18-filter-btn.is-active) {
-    color: #090D16;
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) :is(.v18-unit-btn.is-active, .v18-filter-btn.is-active) {
+      color: #090D16;
+    }
   }
   @media (forced-colors: active) {
     :is(.v17-scene-btn, .v18-unit-btn, .v18-filter-btn).is-active {
@@ -241,12 +243,14 @@
   .v18-tone-emerald { background: rgba(16, 185, 129, 0.16); color: #047857; }
   .v18-tone-gold    { background: rgba(234, 179, 8, 0.16);  color: #A16207; }
   .v18-tone-sky     { background: rgba(14, 165, 233, 0.16); color: #0369A1; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-amber   { color: #FCD34D; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-teal    { color: #5EEAD4; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-indigo  { color: #A5B4FC; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-emerald { color: #6EE7B7; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-gold    { color: #FDE047; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-sky     { color: #7DD3FC; }
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-amber   { color: #FCD34D; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-teal    { color: #5EEAD4; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-indigo  { color: #A5B4FC; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-emerald { color: #6EE7B7; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-gold    { color: #FDE047; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v18-tone-sky     { color: #7DD3FC; }
+  }
 
   .v18-mush-body { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; }
   .v18-mush-name { font-size: var(--ts-sm); font-weight: 700; color: var(--text-primary); }

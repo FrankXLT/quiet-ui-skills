@@ -18,14 +18,15 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from verify_v9_gallery import capture_gate54_gallery, run_domain06_and_echarts_checks  # noqa: E402
-from verify_v9_helpers import STAGE_AUDIT_JS, capture_gate41_gallery, set_viewport  # noqa: E402
+from verify_v9_gallery import capture_gate41_gallery, capture_phase6_gallery, run_domain06_and_echarts_checks  # noqa: E402
+from verify_v9_helpers import STAGE_AUDIT_JS, set_viewport  # noqa: E402
 
 REPO_ROOT = SCRIPT_DIR.parent
-PILOT_HTML = REPO_ROOT / "docs" / "pilot" / "world-01-pilot.html"
+ROOT_SHOWCASE = REPO_ROOT / "quiet-ui-showcase.html"
+DOCS_INDEX = REPO_ROOT / "docs" / "index.html"
 UNIFIED_HTML = REPO_ROOT / "docs" / "v9" / "quiet-ui-v9-showcase.html"
-PERSONAL_V9 = REPO_ROOT / "customizations" / "personal-starter" / "showcase-v9.html"
-BRAND_V9 = REPO_ROOT / "customizations" / "brand-starter" / "showcase-v9.html"
+PERSONAL_V9 = REPO_ROOT / "customizations" / "personal-starter" / "showcase.html"
+BRAND_V9 = REPO_ROOT / "customizations" / "brand-starter" / "showcase.html"
 
 ALL_WORLDS_VIEWS: list[tuple[str, tuple[str, ...]]] = [
     ("01-clinical-icu-and-trials", ("v01-icu-bedside-terminal", "v02-trial-regulatory-brief", "v03-patient-recovery-companion")),
@@ -55,8 +56,8 @@ def _start_server() -> tuple[ThreadingHTTPServer, int]:
 
 def verify_static(all_worlds: bool = False) -> list[str]:
     errs: list[str] = []
-    if not PILOT_HTML.is_file():
-        return [f"[MISSING_PILOT] Run build_v9_showcase.py first: {PILOT_HTML}"]
+    if not ROOT_SHOWCASE.is_file():
+        return [f"[MISSING_ROOT] Run build_v9_showcase.py first: {ROOT_SHOWCASE}"]
     for p in sorted((REPO_ROOT / "src" / "v9").rglob("*")):
         if not p.is_file() or "__pycache__" in p.parts or p.suffix == ".pyc":
             continue
@@ -74,9 +75,9 @@ def verify_static(all_worlds: bool = False) -> list[str]:
         lines = len((REPO_ROOT / rel).read_text(encoding="utf-8").splitlines())
         if lines > 400:
             errs.append(f"[LINE_BUDGET] {rel} has {lines} lines > 400")
-    targets = [PILOT_HTML]
+    targets = [ROOT_SHOWCASE]
     if all_worlds:
-        targets.extend([UNIFIED_HTML, PERSONAL_V9, BRAND_V9])
+        targets.extend([DOCS_INDEX, UNIFIED_HTML, PERSONAL_V9, BRAND_V9])
     for html_p in targets:
         if not html_p.is_file():
             errs.append(f"[MISSING_HTML] Missing build artifact {html_p.relative_to(REPO_ROOT)}")
@@ -95,9 +96,9 @@ def verify_static(all_worlds: bool = False) -> list[str]:
 def _audit_stage(driver: Any, url: str, width: int, height: int, tag: str) -> list[str]:
     set_viewport(driver, width, height, 1)
     driver.get(url)
-    for _ in range(15):
-        time.sleep(0.08)
-        if driver.execute_script("const d=document.getElementById('va-stage-portal')?.contentDocument;const m=d?.getElementById('va-stage-main');return !!(m&&m.children.length&&[...d.querySelectorAll('img.v9-opt-photo')].every(i=>i.complete&&i.naturalWidth>0));"):
+    for _ in range(25):
+        time.sleep(0.06)
+        if driver.execute_script("const d=document.getElementById('va-stage-portal')?.contentDocument;const m=d?.getElementById('va-stage-main');return !!(m&&m.children.length&&[...d.querySelectorAll('img.v9-opt-photo, img.v17-art-photo.is-active')].every(i=>i.complete&&i.naturalWidth>0));"):
             break
     errs: list[str] = []
     bar_err = driver.execute_script(
@@ -253,7 +254,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
         errs.append("[STUDIO_MODE] Failed to return from Components to Examples")
 
     # Starters check
-    for rel, min_views in (("customizations/personal-starter/showcase-v9.html", 18), ("customizations/brand-starter/showcase-v9.html", 14)):
+    for rel, min_views in (("customizations/personal-starter/showcase.html", 18), ("customizations/brand-starter/showcase.html", 14)):
         driver.get(f"{root_url}/{rel}")
         time.sleep(0.35)
         cnt = driver.execute_script("const m=JSON.parse(document.getElementById('va-v9-manifest').textContent);return m.worlds.reduce((a,w)=>a+w.views.length,0);")
@@ -279,7 +280,7 @@ def _verify_phase5_edge_cases(driver: Any, base_url: str, root_url: str) -> list
         errs.append("[V12_PIN] v12 click-to-pin failed to activate/unpin sibling pedagogy cards")
 
     # 2. Starter dark/paper theme polarity isolation
-    for rel, th, max_lum in (("customizations/personal-starter/showcase-v9.html", "dark", 0.08), ("customizations/brand-starter/showcase-v9.html", "dark", 0.08), ("customizations/personal-starter/showcase-v9.html", "paper", 0.96)):
+    for rel, th, max_lum in (("customizations/personal-starter/showcase.html", "dark", 0.08), ("customizations/brand-starter/showcase.html", "dark", 0.08), ("customizations/personal-starter/showcase.html", "paper", 0.96)):
         driver.get(f"{root_url}/{rel}?theme={th}")
         time.sleep(0.35)
         driver.switch_to.frame("va-stage-portal")
@@ -340,7 +341,7 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
         opts.add_argument(arg)
     srv, port = _start_server()
     root_url = f"http://127.0.0.1:{port}"
-    base_url = f"{root_url}/docs/v9/quiet-ui-v9-showcase.html" if all_worlds else f"{root_url}/docs/pilot/world-01-pilot.html"
+    base_url = f"{root_url}/quiet-ui-showcase.html"
     worlds = ALL_WORLDS_VIEWS if all_worlds else ALL_WORLDS_VIEWS[:1]
     errs: list[str] = []
     driver = None
@@ -361,7 +362,7 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
             errs.extend(run_domain06_and_echarts_checks(driver, base_url, root_url))
         if screenshots_dir is not None:
             if all_worlds:
-                capture_gate54_gallery(driver, base_url, screenshots_dir)
+                capture_phase6_gallery(driver, base_url, screenshots_dir)
             else:
                 capture_gate41_gallery(driver, base_url, screenshots_dir)
     finally:
@@ -375,7 +376,7 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
 def main() -> int:
     parser = argparse.ArgumentParser(description="Quiet UI v9.0 Pilot & 6-World CDP Verifier")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome CDP matrix & behavioral gates")
-    parser.add_argument("--all-worlds", action="store_true", help="Verify all 6 Worlds x 18 Views on docs/v9/quiet-ui-v9-showcase.html")
+    parser.add_argument("--all-worlds", action="store_true", help="Verify all 6 Worlds x 18 Views on quiet-ui-showcase.html")
     parser.add_argument("--screenshots-dir", default=None, help="Directory to write Retina proof PNGs")
     args = parser.parse_args()
 

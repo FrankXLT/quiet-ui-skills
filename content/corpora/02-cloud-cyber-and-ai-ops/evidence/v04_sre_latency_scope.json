@@ -3,7 +3,7 @@
   "id": "w02-v04-sre-latency-scope",
   "metadata": {
     "title": "Edge API p99 Latency, Error-Budget Burn Rate & Canary Gate Scope",
-    "description": "Synchronized 3-channel L3 incident scope capturing a 420.0 ms p99 tail latency spike breaching the 250.0 ms SLO ceiling, 16.8 %/h error-budget burn rate, canary traffic isolation, and an explicit 12.0 s OTel scrape null dropout (44.0 s to 56.0 s).",
+    "description": "Synchronized 3-channel high-precision incident scope capturing a 420.0 ms p99 tail latency spike breaching the 250.0 ms SLO ceiling, 16.8 %/h error-budget burn rate, canary traffic isolation, and an explicit 12.0 s OTel scrape null dropout (44.0 s to 56.0 s).",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T04:15:00Z"
   },

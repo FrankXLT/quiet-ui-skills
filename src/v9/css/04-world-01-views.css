@@ -93,7 +93,9 @@
   .v01-zero-btn.is-verified { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--tint-indigo-bg); }
   .v01-arm-btn.is-armed { border-color: var(--status-warn); background: var(--status-warn-bg); color: var(--status-warn); }
   .v01-exec-btn { border-color: transparent; background: var(--status-warn); color: #FFFFFF; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn { color: #090D16; }
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn { color: #090D16; }
+  }
   .v01-exec-btn:disabled { opacity: 0.45; cursor: not-allowed; background: var(--border-hairline); color: var(--text-muted); }
 
   .v01-audit-box {
@@ -163,7 +165,9 @@
 
   .v02-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
   .v02-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v02-chip.is-active { color: #090D16; }
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v02-chip.is-active { color: #090D16; }
+  }
   .v02-filter-readout { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); padding: 0.35rem 0.6rem; background: var(--bg-elevated); border-radius: var(--radius-xs); }
 
   .v02-prose-col {
@@ -194,20 +198,6 @@
 
   @media screen {
     @container stage (780px <= width <= 1080px) {
-      :root:not([data-medium="m1"]) .v9-view-v02 .v9-masthead {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        column-gap: 2.25rem;
-        align-items: center;
-      }
-      :root:not([data-medium="m1"]) .v9-view-v02 .v9-masthead-eyebrow {
-        flex-wrap: wrap;
-        min-inline-size: 0;
-      }
-      :root:not([data-medium="m1"]) .v9-view-v02 .v9-masthead-title {
-        white-space: normal;
-        font-size: var(--ts-md);
-      }
       :root:not([data-medium="m1"]) .v02-book-spread {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

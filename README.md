@@ -16,10 +16,9 @@
 
 ## Quick Start & Installation
 
-- **v9.0 Multi-Domain Interactive Studio (`5 Domains · 16 Views`):** Open [`docs/v9/quiet-ui-v9-showcase.html`](docs/v9/quiet-ui-v9-showcase.html) locally (zero build step, zero external CDNs).
-- **Evidence Component Library (`21 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally to inspect every deterministic SVG compiler across all 4 surface themes.
-- **Classic 16-Tier Structural Showcase (`v8.2.0`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) ([`quiet-ui-showcase.html`](quiet-ui-showcase.html)).
-- **Deep-Link Any State:** Append `?mode=examples&domain=clinical&view=v01&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
+- **Live v9.0 Interactive Studio (`6 Domains · 18 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
+- **Evidence Component Library (`21 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to toggle `Quiet SVG | Live ECharts` and copy `Apache ECharts · Plotly · Matplotlib · Bokeh · Mermaid` configs.
+- **Deep-Link Any State:** Append `?mode=examples&domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
 
 ```bash
 # Install native Antigravity Plugin (~/.gemini/config/plugins/quiet-ui-skills)
@@ -38,12 +37,12 @@ npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-bridge
 
 ## Customize in 60 Seconds (`customizations/`)
 
-One manifest (`customizations/<name>/customization.json`) skins **both** your UI shells and your compiled SVG schematics simultaneously:
+One manifest (`customizations/<name>/customization.json`) skins **both** your UI shells and your compiled SVG/ECharts schematics simultaneously:
 
-| Starter Blueprint | Scope | Enabled Tiers | Optical Backplates | Target Use Cases |
+| Starter Blueprint | Scope | Enabled Views | Optical & Gallery Backplates | Target Use Cases |
 | :--- | :---: | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial | All 16 Tiers + v9 Preview | Apollo 8 Earthrise (`as08-14-2383`) | Personal research, telemetry consoles, optical viewport HUD, tactile control decks. |
-| **`brand-starter`** | Team & Product | 13 Tiers + v9 Preview | Omitted | Enterprise software products, SaaS dashboards, engineering docs & systems schematics. |
+| **`personal-starter`** | Personal & Spatial | All **18 Views** (6 Domains) | All 7 PD/CC0 & NASA photos | Personal research, telemetry consoles, Home Assistant walls, optical HUDs, maritime glass. |
+| **`brand-starter`** | Team & Product | **14 Views** (Domains 01–05) | Omitted | Enterprise software products, SaaS dashboards, engineering docs & systems schematics. |
 
 ```text
 I want to customize Quiet UI for [personal / brand] use in customizations/<my-name>/.
@@ -63,7 +62,7 @@ Please clone the starter, extract design tokens into customization.json, update 
 | What You Hand the Agent | Activated Pillar | What It Builds Deterministically |
 | :--- | :---: | :--- |
 | **Long-form monographs, RFCs, runbooks, fleet grids, planners, walls, or HUDs** | `quiet-ui` | Unboxed `72ch` sheets (`M1`), responsive editorial grids (`M2`), stateful apps (`M3`), POI terminals (`M4`), `>= 32px` wall displays (`M5`), `>= 65%` keep-out HUDs (`M6`), smoked-glass overlays (`M7`) |
-| **Waveforms, spectral/calibration plots, waterfalls, scalars, or Booktabs tables** | `quiet-evidence` | JSON-compiled `plot_compiler.py` (`1–2–5` ticks, `atan2` halo labels), `waveform_compiler.py`, `comparison_plots.py`, `scalar_and_table.py`, and `bitfield_compiler.py` |
+| **Waveforms, spectral/calibration plots, waterfalls, HA energy bars, or tables** | `quiet-evidence` | JSON-compiled `plot_compiler.py` (`1–2–5` ticks, residual strips), `echarts_adapter.py`, `waveform_compiler.py`, `comparison_plots.py`, `scalar_and_table.py`, and `bitfield_compiler.py` |
 | **Sequence flows, $N^2$ matrices, fault trees, P&IDs, buses, or ER schemas** | `quiet-evidence` | Clean-room open-standards SVG compilers: `sequence` (`ITU-T Z.120`), `n2_matrix` (`NASA SP-2016-6105`), `fault_tree` (`NRC NUREG-0492`), `pid`, `bus`, `pipeline`, `interlock`, `er_lineage` |
 | **Executive memos, lab reports, clinical handoffs, or multi-level explanations** | `quiet-bridge` | Audience vector selection (`L1` / `L2` / `L3`), dual-layer briefing + proof stage, and cross-artifact numerical conservation checks |
 
@@ -71,7 +70,7 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 ## 1. `quiet-ui`: The 16-Tier UI Continuum
 
-All 16 tiers default to **Pure White (`data-theme="white"`)** and switch live across **Warm Paper (`paper`)**, **Warm Sepia Dark (`dark-paper`)**, and **Carbon Dark (`dark`)**:
+All 16 tiers and all 18 domain views default to **Pure White (`data-theme="white"`)** and switch live across **Warm Paper (`paper`)**, **Warm Sepia Dark (`dark-paper`)**, and **Carbon Dark (`dark`)**:
 
 | # | Tier ID | Structural Archetype | Box Weight | Default Nav | Primary Use Cases |
 | :-: | :--- | :--- | :---: | :---: | :--- |
@@ -97,15 +96,15 @@ All 16 tiers default to **Pure White (`data-theme="white"`)** and switch live ac
 ## Verification Toolchain & Repository Layout
 
 ```bash
-# 1. Verify v8 Showcase + markdown CSS token parity & 3-pillar link integrity
-python3 -B skills/quiet-ui/scripts/verify_visual_contract.py quiet-ui-showcase.html --check-docs
+# 1. Verify v9 Visual Contract, markdown CSS token parity & 21 CDP Gates
+python3 -B skills/quiet-ui/scripts/verify_visual_contract.py quiet-ui-showcase.html --check-docs --cdp
 
 # 2. Verify Pillar 2 quantitative metrology & all 21 component specimens
-python3 -B skills/quiet-evidence/scripts/verify_evidence.py
+python3 -B skills/quiet-evidence/scripts/verify_evidence.py --cdp
 
-# 3. Verify 5-domain 16-view conservation ledgers & v9 showcase
+# 3. Verify 6-domain 18-view conservation ledgers & v9 studio matrix
 python3 -B scripts/verify_corpora.py
-python3 -B scripts/verify_v9_pilot.py
+python3 -B scripts/verify_v9_pilot.py --all-worlds --cdp
 
 # 4. Verify starter customizations & self-immutability lock
 python3 -B customizations/scripts/verify_customization.py customizations/personal-starter
@@ -115,17 +114,19 @@ python3 -B customizations/scripts/verify_customization.py customizations/brand-s
 ```text
 quiet-ui-skills/
 ├── plugin.json                                      # Native Antigravity plugin manifest (v9.0.0)
+├── quiet-ui-showcase.html                           # Unified 6-domain 18-view Quiet UI v9.0 Studio
 ├── assets/logo.svg                                  # High-contrast square plugin icon
 ├── LICENSE / NOTICE / TRADEMARKS.md                 # Apache 2.0 Core 3-Pillar + MIT Customizations & Output
-├── THIRD_PARTY_LICENSES.md                          # Clean-room zero third-party runtime dependency statement
+├── THIRD_PARTY_LICENSES.md                          # Clean-room zero third-party runtime & Apache ECharts license notice
 ├── install.sh                                       # 1-command plugin & 3-pillar cross-agent installer
 ├── tokens/quiet-ui-tokens.css                       # Standalone 4-theme CSS design tokens (MIT)
+├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
 ├── docs/bench/evidence-bench.html                   # 21-specimen deterministic Evidence Component Library
-├── docs/v9/quiet-ui-v9-showcase.html                # Unified 5-domain 16-view Quiet UI v9.0 Studio
-├── customizations/                                  # Personal & Brand starter kits (MIT)
+├── docs/v9/quiet-ui-v9-showcase.html                # Versioned v9.0 archive mirror
+├── customizations/                                  # Personal (18v) & Brand (14v) starter kits (MIT)
 └── skills/
     ├── quiet-ui/                                    # Pillar 1: 7 delivery mediums & N0–N4 responsive shells
-    ├── quiet-evidence/                              # Pillar 2: Calibrated plots, bitfields & open-standard schematics
+    ├── quiet-evidence/                              # Pillar 2: Calibrated plots, ECharts adapter & open schematics
     └── quiet-bridge/                                # Pillar 3: Audience translation & plain-English rationale
 ```
 

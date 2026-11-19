@@ -26,6 +26,16 @@
     return null;
   }
 
+  function getLayers() {
+    if (global.QuietEChartsLayers) return global.QuietEChartsLayers;
+    try {
+      if (global.parent && global.parent !== global && global.parent.QuietEChartsLayers) {
+        return global.parent.QuietEChartsLayers;
+      }
+    } catch (_err) {}
+    return null;
+  }
+
   function cssVar(doc, token, fallback) {
     try {
       var val = getComputedStyle(doc.documentElement).getPropertyValue(token).trim();
@@ -43,6 +53,7 @@
       bgSurface: cssVar(doc, '--bg-surface', '#FFFFFF'),
       bgElevated: cssVar(doc, '--bg-elevated', '#F8FAFC'),
       accentFocal: cssVar(doc, '--accent-focal', '#0369A1'),
+      statusOk: cssVar(doc, '--status-ok', '#15803D'),
       statusWarn: cssVar(doc, '--status-warn', '#B45309'),
       statusDanger: cssVar(doc, '--status-danger', '#B91C1C'),
     };
@@ -58,7 +69,7 @@
     var rawTok = seriesSpec && (seriesSpec.color || seriesSpec.token) ? (seriesSpec.color || seriesSpec.token) : PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
     if (rawTok.indexOf('var(') === 0) rawTok = rawTok.slice(4, -1).split(',')[0].trim();
     if (rawTok.indexOf('#') === 0) return rawTok;
-    if (rawTok === '--accent-focal' && idx > 0) rawTok = PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
+    if (!(seriesSpec && seriesSpec.colorExplicit) && rawTok === '--accent-focal' && idx > 0) rawTok = PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
     var fallback = tokens.accentFocal;
     if (rawTok === '--status-warn') fallback = tokens.statusWarn;
     else if (rawTok === '--status-danger') fallback = tokens.statusDanger;
@@ -74,13 +85,12 @@
     return 'circle';
   }
 
-  function makeWhiskerSeries(name, color, pts, opacity, logY) {
-    var coords = [];
-    for (var i = 0; i < pts.length; i += 1) {
-      var p = pts[i];
-      if (p[1] !== null && p[1] !== undefined && p[2] > 0) {
-        if (logY && p[1] <= 0) continue;
-        coords.push([p[0], logY ? Math.max(p[1] * 1e-6, p[1] - p[2]) : (p[1] - p[2]), p[1] + p[2]]);
+  function makeWhiskerSeries(name, color, pts, opacity, preMapped) {
+    var coords = preMapped ? pts : [];
+    if (!preMapped) {
+      for (var i = 0; i < pts.length; i += 1) {
+        var p = pts[i];
+        if (p[1] !== null && p[1] !== undefined && p[2] > 0) coords.push([p[0], p[1] - p[2], p[1] + p[2]]);
       }
     }
     if (!coords.length) return null;
@@ -91,48 +101,60 @@
       tooltip: { show: false },
       legendHoverLink: false,
       z: 3,
-      renderItem: function (_params, api) {
+      renderItem: function (params, api) {
         var xv = api.value(0);
         var low = api.coord([xv, api.value(1)]);
         var high = api.coord([xv, api.value(2)]);
         if (!low || !high || !Number.isFinite(low[0]) || !Number.isFinite(low[1]) || !Number.isFinite(high[0]) || !Number.isFinite(high[1])) return null;
-        return {
-          type: 'group',
-          children: [
-            { type: 'line', shape: { x1: low[0], y1: low[1], x2: high[0], y2: high[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
-            { type: 'line', shape: { x1: high[0] - 4, y1: high[1], x2: high[0] + 4, y2: high[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
-            { type: 'line', shape: { x1: low[0] - 4, y1: low[1], x2: low[0] + 4, y2: low[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
-          ],
-        };
+        var cs = params && params.coordSys;
+        var yTop = cs ? cs.y : -1e9, yBot = cs ? (cs.y + cs.height) : 1e9;
+        var yLo = Math.max(yTop, Math.min(yBot, low[1]));
+        var yHi = Math.max(yTop, Math.min(yBot, high[1]));
+        var ch = [
+          { type: 'line', shape: { x1: low[0], y1: yLo, x2: high[0], y2: yHi }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
+        ];
+        if (high[1] >= yTop - 1 && high[1] <= yBot + 1) ch.push({ type: 'line', shape: { x1: high[0] - 4, y1: yHi, x2: high[0] + 4, y2: yHi }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } });
+        if (low[1] >= yTop - 1 && low[1] <= yBot + 1) ch.push({ type: 'line', shape: { x1: low[0] - 4, y1: yLo, x2: low[0] + 4, y2: yLo }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } });
+        return { type: 'group', children: ch };
       },
       data: coords,
     };
   }
 
   function buildEnvelopes(doc, payload, t) {
-    return (payload.envelopes || []).map(function (env) {
+    var items = [];
+    (payload.envelopes || []).forEach(function (env) {
+      if (typeof env.value !== 'number' || !Number.isFinite(env.value)) return;
       var col = cssVar(doc, env.token || '--status-warn', env.type === 'abort' ? t.statusDanger : t.statusWarn);
-      return {
+      items.push({
         name: env.label || String(env.value),
         yAxis: env.value,
         lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
         label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 10.5, fontWeight: 600 },
-      };
+      });
     });
+    return items;
   }
 
-  function buildCartesianOption(doc, payload, activeTerm) {
+  function buildCartesianOption(doc, rawPayload, activeTerm) {
     var t = readTokens(doc);
+    var layers = getLayers();
+    var payload = (layers && layers.mapCartesianPayload) ? layers.mapCartesianPayload(rawPayload) : rawPayload;
     var xMeta = payload.x || {};
     var yMeta = payload.y || {};
     var series = [];
     var envData = buildEnvelopes(doc, payload, t);
+    var showWhiskers = payload.rigor !== 'L1';
 
     (payload.series || []).forEach(function (sr, idx) {
       var col = resolveSeriesColor(doc, sr, idx, t);
       var dimmed = activeTerm && sr.term && sr.term !== activeTerm;
       var opacity = dimmed ? 0.22 : 1.0;
       if (sr.epistemic === 'analytical_model') {
+        if (sr.corridor && layers) {
+          var band = layers.makeCorridorSeries(sr, col, opacity, 0);
+          if (band) series.push(band);
+        }
         series.push({
           id: sr.id || 'model-' + idx,
           name: sr.name || 'Model',
@@ -145,46 +167,72 @@
           z: 2,
         });
       } else {
-        series.push({
+        var isConn = sr.connectPiecewise !== undefined ? !!sr.connectPiecewise : !!sr.connect;
+        var ptsData = (sr.data || []).map(function (p) { return p.length >= 4 ? [p[0], p[1], p[2], p[3]] : [p[0], p[1]]; });
+        var baseMeas = {
           id: sr.id || 'meas-' + idx,
           name: sr.name || 'Measurement',
-          type: 'line',
-          connectNulls: false,
-          showSymbol: true,
+          type: isConn ? 'line' : 'scatter',
+          encode: { x: 0, y: 1 },
           symbol: mapSymbol(sr.symbol),
-          symbolSize: 6.5,
-          smooth: false,
-          data: (sr.data || []).map(function (p) { return [p[0], p[1]]; }),
-          lineStyle: { color: col, width: sr.connect === false ? 0 : (dimmed ? 1.5 : 2.1), opacity: opacity },
+          symbolSize: isConn ? 6.5 : 7.5,
+          data: ptsData,
           itemStyle: { color: col, opacity: opacity },
           z: 4,
-        });
-        var whisker = makeWhiskerSeries(sr.name || 'meas', col, sr.data || [], opacity, !!yMeta.log);
-        if (whisker) series.push(whisker);
+        };
+        if (isConn) {
+          baseMeas.connectNulls = false;
+          baseMeas.showSymbol = true;
+          baseMeas.smooth = false;
+          baseMeas.lineStyle = { color: col, width: dimmed ? 1.5 : 2.1, opacity: opacity };
+        }
+        series.push(baseMeas);
+        if (showWhiskers) {
+          var whisker = sr.whiskers ? makeWhiskerSeries(sr.name || 'meas', col, sr.whiskers, opacity, true) : makeWhiskerSeries(sr.name || 'meas', col, sr.data || [], opacity, false);
+          if (whisker) series.push(whisker);
+        }
       }
     });
 
-    if (series.length && envData.length) series[0].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
-    return {
+    if (layers) series = series.concat(layers.makeSlopedEnvelopes(payload, t, cssVar, doc, 0));
+    if (envData.length) {
+      for (var m = 0; m < series.length; m += 1) {
+        if (series[m].type === 'line' || series[m].type === 'scatter') {
+          series[m].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
+          break;
+        }
+      }
+    }
+    var xAxisBase = {
+      type: xMeta.log ? 'log' : 'value',
+      min: (xMeta.log && xMeta.min <= 0) || !Number.isFinite(xMeta.min) ? undefined : xMeta.min,
+      max: (xMeta.log && xMeta.max <= 0) || !Number.isFinite(xMeta.max) ? undefined : xMeta.max,
+      interval: !xMeta.log && Number.isFinite(xMeta.interval) ? xMeta.interval : undefined,
+      name: xMeta.name || 'x',
+      nameLocation: 'middle',
+      nameGap: 28,
+      nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
+      axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
+      axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: (xMeta.logMapped && layers) ? layers.fmtLogDecade : (xMeta.log ? undefined : fmtLinearTick) },
+      splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
+    };
+    var opt = {
       animation: false,
       backgroundColor: 'transparent',
       textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
-      tooltip: { trigger: 'axis', renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, borderWidth: 1, textStyle: { color: t.textPrimary, fontSize: 12 } },
-      legend: { top: 2, left: 64, right: 16, itemWidth: 16, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
-      grid: { left: 66, right: 24, top: 44, bottom: 52, containLabel: true },
-      xAxis: {
-        type: xMeta.log ? 'log' : 'value',
-        min: (xMeta.log && xMeta.min <= 0) || !Number.isFinite(xMeta.min) ? undefined : xMeta.min,
-        max: (xMeta.log && xMeta.max <= 0) || !Number.isFinite(xMeta.max) ? undefined : xMeta.max,
-        interval: !xMeta.log && Number.isFinite(xMeta.interval) ? xMeta.interval : undefined,
-        name: xMeta.name || 'x',
-        nameLocation: 'middle',
-        nameGap: 28,
-        nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
-        axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: xMeta.log ? undefined : fmtLinearTick },
-        splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
+      tooltip: {
+        trigger: 'axis',
+        renderMode: 'richText',
+        confine: true,
+        backgroundColor: t.bgElevated,
+        borderColor: t.borderStrong,
+        borderWidth: 1,
+        textStyle: { color: t.textPrimary, fontSize: 12 },
+        valueFormatter: yMeta.logMapped ? function (v) { return typeof v === 'number' && Number.isFinite(v) ? Math.pow(10, v).toExponential(2) : ''; } : undefined,
       },
+      legend: { top: 2, left: 64, right: 16, itemWidth: 16, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
+      grid: { left: (yMeta.log || yMeta.logMapped) ? 72 : 66, right: 24, top: 44, bottom: 52, containLabel: true },
+      xAxis: xAxisBase,
       yAxis: {
         type: yMeta.log ? 'log' : 'value',
         min: (yMeta.log && yMeta.min <= 0) || !Number.isFinite(yMeta.min) ? undefined : yMeta.min,
@@ -192,92 +240,33 @@
         interval: !yMeta.log && Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
         name: yMeta.name || 'y',
         nameLocation: 'middle',
-        nameGap: 44,
+        nameGap: (yMeta.log || yMeta.logMapped) ? 52 : 44,
         nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
         axisLine: { lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: yMeta.log ? undefined : fmtLinearTick },
+        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: (yMeta.logMapped && layers) ? layers.fmtLogDecade : (yMeta.log ? undefined : fmtLinearTick) },
         splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
       },
       series: series,
     };
+    return (payload.residuals && layers) ? layers.attachResidualStrip(opt, payload, t, xAxisBase) : opt;
   }
 
   function buildWaterfallOption(doc, payload) {
     var t = readTokens(doc);
-    var yMeta = payload.y || {};
-    return {
-      animation: false,
-      backgroundColor: 'transparent',
-      textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
-      tooltip: { trigger: 'axis', renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, textStyle: { color: t.textPrimary, fontSize: 12 } },
-      legend: { top: 2, left: 64, textStyle: { color: t.textSecondary, fontSize: 11 }, data: ['Increase', 'Reduction / Cost'] },
-      grid: { left: 66, right: 22, top: 42, bottom: 54, containLabel: true },
-      xAxis: { type: 'category', data: payload.categories || [], axisLine: { onZero: false, lineStyle: { color: t.textSecondary } }, axisLabel: { color: t.textSecondary, fontSize: 11, interval: 0, hideOverlap: true } },
-      yAxis: {
-        type: 'value',
-        min: Number.isFinite(yMeta.min) ? yMeta.min : undefined,
-        max: Number.isFinite(yMeta.max) ? yMeta.max : undefined,
-        interval: Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
-        name: yMeta.name || payload.yName || 'Value',
-        nameLocation: 'middle',
-        nameGap: 44,
-        nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
-        axisLine: { lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: fmtLinearTick },
-        splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
-      },
-      series: [
-        { name: 'Base', type: 'bar', stack: 'wf', silent: true, itemStyle: { color: 'transparent' }, data: payload.bases || [] },
-        { name: 'Increase', type: 'bar', stack: 'wf', itemStyle: { color: t.accentFocal }, data: payload.positive || [] },
-        { name: 'Reduction / Cost', type: 'bar', stack: 'wf', itemStyle: { color: t.statusWarn }, data: payload.negative || [] },
-      ],
-    };
+    var layers = getLayers();
+    if (layers && typeof layers.buildWaterfallOption === 'function') {
+      return layers.buildWaterfallOption(doc, payload, t, buildEnvelopes(doc, payload, t));
+    }
+    return { animation: false, backgroundColor: 'transparent', series: [] };
   }
 
   function buildStackedBarOption(doc, payload) {
     var t = readTokens(doc);
-    var yMeta = payload.y || {};
-    var envData = buildEnvelopes(doc, payload, t);
-    var series = (payload.series || []).map(function (sr, idx) {
-      var col = resolveSeriesColor(doc, sr, idx, t);
-      if (sr.seriesType === 'line') {
-        return { id: sr.id, name: sr.name, type: 'line', showSymbol: false, symbol: 'circle', symbolSize: 5, smooth: false, data: sr.data || [], lineStyle: { color: col, width: 2.2 }, itemStyle: { color: col }, z: 5 };
-      }
-      return { id: sr.id, name: sr.name, type: 'bar', stack: sr.stack || 'energy', barMaxWidth: 20, itemStyle: { color: col, borderRadius: [1.5, 1.5, 1.5, 1.5] }, data: sr.data || [], z: 3 };
-    });
-    if (series.length && envData.length) series[0].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
-    return {
-      animation: false,
-      backgroundColor: 'transparent',
-      textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
-      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, borderWidth: 1, textStyle: { color: t.textPrimary, fontSize: 12 } },
-      legend: { top: 2, left: 48, right: 12, itemWidth: 14, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
-      grid: { left: 56, right: 20, top: 48, bottom: 48, containLabel: true },
-      xAxis: {
-        type: 'category',
-        data: payload.categories || [],
-        name: (payload.x || {}).name || 'Hour of Day',
-        nameLocation: 'middle',
-        nameGap: 26,
-        nameTextStyle: { color: t.textSecondary, fontSize: 11, fontWeight: 600 },
-        axisLine: { onZero: true, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, interval: function (i) { return i % 4 === 0; } },
-      },
-      yAxis: {
-        type: 'value',
-        min: Number.isFinite(yMeta.min) ? yMeta.min : undefined,
-        max: Number.isFinite(yMeta.max) ? yMeta.max : undefined,
-        interval: Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
-        name: yMeta.name || 'Power (kW)',
-        nameLocation: 'middle',
-        nameGap: 40,
-        nameTextStyle: { color: t.textSecondary, fontSize: 11, fontWeight: 600 },
-        axisLine: { lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: fmtLinearTick },
-        splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
-      },
-      series: series,
-    };
+    var layers = getLayers();
+    if (layers && typeof layers.buildStackedBarOption === 'function') {
+      return layers.buildStackedBarOption(doc, payload, t, buildEnvelopes(doc, payload, t), resolveSeriesColor);
+    }
+    return { animation: false, backgroundColor: 'transparent', series: [] };
   }
 
   function shouldEnableECharts(doc, wrap) {
@@ -310,7 +299,10 @@
     try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
     var w = Math.max(300, Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8));
-    var h = Math.round(w < 500 ? 255 : Math.min(340, Math.max(255, w * 0.44)));
+    var hasRes = !!(payload.residuals && Array.isArray(payload.residuals.points) && payload.residuals.points.length);
+    var h = hasRes
+      ? Math.round(w < 500 ? 335 : Math.min(410, Math.max(365, w * 0.54)))
+      : Math.round(w < 500 ? 255 : Math.min(340, Math.max(255, w * 0.44)));
     host.style.width = w + 'px';
     host.style.height = h + 'px';
     var inst = lib.getInstanceByDom(host) || lib.init(host, null, { renderer: 'svg', width: w, height: h });
@@ -392,7 +384,12 @@
         var termBtn = ev.target && ev.target.closest ? ev.target.closest('[data-term]') : null;
         if (termBtn) {
           var term = termBtn.dataset.term || '';
-          doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { w.dataset.activeTerm = w.dataset.activeTerm === term ? '' : term; });
+          var scopeEl = termBtn.closest('.qe-figure, .v9-stage-inner') || doc;
+          var wraps = scopeEl.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]');
+          wraps.forEach(function (w) {
+            if (term && scopeEl === doc && w.dataset.quietEcharts.indexOf('"' + term + '"') < 0) return;
+            w.dataset.activeTerm = w.dataset.activeTerm === term ? '' : term;
+          });
           boot(doc);
         }
       });

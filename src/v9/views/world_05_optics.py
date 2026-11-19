@@ -20,13 +20,13 @@ def _v15_reticle_svg(bte: float) -> str:
         for d2 in range(140, 205, 5)
     )
     spd_ticks = "".join(
-        f'<line x1="{122 if spd % 10 == 0 else 128}" y1="{345 - (spd - 138) * 6}" x2="136" y2="{345 - (spd - 138) * 6}" stroke-width="1.6"/>'
-        + (f'<text x="115" y="{350 - (spd - 138) * 6}" text-anchor="end" font-size="13">{spd}</text>' if spd % 10 == 0 and abs((spd - 138) * 6) >= 28 else "")
+        f'<line x1="{122 if spd % 10 == 0 else 128}" y1="{360 - (spd - 138) * 6}" x2="136" y2="{360 - (spd - 138) * 6}" stroke-width="1.6"/>'
+        + (f'<text x="115" y="{365 - (spd - 138) * 6}" text-anchor="end" font-size="13">{spd}</text>' if spd % 10 == 0 and abs((spd - 138) * 6) >= 28 else "")
         for spd in range(110, 170, 5)
     )
     alt_ticks = "".join(
-        f'<line x1="1064" y1="{345 - round((alt - 1180) * 0.85)}" x2="{1078 if alt % 100 == 0 else 1072}" y2="{345 - round((alt - 1180) * 0.85)}" stroke-width="1.6"/>'
-        + (f'<text x="1084" y="{350 - round((alt - 1180) * 0.85)}" text-anchor="start" font-size="13">{alt:,}</text>' if alt % 100 == 0 and abs(round((alt - 1180) * 0.85)) >= 28 else "")
+        f'<line x1="1064" y1="{360 - round((alt - 1180) * 0.85)}" x2="{1078 if alt % 100 == 0 else 1072}" y2="{360 - round((alt - 1180) * 0.85)}" stroke-width="1.6"/>'
+        + (f'<text x="1084" y="{365 - round((alt - 1180) * 0.85)}" text-anchor="start" font-size="13">{alt:,}</text>' if alt % 100 == 0 and abs(round((alt - 1180) * 0.85)) >= 28 else "")
         for alt in range(1000, 1450, 50)
     )
     ils_loc_dots = "".join(
@@ -35,7 +35,7 @@ def _v15_reticle_svg(bte: float) -> str:
     )
     ils_gs_dots = "".join(
         f'<circle cx="770" cy="{y}" r="2.2" fill="none" stroke-width="1.5"/>'
-        for y in (280, 315, 350, 385, 420)
+        for y in (290, 325, 360, 395, 430)
     )
     return f"""<svg class="v15-reticle-layer" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="MIL-STD-1787B Collimated Optical Flight Symbology">
       <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -54,53 +54,53 @@ def _v15_reticle_svg(bte: float) -> str:
         <line x1="464" y1="121" x2="457" y2="111" stroke-width="1.6"/>
         <line x1="736" y1="121" x2="743" y2="111" stroke-width="1.6"/>
 
-        <text id="v15-hud-spd-unit" x="136" y="136" text-anchor="end" font-size="12">KT IAS</text>
-        <line x1="136" y1="150" x2="136" y2="540" stroke-width="2"/>
+        <text id="v15-hud-spd-unit" x="136" y="146" text-anchor="end" font-size="12">KT IAS</text>
+        <line x1="136" y1="160" x2="136" y2="560" stroke-width="2"/>
         <g id="v15-spd-ticks">{spd_ticks}</g>
-        <path d="M136 297 L146 291 L146 303 Z" fill="none" stroke-width="1.8"/>
-        <path d="M42 325 L126 325 L140 345 L126 365 L42 365 Z" fill="none" stroke-width="2.2"/>
-        <text id="v15-hud-spd-val" x="90" y="352" text-anchor="middle" font-size="19">138</text>
-        <text id="v15-hud-spd-sub" x="44" y="576" text-anchor="start" font-size="13">GS 144 KT</text>
-        <text id="v15-hud-prop-line" x="44" y="616" text-anchor="start" font-size="14" data-bte="{bte:.1f}">PROP BTE {bte:.1f}% · IMEP 14.0 BAR</text>
+        <path d="M136 312 L146 306 L146 318 Z" fill="none" stroke-width="1.8"/>
+        <path d="M42 340 L126 340 L140 360 L126 380 L42 380 Z" fill="none" stroke-width="2.2"/>
+        <text id="v15-hud-spd-val" x="90" y="367" text-anchor="middle" font-size="19">138</text>
+        <text id="v15-hud-spd-sub" x="44" y="590" text-anchor="start" font-size="13">GS 144 KT</text>
+        <text id="v15-hud-prop-line" x="44" y="624" text-anchor="start" font-size="14" data-bte="{bte:.1f}">PROP BTE {bte:.1f}% · IMEP 14.0 BAR</text>
 
-        <text id="v15-hud-alt-unit" x="1064" y="136" text-anchor="start" font-size="12">FT MSL</text>
-        <line x1="1064" y1="150" x2="1064" y2="540" stroke-width="2"/>
+        <text id="v15-hud-alt-unit" x="1064" y="146" text-anchor="start" font-size="12">FT MSL</text>
+        <line x1="1064" y1="160" x2="1064" y2="560" stroke-width="2"/>
         <g id="v15-alt-ticks">{alt_ticks}</g>
-        <path d="M1060 345 L1074 325 L1162 325 L1162 365 L1074 365 Z" fill="none" stroke-width="2.2"/>
-        <text id="v15-hud-alt-val" x="1116" y="352" text-anchor="middle" font-size="18">1,180</text>
-        <text id="v15-hud-rad-line" x="1158" y="554" text-anchor="end" font-size="13">640 FT AGL · 3.0° GS</text>
-        <text id="v15-hud-vs-line" x="1158" y="576" text-anchor="end" font-size="13">VS -650 FPM</text>
-        <text id="v15-hud-baro-line" x="1158" y="598" text-anchor="end" font-size="13">29.92 IN</text>
+        <path d="M1060 360 L1074 340 L1162 340 L1162 380 L1074 380 Z" fill="none" stroke-width="2.2"/>
+        <text id="v15-hud-alt-val" x="1116" y="367" text-anchor="middle" font-size="18">1,180</text>
+        <text id="v15-hud-rad-line" x="1158" y="572" text-anchor="end" font-size="13">640 FT AGL · 3.0° GS</text>
+        <text id="v15-hud-vs-line" x="1158" y="594" text-anchor="end" font-size="13">VS -650 FPM</text>
+        <text id="v15-hud-baro-line" x="1158" y="616" text-anchor="end" font-size="13">29.92 IN</text>
 
-        <line x1="395" y1="350" x2="532" y2="350" stroke-width="1.8" opacity="0.86"/>
-        <line x1="668" y1="350" x2="805" y2="350" stroke-width="1.8" opacity="0.86"/>
-        <path d="M572 314 L586 314 L593 323 L600 314 L607 323 L614 314 L628 314" fill="none" stroke-width="2.2"/>
+        <line x1="395" y1="360" x2="532" y2="360" stroke-width="1.8" opacity="0.86"/>
+        <line x1="668" y1="360" x2="805" y2="360" stroke-width="1.8" opacity="0.86"/>
+        <path d="M572 324 L586 324 L593 333 L600 324 L607 333 L614 324 L628 324" fill="none" stroke-width="2.2"/>
 
-        <path d="M484 180 v-12 h64 M652 168 h64 v12" fill="none" stroke-width="2"/>
-        <text x="476" y="173" text-anchor="end" font-size="13">+10</text>
-        <text x="724" y="173" text-anchor="start" font-size="13">+10</text>
-        <path d="M484 271 v-12 h64 M652 259 h64 v12" fill="none" stroke-width="2"/>
-        <text x="476" y="264" text-anchor="end" font-size="13">+5</text>
-        <text x="724" y="264" text-anchor="start" font-size="13">+5</text>
+        <path d="M484 190 v-12 h64 M652 178 h64 v12" fill="none" stroke-width="2"/>
+        <text x="476" y="183" text-anchor="end" font-size="13">+10</text>
+        <text x="724" y="183" text-anchor="start" font-size="13">+10</text>
+        <path d="M484 281 v-12 h64 M652 269 h64 v12" fill="none" stroke-width="2"/>
+        <text x="476" y="274" text-anchor="end" font-size="13">+5</text>
+        <text x="724" y="274" text-anchor="start" font-size="13">+5</text>
 
-        <path d="M484 429 v12 h64 M652 441 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
-        <text x="476" y="446" text-anchor="end" font-size="13">-5</text>
-        <text x="724" y="446" text-anchor="start" font-size="13">-5</text>
-        <path d="M484 520 v12 h64 M652 532 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
-        <text x="476" y="537" text-anchor="end" font-size="13">-10</text>
-        <text x="724" y="537" text-anchor="start" font-size="13">-10</text>
+        <path d="M484 439 v12 h64 M652 451 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
+        <text x="476" y="456" text-anchor="end" font-size="13">-5</text>
+        <text x="724" y="456" text-anchor="start" font-size="13">-5</text>
+        <path d="M484 530 v12 h64 M652 542 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
+        <text x="476" y="547" text-anchor="end" font-size="13">-10</text>
+        <text x="724" y="547" text-anchor="start" font-size="13">-10</text>
 
         <g id="v15-hud-fpm" transform="translate(0,0)">
-          <circle cx="600" cy="395" r="11" fill="none" stroke-width="2.2"/>
-          <path d="M568 395 H589 M611 395 H632 M600 384 V371" fill="none" stroke-width="2.2"/>
+          <circle cx="600" cy="410" r="11" fill="none" stroke-width="2.2"/>
+          <path d="M568 410 H589 M611 410 H632 M600 399 V386" fill="none" stroke-width="2.2"/>
         </g>
         <g id="v15-hud-ils-scale" opacity="0">
           {ils_loc_dots}
           <polygon points="606,551 614,560 606,569 598,560" fill="none" stroke-width="1.8"/>
           {ils_gs_dots}
-          <polygon points="770,347 779,355 770,363 761,355" fill="none" stroke-width="1.8"/>
+          <polygon points="770,357 779,365 770,373 761,365" fill="none" stroke-width="1.8"/>
           <text x="684" y="564" text-anchor="start" font-size="11">LOC</text>
-          <text x="770" y="268" text-anchor="middle" font-size="11">GS</text>
+          <text x="770" y="278" text-anchor="middle" font-size="11">GS</text>
         </g>
       </g>
     </svg>"""

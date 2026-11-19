@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:waveform",
     "id": "bench-m5-l1-day-arc",
     "metadata": {
-      "title": "M5-L1: 24-Hour Substation BESS Dispatch & Calibration Duty Arc",
-      "description": "L1 Orientation 24-hour grid battery energy storage operational duty-cycle timeline highlighting off-peak charge, frequency regulation, and peak shaving.",
+      "title": "24-Hour Substation BESS Dispatch & Calibration Duty Arc",
+      "description": "Orientation 24-hour grid battery energy storage operational duty-cycle timeline highlighting off-peak charge, frequency regulation, and peak shaving.",
       "rigor_level": "L1",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -25,8 +25,8 @@
     "$schema": "urn:quiet-ui:schema:v9:waveform",
     "id": "bench-m5-l2-sequence-interlock",
     "metadata": {
-      "title": "M5-L2: Recovered v7.1 4-Lifeline Optical Cutover Interlock Sequence",
-      "description": "L2 Governance protocol handshake sequence across Operator CLI, DWDM Grandmaster, Sector-7 FPGA, and OCXO Flywheel.",
+      "title": "Recovered v7.1 4-Lifeline Optical Cutover Interlock Sequence",
+      "description": "Governance protocol handshake sequence across Operator CLI, DWDM Grandmaster, Sector-7 FPGA, and OCXO Flywheel.",
       "rigor_level": "L2",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -48,8 +48,8 @@
     "$schema": "urn:quiet-ui:schema:v9:waveform",
     "id": "bench-m5-l3-hil-manchester-scope",
     "metadata": {
-      "title": "M5-L3: Multi-Channel HIL Oscilloscope & MIL-STD-1553B Manchester II Dropout Scope",
-      "description": "L3 Physical synchronized multi-channel scope showing optical phase ringing, BCJR LLR drop, and true <path> discontinuity across a 3.5 us telemetry dropout.",
+      "title": "Multi-Channel HIL Oscilloscope & MIL-STD-1553B Manchester II Dropout Scope",
+      "description": "Physical synchronized multi-channel scope showing optical phase ringing, BCJR LLR drop, and true <path> discontinuity across a 3.5 us telemetry dropout.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },

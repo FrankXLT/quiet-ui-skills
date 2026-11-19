@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:scalar",
     "id": "bench-m1-l1-fleet-kpi",
     "metadata": {
-      "title": "M1-L1: Clinical ICU Arterial Pressure (MAP) Orientation",
-      "description": "L1 Orientation clinical scalar readout with trend sparkline and non-color-only FDA IEC 62366 status state.",
+      "title": "Clinical ICU Arterial Pressure (MAP) Orientation",
+      "description": "Orientation clinical scalar readout with trend sparkline and non-color-only FDA IEC 62366 status state.",
       "rigor_level": "L1",
       "timestamp_utc": "2026-11-16T21:15:00Z",
       "subsystem": "ICU-BED-04-HEMO"
@@ -18,8 +18,8 @@
     "$schema": "urn:quiet-ui:schema:v9:scalar",
     "id": "bench-m1-l2-link-margin",
     "metadata": {
-      "title": "M1-L2: DWDM Incident Optical Drive Margin",
-      "description": "L2 Governance readout tracking contract target corridor and warning envelope margin.",
+      "title": "DWDM Incident Optical Drive Margin",
+      "description": "Governance readout tracking contract target corridor and warning envelope margin.",
       "rigor_level": "L2",
       "timestamp_utc": "2026-11-16T21:15:00Z",
       "subsystem": "DWDM-GOVERNANCE"
@@ -39,8 +39,8 @@
     "$schema": "urn:quiet-ui:schema:v9:scalar",
     "id": "bench-m1-l3-nasa-cmd-act",
     "metadata": {
-      "title": "M1-L3: NASA-STD-3001 Dual-Marker CMD vs ACT Dewar & Stale Sensor Array",
-      "description": "L3 Physical readout pairing CMD vs ACT markers, NIST expanded uncertainty (k=2), sensor calibration provenance, and an active STALE DATA excursion.",
+      "title": "NASA-STD-3001 Dual-Marker CMD vs ACT Dewar & Stale Sensor Array",
+      "description": "Physical readout pairing CMD vs ACT markers, NIST expanded uncertainty (k=2), sensor calibration provenance, and an active STALE DATA excursion.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z",
       "subsystem": "CRYO-METROLOGY-BUS"

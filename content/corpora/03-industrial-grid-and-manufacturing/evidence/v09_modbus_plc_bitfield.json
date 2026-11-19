@@ -4,7 +4,7 @@
   "metadata": {
     "title": "16-Bit Modbus Holding Register 0x0104 (PLC_BREAKER_INTERLOCK_WORD)",
     "mnemonic": "PLC_BREAKER_INTERLOCK_WORD",
-    "description": "L3 16-bit Modbus RTU PLC safety interlock register governing microgrid POI breaker 52-M, LOTO disconnect status, and guarded islanding arm state.",
+    "description": "16-bit Modbus RTU PLC safety interlock register governing microgrid POI breaker 52-M, LOTO disconnect status, and guarded islanding arm state.",
     "rigor_level": "L3",
     "address_offset": "0x0104",
     "register_width_bits": 16,

@@ -39,7 +39,7 @@ def _is_excluded_from_budget(rel_path: str) -> bool:
     if rel_path in EXCLUDED_LINE_BUDGET_EXACT:
         return True
     parts = rel_path.split("/")
-    return len(parts) >= 3 and parts[0] == "customizations" and parts[-1] in {"showcase.html", "showcase-v9.html"}
+    return len(parts) >= 3 and parts[0] == "customizations" and parts[-1] == "showcase.html"
 
 
 def verify_line_counts(repo_root: Path) -> list[str]:
@@ -49,7 +49,7 @@ def verify_line_counts(repo_root: Path) -> list[str]:
     - skills/**/references/*.md: <= 450 lines (migration stubs)
     - skills/**/*.md (sub-documents): 120-450 lines (substance band)
     - src/tiers/*.html: <= 550 lines (target 260-550L)
-    - code/css/js/scripts: <= 350 lines
+    - code/css/js/scripts: <= 450 lines
     """
     violations: list[str] = []
     for p in repo_root.rglob("*"):
@@ -121,7 +121,7 @@ def verify_zero_important(repo_root: Path) -> list[str]:
 
 
 def verify_token_mirror_parity(repo_root: Path) -> list[str]:
-    """Gate 1 Static: SHA-256 parity across all 5 token files."""
+    """Gate 1 Static: SHA-256 parity across all 4 token files."""
     errors: list[str] = []
     hashes: dict[str, str] = {}
     for rel_path in TOKEN_MIRROR_PATHS:

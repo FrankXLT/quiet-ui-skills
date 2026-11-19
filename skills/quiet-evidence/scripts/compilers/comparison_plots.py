@@ -29,9 +29,11 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
     y_lbl = spec.get("axes", {}).get("y_axis", {}).get("quantity_calculus", f"Budget / {unit}")
     running, spans, bounds = 0.0, [], [0.0]
     for s in steps:
-        v = float(s["value"])
+        v = float(s["delta"] if "delta" in s else s["value"])
         kind = s.get("kind", "delta")
         if kind in {"start", "total"}:
+            if kind == "total" and ("value" in s or "delta" in s) and abs(v - running) > 1e-4:
+                raise ValueError(f"Waterfall conservation violated at '{s.get('label')}': expected {running:.4f}, got {v:.4f}")
             lo, hi = min(0.0, v), max(0.0, v)
             spans.append((lo, hi, v, kind, str(s["label"])))
             running = v

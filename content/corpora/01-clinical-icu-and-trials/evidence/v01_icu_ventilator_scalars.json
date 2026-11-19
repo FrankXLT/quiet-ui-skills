@@ -3,7 +3,7 @@
   "id": "v01-icu-ventilator-scalars",
   "metadata": {
     "title": "ICU Bed-04 Hemodynamic & Ventilator Telemetry Scalars",
-    "description": "Synchronized L3 bedside metrology (MAP, Ventilator PEEP CMD vs ACT, SpO2) with NIST expanded uncertainty (k=2), calibration provenance, and L1 recovery trend sparklines.",
+    "description": "Synchronized high-precision bedside metrology (MAP, Ventilator PEEP CMD vs ACT, SpO2) with NIST expanded uncertainty (k=2), calibration provenance, and recovery trend sparklines.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z",
     "subsystem": "ICU-BED-04-TELEMETRY"

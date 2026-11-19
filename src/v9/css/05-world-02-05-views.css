@@ -38,7 +38,9 @@
 
   .v9-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }
   .v9-chip.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-chip.is-active { color: #090D16; }
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-chip.is-active { color: #090D16; }
+  }
   .v9-filter-readout {
     font-family: var(--font-mono);
     font-size: var(--ts-xs);
@@ -80,7 +82,9 @@
   }
   .v9-tactile-btn[aria-pressed="true"] { background: var(--tint-amber-bg); border-color: var(--status-warn); color: var(--tint-amber-fg); }
   .v9-tactile-exec { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; font-weight: 700; }
-  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-tactile-exec { color: #090D16; }
+  @media screen {
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-tactile-exec { color: #090D16; }
+  }
   .v9-tactile-exec:disabled { opacity: 0.42; cursor: not-allowed; }
   @media (max-width: 599px) {
     .v9-tactile-btn { min-block-size: 44px; inline-size: 100%; }

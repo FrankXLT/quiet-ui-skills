@@ -141,8 +141,8 @@
       var decimals = cfg.decimals || 0;
       for (var v = cfg.min; v <= cfg.max + 1e-6; v += cfg.step) {
         var val = decimals ? Number(v.toFixed(decimals)) : Math.round(v);
-        var y = Math.round(345 - (val - cfg.center) * cfg.pxPerUnit);
-        if (y < 152 || y > 538) continue;
+        var y = Math.round(360 - (val - cfg.center) * cfg.pxPerUnit);
+        if (y < 162 || y > 558) continue;
         var isMaj = decimals ? (Math.round(val * 10) % Math.round(cfg.majorEvery * 10) === 0) : (val % cfg.majorEvery === 0);
         var ln = d.createElementNS(SVG_NS, 'line');
         ln.setAttribute('x1', String(cfg.side === 'left' ? (isMaj ? 122 : 128) : 1064));
@@ -151,7 +151,7 @@
         ln.setAttribute('y2', String(y));
         ln.setAttribute('stroke-width', '1.6');
         g.appendChild(ln);
-        if (isMaj && Math.abs(y - 345) >= 28) {
+        if (isMaj && Math.abs(y - 360) >= 28) {
           var tx = d.createElementNS(SVG_NS, 'text');
           tx.setAttribute('x', String(cfg.side === 'left' ? 115 : 1084));
           tx.setAttribute('y', String(y + 5));

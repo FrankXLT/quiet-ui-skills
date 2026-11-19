@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:bitfield",
     "id": "bench-m3-l1-readiness-frame",
     "metadata": {
-      "title": "M3-L1: Optical Transceiver Functional Readiness Frame",
-      "description": "L1 Orientation status summary synthesized from BAR0 optical control register flags without exposing bit manipulation.",
+      "title": "Optical Transceiver Functional Readiness Frame",
+      "description": "Orientation status summary synthesized from BAR0 optical control register flags without exposing bit manipulation.",
       "mnemonic": "CSR_OPTICAL_READY",
       "rigor_level": "L1",
       "register_width_bits": 32,
@@ -20,8 +20,8 @@
     "$schema": "urn:quiet-ui:schema:v9:bitfield",
     "id": "bench-m3-l2-ccsds-header",
     "metadata": {
-      "title": "M3-L2: 48-Bit CCSDS 133.0-B-2 Space Packet Primary Header",
-      "description": "L2 Governance 48-bit protocol header split across three 16-bit portrait-safe rows with byte/bit field boundaries.",
+      "title": "48-Bit CCSDS 133.0-B-2 Space Packet Primary Header",
+      "description": "Governance 48-bit protocol header split across three 16-bit portrait-safe rows with byte/bit field boundaries.",
       "mnemonic": "CCSDS_PRIMARY_HDR",
       "rigor_level": "L2",
       "address_offset": "0x0000",
@@ -43,8 +43,8 @@
     "$schema": "urn:quiet-ui:schema:v9:bitfield",
     "id": "bench-m3-l3-1553b-and-mmio",
     "metadata": {
-      "title": "M3-L3: 16-Bit MIL-STD-1553B Status Word & 32-Bit BAR0 MMIO CSR",
-      "description": "L3 Physical bit-level truth pairing the 16-bit MIL-STD-1553B RT Status Word (0x1A01) with the 32-bit BAR0 Optical Control/Status Register (0x8004A01C).",
+      "title": "16-Bit MIL-STD-1553B Status Word & 32-Bit BAR0 MMIO CSR",
+      "description": "Physical bit-level truth pairing the 16-bit MIL-STD-1553B RT Status Word (0x1A01) with the 32-bit BAR0 Optical Control/Status Register (0x8004A01C).",
       "rigor_level": "L3"
     },
     "registers": [

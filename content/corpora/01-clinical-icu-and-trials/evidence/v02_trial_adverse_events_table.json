@@ -3,7 +3,7 @@
   "id": "v02-trial-adverse-events-table",
   "metadata": {
     "title": "CONSORT Phase III Primary Efficacy & Safety Adverse Events Ledger",
-    "description": "Booktabs intention-to-treat (n=1,240) primary mortality endpoint and KDIGO/IEC safety rates with 95% binomial uncertainty bounds and DSMB dispositions.",
+    "description": "Hairline-ruled intention-to-treat (n=1,240) primary mortality endpoint and KDIGO/IEC safety rates with 95% binomial uncertainty bounds and DSMB dispositions.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z"
   },

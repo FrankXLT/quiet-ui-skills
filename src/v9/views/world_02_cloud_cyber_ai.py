@@ -169,7 +169,7 @@ def _build_v05_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div class="v9-kpi-tile qe-bit-card" data-enclave="hsm">
         <span class="va-kicker">ENCLAVE-HSM-AUDIT</span>
         <span class="v9-kpi-val va-nums">9443 / 4317</span>
-        <span class="v9-kpi-sub">FIPS 140-3 L3 HSM + WORM</span>
+        <span class="v9-kpi-sub">FIPS 140-3 Level 3 HSM + WORM</span>
       </div>
       <div class="v9-kpi-tile">
         <span class="va-kicker">CSR_MTLS_POLICY</span>

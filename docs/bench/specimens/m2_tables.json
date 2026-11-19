@@ -3,8 +3,8 @@
     "$schema": "urn:quiet-ui:schema:v9:table",
     "id": "bench-m2-l1-exec-summary",
     "metadata": {
-      "title": "M2-L1: Civic Capital & Municipal Utility Readiness Summary",
-      "description": "L1 Orientation civic board summary table displaying Priority 1 columns, native units, and non-color-only GAO/USWDS status badges.",
+      "title": "Civic Capital & Municipal Utility Readiness Summary",
+      "description": "Orientation civic board summary table displaying Priority 1 columns, native units, and non-color-only GAO/USWDS status badges.",
       "rigor_level": "L1",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -24,8 +24,8 @@
     "$schema": "urn:quiet-ui:schema:v9:table",
     "id": "bench-m2-l2-ppsm-matrix",
     "metadata": {
-      "title": "M2-L2: NIST Zero-Trust ATO Companion PPSM Matrix",
-      "description": "L2 Governance Ports, Protocols, and Services Management (PPSM) matrix paired directly with M6-L2 Trust Enclave Boundary Map.",
+      "title": "NIST Zero-Trust ATO Companion PPSM Matrix",
+      "description": "Governance Ports, Protocols, and Services Management (PPSM) matrix paired directly with the Trust Enclave Boundary Map.",
       "rigor_level": "L2",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
@@ -49,8 +49,8 @@
     "$schema": "urn:quiet-ui:schema:v9:table",
     "id": "bench-m2-l3-booktabs-heatmap",
     "metadata": {
-      "title": "M2-L3: Booktabs Optical Syntonization Ledger & 3x8 Phase-Excursion Heatmap",
-      "description": "L3 Physical metrological ledger with NIST quantity calculus headers, +/- uncertainty alignment, and recovered v7.1 3x8 phase-excursion matrix.",
+      "title": "Optical Syntonization Ledger & 3x8 Phase-Excursion Heatmap",
+      "description": "Physical metrological ledger with NIST quantity calculus headers, +/- uncertainty alignment, and recovered v7.1 3x8 phase-excursion matrix.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },
