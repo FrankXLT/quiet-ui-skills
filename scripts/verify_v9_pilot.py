@@ -98,7 +98,10 @@ def verify_static(all_worlds: bool = False) -> list[str]:
 def _audit_stage(driver: Any, url: str, width: int, height: int, tag: str) -> list[str]:
     set_viewport(driver, width, height, 1)
     driver.get(url)
-    time.sleep(0.24)
+    for _ in range(15):
+        time.sleep(0.08)
+        if driver.execute_script("const d=document.getElementById('va-stage-portal')?.contentDocument;const m=d?.getElementById('va-stage-main');return !!(m&&m.children.length&&[...d.querySelectorAll('img.v9-opt-photo')].every(i=>i.complete&&i.naturalWidth>0));"):
+            break
     errs: list[str] = []
     bar_err = driver.execute_script(
         "const b=document.getElementById('va-studio-bar');"

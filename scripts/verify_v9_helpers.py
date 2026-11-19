@@ -190,10 +190,13 @@ if (view === 'v08-plant-floor-wall-kiosk' && w >= 1900) {
   }
 }
 if (view === 'v15-collimated-flight-hud') {
-  const earthUrl = getComputedStyle(document.documentElement).getPropertyValue('--hud-earthrise-url').trim();
-  const hudImg = document.getElementById('v15-earthrise-img');
-  if (!earthUrl.includes('as08-14-2383.jpg') || !hudImg || !hudImg.complete || hudImg.naturalWidth <= 0) {
-    errs.push(`[M6_EARTHRISE] Missing or unloaded Earthrise image (${earthUrl})`);
+  const photos = [...document.querySelectorAll('#v15-hud-stage img.v9-opt-photo')];
+  if (photos.length !== 3) errs.push(`[M6_PHOTOS] Expected 3 photographic backplates, found ${photos.length}`);
+  for (const img of photos) {
+    if (!img.complete || img.naturalWidth < 1200) errs.push(`[M6_PHOTO_LOAD] Backplate ${img.dataset.asset} unloaded (w=${img.naturalWidth})`);
+  }
+  if (document.querySelectorAll('.v15-scene-svg, .v16-scene-svg, .v16-corridor-svg').length) {
+    errs.push('[M6_SYNTHETIC] Synthetic scenery SVG found in v15');
   }
   const ret = document.querySelector('.v15-reticle-layer');
   const retTxt = ret ? (ret.textContent || '') : '';
@@ -226,6 +229,14 @@ if (view === 'v15-collimated-flight-hud') {
   }
 }
 if (view === 'v16-transparent-window-overlay') {
+  const photos = [...document.querySelectorAll('#v16-glass-viewport img.v9-opt-photo')];
+  if (photos.length !== 3) errs.push(`[M7_PHOTOS] Expected 3 photographic backplates, found ${photos.length}`);
+  for (const img of photos) {
+    if (!img.complete || img.naturalWidth < 1200) errs.push(`[M7_PHOTO_LOAD] Backplate ${img.dataset.asset} unloaded (w=${img.naturalWidth})`);
+  }
+  if (document.querySelectorAll('.v15-scene-svg, .v16-scene-svg, .v16-corridor-svg').length) {
+    errs.push('[M7_SYNTHETIC] Synthetic scenery SVG found in v16');
+  }
   const vp = document.getElementById('v16-glass-viewport');
   const lumMode = vp ? (vp.dataset.luminance || 'daylight') : 'daylight';
   const sceneBackdrop = lumMode === 'night' ? [15, 23, 42] : (lumMode === 'dusk' ? [180, 83, 9] : [224, 242, 254]);
@@ -239,7 +250,13 @@ if (view === 'v16-transparent-window-overlay') {
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
   };
   const h = window.innerHeight, kx0 = w * 0.24, kx1 = w * 0.76, ky0 = h * 0.24, ky1 = h * 0.68;
-  for (const pod of document.querySelectorAll('.v16-glass-pod')) {
+  const pods = [...document.querySelectorAll('.v16-glass-pod')];
+  if (w < 640 && pods.length) {
+    const visorH = Math.max(...pods.map(p => p.getBoundingClientRect().bottom)) - Math.min(...pods.map(p => p.getBoundingClientRect().top));
+    const maxBot = Math.max(...pods.map(p => p.getBoundingClientRect().bottom));
+    if (visorH > 145 || maxBot > 155) errs.push(`[M7_MOBILE_VISOR] Visor height=${visorH.toFixed(1)}px bottom=${maxBot.toFixed(1)}px > 145/155px`);
+  }
+  for (const pod of pods) {
     const cs = getComputedStyle(pod), pr = pod.getBoundingClientRect();
     const bf = cs.backdropFilter || cs.webkitBackdropFilter || '';
     if (!bf.includes('blur(')) errs.push(`[M7_BLUR] Glass pod missing backdrop-filter blur (got '${bf}')`);
@@ -329,10 +346,7 @@ return errs;
 
 
 def set_viewport(driver: Any, width: int, height: int, scale: int = 1) -> None:
-    driver.execute_cdp_cmd(
-        "Emulation.setDeviceMetricsOverride",
-        {"width": width, "height": height, "deviceScaleFactor": scale, "mobile": width < 600},
-    )
+    driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": width, "height": height, "deviceScaleFactor": scale, "mobile": width < 600})
 
 
 def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
@@ -362,22 +376,25 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
 
 def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     shots_dir.mkdir(parents=True, exist_ok=True)
+    v15_q = "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white"
+    v16_q = "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white"
     shots = [
-        ("01_v15_hud_orbital_earthrise.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", None),
-        ("02_v15_hud_daylight_runway_clouds.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();"),
-        ("03_v15_hud_night_coastal_approach.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
-        ("04_v16_glass_daylight_causeway.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
-        ("05_v16_glass_horizon_dusk.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
-        ("06_v16_glass_night_cabin.png", 1440, 900, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
-        ("07_v16_glass_mobile_390x844.png", 390, 844, "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white", None),
-        ("08_v04_and_rationale_clean_strings.png", 1440, 900, "domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench&theme=white", "document.getElementById('va-bridge-btn').click();"),
+        ("01_v15_hud_orbital_earthrise_clean_footer.png", 1440, 900, v15_q, None),
+        ("02_v15_hud_daylight_real_runway_photo.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();"),
+        ("03_v15_hud_night_real_runway_photo.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
+        ("04_v16_glass_daylight_real_highway.png", 1440, 900, v16_q, None),
+        ("05_v16_glass_sunset_real_highway.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
+        ("06_v16_glass_night_real_highway.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
+        ("07_v16_glass_mobile_390x844_compact.png", 390, 844, v16_q, None),
     ]
     for fname, w, h, qs, hook in shots:
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?{qs}")
-        time.sleep(0.45)
+        for _ in range(12):
+            time.sleep(0.15)
+            if driver.execute_script("const d=document.getElementById('va-stage-portal')?.contentDocument;const imgs=d?[...d.querySelectorAll('img.v9-opt-photo')]:[];return imgs.length===3&&imgs.every(i=>i.complete&&i.naturalWidth>=1200);"):
+                break
         if hook:
             driver.execute_script(hook)
-            time.sleep(0.25)
+        time.sleep(0.35)
         driver.save_screenshot(str(shots_dir / fname))
-

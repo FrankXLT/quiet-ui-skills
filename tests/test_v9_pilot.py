@@ -238,14 +238,19 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIsNotNone(v15_m)
         self.assertIsNotNone(v16_m)
         v15_html, v16_html = v15_m.group(1), v16_m.group(1)
-        for tok in ("v15-hud-stage", "v15-earthrise-img", "v15-scene-svg", "v15-reticle-layer", "084°", "142", "8,520", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR"):
+        for tok in ("v15-hud-stage", "v9-opt-photo", "assets/as08-14-2383.jpg", "assets/opt_hud_daylight_rwy.jpg", "assets/opt_hud_night_rwy.jpg", "v15-reticle-layer", "084°", "142", "8,520", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR", 'y="616"', 'y1="350"'):
             self.assertIn(tok, v15_html)
-        for bad in ("BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip"):
+        for bad in ("v15-scene-svg", "v15-earthrise-img", "BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip"):
             self.assertNotIn(bad, v15_html)
-        for tok in ("v16-glass-viewport", "v16-scene-svg", "42", "45 mph DERATE LIMIT", "MCU Thermal Limit (85 °C)", "2.8 s · 53 m SAFE FOLLOWING GAP"):
+        for tok in ("v16-glass-viewport", "v9-opt-photo", "assets/opt_glass_day_hwy.jpg", "assets/opt_glass_dusk_hwy.jpg", "assets/opt_glass_night_hwy.jpg", "42", "45 mph DERATE LIMIT", "E-Bound Highway · 2.4 mi to Maint Turnout", "Following Gap: 2.8 s", "MCU Thermal Limit (85 °C)"):
             self.assertIn(tok, v16_html)
-        for bad in ("0x18FEF100", "Offset: 0x", "SCRIM:", "NO FLASH", ">= 7.0:1", "preserves", "120 Ω", "v9-chip"):
+        for bad in ("v16-scene-svg", "v16-corridor-svg", "v16-road-gap-badge", "0x18FEF100", "Offset: 0x", "SCRIM:", "NO FLASH", ">= 7.0:1", "preserves", "120 Ω", "v9-chip"):
             self.assertNotIn(bad, v16_html)
+        for jpg_name in ("as08-14-2383.jpg", "opt_hud_daylight_rwy.jpg", "opt_hud_night_rwy.jpg", "opt_glass_day_hwy.jpg", "opt_glass_dusk_hwy.jpg", "opt_glass_night_hwy.jpg"):
+            jpg_p = REPO_ROOT / "docs" / "assets" / jpg_name
+            self.assertTrue(jpg_p.is_file(), f"Missing optical backplate {jpg_name}")
+            self.assertLessEqual(jpg_p.stat().st_size, 185 * 1024)
+            self.assertNotIn(b"Exif\x00\x00", jpg_p.read_bytes())
         from customizations.scripts.build_showcase import build_showcase
         with tempfile.TemporaryDirectory() as tmp:
             tmp_p = Path(tmp)

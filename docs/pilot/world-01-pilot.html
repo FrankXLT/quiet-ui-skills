@@ -3061,6 +3061,22 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   /* ------------------------------------------------------------------------
+     M6 & M7 Shared Photographic Backplates & Optical Glass Primitives
+     ------------------------------------------------------------------------ */
+  .v9-opt-photo {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.24s ease;
+  }
+
+  /* ------------------------------------------------------------------------
      M6: Collimated Flight HUD (v15 — >= 65% central sightline keep-out)
      ------------------------------------------------------------------------ */
   .v9-stage-inner.v9-view-v15 {
@@ -3076,16 +3092,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border-radius: var(--radius-card);
     overflow: hidden;
     background-color: #020617;
-    background-size: cover;
-    background-position: center;
     color: #22FF88;
     --hud-phosphor: #22FF88;
-  }
-  .v15-hud-stage[data-backplate="earthrise"] {
-    background-image:
-      linear-gradient(180deg, rgba(2, 6, 23, 0.25) 0%, rgba(2, 6, 23, 0.08) 50%, rgba(2, 6, 23, 0.36) 100%),
-      var(--hud-earthrise-url),
-      radial-gradient(circle at 65% 38%, #1D4ED8 0%, #0F172A 46%, #020617 85%);
   }
   .v15-hud-stage[data-backplate="daylight"] {
     --hud-phosphor: #14FF72;
@@ -3095,33 +3103,19 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     --hud-phosphor: #22FF88;
     color: #22FF88;
   }
-  .v15-earthrise-img {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    object-position: center;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.94;
-    display: none;
+  .v15-hud-stage[data-backplate="earthrise"] .v15-photo[data-photo-mode="earthrise"],
+  .v15-hud-stage[data-backplate="daylight"] .v15-photo[data-photo-mode="daylight"],
+  .v15-hud-stage[data-backplate="lowlight"] .v15-photo[data-photo-mode="lowlight"] {
+    opacity: 1;
   }
-  .v15-hud-stage[data-backplate="earthrise"] .v15-earthrise-img { display: block; }
-  .v15-scene-svg {
+  .v15-hud-stage::after {
+    content: "";
     position: absolute;
     inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    pointer-events: none;
     z-index: 1;
-    display: none;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.18) 0%, rgba(2, 6, 23, 0.04) 48%, rgba(2, 6, 23, 0.20) 100%);
   }
-  .v15-hud-stage:is([data-backplate="daylight"], [data-backplate="lowlight"]) .v15-scene-svg { display: block; }
-  .v15-scene-day,
-  .v15-scene-night { display: none; }
-  .v15-hud-stage[data-backplate="daylight"] .v15-scene-day { display: block; }
-  .v15-hud-stage[data-backplate="lowlight"] .v15-scene-night { display: block; }
 
   .v15-reticle-layer {
     position: absolute;
@@ -3129,7 +3123,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     inline-size: 100%;
     block-size: 100%;
     pointer-events: none;
-    z-index: 3;
+    z-index: 2;
     color: var(--hud-phosphor);
   }
   .v15-reticle-layer text {
@@ -3183,47 +3177,39 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border: 1px solid var(--border-strong);
     overflow: hidden;
     background-color: #0F172A;
-    --m7-scrim-alpha: 0.76;
+    --m7-scrim-alpha: 0.74;
   }
-  .v16-glass-viewport[data-luminance="daylight"] { --m7-scrim-alpha: 0.76; }
-  .v16-glass-viewport[data-luminance="dusk"]     { --m7-scrim-alpha: 0.66; }
-  .v16-glass-viewport[data-luminance="night"]    { --m7-scrim-alpha: 0.56; }
+  .v16-glass-viewport[data-luminance="daylight"] { --m7-scrim-alpha: 0.74; }
+  .v16-glass-viewport[data-luminance="dusk"]     { --m7-scrim-alpha: 0.68; }
+  .v16-glass-viewport[data-luminance="night"]    { --m7-scrim-alpha: 0.62; }
 
-  .v16-only-day,
-  .v16-only-dusk,
-  .v16-only-night { display: none; }
-  .v16-glass-viewport[data-luminance="daylight"] .v16-only-day { display: block; }
-  .v16-glass-viewport[data-luminance="dusk"] .v16-only-dusk    { display: block; }
-  .v16-glass-viewport[data-luminance="night"] .v16-only-night  { display: block; }
-  .v16-glass-viewport[data-luminance="night"] .v16-clouds      { opacity: 0.14; }
-  .v16-glass-viewport[data-luminance="dusk"] .v16-clouds       { opacity: 0.36; }
-
-  .v16-scene-svg {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    pointer-events: none;
-    z-index: 1;
+  .v16-glass-viewport[data-luminance="daylight"] .v16-photo[data-photo-mode="daylight"],
+  .v16-glass-viewport[data-luminance="dusk"] .v16-photo[data-photo-mode="dusk"],
+  .v16-glass-viewport[data-luminance="night"] .v16-photo[data-photo-mode="night"] {
+    opacity: 1;
   }
+  .v16-visor-bar { display: contents; }
+
   .v16-glass-pod {
     position: absolute;
     top: 1rem;
-    z-index: 4;
+    z-index: 2;
     inline-size: max-content;
-    max-inline-size: min(332px, calc(50vw - 1.5rem));
+    max-inline-size: min(336px, calc(50vw - 1.5rem));
     padding: 0.72rem 0.92rem;
     border-radius: var(--radius-card);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(18px) saturate(1.25);
-    -webkit-backdrop-filter: blur(18px) saturate(1.25);
-    border: 1px solid rgba(248, 250, 252, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 12px 32px rgba(2, 6, 23, 0.42);
+    background-color: rgba(10, 16, 28, var(--m7-scrim-alpha));
+    backdrop-filter: blur(20px) saturate(1.35);
+    -webkit-backdrop-filter: blur(20px) saturate(1.35);
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 24px rgba(2, 6, 23, 0.36);
     color: #FFFFFF;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 1.2px rgba(2, 6, 23, 0.45);
     text-shadow: 0 1px 2px rgba(2, 6, 23, 0.9);
     display: flex;
     flex-direction: column;
-    gap: 0.26rem;
+    gap: 0.24rem;
   }
   .v16-pod-left  { left: 1rem; }
   .v16-pod-right { right: 1rem; }
@@ -3238,7 +3224,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.24rem 0.45rem;
+    gap: 0.22rem 0.42rem;
   }
   .v16-speed-val {
     font-family: var(--font-mono);
@@ -3261,29 +3247,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     margin-inline-start: auto;
   }
   .v16-route-line { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
-  .v16-eff-line { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E0F2FE; }
+  .v16-eff-line { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E0F2FE; line-height: 1.35; }
   .v16-warn-title { font-size: var(--ts-sm); font-weight: 700; color: #FFFFFF; line-height: 1.25; }
   .v16-warn-action { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
 
-  .v16-road-gap-badge {
-    position: absolute;
-    left: 50%;
-    bottom: clamp(4.2rem, 16dvh, 8.2rem);
-    transform: translateX(-50%);
-    z-index: 4;
-    padding: 0.3rem 0.78rem;
-    border-radius: var(--radius-inner);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(125, 211, 252, 0.58);
-    font-family: var(--font-mono);
-    font-size: var(--ts-xs);
-    font-weight: 700;
-    color: #E0F2FE;
-    white-space: nowrap;
-    pointer-events: none;
-  }
   .v16-ctrl-chips {
     position: absolute;
     right: 1rem;
@@ -3295,10 +3262,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     gap: 0.35rem;
     padding: 0.32rem 0.42rem;
     border-radius: var(--radius-inner);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(248, 250, 252, 0.24);
+    background-color: rgba(10, 16, 28, var(--m7-scrim-alpha));
+    backdrop-filter: blur(16px) saturate(1.25);
+    -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    border: 1px solid rgba(255, 255, 255, 0.28);
   }
   .v16-lum-chip {
     background: rgba(15, 23, 42, 0.86);
@@ -3318,9 +3285,17 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     .v16-glass-viewport {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      padding: 0.65rem;
-      gap: 0.55rem;
+      justify-content: space-between;
+      padding: 0.45rem;
+      gap: 0.35rem;
+    }
+    .v16-visor-bar {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 0.25rem;
+      align-items: stretch;
     }
     .v16-glass-pod {
       position: relative;
@@ -3329,22 +3304,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       right: auto;
       inline-size: 100%;
       max-inline-size: 100%;
+      padding: 0.45rem 0.65rem;
+      gap: 0.14rem;
     }
-    .v16-road-gap-badge {
-      position: relative;
-      left: auto;
-      bottom: auto;
-      transform: none;
-      align-self: center;
-      margin-top: auto;
-    }
+    .v16-speed-val { font-size: 1.32rem; }
+    .v16-speed-unit { font-size: 11px; }
+    .v16-speed-cap { margin-inline-start: 0; font-size: 10px; }
+    .v16-route-line,
+    .v16-eff-line,
+    .v16-warn-action { font-size: 10.5px; line-height: 1.22; }
+    .v16-warn-title { font-size: 11.5px; line-height: 1.2; }
     .v16-ctrl-chips {
       position: relative;
       right: auto;
       bottom: auto;
-      align-self: stretch;
+      align-self: center;
       justify-content: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.35rem;
     }
+    .v16-lum-chip { padding-inline: 0.48rem; font-size: 11px; }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .v16-glass-viewport[data-luminance] { --m7-scrim-alpha: 0.90; }
@@ -4276,7 +4255,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v03-guide" class="v03-pedagogy-panel qe-pedagogy-scope" aria-label="Interactive Home Care Guide">
     <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Oxygen Level Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Oxygen Level Trend">
-<defs><clipPath id="qe-clip-168611"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-864892"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4372,7 +4351,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Oxygen Saturation (%)</text>
-<g clip-path="url(#qe-clip-168611)">
+<g clip-path="url(#qe-clip-864892)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--tint-emerald-fg)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/>
@@ -4392,7 +4371,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 </svg></div>
 </div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Resting Blood Pressure Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Resting Blood Pressure Trend">
-<defs><clipPath id="qe-clip-381372"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-825619"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4500,7 +4479,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Blood Pressure (mmHg)</text>
-<g clip-path="url(#qe-clip-381372)">
+<g clip-path="url(#qe-clip-825619)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--status-warn)" stroke-width="1.5"/>
@@ -5081,13 +5060,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveAbsDocsAsset('assets/as08-14-2383.jpg');
     const tokStyle = document.getElementById('custom-tokens');
     const ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
     const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
     const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
-    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + escHtml(earthriseUrl) + '\');" data-theme="' + escHtml(state.theme) +
+    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
       '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
@@ -5200,8 +5178,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
-      const hudImg = doc.getElementById('v15-earthrise-img');
-      if (hudImg) { hudImg.onerror = function () { hudImg.style.display = 'none'; }; hudImg.src = resolveAbsDocsAsset('assets/as08-14-2383.jpg'); }
+      doc.querySelectorAll('img[data-asset]').forEach(function (img) {
+        img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
+      });
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;

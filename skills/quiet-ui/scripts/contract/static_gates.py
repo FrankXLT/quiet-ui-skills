@@ -211,12 +211,12 @@ def verify_hygiene_static(repo_root: Path, showcase_path: Path) -> list[str]:
         if meta in visible:
             errors.append(f"[BANNED_META_STRING] Prompt artifact text found: '{meta}'")
 
-    # Gate 12 EXIF check on docs/assets/as08-14-2383.jpg
-    as08_path = repo_root / "docs" / "assets" / "as08-14-2383.jpg"
-    if as08_path.exists():
-        data = as08_path.read_bytes()
-        if b"Exif\x00\x00" in data:
-            errors.append(f"[EXIF_VIOLATION] {as08_path.name} contains EXIF metadata tags")
+    # Gate 12 EXIF check across all docs/assets/*.jpg optical backplates
+    assets_dir = repo_root / "docs" / "assets"
+    if assets_dir.is_dir():
+        for jpg_path in sorted(assets_dir.glob("*.jpg")):
+            if b"Exif\x00\x00" in jpg_path.read_bytes():
+                errors.append(f"[EXIF_VIOLATION] {jpg_path.name} contains EXIF metadata tags")
     return errors
 
 

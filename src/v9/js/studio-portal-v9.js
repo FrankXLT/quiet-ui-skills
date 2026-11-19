@@ -154,13 +154,12 @@
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveAbsDocsAsset('assets/as08-14-2383.jpg');
     const tokStyle = document.getElementById('custom-tokens');
     const ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
     const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
     const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
-    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + escHtml(earthriseUrl) + '\');" data-theme="' + escHtml(state.theme) +
+    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
       '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
@@ -273,8 +272,9 @@
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
-      const hudImg = doc.getElementById('v15-earthrise-img');
-      if (hudImg) { hudImg.onerror = function () { hudImg.style.display = 'none'; }; hudImg.src = resolveAbsDocsAsset('assets/as08-14-2383.jpg'); }
+      doc.querySelectorAll('img[data-asset]').forEach(function (img) {
+        img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
+      });
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;

@@ -3071,6 +3071,22 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   /* ------------------------------------------------------------------------
+     M6 & M7 Shared Photographic Backplates & Optical Glass Primitives
+     ------------------------------------------------------------------------ */
+  .v9-opt-photo {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.24s ease;
+  }
+
+  /* ------------------------------------------------------------------------
      M6: Collimated Flight HUD (v15 — >= 65% central sightline keep-out)
      ------------------------------------------------------------------------ */
   .v9-stage-inner.v9-view-v15 {
@@ -3086,16 +3102,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border-radius: var(--radius-card);
     overflow: hidden;
     background-color: #020617;
-    background-size: cover;
-    background-position: center;
     color: #22FF88;
     --hud-phosphor: #22FF88;
-  }
-  .v15-hud-stage[data-backplate="earthrise"] {
-    background-image:
-      linear-gradient(180deg, rgba(2, 6, 23, 0.25) 0%, rgba(2, 6, 23, 0.08) 50%, rgba(2, 6, 23, 0.36) 100%),
-      var(--hud-earthrise-url),
-      radial-gradient(circle at 65% 38%, #1D4ED8 0%, #0F172A 46%, #020617 85%);
   }
   .v15-hud-stage[data-backplate="daylight"] {
     --hud-phosphor: #14FF72;
@@ -3105,33 +3113,19 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     --hud-phosphor: #22FF88;
     color: #22FF88;
   }
-  .v15-earthrise-img {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    object-position: center;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.94;
-    display: none;
+  .v15-hud-stage[data-backplate="earthrise"] .v15-photo[data-photo-mode="earthrise"],
+  .v15-hud-stage[data-backplate="daylight"] .v15-photo[data-photo-mode="daylight"],
+  .v15-hud-stage[data-backplate="lowlight"] .v15-photo[data-photo-mode="lowlight"] {
+    opacity: 1;
   }
-  .v15-hud-stage[data-backplate="earthrise"] .v15-earthrise-img { display: block; }
-  .v15-scene-svg {
+  .v15-hud-stage::after {
+    content: "";
     position: absolute;
     inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    pointer-events: none;
     z-index: 1;
-    display: none;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.18) 0%, rgba(2, 6, 23, 0.04) 48%, rgba(2, 6, 23, 0.20) 100%);
   }
-  .v15-hud-stage:is([data-backplate="daylight"], [data-backplate="lowlight"]) .v15-scene-svg { display: block; }
-  .v15-scene-day,
-  .v15-scene-night { display: none; }
-  .v15-hud-stage[data-backplate="daylight"] .v15-scene-day { display: block; }
-  .v15-hud-stage[data-backplate="lowlight"] .v15-scene-night { display: block; }
 
   .v15-reticle-layer {
     position: absolute;
@@ -3139,7 +3133,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     inline-size: 100%;
     block-size: 100%;
     pointer-events: none;
-    z-index: 3;
+    z-index: 2;
     color: var(--hud-phosphor);
   }
   .v15-reticle-layer text {
@@ -3193,47 +3187,39 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border: 1px solid var(--border-strong);
     overflow: hidden;
     background-color: #0F172A;
-    --m7-scrim-alpha: 0.76;
+    --m7-scrim-alpha: 0.74;
   }
-  .v16-glass-viewport[data-luminance="daylight"] { --m7-scrim-alpha: 0.76; }
-  .v16-glass-viewport[data-luminance="dusk"]     { --m7-scrim-alpha: 0.66; }
-  .v16-glass-viewport[data-luminance="night"]    { --m7-scrim-alpha: 0.56; }
+  .v16-glass-viewport[data-luminance="daylight"] { --m7-scrim-alpha: 0.74; }
+  .v16-glass-viewport[data-luminance="dusk"]     { --m7-scrim-alpha: 0.68; }
+  .v16-glass-viewport[data-luminance="night"]    { --m7-scrim-alpha: 0.62; }
 
-  .v16-only-day,
-  .v16-only-dusk,
-  .v16-only-night { display: none; }
-  .v16-glass-viewport[data-luminance="daylight"] .v16-only-day { display: block; }
-  .v16-glass-viewport[data-luminance="dusk"] .v16-only-dusk    { display: block; }
-  .v16-glass-viewport[data-luminance="night"] .v16-only-night  { display: block; }
-  .v16-glass-viewport[data-luminance="night"] .v16-clouds      { opacity: 0.14; }
-  .v16-glass-viewport[data-luminance="dusk"] .v16-clouds       { opacity: 0.36; }
-
-  .v16-scene-svg {
-    position: absolute;
-    inset: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    pointer-events: none;
-    z-index: 1;
+  .v16-glass-viewport[data-luminance="daylight"] .v16-photo[data-photo-mode="daylight"],
+  .v16-glass-viewport[data-luminance="dusk"] .v16-photo[data-photo-mode="dusk"],
+  .v16-glass-viewport[data-luminance="night"] .v16-photo[data-photo-mode="night"] {
+    opacity: 1;
   }
+  .v16-visor-bar { display: contents; }
+
   .v16-glass-pod {
     position: absolute;
     top: 1rem;
-    z-index: 4;
+    z-index: 2;
     inline-size: max-content;
-    max-inline-size: min(332px, calc(50vw - 1.5rem));
+    max-inline-size: min(336px, calc(50vw - 1.5rem));
     padding: 0.72rem 0.92rem;
     border-radius: var(--radius-card);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(18px) saturate(1.25);
-    -webkit-backdrop-filter: blur(18px) saturate(1.25);
-    border: 1px solid rgba(248, 250, 252, 0.28);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24), 0 12px 32px rgba(2, 6, 23, 0.42);
+    background-color: rgba(10, 16, 28, var(--m7-scrim-alpha));
+    backdrop-filter: blur(20px) saturate(1.35);
+    -webkit-backdrop-filter: blur(20px) saturate(1.35);
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 8px 24px rgba(2, 6, 23, 0.36);
     color: #FFFFFF;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 1.2px rgba(2, 6, 23, 0.45);
     text-shadow: 0 1px 2px rgba(2, 6, 23, 0.9);
     display: flex;
     flex-direction: column;
-    gap: 0.26rem;
+    gap: 0.24rem;
   }
   .v16-pod-left  { left: 1rem; }
   .v16-pod-right { right: 1rem; }
@@ -3248,7 +3234,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.24rem 0.45rem;
+    gap: 0.22rem 0.42rem;
   }
   .v16-speed-val {
     font-family: var(--font-mono);
@@ -3271,29 +3257,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     margin-inline-start: auto;
   }
   .v16-route-line { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
-  .v16-eff-line { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E0F2FE; }
+  .v16-eff-line { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E0F2FE; line-height: 1.35; }
   .v16-warn-title { font-size: var(--ts-sm); font-weight: 700; color: #FFFFFF; line-height: 1.25; }
   .v16-warn-action { font-size: var(--ts-xs); color: #F1F5F9; line-height: 1.35; }
 
-  .v16-road-gap-badge {
-    position: absolute;
-    left: 50%;
-    bottom: clamp(4.2rem, 16dvh, 8.2rem);
-    transform: translateX(-50%);
-    z-index: 4;
-    padding: 0.3rem 0.78rem;
-    border-radius: var(--radius-inner);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(125, 211, 252, 0.58);
-    font-family: var(--font-mono);
-    font-size: var(--ts-xs);
-    font-weight: 700;
-    color: #E0F2FE;
-    white-space: nowrap;
-    pointer-events: none;
-  }
   .v16-ctrl-chips {
     position: absolute;
     right: 1rem;
@@ -3305,10 +3272,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     gap: 0.35rem;
     padding: 0.32rem 0.42rem;
     border-radius: var(--radius-inner);
-    background-color: rgba(6, 10, 20, var(--m7-scrim-alpha));
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(248, 250, 252, 0.24);
+    background-color: rgba(10, 16, 28, var(--m7-scrim-alpha));
+    backdrop-filter: blur(16px) saturate(1.25);
+    -webkit-backdrop-filter: blur(16px) saturate(1.25);
+    border: 1px solid rgba(255, 255, 255, 0.28);
   }
   .v16-lum-chip {
     background: rgba(15, 23, 42, 0.86);
@@ -3328,9 +3295,17 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     .v16-glass-viewport {
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      padding: 0.65rem;
-      gap: 0.55rem;
+      justify-content: space-between;
+      padding: 0.45rem;
+      gap: 0.35rem;
+    }
+    .v16-visor-bar {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 0.25rem;
+      align-items: stretch;
     }
     .v16-glass-pod {
       position: relative;
@@ -3339,22 +3314,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       right: auto;
       inline-size: 100%;
       max-inline-size: 100%;
+      padding: 0.45rem 0.65rem;
+      gap: 0.14rem;
     }
-    .v16-road-gap-badge {
-      position: relative;
-      left: auto;
-      bottom: auto;
-      transform: none;
-      align-self: center;
-      margin-top: auto;
-    }
+    .v16-speed-val { font-size: 1.32rem; }
+    .v16-speed-unit { font-size: 11px; }
+    .v16-speed-cap { margin-inline-start: 0; font-size: 10px; }
+    .v16-route-line,
+    .v16-eff-line,
+    .v16-warn-action { font-size: 10.5px; line-height: 1.22; }
+    .v16-warn-title { font-size: 11.5px; line-height: 1.2; }
     .v16-ctrl-chips {
       position: relative;
       right: auto;
       bottom: auto;
-      align-self: stretch;
+      align-self: center;
       justify-content: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.35rem;
     }
+    .v16-lum-chip { padding-inline: 0.48rem; font-size: 11px; }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .v16-glass-viewport[data-luminance] { --m7-scrim-alpha: 0.90; }
@@ -4284,7 +4263,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v03-guide" class="v03-pedagogy-panel qe-pedagogy-scope" aria-label="Interactive Home Care Guide">
     <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Oxygen Level Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Oxygen Level Trend">
-<defs><clipPath id="qe-clip-172533"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-365687"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4380,7 +4359,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Oxygen Saturation (%)</text>
-<g clip-path="url(#qe-clip-172533)">
+<g clip-path="url(#qe-clip-365687)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--tint-emerald-fg)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/>
@@ -4400,7 +4379,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 </svg></div>
 </div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Resting Blood Pressure Trend"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Resting Blood Pressure Trend">
-<defs><clipPath id="qe-clip-9996"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-918978"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4508,7 +4487,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Blood Pressure (mmHg)</text>
-<g clip-path="url(#qe-clip-9996)">
+<g clip-path="url(#qe-clip-918978)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--status-warn)" stroke-width="1.5"/>
@@ -4895,7 +4874,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     <section id="v06-cal" class="v9-dual-col" aria-label="Classifier Reliability Plot"><figure class="va-figure-card qe-figure" id="w02-v06-ai-calibration-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">CLS-ROUTER-V4</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">FW</span><span class="qe-cond-val va-nums">snap-2026.11-r2</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">NIST-AI-RMF-100-1</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">1200</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">CAL-ECE-2026-1104</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip">
-<defs><clipPath id="qe-clip-545503"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-819001"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="118.4" y1="26.0" x2="118.4" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="118.4" y1="250.0" x2="118.4" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="141.5" y1="26.0" x2="141.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -4983,7 +4962,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Predicted Confidence, p̂</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Observed Empirical Frequency, f<tspan dy="2.2" font-size="9.2">obs</tspan></text>
-<g clip-path="url(#qe-clip-545503)">
+<g clip-path="url(#qe-clip-819001)">
 <polygon points="95.4,250.0 103.2,250.0 111.0,250.0 118.8,250.0 126.6,250.0 134.5,248.9 142.3,245.1 150.1,241.3 157.9,237.5 165.7,233.8 173.5,230.0 181.4,226.2 189.2,222.4 197.0,218.6 204.8,214.8 212.6,211.0 220.5,207.2 228.3,203.4 236.1,199.6 243.9,195.8 251.7,192.0 259.5,188.2 267.4,184.4 275.2,180.6 283.0,176.8 290.8,173.0 298.6,169.2 306.5,165.4 314.3,161.6 322.1,157.8 329.9,154.0 337.7,150.2 345.5,146.4 353.4,142.6 361.2,138.8 369.0,135.0 376.8,131.2 384.6,127.4 392.5,123.6 400.3,119.9 408.1,116.1 415.9,112.3 423.7,108.5 431.5,104.7 439.4,100.9 447.2,97.1 455.0,93.3 462.8,89.5 470.6,85.7 478.5,81.9 486.3,78.1 494.1,74.3 501.9,70.5 509.7,66.7 517.5,62.9 525.4,59.1 533.2,55.3 541.0,51.5 548.8,47.7 556.6,43.9 556.6,250.0 95.4,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 95.4 250.0 L 103.2 250.0 L 111.0 250.0 L 118.8 250.0 L 126.6 250.0 L 134.5 248.9 L 142.3 245.1 L 150.1 241.3 L 157.9 237.5 L 165.7 233.8 L 173.5 230.0 L 181.4 226.2 L 189.2 222.4 L 197.0 218.6 L 204.8 214.8 L 212.6 211.0 L 220.5 207.2 L 228.3 203.4 L 236.1 199.6 L 243.9 195.8 L 251.7 192.0 L 259.5 188.2 L 267.4 184.4 L 275.2 180.6 L 283.0 176.8 L 290.8 173.0 L 298.6 169.2 L 306.5 165.4 L 314.3 161.6 L 322.1 157.8 L 329.9 154.0 L 337.7 150.2 L 345.5 146.4 L 353.4 142.6 L 361.2 138.8 L 369.0 135.0 L 376.8 131.2 L 384.6 127.4 L 392.5 123.6 L 400.3 119.9 L 408.1 116.1 L 415.9 112.3 L 423.7 108.5 L 431.5 104.7 L 439.4 100.9 L 447.2 97.1 L 455.0 93.3 L 462.8 89.5 L 470.6 85.7 L 478.5 81.9 L 486.3 78.1 L 494.1 74.3 L 501.9 70.5 L 509.7 66.7 L 517.5 62.9 L 525.4 59.1 L 533.2 55.3 L 541.0 51.5 L 548.8 47.7 L 556.6 43.9" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <polygon points="95.4,241.0 100.5,238.5 105.7,236.0 110.9,233.5 116.1,231.0 121.3,228.5 126.5,225.9 131.6,223.4 136.8,220.9 142.0,218.4 147.2,215.9 152.4,213.4 157.6,210.8 162.7,208.3 167.9,205.8 173.1,203.3 178.3,200.8 183.5,198.3 188.7,195.7 193.8,193.2 199.0,190.7 204.2,188.2 209.4,185.7 214.6,183.2 219.8,180.6 224.9,178.1 230.1,175.6 235.3,173.1 240.5,170.6 245.7,168.1 250.8,165.5 256.0,163.0 261.2,160.5 266.4,158.0 271.6,155.5 276.8,153.0 281.9,150.4 287.1,147.9 292.3,145.4 297.5,142.9 302.7,140.4 307.9,137.8 313.0,135.3 318.2,132.8 323.4,130.3 328.6,127.8 333.8,125.3 339.0,122.7 344.1,120.2 349.3,117.7 354.5,115.2 359.7,112.7 364.9,110.2 370.1,107.6 375.2,105.1 380.4,102.6 385.6,100.1 390.8,97.6 396.0,95.1 401.2,92.5 406.3,90.0 411.5,87.5 416.7,85.0 421.9,82.5 427.1,80.0 432.2,77.4 437.4,74.9 442.6,72.4 447.8,69.9 453.0,67.4 458.2,64.9 463.3,62.3 468.5,59.8 473.7,57.3 478.9,54.8 484.1,52.3 489.3,49.8 494.4,47.2 499.6,44.7 504.8,42.2 510.0,39.7 515.2,37.2 520.4,34.7 525.5,32.1 530.7,29.6 535.9,27.1 541.1,26.0 546.3,26.0 551.5,26.0 556.6,26.0 556.6,35.0 551.5,37.5 546.3,40.0 541.1,42.5 535.9,45.0 530.7,47.5 525.5,50.1 520.4,52.6 515.2,55.1 510.0,57.6 504.8,60.1 499.6,62.6 494.4,65.2 489.3,67.7 484.1,70.2 478.9,72.7 473.7,75.2 468.5,77.7 463.3,80.3 458.2,82.8 453.0,85.3 447.8,87.8 442.6,90.3 437.4,92.8 432.2,95.4 427.1,97.9 421.9,100.4 416.7,102.9 411.5,105.4 406.3,107.9 401.2,110.5 396.0,113.0 390.8,115.5 385.6,118.0 380.4,120.5 375.2,123.0 370.1,125.6 364.9,128.1 359.7,130.6 354.5,133.1 349.3,135.6 344.1,138.2 339.0,140.7 333.8,143.2 328.6,145.7 323.4,148.2 318.2,150.7 313.0,153.3 307.9,155.8 302.7,158.3 297.5,160.8 292.3,163.3 287.1,165.8 281.9,168.4 276.8,170.9 271.6,173.4 266.4,175.9 261.2,178.4 256.0,180.9 250.8,183.5 245.7,186.0 240.5,188.5 235.3,191.0 230.1,193.5 224.9,196.0 219.8,198.6 214.6,201.1 209.4,203.6 204.2,206.1 199.0,208.6 193.8,211.1 188.7,213.7 183.5,216.2 178.3,218.7 173.1,221.2 167.9,223.7 162.7,226.2 157.6,228.8 152.4,231.3 147.2,233.8 142.0,236.3 136.8,238.8 131.6,241.3 126.5,243.9 121.3,246.4 116.1,248.9 110.9,250.0 105.7,250.0 100.5,250.0 95.4,250.0" fill="var(--text-secondary)" opacity="0.14"/>
@@ -5465,7 +5444,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v09-spc" aria-label="Shewhart X̄ SPC Plot"><figure class="va-figure-card qe-figure" id="v09-spc-control-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">CNC-CELL-03-BORE</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">NIST/SEMATECH SPC</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(20.0 ± 0.2) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">C<sub>pk</sub></span><span class="qe-cond-val va-nums">1.64</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">5</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">CAL-CMM-ISO10360-2026-07</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)">
-<defs><clipPath id="qe-clip-962925"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-344817"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="107.8" y1="26.0" x2="107.8" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="107.8" y1="250.0" x2="107.8" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="123.5" y1="26.0" x2="123.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -5585,7 +5564,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Subgroup Lot Index, k (n = 5)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Subgroup Mean Bore Diameter, X̄ / mm</text>
-<g clip-path="url(#qe-clip-962925)">
+<g clip-path="url(#qe-clip-344817)">
 <polygon points="78.0,40.0 482.0,40.0 482.0,26.0 78.0,26.0" fill="var(--status-err-bg)" opacity="0.50"/>
 <path d="M 78.0 40.0 L 482.0 40.0" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <line x1="482.0" y1="40.0" x2="487.0" y2="40.0" stroke="var(--status-danger)" stroke-width="1.5"/>
@@ -5992,7 +5971,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v11-plot" aria-label="Treasury Drawdown Plot"><figure class="va-figure-card qe-figure" id="v11-treasury-drawdown-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Unit</span><span class="qe-cond-val va-nums">TREASURY-POOL-04</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">GAO / SEC-10Q +250 bps</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">10000</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">FRED-CPIU-2026Q4</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)">
-<defs><clipPath id="qe-clip-894911"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-75103"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="108.5" y1="26.0" x2="108.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="108.5" y1="250.0" x2="108.5" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="121.7" y1="26.0" x2="121.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -6120,7 +6099,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Stress Test Horizon, q / quarter</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Portfolio Liquidity Ratio, L<tspan dy="2.2" font-size="9.2">ratio</tspan><tspan dy="-2.2"> / %</tspan></text>
-<g clip-path="url(#qe-clip-894911)">
+<g clip-path="url(#qe-clip-75103)">
 <polygon points="78.0,205.2 574.0,205.2 574.0,250.0 78.0,250.0" fill="var(--status-err-bg)" opacity="0.45"/>
 <path d="M 78.0 205.2 L 574.0 205.2" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <polygon points="95.4,44.3 100.5,47.3 105.7,50.3 110.9,53.1 116.1,55.9 121.3,58.7 126.5,61.3 131.6,63.9 136.8,66.4 142.0,68.8 147.2,71.2 152.4,73.5 157.6,75.7 162.7,77.9 167.9,80.0 173.1,82.1 178.3,84.1 183.5,86.1 188.7,88.0 193.8,89.8 199.0,91.6 204.2,93.4 209.4,95.1 214.6,96.7 219.8,98.3 224.9,99.9 230.1,101.4 235.3,102.9 240.5,104.4 245.7,105.8 250.8,107.1 256.0,108.5 261.2,109.8 266.4,111.0 271.6,112.2 276.8,113.4 281.9,114.6 287.1,115.7 292.3,116.8 297.5,117.9 302.7,118.9 307.9,119.9 313.0,120.9 318.2,121.9 323.4,122.8 328.6,123.7 333.8,124.6 339.0,125.4 344.1,126.3 349.3,127.1 354.5,127.9 359.7,128.6 364.9,129.4 370.1,130.1 375.2,130.8 380.4,131.5 385.6,132.2 390.8,132.8 396.0,133.4 401.2,134.1 406.3,134.7 411.5,135.2 416.7,135.8 421.9,136.4 427.1,136.9 432.2,137.4 437.4,137.9 442.6,138.4 447.8,138.9 453.0,139.4 458.2,139.8 463.3,140.3 468.5,140.7 473.7,141.1 478.9,141.5 484.1,141.9 489.3,142.3 494.4,142.7 499.6,143.0 504.8,143.4 510.0,143.7 515.2,144.1 520.4,144.4 525.5,144.7 530.7,145.0 535.9,145.3 541.1,145.6 546.3,145.9 551.5,146.2 556.6,146.4 556.6,164.8 551.5,164.5 546.3,164.2 541.1,164.0 535.9,163.7 530.7,163.4 525.5,163.2 520.4,162.9 515.2,162.6 510.0,162.2 504.8,161.9 499.6,161.6 494.4,161.3 489.3,160.9 484.1,160.6 478.9,160.2 473.7,159.8 468.5,159.4 463.3,159.0 458.2,158.6 453.0,158.2 447.8,157.8 442.6,157.3 437.4,156.9 432.2,156.4 427.1,155.9 421.9,155.4 416.7,154.9 411.5,154.4 406.3,153.9 401.2,153.3 396.0,152.8 390.8,152.2 385.6,151.6 380.4,151.0 375.2,150.3 370.1,149.7 364.9,149.0 359.7,148.3 354.5,147.6 349.3,146.9 344.1,146.1 339.0,145.4 333.8,144.6 328.6,143.8 323.4,142.9 318.2,142.1 313.0,141.2 307.9,140.3 302.7,139.3 297.5,138.4 292.3,137.4 287.1,136.4 281.9,135.3 276.8,134.3 271.6,133.2 266.4,132.0 261.2,130.9 256.0,129.7 250.8,128.5 245.7,127.2 240.5,125.9 235.3,124.6 230.1,123.2 224.9,121.8 219.8,120.3 214.6,118.9 209.4,117.3 204.2,115.8 199.0,114.1 193.8,112.5 188.7,110.8 183.5,109.0 178.3,107.2 173.1,105.4 167.9,103.5 162.7,101.5 157.6,99.5 152.4,97.4 147.2,95.3 142.0,93.1 136.8,90.8 131.6,88.5 126.5,86.2 121.3,83.7 116.1,81.2 110.9,78.6 105.7,76.0 100.5,73.2 95.4,70.4" fill="var(--text-secondary)" opacity="0.14"/>
@@ -6230,7 +6209,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">RC-BENCH-RIG-04</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(22.4 ± 0.2) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">Scope-10MHz-Ref</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">1.00 kHz</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">NIST-RC-LAB-2026</span></div></div>
 <div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">V(t) = </span><button type="button" class="va-pill qe-eq-term qe-term-tx" data-variant="chip" data-term="tx"><span>V<sub>0</sub> (5.00 V)</span></button> <span class="qe-eq-op">×</span> <button type="button" class="va-pill qe-eq-term qe-term-path_loss" data-variant="chip" data-term="path_loss"><span>exp(−t / τ) (τ = 2.40 s)</span></button></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]">
-<defs><clipPath id="qe-clip-817870"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-440438"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="118.4" y1="26.0" x2="118.4" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="118.4" y1="250.0" x2="118.4" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="141.5" y1="26.0" x2="141.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -6328,7 +6307,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Elapsed Discharge Time, t / s</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Capacitor Voltage, V<tspan dy="2.2" font-size="9.2">c</tspan><tspan dy="-2.2"> / V</tspan></text>
-<g clip-path="url(#qe-clip-817870)">
+<g clip-path="url(#qe-clip-440438)">
 <polygon points="95.4,26.0 100.5,27.7 105.7,37.9 110.9,47.6 116.1,56.8 121.3,65.7 126.5,74.1 131.6,82.1 136.8,89.8 142.0,97.1 147.2,104.1 152.4,110.8 157.6,117.2 162.7,123.2 167.9,129.0 173.1,134.6 178.3,139.9 183.5,144.9 188.7,149.7 193.8,154.3 199.0,158.7 204.2,162.8 209.4,166.8 214.6,170.6 219.8,174.3 224.9,177.7 230.1,181.0 235.3,184.2 240.5,187.2 245.7,190.1 250.8,192.8 256.0,195.4 261.2,197.9 266.4,200.3 271.6,202.6 276.8,204.7 281.9,206.8 287.1,208.8 292.3,210.7 297.5,212.5 302.7,214.2 307.9,215.8 313.0,217.4 318.2,218.9 323.4,220.3 328.6,221.7 333.8,223.0 339.0,224.2 344.1,225.4 349.3,226.5 354.5,227.6 359.7,228.6 364.9,229.6 370.1,230.5 375.2,231.4 380.4,232.3 385.6,233.1 390.8,233.8 396.0,234.6 401.2,235.3 406.3,236.0 411.5,236.6 416.7,237.2 421.9,237.8 427.1,238.4 432.2,238.9 437.4,239.4 442.6,239.9 447.8,240.3 453.0,240.8 458.2,241.2 463.3,241.6 468.5,242.0 473.7,242.4 478.9,242.7 484.1,243.0 489.3,243.4 494.4,243.7 499.6,244.0 504.8,244.2 510.0,244.5 515.2,244.7 520.4,245.0 525.5,245.2 530.7,245.4 535.9,245.6 541.1,245.8 546.3,246.0 551.5,246.2 556.6,246.4 556.6,246.7 551.5,246.5 546.3,246.3 541.1,246.2 535.9,246.0 530.7,245.8 525.5,245.6 520.4,245.4 515.2,245.2 510.0,244.9 504.8,244.7 499.6,244.4 494.4,244.2 489.3,243.9 484.1,243.6 478.9,243.3 473.7,242.9 468.5,242.6 463.3,242.3 458.2,241.9 453.0,241.5 447.8,241.1 442.6,240.7 437.4,240.2 432.2,239.7 427.1,239.3 421.9,238.7 416.7,238.2 411.5,237.6 406.3,237.0 401.2,236.4 396.0,235.8 390.8,235.1 385.6,234.4 380.4,233.6 375.2,232.8 370.1,232.0 364.9,231.2 359.7,230.2 354.5,229.3 349.3,228.3 344.1,227.3 339.0,226.2 333.8,225.0 328.6,223.8 323.4,222.6 318.2,221.3 313.0,219.9 307.9,218.5 302.7,216.9 297.5,215.4 292.3,213.7 287.1,212.0 281.9,210.1 276.8,208.2 271.6,206.2 266.4,204.1 261.2,201.9 256.0,199.6 250.8,197.2 245.7,194.7 240.5,192.0 235.3,189.2 230.1,186.3 224.9,183.3 219.8,180.1 214.6,176.7 209.4,173.2 204.2,169.5 199.0,165.7 193.8,161.6 188.7,157.4 183.5,153.0 178.3,148.3 173.1,143.5 167.9,138.3 162.7,133.0 157.6,127.4 152.4,121.5 147.2,115.4 142.0,108.9 136.8,102.1 131.6,95.0 126.5,87.6 121.3,79.8 116.1,71.7 110.9,63.1 105.7,54.2 100.5,44.8 95.4,35.0" fill="var(--tint-amber-fg)" opacity="0.14"/>
 <path d="M 95.4 26.0 L 100.5 36.2 L 105.7 46.0 L 110.9 55.4 L 116.1 64.3 L 121.3 72.7 L 126.5 80.9 L 131.6 88.6 L 136.8 96.0 L 142.0 103.0 L 147.2 109.7 L 152.4 116.2 L 157.6 122.3 L 162.7 128.1 L 167.9 133.7 L 173.1 139.0 L 178.3 144.1 L 183.5 148.9 L 188.7 153.6 L 193.8 158.0 L 199.0 162.2 L 204.2 166.2 L 209.4 170.0 L 214.6 173.7 L 219.8 177.2 L 224.9 180.5 L 230.1 183.7 L 235.3 186.7 L 240.5 189.6 L 245.7 192.4 L 250.8 195.0 L 256.0 197.5 L 261.2 199.9 L 266.4 202.2 L 271.6 204.4 L 276.8 206.5 L 281.9 208.5 L 287.1 210.4 L 292.3 212.2 L 297.5 213.9 L 302.7 215.6 L 307.9 217.1 L 313.0 218.6 L 318.2 220.1 L 323.4 221.4 L 328.6 222.8 L 333.8 224.0 L 339.0 225.2 L 344.1 226.3 L 349.3 227.4 L 354.5 228.4 L 359.7 229.4 L 364.9 230.4 L 370.1 231.3 L 375.2 232.1 L 380.4 232.9 L 385.6 233.7 L 390.8 234.5 L 396.0 235.2 L 401.2 235.9 L 406.3 236.5 L 411.5 237.1 L 416.7 237.7 L 421.9 238.3 L 427.1 238.8 L 432.2 239.3 L 437.4 239.8 L 442.6 240.3 L 447.8 240.7 L 453.0 241.1 L 458.2 241.5 L 463.3 241.9 L 468.5 242.3 L 473.7 242.7 L 478.9 243.0 L 484.1 243.3 L 489.3 243.6 L 494.4 243.9 L 499.6 244.2 L 504.8 244.5 L 510.0 244.7 L 515.2 244.9 L 520.4 245.2 L 525.5 245.4 L 530.7 245.6 L 535.9 245.8 L 541.1 246.0 L 546.3 246.2 L 551.5 246.4 L 556.6 246.5" fill="none" stroke="var(--tint-amber-fg)" stroke-width="1.8" stroke-dasharray="5,4" data-term="path_loss"/>
 <line x1="95.4" y1="26.0" x2="95.4" y2="29.6" stroke="var(--tint-indigo-fg)" stroke-width="1.3"/>
@@ -6445,7 +6424,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <section id="v13-plot" aria-label="Brake Thermal Efficiency Curve"><figure class="va-figure-card qe-figure" id="w05-v13-propulsion-bte-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">ANL-D3-2.0L-CRDI</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">Argonne D^3 Dyn-Cell</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(25.0 ± 0.5) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">100.00 Hz</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">NIST-TRQ-2026-05</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP">
-<defs><clipPath id="qe-clip-569703"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-283609"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="108.2" y1="26.0" x2="108.2" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="108.2" y1="250.0" x2="108.2" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="121.0" y1="26.0" x2="121.0" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -6595,7 +6574,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Indicated Mean Effective Pressure, IMEP / bar</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Brake Thermal Efficiency, η<tspan dy="2.2" font-size="9.2">bte</tspan><tspan dy="-2.2"> / %</tspan></text>
-<g clip-path="url(#qe-clip-569703)">
+<g clip-path="url(#qe-clip-283609)">
 <polygon points="78.0,51.6 574.0,51.6 574.0,26.0 78.0,26.0" fill="var(--status-err-bg)" opacity="0.50"/>
 <path d="M 78.0 51.6 L 574.0 51.6" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <polygon points="78.0,122.0 574.0,122.0 574.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
@@ -6915,94 +6894,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <template id="tpl-view-v15-collimated-flight-hud">
 <div class="v9-stage-inner v9-view-v15">
   <div id="v15-hud-stage" class="v15-hud-stage" data-backplate="earthrise">
-    <img id="v15-earthrise-img" class="v15-earthrise-img" alt="" decoding="async"/>
-    <svg class="v15-scene-svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="v15-day-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#2563EB"/>
-          <stop offset="48%" stop-color="#60A5FA"/>
-          <stop offset="84%" stop-color="#DBEAFE"/>
-          <stop offset="100%" stop-color="#F8FAFC"/>
-        </linearGradient>
-        <linearGradient id="v15-day-ground" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#64748B"/>
-          <stop offset="28%" stop-color="#475569"/>
-          <stop offset="100%" stop-color="#334155"/>
-        </linearGradient>
-        <linearGradient id="v15-night-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#020617"/>
-          <stop offset="65%" stop-color="#071526"/>
-          <stop offset="100%" stop-color="#0F263D"/>
-        </linearGradient>
-        <linearGradient id="v15-night-sea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#07111F"/>
-          <stop offset="100%" stop-color="#030712"/>
-        </linearGradient>
-      </defs>
-      <g class="v15-scene-day">
-        <rect x="0" y="0" width="1200" height="370" fill="url(#v15-day-sky)"/>
-        <path d="M0 360 L0 336 Q130 318 270 332 T560 336 T880 326 T1200 338 L1200 360 Z" fill="#94A3B8" opacity="0.62"/>
-        <g fill="#FFFFFF">
-          <ellipse cx="145" cy="272" rx="150" ry="52" fill="#E2E8F0"/>
-          <ellipse cx="165" cy="256" rx="120" ry="44" fill="#FFFFFF"/>
-          <ellipse cx="360" cy="285" rx="165" ry="48" fill="#F1F5F9"/>
-          <ellipse cx="385" cy="270" rx="115" ry="38" fill="#FFFFFF"/>
-          <ellipse cx="835" cy="282" rx="160" ry="46" fill="#F1F5F9"/>
-          <ellipse cx="855" cy="264" rx="125" ry="40" fill="#FFFFFF"/>
-          <ellipse cx="1055" cy="268" rx="155" ry="50" fill="#E2E8F0"/>
-          <ellipse cx="1040" cy="252" rx="120" ry="42" fill="#FFFFFF"/>
-        </g>
-        <rect x="0" y="346" width="1200" height="24" fill="#F8FAFC" opacity="0.45"/>
-        <rect x="0" y="362" width="1200" height="358" fill="url(#v15-day-ground)"/>
-        <path d="M562 362 L638 362 L945 720 L255 720 Z" fill="#1E293B"/>
-        <path d="M565 362 L569 362 L285 720 L272 720 Z" fill="#F8FAFC" opacity="0.88"/>
-        <path d="M631 362 L635 362 L928 720 L915 720 Z" fill="#F8FAFC" opacity="0.88"/>
-        <g>
-          <path d="M350 658 L372 658 L360 688 L334 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M402 658 L424 658 L415 688 L391 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M454 658 L476 658 L470 688 L447 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M506 658 L528 658 L525 688 L503 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M672 658 L694 658 L697 688 L675 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M724 658 L746 658 L753 688 L730 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M776 658 L798 658 L809 688 L785 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M828 658 L850 658 L866 688 L840 688 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M452 572 L494 572 L482 598 L434 598 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M706 572 L748 572 L766 598 L718 598 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M597 380 L603 380 L604 398 L596 398 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M596 414 L604 414 L605 440 L595 440 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M595 464 L605 464 L606 498 L594 498 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M594 528 L606 528 L608 574 L592 574 Z" fill="#F8FAFC" opacity="0.9"/>
-          <path d="M592 612 L608 612 L611 670 L589 670 Z" fill="#F8FAFC" opacity="0.9"/>
-        </g>
-      </g>
-      <g class="v15-scene-night">
-        <rect x="0" y="0" width="1200" height="370" fill="url(#v15-night-sky)"/>
-        <g fill="#93C5FD" opacity="0.55">
-          <circle cx="195" cy="88" r="1.3"/><circle cx="318" cy="134" r="1.1"/><circle cx="485" cy="72" r="1.4"/>
-          <circle cx="712" cy="96" r="1.2"/><circle cx="888" cy="128" r="1.5"/><circle cx="1015" cy="78" r="1.1"/>
-        </g>
-        <path d="M0 362 L0 330 Q175 308 360 328 T760 326 T1200 334 L1200 362 Z" fill="#0B1626"/>
-        <rect x="0" y="362" width="1200" height="358" fill="url(#v15-night-sea)"/>
-        <path d="M556 362 L644 362 L960 720 L240 720 Z" fill="#0A101C"/>
-        <g fill="#22C55E">
-          <circle cx="348" cy="650" r="3.4"/><circle cx="412" cy="650" r="3.4"/><circle cx="476" cy="650" r="3.4"/>
-          <circle cx="540" cy="650" r="3.4"/><circle cx="660" cy="650" r="3.4"/><circle cx="724" cy="650" r="3.4"/>
-          <circle cx="788" cy="650" r="3.4"/><circle cx="852" cy="650" r="3.4"/>
-        </g>
-        <g fill="#FDE047">
-          <circle cx="322" cy="680" r="3.8"/><circle cx="378" cy="612" r="3.3"/><circle cx="430" cy="548" r="2.9"/>
-          <circle cx="474" cy="492" r="2.5"/><circle cx="512" cy="444" r="2.2"/><circle cx="542" cy="404" r="1.8"/>
-          <circle cx="878" cy="680" r="3.8"/><circle cx="822" cy="612" r="3.3"/><circle cx="770" cy="548" r="2.9"/>
-          <circle cx="726" cy="492" r="2.5"/><circle cx="688" cy="444" r="2.2"/><circle cx="658" cy="404" r="1.8"/>
-        </g>
-        <g fill="#E2E8F0" opacity="0.9">
-          <circle cx="600" cy="622" r="2.8"/><circle cx="600" cy="560" r="2.4"/><circle cx="600" cy="505" r="2.1"/>
-          <circle cx="600" cy="458" r="1.8"/><circle cx="600" cy="418" r="1.6"/><circle cx="600" cy="386" r="1.3"/>
-        </g>
-        <circle cx="458" cy="532" r="4" fill="#F8FAFC"/><circle cx="474" cy="532" r="4" fill="#F8FAFC"/>
-        <circle cx="490" cy="532" r="4" fill="#EF4444"/><circle cx="506" cy="532" r="4" fill="#EF4444"/>
-      </g>
-    </svg>
+    <img class="v9-opt-photo v15-photo" data-photo-mode="earthrise" data-asset="assets/as08-14-2383.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="high" decoding="async"/>
+    <img class="v9-opt-photo v15-photo" data-photo-mode="daylight" data-asset="assets/opt_hud_daylight_rwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
+    <img class="v9-opt-photo v15-photo" data-photo-mode="lowlight" data-asset="assets/opt_hud_night_rwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
     <svg class="v15-reticle-layer" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet" role="img" aria-label="MIL-STD-1787B Collimated Optical Flight Symbology">
       <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <line x1="384" y1="48" x2="816" y2="48" stroke-width="1.8"/>
@@ -7026,6 +6920,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         <path d="M42 325 L126 325 L140 345 L126 365 L42 365 Z" fill="none" stroke-width="2.2"/>
         <text x="90" y="352" text-anchor="middle" font-size="19">142</text>
         <text x="44" y="576" text-anchor="start" font-size="13">GS 148 KT</text>
+        <text x="44" y="616" text-anchor="start" font-size="14">PROP BTE 42.8% · IMEP 14.0 BAR</text>
 
         <text x="1064" y="136" text-anchor="start" font-size="12">FT MSL</text>
         <line x1="1064" y1="150" x2="1064" y2="540" stroke-width="2"/>
@@ -7035,27 +6930,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         <text x="1158" y="576" text-anchor="end" font-size="13">VS -650 FPM</text>
         <text x="1158" y="598" text-anchor="end" font-size="13">29.92 IN</text>
 
-        <line x1="395" y1="360" x2="532" y2="360" stroke-width="1.8" opacity="0.86"/>
-        <line x1="668" y1="360" x2="805" y2="360" stroke-width="1.8" opacity="0.86"/>
-        <path d="M572 324 L586 324 L593 333 L600 324 L607 333 L614 324 L628 324" fill="none" stroke-width="2.2"/>
+        <line x1="395" y1="350" x2="532" y2="350" stroke-width="1.8" opacity="0.86"/>
+        <line x1="668" y1="350" x2="805" y2="350" stroke-width="1.8" opacity="0.86"/>
+        <path d="M572 314 L586 314 L593 323 L600 314 L607 323 L614 314 L628 314" fill="none" stroke-width="2.2"/>
 
-        <path d="M484 190 v-12 h64 M652 178 h64 v12" fill="none" stroke-width="2"/>
-        <text x="476" y="183" text-anchor="end" font-size="13">+10</text>
-        <text x="724" y="183" text-anchor="start" font-size="13">+10</text>
-        <path d="M484 281 v-12 h64 M652 269 h64 v12" fill="none" stroke-width="2"/>
-        <text x="476" y="274" text-anchor="end" font-size="13">+5</text>
-        <text x="724" y="274" text-anchor="start" font-size="13">+5</text>
+        <path d="M484 180 v-12 h64 M652 168 h64 v12" fill="none" stroke-width="2"/>
+        <text x="476" y="173" text-anchor="end" font-size="13">+10</text>
+        <text x="724" y="173" text-anchor="start" font-size="13">+10</text>
+        <path d="M484 271 v-12 h64 M652 259 h64 v12" fill="none" stroke-width="2"/>
+        <text x="476" y="264" text-anchor="end" font-size="13">+5</text>
+        <text x="724" y="264" text-anchor="start" font-size="13">+5</text>
 
-        <path d="M484 439 v12 h64 M652 451 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
-        <text x="476" y="456" text-anchor="end" font-size="13">-5</text>
-        <text x="724" y="456" text-anchor="start" font-size="13">-5</text>
-        <path d="M484 530 v12 h64 M652 542 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
-        <text x="476" y="547" text-anchor="end" font-size="13">-10</text>
-        <text x="724" y="547" text-anchor="start" font-size="13">-10</text>
+        <path d="M484 429 v12 h64 M652 441 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
+        <text x="476" y="446" text-anchor="end" font-size="13">-5</text>
+        <text x="724" y="446" text-anchor="start" font-size="13">-5</text>
+        <path d="M484 520 v12 h64 M652 532 h64 v-12" fill="none" stroke-width="2" stroke-dasharray="10 7"/>
+        <text x="476" y="537" text-anchor="end" font-size="13">-10</text>
+        <text x="724" y="537" text-anchor="start" font-size="13">-10</text>
 
-        <circle cx="600" cy="405" r="11" fill="none" stroke-width="2.2"/>
-        <path d="M568 405 H589 M611 405 H632 M600 394 V381" fill="none" stroke-width="2.2"/>
-        <text x="44" y="684" text-anchor="start" font-size="14">PROP BTE 42.8% · IMEP 14.0 BAR</text>
+        <circle cx="600" cy="395" r="11" fill="none" stroke-width="2.2"/>
+        <path d="M568 395 H589 M611 395 H632 M600 384 V371" fill="none" stroke-width="2.2"/>
       </g>
     </svg>
     <div id="v15-backplate-chips" class="v15-hud-mode-strip" role="group" aria-label="Optical Backplate Scene">
@@ -7069,90 +6963,25 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <template id="tpl-view-v16-transparent-window-overlay">
 <div class="v9-stage-inner v9-view-v16">
   <div id="v16-glass-viewport" class="v16-glass-viewport" data-luminance="daylight" data-contrast="10.8:1">
-    <svg class="v16-scene-svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="v16-sky-day" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#38BDF8"/><stop offset="52%" stop-color="#BAE6FD"/><stop offset="100%" stop-color="#F8FAFC"/>
-        </linearGradient>
-        <linearGradient id="v16-sky-dusk" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#1E3A8A"/><stop offset="56%" stop-color="#B45309"/><stop offset="100%" stop-color="#F59E0B"/>
-        </linearGradient>
-        <linearGradient id="v16-sky-night" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#020617"/><stop offset="65%" stop-color="#0B1324"/><stop offset="100%" stop-color="#1E293B"/>
-        </linearGradient>
-        <radialGradient id="v16-sun-glare" cx="0.62" cy="0.34" r="0.34">
-          <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.92"/>
-          <stop offset="40%" stop-color="#FEF3C7" stop-opacity="0.45"/>
-          <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-        </radialGradient>
-        <linearGradient id="v16-road-deck" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#475569"/><stop offset="100%" stop-color="#1E293B"/>
-        </linearGradient>
-      </defs>
-      <rect class="v16-sky-fill v16-only-day" x="0" y="0" width="1200" height="320" fill="url(#v16-sky-day)"/>
-      <rect class="v16-sky-fill v16-only-dusk" x="0" y="0" width="1200" height="320" fill="url(#v16-sky-dusk)"/>
-      <rect class="v16-sky-fill v16-only-night" x="0" y="0" width="1200" height="320" fill="url(#v16-sky-night)"/>
-      <rect class="v16-only-day" x="0" y="0" width="1200" height="320" fill="url(#v16-sun-glare)"/>
-      <rect class="v16-only-dusk" x="0" y="0" width="1200" height="320" fill="url(#v16-sun-glare)" opacity="0.65"/>
-      <g class="v16-clouds">
-        <ellipse cx="180" cy="128" rx="190" ry="42" fill="#FFFFFF" opacity="0.72"/>
-        <ellipse cx="1010" cy="142" rx="195" ry="44" fill="#FFFFFF" opacity="0.68"/>
-      </g>
-      <path d="M0 315 L0 264 Q140 232 300 266 L460 288 L760 288 L930 256 Q1080 236 1200 268 L1200 315 Z" fill="#475569" opacity="0.68"/>
-      <rect x="0" y="310" width="1200" height="410" fill="#1E293B"/>
-      <g class="v16-bridge-structure">
-        <rect x="170" y="42" width="16" height="310" fill="#334155"/><rect x="218" y="42" width="16" height="310" fill="#334155"/>
-        <rect x="170" y="76" width="64" height="12" fill="#475569"/><rect x="170" y="168" width="64" height="12" fill="#475569"/>
-        <rect x="966" y="42" width="16" height="310" fill="#334155"/><rect x="1014" y="42" width="16" height="310" fill="#334155"/>
-        <rect x="966" y="76" width="64" height="12" fill="#475569"/><rect x="966" y="168" width="64" height="12" fill="#475569"/>
-        <g stroke="#CBD5E1" stroke-width="2.2" opacity="0.72">
-          <line x1="178" y1="54" x2="10" y2="296"/><line x1="178" y1="54" x2="86" y2="306"/>
-          <line x1="226" y1="54" x2="310" y2="308"/><line x1="226" y1="54" x2="392" y2="308"/>
-          <line x1="974" y1="54" x2="808" y2="308"/><line x1="974" y1="54" x2="890" y2="308"/>
-          <line x1="1022" y1="54" x2="1114" y2="306"/><line x1="1022" y1="54" x2="1190" y2="296"/>
-        </g>
-        <g class="v16-only-night" fill="#EF4444">
-          <circle cx="178" cy="40" r="4"/><circle cx="226" cy="40" r="4"/>
-          <circle cx="974" cy="40" r="4"/><circle cx="1022" cy="40" r="4"/>
-        </g>
-      </g>
-      <path d="M510 310 L690 310 L1180 720 L20 720 Z" fill="#64748B"/>
-      <path d="M522 310 L678 310 L1132 720 L68 720 Z" fill="url(#v16-road-deck)"/>
-      <g>
-        <path d="M532 325 L536 325 L230 720 L216 720 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M664 325 L668 325 L984 720 L970 720 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M572 340 L575 340 L565 376 L559 376 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M551 404 L558 404 L535 478 L522 478 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M504 532 L520 532 L478 656 L450 656 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M625 340 L628 340 L641 376 L635 376 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M642 404 L649 404 L678 478 L665 478 Z" fill="#E2E8F0" opacity="0.82"/>
-        <path d="M680 532 L696 532 L750 656 L722 656 Z" fill="#E2E8F0" opacity="0.82"/>
-      </g>
-      <g transform="translate(556, 376)">
-        <path d="M12 22 L20 4 H68 L76 22 L84 26 V52 H4 V26 Z" fill="#0F172A" stroke="#475569" stroke-width="1.5"/>
-        <path d="M22 7 H66 L72 20 H16 Z" fill="#334155"/>
-        <rect x="8" y="29" width="15" height="6" rx="1" fill="#EF4444"/>
-        <rect x="65" y="29" width="15" height="6" rx="1" fill="#EF4444"/>
-      </g>
-      <path d="M542 468 L658 468 L774 696 L426 696 Z" fill="#38BDF8" opacity="0.11"/>
-      <path d="M542 468 L426 696 M658 468 L774 696" fill="none" stroke="#38BDF8" stroke-width="3" opacity="0.88"/>
-      <path d="M498 548 V536 M498 548 H702 M702 548 V536" fill="none" stroke="#7DD3FC" stroke-width="3" opacity="0.95"/>
-    </svg>
-    <section class="v16-glass-pod v16-pod-left" aria-label="Speed, Route and Efficiency">
-      <div class="v16-speed-row">
-        <span class="v16-speed-val va-nums">42</span>
-        <span class="v16-speed-unit">mph</span>
-        <span class="v16-speed-cap va-nums">45 mph DERATE LIMIT</span>
-      </div>
-      <div class="v16-route-line">E-Bound Bay Causeway · 2.4 mi to Maint Turnout</div>
-      <div class="v16-eff-line va-nums">Cruise Efficiency: <strong>42.8% BTE</strong></div>
-    </section>
-    <section class="v16-glass-pod v16-pod-right v16-pod-warn" aria-label="Drivetrain Advisory">
-      <span class="va-pill" data-variant="status" data-state="warn">DRIVETRAIN DERATE</span>
-      <div class="v16-warn-title">MCU Thermal Limit (85 °C)</div>
-      <div class="v16-warn-action">Hold &lt;= 45 mph · Inspect Rear Harness Stub at Next Stop</div>
-    </section>
-    <div class="v16-road-gap-badge va-nums" aria-label="Conformal Safe Following Distance">2.8 s · 53 m SAFE FOLLOWING GAP</div>
+    <img class="v9-opt-photo v16-photo" data-photo-mode="daylight" data-asset="assets/opt_glass_day_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="high" decoding="async"/>
+    <img class="v9-opt-photo v16-photo" data-photo-mode="dusk" data-asset="assets/opt_glass_dusk_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
+    <img class="v9-opt-photo v16-photo" data-photo-mode="night" data-asset="assets/opt_glass_night_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
+    <div class="v16-visor-bar">
+      <section class="v16-glass-pod v16-pod-left" aria-label="Speed, Route and Efficiency">
+        <div class="v16-speed-row">
+          <span class="v16-speed-val va-nums">42</span>
+          <span class="v16-speed-unit">mph</span>
+          <span class="v16-speed-cap va-nums">45 mph DERATE LIMIT</span>
+        </div>
+        <div class="v16-route-line">E-Bound Highway · 2.4 mi to Maint Turnout</div>
+        <div class="v16-eff-line va-nums">Cruise: <strong>42.8% BTE</strong> · Following Gap: 2.8 s</div>
+      </section>
+      <section class="v16-glass-pod v16-pod-right v16-pod-warn" aria-label="Drivetrain Advisory">
+        <span class="va-pill" data-variant="status" data-state="warn">DRIVETRAIN DERATE</span>
+        <div class="v16-warn-title">MCU Thermal Limit (85 °C)</div>
+        <div class="v16-warn-action">Hold &lt;= 45 mph · Inspect Rear Harness Stub at Stop</div>
+      </section>
+    </div>
     <div id="v16-luminance-chips" class="v16-ctrl-chips" role="group" aria-label="Ambient Glare Mode">
       <button type="button" class="va-pill v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.8:1" aria-pressed="true">Daylight Glare</button>
       <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.9:1" aria-pressed="false">Horizon Dusk</button>
@@ -7698,13 +7527,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const med = effectiveMedium(viewMeta);
     const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveAbsDocsAsset('assets/as08-14-2383.jpg');
     const tokStyle = document.getElementById('custom-tokens');
     const ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
     const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
     const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
-    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + escHtml(earthriseUrl) + '\');" data-theme="' + escHtml(state.theme) +
+    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
       '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
@@ -7817,8 +7645,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (main && state.renderedView !== state.view) {
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
-      const hudImg = doc.getElementById('v15-earthrise-img');
-      if (hudImg) { hudImg.onerror = function () { hudImg.style.display = 'none'; }; hudImg.src = resolveAbsDocsAsset('assets/as08-14-2383.jpg'); }
+      doc.querySelectorAll('img[data-asset]').forEach(function (img) {
+        img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
+      });
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;

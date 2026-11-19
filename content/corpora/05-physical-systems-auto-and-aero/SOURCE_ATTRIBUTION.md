@@ -33,3 +33,16 @@ Government datasets, open engineering standards, and NIST metrology guides.
 | `NASA-STD-3001-V2C` | `v15`, `v16` | NASA-STD-3001 Vol 2 Rev C (`20130000738`) — Crew display/effector separation, guarded controls, and zero-flashing alarm discipline | `GOV_PUBLIC_USE_PERMITTED` |
 | `NASA-NTRS-20250011652` | `v15` | Review of Advanced Informatics and Display Systems for Extravehicular & Flight HUDs (`M6` collimated infinity optics, `>= 65.0 %` central sightline keep-out) | `GOV_PUBLIC_USE_PERMITTED` |
 | `QUIET-UI-M7-OPTICS` | `v16` | Medium `M7` Transparent Window Overlay specification (luminance-adaptive smoked scrim `>= 7.0:1` contrast ratio with `paint-order` stroke halos) | `REPO_SPEC_V9` |
+
+## 4. Real-World Optical Backplate Photographs (`v15`, `v16`, EXIF-Free `1600×1000`)
+
+All optical viewport photographs carry zero attribution requirements for shipped deliverables (`17 U.S.C. § 105` U.S. Government Public Domain or `CC0 1.0 Universal` dedication, verified `AttributionRequired == "false"` via `scripts/fetch_optical_backplates.py`).
+
+| Asset Path | View & Mode | Source Title & Agency | License | Output Size |
+| :--- | :--- | :--- | :--- | :--- |
+| `docs/assets/as08-14-2383.jpg` | `v15` `earthrise` | Apollo 8 Earthrise (`as08-14-2383`, NASA JSC) | `PD-USGov-NASA` | `1600×1000` (`30,948 B`) |
+| `docs/assets/opt_hud_daylight_rwy.jpg` | `v15` `daylight` | [`DF-ST-83-04217 An aerial view of the runway approach`](https://commons.wikimedia.org/wiki/File:DF-ST-83-04217_An_aerial_view_of_the_runway_approach.jpeg) (U.S. DoD / DVIC, `2820×1850`) | `Public domain` | `1600×1000` (`178,006 B`) |
+| `docs/assets/opt_hud_night_rwy.jpg` | `v15` `lowlight` | [`KC-10 landing at night 130811-F-AB304-254`](https://commons.wikimedia.org/wiki/File:KC-10_landing_at_night_130811-F-AB304-254.jpg) (U.S. Air Force / DVIDS, `4112×2832`) | `Public domain` | `1600×1000` (`130,751 B`) |
+| `docs/assets/opt_glass_day_hwy.jpg` | `v16` `daylight` | [`Catskill, United States (Unsplash)`](https://commons.wikimedia.org/wiki/File:Catskill,_United_States_(Unsplash).jpg) (Wikimedia Commons / Unsplash CC0 Archive, `3934×2626`) | `CC0 1.0` | `1600×1000` (`169,752 B`) |
+| `docs/assets/opt_glass_dusk_hwy.jpg` | `v16` `dusk` | [`Cool sunset hues on a highway (Unsplash)`](https://commons.wikimedia.org/wiki/File:Cool_sunset_hues_on_a_highway_(Unsplash).jpg) (Wikimedia Commons / Unsplash CC0 Archive, `3600×2400`) | `CC0 1.0` | `1600×1000` (`161,814 B`) |
+| `docs/assets/opt_glass_night_hwy.jpg` | `v16` `night` | [`Highway light trains at night (Unsplash)`](https://commons.wikimedia.org/wiki/File:Highway_light_trains_at_night_(Unsplash).jpg) (Wikimedia Commons / Unsplash CC0 Archive, `4595×2872`) | `CC0 1.0` | `1600×1000` (`144,066 B`) |
