@@ -1,0 +1,103 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v10-civic-budget-table",
+  "metadata": {
+    "title": "FY2027 Municipal Capital Trade Matrix & Reserve Coverage Ledger",
+    "description": "GAO Green Book and USWDS-compliant capital obligation matrix matching waterfall allocations (28.4 M USD School HVAC, 31.2 M USD Water Main, 26.9 M USD Closing Contingency) against the 15.0 M USD policy reserve floor.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "columns": [
+    {
+      "key": "line_item",
+      "label": "Capital Line Item",
+      "data_type": "string",
+      "priority": 1
+    },
+    {
+      "key": "ledger_class",
+      "label": "GAO Fund Class",
+      "data_type": "string",
+      "priority": 2
+    },
+    {
+      "key": "amount_musd",
+      "label": "Net Allocation",
+      "unit": "M USD",
+      "quantity_calculus": "F_net / M USD",
+      "data_type": "numeric",
+      "priority": 1
+    },
+    {
+      "key": "reserve_coverage_pct",
+      "label": "Reserve Coverage",
+      "unit": "%",
+      "quantity_calculus": "R_cov / %",
+      "data_type": "numeric",
+      "priority": 1
+    },
+    {
+      "key": "board_status",
+      "label": "Board Status",
+      "data_type": "status",
+      "priority": 1
+    },
+    {
+      "key": "covenant_note",
+      "label": "Audit & Trade Note",
+      "data_type": "string",
+      "priority": 2
+    }
+  ],
+  "rows": [
+    {
+      "line_item": "Opening Capital Reserve",
+      "ledger_class": "Unobligated Base",
+      "amount_musd": 48.0,
+      "reserve_coverage_pct": 320.0,
+      "board_status": "NOMINAL",
+      "covenant_note": "3.20x statutory 15.0 M USD floor"
+    },
+    {
+      "line_item": "State Infrastructure Grant",
+      "ledger_class": "Restricted Inflow",
+      "amount_musd": 16.5,
+      "reserve_coverage_pct": 430.0,
+      "board_status": "NOMINAL",
+      "covenant_note": "Cumulative inflow reach 64.5 M USD"
+    },
+    {
+      "line_item": "Municipal Utility Revenue Bond",
+      "ledger_class": "Debt Proceeds",
+      "amount_musd": 22.0,
+      "reserve_coverage_pct": 576.7,
+      "board_status": "NOMINAL",
+      "covenant_note": "Pre-outlay liquidity 86.5 M USD"
+    },
+    {
+      "line_item": "School HVAC Modernization",
+      "ledger_class": "Capital Outlay",
+      "amount_musd": 28.4,
+      "reserve_coverage_pct": 387.3,
+      "board_status": "NOMINAL",
+      "covenant_note": "Fixed-price GMP; 58.1 M USD post-draw"
+    },
+    {
+      "line_item": "Mainline Water Main Replacement",
+      "ledger_class": "Capital Outlay",
+      "amount_musd": 31.2,
+      "reserve_coverage_pct": 179.3,
+      "board_status": "REVIEW",
+      "covenant_note": "Ductile-iron price escalation; Option B split",
+      "_row_status": "warn"
+    },
+    {
+      "line_item": "Closing Contingency Balance",
+      "ledger_class": "Net Ending Reserve",
+      "amount_musd": 26.9,
+      "reserve_coverage_pct": 179.3,
+      "board_status": "NOMINAL",
+      "covenant_note": "+11.9 M USD above 15.0 M USD policy floor"
+    }
+  ]
+}

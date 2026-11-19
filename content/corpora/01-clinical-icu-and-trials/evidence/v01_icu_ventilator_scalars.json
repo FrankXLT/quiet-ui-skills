@@ -1,0 +1,152 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:scalar",
+  "id": "v01-icu-ventilator-scalars",
+  "metadata": {
+    "title": "ICU Bed-04 Hemodynamic & Ventilator Telemetry Scalars",
+    "description": "Synchronized high-precision bedside metrology (MAP, Ventilator PEEP CMD vs ACT, SpO2) with NIST expanded uncertainty (k=2), calibration provenance, and recovery trend sparklines.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z",
+    "subsystem": "ICU-BED-04-TELEMETRY"
+  },
+  "items": [
+    {
+      "metadata": {
+        "title": "Mean Arterial Pressure (Radial Arterial Line)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-17T05:30:00Z",
+        "subsystem": "ICU-BED-04-HEMO"
+      },
+      "quantity": {
+        "symbol": "MAP",
+        "name": "Mean Arterial Pressure",
+        "unit": "mmHg",
+        "quantity_calculus": "MAP / mmHg"
+      },
+      "measurement": {
+        "nominal_value": 63.5,
+        "expanded_uncertainty": 1.5,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "ART-LINE-04A",
+        "calibration_id": "CAL-NIST-ICU-2026-401",
+        "raw_adc_counts": 16256
+      },
+      "limits": {
+        "nominal_target": 75.0,
+        "tolerance_band": [-10.0, 15.0],
+        "warning_thresholds": {
+          "lower": 65.0,
+          "upper": 100.0
+        },
+        "abort_thresholds": {
+          "lower": 55.0,
+          "upper": 115.0
+        }
+      },
+      "status_annunciator": {
+        "state": "WARNING",
+        "label": "CAUTION",
+        "margin_remaining_pct": -2.3
+      },
+      "gauge": {
+        "type": "linear_horizontal",
+        "min_scale": 50.0,
+        "max_scale": 120.0
+      },
+      "sparkline": [68.2, 67.4, 66.8, 66.0, 65.2, 64.8, 64.1, 63.9, 63.6, 63.5]
+    },
+    {
+      "metadata": {
+        "title": "Ventilator PEEP (Commanded vs Actual Circuit Pressure)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-17T05:30:00Z",
+        "subsystem": "ICU-BED-04-VENT"
+      },
+      "quantity": {
+        "symbol": "PEEP",
+        "name": "Positive End-Expiratory Pressure",
+        "unit": "cmH2O",
+        "quantity_calculus": "PEEP / cmH2O"
+      },
+      "measurement": {
+        "nominal_value": 10.2,
+        "expanded_uncertainty": 0.2,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "VENT-PNEUM-04B",
+        "calibration_id": "CAL-ISO80601-VENT-2026-118",
+        "raw_adc_counts": 8192
+      },
+      "limits": {
+        "nominal_target": 10.0,
+        "tolerance_band": [-1.0, 1.0],
+        "warning_thresholds": {
+          "lower": 8.0,
+          "upper": 14.0
+        },
+        "abort_thresholds": {
+          "lower": 5.0,
+          "upper": 18.0
+        }
+      },
+      "status_annunciator": {
+        "state": "NOMINAL",
+        "label": "NOMINAL",
+        "margin_remaining_pct": 95.0
+      },
+      "gauge": {
+        "type": "linear_horizontal",
+        "min_scale": 4.0,
+        "max_scale": 20.0,
+        "commanded_value": 10.0
+      },
+      "sparkline": [10.0, 10.1, 10.0, 10.2, 10.1, 10.2, 10.3, 10.1, 10.2, 10.2]
+    },
+    {
+      "metadata": {
+        "title": "Pulse Oximetry Oxygen Saturation (SpO2)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-17T05:30:00Z",
+        "subsystem": "ICU-BED-04-OXI"
+      },
+      "quantity": {
+        "symbol": "SpO2",
+        "name": "Arterial Oxygen Saturation",
+        "unit": "%",
+        "quantity_calculus": "SpO2 / %"
+      },
+      "measurement": {
+        "nominal_value": 94.2,
+        "expanded_uncertainty": 0.8,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "OXI-PLETH-04C",
+        "calibration_id": "CAL-ISO80601-OXI-2026-092",
+        "raw_adc_counts": 12058
+      },
+      "limits": {
+        "nominal_target": 96.0,
+        "tolerance_band": [-4.0, 4.0],
+        "warning_thresholds": {
+          "lower": 92.0,
+          "upper": 100.0
+        },
+        "abort_thresholds": {
+          "lower": 88.0,
+          "upper": 100.0
+        }
+      },
+      "status_annunciator": {
+        "state": "NOMINAL",
+        "label": "NOMINAL",
+        "margin_remaining_pct": 55.0
+      },
+      "gauge": {
+        "type": "linear_horizontal",
+        "min_scale": 85.0,
+        "max_scale": 100.0
+      },
+      "sparkline": [95.4, 95.1, 94.8, 94.9, 94.6, 94.5, 94.3, 94.4, 94.1, 94.2]
+    }
+  ]
+}

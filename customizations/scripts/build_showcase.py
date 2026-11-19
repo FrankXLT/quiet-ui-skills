@@ -10,6 +10,7 @@ License: MIT (https://github.com/FrankXLT/quiet-ui-skills)
 from __future__ import annotations
 
 import argparse
+import html as _html
 import json
 import re
 import sys
@@ -47,6 +48,69 @@ def load_manifest(target_dir: Path) -> dict:
         return json.load(f)
 
 
+def _filter_v9_showcase(html: str, manifest: dict, disabled_tiers: list[str], mode: str) -> tuple[str, str]:
+    """Filter v9 world/view selectors, JSON manifest, and templates."""
+    m = re.search(r'(<script[^>]*id="va-v9-manifest"[^>]*>)(.*?)(</script>)', html, flags=re.S)
+    if not m:
+        return html, "0 views"
+    v9_data = json.loads(m.group(2))
+    enabled_worlds = manifest.get("enabled_worlds")
+    enabled_views = manifest.get("enabled_views")
+    brand_excluded: set[str] = set()
+    if mode == "brand":
+        if "hud-1" in disabled_tiers:
+            brand_excluded.add("v15-collimated-flight-hud")
+        if "ctrl-1" in disabled_tiers or "hud-1" in disabled_tiers:
+            brand_excluded.add("v16-transparent-window-overlay")
+        if "app-5" in disabled_tiers:
+            brand_excluded.update({"v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console"})
+    kept_worlds, disabled_views = [], []
+    for w in v9_data.get("worlds", []):
+        if enabled_worlds and w["world_id"] not in enabled_worlds:
+            disabled_views.extend(vw["view_id"] for vw in w.get("views", []))
+            continue
+        kept_views = []
+        for vw in w.get("views", []):
+            vid = vw["view_id"]
+            if (enabled_views and vid not in enabled_views) or vid in brand_excluded:
+                disabled_views.append(vid)
+            else:
+                kept_views.append(vw)
+        if kept_views:
+            w_copy = dict(w)
+            w_copy["views"] = kept_views
+            kept_worlds.append(w_copy)
+    v9_data["worlds"] = kept_worlds
+    new_json = json.dumps(v9_data, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e")
+    html = html[:m.start(2)] + new_json + html[m.end(2):]
+    w_opts = "\n".join(
+        f'          <option value="{_html.escape(str(w["world_id"]), quote=True)}">{_html.escape(str(w["world_label"]))}</option>'
+        for w in kept_worlds
+    )
+    first_views = kept_worlds[0]["views"] if kept_worlds else []
+    v_opts = "\n".join(
+        f'        <option value="{_html.escape(str(vw["view_id"]), quote=True)}">{_html.escape(str(vw["option_label"]))}</option>'
+        for vw in first_views
+    )
+    for sid in ("va-domain-select", "va-sheet-domain-select"):
+        html = re.sub(
+            rf'(<select\s+id="{sid}"[^>]*>)(.*?)(</select>)',
+            lambda match: f"{match.group(1)}\n{w_opts}\n        {match.group(3)}",
+            html,
+            flags=re.S,
+        )
+    html = re.sub(
+        r'(<select\s+id="va-view-select"[^>]*>)(.*?)(</select>)',
+        lambda match: f"{match.group(1)}\n{v_opts}\n      {match.group(3)}",
+        html,
+        flags=re.S,
+    )
+    for vid in disabled_views:
+        html = re.sub(rf'\n\s*<template\s+id="tpl-view-{re.escape(vid)}"[^>]*>.*?</template>', "", html, flags=re.S)
+    total_views = sum(len(w["views"]) for w in kept_worlds)
+    return html, f"{len(kept_worlds)} worlds, {total_views} views"
+
+
 def build_showcase(
     target_dir: Path,
     source_html_path: Path,
@@ -54,14 +118,11 @@ def build_showcase(
     bundle: bool = False,
 ) -> None:
     manifest = load_manifest(target_dir)
-    title = manifest.get("title", "Quiet UI Showcase")
-    mode = manifest.get("mode", "personal")
+    title = str(manifest.get("title", "Quiet UI Showcase"))
+    mode = str(manifest.get("mode", "personal"))
 
     raw_enabled = manifest.get("enabled_tiers", ALL_16_TIERS)
-    enabled = normalize_tiers(raw_enabled)
-    if not enabled:
-        enabled = list(ALL_16_TIERS)
-
+    enabled = normalize_tiers(raw_enabled) or list(ALL_16_TIERS)
     raw_disabled = manifest.get("disabled_tiers", [t for t in ALL_16_TIERS if t not in enabled])
     disabled = normalize_tiers(raw_disabled)
     for t in ALL_16_TIERS:
@@ -72,77 +133,48 @@ def build_showcase(
         raise FileNotFoundError(f"Source master showcase not found: {source_html_path}")
 
     html = source_html_path.read_text(encoding="utf-8")
+    safe_title = _html.escape(title, quote=True)
+    html = re.sub(r"<title>.*?</title>", lambda _m: f"<title>{safe_title} — Quiet UI Showcase</title>", html, count=1)
 
-    # 1. Update <title>
-    html = re.sub(
-        r"<title>.*?</title>",
-        f"<title>{title} — Quiet UI Showcase</title>",
-        html,
-        count=1,
-    )
-
-    # 2. Stamp custom styles attributes & bundle/link styles
     tokens_path = target_dir / "styles" / "quiet-ui-tokens.css"
     overrides_path = target_dir / "styles" / "overrides.css"
-
     custom_attr = 'data-custom-styles="true"'
     if bundle:
         custom_attr += ' data-inline-custom-css="true"'
-        tok_css = tokens_path.read_text(encoding="utf-8") if tokens_path.exists() else ""
-        ovr_css = overrides_path.read_text(encoding="utf-8") if overrides_path.exists() else ""
-        bundle_block = (
-            f'\n  <style id="custom-tokens">\n{tok_css}\n  </style>\n'
-            f'  <style id="custom-overrides">\n{ovr_css}\n  </style>\n'
-        )
+        tok_css = re.sub(r"</\s*style", "<\\/style", tokens_path.read_text(encoding="utf-8"), flags=re.I) if tokens_path.exists() else ""
+        ovr_css = re.sub(r"</\s*style", "<\\/style", overrides_path.read_text(encoding="utf-8"), flags=re.I) if overrides_path.exists() else ""
+        bundle_block = f'\n  <style id="custom-tokens">\n{tok_css}\n  </style>\n  <style id="custom-overrides">\n{ovr_css}\n  </style>\n'
         html = html.replace("</head>", f"{bundle_block}</head>", 1)
     else:
-        links_block = (
-            '  <link rel="stylesheet" href="./styles/quiet-ui-tokens.css" />\n'
-            '  <link rel="stylesheet" href="./styles/overrides.css" />\n'
-        )
+        links_block = '  <link rel="stylesheet" href="./styles/quiet-ui-tokens.css" />\n  <link rel="stylesheet" href="./styles/overrides.css" />\n'
         html = html.replace("</head>", f"{links_block}</head>", 1)
+    html = re.sub(r'<html\b([^>]*)>', lambda m: f'<html{m.group(1)} {custom_attr}>', html, count=1)
 
-    html = re.sub(r'<html\b([^>]*)>', rf'<html\1 {custom_attr}>', html, count=1)
+    if 'id="va-v9-manifest"' in html:
+        html, summary = _filter_v9_showcase(html, manifest, disabled, mode)
+        output_html_path.write_text(html, encoding="utf-8")
+        print(f"[OK] Built {mode} v9 showcase ({summary}) -> {output_html_path}")
+        return
 
-    # 3. Filter <select id="va-tier-select"> and <select id="va-studio-tier-select">
     def filter_select(match: re.Match) -> str:
         tag_start, inner, tag_end = match.group(1), match.group(2), match.group(3)
-        kept_options: list[str] = []
-        for opt_match in re.finditer(r'<option\s+value="([^"]+)">([^<]+)</option>', inner):
-            val, lbl = opt_match.group(1), opt_match.group(2)
-            res_val = TIER_ALIASES.get(val, val)
-            if res_val in enabled:
-                kept_options.append(f'        <option value="{res_val}">{lbl}</option>')
-        return f"{tag_start}\n" + "\n".join(kept_options) + f"\n      {tag_end}"
+        kept = [
+            f'        <option value="{TIER_ALIASES.get(m.group(1), m.group(1))}">{m.group(2)}</option>'
+            for m in re.finditer(r'<option\s+value="([^"]+)">([^<]+)</option>', inner)
+            if TIER_ALIASES.get(m.group(1), m.group(1)) in enabled
+        ]
+        return f"{tag_start}\n" + "\n".join(kept) + f"\n      {tag_end}"
 
-    html = re.sub(
-        r'(<select\s+id="va-(?:studio-)?tier-select"[^>]*>)(.*?)(</select>)',
-        filter_select,
-        html,
-        flags=re.S,
-    )
-
-    # 4. Remove disabled <template id="tpl-tier-{dis}"> blocks
+    html = re.sub(r'(<select\s+id="va-(?:studio-)?tier-select"[^>]*>)(.*?)(</select>)', filter_select, html, flags=re.S)
     for dis in disabled:
-        pattern = rf'\n\s*<template\s+id="tpl-tier-{re.escape(dis)}"[^>]*>.*?</template>'
-        html = re.sub(pattern, "", html, flags=re.S)
-        legacy_pat = rf'\n\s*<section\s+id="tier-{re.escape(dis)}"[^>]*>.*?</section>'
-        html = re.sub(legacy_pat, "", html, flags=re.S)
+        html = re.sub(rf'\n\s*<template\s+id="tpl-tier-{re.escape(dis)}"[^>]*>.*?</template>', "", html, flags=re.S)
+        html = re.sub(rf'\n\s*<section\s+id="tier-{re.escape(dis)}"[^>]*>.*?</section>', "", html, flags=re.S)
+        html = re.sub(rf'\s*<button\s+[^>]*data-tier="{re.escape(dis)}"[^>]*>.*?</button>', "", html)
 
-    # 5. Filter legacy switcher buttons if present
-    for dis in disabled:
-        btn_pat = rf'\s*<button\s+[^>]*data-tier="{re.escape(dis)}"[^>]*>.*?</button>'
-        html = re.sub(btn_pat, "", html)
-
-    # 6. Ensure default tier is among enabled tiers
     first_tier = enabled[0] if enabled else "doc-1"
     html = re.sub(r'data-tier="[^"]*"', f'data-tier="{first_tier}"', html, count=1)
-
     output_html_path.write_text(html, encoding="utf-8")
-    print(
-        f"[OK] Built {mode} showcase ({len(enabled)} tiers enabled, {len(disabled)} disabled) "
-        f"-> {output_html_path}"
-    )
+    print(f"[OK] Built {mode} showcase ({len(enabled)} tiers enabled, {len(disabled)} disabled) -> {output_html_path}")
 
 
 def main() -> int:

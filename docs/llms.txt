@@ -1,12 +1,12 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-ui-diagrams`) v8.0
+# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.0
 
-> Unified open-source design system and cross-agent UI architecture plugin combining a **16-tier responsive HTML UI & document architecture (`quiet-ui`)** with a **45-type editorial SVG diagram, quantitative chart, and Mermaid/draw.io/Excalidraw/PlantUML import engine (`quiet-ui-diagrams`)** on one 4-theme CSS token palette.
+> 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
-- **Live 16-Tier Interactive Showcase (In-Situ UI + Diagrams):** https://FrankXLT.github.io/quiet-ui-skills/
-- **Live 45-Type Diagram & Chart Atlas (+ DSL Workbench):** https://FrankXLT.github.io/quiet-ui-skills/diagrams.html
+- **v9.0 Multi-Domain Interactive Studio (`6 Domains · 18 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
+- **Evidence Component Library (`21 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
-- **Bundled Skills:** `quiet-ui` (16 UI Tiers · Universal Responsive Stage Portal) + `quiet-ui-diagrams` (45 Diagram/Chart Types · 4 DSL AST Importers)
-- **License:** Apache 2.0 (Core Plugin & UI Engine) + MIT (Customizations, Tokens, Diagrams & 100% of Generated UI/SVG Deliverables)
+- **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
+- **License:** Apache 2.0 (Core 3-Pillar Plugin) + MIT (Customizations, Tokens & 100% of Generated UI/SVG Deliverables)
 
 ## 1. Installation & Quick Start
 
@@ -16,67 +16,51 @@ cd quiet-ui-skills
 ./install.sh
 ```
 
-Installs the native **Quiet UI Skills** plugin into `~/.gemini/config/plugins/quiet-ui-skills/` and standalone skills into `~/.agents/skills/quiet-ui/` and `~/.agents/skills/quiet-ui-diagrams/`.
+Installs the native **Quiet UI Skills** plugin into `~/.gemini/config/plugins/quiet-ui-skills/` and standalone skills into `~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}/`.
 
 ### Customize in 60 Seconds (`customizations/`)
-One manifest (`customizations/<name>/customization.json`) skins both 16-tier UI pages and 45-type SVG diagrams:
-- **`customizations/personal-starter/`**: 16-tier blueprint for personal research, workspaces, telemetry, optical viewport HUD, and tactile consoles.
-- **`customizations/brand-starter/`**: 13-tier blueprint for enterprise software products, documentation portals, and technical diagrams.
+One manifest (`customizations/<name>/customization.json`) skins UI shells and every compiled SVG schematic simultaneously:
+- **`customizations/personal-starter/`**: Full-range blueprint for personal research, telemetry, optical viewport HUD, and tactile consoles.
+- **`customizations/brand-starter/`**: Product blueprint for enterprise documentation, workflows, and engineering workspaces.
 
 ```bash
 python3 customizations/scripts/build_showcase.py customizations/<target>
 python3 customizations/scripts/verify_customization.py customizations/<target> --check-immutability
 ```
 
-## 2. Shared Architectural Contracts (`quiet-ui` + `quiet-ui-diagrams`)
+## 2. Shared Architectural Contracts (`quiet-ui` + `quiet-evidence` + `quiet-bridge`)
 
-1. **Self-Immutability Lock:** `skills/quiet-ui/`, `skills/quiet-ui-diagrams/`, `customizations/personal-starter/`, and `customizations/brand-starter/` are strictly read-only during user workflows. User work lives in `customizations/<name>/` or `<workspace>/`.
-2. **4-Theme CSS Token Cohesion:** Both skills bind surfaces, ink, hairlines, and semantic tints to `tokens/quiet-ui-tokens.css` (`data-theme="white|paper|dark-paper|dark"`, defaulting to `white`).
+1. **Self-Immutability Lock:** `skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`, `customizations/personal-starter/`, and `customizations/brand-starter/` are strictly read-only during user workflows.
+2. **4-Theme CSS Token Cohesion & 4-Way SHA-256 Parity:** All 3 pillars bind surfaces, ink, hairlines, and semantic tints to `tokens/quiet-ui-tokens.css` (`data-theme="white|paper|dark-paper|dark"`, defaulting to `white`), mirrored across `tokens/`, `skills/quiet-ui/tokens/`, and both starter kits.
 3. **Fluid 4K Root Scale & 3-Role Font Stack:**
    - Fluid 4K root: `clamp(16px, calc(12.4px + 0.25vw), 22px)` with `11px` hard legibility floor (`--ts-xs`).
-   - `--font-sans` (`Inter`, system sans + `tabular-nums`) for 100% of navigation, kickers, controls, and headings.
+   - `--font-sans` (`Inter`, system sans + `tabular-nums`) for navigation, kickers, controls, and headings.
    - `--font-serif` (`Newsreader`, `Georgia`) strictly for monograph prose and display H1.
-   - `--font-mono` (`JetBrains Mono`, `ui-monospace`) strictly for machine literals, telemetry readouts, ports, and code.
+   - `--font-mono` (`JetBrains Mono`, `ui-monospace`) strictly for machine literals, telemetry readouts, register bits, and code.
 4. **Concentric Border-Radius Math & NASA Human-Factors Invariants:**
    - `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))` across `auto|sharp|subtle|rounded|soft`.
    - NASA-STD-3001/HIDH rules: telemetry vs effectors separation, `CMD`/`ACT` feedback, 2-step guarded actuation (`ARM` -> `EXECUTE`), quiet cockpit nominal neutrality, and `STALE` flags.
 
-## 3. Skill 1 — `quiet-ui` (16 Macro Page & Workspace Tiers)
+## 3. Pillar 1 — `quiet-ui` (7 Delivery Mediums)
 
-- `01. Doc-1` — Academic & Scientific Monograph (`0%` Box Weight, `N1`)
-- `02. Doc-2` — Executive Decision Memo (`BLUF` + Diagram, `15%`, `N0`)
-- `03. Doc-3` — Normative RFC Specification (`25%`, `N0`)
-- `04. Doc-4B` — Encyclopedic SDK & API Reference (`.va-flow-spine` + Decision Table, `25%`, `N3`)
-- `05. Doc-4A` — Split-Pane Operational Runbook (`45%`, `N1`)
-- `06. Bridge-1` — Parametric Engineering Worksheet (`50%`, `N0`)
-- `07. Deck-1` — Viewport-Locked Briefing Stage (`100dvh` 16:9, `60%`, `N1`)
-- `08. Bridge-2` — High-Density Data Table & Fleet Grid (`100% 1px Grid`, `N2`)
-- `09. App-2` — Live Metrics & HIL Console (`100% 1px Grid`, `N1`)
-- `10. App-1` — Compact Issue & Ticket Tracker (`0% Cards / 36px Rows`, `N1`)
-- `11. App-4` — Task & Calendar Planner (`80%`, `N1`)
-- `12. App-3` — KPI & Analytics Dashboard (`100% Cards`, `N2`)
-- `13. App-5` — Daily Pacing & Workload Planner (`75%`, `N1`)
-- `14. App-Tree` — Hierarchical Tree, Schema & File Explorer (`90% 3-Pane`, `N1`)
-- `15. HUD-1` — Optical Viewport / AR HUD (`>= 65%` keep-out, `20% HUD`, `N0`)
-- `16. Ctrl-1` — Tactile Subsystem Console (2-step guarded actuation, `85%`, `N1`)
+- `M1` — Paper & Ink Print Sheets (unboxed, `@media print` optimized)
+- `M2` — Editorial Web Monographs, RFCs & Two-Column Proof Layouts (`72ch`)
+- `M3` — Stateful Web Workbenches, Fleet Grids & Split-Pane Planners
+- `M4` — Walk-Up POI Terminals & Guarded Industrial SCADA Consoles
+- `M5` — 10-Foot Ambient Wall Displays (`>= 32px` KPIs, zero decorative chrome)
+- `M6` — Collimated Optical HUDs (`>= 65%` unobstructed central keep-out zone)
+- `M7` — Transparent Smart-Glass Overlays (`>= 7.0:1` peripheral smoked scrims)
 
-## 4. Skill 2 — `quiet-ui-diagrams` (45 Micro Diagram & Chart Types + DSL Extractors)
+## 4. Pillar 2 — `quiet-evidence` (6 Deterministic Evidence Modalities)
 
-- **Architecture & Systems:** `architecture`, `architecture-delta`, `high-level`, `it-state`, `deployment`, `dependency`, `layers`, `nested`, `exploded`, `axonometric-plan`, `dp-security-matrix`
-- **Data & Schemas:** `data-flow`, `medallion`, `dp-integration`, `er`, `db-schema`, `uml-class`
-- **Flows & Operations:** `flowchart`, `process`, `sequence`, `state`, `swimlane`, `loop`, `fishbone`, `timeline`, `gantt`
-- **Strategy & Product:** `wardley`, `service-blueprint`, `journey`, `story-map`, `kanban`, `org-chart`, `tree`, `quadrant`
-- **Quantitative Charts:** `line` (slope/ridgeline/streamgraph/bump), `bar` (dumbbell), `scatter` (bubble/beeswarm/box), `waterfall`, `sankey`, `treemap`, `heatmap`, `radar`, `polar`, `pyramid`, `venn`
-- **CLI Toolchain (`skills/quiet-ui-diagrams/scripts/`):** `mermaid_extract.py`, `drawio_extract.py`, `excalidraw_extract.py`, `plantuml_extract.py`, `verify_geometry.py`, `self_check.py`, `export_svg.py`, and `export_png.py`.
+- **Modalities (`compile_evidence.py`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs alignment & collapsible mobile disclosures), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, Bland-Altman, waterfall, forest plots with `1–2–5` ticks and `svg_knockout_label`), `bitfields` (32/64-bit MSB-left hardware register strips + decode table), and `schematics` (`pid`, `pipeline`, `bus`, `interlock`, `er_lineage`, plus clean-room open standards `sequence` [`ITU-T Z.120`], `n2_matrix` [`NASA SP-2016-6105`], and `fault_tree` [`NRC NUREG-0492`]).
 
 ## 5. Reference Map
 
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v8.0.0).
-- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): 16-tier UI Output Contract, Content Router, and reference index (`00..07`).
-- [skills/quiet-ui/references/00-intake-questionnaire-and-project-lock.md](skills/quiet-ui/references/00-intake-questionnaire-and-project-lock.md): Intake questionnaire, project lock, and content router.
-- [skills/quiet-ui/references/01-user-discovery-and-4-theme-tokens.md](skills/quiet-ui/references/01-user-discovery-and-4-theme-tokens.md): 4 themes, fluid 4K root, and @layer CSS.
-- [skills/quiet-ui/references/05-optical-hud-and-tactile-console.md](skills/quiet-ui/references/05-optical-hud-and-tactile-console.md): Optical Viewport HUD and Tactile Subsystem Console.
-- [skills/quiet-ui/references/07-nasa-human-factors-and-controls.md](skills/quiet-ui/references/07-nasa-human-factors-and-controls.md): NASA-STD-3001/HIDH human-factors controls.
-- [skills/quiet-ui/scripts/verify_visual_contract.py](skills/quiet-ui/scripts/verify_visual_contract.py): 16-tier DOM, typography, and `--check-docs` verifier.
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.0.0).
+- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`).
+- [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler & metrology router (`6` modalities).
+- [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & review-room contract router.
+- [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows, 4-variant pill grammar, and verification lifecycle.
 - [tokens/quiet-ui-tokens.css](tokens/quiet-ui-tokens.css): Standalone 4-theme CSS Custom Properties (MIT).
 - [customizations/README.md](customizations/README.md): 60-second brand & personal onboarding guide (MIT).

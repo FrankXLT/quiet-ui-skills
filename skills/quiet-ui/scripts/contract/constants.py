@@ -28,11 +28,10 @@ TIERS: list[str] = [
     "hud-1", "ctrl-1",
 ]
 
-# SHA-256 Parity Token Mirror Targets
+# SHA-256 Parity Token Mirror Targets (4-Way First-Party Parity)
 TOKEN_MIRROR_PATHS: list[str] = [
     "tokens/quiet-ui-tokens.css",
     "skills/quiet-ui/tokens/quiet-ui-tokens.css",
-    "docs/atlas/quiet-ui-tokens.css",
     "customizations/personal-starter/styles/quiet-ui-tokens.css",
     "customizations/brand-starter/styles/quiet-ui-tokens.css",
 ]
@@ -40,16 +39,32 @@ TOKEN_MIRROR_PATHS: list[str] = [
 # Surface Color Themes
 THEMES: tuple[str, ...] = ("white", "paper", "dark-paper", "dark")
 
-# Line budgets across repo (v8.2 Rebalanced Budgets)
-MAX_LINE_BUDGET: int = 350
-CODE_LINE_BUDGET: int = 350
+# Line budgets across repo (v9.0 Unified 3-Pillar Continuum Budgets)
+MAX_LINE_BUDGET: int = 450
+CODE_LINE_BUDGET: int = 450
 REFERENCES_LINE_BUDGET: int = 450
+SKILL_ROUTER_MAX_LINES: int = 140
+MARKDOWN_DOC_MAX_LINES: int = 450
+MARKDOWN_SUBDOC_MIN_LINES: int = 120  # substance band 130-420 lines
+WORKFLOWS_DOC_RANGE: tuple[int, int] = (250, 450)
 TIER_HTML_LINE_RANGE: tuple[int, int] = (260, 550)
 TIER_HTML_FLOOR: int = 240
 EXCLUDED_LINE_BUDGET_EXACT: set[str] = {
     "quiet-ui-showcase.html",
     "docs/index.html",
+    "docs/bench/evidence-bench.html",
+    "docs/v9/quiet-ui-v9-showcase.html",
 }
+
+# 3-Pillar Skill Registry
+PILLAR_SKILL_NAMES: tuple[str, ...] = (
+    "quiet-ui",
+    "quiet-evidence",
+    "quiet-bridge",
+)
+
+# Offline Schema URN Prefix
+OFFLINE_SCHEMA_URN_PREFIX: str = "urn:quiet-ui:schema:v9:"
 
 # Fluid 4K Root Font Scale targets: width -> (expected_px, tolerance_px)
 ROOT_FONT_SCALE_TARGETS: dict[int, tuple[float, float]] = {

@@ -1,9 +1,9 @@
 {
   "name": "personal-starter",
   "title": "Quiet UI Personal Workspace & Continuum",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "mode": "personal",
-  "description": "Read-only blueprint for personal research monographs, telemetry consoles, optical viewport HUD, and tactile control decks across all 16 tiers.",
+  "description": "Read-only blueprint for personal research monographs, telemetry consoles, Home Assistant walls, optical viewport HUD, and 6-domain v9 studio (18 views).",
   "palette": {
     "primary": "#4F46E5",
     "accent": "#06B6D4",

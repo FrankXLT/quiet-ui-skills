@@ -1,0 +1,152 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v18-whole-home-energy-plot",
+  "plot_kind": "stacked_bar",
+  "metadata": {
+    "title": "24-Hour Home Energy Flow: Solar, Grid & Battery",
+    "description": "Hourly stacked energy bars (kW) across Solar Production, Grid Used, Battery Used, Grid Export, Battery Stored, and Home Load showing -1.68 kW export at 14:00 ahead of the $0.34 / kWh peak window.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-18T14:00:00Z"
+  },
+  "test_environment": {
+    "dut_id": "Whole-Home Energy Meter",
+    "standard_id": "Residential Hourly Net Metering",
+    "ambient_temperature_c": 21.5,
+    "temperature_uncertainty_c": 0.2,
+    "peak_tou_window": "16:00-21:00 ($0.34 / kWh)"
+  },
+  "tariff_schedule": {
+    "off_peak_usd_kwh": 0.14,
+    "peak_evening_usd_kwh": 0.34,
+    "peak_window_hours": [16, 21]
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "hour",
+      "unit": "",
+      "quantity_calculus": "Hour of Day",
+      "scale_type": "category",
+      "categories": [
+        "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
+        "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
+        "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
+        "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+      ]
+    },
+    "y_axis": {
+      "quantity": "P",
+      "unit": "kW",
+      "quantity_calculus": "Power (kW)",
+      "scale_type": "linear",
+      "domain": [-4.0, 6.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-pv-export-floor",
+      "label": "Peak Export -1.68 kW",
+      "threshold_value": -1.68,
+      "type": "reference",
+      "direction": "none",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)"
+    }
+  ],
+  "series": [
+    {
+      "id": "solar-production",
+      "name": "Solar Production",
+      "series_type": "bar",
+      "stack": "energy",
+      "marker_color": "#F59E0B",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.0}, {"x": 1, "y": 0.0}, {"x": 2, "y": 0.0}, {"x": 3, "y": 0.0},
+        {"x": 4, "y": 0.0}, {"x": 5, "y": 0.0}, {"x": 6, "y": 0.28}, {"x": 7, "y": 0.95},
+        {"x": 8, "y": 1.85}, {"x": 9, "y": 2.95}, {"x": 10, "y": 3.92}, {"x": 11, "y": 4.55},
+        {"x": 12, "y": 4.94}, {"x": 13, "y": 5.06}, {"x": 14, "y": 5.1}, {"x": 15, "y": 4.48},
+        {"x": 16, "y": 3.64}, {"x": 17, "y": 2.2}, {"x": 18, "y": 1.12}, {"x": 19, "y": 0.2},
+        {"x": 20, "y": 0.0}, {"x": 21, "y": 0.0}, {"x": 22, "y": 0.0}, {"x": 23, "y": 0.0}
+      ]
+    },
+    {
+      "id": "grid-used",
+      "name": "Grid Used",
+      "series_type": "bar",
+      "stack": "energy",
+      "marker_color": "#38BDF8",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.92}, {"x": 1, "y": 0.86}, {"x": 2, "y": 0.84}, {"x": 3, "y": 0.85},
+        {"x": 4, "y": 0.88}, {"x": 5, "y": 1.04}, {"x": 6, "y": 1.18}, {"x": 7, "y": 0.95},
+        {"x": 8, "y": 0.49}, {"x": 9, "y": 0.0}, {"x": 10, "y": 0.0}, {"x": 11, "y": 0.0},
+        {"x": 12, "y": 0.0}, {"x": 13, "y": 0.0}, {"x": 14, "y": 0.0}, {"x": 15, "y": 0.0},
+        {"x": 16, "y": 0.0}, {"x": 17, "y": 0.0}, {"x": 18, "y": 0.26}, {"x": 19, "y": 0.35},
+        {"x": 20, "y": 0.45}, {"x": 21, "y": 1.55}, {"x": 22, "y": 1.62}, {"x": 23, "y": 1.22}
+      ]
+    },
+    {
+      "id": "battery-used",
+      "name": "Battery Used",
+      "series_type": "bar",
+      "stack": "energy",
+      "marker_color": "#2DD4BF",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.0}, {"x": 1, "y": 0.0}, {"x": 2, "y": 0.0}, {"x": 3, "y": 0.0},
+        {"x": 4, "y": 0.0}, {"x": 5, "y": 0.0}, {"x": 6, "y": 0.0}, {"x": 7, "y": 0.0},
+        {"x": 8, "y": 0.0}, {"x": 9, "y": 0.0}, {"x": 10, "y": 0.0}, {"x": 11, "y": 0.0},
+        {"x": 12, "y": 0.0}, {"x": 13, "y": 0.0}, {"x": 14, "y": 0.0}, {"x": 15, "y": 0.0},
+        {"x": 16, "y": 0.21}, {"x": 17, "y": 1.82}, {"x": 18, "y": 2.8}, {"x": 19, "y": 3.1},
+        {"x": 20, "y": 2.5}, {"x": 21, "y": 0.6}, {"x": 22, "y": 0.0}, {"x": 23, "y": 0.0}
+      ]
+    },
+    {
+      "id": "grid-export",
+      "name": "Grid Export",
+      "series_type": "bar",
+      "stack": "energy",
+      "marker_color": "#818CF8",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.0}, {"x": 1, "y": 0.0}, {"x": 2, "y": 0.0}, {"x": 3, "y": 0.0},
+        {"x": 4, "y": 0.0}, {"x": 5, "y": 0.0}, {"x": 6, "y": 0.0}, {"x": 7, "y": 0.0},
+        {"x": 8, "y": 0.0}, {"x": 9, "y": 0.0}, {"x": 10, "y": -0.5}, {"x": 11, "y": -0.85},
+        {"x": 12, "y": -1.16}, {"x": 13, "y": -1.46}, {"x": 14, "y": -1.68}, {"x": 15, "y": -0.92},
+        {"x": 16, "y": 0.0}, {"x": 17, "y": 0.0}, {"x": 18, "y": 0.0}, {"x": 19, "y": 0.0},
+        {"x": 20, "y": 0.0}, {"x": 21, "y": 0.0}, {"x": 22, "y": 0.0}, {"x": 23, "y": 0.0}
+      ]
+    },
+    {
+      "id": "battery-stored",
+      "name": "Battery Stored",
+      "series_type": "bar",
+      "stack": "energy",
+      "marker_color": "#34D399",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.0}, {"x": 1, "y": 0.0}, {"x": 2, "y": 0.0}, {"x": 3, "y": 0.0},
+        {"x": 4, "y": 0.0}, {"x": 5, "y": 0.0}, {"x": 6, "y": 0.0}, {"x": 7, "y": 0.0},
+        {"x": 8, "y": 0.0}, {"x": 9, "y": -0.25}, {"x": 10, "y": -0.67}, {"x": 11, "y": -0.75},
+        {"x": 12, "y": -0.6}, {"x": 13, "y": -0.3}, {"x": 14, "y": 0.0}, {"x": 15, "y": 0.0},
+        {"x": 16, "y": 0.0}, {"x": 17, "y": 0.0}, {"x": 18, "y": 0.0}, {"x": 19, "y": 0.0},
+        {"x": 20, "y": 0.0}, {"x": 21, "y": 0.0}, {"x": 22, "y": 0.0}, {"x": 23, "y": 0.0}
+      ]
+    },
+    {
+      "id": "home-load",
+      "name": "Home Load",
+      "series_type": "line",
+      "marker_color": "var(--text-primary)",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0.92}, {"x": 1, "y": 0.86}, {"x": 2, "y": 0.84}, {"x": 3, "y": 0.85},
+        {"x": 4, "y": 0.88}, {"x": 5, "y": 1.04}, {"x": 6, "y": 1.46}, {"x": 7, "y": 1.9},
+        {"x": 8, "y": 2.34}, {"x": 9, "y": 2.7}, {"x": 10, "y": 2.75}, {"x": 11, "y": 2.95},
+        {"x": 12, "y": 3.18}, {"x": 13, "y": 3.3}, {"x": 14, "y": 3.42}, {"x": 15, "y": 3.56},
+        {"x": 16, "y": 3.85}, {"x": 17, "y": 4.02}, {"x": 18, "y": 4.18}, {"x": 19, "y": 3.65},
+        {"x": 20, "y": 2.95}, {"x": 21, "y": 2.15}, {"x": 22, "y": 1.62}, {"x": 23, "y": 1.22}
+      ]
+    }
+  ]
+}

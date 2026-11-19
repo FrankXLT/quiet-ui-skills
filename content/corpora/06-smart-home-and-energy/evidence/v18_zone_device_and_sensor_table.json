@@ -1,0 +1,26 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v18-zone-device-and-sensor-table",
+  "metadata": {
+    "title": "Connected Home Devices & Energy Summary",
+    "description": "Plain-language home overview across solar generation, utility exchange, battery reserve, Living Room comfort, water leak protection, and two-step entry doors.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-18T14:00:00Z"
+  },
+  "columns": [
+    {"key": "device_id", "label": "Device", "data_type": "string", "priority": 1},
+    {"key": "zone", "label": "Room / Area", "data_type": "string", "priority": 1},
+    {"key": "state", "label": "Status", "data_type": "status", "priority": 1},
+    {"key": "primary_metric", "label": "Reading", "data_type": "string", "priority": 1},
+    {"key": "tariff_note", "label": "Schedule & Notes", "data_type": "string", "priority": 2}
+  ],
+  "rows": [
+    {"device_id": "Solar Roof Array", "zone": "South Roof", "state": "Producing", "primary_metric": "5.10 kW", "tariff_note": "Powering 3.42 kW home load"},
+    {"device_id": "Main Home Grid Meter", "zone": "Utility Service", "state": "Exporting", "primary_metric": "-1.68 kW net", "tariff_note": "Pre-peak ($0.34 / kWh at 16:00)"},
+    {"device_id": "Home Battery", "zone": "Garage", "state": "Charged", "primary_metric": "84.0 % SOC", "tariff_note": "Held for 16:00-21:00 evening peak"},
+    {"device_id": "Living Room Thermostat", "zone": "Main Level", "state": "Comfortable", "primary_metric": "21.5 °C / 44.0 % RH", "tariff_note": "Heat pump idling quietly"},
+    {"device_id": "Water Leak Sensors", "zone": "Basement & Bath", "state": "Dry (6/6)", "primary_metric": "6 clear", "numeric_value": 6, "tariff_note": "Main water valve ready"},
+    {"device_id": "Front Door", "zone": "Front Entry", "state": "Locked", "primary_metric": "Deadbolt engaged", "tariff_note": "2-step unlock interlock"},
+    {"device_id": "Garage Door", "zone": "North Bay", "state": "Closed", "primary_metric": "Clear", "tariff_note": "2-step open interlock"}
+  ]
+}

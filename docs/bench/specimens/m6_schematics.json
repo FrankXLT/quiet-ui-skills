@@ -1,0 +1,170 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-m6-l1-heritage-triptych",
+    "metadata": {
+      "title": "Recovered v7.1 Optical Stack, Wardley Map & Zero-Copy Telemetry Sankey",
+      "description": "Orientation structural trio recovering the v7.1 exploded 3-plane optical stack, Wardley value-chain evolution map, and zero-copy telemetry Sankey.",
+      "rigor_level": "L1",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "panels": [
+      {
+        "schematic_kind": "optical_stack",
+        "title": "Panel A: Exploded 3-Plane Optical Syntonization Stack",
+        "planes": [
+          {"label": "Plane 3: PCIe BAR0 TAI Ring", "detail": "Zero-copy DMA frames (alpha = 2.742e-4)", "fill_token": "var(--tint-indigo-bg)"},
+          {"label": "Plane 2: DDMTD Beat Detector", "detail": "Hardware helper divider (N = 2^14)", "fill_token": "var(--bg-card)"},
+          {"label": "Plane 1: 1490/1310 nm SMF-28e+", "detail": "Bidirectional single-fiber DWDM ring", "fill_token": "var(--bg-card)"}
+        ]
+      },
+      {
+        "schematic_kind": "wardley",
+        "title": "Panel B: Wardley Value-Chain Evolution Map",
+        "nodes": [
+          {"id": "sla", "label": "Beam Coherency SLA", "evolution": 0.32, "visibility": 0.88, "color": "var(--accent-focal)"},
+          {"id": "comb", "label": "Cryo Optical Comb", "evolution": 0.14, "visibility": 0.44, "color": "var(--status-warn)"},
+          {"id": "fpga", "label": "DDMTD Helper FPGA", "evolution": 0.48, "visibility": 0.62, "color": "var(--status-ok)"},
+          {"id": "sfp", "label": "DWDM SFP+ Optics", "evolution": 0.68, "visibility": 0.48, "color": "var(--accent-focal)"},
+          {"id": "fiber", "label": "SMF-28e+ Fiber", "evolution": 0.88, "visibility": 0.20, "color": "var(--text-muted)"}
+        ],
+        "edges": [
+          {"from": "sla", "to": "fpga"}, {"from": "fpga", "to": "comb"},
+          {"from": "fpga", "to": "sfp"}, {"from": "sfp", "to": "fiber"}
+        ]
+      },
+      {
+        "schematic_kind": "sankey",
+        "title": "Panel C: Zero-Copy Telemetry Flow Sankey (142.8 Gbps Net)",
+        "nodes": [
+          {"id": "src", "label": "8x SECTORS", "metric": "142.8 Gbps", "x": 30, "y": 32, "w": 146, "h": 182, "stroke": "var(--status-ok)"},
+          {"id": "dma", "label": "PCIe BAR0 Ring", "metric": "133.6 Gbps", "x": 276, "y": 32, "w": 154, "h": 112, "stroke": "var(--accent-focal)"},
+          {"id": "kal", "label": "Kalman Audit", "metric": "9.2 Gbps", "x": 276, "y": 156, "w": 154, "h": 58, "stroke": "var(--status-warn)"},
+          {"id": "ts", "label": "TimescaleDB", "metric": "92.4 Gbps", "x": 524, "y": 32, "w": 166, "h": 58, "stroke": "var(--status-ok)"},
+          {"id": "hil", "label": "Live HIL Stream", "metric": "41.2 Gbps", "x": 524, "y": 98, "w": 166, "h": 54, "stroke": "var(--accent-focal)"},
+          {"id": "al", "label": "Alert Ledger", "metric": "9.2 Gbps", "x": 524, "y": 160, "w": 166, "h": 54, "stroke": "var(--status-warn)"}
+        ],
+        "flows": [
+          {"from": "src", "to": "dma", "sy0": 40, "sy1": 150, "dy0": 40, "dy1": 134, "fill": "var(--tint-indigo-bg)"},
+          {"from": "src", "to": "kal", "sy0": 158, "sy1": 206, "dy0": 162, "dy1": 206, "fill": "var(--tint-amber-bg)"},
+          {"from": "dma", "to": "ts", "sy0": 40, "sy1": 94, "dy0": 38, "dy1": 84, "fill": "var(--tint-emerald-bg)"},
+          {"from": "dma", "to": "hil", "sy0": 98, "sy1": 136, "dy0": 104, "dy1": 146, "fill": "var(--tint-indigo-bg)"},
+          {"from": "kal", "to": "al", "sy0": 164, "sy1": 206, "dy0": 166, "dy1": 208, "fill": "var(--tint-amber-bg)"}
+        ]
+      }
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-m6-l2-ato-enclave",
+    "metadata": {
+      "title": "NIST Zero-Trust ATO Enclave & FIPS 140-3 Boundary Map",
+      "description": "Governance enclave topology matching the PPSM Matrix with FIPS 140-3 boundaries, Manhattan orthogonal flows, and wire-crossing bridge arcs.",
+      "rigor_level": "L2",
+      "drawing_number": "ATO-BOUNDARY-0842-R2"
+    },
+    "schematic_kind": "topology",
+    "width": 720,
+    "height": 330,
+    "enclaves": [
+      {"id": "e-time", "label": "ENCLAVE-TIME-01", "fips_level": "FIPS 140-3 Level 3", "border_style": "dash-dot", "fill_token": "var(--bg-elevated)"},
+      {"id": "e-hil", "label": "ENCLAVE-HIL-TEST", "fips_level": "VLAN Isolated", "border_style": "dashed", "fill_token": "var(--status-warn-bg)"},
+      {"id": "e-opt", "label": "ENCLAVE-OPTICAL", "fips_level": "FIPS 140-3 Level 2", "x": 266, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"},
+      {"id": "e-core", "label": "ENCLAVE-CORE-ENG", "fips_level": "FIPS 140-3 Level 2", "x": 516, "y": 20, "w": 188, "h": 286, "border_style": "dashed", "fill_token": "var(--bg-elevated)"}
+    ],
+    "nodes": [
+      {"id": "gm", "enclave_id": "e-time", "label": "Grandmaster PTP", "sublabel": "PRS10 + IEEE 1588", "x": 32, "y": 78, "w": 156, "h": 58, "focal": true},
+      {"id": "hil", "enclave_id": "e-hil", "label": "HIL Diagnostic", "sublabel": "Test Bench Gateway", "x": 32, "y": 216, "w": 156, "h": 58},
+      {"id": "mux", "enclave_id": "e-opt", "label": "DWDM Crypto Mux", "sublabel": "MACsec + Ch16", "x": 282, "y": 148, "w": 156, "h": 62, "focal": true},
+      {"id": "ingest", "enclave_id": "e-core", "label": "Telemetry Core", "sublabel": "TLS 1.3 Collector", "x": 532, "y": 78, "w": 156, "h": 58},
+      {"id": "siem", "enclave_id": "e-core", "label": "ATO Audit Vault", "sublabel": "Immutable Ledger", "x": 532, "y": 216, "w": 156, "h": 58}
+    ],
+    "edges": [
+      {"from": "gm", "to": "mux", "label": "PPSM-0842-A", "crosses_enclave_boundary": true, "stroke_color": "var(--accent-focal)", "mid_x": 235},
+      {"from": "hil", "to": "mux", "label": "PPSM-0842-C", "crosses_enclave_boundary": true, "style": "dashed", "stroke_color": "var(--status-warn)", "mid_x": 235},
+      {"from": "mux", "to": "ingest", "label": "PPSM-0842-B", "crosses_enclave_boundary": true, "stroke_color": "var(--status-ok)", "mid_x": 485},
+      {"from": "ingest", "to": "siem", "label": "Audit Pipe", "stroke_color": "var(--text-secondary)"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-m6-l3-1553b-and-variants",
+    "metadata": {
+      "title": "78 Ω MIL-STD-1553B & 120 Ω CAN-FD Buses, Delta Lanes, FSM & ER Lineage",
+      "description": "Physical, Clinical & Metrological multi-panel schematic featuring 78-ohm MIL-STD-1553B and 120-ohm SAE J1939 CAN-FD differential buses, plus Delta Lanes, FSM, and Crow's-Foot ER lineage.",
+      "rigor_level": "L3",
+      "drawing_number": "DWG-1553B-SYNTH-8812"
+    },
+    "panels": [
+      {
+        "schematic_kind": "mil1553b",
+        "bus_standard": "mil1553b",
+        "title": "Panel A: 78-ohm Terminated Dual-Redundant MIL-STD-1553B Avionics Bus",
+        "terminals": [
+          {"id": "bc", "role": "BC", "label": "BC (Master)", "sublabel": "Bus Controller"},
+          {"id": "rt1", "role": "RT", "label": "RT-01 (DWDM)", "sublabel": "Synthesizer"},
+          {"id": "rt2", "role": "RT", "label": "RT-03 (Cryo)", "sublabel": "Status 0x1A01", "status": "warn"},
+          {"id": "bm", "role": "BM", "label": "BM (Monitor)", "sublabel": "HIL Capture"}
+        ]
+      },
+      {
+        "schematic_kind": "differential_bus",
+        "bus_standard": "can_fd",
+        "title": "Panel B: 120-ohm SAE J1939 / CAN-FD Propulsion Differential Bus",
+        "terminals": [
+          {"id": "ecu", "role": "ECU", "label": "ECM (0x00)", "sublabel": "Engine Control"},
+          {"id": "bms", "role": "RT", "label": "BMS (0xF3)", "sublabel": "HV Pack 800 V"},
+          {"id": "inv", "role": "RT", "label": "MCU (0xEF)", "sublabel": "Derate 85 °C", "status": "warn"},
+          {"id": "diag", "role": "BM", "label": "OBD-II Tap", "sublabel": "2 Mbps Data"}
+        ]
+      },
+      {
+        "schematic_kind": "delta_lanes",
+        "title": "Panel C: Bidirectional DWDM Timing Architecture Delta",
+        "lanes": [
+          {"kind": "baseline", "title": "LEGACY COAXIAL BASELINE (194.2 ps)", "nodes": [
+            {"label": "NIST-H4 MASER", "sublabel": "10 MHz / 1 PPS"},
+            {"label": "RG-316 Distribution", "sublabel": "2.4 km Uncompensated"},
+            {"label": "Sector Rx", "sublabel": "194.2 ps Drift"}
+          ]},
+          {"kind": "proposed", "title": "PROPOSED DWDM WHITE RABBIT (0.81 ps RMS)", "nodes": [
+            {"label": "Optical Comb GM", "sublabel": "193.41 THz Locked"},
+            {"label": "SMF-28e+ Ring", "sublabel": "DDMTD Phase Lock"},
+            {"label": "BAR0 TAI DMA", "sublabel": "0.81 ps Verified"}
+          ]}
+        ]
+      },
+      {
+        "schematic_kind": "fsm",
+        "title": "Panel D: Normative 5-State Optical Syntonizer Lock State Machine",
+        "states": [
+          {"id": "uncal", "label": "UNCALIBRATED", "sublabel": "Port Init", "tone": "neutral"},
+          {"id": "cal", "label": "PHASE_CAL", "sublabel": "DDMTD Sweep", "tone": "focal"},
+          {"id": "lock", "label": "SLAVE_LOCKED", "sublabel": "skew < 85 ps", "tone": "ok"},
+          {"id": "hold", "label": "HOLDOVER", "sublabel": "OCXO Drift", "tone": "warn"},
+          {"id": "fault", "label": "FAULT", "sublabel": "> 42 min", "tone": "err"}
+        ],
+        "transitions": [
+          {"from": "uncal", "to": "cal", "label": "link_up"},
+          {"from": "cal", "to": "lock", "label": "alpha_ok"},
+          {"from": "lock", "to": "hold", "label": "rx_los"},
+          {"from": "hold", "to": "fault", "label": ">42m"},
+          {"from": "hold", "to": "uncal", "label": "re-lock_sweep [10k DDMTD samples]"}
+        ]
+      },
+      {
+        "schematic_kind": "er_lineage",
+        "title": "Panel E: Crow's-Foot Telemetry Schema Lineage",
+        "entities": [
+          {"id": "nodes", "label": "WR_BOUNDARY_NODES", "x": 24, "y": 24, "w": 190, "h": 114, "columns": ["PK id : TEXT", "sector_id : INT", "wavelength : INT", "status : TEXT"]},
+          {"id": "samples", "label": "WR_PHASE_SAMPLES", "x": 264, "y": 24, "w": 196, "h": 114, "focal": true, "columns": ["PK sample_id : UUID", "FK node_id : TEXT", "tai_epoch_ns : BIGINT", "phase_skew_ps : NUM"]},
+          {"id": "events", "label": "PTP_HOLDOVER_EVENTS", "x": 506, "y": 24, "w": 190, "h": 114, "columns": ["PK event_id : UUID", "FK node_id : TEXT", "duration_s : NUM", "drift_ps_min : NUM"]}
+        ],
+        "relations": [
+          {"from": "nodes", "to": "samples"},
+          {"from": "nodes", "to": "events", "route": "bottom"}
+        ]
+      }
+    ]
+  }
+]

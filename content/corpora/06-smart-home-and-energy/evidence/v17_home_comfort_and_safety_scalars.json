@@ -1,0 +1,98 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:scalar",
+  "id": "v17-home-comfort-and-safety-scalars",
+  "metadata": {
+    "title": "Home Comfort, Battery Reserve & Leak Protection Status",
+    "description": "Living Room temperature and humidity, solar production, home battery reserve, net grid export, and water leak sensor status.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-18T14:00:00Z",
+    "subsystem": "Home Comfort & Energy"
+  },
+  "items": [
+    {
+      "metadata": {
+        "title": "Living Room Temperature",
+        "rigor_level": "L2",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Living Room"
+      },
+      "quantity": {"symbol": "T_living", "name": "Indoor Temperature", "unit": "°C", "quantity_calculus": "T_living / °C"},
+      "measurement": {"nominal_value": 21.5, "expanded_uncertainty": 0.2, "coverage_factor": 2.0},
+      "limits": {
+        "nominal_target": 21.5,
+        "warning_thresholds": {"lower": 19.5, "upper": 24.0},
+        "abort_thresholds": {"lower": 17.0, "upper": 27.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL"},
+      "gauge": {"type": "linear_horizontal", "min_scale": 16.0, "max_scale": 28.0}
+    },
+    {
+      "metadata": {
+        "title": "Living Room Humidity",
+        "rigor_level": "L2",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Living Room"
+      },
+      "quantity": {"symbol": "RH_living", "name": "Relative Humidity", "unit": "%", "quantity_calculus": "RH_living / %"},
+      "measurement": {"nominal_value": 44.0, "expanded_uncertainty": 2.0, "coverage_factor": 2.0},
+      "limits": {
+        "nominal_target": 45.0,
+        "warning_thresholds": {"lower": 30.0, "upper": 58.0},
+        "abort_thresholds": {"lower": 20.0, "upper": 68.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL"},
+      "gauge": {"type": "linear_horizontal", "min_scale": 20.0, "max_scale": 70.0}
+    },
+    {
+      "metadata": {
+        "title": "Solar Production",
+        "rigor_level": "L1",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Solar Roof Array"
+      },
+      "quantity": {"symbol": "P_pv", "name": "Solar Production", "unit": "kW", "quantity_calculus": "P_pv / kW"},
+      "measurement": {"nominal_value": 5.1, "expanded_uncertainty": 0.18, "coverage_factor": 2.0},
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL"},
+      "sparkline": [0.0, 0.3, 1.9, 3.9, 4.9, 5.1, 3.6, 1.1]
+    },
+    {
+      "metadata": {
+        "title": "Home Battery Reserve",
+        "rigor_level": "L2",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Home Battery"
+      },
+      "quantity": {"symbol": "SOC", "name": "Battery Reserve", "unit": "%", "quantity_calculus": "SOC / %"},
+      "measurement": {"nominal_value": 84.0, "expanded_uncertainty": 1.0, "coverage_factor": 2.0},
+      "limits": {
+        "nominal_target": 85.0,
+        "warning_thresholds": {"lower": 20.0, "upper": 100.0},
+        "abort_thresholds": {"lower": 10.0, "upper": 100.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL"},
+      "gauge": {"type": "linear_horizontal", "min_scale": 0.0, "max_scale": 100.0}
+    },
+    {
+      "metadata": {
+        "title": "Water Leak Sensors",
+        "rigor_level": "L1",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Perimeter Leak Sensors"
+      },
+      "quantity": {"symbol": "N_dry", "name": "Dry Sensors", "unit": "1", "quantity_calculus": "N_dry / 1"},
+      "measurement": {"nominal_value": 6},
+      "status_annunciator": {"state": "NOMINAL", "label": "ALL 6 DRY"}
+    },
+    {
+      "metadata": {
+        "title": "Grid Export",
+        "rigor_level": "L2",
+        "timestamp_utc": "2026-11-18T14:00:00Z",
+        "subsystem": "Main Home Grid Meter"
+      },
+      "quantity": {"symbol": "P_grid", "name": "Grid Export", "unit": "kW", "quantity_calculus": "P_grid / kW"},
+      "measurement": {"nominal_value": -1.68, "expanded_uncertainty": 0.16, "coverage_factor": 2.0},
+      "status_annunciator": {"state": "NOMINAL", "label": "EXPORTING"}
+    }
+  ]
+}

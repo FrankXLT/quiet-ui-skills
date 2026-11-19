@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: MIT */
 /* ==========================================================================
    Quiet UI Skills — Canonical Design Tokens & Responsive Continuum Scale
-   Version: 8.0 (16-Tier Continuum, Fluid 4K Root, Zero-Override @layer Ready,
-                 Concentric Radius Math, NASA Human-Factors & HUD Glass Tokens)
+   Version: 9.0 (3-Pillar Continuum, 6 Domains x 18 Views, 21 Evidence Specimens,
+                 Fluid 4K Root, Concentric Radius Math, NASA & Smart-Glass Tokens)
    License: MIT License
    ========================================================================== */
 
@@ -47,6 +47,7 @@
   --inset-pad: 4px;
   --radius-card: 8px;
   --radius-sm: 6px;
+  --radius-xs: 2px;
   --radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)));
   --radius-trough-pill: max(0px, calc(var(--radius-sm, 6px) - 2px));
   --radius-pill: 999px;
@@ -78,11 +79,11 @@
 h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* Concentric 5-Stop Corner Radius Dial (`data-corners="auto|sharp|subtle|rounded|soft"`) */
-:root[data-corners="auto"]    { --radius-card: 8px;  --radius-sm: 6px;  --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
-:root[data-corners="sharp"]   { --radius-card: 0px;  --radius-sm: 0px;  --radius-inner: 0px; --radius-trough-pill: 0px; }
-:root[data-corners="subtle"]  { --radius-card: 6px;  --radius-sm: 4px;  --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
-:root[data-corners="rounded"] { --radius-card: 12px; --radius-sm: 8px;  --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
-:root[data-corners="soft"]    { --radius-card: 18px; --radius-sm: 10px; --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
+:root[data-corners="auto"]    { --radius-card: 8px;  --radius-sm: 6px;  --radius-xs: 2px; --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
+:root[data-corners="sharp"]   { --radius-card: 0px;  --radius-sm: 0px;  --radius-xs: 0px; --radius-inner: 0px; --radius-trough-pill: 0px; }
+:root[data-corners="subtle"]  { --radius-card: 6px;  --radius-sm: 4px;  --radius-xs: 2px; --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
+:root[data-corners="rounded"] { --radius-card: 12px; --radius-sm: 8px;  --radius-xs: 2px; --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
+:root[data-corners="soft"]    { --radius-card: 18px; --radius-sm: 10px; --radius-xs: 2px; --radius-inner: max(0px, calc(var(--radius-card) - var(--inset-pad))); --radius-trough-pill: max(0px, calc(var(--radius-sm) - 2px)); }
 
 /* ==========================================================================
    4 Surface Polarity Themes (white [Default], paper, dark-paper, dark)
@@ -104,6 +105,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --text-muted: #475569;
   --border-hairline: #E2E8F0;
   --border-grid: var(--border-hairline);
+  --border-subtle: var(--border-hairline);
   --border-strong: #CBD5E1;
   --accent-primary: #1D4ED8;
   --accent-focal: var(--accent-primary);
@@ -136,6 +138,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --text-muted: #57534E;
   --border-hairline: #E5E0D6;
   --border-grid: var(--border-hairline);
+  --border-subtle: var(--border-hairline);
   --border-strong: #D6CFC5;
   --accent-primary: #1E40AF;
   --accent-focal: var(--accent-primary);
@@ -168,6 +171,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --text-muted: #A19B93;
   --border-hairline: #2E2C29;
   --border-grid: var(--border-hairline);
+  --border-subtle: var(--border-hairline);
   --border-strong: #46433E;
   --accent-primary: #60A5FA;
   --accent-focal: var(--accent-primary);
@@ -200,6 +204,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --text-muted: #94A3B8;
   --border-hairline: #1E293B;
   --border-grid: var(--border-hairline);
+  --border-subtle: var(--border-hairline);
   --border-strong: #334155;
   --accent-primary: #38BDF8;
   --accent-focal: var(--accent-primary);

@@ -1,0 +1,116 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v09-spc-control-plot",
+  "plot_kind": "cartesian",
+  "metadata": {
+    "title": "Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)",
+    "description": "NIST/SEMATECH Shewhart X_bar control chart plotting discrete subgroup means (+/-u_y) against +/-3sigma control limits (UCL 10.042 mm, CL 10.000 mm, LCL 9.958 mm), engineering spec limits (USL 10.070 mm, LSL 9.930 mm), and normalized residual strip.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-16T21:30:00Z"
+  },
+  "test_environment": {
+    "dut_id": "CNC-CELL-03-BORE",
+    "standard_id": "NIST/SEMATECH SPC",
+    "cpk": "1.64",
+    "sample_subgroup_size": "5",
+    "ambient_temperature_c": 20.0,
+    "temperature_uncertainty_c": 0.2,
+    "calibration_id": "CAL-CMM-ISO10360-2026-07"
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "k",
+      "unit": "1",
+      "quantity_calculus": "Subgroup Lot Index, k (n = 5)",
+      "scale_type": "linear",
+      "domain": [1.0, 12.0]
+    },
+    "y_axis": {
+      "quantity": "X_bar",
+      "unit": "mm",
+      "quantity_calculus": "Subgroup Mean Bore Diameter, X_bar / mm",
+      "scale_type": "linear",
+      "domain": [9.92, 10.08]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "env-usl",
+      "label": "USL 10.070 mm",
+      "threshold_value": 10.07,
+      "type": "abort",
+      "direction": "upper",
+      "stroke_style": "dash-dot",
+      "stroke_color": "var(--status-danger)"
+    },
+    {
+      "id": "env-ucl",
+      "label": "UCL 10.042 mm",
+      "threshold_value": 10.042,
+      "type": "warning",
+      "direction": "none",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--status-warn)"
+    },
+    {
+      "id": "env-lcl",
+      "label": "LCL 9.958 mm",
+      "threshold_value": 9.958,
+      "type": "warning",
+      "direction": "none",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--status-warn)"
+    },
+    {
+      "id": "env-lsl",
+      "label": "LSL 9.930 mm",
+      "threshold_value": 9.93,
+      "type": "abort",
+      "direction": "lower",
+      "stroke_style": "dash-dot",
+      "stroke_color": "var(--status-danger)"
+    }
+  ],
+  "series": [
+    {
+      "id": "spc-cl-model",
+      "name": "Nominal Centerline CL (10.000 mm)",
+      "epistemic_type": "analytical_model",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)",
+      "corridor_abs": 0.014,
+      "equation": "10.000"
+    },
+    {
+      "id": "spc-xbar-subgroups",
+      "name": "Subgroup Mean X_bar (n = 5)",
+      "epistemic_type": "discrete_measurement",
+      "connect_piecewise": true,
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 1, "y": 9.997, "u_y": 0.007},
+        {"x": 2, "y": 10.006, "u_y": 0.006},
+        {"x": 3, "y": 10.011, "u_y": 0.007},
+        {"x": 4, "y": 9.993, "u_y": 0.007},
+        {"x": 5, "y": 10.002, "u_y": 0.006},
+        {"x": 6, "y": 10.014, "u_y": 0.008},
+        {"x": 7, "y": 9.995, "u_y": 0.007},
+        {"x": 8, "y": 10.004, "u_y": 0.006},
+        {"x": 9, "y": 9.989, "u_y": 0.008},
+        {"x": 10, "y": 10.001, "u_y": 0.006},
+        {"x": 11, "y": 10.008, "u_y": 0.007},
+        {"x": 12, "y": 9.998, "u_y": 0.006}
+      ]
+    }
+  ],
+  "residual_strip": {
+    "enabled": true
+  },
+  "parametric_legend": [
+    {"symbol": "CL", "value": 10.0, "unit": "mm"},
+    {"symbol": "UCL", "value": 10.042, "unit": "mm"},
+    {"symbol": "LCL", "value": 9.958, "unit": "mm"},
+    {"symbol": "C_pk", "value": 1.64, "unit": "1"}
+  ]
+}

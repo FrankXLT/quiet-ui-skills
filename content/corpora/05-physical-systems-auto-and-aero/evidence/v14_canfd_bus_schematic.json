@@ -1,0 +1,56 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:schematic",
+  "id": "w05-v14-canfd-bus-schematic",
+  "metadata": {
+    "title": "SAE J1939 CAN-FD 120 Ω Powertrain & BMS Differential Bus Topology",
+    "description": "120 Ω dual-terminated SAE J1939 / ISO 11898-2 CAN-FD differential bus with direct stub drops (Stub <= 0.3 m) connecting ECM (0x00), BMS (0xF3), MCU (0xEF, thermal warning), and OBD-II Tap.",
+    "rigor_level": "L3",
+    "drawing_number": "DWG-J1939-CANFD-05",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "schematic_kind": "differential_bus",
+  "bus_standard": "can_fd",
+  "bus_parameters": {
+    "termination_ohm": 120,
+    "stub_max_m": 0.3,
+    "arbitration_rate_kbps": 500,
+    "data_phase_rate_mbps": 2.0
+  },
+  "medium_constraints": {
+    "window_scrim_min_contrast": 7.0
+  },
+  "test_environment": {
+    "dut_id": "PT-CANFD-HARNESS-05",
+    "standard_id": "SAE J1939 / ISO 11898-2",
+    "ambient_temperature_c": 23.5,
+    "temperature_uncertainty_c": 0.3,
+    "calibration_id": "FLUKE-87V-CAL-05"
+  },
+  "terminals": [
+    {
+      "id": "ecm",
+      "role": "ECU",
+      "label": "ECM (0x00)",
+      "sublabel": "Engine Control"
+    },
+    {
+      "id": "bms",
+      "role": "RT",
+      "label": "BMS (0xF3)",
+      "sublabel": "HV Pack 800 V"
+    },
+    {
+      "id": "mcu",
+      "role": "RT",
+      "label": "MCU (0xEF)",
+      "sublabel": "Derate 85 °C",
+      "status": "warn"
+    },
+    {
+      "id": "obd",
+      "role": "BM",
+      "label": "OBD-II Tap",
+      "sublabel": "2 Mbps Data"
+    }
+  ]
+}

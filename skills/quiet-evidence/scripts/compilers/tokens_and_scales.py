@@ -1,0 +1,344 @@
+# SPDX-License-Identifier: Apache-2.0
+"""Quiet UI Pillar 2 — Tokens, NAVAIR 1-2-5 / Log-Decade Scales, NIST SP 811 & SVG Halos."""
+
+from __future__ import annotations
+
+import html
+import math
+import re
+from typing import Any
+
+_HEX_RE = re.compile(r"^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+_RGB_RE = re.compile(r"^rgba?\(\s*(?:\d{1,3}%?\s*[,\s]\s*){2}\d{1,3}%?\s*(?:[,/]\s*(?:0|1|0?\.\d+)\s*)?\)$")
+
+SUPERSCRIPT_MAP = str.maketrans("-+0123456789.", "⁻⁺⁰¹²³⁴⁵⁶⁷⁸⁹·")
+
+_GREEK_MAP: dict[str, str] = {
+    "Mod_sigma_y": "Mod σ_y", "Mod sigma_y": "Mod σ_y", "sigma_y": "σ_y", "sigma": "σ",
+    "Delta_phi": "Δφ", "Delta": "Δ", "Lambda_LLR": "Λ_LLR", "Lambda": "Λ",
+    "lambda": "λ", "tau": "τ", "phi": "φ", "alpha": "α", "beta": "β",
+    "gamma": "γ", "theta": "θ", "omega": "ω", "mu": "μ", "eta": "η",
+    "y_hat_i": "ŷᵢ", "y_hat": "ŷ", "p_hat": "p̂", "y_i": "yᵢ", "x_i": "xᵢ",
+    "X_bar": "X̄", "x_bar": "x̄", "R_bar": "R̄",
+}
+_GREEK_KEYS = sorted(_GREEK_MAP, key=len, reverse=True)
+_GREEK_RE = re.compile(r"(?<![A-Za-z0-9_])(" + "|".join(re.escape(k) for k in _GREEK_KEYS) + r")(?![A-Za-z0-9])")
+_SCI_RE = re.compile(r"\b(\d+(?:\.\d+)?)[eE]([+-]?\d+)\b")
+_POW_RE = re.compile(r"\^\(?(-?\d+(?:\.\d+)?)\)?")
+_SUB_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9_])((?:p̂|X̄|R̄|[A-Za-z0-9σΔΛαβγθωλφŷτμµη]){1,8})_([A-Za-z0-9]{1,8})(?![A-Za-z0-9_])")
+
+SI_PREFIXES: tuple[tuple[int, str], ...] = (
+    (-15, "f"), (-12, "p"), (-9, "n"), (-6, "µ"), (-3, "m"),
+    (0, ""), (3, "k"), (6, "M"), (9, "G"), (12, "T"),
+)
+
+SERIES_STYLES: tuple[dict[str, str], ...] = (
+    {"stroke": "var(--accent-focal)", "dash": "none", "marker": "circle", "fill": "var(--accent-focal)"},
+    {"stroke": "var(--text-secondary)", "dash": "6,3", "marker": "square", "fill": "var(--bg-canvas)"},
+    {"stroke": "var(--status-ok)", "dash": "2,3", "marker": "triangle", "fill": "var(--status-ok)"},
+    {"stroke": "var(--tint-violet-fg)", "dash": "8,3,2,3", "marker": "diamond", "fill": "var(--bg-canvas)"},
+    {"stroke": "var(--status-warn)", "dash": "4,4", "marker": "circle", "fill": "var(--bg-canvas)"},
+)
+
+PEDAGOGICAL_TERMS: dict[str, dict[str, str]] = {
+    "tx": {"fg": "var(--tint-indigo-fg)", "bg": "var(--tint-indigo-bg)"},
+    "gain_tx": {"fg": "var(--tint-emerald-fg)", "bg": "var(--tint-emerald-bg)"},
+    "path_loss": {"fg": "var(--tint-amber-fg)", "bg": "var(--tint-amber-bg)"},
+    "gain_rx": {"fg": "var(--tint-violet-fg)", "bg": "var(--tint-violet-bg)"},
+    "rx": {"fg": "var(--accent-focal)", "bg": "var(--tint-indigo-bg)"},
+    "noise": {"fg": "var(--tint-rose-fg)", "bg": "var(--tint-rose-bg)"},
+    "oxygen-goal": {"fg": "var(--tint-emerald-fg)", "bg": "var(--tint-emerald-bg)"},
+    "hydration-check": {"fg": "var(--tint-indigo-fg)", "bg": "var(--tint-indigo-bg)"},
+    "bp-threshold": {"fg": "var(--tint-amber-fg)", "bg": "var(--tint-amber-bg)"},
+}
+
+ANNUNCIATOR_STATES: dict[str, dict[str, str]] = {
+    "NOMINAL":  {"pill": "Nominal",      "state": "nominal", "fg": "var(--text-secondary)", "gauge_fg": "var(--status-ok)"},
+    "ADVISORY": {"pill": "ADVISORY",     "state": "warn",    "fg": "var(--status-warn)",    "gauge_fg": "var(--status-warn)"},
+    "WARNING":  {"pill": "CAUTION",      "state": "warn",    "fg": "var(--status-warn)",    "gauge_fg": "var(--status-warn)"},
+    "CRITICAL": {"pill": "TRIPWIRE",     "state": "fault",   "fg": "var(--status-danger)",  "gauge_fg": "var(--status-danger)"},
+    "STALE":    {"pill": "STALE DATA",   "state": "warn",    "fg": "var(--status-warn)",    "gauge_fg": "var(--status-warn)"},
+    "FAULT":    {"pill": "SENSOR FAULT", "state": "fault",   "fg": "var(--status-danger)",  "gauge_fg": "var(--status-danger)"},
+}
+
+SAFE_TOKENS: set[str] = {
+    "--bg-shell", "--bg-canvas", "--bg-surface", "--bg-card", "--bg-elevated",
+    "--bg-header", "--text-primary", "--text-main", "--text-secondary", "--text-dim",
+    "--text-muted", "--border-hairline", "--border-grid", "--border-subtle", "--border-strong",
+    "--accent-primary", "--accent-focal", "--status-ok", "--status-ok-bg",
+    "--status-warn", "--status-warn-bg", "--status-danger", "--status-err",
+    "--status-err-bg", "--tint-indigo-bg", "--tint-indigo-fg",
+    "--tint-emerald-bg", "--tint-emerald-fg", "--tint-amber-bg", "--tint-amber-fg",
+    "--tint-rose-bg", "--tint-rose-fg", "--tint-violet-bg", "--tint-violet-fg", "--radius-xs",
+}
+
+
+def esc(text: Any) -> str:
+    """Escape text safely for HTML/SVG without introducing raw backticks."""
+    return html.escape(str(text), quote=True)
+
+
+def format_math_unicode(text: Any) -> str:
+    """Format ASCII math notation into Unicode scientific typography."""
+    s = str(text)
+    s = _SCI_RE.sub(lambda m: f"{m.group(1)} × 10{m.group(2).lstrip('+').translate(SUPERSCRIPT_MAP)}", s)
+    s = _POW_RE.sub(lambda m: m.group(1).lstrip("+").translate(SUPERSCRIPT_MAP), s)
+    s = _GREEK_RE.sub(lambda m: _GREEK_MAP[m.group(1)], s)
+    s = re.sub(r"\s*\*\s*", " ", s)
+    return s.replace(" - ", " − ")
+
+
+def format_math_html(text: Any) -> str:
+    """Format ASCII math notation into escaped HTML with <sub> subscripts."""
+    uni = esc(format_math_unicode(text))
+    return _SUB_TOKEN_RE.sub(r"\1<sub>\2</sub>", uni)
+
+
+def format_math_svg(text: Any, sub_size: float = 8.8) -> str:
+    """Format ASCII math notation into escaped SVG markup with <tspan dy font-size=sub_size> subscripts."""
+    uni = format_math_unicode(text)
+    out: list[str] = []
+    pos, shifted = 0, False
+    sz = max(7.0, float(sub_size))
+    for m in _SUB_TOKEN_RE.finditer(uni):
+        pre = esc(uni[pos:m.start()]) + esc(m.group(1))
+        out.append(f'<tspan dy="-2.2">{pre}</tspan>' if shifted else pre)
+        out.append(f'<tspan dy="2.2" font-size="{sz:g}">{esc(m.group(2))}</tspan>')
+        shifted = True
+        pos = m.end()
+    tail = esc(uni[pos:])
+    if tail:
+        out.append(f'<tspan dy="-2.2">{tail}</tspan>' if shifted else tail)
+    return "".join(out)
+
+
+def resolve_token(value: str | None, fallback: str = "var(--accent-focal)") -> str:
+    """Resolve CSS custom property against canonical Quiet UI tokens."""
+    if not isinstance(value, str) or not value:
+        return fallback
+    val = value.strip()
+    if val.startswith("var(") and val.endswith(")"):
+        inner = val[4:-1].split(",")[0].strip()
+        return f"var({inner})" if inner in SAFE_TOKENS else fallback
+    if val in SAFE_TOKENS:
+        return f"var({val})"
+    if val == "currentColor" or _HEX_RE.match(val) or _RGB_RE.match(val):
+        return val
+    return fallback
+
+
+def resolve_term_colors(term_key: str | None) -> dict[str, str]:
+    """Return Pedagogical Flow role foreground/background tokens for a data-term."""
+    if not term_key:
+        return {"fg": "var(--accent-focal)", "bg": "var(--bg-elevated)"}
+    return PEDAGOGICAL_TERMS.get(term_key, {"fg": "var(--accent-focal)", "bg": "var(--tint-indigo-bg)"})
+
+
+def _snap_sig(val: float, step: float) -> float:
+    if abs(val) < step * 1e-9:
+        return 0.0
+    return float(f"{val:.12g}")
+
+
+def compute_linear_125_scale(
+    vmin: float,
+    vmax: float,
+    target_ticks: int = 6,
+) -> dict[str, Any]:
+    """Compute NAVAIR FTM-108 1-2-5 x 10^n major and minor ticks."""
+    if not (math.isfinite(vmin) and math.isfinite(vmax)):
+        vmin, vmax = 0.0, 1.0
+    if vmin > vmax:
+        vmin, vmax = vmax, vmin
+    if math.isclose(vmin, vmax, rel_tol=1e-12, abs_tol=0.0):
+        pad = abs(vmin) * 0.1 if vmin != 0.0 else 1.0
+        vmin -= pad
+        vmax += pad
+    span = vmax - vmin
+    if not math.isfinite(span) or span <= 0.0:
+        vmin, vmax, span = -1.0, 1.0, 2.0
+    rough = span / max(target_ticks, 2)
+    exp = math.floor(math.log10(rough))
+    frac = rough / (10.0 ** exp)
+    if frac < math.sqrt(2.0):
+        c = 1.0
+    elif frac < math.sqrt(10.0):
+        c = 2.0
+    elif frac < math.sqrt(50.0):
+        c = 5.0
+    else:
+        c = 1.0
+        exp += 1
+    step = c * (10.0 ** exp)
+    start = math.floor(vmin / step + 1e-9) * step
+    end = math.ceil(vmax / step - 1e-9) * step
+    if end <= start:
+        end = start + step
+
+    majors: list[float] = []
+    cur = start
+    limit = 0
+    while cur <= end + step * 1e-6 and limit < 40:
+        majors.append(_snap_sig(cur, step))
+        cur += step
+        limit += 1
+
+    sub_div = 4 if c == 2.0 else 5
+    minor_step = step / sub_div
+    minors: list[float] = []
+    for i in range(len(majors) - 1):
+        for k in range(1, sub_div):
+            minors.append(_snap_sig(majors[i] + k * minor_step, minor_step))
+
+    return {
+        "min": majors[0],
+        "max": majors[-1],
+        "step": step,
+        "mantissa": int(c),
+        "exponent": exp,
+        "majors": majors,
+        "minors": minors,
+    }
+
+
+def compute_log_decade_scale(vmin: float, vmax: float) -> dict[str, Any]:
+    """Compute integer log10 decades and mandatory 2..9 minor decade ticks."""
+    if not (math.isfinite(vmin) and math.isfinite(vmax)):
+        vmin, vmax = 1.0, 10.0
+    if vmin > vmax:
+        vmin, vmax = vmax, vmin
+    if vmax <= 0.0:
+        lo, hi = 1.0, 10.0
+    else:
+        lo = vmin if vmin > 0.0 else max(1e-30, vmax * 1e-4)
+        hi = max(vmax, lo * 10.0)
+    exp_min = math.floor(math.log10(lo) + 1e-9)
+    exp_max = math.ceil(math.log10(hi) - 1e-9)
+    if exp_max <= exp_min:
+        exp_max = exp_min + 1
+    if exp_max - exp_min > 18:
+        exp_min = exp_max - 18
+    majors = [10.0 ** k for k in range(exp_min, exp_max + 1)]
+    minors: list[float] = []
+    for k in range(exp_min, exp_max):
+        base = 10.0 ** k
+        for m in range(2, 10):
+            minors.append(m * base)
+    return {
+        "min": majors[0],
+        "max": majors[-1],
+        "exp_min": exp_min,
+        "exp_max": exp_max,
+        "majors": majors,
+        "minors": minors,
+    }
+
+
+def select_engineering_prefix(max_abs: float, unit: str) -> tuple[float, str]:
+    """Select SI engineering prefix factor and scaled unit keeping ticks in [0.1, 999]."""
+    non_prefix_units = {"1", "", "%", "dB", "dBm", "dBc", "dBc/Hz", "°C", "°", "K"}
+    if not unit or unit in non_prefix_units or not math.isfinite(max_abs) or max_abs <= 0:
+        return 1.0, unit
+    if len(unit) > 1 and unit[0] in {"f", "p", "n", "µ", "u", "m", "k", "M", "G", "T"} and unit not in {"ms", "mV", "mA", "mrad", "mm"}:
+        return 1.0, unit
+    if unit in {"ms", "mV", "mA", "mrad", "mm", "µs", "ps", "ns", "GHz", "MHz", "kHz", "kΩ", "km"}:
+        return 1.0, unit
+    exp3 = int(math.floor(math.log10(max_abs) / 3.0) * 3)
+    exp3 = max(-15, min(12, exp3))
+    for p_exp, p_sym in SI_PREFIXES:
+        if p_exp == exp3:
+            return 10.0 ** (-p_exp), f"{p_sym}{unit}"
+    return 1.0, unit
+
+
+def format_tick_numeral(val: float, is_log: bool = False, step: float | None = None) -> str:
+    """Format axis tick numeral cleanly without floating-point artifacts."""
+    if not math.isfinite(val):
+        return "0"
+    if is_log:
+        exp = round(math.log10(max(val, 1e-30)))
+        if abs(exp) <= 2 and val >= 0.01 and val == round(val, 2):
+            return f"{val:g}"
+        return "10" + str(exp).translate(SUPERSCRIPT_MAP)
+    if val == 0.0 or (step is not None and step > 0 and abs(val) < step * 1e-9):
+        return "0"
+    if step is not None and step > 0:
+        dec = max(0, -math.floor(math.log10(step) + 1e-9))
+        if abs(val) >= 1e5 or (0 < abs(val) < 1e-3):
+            return f"{val:.2e}"
+        dec = min(dec, 6)
+        formatted = f"{val:.{dec}f}"
+        return formatted.rstrip("0").rstrip(".") if "." in formatted and dec > 2 else formatted
+    return f"{val:g}"
+
+
+def format_quantity_header(symbol: str, name: str | None = None, unit: str = "") -> str:
+    """Format NIST SP 811 quotient or parenthetical header (never `f [GHz]`)."""
+    clean_u = unit.strip()
+    if not clean_u or clean_u == "1":
+        return f"{name}, {symbol}" if name and name != symbol else symbol
+    if name and name != symbol:
+        return f"{name}, {symbol} / {clean_u}"
+    return f"{symbol} / {clean_u}"
+
+
+def format_value_unit(val: float | str, unit: str = "", uncertainty: float | None = None, decimals: int | None = None) -> str:
+    """Format physical reading with NIST SP 811 non-breaking space and parenthetical uncertainty."""
+    if isinstance(val, (int, float)):
+        if decimals is None and uncertainty is not None and uncertainty > 0:
+            dec = max(0, min(6, -math.floor(math.log10(uncertainty) + 1e-9) + 1))
+            val_str = f"{val:.{dec}f}"
+            unc_str = f"{uncertainty:.{dec}f}"
+        elif decimals is not None:
+            val_str = f"{val:.{decimals}f}"
+            unc_str = f"{uncertainty:.{decimals}f}" if uncertainty is not None else ""
+        else:
+            val_str = f"{val:g}"
+            unc_str = f"{uncertainty:g}" if uncertainty is not None else ""
+    else:
+        val_str = str(val)
+        unc_str = f"{uncertainty:g}" if uncertainty is not None else ""
+
+    clean_u = unit.strip()
+    sep = "" if clean_u in {"°", "′", "″", "%"} else "\u00a0"
+    if unc_str:
+        return f"({val_str} \u00b1 {unc_str}){sep}{clean_u}" if clean_u and clean_u != "1" else f"{val_str} \u00b1 {unc_str}"
+    if clean_u and clean_u != "1":
+        return f"{val_str}{sep}{clean_u}"
+    return val_str
+
+
+def render_test_condition_strip(env: dict[str, Any] | None, rigor: str) -> str:
+    """Render NIST/NAVAIR/Clinical/Industrial Condition Header Block for L2/L3 visuals."""
+    if not env or rigor == "L1":
+        return ""
+    fields: list[tuple[str, str]] = []
+    for key, lbl in (("dut_id", "DUT"), ("unit_id", "Unit"), ("cohort_id", "Cohort"), ("firmware_version", "FW"), ("standard_id", "Std")):
+        if env.get(key):
+            fields.append((lbl, str(env[key])))
+    if env.get("ambient_temperature_c") is not None:
+        fields.append(("T_amb", format_value_unit(env["ambient_temperature_c"], "°C", env.get("temperature_uncertainty_c"), decimals=1)))
+    elif env.get("temperature_c") is not None:
+        fields.append(("T_amb", format_value_unit(env["temperature_c"], "°C", decimals=1)))
+    if env.get("reference_oscillator") or env.get("reference_clock"):
+        fields.append(("Timebase", str(env.get("reference_oscillator") or env.get("reference_clock"))))
+    if env.get("sampling_rate_hz") or env.get("sample_rate_hz"):
+        sr = float(env.get("sampling_rate_hz") or env.get("sample_rate_hz"))
+        factor, s_unit = select_engineering_prefix(sr, "Hz")
+        fields.append(("f_s", format_value_unit(sr * factor, s_unit, decimals=2)))
+    if env.get("cpk") is not None:
+        fields.append(("C_pk", f"{float(env['cpk']):.2f}"))
+    if env.get("sample_subgroup_size") is not None:
+        fields.append(("n_sub", str(env["sample_subgroup_size"])))
+    if env.get("calibration_id"):
+        fields.append(("Cal Cert", str(env["calibration_id"])))
+    if not fields:
+        return ""
+    if rigor == "L2":
+        fields = fields[:3]
+    cells = "".join(
+        f'<div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">{format_math_html(k)}</span>'
+        f'<span class="qe-cond-val va-nums">{esc(v)}</span></div>'
+        for k, v in fields
+    )
+    return f'<div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions">{cells}</div>'

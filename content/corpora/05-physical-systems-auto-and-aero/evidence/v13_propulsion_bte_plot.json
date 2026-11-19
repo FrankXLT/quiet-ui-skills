@@ -1,0 +1,104 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "w05-v13-propulsion-bte-plot",
+  "metadata": {
+    "title": "Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP",
+    "description": "Steady-state propulsion dynamometer measurements (discrete points with +/-u_y whiskers) compared against cubic analytical efficiency model peaking at 42.8 % at 14.0 bar IMEP, bounded by cruise derate floor and thermal/knock ceiling.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z",
+    "peak_bte_pct": 42.8
+  },
+  "medium_constraints": {
+    "hud_sightline_keepout_pct": 65.0
+  },
+  "test_environment": {
+    "dut_id": "ANL-D3-2.0L-CRDI",
+    "standard_id": "Argonne D^3 Dyn-Cell",
+    "ambient_temperature_c": 25.0,
+    "temperature_uncertainty_c": 0.5,
+    "sampling_rate_hz": 100.0,
+    "calibration_id": "NIST-TRQ-2026-05"
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "IMEP",
+      "unit": "bar",
+      "quantity_calculus": "Indicated Mean Effective Pressure, IMEP / bar",
+      "scale_type": "linear",
+      "domain": [2.0, 20.0]
+    },
+    "y_axis": {
+      "quantity": "eta_bte",
+      "unit": "%",
+      "quantity_calculus": "Brake Thermal Efficiency, eta_bte / %",
+      "scale_type": "linear",
+      "domain": [15.0, 50.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "bte-thermal-ceiling",
+      "label": "Knock / Thermal Derate Ceiling (46.0 %)",
+      "threshold_value": 46.0,
+      "type": "abort",
+      "direction": "upper",
+      "stroke_style": "dash-dot",
+      "stroke_color": "var(--status-danger)"
+    },
+    {
+      "id": "bte-cruise-derate",
+      "label": "Cruise Efficiency Warning Floor (35.0 %)",
+      "threshold_value": 35.0,
+      "type": "warning",
+      "direction": "lower",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--status-warn)"
+    }
+  ],
+  "series": [
+    {
+      "id": "bte-poly-model",
+      "name": "Cubic Polynomial Model",
+      "epistemic_type": "analytical_model",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)",
+      "corridor_abs": 0.7,
+      "equation": "42.8 - 0.125 * (x - 14.0)^2 + 0.0042 * (x - 14.0)^3"
+    },
+    {
+      "id": "bte-dyn-samples",
+      "name": "Argonne D^3 Dyn Runs",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 2.0, "y": 17.3, "u_y": 0.8},
+        {"x": 4.0, "y": 26.5, "u_y": 0.7},
+        {"x": 6.0, "y": 32.3, "u_y": 0.6},
+        {"x": 8.0, "y": 37.8, "u_y": 0.6},
+        {"x": 10.0, "y": 40.2, "u_y": 0.5},
+        {"x": 12.0, "y": 42.4, "u_y": 0.5},
+        {"x": 14.0, "y": 42.8, "u_y": 0.4},
+        {"x": 16.0, "y": 42.1, "u_y": 0.5},
+        {"x": 18.0, "y": 41.4, "u_y": 0.5},
+        {"x": 20.0, "y": 38.9, "u_y": 0.6}
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "x": 14.0,
+      "y": 42.8,
+      "dx": -12,
+      "dy": -24,
+      "label": "Peak BTE 42.8 % @ 14 bar"
+    }
+  ],
+  "residual_strip": {
+    "enabled": true
+  },
+  "parametric_legend": [
+    {"symbol": "eta_peak", "value": 42.8, "unit": "%"},
+    {"symbol": "IMEP_opt", "value": 14.0, "unit": "bar"}
+  ]
+}

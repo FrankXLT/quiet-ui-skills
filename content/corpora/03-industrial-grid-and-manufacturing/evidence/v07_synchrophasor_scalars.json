@@ -1,0 +1,147 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:scalar",
+  "id": "v07-synchrophasor-scalars",
+  "metadata": {
+    "title": "Microgrid POI Dispatch, Synchrophasor Frequency, BESS SoC & OEE Readouts",
+    "description": "Conserved telemetry array pairing CMD-vs-ACT NIST uncertainty gauges for control-room dispatch with wall-kiosk readiness sparklines.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-16T21:30:00Z",
+    "subsystem": "POI-SYNCHROPHASOR-BUS"
+  },
+  "readouts": [
+    {"id": "dispatch-active-power", "label": "Dispatch Active Power", "cmd": 24.0, "act": 23.6, "uncertainty": 0.1, "unit": "MW", "state": "NOMINAL"},
+    {"id": "grid-synchrophasor-freq", "label": "Grid Synchrophasor Frequency", "cmd": 60.0, "act": 59.985, "uncertainty": 0.005, "unit": "Hz", "state": "NOMINAL"},
+    {"id": "bess-state-of-charge", "label": "BESS SoC", "cmd": 80.0, "act": 78.4, "uncertainty": 0.5, "unit": "%", "state": "NOMINAL"},
+    {"id": "plant-oee-yield", "label": "OEE Yield", "cmd": 95.0, "act": 94.2, "uncertainty": 0.4, "unit": "%", "state": "NOMINAL"}
+  ],
+  "items": [
+    {
+      "metadata": {
+        "title": "Dispatch Active Power (CMD 24.0 MW)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-16T21:30:00Z",
+        "subsystem": "POI-DISPATCH-MW"
+      },
+      "quantity": {
+        "symbol": "P_act",
+        "name": "Dispatch Active Power",
+        "unit": "MW",
+        "quantity_calculus": "P_act / MW"
+      },
+      "measurement": {
+        "nominal_value": 23.6,
+        "expanded_uncertainty": 0.1,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "PMU-POI-01A",
+        "calibration_id": "CAL-NIST-GRID-2026-031",
+        "raw_adc_counts": 47200
+      },
+      "limits": {
+        "nominal_target": 24.0,
+        "tolerance_band": [-1.0, 1.0],
+        "warning_thresholds": {"lower": 21.5, "upper": 25.5},
+        "abort_thresholds": {"lower": 18.0, "upper": 27.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL", "margin_remaining_pct": 84.0},
+      "gauge": {"type": "linear_horizontal", "min_scale": 16.0, "max_scale": 28.0},
+      "sparkline": [23.2, 23.4, 23.5, 23.7, 23.6, 23.5, 23.8, 23.6, 23.7, 23.6]
+    },
+    {
+      "metadata": {
+        "title": "Grid Synchrophasor Frequency (CMD 60.000 Hz)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-16T21:30:00Z",
+        "subsystem": "PMU-C37118-FREQ"
+      },
+      "quantity": {
+        "symbol": "f_grid",
+        "name": "Grid Synchrophasor Frequency",
+        "unit": "Hz",
+        "quantity_calculus": "f_grid / Hz"
+      },
+      "measurement": {
+        "nominal_value": 59.985,
+        "expanded_uncertainty": 0.005,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "PMU-GPSDO-02B",
+        "calibration_id": "CAL-IEEE-C37118-2026-09",
+        "raw_adc_counts": 59985
+      },
+      "limits": {
+        "nominal_target": 60.0,
+        "tolerance_band": [-0.02, 0.02],
+        "warning_thresholds": {"lower": 59.95, "upper": 60.05},
+        "abort_thresholds": {"lower": 59.9, "upper": 60.1}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL", "margin_remaining_pct": 70.0},
+      "gauge": {"type": "linear_horizontal", "min_scale": 59.85, "max_scale": 60.15},
+      "sparkline": [59.992, 59.99, 59.988, 59.986, 59.984, 59.985, 59.987, 59.986, 59.985, 59.985]
+    },
+    {
+      "metadata": {
+        "title": "BESS State of Charge (SoC)",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-16T21:30:00Z",
+        "subsystem": "BESS-RACK-BMS"
+      },
+      "quantity": {
+        "symbol": "SoC_bess",
+        "name": "BESS State of Charge",
+        "unit": "%",
+        "quantity_calculus": "SoC_bess / %"
+      },
+      "measurement": {
+        "nominal_value": 78.4,
+        "expanded_uncertainty": 0.5,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "BMS-RACK-A04",
+        "calibration_id": "CAL-BESS-SHUNT-2026-14",
+        "raw_adc_counts": 15680
+      },
+      "limits": {
+        "nominal_target": 80.0,
+        "tolerance_band": [-10.0, 10.0],
+        "warning_thresholds": {"lower": 20.0, "upper": 92.0},
+        "abort_thresholds": {"lower": 10.0, "upper": 96.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL", "margin_remaining_pct": 88.0},
+      "gauge": {"type": "linear_horizontal", "min_scale": 0.0, "max_scale": 100.0},
+      "sparkline": [79.1, 79.0, 78.9, 78.8, 78.7, 78.6, 78.5, 78.5, 78.4, 78.4]
+    },
+    {
+      "metadata": {
+        "title": "Plant OEE Yield",
+        "rigor_level": "L3",
+        "timestamp_utc": "2026-11-16T21:30:00Z",
+        "subsystem": "MES-CELL-03-OEE"
+      },
+      "quantity": {
+        "symbol": "OEE",
+        "name": "Plant OEE Yield",
+        "unit": "%",
+        "quantity_calculus": "OEE / %"
+      },
+      "measurement": {
+        "nominal_value": 94.2,
+        "expanded_uncertainty": 0.4,
+        "coverage_factor": 2.0,
+        "confidence_pct": 95.45,
+        "sensor_id": "MES-LINE-03-AGG",
+        "calibration_id": "CAL-OEE-AUDIT-2026-03",
+        "raw_adc_counts": 9420
+      },
+      "limits": {
+        "nominal_target": 95.0,
+        "tolerance_band": [-3.0, 3.0],
+        "warning_thresholds": {"lower": 88.0, "upper": 99.5},
+        "abort_thresholds": {"lower": 82.0, "upper": 100.0}
+      },
+      "status_annunciator": {"state": "NOMINAL", "label": "NOMINAL", "margin_remaining_pct": 91.0},
+      "gauge": {"type": "linear_horizontal", "min_scale": 75.0, "max_scale": 100.0},
+      "sparkline": [93.8, 93.9, 94.0, 94.1, 94.0, 94.2, 94.3, 94.1, 94.2, 94.2]
+    }
+  ]
+}

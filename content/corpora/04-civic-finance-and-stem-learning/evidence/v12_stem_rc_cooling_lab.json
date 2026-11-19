@@ -1,0 +1,114 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v12-stem-rc-cooling-lab",
+  "metadata": {
+    "title": "First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]",
+    "description": "STEM Interactive Lab pairing color-coupled exponential decay with discrete student oscilloscope measurements (±1σ uncertainty), 1–2–5 NIST axes, and bottom normalized residual strip.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "test_environment": {
+    "dut_id": "RC-BENCH-RIG-04",
+    "ambient_temperature_c": 22.4,
+    "temperature_uncertainty_c": 0.2,
+    "reference_oscillator": "Scope-10MHz-Ref",
+    "sampling_rate_hz": 1000.0,
+    "calibration_id": "NIST-RC-LAB-2026"
+  },
+  "plot_kind": "cartesian",
+  "pedagogical_equation": {
+    "lhs": "V(t)",
+    "terms": [
+      {
+        "symbol": "V_0 (5.00 V)",
+        "term": "tx"
+      },
+      {
+        "symbol": "×",
+        "term": ""
+      },
+      {
+        "symbol": "exp(−t / τ) (τ = 2.40 s)",
+        "term": "path_loss"
+      }
+    ]
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "t",
+      "unit": "s",
+      "quantity_calculus": "Elapsed Discharge Time, t / s",
+      "scale_type": "linear",
+      "domain": [0.0, 10.0]
+    },
+    "y_axis": {
+      "quantity": "V_c",
+      "unit": "V",
+      "quantity_calculus": "Capacitor Voltage, V_c / V",
+      "scale_type": "linear",
+      "domain": [0.0, 5.0]
+    }
+  },
+  "series": [
+    {
+      "id": "rc-theoretical-decay",
+      "name": "Analytical RC Model V_0 · exp(−t / τ)",
+      "epistemic_type": "analytical_model",
+      "term": "path_loss",
+      "stroke_style": "dashed",
+      "corridor_rel": 0.04,
+      "equation": "5.0 * exp(-x / 2.4)"
+    },
+    {
+      "id": "student-scope-samples",
+      "name": "Student Oscilloscope Samples",
+      "epistemic_type": "discrete_measurement",
+      "term": "tx",
+      "marker_glyph": "circle",
+      "data_points": [
+        {"x": 0.0, "y": 4.98, "u_y": 0.06},
+        {"x": 0.5, "y": 4.09, "u_y": 0.06},
+        {"x": 1.0, "y": 3.26, "u_y": 0.06},
+        {"x": 2.0, "y": 2.21, "u_y": 0.05},
+        {"x": 2.4, "y": 1.82, "u_y": 0.05},
+        {"x": 4.0, "y": 0.97, "u_y": 0.04},
+        {"x": 6.0, "y": 0.39, "u_y": 0.04},
+        {"x": 8.0, "y": 0.19, "u_y": 0.04},
+        {"x": 10.0, "y": 0.08, "u_y": 0.03}
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "x": 0.0,
+      "y": 4.98,
+      "dx": 28,
+      "dy": 22,
+      "label": "Initial Voltage V_0 = 5.00 V",
+      "term": "tx"
+    },
+    {
+      "x": 2.4,
+      "y": 1.82,
+      "dx": 30,
+      "dy": -22,
+      "label": "1 τ = 2.40 s (1.84 V)",
+      "term": "path_loss"
+    }
+  ],
+  "residual_strip": {
+    "enabled": true
+  },
+  "parametric_legend": [
+    {
+      "symbol": "V_0",
+      "value": 5.0,
+      "unit": "V"
+    },
+    {
+      "symbol": "τ",
+      "value": 2.4,
+      "unit": "s"
+    }
+  ]
+}

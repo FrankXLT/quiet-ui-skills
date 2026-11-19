@@ -1,0 +1,165 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:corpus",
+  "world_id": "01-clinical-icu-and-trials",
+  "world_index": 1,
+  "title": "Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof",
+  "domain": "Clinical & Life Sciences",
+  "created_utc": "2026-11-17T05:30:00Z",
+  "summary": "Multi-audience corpus demonstrating Quiet UI Numerical Conservation across bedside critical-care telemetry (L3 Quiet Cockpit), CONSORT Phase III regulatory review (L3 Decision Contrast), and plain-language patient recovery guidance (L1 Pedagogical Flow).",
+  "canonical_metrics": {
+    "map_mmhg": {
+      "label": "Mean Arterial Pressure (MAP)",
+      "value": 63.5,
+      "expanded_uncertainty": 1.5,
+      "unit": "mmHg",
+      "target": 75.0,
+      "lower_limit": 65.0,
+      "abort_lower_limit": 55.0,
+      "disposition": "CAUTION"
+    },
+    "peep_cmd_cmh2o": {
+      "label": "Ventilator PEEP Commanded",
+      "value": 10.0,
+      "unit": "cmH2O",
+      "disposition": "NOMINAL"
+    },
+    "peep_act_cmh2o": {
+      "label": "Ventilator PEEP Actual",
+      "value": 10.2,
+      "expanded_uncertainty": 0.2,
+      "unit": "cmH2O",
+      "disposition": "NOMINAL"
+    },
+    "spo2_pct": {
+      "label": "Arterial Oxygen Saturation (SpO2)",
+      "value": 94.2,
+      "expanded_uncertainty": 0.8,
+      "unit": "%",
+      "target": 96.0,
+      "lower_limit": 92.0,
+      "disposition": "NOMINAL"
+    },
+    "dropout_duration_s": {
+      "label": "Motion-Artifact Scope Dropout",
+      "value": 2.4,
+      "unit": "s",
+      "cursor_a_s": 6.4,
+      "cursor_b_s": 8.8
+    },
+    "overall_hr": {
+      "label": "Overall 28-Day Mortality Hazard Ratio",
+      "value": 0.74,
+      "ci_low": 0.61,
+      "ci_high": 0.90,
+      "unit": "1",
+      "null_value": 1.0,
+      "cohort_n": 1240
+    },
+    "age_ge65_hr": {
+      "label": "Age >= 65 yr Subgroup Hazard Ratio",
+      "value": 0.79,
+      "ci_low": 0.62,
+      "ci_high": 1.01,
+      "unit": "1",
+      "cohort_n": 612
+    },
+    "sofa_ge8_hr": {
+      "label": "SOFA >= 8 Subgroup Hazard Ratio",
+      "value": 0.68,
+      "ci_low": 0.52,
+      "ci_high": 0.89,
+      "unit": "1",
+      "cohort_n": 486
+    },
+    "lactate_gt2_hr": {
+      "label": "Lactate > 2 mmol/L Subgroup Hazard Ratio",
+      "value": 0.71,
+      "ci_low": 0.54,
+      "ci_high": 0.93,
+      "unit": "1",
+      "cohort_n": 704
+    },
+    "aki_rate_pct": {
+      "label": "KDIGO Stage >= 2 AKI Incidence (Protocol Arm)",
+      "value": 11.4,
+      "expanded_uncertainty": 1.8,
+      "unit": "%",
+      "control_value": 14.8
+    }
+  },
+  "evidence_bindings": {
+    "evidence/v01_icu_ventilator_scalars.json": [
+      "map_mmhg",
+      "peep_cmd_cmh2o",
+      "peep_act_cmh2o",
+      "spo2_pct"
+    ],
+    "evidence/v01_icu_hemodynamic_scope.json": [
+      "map_mmhg",
+      "spo2_pct",
+      "dropout_duration_s"
+    ],
+    "evidence/v02_trial_consort_forest.json": [
+      "overall_hr",
+      "age_ge65_hr",
+      "sofa_ge8_hr",
+      "lactate_gt2_hr"
+    ],
+    "evidence/v02_trial_adverse_events_table.json": [
+      "overall_hr",
+      "aki_rate_pct"
+    ]
+  },
+  "views": [
+    {
+      "view_id": "v01-icu-bedside-terminal",
+      "title": "ICU Bed-04 Tactical Hemodynamic & Ventilator Console",
+      "presenter": "ICU Informaticist",
+      "audience": "Bedside Nurse & Intensivist",
+      "lenses": ["Technician / Operator"],
+      "tempos": ["T1"],
+      "mediums": ["M4"],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": ["N0", "N3"],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v01_icu_ventilator_scalars.json",
+        "evidence/v01_icu_hemodynamic_scope.json"
+      ],
+      "actionable_disposition": "Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg."
+    },
+    {
+      "view_id": "v02-trial-regulatory-brief",
+      "title": "CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief",
+      "presenter": "Clinical Biostatistician",
+      "audience": "FDA Reviewer & Hospital CMO",
+      "lenses": ["Discipline Engineer", "Program Manager"],
+      "tempos": ["T2", "T3"],
+      "mediums": ["M1", "M2"],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": ["N1"],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v02_trial_consort_forest.json",
+        "evidence/v02_trial_adverse_events_table.json"
+      ],
+      "actionable_disposition": "Approve protocol adoption for SOFA >= 8 and Lactate > 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log."
+    },
+    {
+      "view_id": "v03-patient-recovery-companion",
+      "title": "Post-ICU Discharge Recovery & Vital Trend Companion",
+      "presenter": "Clinical Care Team",
+      "audience": "Discharged Patient & Family",
+      "lenses": ["Consumer / Common Reader"],
+      "tempos": ["T3"],
+      "mediums": ["M3"],
+      "chromatic_budget": "Pedagogical Flow",
+      "nav_shells": ["N2", "N4"],
+      "rigor_level": "L1",
+      "evidence_refs": [
+        "evidence/v01_icu_ventilator_scalars.json"
+      ],
+      "actionable_disposition": "Continue home pulse-oximetry log targeting >= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%."
+    }
+  ]
+}

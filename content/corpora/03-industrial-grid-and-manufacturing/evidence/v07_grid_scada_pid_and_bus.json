@@ -1,0 +1,164 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:schematic",
+  "id": "v07-grid-scada-pid-and-bus",
+  "metadata": {
+    "title": "Microgrid POI ISA-5.1 P&ID Loop & 120 Ω RS-485/Modbus PLC Fieldbus",
+    "description": "Physical topology pairing the ISA-5.1 Gas Turbine and 24.0 MW BESS Point-of-Interconnection loop with the 120-ohm terminated TIA-485/Modbus RTU PLC fieldbus.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-16T21:30:00Z",
+    "drawing_number": "DWG-SCADA-POI-0307-R2"
+  },
+  "test_environment": {
+    "dut_id": "POI-MGRID-03",
+    "standard_id": "ISA-5.1 / ISA-101 / TIA-485",
+    "firmware_version": "SCADA-v9.3.1",
+    "ambient_temperature_c": 24.5,
+    "temperature_uncertainty_c": 0.5,
+    "calibration_id": "CAL-PMU-2026-031"
+  },
+  "panels": [
+    {
+      "schematic_kind": "pid_loop",
+      "title": "Panel A: ISA-5.1 Gas Turbine & 24.0 MW BESS Microgrid POI Loop",
+      "width": 720,
+      "height": 348,
+      "enclaves": [
+        {
+          "id": "enc-gt",
+          "label": "GAS TURBINE SKID (ISA-5.1)",
+          "fips_level": "SIL-2 Fuel Interlock",
+          "border_style": "dash-dot",
+          "fill_token": "var(--bg-elevated)"
+        },
+        {
+          "id": "enc-bess",
+          "label": "24.0 MW BESS & POI",
+          "fips_level": "IEEE 1547 / 59.985 Hz",
+          "border_style": "dashed",
+          "fill_token": "var(--bg-elevated)"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "fcv",
+          "enclave_id": "enc-gt",
+          "label": "FCV-101 Fuel Valve",
+          "sublabel": "Modulating 64% Open",
+          "x": 32,
+          "y": 82,
+          "w": 156,
+          "h": 58
+        },
+        {
+          "id": "gt",
+          "enclave_id": "enc-gt",
+          "label": "Gas Turbine Gen",
+          "sublabel": "14.2 MW / 3600 RPM",
+          "x": 32,
+          "y": 212,
+          "w": 156,
+          "h": 58,
+          "focal": true
+        },
+        {
+          "id": "bess",
+          "enclave_id": "enc-bess",
+          "label": "BESS Rack 24.0 MW",
+          "sublabel": "SoC 78.4% | 1500 VDC",
+          "x": 274,
+          "y": 82,
+          "w": 164,
+          "h": 58,
+          "focal": true
+        },
+        {
+          "id": "inv",
+          "enclave_id": "enc-bess",
+          "label": "Grid-Forming Inv",
+          "sublabel": "ACT 23.6 MW | 60 Hz",
+          "x": 274,
+          "y": 212,
+          "w": 164,
+          "h": 58
+        },
+        {
+          "id": "poi",
+          "enclave_id": "enc-bess",
+          "label": "POI Breaker 52-M",
+          "sublabel": "59.985 Hz | Closed",
+          "x": 524,
+          "y": 148,
+          "w": 164,
+          "h": 58,
+          "focal": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "fcv",
+          "to": "gt",
+          "label": "Fuel FT-101",
+          "stroke_color": "var(--text-primary)"
+        },
+        {
+          "from": "gt",
+          "to": "inv",
+          "label": "13.8 kV Bus",
+          "crosses_enclave_boundary": true,
+          "stroke_color": "var(--accent-focal)",
+          "mid_x": 232
+        },
+        {
+          "from": "bess",
+          "to": "inv",
+          "label": "DC 1500 V",
+          "stroke_color": "var(--accent-focal)"
+        },
+        {
+          "from": "inv",
+          "to": "poi",
+          "label": "23.6 MW POI",
+          "stroke_color": "var(--status-ok)",
+          "mid_x": 480
+        }
+      ],
+      "instruments": [
+        {"tag": "FT", "loop": "101", "x": 110, "y": 316, "color": "var(--accent-focal)"},
+        {"tag": "TT", "loop": "102", "x": 235, "y": 316, "color": "var(--status-warn)"},
+        {"tag": "PT", "loop": "204", "x": 480, "y": 316, "color": "var(--accent-focal)"},
+        {"tag": "XI", "loop": "301", "x": 606, "y": 108, "color": "var(--status-ok)"}
+      ]
+    },
+    {
+      "schematic_kind": "differential_bus",
+      "bus_standard": "rs485",
+      "title": "Panel B: 120 Ω RS-485 / Modbus RTU Microgrid PLC Fieldbus",
+      "terminals": [
+        {
+          "id": "plc-master",
+          "role": "MASTER",
+          "label": "PLC-01 Master",
+          "sublabel": "Reg 0x0104"
+        },
+        {
+          "id": "rtu-gt",
+          "role": "RT",
+          "label": "RTU-02 GT",
+          "sublabel": "Addr 02 | 120 Ω"
+        },
+        {
+          "id": "rtu-bess",
+          "role": "RT",
+          "label": "BMS-03 BESS",
+          "sublabel": "SoC 78.4%"
+        },
+        {
+          "id": "rtu-pmu",
+          "role": "BM",
+          "label": "PMU-04 POI",
+          "sublabel": "59.985 Hz"
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # quiet-ui-skills — Dual-Remote 3-2-1 Mirror Synchronizer (GitHub + GitLab)
-# License: Apache-2.0 (Core Engine) + MIT (Customizations, Tokens & Diagrams)
+# License: Apache-2.0 (Core 3-Pillar Engine) + MIT (Customizations, Tokens & Output)
 # Upstream: https://github.com/FrankXLT/quiet-ui-skills
 # Usage:
 #   bash scripts/sync_mirrors.sh [--force]

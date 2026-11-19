@@ -1,0 +1,103 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v11-treasury-drawdown-plot",
+  "metadata": {
+    "title": "Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)",
+    "description": "Quantitative Risk drawdown comparison of 10,000-path Monte Carlo median liquidity ratios (+/-u_y IQR dispersion) against deterministic duration-convexity decay under a +250 bps parallel Treasury shock and the 20.0% minimum regulatory liquidity floor.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "test_environment": {
+    "unit_id": "TREASURY-POOL-04",
+    "standard_id": "GAO / SEC-10Q +250 bps",
+    "calibration_id": "FRED-CPIU-2026Q4",
+    "sample_subgroup_size": 10000
+  },
+  "plot_kind": "cartesian",
+  "axes": {
+    "x_axis": {
+      "quantity": "q",
+      "unit": "quarter",
+      "quantity_calculus": "Stress Test Horizon, q / quarter",
+      "scale_type": "linear",
+      "domain": [1.0, 8.0]
+    },
+    "y_axis": {
+      "quantity": "L_ratio",
+      "unit": "%",
+      "quantity_calculus": "Portfolio Liquidity Ratio, L_ratio / %",
+      "scale_type": "linear",
+      "domain": [15.0, 40.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "min-regulatory-liquidity-floor",
+      "type": "abort",
+      "direction": "lower",
+      "threshold_value": 20.0,
+      "label": "Regulatory Liquidity Floor (20.0%)",
+      "stroke_color": "var(--status-danger)",
+      "stroke_style": "dash-dot"
+    }
+  ],
+  "series": [
+    {
+      "id": "duration-shock-model",
+      "name": "Deterministic Duration Model (+250 bps)",
+      "epistemic_type": "analytical_model",
+      "stroke_style": "dashed",
+      "stroke_color": "var(--text-secondary)",
+      "corridor_rel": 0.04,
+      "equation": "36.5 - 12.0 * (1.0 - exp(-0.35 * (x - 1.0)))"
+    },
+    {
+      "id": "mc-median-liquidity",
+      "name": "Monte Carlo Median Liquidity (n = 10,000)",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 1.0, "y": 36.4, "u_y": 1.1},
+        {"x": 2.0, "y": 32.6, "u_y": 1.3},
+        {"x": 3.0, "y": 30.8, "u_y": 1.4},
+        {"x": 4.0, "y": 28.4, "u_y": 1.5},
+        {"x": 5.0, "y": 27.9, "u_y": 1.6},
+        {"x": 6.0, "y": 26.2, "u_y": 1.6},
+        {"x": 7.0, "y": 26.3, "u_y": 1.7},
+        {"x": 8.0, "y": 25.1, "u_y": 1.8}
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "x": 4.0,
+      "y": 28.4,
+      "dx": 30,
+      "dy": -26,
+      "label": "Q4 Mid-Horizon +8.4% Margin"
+    },
+    {
+      "x": 8.0,
+      "y": 25.1,
+      "dx": -34,
+      "dy": -26,
+      "label": "Q8 Floor Headroom +5.1%"
+    }
+  ],
+  "residual_strip": {
+    "enabled": true
+  },
+  "parametric_legend": [
+    {
+      "symbol": "Delta y",
+      "value": 250,
+      "unit": "bps"
+    },
+    {
+      "symbol": "L_floor",
+      "value": 20.0,
+      "unit": "%"
+    }
+  ]
+}

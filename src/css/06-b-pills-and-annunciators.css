@@ -1,0 +1,143 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* ==========================================================================
+   Quiet UI v9.0 — 4-Variant Pill Grammar & Quiet-Nominal Annunciators
+   Variants:
+     1. status       — ISA-101 / NUREG-0700 annunciator (quiet nominal; warn/fault framed)
+     2. tag          — Monochrome metadata keycap (2px radius, neutral surface)
+     3. chip         — Interactive 999px stadium capsule (strictly clickable controls)
+     4. svg-knockout — Borderless canvas-matched SVG mask (in SVG compilers)
+   ========================================================================== */
+
+@layer shell {
+  /* Zero-Inflation Baseline Lock (22px row, 18px fixed pill box) */
+  .qe-scalar-top,
+  .qe-bit-meta,
+  .qe-card-head {
+    min-block-size: 1.375rem;
+    display: flex;
+    align-items: center;
+  }
+  .qe-card-head { justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+
+  /* Universal .va-pill Construction Law */
+  .va-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    block-size: 1.125rem;
+    line-height: 1;
+    box-sizing: border-box;
+    vertical-align: middle;
+    padding-inline: 0.42rem;
+    border-radius: var(--radius-xs, 2px);
+    border: 1px solid transparent;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-box: trim-both cap alphabetic;
+  }
+
+  /* Variant 1: ISA-101 / NUREG-0700 Status Annunciator */
+  .va-pill[data-variant="status"][data-state="nominal"] {
+    background: transparent;
+    border-width: 0;
+    padding-inline: 0;
+    color: var(--text-secondary);
+  }
+  .va-pill[data-variant="status"][data-state="nominal"]::before {
+    content: "";
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .va-pill[data-variant="status"][data-state="warn"] {
+    background: color-mix(in oklab, var(--status-warn) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--status-warn) 32%, transparent);
+    border-inline-start: 2.5px solid var(--status-warn);
+    color: var(--status-warn);
+    font-weight: 600;
+  }
+  .va-pill[data-variant="status"][data-state="warn"]::before {
+    content: "▲";
+    content: "▲" / "";
+    font-size: 0.5625rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .va-pill[data-variant="status"][data-state="fault"] {
+    background: color-mix(in oklab, var(--status-danger) 12%, transparent);
+    border: 1px solid color-mix(in oklab, var(--status-danger) 36%, transparent);
+    border-inline-start: 2.5px solid var(--status-danger);
+    color: var(--status-danger);
+    font-weight: 600;
+  }
+  .va-pill[data-variant="status"][data-state="fault"]::before {
+    content: "◆";
+    content: "◆" / "";
+    font-size: 0.625rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* Variant 2: Strictly Monochrome Metadata Keycap */
+  .va-pill[data-variant="tag"] {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle, var(--border-hairline));
+    border-radius: var(--radius-xs, 2px);
+    color: var(--text-secondary);
+  }
+
+  /* Variant 3: Interactive Stadium Capsule (Round = Clickable) */
+  .va-pill[data-variant="chip"] {
+    block-size: 1.375rem;
+    min-block-size: 1.375rem;
+    padding-inline: 0.625rem;
+    border-radius: var(--radius-pill, 999px);
+    border: 1px solid var(--border-strong);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
+  }
+  .va-pill[data-variant="chip"]:hover:not(:disabled) {
+    border-color: var(--accent-primary);
+  }
+  .va-pill[data-variant="chip"].qe-eq-term {
+    background: var(--term-bg, var(--bg-surface));
+    color: var(--term-fg, var(--accent-focal));
+    border-color: color-mix(in oklab, var(--term-fg, var(--accent-focal)) 28%, transparent);
+    font-family: var(--font-serif);
+    font-size: var(--ts-sm);
+    font-weight: 700;
+  }
+
+  /* Monochrome Policy (C1) & High-Contrast Support */
+  [data-chromatic="c1"] .va-pill[data-variant="status"][data-state="warn"],
+  [data-chromatic="c1"] .va-pill[data-variant="status"][data-state="fault"],
+  [data-color-policy="c1"] .va-pill[data-variant="status"][data-state="warn"],
+  [data-color-policy="c1"] .va-pill[data-variant="status"][data-state="fault"] {
+    background: var(--bg-elevated);
+    border-color: var(--border-strong);
+    border-inline-start-color: var(--text-primary);
+    color: var(--text-primary);
+  }
+
+  @media (forced-colors: active) {
+    .va-pill[data-variant="status"][data-state="nominal"]::before {
+      background: CanvasText;
+    }
+    .va-pill[data-variant="status"][data-state="warn"],
+    .va-pill[data-variant="status"][data-state="fault"] {
+      border-color: ButtonBorder;
+      border-inline-start-color: Highlight;
+    }
+  }
+}

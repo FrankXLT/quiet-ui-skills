@@ -1,0 +1,134 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:waveform",
+    "id": "bench-m5-l1-day-arc",
+    "metadata": {
+      "title": "24-Hour Substation BESS Dispatch & Calibration Duty Arc",
+      "description": "Orientation 24-hour grid battery energy storage operational duty-cycle timeline highlighting off-peak charge, frequency regulation, and peak shaving.",
+      "rigor_level": "L1",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "waveform_kind": "day_arc",
+    "phases": [
+      {"start_h": 0.0, "end_h": 6.0, "label": "OFF-PEAK CHARGE", "color": "var(--text-secondary)", "bg": "var(--bg-elevated)"},
+      {"start_h": 6.0, "end_h": 11.5, "label": "60.00 Hz REG", "color": "var(--status-ok)", "bg": "var(--status-ok-bg)"},
+      {"start_h": 11.5, "end_h": 14.0, "label": "RAMP TEST", "color": "var(--status-warn)", "bg": "var(--status-warn-bg)"},
+      {"start_h": 14.0, "end_h": 21.0, "label": "PEAK SHAVING", "color": "var(--accent-focal)", "bg": "var(--tint-indigo-bg)"},
+      {"start_h": 21.0, "end_h": 24.0, "label": "CELL BALANCE", "color": "var(--tint-violet-fg)", "bg": "var(--tint-violet-bg)"}
+    ],
+    "events": [
+      {"hour": 12.6, "label": "59.88 Hz Sag", "color": "var(--status-warn)"},
+      {"hour": 21.5, "label": "Breaker Re-Sync", "color": "var(--accent-focal)"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:waveform",
+    "id": "bench-m5-l2-sequence-interlock",
+    "metadata": {
+      "title": "Recovered v7.1 4-Lifeline Optical Cutover Interlock Sequence",
+      "description": "Governance protocol handshake sequence across Operator CLI, DWDM Grandmaster, Sector-7 FPGA, and OCXO Flywheel.",
+      "rigor_level": "L2",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "waveform_kind": "sequence",
+    "actors": [
+      {"id": "op", "label": "Operator CLI"},
+      {"id": "gm", "label": "DWDM GM"},
+      {"id": "fpga", "label": "Sector-7 FPGA"},
+      {"id": "ocxo", "label": "OCXO Flywheel"}
+    ],
+    "steps": [
+      {"from": "op", "to": "gm", "label": "01. query_sfp_ddm() [Rx > -14 dBm]", "status": "neutral"},
+      {"from": "gm", "to": "fpga", "label": "02. write_alpha(2.742e-4) [10k sweep]", "status": "neutral"},
+      {"from": "fpga", "to": "op", "label": "03. bar0_dma_lock (SYNC_VALID=1, jitter < 90 ps)", "status": "focal", "style": "dashed"},
+      {"from": "fpga", "to": "ocxo", "label": "04. holdover_gate (drift < 1.2 ps/min)", "status": "ok"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:waveform",
+    "id": "bench-m5-l3-hil-manchester-scope",
+    "metadata": {
+      "title": "Multi-Channel HIL Oscilloscope & MIL-STD-1553B Manchester II Dropout Scope",
+      "description": "Physical synchronized multi-channel scope showing optical phase ringing, BCJR LLR drop, and true <path> discontinuity across a 3.5 us telemetry dropout.",
+      "rigor_level": "L3",
+      "timestamp_utc": "2026-11-16T21:15:00Z"
+    },
+    "test_environment": {
+      "dut_id": "HIL-RIG-1553B-04",
+      "firmware_version": "v4.12.0",
+      "ambient_temperature_c": 22.8,
+      "reference_clock": "GPSDO-OCXO-10MHz",
+      "sampling_rate_hz": 2500000000.0
+    },
+    "timebase": {
+      "quantity": "t",
+      "quantity_calculus": "Elapsed Scope Time, t / µs",
+      "unit": "µs",
+      "start_time": 0.0,
+      "total_span_us": 20.0,
+      "nominal_dt": 2.0
+    },
+    "cursors": {
+      "cursor_a": {"time_us": 6.20, "label": "T_A", "stroke_color": "var(--tint-violet-fg)"},
+      "cursor_b": {"time_us": 14.50, "label": "T_B", "stroke_color": "var(--accent-primary)"}
+    },
+    "dropout_handling": {"detection_multiplier": 1.5, "interpolate": false},
+    "channels": [
+      {
+        "id": "ch1",
+        "name": "Optical Phase Residual",
+        "type": "analog",
+        "quantity_calculus": "Delta_phi / mrad",
+        "unit": "mrad",
+        "vertical_scale_per_div": 35.0,
+        "trace_color": "var(--accent-focal)",
+        "threshold_envelopes": [
+          {"type": "upper_abort", "value": 65.0, "color": "var(--status-danger)"},
+          {"type": "lower_abort", "value": -65.0, "color": "var(--status-danger)"}
+        ],
+        "samples": [
+          [0.0, 4.0], [1.0, 6.2], [2.0, -5.0], [3.0, 12.0], [4.0, -18.0], [5.0, 42.0],
+          [6.0, 68.5], [7.0, -54.0], [8.0, 32.0], [9.0, -16.0], [10.0, 9.0], [11.0, 4.5],
+          [11.5, null], [14.5, 5.2], [15.5, 11.0], [16.5, -8.5], [17.5, 6.0], [18.5, -3.5], [20.0, 2.5]
+        ]
+      },
+      {
+        "id": "ch2",
+        "name": "BCJR Soft Metric",
+        "type": "analog",
+        "quantity_calculus": "Lambda_LLR",
+        "unit": "LLR",
+        "vertical_scale_per_div": 4.0,
+        "trace_color": "var(--status-ok)",
+        "samples": [
+          [0.0, 6.4], [2.0, 6.2], [4.0, 5.8], [6.0, 1.2], [8.0, 4.1], [10.0, 6.0], [11.0, 5.9],
+          [11.5, null], [14.5, 5.5], [16.0, 6.3], [18.0, 6.5], [20.0, 6.4]
+        ]
+      },
+      {
+        "id": "ch3",
+        "name": "MIL-STD-1553B Bus A (Manchester II)",
+        "type": "digital",
+        "quantity_calculus": "V_bus / bi-phase",
+        "unit": "V",
+        "trace_color": "var(--status-warn)",
+        "samples": [
+          [0.0, 1], [1.5, 1], [3.0, -1], [4.0, 1], [4.5, -1], [5.0, 1], [5.5, -1], [6.0, 1],
+          [6.5, -1], [7.0, 1], [8.0, -1], [9.0, 1], [10.0, -1], [11.0, 1],
+          [11.5, null], [14.5, -1], [15.0, 1], [15.5, -1], [16.5, 1], [17.5, -1], [18.5, 1], [20.0, 1]
+        ]
+      },
+      {
+        "id": "ch4",
+        "name": "Clock Gate Enable",
+        "type": "digital",
+        "quantity_calculus": "GATE_EN",
+        "unit": "logic",
+        "trace_color": "var(--text-primary)",
+        "samples": [
+          [0.0, 0], [3.5, 1], [11.0, 1], [11.5, 0], [14.5, 1], [19.0, 1], [20.0, 0]
+        ]
+      }
+    ]
+  }
+]

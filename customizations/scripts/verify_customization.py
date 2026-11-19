@@ -86,34 +86,57 @@ def verify_palette_contrast(palette: dict) -> list[str]:
     return errs
 
 
-def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str]) -> list[str]:
+def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str], mode: str = "personal") -> list[str]:
     errs: list[str] = []
     if not html_path.exists():
         return [f"[FILE_MISSING] Showcase file not found: {html_path}"]
 
     content = html_path.read_text(encoding="utf-8")
 
-    # 1. Enabled tiers present in templates/DOM & selectors
-    for t in enabled:
-        tpl_token = f'id="tpl-tier-{t}"'
-        sec_token = f'id="tier-{t}"'
-        if tpl_token not in content and sec_token not in content:
-            errs.append(f"[TIER_DOM_MISSING] Enabled tier '{t}' missing template/section {tpl_token}")
-        opt_token = f'<option value="{t}">'
-        if opt_token not in content:
-            errs.append(f"[TIER_SELECT_MISSING] Enabled tier '{t}' missing studio select option {opt_token}")
+    if 'id="va-v9-manifest"' in content:
+        m = re.search(r'<script[^>]*id="va-v9-manifest"[^>]*>(.*?)</script>', content, flags=re.S)
+        if not m:
+            errs.append("[V9_MANIFEST_MISSING] Could not parse #va-v9-manifest in v9 showcase")
+        else:
+            try:
+                v9_data = json.loads(m.group(1))
+                worlds = v9_data.get("worlds", [])
+                world_ids = [w["world_id"] for w in worlds]
+                view_ids = [vw["view_id"] for w in worlds for vw in w.get("views", [])]
+                if target_dir.name in {"personal-starter", "brand-starter"}:
+                    expected_cnt = 18 if mode == "personal" else 14
+                    if len(view_ids) != expected_cnt:
+                        errs.append(f"[V9_VIEW_COUNT] Mode '{mode}' expected {expected_cnt} views, got {len(view_ids)}")
+                elif not view_ids:
+                    errs.append("[V9_VIEW_COUNT] Customized v9 showcase must enable at least 1 view")
+                for wid in world_ids:
+                    if f'<option value="{wid}"' not in content:
+                        errs.append(f"[V9_WORLD_OPTION_MISSING] Missing domain option '{wid}' in select")
+                for vid in view_ids:
+                    if f'id="tpl-view-{vid}"' not in content:
+                        errs.append(f"[V9_TEMPLATE_MISSING] Missing <template id=\"tpl-view-{vid}\">")
+                for sid in ("va-domain-select", "va-view-select"):
+                    if f'id="{sid}"' not in content:
+                        errs.append(f"[V9_SELECT_MISSING] Missing selector #{sid}")
+                if mode == "brand":
+                    for excluded in ("v15-collimated-flight-hud", "v16-transparent-window-overlay", "v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console"):
+                        if excluded in view_ids or f'id="tpl-view-{excluded}"' in content:
+                            errs.append(f"[BRAND_EXCLUSION_LEAK] Disabled brand view leaked: {excluded}")
+            except Exception as exc:
+                errs.append(f"[V9_MANIFEST_ERR] Invalid #va-v9-manifest JSON: {exc}")
+    else:
+        for t in enabled:
+            tpl_token, sec_token = f'id="tpl-tier-{t}"', f'id="tier-{t}"'
+            if tpl_token not in content and sec_token not in content:
+                errs.append(f"[TIER_DOM_MISSING] Enabled tier '{t}' missing template/section {tpl_token}")
+            if f'<option value="{t}">' not in content:
+                errs.append(f"[TIER_SELECT_MISSING] Enabled tier '{t}' missing studio select option")
+        for d in disabled:
+            if f'id="tpl-tier-{d}"' in content or f'id="tier-{d}"' in content:
+                errs.append(f"[DISABLED_TIER_LEAK] Disabled tier '{d}' found in DOM/template")
+            if f'<option value="{d}">' in content:
+                errs.append(f"[DISABLED_TIER_SELECT] Disabled tier '{d}' found in studio select")
 
-    # 2. Disabled tiers absent from templates/DOM & selectors
-    for d in disabled:
-        tpl_token = f'id="tpl-tier-{d}"'
-        sec_token = f'id="tier-{d}"'
-        if tpl_token in content or sec_token in content:
-            errs.append(f"[DISABLED_TIER_LEAK] Disabled tier '{d}' found in DOM/template")
-        opt_token = f'<option value="{d}">'
-        if opt_token in content:
-            errs.append(f"[DISABLED_TIER_SELECT] Disabled tier '{d}' found in studio select")
-
-    # 3. Geometric, Numeric & Zero Priority Override Invariants (ignoring comments)
     clean_css = re.sub(r'/\*.*?\*/', '', content, flags=re.S)
     if FORBIDDEN_CSS_OVERRIDE in clean_css:
         errs.append(f"[ZERO_OVERRIDE_BREACH] Found forbidden {FORBIDDEN_CSS_OVERRIDE} declaration in showcase.")
@@ -137,14 +160,17 @@ def check_immutability(repo_root: Path) -> list[str]:
 
     protected_prefixes = (
         "skills/quiet-ui/",
-        "skills/quiet-ui-diagrams/",
+        "skills/quiet-evidence/",
+        "skills/quiet-bridge/",
         "customizations/personal-starter/",
         "customizations/brand-starter/",
     )
     for line in res.stdout.splitlines():
-        parts = line.strip().split(maxsplit=1)
-        if len(parts) == 2:
-            fpath = parts[1]
+        if len(line) < 4:
+            continue
+        raw_path = line[3:].strip()
+        paths = [p.strip().strip('"') for p in raw_path.split(" -> ")]
+        for fpath in paths:
             for pfx in protected_prefixes:
                 if fpath.startswith(pfx):
                     errs.append(f"[IMMUTABILITY_BREACH] Protected starter/core file modified: {fpath}")
@@ -203,7 +229,7 @@ def verify_customization(target_dir: Path, repo_root: Path, check_immutable: boo
 
     # Validate showcase HTML
     showcase_path = target_dir / "showcase.html"
-    errors.extend(verify_showcase(showcase_path, enabled, disabled))
+    errors.extend(verify_showcase(showcase_path, enabled, disabled, mode=str(mode or "personal")))
 
     # Validate immutability if requested
     if check_immutable:

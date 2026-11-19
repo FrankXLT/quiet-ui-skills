@@ -1,0 +1,58 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v02-trial-consort-forest",
+  "metadata": {
+    "title": "CONSORT Phase III Sepsis Vasopressor-Sparing Subgroup Forest Plot",
+    "description": "28-day all-cause mortality Hazard Ratio (HR) and 95% confidence intervals across pre-specified clinical subgroups (null effect HR = 1.0).",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T05:30:00Z"
+  },
+  "plot_kind": "forest",
+  "null_value": 1.0,
+  "test_environment": {
+    "dut_id": "TRIAL-SEPSIS-2026-P3",
+    "firmware_version": "SAP-v2.4-ITT",
+    "ambient_temperature_c": 21.0,
+    "reference_clock": "DSMB-LOCK-2026-11",
+    "sampling_rate_hz": 1.0
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "HR",
+      "unit": "1",
+      "quantity_calculus": "28-Day Mortality Hazard Ratio, HR (95% CI)",
+      "scale_type": "linear",
+      "domain": [0.4, 1.2]
+    }
+  },
+  "items": [
+    {
+      "label": "Overall Cohort (n=1,240)",
+      "estimate": 0.74,
+      "ci_low": 0.61,
+      "ci_high": 0.90
+    },
+    {
+      "label": "Age >= 65 yr (n=612)",
+      "estimate": 0.79,
+      "ci_low": 0.62,
+      "ci_high": 1.01
+    },
+    {
+      "label": "SOFA >= 8 (n=486)",
+      "estimate": 0.68,
+      "ci_low": 0.52,
+      "ci_high": 0.89
+    },
+    {
+      "label": "Lactate > 2 mmol/L (n=704)",
+      "estimate": 0.71,
+      "ci_low": 0.54,
+      "ci_high": 0.93
+    }
+  ],
+  "parametric_legend": [
+    {"symbol": "HR_all", "value": 0.74, "unit": "1"},
+    {"symbol": "n_ITT", "value": 1240, "unit": "1"}
+  ]
+}
