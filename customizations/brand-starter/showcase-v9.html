@@ -2105,14 +2105,23 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   /* Progressive Apache ECharts SVG Host & M1 Print Fallback */
   .qe-plot-wrap[data-echarts-active="true"] .qe-svg-fallback { display: none; }
+  .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series { display: none; }
+  .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: none; }
+  .qe-legend-series, .qe-param-strip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.9rem; }
   .qe-echarts-host { inline-size: 100%; overflow: visible; }
   :root[data-medium="m1"] .qe-plot-wrap .qe-svg-fallback,
   .qe-plot-wrap[data-medium="m1"] .qe-svg-fallback { display: block; }
   :root[data-medium="m1"] .qe-plot-wrap .qe-echarts-host,
   .qe-plot-wrap[data-medium="m1"] .qe-echarts-host { display: none; }
+  :root[data-medium="m1"] .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series,
+  .qe-plot-wrap[data-medium="m1"][data-echarts-active="true"] .qe-legend-series { display: inline-flex; }
+  :root[data-medium="m1"] .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)),
+  .qe-plot-wrap[data-medium="m1"][data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: flex; }
   @media print {
     .qe-plot-wrap[data-echarts-active] .qe-svg-fallback,
     .qe-plot-wrap .qe-svg-fallback { display: block; }
+    .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series { display: inline-flex; }
+    .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: flex; }
     .qe-plot-wrap .qe-echarts-host, .qe-plot-modebar, .qe-eco-drawer { display: none; }
   }
   .qe-plot-modebar {
@@ -2140,10 +2149,56 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .qe-eco-summary::-webkit-details-marker { display: none; }
   .qe-eco-summary::before { content: '+ '; font-family: var(--font-mono); }
   .qe-eco-drawer[open] .qe-eco-summary::before { content: '- '; }
-  .qe-eco-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; margin-top: 0.45rem; }
-  .qe-eco-block { background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: var(--radius-inner); padding: 0.45rem 0.6rem; min-inline-size: 0; }
-  .qe-eco-head { margin: 0 0 0.28rem; font-size: var(--ts-xs); color: var(--text-secondary); }
-  .qe-eco-block pre { margin: 0; overflow-x: auto; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.4; color: var(--text-primary); }
+  .qe-eco-tabs-wrap { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .qe-eco-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid var(--border-hairline); }
+  .qe-eco-tablist { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
+  .qe-eco-tab {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.38rem 0.65rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 32px;
+  }
+  .qe-eco-tab[aria-selected="true"] { color: var(--text-primary); }
+  .qe-eco-tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0.4rem; right: 0.4rem; bottom: 0; height: 2px; background: var(--accent-focal); }
+  .qe-eco-tab:focus-visible, .qe-copy-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .qe-eco-copy-wrap { display: inline-flex; align-items: center; gap: 0.45rem; padding-bottom: 0.25rem; }
+  .qe-copy-btn {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-radius: var(--radius-inner);
+    padding: 0.22rem 0.55rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 28px;
+    min-inline-size: 44px;
+  }
+  .qe-copy-status { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--status-ok); opacity: 0; transition: opacity 0.15s ease; }
+  .qe-copy-status.is-visible { opacity: 1; }
+  .qe-eco-pre {
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.48;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: visible;
+  }
+  @media (forced-colors: active) {
+    .qe-eco-tab[aria-selected="true"]::after { background: Highlight; }
+  }
 }
 
 
@@ -3385,10 +3440,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.0 Phase 5.4 — World 06: Smart Home Ambient Frame (v17) & Companion Console (v18) */
+/* Quiet UI v9.0 Gate 5.5 — World 06: Framed Home Gallery (v17) & HA Mushroom Console (v18) */
 
 @layer evidence {
-  /* v17 Ambient Picture-Frame Kiosk (M5/M7 · >= 68% unobstructed canvas) */
+  /* v17 Architectural Frame + Museum Matting (>= 76% unobstructed artwork) */
   .v9-stage-inner.v9-view-v17 {
     max-inline-size: min(100%, 96rem);
     padding: 0.75rem;
@@ -3396,14 +3451,30 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .v17-frame-viewport {
     position: relative;
     inline-size: 100%;
-    min-block-size: min(74dvh, 640px);
+    min-block-size: min(76dvh, 650px);
     max-block-size: calc(100dvh - 1.75rem);
     aspect-ratio: 16 / 10;
-    border-radius: var(--radius-card);
+    padding: 14px;
+    border-radius: 8px;
+    background: #EDEAE2;
+    border: 5px solid #3B2F25;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    display: flex;
+  }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v17-frame-viewport {
+    background: #1C1B19;
+    border-color: #2E2A26;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .v17-mat-window {
+    position: relative;
+    flex: 1 1 auto;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: 2px;
     overflow: hidden;
     background: #141923;
-    border: 1px solid var(--border-strong);
-    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.24);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.28);
   }
   .v17-art-photo {
     position: absolute;
@@ -3416,125 +3487,162 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     pointer-events: none;
   }
   .v17-art-photo.is-active { opacity: 1; }
-  .v17-frame-viewport[data-v17-scene="cinema-dim"] .v17-art-photo.is-active { filter: brightness(0.76) saturate(0.92); }
-  .v17-frame-viewport[data-v17-scene="night-quiet"] .v17-art-photo.is-active { filter: brightness(0.62) saturate(0.84); }
+  .v17-frame-viewport[data-v17-scene="morning"] .v17-art-photo.is-active { filter: brightness(1.03) saturate(1.04); }
+  .v17-frame-viewport[data-v17-scene="movie"] .v17-art-photo.is-active { filter: brightness(0.72) saturate(0.88); }
+  .v17-frame-viewport[data-v17-scene="goodnight"] .v17-art-photo.is-active { filter: brightness(0.56) saturate(0.78); }
   .v17-ambient-scrim {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.28) 0%, transparent 24%, transparent 78%, rgba(15, 23, 42, 0.36) 100%);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.28);
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.18) 0%, transparent 20%, transparent 82%, rgba(15, 23, 42, 0.22) 100%);
   }
   .v17-visor-bar { display: contents; }
   .v17-glass-pod {
     position: absolute;
-    top: 0.9rem;
+    top: 0.75rem;
     z-index: 2;
-    padding: 0.56rem 0.85rem;
-    border-radius: var(--radius-card);
-    background-color: rgba(16, 22, 34, 0.68);
-    backdrop-filter: blur(22px) saturate(1.25);
-    -webkit-backdrop-filter: blur(22px) saturate(1.25);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.32);
+    padding: 0.45rem 0.78rem;
+    border-radius: 14px;
+    background-color: rgba(16, 20, 28, 0.76);
+    backdrop-filter: blur(18px) saturate(1.18);
+    -webkit-backdrop-filter: blur(18px) saturate(1.18);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    box-shadow: 0 4px 16px rgba(2, 6, 23, 0.24);
     color: #F8FAFC;
-    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.85);
+    text-shadow: 0 1px 2px rgba(2, 6, 23, 0.78);
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    max-inline-size: min(360px, calc(50vw - 1.5rem));
+    gap: 0.14rem;
+    max-inline-size: min(320px, calc(48vw - 1.5rem));
   }
-  .v17-clock-pod  { left: 0.9rem; }
-  .v17-energy-pod { right: 0.9rem; text-align: end; }
-  .v17-clock-row  { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; }
-  .v17-clock-time { font-family: var(--font-mono); font-size: clamp(1.35rem, 1.15rem + 0.6cqi, 1.75rem); font-weight: 700; line-height: 1; color: #FFFFFF; }
-  .v17-clock-meta { font-size: var(--ts-xs); color: #E2E8F0; }
+  .v17-clock-pod  { left: 0.75rem; }
+  .v17-energy-pod { right: 0.75rem; text-align: end; }
+  .v17-clock-row  { display: flex; align-items: baseline; gap: 0.48rem; flex-wrap: wrap; }
+  .v17-clock-time { font-family: var(--font-sans); font-size: clamp(1.1rem, 1rem + 0.35cqi, 1.4rem); font-weight: 600; line-height: 1.05; color: #FFFFFF; }
+  .v17-clock-meta { font-size: var(--ts-xs); color: #F1F5F9; }
   .v17-comfort-row, .v17-energy-line, .v17-energy-sub {
     display: flex;
     align-items: center;
-    gap: 0.42rem;
+    gap: 0.35rem;
     flex-wrap: wrap;
-    font-family: var(--font-mono);
     font-size: var(--ts-xs);
-    color: #F1F5F9;
+    color: #F8FAFC;
   }
-  .v17-energy-sub { justify-content: flex-end; }
-  .v17-energy-sub .va-pill[data-variant="status"][data-state="nominal"] {
-    color: #D1FAE5;
-    font-weight: 700;
-  }
+  .v17-energy-line { justify-content: flex-end; font-weight: 600; }
+  .v17-energy-sub { justify-content: flex-end; color: #D1FAE5; }
   .v17-scene-bar {
     position: absolute;
-    left: 0.9rem;
-    right: 0.9rem;
-    bottom: 0.85rem;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0.75rem;
     z-index: 3;
-    padding: 0.42rem 0.65rem;
-    border-radius: var(--radius-card);
-    background-color: rgba(16, 22, 34, 0.72);
-    backdrop-filter: blur(22px) saturate(1.25);
-    -webkit-backdrop-filter: blur(22px) saturate(1.25);
+    inline-size: max-content;
+    max-inline-size: calc(100% - 1.5rem);
+    padding: 0.32rem 0.5rem;
+    border-radius: 26px;
+    background-color: rgba(16, 20, 28, 0.80);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
     border: 1px solid rgba(255, 255, 255, 0.24);
+    box-shadow: 0 6px 20px rgba(2, 6, 23, 0.28);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 0.45rem 0.75rem;
+    gap: 0.28rem 0.42rem;
     color: #F8FAFC;
   }
-  .v17-btn-group { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .v17-dock-sep { inline-size: 1px; block-size: 18px; background: rgba(255, 255, 255, 0.24); }
+  .v17-btn-group { display: flex; align-items: center; gap: 0.25rem; flex-wrap: wrap; }
   .v17-scene-btn {
-    border: 1px solid rgba(248, 250, 252, 0.28);
-    background: rgba(15, 23, 42, 0.72);
-    color: #F8FAFC;
-    border-radius: var(--radius-inner);
-    padding: 0.34rem 0.65rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #F1F5F9;
+    border-radius: 999px;
+    padding: 0.28rem 0.62rem;
     font-size: var(--ts-xs);
     font-weight: 600;
     cursor: pointer;
-    min-block-size: 32px;
+    min-block-size: 30px;
   }
+  .v17-scene-btn:hover { background: rgba(255, 255, 255, 0.14); }
   .v17-scene-btn:focus-visible { outline: 2px solid #FDE68A; outline-offset: 2px; }
-  .v17-scene-btn.is-active { background: #FDE68A; border-color: #FEF3C7; color: #0F172A; }
-  .v17-readout { font-family: var(--font-mono); font-size: var(--ts-xs); color: #E2E8F0; }
+  .v17-scene-btn.is-active { background: #FDE68A; color: #0F172A; }
 
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .v17-glass-pod, .v17-scene-bar { background-color: rgba(16, 22, 34, 0.90); }
+    .v17-glass-pod, .v17-scene-bar { background-color: rgba(16, 20, 28, 0.90); }
   }
 
-  /* v18 Companion & Desktop Home Assistant Console */
-  .v9-stage-inner.v9-view-v18 { gap: 0.85rem; }
+  /* v18 Home Assistant Companion + Mushroom Cards */
+  .v9-stage-inner.v9-view-v18 { gap: 0.9rem; }
+  .v18-unit-group { display: inline-flex; align-items: center; padding: 2px; border-radius: 20px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); gap: 2px; }
+  .v18-unit-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    cursor: pointer;
+    min-block-size: 28px;
+  }
+  .v18-unit-btn.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  .v18-unit-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+
+  .v18-kpi-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+  @container stage (width >= 900px) { .v18-kpi-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .v18-kpi-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 14px;
+    padding: 0.72rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.72rem;
+    min-inline-size: 0;
+  }
+  .v18-kpi-copy { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; }
   .v18-section-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-card);
-    padding: 0.72rem 0.9rem;
+    border-radius: 14px;
+    padding: 0.78rem 0.92rem;
     display: flex;
     flex-direction: column;
-    gap: 0.58rem;
+    gap: 0.62rem;
     min-inline-size: 0;
   }
-  .v18-card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.9rem;
-  }
+  .v18-card-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 0.9rem; }
   .v18-card-title { margin: 0; font-size: var(--ts-md); color: var(--text-primary); }
   .v18-filter-bar { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
   .v18-filter-btn {
     border: 1px solid var(--border-subtle);
     background: var(--bg-elevated);
     color: var(--text-secondary);
-    border-radius: var(--radius-inner);
-    padding: 0.32rem 0.65rem;
+    border-radius: 999px;
+    padding: 0.3rem 0.72rem;
     font-size: var(--ts-xs);
     font-weight: 600;
     cursor: pointer;
-    min-block-size: 34px;
+    min-block-size: 32px;
   }
   .v18-filter-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
   .v18-filter-btn.is-active { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) :is(.v18-unit-btn.is-active, .v18-filter-btn.is-active) {
+    color: #090D16;
+  }
+  @media (forced-colors: active) {
+    :is(.v17-scene-btn, .v18-unit-btn, .v18-filter-btn).is-active {
+      forced-color-adjust: none;
+      background: Highlight;
+      border-color: Highlight;
+      color: HighlightText;
+      outline: 2px solid Highlight;
+    }
+  }
+
   .v18-room-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.65rem; }
   .v18-security-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
   .v18-ledger-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; }
@@ -3543,50 +3651,62 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     .v18-security-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @container stage (width >= 1020px) {
-    .v18-room-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .v18-room-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .v18-ledger-grid { grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr); }
   }
-  .v18-zone-tile {
+
+  .v18-mush-card {
     background: var(--bg-elevated);
     border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-inner);
-    padding: 0.68rem 0.8rem;
+    border-radius: 14px;
+    padding: 0.68rem 0.82rem;
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    align-items: center;
+    gap: 0.72rem;
     min-inline-size: 0;
   }
   .v18-zone-tile[hidden] { display: none; }
-  .v18-zone-top { display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }
-  .v18-zone-id { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; color: var(--text-secondary); }
-  .v18-zone-val { font-family: var(--font-mono); font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
-  .v18-zone-meta { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.35; }
-  .v18-sec-log { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-secondary); }
+  .v18-mush-icon {
+    flex: 0 0 auto;
+    inline-size: 38px;
+    block-size: 38px;
+    border-radius: 19px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .v18-svg-ico { inline-size: 19px; block-size: 19px; }
+  .v18-tone-amber   { background: rgba(245, 158, 11, 0.16); color: #B45309; }
+  .v18-tone-teal    { background: rgba(20, 184, 166, 0.16); color: #0F766E; }
+  .v18-tone-indigo  { background: rgba(99, 102, 241, 0.16); color: #4338CA; }
+  .v18-tone-emerald { background: rgba(16, 185, 129, 0.16); color: #047857; }
+  .v18-tone-gold    { background: rgba(234, 179, 8, 0.16);  color: #A16207; }
+  .v18-tone-sky     { background: rgba(14, 165, 233, 0.16); color: #0369A1; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-amber   { color: #FCD34D; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-teal    { color: #5EEAD4; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-indigo  { color: #A5B4FC; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-emerald { color: #6EE7B7; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-gold    { color: #FDE047; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) .v18-tone-sky     { color: #7DD3FC; }
+
+  .v18-mush-body { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; }
+  .v18-mush-name { font-size: var(--ts-sm); font-weight: 700; color: var(--text-primary); }
+  .v18-mush-primary { font-size: var(--ts-xs); font-weight: 600; color: var(--text-secondary); }
+  .v18-mush-sub { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.3; }
+  .v18-access-label { display: flex; align-items: center; gap: 0.55rem; }
+  .v18-sec-log { font-size: var(--ts-xs); color: var(--text-secondary); }
 
   @media (max-width: 639px) {
     .v9-stage-inner.v9-view-v18 { padding-bottom: 5.5rem; }
-    .v17-scene-btn, .v18-filter-btn, .v18-security-grid .v9-tactile-btn {
+    .v17-scene-btn, .v18-filter-btn, .v18-unit-btn, .v18-security-grid .v9-tactile-btn {
       min-block-size: 44px;
       min-inline-size: 44px;
     }
-    .v17-frame-viewport {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      aspect-ratio: auto;
-      min-block-size: min(82dvh, 660px);
-      padding: 0.55rem;
-      gap: 0.45rem;
-    }
-    .v17-visor-bar { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 0.45rem; position: relative; z-index: 2; }
-    .v17-glass-pod, .v17-scene-bar {
-      position: static;
-      max-inline-size: none;
-      flex: 0 0 auto;
-      inline-size: 100%;
-      text-align: start;
-    }
-    .v17-energy-sub { justify-content: flex-start; }
+    .v17-frame-viewport { padding: 10px; border-width: 4px; aspect-ratio: auto; min-block-size: min(82dvh, 660px); }
+    .v17-mat-window { display: flex; flex-direction: column; justify-content: space-between; padding: 0.5rem; gap: 0.45rem; }
+    .v17-visor-bar { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 0.4rem; position: relative; z-index: 2; }
+    .v17-glass-pod, .v17-scene-bar { position: static; transform: none; max-inline-size: none; flex: 0 0 auto; inline-size: 100%; text-align: start; }
+    .v17-energy-line, .v17-energy-sub { justify-content: flex-start; }
   }
 }
 
@@ -3807,7 +3927,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet Evidence — Runtime Apache ECharts (SVG) Progressive Adapter */
+/* Quiet Evidence — Runtime Apache ECharts (SVG) + 5-Tab Ecosystem Viewer */
 (function (global) {
   'use strict';
 
@@ -3822,6 +3942,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   var PALETTE_TOKENS = ['--accent-focal', '--status-warn', '--text-secondary', '--status-danger'];
   var ROOT_LISTENERS = new WeakSet();
   var RESIZE_OBSERVERS = new WeakMap();
+  var COPY_TIMERS = new WeakMap();
 
   function getLib() {
     if (global.echarts) return global.echarts;
@@ -3855,15 +3976,22 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     };
   }
 
+  function fmtLinearTick(v) {
+    if (!Number.isFinite(v)) return '';
+    if (Math.abs(v) < 1e-12) return '0';
+    return String(Number(v.toPrecision(6)));
+  }
+
   function resolveSeriesColor(doc, seriesSpec, idx, tokens) {
-    var rawTok = seriesSpec && seriesSpec.token ? seriesSpec.token : PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
-    if (rawTok === '--accent-focal' && idx > 0) {
-      rawTok = PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
-    }
+    var rawTok = seriesSpec && (seriesSpec.color || seriesSpec.token) ? (seriesSpec.color || seriesSpec.token) : PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
+    if (rawTok.indexOf('var(') === 0) rawTok = rawTok.slice(4, -1).split(',')[0].trim();
+    if (rawTok.indexOf('#') === 0) return rawTok;
+    if (rawTok === '--accent-focal' && idx > 0) rawTok = PALETTE_TOKENS[idx % PALETTE_TOKENS.length];
     var fallback = tokens.accentFocal;
     if (rawTok === '--status-warn') fallback = tokens.statusWarn;
     else if (rawTok === '--status-danger') fallback = tokens.statusDanger;
     else if (rawTok === '--text-secondary') fallback = tokens.textSecondary;
+    else if (rawTok === '--text-primary') fallback = tokens.textPrimary;
     return cssVar(doc, rawTok, fallback);
   }
 
@@ -3880,13 +4008,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       var p = pts[i];
       if (p[1] !== null && p[1] !== undefined && p[2] > 0) {
         if (logY && p[1] <= 0) continue;
-        var lowY = logY ? Math.max(p[1] * 1e-6, p[1] - p[2]) : (p[1] - p[2]);
-        coords.push([p[0], lowY, p[1] + p[2]]);
+        coords.push([p[0], logY ? Math.max(p[1] * 1e-6, p[1] - p[2]) : (p[1] - p[2]), p[1] + p[2]]);
       }
     }
     if (!coords.length) return null;
     return {
-      name: name + ' u_y',
+      name: name + ' u',
       type: 'custom',
       silent: true,
       tooltip: { show: false },
@@ -3897,13 +4024,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         var low = api.coord([xv, api.value(1)]);
         var high = api.coord([xv, api.value(2)]);
         if (!low || !high || !Number.isFinite(low[0]) || !Number.isFinite(low[1]) || !Number.isFinite(high[0]) || !Number.isFinite(high[1])) return null;
-        var cap = 4;
         return {
           type: 'group',
           children: [
             { type: 'line', shape: { x1: low[0], y1: low[1], x2: high[0], y2: high[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
-            { type: 'line', shape: { x1: high[0] - cap, y1: high[1], x2: high[0] + cap, y2: high[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
-            { type: 'line', shape: { x1: low[0] - cap, y1: low[1], x2: low[0] + cap, y2: low[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
+            { type: 'line', shape: { x1: high[0] - 4, y1: high[1], x2: high[0] + 4, y2: high[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
+            { type: 'line', shape: { x1: low[0] - 4, y1: low[1], x2: low[0] + 4, y2: low[1] }, style: { stroke: color, lineWidth: 1.35, opacity: opacity } },
           ],
         };
       },
@@ -3911,20 +4037,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     };
   }
 
+  function buildEnvelopes(doc, payload, t) {
+    return (payload.envelopes || []).map(function (env) {
+      var col = cssVar(doc, env.token || '--status-warn', env.type === 'abort' ? t.statusDanger : t.statusWarn);
+      return {
+        name: env.label || String(env.value),
+        yAxis: env.value,
+        lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
+        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 10.5, fontWeight: 600 },
+      };
+    });
+  }
+
   function buildCartesianOption(doc, payload, activeTerm) {
     var t = readTokens(doc);
     var xMeta = payload.x || {};
     var yMeta = payload.y || {};
     var series = [];
-    var envData = (payload.envelopes || []).map(function (env) {
-      var col = cssVar(doc, env.token || '--status-warn', env.type === 'abort' ? t.statusDanger : t.statusWarn);
-      return {
-        name: env.label || String(env.value),
-        yAxis: env.value,
-        lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.5 },
-        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 10.5, fontWeight: 600 },
-      };
-    });
+    var envData = buildEnvelopes(doc, payload, t);
 
     (payload.series || []).forEach(function (sr, idx) {
       var col = resolveSeriesColor(doc, sr, idx, t);
@@ -3943,7 +4073,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           z: 2,
         });
       } else {
-        var lineData = (sr.data || []).map(function (p) { return [p[0], p[1]]; });
         series.push({
           id: sr.id || 'meas-' + idx,
           name: sr.name || 'Measurement',
@@ -3953,7 +4082,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           symbol: mapSymbol(sr.symbol),
           symbolSize: 6.5,
           smooth: false,
-          data: lineData,
+          data: (sr.data || []).map(function (p) { return [p[0], p[1]]; }),
           lineStyle: { color: col, width: sr.connect === false ? 0 : (dimmed ? 1.5 : 2.1), opacity: opacity },
           itemStyle: { color: col, opacity: opacity },
           z: 4,
@@ -3963,55 +4092,38 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       }
     });
 
-    if (series.length && envData.length) {
-      series[0].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
-    }
-
+    if (series.length && envData.length) series[0].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
     return {
       animation: false,
       backgroundColor: 'transparent',
       textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
-      tooltip: {
-        trigger: 'axis',
-        renderMode: 'richText',
-        confine: true,
-        backgroundColor: t.bgElevated,
-        borderColor: t.borderStrong,
-        borderWidth: 1,
-        textStyle: { color: t.textPrimary, fontSize: 12 },
-      },
-      legend: {
-        top: 2,
-        left: 64,
-        right: 16,
-        itemWidth: 16,
-        itemHeight: 8,
-        textStyle: { color: t.textSecondary, fontSize: 11 },
-        data: (payload.series || []).map(function (s) { return s.name; }),
-      },
+      tooltip: { trigger: 'axis', renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, borderWidth: 1, textStyle: { color: t.textPrimary, fontSize: 12 } },
+      legend: { top: 2, left: 64, right: 16, itemWidth: 16, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
       grid: { left: 66, right: 24, top: 44, bottom: 52, containLabel: true },
       xAxis: {
         type: xMeta.log ? 'log' : 'value',
         min: (xMeta.log && xMeta.min <= 0) || !Number.isFinite(xMeta.min) ? undefined : xMeta.min,
         max: (xMeta.log && xMeta.max <= 0) || !Number.isFinite(xMeta.max) ? undefined : xMeta.max,
+        interval: !xMeta.log && Number.isFinite(xMeta.interval) ? xMeta.interval : undefined,
         name: xMeta.name || 'x',
         nameLocation: 'middle',
         nameGap: 28,
         nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
         axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true },
+        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: xMeta.log ? undefined : fmtLinearTick },
         splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
       },
       yAxis: {
         type: yMeta.log ? 'log' : 'value',
         min: (yMeta.log && yMeta.min <= 0) || !Number.isFinite(yMeta.min) ? undefined : yMeta.min,
         max: (yMeta.log && yMeta.max <= 0) || !Number.isFinite(yMeta.max) ? undefined : yMeta.max,
+        interval: !yMeta.log && Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
         name: yMeta.name || 'y',
         nameLocation: 'middle',
         nameGap: 44,
         nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
         axisLine: { lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true },
+        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: yMeta.log ? undefined : fmtLinearTick },
         splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
       },
       series: series,
@@ -4020,6 +4132,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function buildWaterfallOption(doc, payload) {
     var t = readTokens(doc);
+    var yMeta = payload.y || {};
     return {
       animation: false,
       backgroundColor: 'transparent',
@@ -4027,20 +4140,18 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       tooltip: { trigger: 'axis', renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, textStyle: { color: t.textPrimary, fontSize: 12 } },
       legend: { top: 2, left: 64, textStyle: { color: t.textSecondary, fontSize: 11 }, data: ['Increase', 'Reduction / Cost'] },
       grid: { left: 66, right: 22, top: 42, bottom: 54, containLabel: true },
-      xAxis: {
-        type: 'category',
-        data: payload.categories || [],
-        axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, interval: 0, hideOverlap: true },
-      },
+      xAxis: { type: 'category', data: payload.categories || [], axisLine: { onZero: false, lineStyle: { color: t.textSecondary } }, axisLabel: { color: t.textSecondary, fontSize: 11, interval: 0, hideOverlap: true } },
       yAxis: {
         type: 'value',
-        name: payload.yName || 'Value',
+        min: Number.isFinite(yMeta.min) ? yMeta.min : undefined,
+        max: Number.isFinite(yMeta.max) ? yMeta.max : undefined,
+        interval: Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
+        name: yMeta.name || payload.yName || 'Value',
         nameLocation: 'middle',
         nameGap: 44,
         nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
         axisLine: { lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true },
+        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: fmtLinearTick },
         splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
       },
       series: [
@@ -4051,16 +4162,60 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     };
   }
 
+  function buildStackedBarOption(doc, payload) {
+    var t = readTokens(doc);
+    var yMeta = payload.y || {};
+    var envData = buildEnvelopes(doc, payload, t);
+    var series = (payload.series || []).map(function (sr, idx) {
+      var col = resolveSeriesColor(doc, sr, idx, t);
+      if (sr.seriesType === 'line') {
+        return { id: sr.id, name: sr.name, type: 'line', showSymbol: false, symbol: 'circle', symbolSize: 5, smooth: false, data: sr.data || [], lineStyle: { color: col, width: 2.2 }, itemStyle: { color: col }, z: 5 };
+      }
+      return { id: sr.id, name: sr.name, type: 'bar', stack: sr.stack || 'energy', barMaxWidth: 20, itemStyle: { color: col, borderRadius: [1.5, 1.5, 1.5, 1.5] }, data: sr.data || [], z: 3 };
+    });
+    if (series.length && envData.length) series[0].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
+    return {
+      animation: false,
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
+      tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, renderMode: 'richText', confine: true, backgroundColor: t.bgElevated, borderColor: t.borderStrong, borderWidth: 1, textStyle: { color: t.textPrimary, fontSize: 12 } },
+      legend: { top: 2, left: 48, right: 12, itemWidth: 14, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
+      grid: { left: 56, right: 20, top: 48, bottom: 48, containLabel: true },
+      xAxis: {
+        type: 'category',
+        data: payload.categories || [],
+        name: (payload.x || {}).name || 'Hour of Day',
+        nameLocation: 'middle',
+        nameGap: 26,
+        nameTextStyle: { color: t.textSecondary, fontSize: 11, fontWeight: 600 },
+        axisLine: { onZero: true, lineStyle: { color: t.textSecondary } },
+        axisLabel: { color: t.textSecondary, fontSize: 11, interval: function (i) { return i % 4 === 0; } },
+      },
+      yAxis: {
+        type: 'value',
+        min: Number.isFinite(yMeta.min) ? yMeta.min : undefined,
+        max: Number.isFinite(yMeta.max) ? yMeta.max : undefined,
+        interval: Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
+        name: yMeta.name || 'Power (kW)',
+        nameLocation: 'middle',
+        nameGap: 40,
+        nameTextStyle: { color: t.textSecondary, fontSize: 11, fontWeight: 600 },
+        axisLine: { lineStyle: { color: t.textSecondary } },
+        axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: fmtLinearTick },
+        splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
+      },
+      series: series,
+    };
+  }
+
   function shouldEnableECharts(doc, wrap) {
-    var docEl = doc.documentElement;
-    var rootMed = (docEl.dataset.medium || '').toLowerCase();
+    var rootMed = (doc.documentElement.dataset.medium || '').toLowerCase();
     var wrapMed = (wrap.dataset.medium || '').toLowerCase();
     if (rootMed === 'm1' || wrapMed === 'm1') return false;
     if (doc.defaultView && doc.defaultView.matchMedia && doc.defaultView.matchMedia('print').matches) return false;
     if (wrap.dataset.echartsMode === 'svg') return false;
     if (wrap.dataset.echartsMode === 'echarts') return true;
-    var activeView = docEl.dataset.view || '';
-    return !!AUTO_VIEWS[activeView];
+    return !!AUTO_VIEWS[doc.documentElement.dataset.view || ''];
   }
 
   function disposeWrap(wrap, lib) {
@@ -4078,27 +4233,65 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   function mountWrap(doc, wrap, lib) {
     var host = wrap.querySelector('.qe-echarts-host');
     var scroll = wrap.querySelector('.va-figure-scroll');
-    if (!host || !scroll || !lib || !shouldEnableECharts(doc, wrap)) {
-      disposeWrap(wrap, lib);
-      return;
-    }
+    if (!host || !scroll || !lib || !shouldEnableECharts(doc, wrap)) { disposeWrap(wrap, lib); return; }
     var payload;
-    try {
-      payload = JSON.parse(wrap.dataset.quietEcharts || '');
-    } catch (_err) {
-      disposeWrap(wrap, lib);
-      return;
-    }
+    try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
     var w = Math.max(300, Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8));
-    var h = Math.round(w < 500 ? 250 : Math.min(340, Math.max(250, w * 0.44)));
+    var h = Math.round(w < 500 ? 255 : Math.min(340, Math.max(255, w * 0.44)));
     host.style.width = w + 'px';
     host.style.height = h + 'px';
     var inst = lib.getInstanceByDom(host) || lib.init(host, null, { renderer: 'svg', width: w, height: h });
-    var opt = payload.kind === 'waterfall' ? buildWaterfallOption(doc, payload) : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
+    var opt = payload.kind === 'waterfall' ? buildWaterfallOption(doc, payload) : (payload.kind === 'stacked_bar' ? buildStackedBarOption(doc, payload) : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || ''));
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.echartsActive = 'true';
+  }
+
+  function activateEcoTab(tabBtn) {
+    var wrap = tabBtn && tabBtn.closest('.qe-eco-drawer');
+    if (!wrap) return;
+    var targetId = tabBtn.getAttribute('aria-controls');
+    wrap.querySelectorAll('.qe-eco-tab[role="tab"]').forEach(function (t) {
+      var on = t === tabBtn;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    wrap.querySelectorAll('.qe-eco-panel[role="tabpanel"]').forEach(function (p) {
+      if (p.id === targetId) p.removeAttribute('hidden');
+      else p.setAttribute('hidden', 'until-found');
+    });
+  }
+
+  function copyEcoSnippet(btn) {
+    var drawer = btn && btn.closest('.qe-eco-drawer');
+    if (!drawer) return;
+    var panel = drawer.querySelector('.qe-eco-panel:not([hidden]) pre');
+    var status = drawer.querySelector('.qe-copy-status');
+    var txt = panel ? panel.textContent : '';
+    var done = function (msg) {
+      if (!status) return;
+      clearTimeout(COPY_TIMERS.get(status));
+      status.textContent = msg;
+      status.classList.add('is-visible');
+      COPY_TIMERS.set(status, setTimeout(function () { status.classList.remove('is-visible'); status.textContent = ''; }, 2000));
+    };
+    var fallbackCopy = function () {
+      var d = drawer.ownerDocument || global.document;
+      if (!d || !d.body || typeof d.execCommand !== 'function') { done('Copy failed'); return; }
+      var ta = d.createElement('textarea');
+      ta.value = txt; ta.readOnly = true;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;left:-9999px';
+      d.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = !!d.execCommand('copy'); } catch (_err) {}
+      d.body.removeChild(ta);
+      if (btn && btn.focus) btn.focus();
+      done(ok ? 'Copied' : 'Copy failed');
+    };
+    if (global.navigator && global.navigator.clipboard && global.navigator.clipboard.writeText) {
+      global.navigator.clipboard.writeText(txt).then(function () { done('Copied'); }, fallbackCopy);
+    } else { fallbackCopy(); }
   }
 
   function bindEvents(doc) {
@@ -4112,28 +4305,43 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           if (wrap) {
             wrap.dataset.echartsMode = mode;
             wrap.querySelectorAll('.qe-mode-btn[data-qe-mode]').forEach(function (b) {
-              var active = b.dataset.qeMode === mode;
-              b.classList.toggle('is-active', active);
-              b.setAttribute('aria-pressed', active ? 'true' : 'false');
+              var on = b.dataset.qeMode === mode;
+              b.classList.toggle('is-active', on);
+              b.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
             boot(doc);
           }
           return;
         }
+        var ecoTab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
+        if (ecoTab) { activateEcoTab(ecoTab); return; }
+        var copyBtn = ev.target && ev.target.closest ? ev.target.closest('.qe-copy-btn') : null;
+        if (copyBtn) { copyEcoSnippet(copyBtn); return; }
         var termBtn = ev.target && ev.target.closest ? ev.target.closest('[data-term]') : null;
         if (termBtn) {
           var term = termBtn.dataset.term || '';
-          doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) {
-            w.dataset.activeTerm = w.dataset.activeTerm === term ? '' : term;
-          });
+          doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { w.dataset.activeTerm = w.dataset.activeTerm === term ? '' : term; });
           boot(doc);
         }
       });
+      doc.addEventListener('keydown', function (ev) {
+        var tab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
+        if (!tab) return;
+        var list = tab.closest('[role="tablist"]');
+        var tabs = list ? Array.prototype.slice.call(list.querySelectorAll('.qe-eco-tab[role="tab"]')) : [];
+        var idx = tabs.indexOf(tab);
+        if (idx < 0) return;
+        var nxt = ev.key === 'ArrowRight' ? (idx + 1) % tabs.length : (ev.key === 'ArrowLeft' ? (idx - 1 + tabs.length) % tabs.length : (ev.key === 'Home' ? 0 : (ev.key === 'End' ? tabs.length - 1 : -1)));
+        if (nxt >= 0) { ev.preventDefault(); activateEcoTab(tabs[nxt]); tabs[nxt].focus(); }
+      });
+      doc.addEventListener('beforematch', function (ev) {
+        var panel = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-panel[role="tabpanel"]') : null;
+        var tid = panel && panel.getAttribute('aria-labelledby');
+        if (tid) activateEcoTab(doc.getElementById(tid));
+      }, true);
     }
     if (!RESIZE_OBSERVERS.has(doc) && typeof global.ResizeObserver === 'function') {
-      var ro = new global.ResizeObserver(function () {
-        refresh(doc);
-      });
+      var ro = new global.ResizeObserver(function () { refresh(doc); });
       if (doc.body) ro.observe(doc.body);
       RESIZE_OBSERVERS.set(doc, ro);
     }
@@ -4144,32 +4352,23 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (!doc) return;
     bindEvents(doc);
     var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (wrap) {
-      mountWrap(doc, wrap, lib);
-    });
+    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
   }
 
   function refresh(docRef) {
     var doc = docRef || global.document;
     if (!doc) return;
     var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (wrap) {
-      mountWrap(doc, wrap, lib);
-    });
+    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
   }
 
   function disposeAll(docRef) {
     var doc = docRef || global.document;
     if (!doc) return;
     var ro = RESIZE_OBSERVERS.get(doc);
-    if (ro) {
-      ro.disconnect();
-      RESIZE_OBSERVERS.delete(doc);
-    }
+    if (ro) { ro.disconnect(); RESIZE_OBSERVERS.delete(doc); }
     var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (wrap) {
-      disposeWrap(wrap, lib);
-    });
+    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { disposeWrap(w, lib); });
   }
 
   global.QuietEChartsAdapter = { boot: boot, refresh: refresh, disposeAll: disposeAll };
@@ -4498,9 +4697,89 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (ins) ins.classList.toggle('v12-panel-hidden', role !== 'instructor');
     });
 
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    function _setTxt(d, id, txt) {
+      var el = d.getElementById(id);
+      if (el) el.textContent = txt;
+    }
+    function _renderTicks(d, id, cfg) {
+      var g = d.getElementById(id);
+      if (!g) return;
+      g.textContent = '';
+      var decimals = cfg.decimals || 0;
+      for (var v = cfg.min; v <= cfg.max + 1e-6; v += cfg.step) {
+        var val = decimals ? Number(v.toFixed(decimals)) : Math.round(v);
+        var y = Math.round(345 - (val - cfg.center) * cfg.pxPerUnit);
+        if (y < 152 || y > 538) continue;
+        var isMaj = decimals ? (Math.round(val * 10) % Math.round(cfg.majorEvery * 10) === 0) : (val % cfg.majorEvery === 0);
+        var ln = d.createElementNS(SVG_NS, 'line');
+        ln.setAttribute('x1', String(cfg.side === 'left' ? (isMaj ? 122 : 128) : 1064));
+        ln.setAttribute('x2', String(cfg.side === 'left' ? 136 : (isMaj ? 1078 : 1072)));
+        ln.setAttribute('y1', String(y));
+        ln.setAttribute('y2', String(y));
+        ln.setAttribute('stroke-width', '1.6');
+        g.appendChild(ln);
+        if (isMaj && Math.abs(y - 345) >= 28) {
+          var tx = d.createElementNS(SVG_NS, 'text');
+          tx.setAttribute('x', String(cfg.side === 'left' ? 115 : 1084));
+          tx.setAttribute('y', String(y + 5));
+          tx.setAttribute('text-anchor', cfg.side === 'left' ? 'end' : 'start');
+          tx.setAttribute('font-size', '13');
+          tx.textContent = decimals ? val.toFixed(decimals) : val.toLocaleString('en-US');
+          g.appendChild(tx);
+        }
+      }
+    }
+    var V15_REGIMES = {
+      daylight: {
+        hdgRef: 'TRUE HDG', spdUnit: 'KT IAS', spdVal: '138', spdSub: 'GS 144 KT',
+        propFn: function (b) { return 'PROP BTE ' + b + '% · IMEP 14.0 BAR'; },
+        altUnit: 'FT MSL', altVal: '1,180', rad: '640 FT AGL · 3.0° GS', vs: 'VS -650 FPM', baro: '29.92 IN',
+        fpm: 'translate(0,0)', ils: '0',
+        spdCfg: { side: 'left', center: 138, min: 110, max: 165, step: 5, majorEvery: 10, pxPerUnit: 6 },
+        altCfg: { side: 'right', center: 1180, min: 1000, max: 1400, step: 50, majorEvery: 100, pxPerUnit: 0.85 },
+      },
+      lowlight: {
+        hdgRef: 'LOC HDG', spdUnit: 'KT IAS', spdVal: '134', spdSub: 'GS 139 KT',
+        propFn: function (b) { return 'PROP BTE ' + b + '% · IMEP 14.0 BAR'; },
+        altUnit: 'FT MSL', altVal: '860', rad: '480 FT RAD · ILS', vs: 'VS -710 FPM', baro: '29.92 IN',
+        fpm: 'translate(0,0)', ils: '0.88',
+        spdCfg: { side: 'left', center: 134, min: 105, max: 160, step: 5, majorEvery: 10, pxPerUnit: 6 },
+        altCfg: { side: 'right', center: 860, min: 650, max: 1050, step: 50, majorEvery: 100, pxPerUnit: 0.85 },
+      },
+      earthrise: {
+        hdgRef: 'INERTIAL', spdUnit: 'M/S', spdVal: '1,632', spdSub: 'ORB VEL 1,632 M/S',
+        propFn: function (b) { return 'PROP η ' + b + '% REF · RCS NOMINAL'; },
+        altUnit: 'KM', altVal: '112.4', rad: 'APO 114.2 · PER 110.8 KM', vs: 'HDOT 0 M/S', baro: '',
+        fpm: 'translate(0,-45)', ils: '0',
+        spdCfg: { side: 'left', center: 1632, min: 1605, max: 1660, step: 5, majorEvery: 10, pxPerUnit: 6 },
+        altCfg: { side: 'right', center: 112.4, min: 100, max: 124, step: 2, majorEvery: 4, pxPerUnit: 15, decimals: 1 },
+      },
+    };
     wireChipGroup(doc, 'v15-backplate-chips', null, function (btn, d) {
-      const stage = d.getElementById('v15-hud-stage');
-      if (stage && btn.dataset.backplate) stage.setAttribute('data-backplate', btn.dataset.backplate);
+      var mode = btn.dataset.backplate;
+      var stage = d.getElementById('v15-hud-stage');
+      if (stage && mode) stage.setAttribute('data-backplate', mode);
+      var reg = mode && V15_REGIMES[mode];
+      if (!reg) return;
+      var propEl = d.getElementById('v15-hud-prop-line');
+      var bte = (propEl && propEl.dataset.bte) || '42.8';
+      _setTxt(d, 'v15-hud-hdg-ref', reg.hdgRef);
+      _setTxt(d, 'v15-hud-spd-unit', reg.spdUnit);
+      _setTxt(d, 'v15-hud-spd-val', reg.spdVal);
+      _setTxt(d, 'v15-hud-spd-sub', reg.spdSub);
+      _setTxt(d, 'v15-hud-prop-line', reg.propFn(bte));
+      _setTxt(d, 'v15-hud-alt-unit', reg.altUnit);
+      _setTxt(d, 'v15-hud-alt-val', reg.altVal);
+      _setTxt(d, 'v15-hud-rad-line', reg.rad);
+      _setTxt(d, 'v15-hud-vs-line', reg.vs);
+      _setTxt(d, 'v15-hud-baro-line', reg.baro);
+      var fpm = d.getElementById('v15-hud-fpm');
+      if (fpm) fpm.setAttribute('transform', reg.fpm);
+      var ils = d.getElementById('v15-hud-ils-scale');
+      if (ils) ils.setAttribute('opacity', reg.ils);
+      _renderTicks(d, 'v15-spd-ticks', reg.spdCfg);
+      _renderTicks(d, 'v15-alt-ticks', reg.altCfg);
     });
 
     wireChipGroup(doc, 'v16-luminance-chips', null, function (btn, d) {
@@ -4515,23 +4794,22 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.0 Phase 5.4 — World 06 (v17 & v18) Client Interactions */
+/* Quiet UI v9.0 Gate 5.5 — World 06 (v17 & v18) Client Interactions */
 (function (global) {
   'use strict';
+
+  function applyTempUnit(root, unit) {
+    if (!root) return;
+    var u = unit === 'f' ? 'f' : 'c';
+    root.setAttribute('data-temp-unit', u);
+    root.querySelectorAll('[data-temp-c][data-temp-f]').forEach(function (el) {
+      el.textContent = u === 'f' ? el.getAttribute('data-temp-f') : el.getAttribute('data-temp-c');
+    });
+  }
 
   function bootV17(doc) {
     var vp = doc.getElementById('v17-kiosk');
     if (!vp) return;
-    var readout = doc.getElementById('v17-scene-readout');
-
-    function syncReadout() {
-      if (!readout) return;
-      var bd = vp.dataset.v17Backdrop === 'landscape' ? 'Landscape' : 'Fine Art';
-      var sc = vp.dataset.v17Scene === 'cinema-dim'
-        ? 'Cinema Dim'
-        : (vp.dataset.v17Scene === 'night-quiet' ? 'Night Quiet' : 'Evening Warm');
-      readout.textContent = bd + ' · ' + sc;
-    }
 
     vp.querySelectorAll('button[data-v17-backdrop]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -4545,22 +4823,31 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         vp.querySelectorAll('.v17-art-photo').forEach(function (img) {
           img.classList.toggle('is-active', img.dataset.backdrop === mode);
         });
-        syncReadout();
       });
     });
 
     vp.querySelectorAll('button[data-v17-scene]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var scene = btn.dataset.v17Scene || 'evening-warm';
+        var scene = btn.dataset.v17Scene || 'evening';
         vp.dataset.v17Scene = scene;
         vp.querySelectorAll('button[data-v17-scene]').forEach(function (b) {
           var active = b.dataset.v17Scene === scene;
           b.classList.toggle('is-active', active);
           b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
-        syncReadout();
       });
     });
+
+    var unitBtn = doc.getElementById('v17-unit-btn');
+    if (unitBtn) {
+      unitBtn.addEventListener('click', function () {
+        var next = (vp.getAttribute('data-temp-unit') || 'c') === 'c' ? 'f' : 'c';
+        applyTempUnit(vp, next);
+        unitBtn.setAttribute('data-v17-unit', next);
+        unitBtn.classList.toggle('is-active', next === 'f');
+        unitBtn.setAttribute('aria-pressed', next === 'f' ? 'true' : 'false');
+      });
+    }
   }
 
   function wireTwoStep(doc, cfg) {
@@ -4576,7 +4863,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       armBtn.setAttribute('aria-pressed', armed ? 'true' : 'false');
       execBtn.disabled = !armed;
       if (log && armed) {
-        log.textContent = cfg.name + ' ARMED — confirm Step 2 to actuate';
+        log.textContent = cfg.name + ' armed — tap Step 2 to confirm';
       }
     });
 
@@ -4589,12 +4876,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       armBtn.setAttribute('aria-pressed', 'false');
       execBtn.disabled = true;
       if (log) {
-        log.textContent = cfg.name + ' transitioned to ' + pill.textContent;
+        log.textContent = cfg.name + ' is now ' + pill.textContent.toLowerCase();
       }
     });
   }
 
   function bootV18(doc) {
+    var v18Root = doc.querySelector('.v9-view-v18');
     var filterBtns = doc.querySelectorAll('button[data-v18-filter]');
     var tiles = doc.querySelectorAll('.v18-zone-tile[data-v18-cat]');
     if (filterBtns.length && tiles.length) {
@@ -4615,25 +4903,37 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       });
     }
 
+    doc.querySelectorAll('button[data-v18-unit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var unit = btn.dataset.v18Unit || 'c';
+        applyTempUnit(v18Root, unit);
+        doc.querySelectorAll('button[data-v18-unit]').forEach(function (b) {
+          var active = b.dataset.v18Unit === unit;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      });
+    });
+
     wireTwoStep(doc, {
-      name: 'LOCK-FRONT-01',
+      name: 'Front door',
       armId: 'v18-lock-arm',
       execId: 'v18-lock-exec',
       pillId: 'v18-lock-pill',
       closedLabel: 'LOCKED',
       openLabel: 'UNLOCKED',
-      openBtnText: '2. Unlock Entry',
-      recloseBtnText: '2. Relock Entry',
+      openBtnText: '2. Unlock Door',
+      recloseBtnText: '2. Lock Door',
     });
     wireTwoStep(doc, {
-      name: 'GARAGE-BAY-01',
+      name: 'Garage door',
       armId: 'v18-garage-arm',
       execId: 'v18-garage-exec',
       pillId: 'v18-garage-pill',
       closedLabel: 'CLOSED',
       openLabel: 'OPEN',
-      openBtnText: '2. Open Bay Door',
-      recloseBtnText: '2. Close Bay Door',
+      openBtnText: '2. Open Garage',
+      recloseBtnText: '2. Close Garage',
     });
   }
 
@@ -4905,7 +5205,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="marker" x="269.0" y="116.0" width="8" height="8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1"/>
 <text x="428.0" y="124.0" text-anchor="start" font-family="var(--font-mono)" font-size="12.0" font-weight="600" fill="var(--accent-focal)">0.71 (0.54–0.93)</text>
 </svg></div></div>
-<div class="qe-param-legend"><span class="qe-leg-param va-nums">HR<sub>all</sub> = 0.74</span><span class="qe-leg-param va-nums">n<sub>ITT</sub> = 1240</span></div>
+<div class="qe-param-legend"><span class="qe-param-strip"><span class="qe-leg-param va-nums">HR<sub>all</sub> = 0.74</span><span class="qe-leg-param va-nums">n<sub>ITT</sub> = 1240</span></span></div>
 </div><figcaption class="va-figure-caption">28-day all-cause mortality Hazard Ratio (HR) and 95% confidence intervals across pre-specified clinical subgroups (null effect HR = 1.0).</figcaption></figure>
       </section>
 
@@ -5013,9 +5313,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   </section>
 
   <section id="v03-guide" class="v03-pedagogy-panel qe-pedagogy-scope" aria-label="Interactive Home Care Guide">
-    <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Oxygen Level Trend&quot;,&quot;rigor&quot;:&quot;L1&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Check-In Reading (1 to 10)&quot;,&quot;min&quot;:1.0,&quot;max&quot;:10.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Oxygen Saturation (%)&quot;,&quot;min&quot;:88.0,&quot;max&quot;:100.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;spo2_home&quot;,&quot;name&quot;:&quot;Oxygen Level (%)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;oxygen-goal&quot;,&quot;token&quot;:&quot;--tint-emerald-fg&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,95.4,0.0],[2.0,95.1,0.0],[3.0,94.8,0.0],[4.0,94.9,0.0],[5.0,94.6,0.0],[6.0,94.5,0.0],[7.0,94.3,0.0],[8.0,94.4,0.0],[9.0,94.1,0.0],[10.0,94.2,0.0]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Goal &gt;= 92%&quot;,&quot;value&quot;:92.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--tint-emerald-fg&quot;}]}">
+    <div class="qe-equation-bar" aria-label="Daily Care Plan"><span class="qe-eq-lhs">Daily Plan = </span><button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button><span class="qe-eq-op"> + </span><button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button><span class="qe-eq-op"> -&gt; </span><button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button></div><div class="v03-charts-grid"><div class="v03-chart-slot" data-term="oxygen-goal"><figure class="va-figure-card qe-figure" id="v03-oxygen-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Oxygen Level Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Oxygen Level Trend&quot;,&quot;rigor&quot;:&quot;L1&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Check-In Reading (1 to 10)&quot;,&quot;min&quot;:0.0,&quot;max&quot;:10.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Oxygen Saturation (%)&quot;,&quot;min&quot;:88.0,&quot;max&quot;:100.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;spo2_home&quot;,&quot;name&quot;:&quot;Oxygen Level (%)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;oxygen-goal&quot;,&quot;token&quot;:&quot;--tint-emerald-fg&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,95.4,0.0],[2.0,95.1,0.0],[3.0,94.8,0.0],[4.0,94.9,0.0],[5.0,94.6,0.0],[6.0,94.5,0.0],[7.0,94.3,0.0],[8.0,94.4,0.0],[9.0,94.1,0.0],[10.0,94.2,0.0]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Goal &gt;= 92%&quot;,&quot;value&quot;:92.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--tint-emerald-fg&quot;}]}">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Oxygen Level Trend"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Oxygen Level Trend">
-<defs><clipPath id="qe-clip-460053"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-97355"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -5111,7 +5411,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Oxygen Saturation (%)</text>
-<g clip-path="url(#qe-clip-460053)">
+<g clip-path="url(#qe-clip-97355)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--tint-emerald-fg)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--tint-emerald-fg)" stroke-width="1.5"/>
@@ -5129,9 +5429,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 </g>
 <text x="490.0" y="179.3" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--tint-emerald-fg)">Goal &gt;= 92%</text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-</div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Resting Blood Pressure Trend&quot;,&quot;rigor&quot;:&quot;L1&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Check-In Reading (1 to 10)&quot;,&quot;min&quot;:1.0,&quot;max&quot;:10.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Blood Pressure (mmHg)&quot;,&quot;min&quot;:55.0,&quot;max&quot;:85.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;map_home&quot;,&quot;name&quot;:&quot;Resting Blood Pressure (mmHg)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;bp-threshold&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;square&quot;,&quot;data&quot;:[[1.0,68.2,0.0],[2.0,67.4,0.0],[3.0,66.8,0.0],[4.0,66.0,0.0],[5.0,65.2,0.0],[6.0,64.8,0.0],[7.0,64.1,0.0],[8.0,63.9,0.0],[9.0,63.6,0.0],[10.0,63.5,0.0]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Call &lt; 65 mmHg&quot;,&quot;value&quot;:65.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;}]}">
+</div></figure></div><div class="v03-chart-slot" data-term="bp-threshold"><figure class="va-figure-card qe-figure" id="v03-bp-trend-chart" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Resting Blood Pressure Trend</h2></div><div class="qe-plot-wrap" data-rigor="L1" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Resting Blood Pressure Trend&quot;,&quot;rigor&quot;:&quot;L1&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Check-In Reading (1 to 10)&quot;,&quot;min&quot;:0.0,&quot;max&quot;:10.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Blood Pressure (mmHg)&quot;,&quot;min&quot;:55.0,&quot;max&quot;:85.0,&quot;interval&quot;:5.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;map_home&quot;,&quot;name&quot;:&quot;Resting Blood Pressure (mmHg)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;bp-threshold&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;square&quot;,&quot;data&quot;:[[1.0,68.2,0.0],[2.0,67.4,0.0],[3.0,66.8,0.0],[4.0,66.0,0.0],[5.0,65.2,0.0],[6.0,64.8,0.0],[7.0,64.1,0.0],[8.0,63.9,0.0],[9.0,63.6,0.0],[10.0,63.5,0.0]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Call &lt; 65 mmHg&quot;,&quot;value&quot;:65.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;}]}">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Resting Blood Pressure Trend"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 306" role="img" aria-label="Resting Blood Pressure Trend">
-<defs><clipPath id="qe-clip-58101"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-385051"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="110.9" y1="26.0" x2="110.9" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="110.9" y1="250.0" x2="110.9" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="129.7" y1="26.0" x2="129.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -5239,7 +5539,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Check-In Reading (1 to 10)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Blood Pressure (mmHg)</text>
-<g clip-path="url(#qe-clip-58101)">
+<g clip-path="url(#qe-clip-385051)">
 <polygon points="78.0,175.3 482.0,175.3 482.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 78.0 175.3 L 482.0 175.3" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <line x1="482.0" y1="175.3" x2="487.0" y2="175.3" stroke="var(--status-warn)" stroke-width="1.5"/>
@@ -5623,10 +5923,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   </section>
 
   <div class="v9-dual-grid">
-    <section id="v06-cal" class="v9-dual-col" aria-label="Classifier Reliability Plot"><figure class="va-figure-card qe-figure" id="w02-v06-ai-calibration-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Predicted Confidence, p\u0302&quot;,&quot;min&quot;:0.0,&quot;max&quot;:1.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Observed Empirical Frequency, f(obs)&quot;,&quot;min&quot;:0.0,&quot;max&quot;:1.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;ideal-cal-diag&quot;,&quot;name&quot;:&quot;Ideal Calibration Diagonal (f(obs) = p\u0302)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;ideal-cal-diag&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[0.0,0.0],[0.02778,0.02778],[0.05556,0.05556],[0.08333,0.08333],[0.11111,0.11111],[0.13889,0.13889],[0.16667,0.16667],[0.19444,0.19444],[0.22222,0.22222],[0.25,0.25],[0.27778,0.27778],[0.30556,0.30556],[0.33333,0.33333],[0.36111,0.36111],[0.38889,0.38889],[0.41667,0.41667],[0.44444,0.44444],[0.47222,0.47222],[0.5,0.5],[0.52778,0.52778],[0.55556,0.55556],[0.58333,0.58333],[0.61111,0.61111],[0.63889,0.63889],[0.66667,0.66667],[0.69444,0.69444],[0.72222,0.72222],[0.75,0.75],[0.77778,0.77778],[0.80556,0.80556],[0.83333,0.83333],[0.86111,0.86111],[0.88889,0.88889],[0.91667,0.91667],[0.94444,0.94444],[0.97222,0.97222],[1.0,1.0]]},{&quot;id&quot;:&quot;val-bins-meas&quot;,&quot;name&quot;:&quot;Validation Cohort Bins (120/bin)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;val-bins-meas&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[0.05,0.06,0.022],[0.15,0.16,0.033],[0.25,0.24,0.039],[0.35,0.36,0.044],[0.45,0.43,0.045],[0.55,0.52,0.046],[0.65,0.59,0.045],[0.75,0.66,0.043],[0.85,0.73,0.041],[0.95,0.81,0.036]]}],&quot;envelopes&quot;:[]}">
+    <section id="v06-cal" class="v9-dual-col" aria-label="Classifier Reliability Plot"><figure class="va-figure-card qe-figure" id="w02-v06-ai-calibration-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Predicted Confidence, p\u0302&quot;,&quot;min&quot;:0.0,&quot;max&quot;:1.0,&quot;interval&quot;:0.2,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Observed Empirical Frequency, f\u2092\u1d66\u209b&quot;,&quot;min&quot;:0.0,&quot;max&quot;:1.0,&quot;interval&quot;:0.2,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;ideal-cal-diag&quot;,&quot;name&quot;:&quot;Ideal Calibration Diagonal (f\u2092\u1d66\u209b = p\u0302)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;ideal-cal-diag&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[0.0,0.0],[0.02778,0.02778],[0.05556,0.05556],[0.08333,0.08333],[0.11111,0.11111],[0.13889,0.13889],[0.16667,0.16667],[0.19444,0.19444],[0.22222,0.22222],[0.25,0.25],[0.27778,0.27778],[0.30556,0.30556],[0.33333,0.33333],[0.36111,0.36111],[0.38889,0.38889],[0.41667,0.41667],[0.44444,0.44444],[0.47222,0.47222],[0.5,0.5],[0.52778,0.52778],[0.55556,0.55556],[0.58333,0.58333],[0.61111,0.61111],[0.63889,0.63889],[0.66667,0.66667],[0.69444,0.69444],[0.72222,0.72222],[0.75,0.75],[0.77778,0.77778],[0.80556,0.80556],[0.83333,0.83333],[0.86111,0.86111],[0.88889,0.88889],[0.91667,0.91667],[0.94444,0.94444],[0.97222,0.97222],[1.0,1.0]]},{&quot;id&quot;:&quot;val-bins-meas&quot;,&quot;name&quot;:&quot;Validation Cohort Bins (120/bin)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;val-bins-meas&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[0.05,0.06,0.022],[0.15,0.16,0.033],[0.25,0.24,0.039],[0.35,0.36,0.044],[0.45,0.43,0.045],[0.55,0.52,0.046],[0.65,0.59,0.045],[0.75,0.66,0.043],[0.85,0.73,0.041],[0.95,0.81,0.036]]}],&quot;envelopes&quot;:[]}">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">CLS-ROUTER-V4</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">FW</span><span class="qe-cond-val va-nums">snap-2026.11-r2</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">NIST-AI-RMF-100-1</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">1200</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">CAL-ECE-2026-1104</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Classifier Reliability &amp; Calibration Drift Curve with Normalized Residual Strip">
-<defs><clipPath id="qe-clip-945597"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-622908"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="118.4" y1="26.0" x2="118.4" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="118.4" y1="250.0" x2="118.4" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="141.5" y1="26.0" x2="141.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -5714,7 +6014,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Predicted Confidence, p̂</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Observed Empirical Frequency, f<tspan dy="2.2" font-size="9.2">obs</tspan></text>
-<g clip-path="url(#qe-clip-945597)">
+<g clip-path="url(#qe-clip-622908)">
 <polygon points="95.4,250.0 103.2,250.0 111.0,250.0 118.8,250.0 126.6,250.0 134.5,248.9 142.3,245.1 150.1,241.3 157.9,237.5 165.7,233.8 173.5,230.0 181.4,226.2 189.2,222.4 197.0,218.6 204.8,214.8 212.6,211.0 220.5,207.2 228.3,203.4 236.1,199.6 243.9,195.8 251.7,192.0 259.5,188.2 267.4,184.4 275.2,180.6 283.0,176.8 290.8,173.0 298.6,169.2 306.5,165.4 314.3,161.6 322.1,157.8 329.9,154.0 337.7,150.2 345.5,146.4 353.4,142.6 361.2,138.8 369.0,135.0 376.8,131.2 384.6,127.4 392.5,123.6 400.3,119.9 408.1,116.1 415.9,112.3 423.7,108.5 431.5,104.7 439.4,100.9 447.2,97.1 455.0,93.3 462.8,89.5 470.6,85.7 478.5,81.9 486.3,78.1 494.1,74.3 501.9,70.5 509.7,66.7 517.5,62.9 525.4,59.1 533.2,55.3 541.0,51.5 548.8,47.7 556.6,43.9 556.6,250.0 95.4,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
 <path d="M 95.4 250.0 L 103.2 250.0 L 111.0 250.0 L 118.8 250.0 L 126.6 250.0 L 134.5 248.9 L 142.3 245.1 L 150.1 241.3 L 157.9 237.5 L 165.7 233.8 L 173.5 230.0 L 181.4 226.2 L 189.2 222.4 L 197.0 218.6 L 204.8 214.8 L 212.6 211.0 L 220.5 207.2 L 228.3 203.4 L 236.1 199.6 L 243.9 195.8 L 251.7 192.0 L 259.5 188.2 L 267.4 184.4 L 275.2 180.6 L 283.0 176.8 L 290.8 173.0 L 298.6 169.2 L 306.5 165.4 L 314.3 161.6 L 322.1 157.8 L 329.9 154.0 L 337.7 150.2 L 345.5 146.4 L 353.4 142.6 L 361.2 138.8 L 369.0 135.0 L 376.8 131.2 L 384.6 127.4 L 392.5 123.6 L 400.3 119.9 L 408.1 116.1 L 415.9 112.3 L 423.7 108.5 L 431.5 104.7 L 439.4 100.9 L 447.2 97.1 L 455.0 93.3 L 462.8 89.5 L 470.6 85.7 L 478.5 81.9 L 486.3 78.1 L 494.1 74.3 L 501.9 70.5 L 509.7 66.7 L 517.5 62.9 L 525.4 59.1 L 533.2 55.3 L 541.0 51.5 L 548.8 47.7 L 556.6 43.9" fill="none" stroke="var(--status-warn)" stroke-width="1.7" stroke-dasharray="5,4"/>
 <polygon points="95.4,241.0 100.5,238.5 105.7,236.0 110.9,233.5 116.1,231.0 121.3,228.5 126.5,225.9 131.6,223.4 136.8,220.9 142.0,218.4 147.2,215.9 152.4,213.4 157.6,210.8 162.7,208.3 167.9,205.8 173.1,203.3 178.3,200.8 183.5,198.3 188.7,195.7 193.8,193.2 199.0,190.7 204.2,188.2 209.4,185.7 214.6,183.2 219.8,180.6 224.9,178.1 230.1,175.6 235.3,173.1 240.5,170.6 245.7,168.1 250.8,165.5 256.0,163.0 261.2,160.5 266.4,158.0 271.6,155.5 276.8,153.0 281.9,150.4 287.1,147.9 292.3,145.4 297.5,142.9 302.7,140.4 307.9,137.8 313.0,135.3 318.2,132.8 323.4,130.3 328.6,127.8 333.8,125.3 339.0,122.7 344.1,120.2 349.3,117.7 354.5,115.2 359.7,112.7 364.9,110.2 370.1,107.6 375.2,105.1 380.4,102.6 385.6,100.1 390.8,97.6 396.0,95.1 401.2,92.5 406.3,90.0 411.5,87.5 416.7,85.0 421.9,82.5 427.1,80.0 432.2,77.4 437.4,74.9 442.6,72.4 447.8,69.9 453.0,67.4 458.2,64.9 463.3,62.3 468.5,59.8 473.7,57.3 478.9,54.8 484.1,52.3 489.3,49.8 494.4,47.2 499.6,44.7 504.8,42.2 510.0,39.7 515.2,37.2 520.4,34.7 525.5,32.1 530.7,29.6 535.9,27.1 541.1,26.0 546.3,26.0 551.5,26.0 556.6,26.0 556.6,35.0 551.5,37.5 546.3,40.0 541.1,42.5 535.9,45.0 530.7,47.5 525.5,50.1 520.4,52.6 515.2,55.1 510.0,57.6 504.8,60.1 499.6,62.6 494.4,65.2 489.3,67.7 484.1,70.2 478.9,72.7 473.7,75.2 468.5,77.7 463.3,80.3 458.2,82.8 453.0,85.3 447.8,87.8 442.6,90.3 437.4,92.8 432.2,95.4 427.1,97.9 421.9,100.4 416.7,102.9 411.5,105.4 406.3,107.9 401.2,110.5 396.0,113.0 390.8,115.5 385.6,118.0 380.4,120.5 375.2,123.0 370.1,125.6 364.9,128.1 359.7,130.6 354.5,133.1 349.3,135.6 344.1,138.2 339.0,140.7 333.8,143.2 328.6,145.7 323.4,148.2 318.2,150.7 313.0,153.3 307.9,155.8 302.7,158.3 297.5,160.8 292.3,163.3 287.1,165.8 281.9,168.4 276.8,170.9 271.6,173.4 266.4,175.9 261.2,178.4 256.0,180.9 250.8,183.5 245.7,186.0 240.5,188.5 235.3,191.0 230.1,193.5 224.9,196.0 219.8,198.6 214.6,201.1 209.4,203.6 204.2,206.1 199.0,208.6 193.8,211.1 188.7,213.7 183.5,216.2 178.3,218.7 173.1,221.2 167.9,223.7 162.7,226.2 157.6,228.8 152.4,231.3 147.2,233.8 142.0,236.3 136.8,238.8 131.6,241.3 126.5,243.9 121.3,246.4 116.1,248.9 110.9,250.0 105.7,250.0 100.5,250.0 95.4,250.0" fill="var(--text-secondary)" opacity="0.14"/>
@@ -5792,7 +6092,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <circle cx="533.6" cy="373.0" r="3.2" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.4"/>
 <text x="84.0" y="319.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Normalized Residuals (yᵢ − ŷᵢ) / u<tspan dy="2.2" font-size="8.97">y</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Ideal Calibration Diagonal (f<sub>obs</sub> = p̂) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Validation Cohort Bins (120/bin) · Discrete Sample (&#177;u<sub>y</sub>)</span><span class="qe-leg-param va-nums">ECE = 0.05</span><span class="qe-leg-param va-nums">ECE<sub>max</sub> = 0.04</span><span class="qe-leg-param va-nums">N<sub>val</sub> = 1200</span></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Ideal Calibration Diagonal (f<sub>obs</sub> = p̂) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Validation Cohort Bins (120/bin) · Discrete Sample (&#177;u<sub>y</sub>)</span></span><span class="qe-param-strip"><span class="qe-leg-param va-nums">ECE = 0.05</span><span class="qe-leg-param va-nums">ECE<sub>max</sub> = 0.04</span><span class="qe-leg-param va-nums">N<sub>val</sub> = 1200</span></span></div>
 </div><figcaption class="va-figure-caption">L3 AI metrology reliability diagram plotting predicted probability p̂ [0.05..0.95] against empirical validation frequency f<sub>obs</sub> across 10 uniform bins (N = 1200 total, 120 samples/bin) with ±u<sub>y</sub> binomial uncertainty whiskers, ideal y = x diagonal, overconfidence drift gate, and bottom normalized residual strip.</figcaption></figure></section>
     <section id="v06-lineage" class="v9-dual-col" aria-label="Telemetry ER Lineage Diagram"><figure class="va-figure-card qe-figure" id="v06-telemetry-lineage" data-qe-modality="schematic" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Crow&#x27;s-Foot AI Telemetry &amp; Drift Alert Lineage Schema</h2></div><div class="qe-schematic-wrap" data-rigor="L3" data-medium="m3"><div class="qe-schematic-hdr"><span class="qe-dwg-num va-nums">DWG: ATO-ZTA-2026-R3</span></div><div class="qe-subpanel"><div class="qe-subpanel-title">Panel B: 4-Entity Crow&#x27;s-Foot AI Telemetry &amp; Drift Lineage Schema</div><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Panel B: 4-Entity Crow&#x27;s-Foot AI Telemetry &amp; Drift Lineage Schema"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 348" role="img" aria-label="ER Schema Lineage">
 <defs><marker id="qe-er-many" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 1 L 10 6 L 0 11 M 5 1 L 5 11" fill="none" stroke="var(--border-strong)" stroke-width="1.2"/></marker><marker id="qe-er-one" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 4 1 L 4 11 M 8 1 L 8 11" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/></marker></defs>
@@ -6193,10 +6493,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     <aside class="v9-params-aside" aria-label="CMM &amp; Modbus Audit Parameters"><h3>CMM &amp; Modbus Audit Parameters</h3><dl class="v9-params-list"><div class="v9-param-row"><dt>Calibration Certificate</dt><dd class="va-nums">CAL-CMM-ISO10360-2026-07</dd></div><div class="v9-param-row"><dt>Ambient Lab Temp</dt><dd class="va-nums">20.0 ± 0.2 °C</dd></div><div class="v9-param-row"><dt>Subgroup Sample Size</dt><dd class="va-nums">n = 5 parts/lot</dd></div><div class="v9-param-row"><dt>Process Capability</dt><dd class="va-nums">C_pk = 1.64 (Gate &gt;= 1.33)</dd></div><div class="v9-param-row"><dt>Modbus Register</dt><dd class="va-nums">0x0104 = 0x0A15</dd></div></dl></aside>
   </div>
 
-  <section id="v09-spc" aria-label="Shewhart X̄ SPC Plot"><figure class="va-figure-card qe-figure" id="v09-spc-control-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Shewhart X_bar SPC Control Chart \u2014 Bearing Bore Diameter (C_pk = 1.64, n = 5)&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Subgroup Lot Index, k (n = 5)&quot;,&quot;min&quot;:1.0,&quot;max&quot;:12.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Subgroup Mean Bore Diameter, X_bar / mm&quot;,&quot;min&quot;:9.92,&quot;max&quot;:10.08,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;spc-cl-model&quot;,&quot;name&quot;:&quot;Nominal Centerline CL (10.000 mm)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;spc-cl-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[1.0,10.0],[1.30556,10.0],[1.61111,10.0],[1.91667,10.0],[2.22222,10.0],[2.52778,10.0],[2.83333,10.0],[3.13889,10.0],[3.44444,10.0],[3.75,10.0],[4.05556,10.0],[4.36111,10.0],[4.66667,10.0],[4.97222,10.0],[5.27778,10.0],[5.58333,10.0],[5.88889,10.0],[6.19444,10.0],[6.5,10.0],[6.80556,10.0],[7.11111,10.0],[7.41667,10.0],[7.72222,10.0],[8.02778,10.0],[8.33333,10.0],[8.63889,10.0],[8.94444,10.0],[9.25,10.0],[9.55556,10.0],[9.86111,10.0],[10.16667,10.0],[10.47222,10.0],[10.77778,10.0],[11.08333,10.0],[11.38889,10.0],[11.69444,10.0],[12.0,10.0]]},{&quot;id&quot;:&quot;spc-xbar-subgroups&quot;,&quot;name&quot;:&quot;Subgroup Mean X_bar (n = 5)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;spc-xbar-subgroups&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,9.997,0.007],[2.0,10.006,0.006],[3.0,10.011,0.007],[4.0,9.993,0.007],[5.0,10.002,0.006],[6.0,10.014,0.008],[7.0,9.995,0.007],[8.0,10.004,0.006],[9.0,9.989,0.008],[10.0,10.001,0.006],[11.0,10.008,0.007],[12.0,9.998,0.006]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;USL 10.070 mm&quot;,&quot;value&quot;:10.07,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;},{&quot;label&quot;:&quot;UCL 10.042 mm&quot;,&quot;value&quot;:10.042,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;},{&quot;label&quot;:&quot;LCL 9.958 mm&quot;,&quot;value&quot;:9.958,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;},{&quot;label&quot;:&quot;LSL 9.930 mm&quot;,&quot;value&quot;:9.93,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;}]}">
+  <section id="v09-spc" aria-label="Shewhart X̄ SPC Plot"><figure class="va-figure-card qe-figure" id="v09-spc-control-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Shewhart X\u0304 SPC Control Chart \u2014 Bearing Bore Diameter (C\u209a\u2096 = 1.64, n = 5)&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Subgroup Lot Index, k (n = 5)&quot;,&quot;min&quot;:0.0,&quot;max&quot;:12.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Subgroup Mean Bore Diameter, X\u0304 / mm&quot;,&quot;min&quot;:9.92,&quot;max&quot;:10.08,&quot;interval&quot;:0.02,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;spc-cl-model&quot;,&quot;name&quot;:&quot;Nominal Centerline CL (10.000 mm)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;spc-cl-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[0.0,10.0],[0.33333,10.0],[0.66667,10.0],[1.0,10.0],[1.33333,10.0],[1.66667,10.0],[2.0,10.0],[2.33333,10.0],[2.66667,10.0],[3.0,10.0],[3.33333,10.0],[3.66667,10.0],[4.0,10.0],[4.33333,10.0],[4.66667,10.0],[5.0,10.0],[5.33333,10.0],[5.66667,10.0],[6.0,10.0],[6.33333,10.0],[6.66667,10.0],[7.0,10.0],[7.33333,10.0],[7.66667,10.0],[8.0,10.0],[8.33333,10.0],[8.66667,10.0],[9.0,10.0],[9.33333,10.0],[9.66667,10.0],[10.0,10.0],[10.33333,10.0],[10.66667,10.0],[11.0,10.0],[11.33333,10.0],[11.66667,10.0],[12.0,10.0]]},{&quot;id&quot;:&quot;spc-xbar-subgroups&quot;,&quot;name&quot;:&quot;Subgroup Mean X\u0304 (n = 5)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;spc-xbar-subgroups&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,9.997,0.007],[2.0,10.006,0.006],[3.0,10.011,0.007],[4.0,9.993,0.007],[5.0,10.002,0.006],[6.0,10.014,0.008],[7.0,9.995,0.007],[8.0,10.004,0.006],[9.0,9.989,0.008],[10.0,10.001,0.006],[11.0,10.008,0.007],[12.0,9.998,0.006]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;USL 10.070 mm&quot;,&quot;value&quot;:10.07,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;},{&quot;label&quot;:&quot;UCL 10.042 mm&quot;,&quot;value&quot;:10.042,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;},{&quot;label&quot;:&quot;LCL 9.958 mm&quot;,&quot;value&quot;:9.958,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;},{&quot;label&quot;:&quot;LSL 9.930 mm&quot;,&quot;value&quot;:9.93,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;}]}">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">CNC-CELL-03-BORE</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">NIST/SEMATECH SPC</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(20.0 ± 0.2) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">C<sub>pk</sub></span><span class="qe-cond-val va-nums">1.64</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">5</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">CAL-CMM-ISO10360-2026-07</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Shewhart X_bar SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)">
-<defs><clipPath id="qe-clip-794631"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-11491"><rect x="78.0" y="26.0" width="404.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="107.8" y1="26.0" x2="107.8" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="107.8" y1="250.0" x2="107.8" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="123.5" y1="26.0" x2="123.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -6316,7 +6616,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="404.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="280.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Subgroup Lot Index, k (n = 5)</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Subgroup Mean Bore Diameter, X̄ / mm</text>
-<g clip-path="url(#qe-clip-794631)">
+<g clip-path="url(#qe-clip-11491)">
 <polygon points="78.0,40.0 482.0,40.0 482.0,26.0 78.0,26.0" fill="var(--status-err-bg)" opacity="0.50"/>
 <path d="M 78.0 40.0 L 482.0 40.0" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <line x1="482.0" y1="40.0" x2="487.0" y2="40.0" stroke="var(--status-danger)" stroke-width="1.5"/>
@@ -6415,7 +6715,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <circle cx="467.9" cy="346.0" r="3.2" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.4"/>
 <text x="84.0" y="319.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Normalized Residuals (yᵢ − ŷᵢ) / u<tspan dy="2.2" font-size="8.97">y</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Nominal Centerline CL (10.000 mm) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--accent-focal)" stroke-width="1.3" opacity="0.65"/><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Subgroup Mean X̄ (n = 5) · Discrete Sample (&#177;u<sub>y</sub>)</span><span class="qe-leg-param va-nums">CL = 10 mm</span><span class="qe-leg-param va-nums">UCL = 10.042 mm</span><span class="qe-leg-param va-nums">LCL = 9.958 mm</span><span class="qe-leg-param va-nums">C<sub>pk</sub> = 1.64</span></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Nominal Centerline CL (10.000 mm) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--accent-focal)" stroke-width="1.3" opacity="0.65"/><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Subgroup Mean X̄ (n = 5) · Discrete Sample (&#177;u<sub>y</sub>)</span></span><span class="qe-param-strip"><span class="qe-leg-param va-nums">CL = 10 mm</span><span class="qe-leg-param va-nums">UCL = 10.042 mm</span><span class="qe-leg-param va-nums">LCL = 9.958 mm</span><span class="qe-leg-param va-nums">C<sub>pk</sub> = 1.64</span></span></div>
 </div><figcaption class="va-figure-caption">L3 NIST/SEMATECH Shewhart X<sub>bar</sub> control chart plotting discrete subgroup means (±u<sub>y</sub>) against ±3sigma control limits (UCL 10.042 mm, CL 10.000 mm, LCL 9.958 mm), engineering spec limits (USL 10.070 mm, LSL 9.930 mm), and normalized residual strip.</figcaption></figure></section>
   <section id="v09-modbus" aria-label="16-Bit Modbus Holding Register"><figure class="va-figure-card qe-figure" id="v09-modbus-plc-bitfield" data-qe-modality="bitfield" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">16-Bit Modbus Holding Register 0x0104 (PLC_BREAKER_INTERLOCK_WORD)</h2></div><div class="qe-bitfield-wrap" data-rigor="L3" data-medium="m2"><div class="qe-bf-hdr qe-bit-meta"><span class="va-kicker">PLC_BREAKER_INTERLOCK_WORD</span><span class="qe-bf-addr va-nums">Offset: 0x0104</span><span class="qe-bf-addr va-nums">Reset: 0x0000</span><span class="va-pill va-nums" data-variant="tag">Live: 0x0A15</span></div><div class="va-figure-scroll" tabindex="0" role="region" aria-label="16-Bit Modbus Holding Register 0x0104 (PLC_BREAKER_INTERLOCK_WORD)"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 132" role="img" aria-label="16-Bit Modbus Holding Register 0x0104 (PLC_BREAKER_INTERLOCK_WORD)">
 <rect data-role="bitheader" x="40.0" y="14.0" width="40.0" height="22.0" fill="var(--bg-header)" stroke="var(--border-hairline)" stroke-width="0.8"/>
@@ -6567,7 +6867,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     <div id="v10-fund-readout" class="v9-filter-readout va-sheet-hide" aria-live="polite">Showing all 6 capital ledger rows (closing balance 26.9 M USD, 179.3% coverage).</div>
   </section>
 
-  <section id="v10-waterfall" aria-label="FY2027 Capital Reserve Waterfall"><figure class="va-figure-card qe-figure" id="v10-civic-capital-waterfall" data-qe-modality="plot" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor</h2></div><div class="qe-plot-wrap" data-rigor="L2" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;waterfall&quot;,&quot;title&quot;:&quot;FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor&quot;,&quot;rigor&quot;:&quot;L2&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;yName&quot;:&quot;Capital Fund Balance, B_cap / M USD&quot;,&quot;categories&quot;:[&quot;Opening Reserve&quot;,&quot;State Grant&quot;,&quot;Utility Bond&quot;,&quot;School HVAC&quot;,&quot;Water Main&quot;,&quot;Closing Balance&quot;],&quot;bases&quot;:[0.0,48.0,64.5,58.1,26.9,0.0],&quot;positive&quot;:[48.0,16.5,22.0,&quot;-&quot;,&quot;-&quot;,26.9],&quot;negative&quot;:[&quot;-&quot;,&quot;-&quot;,&quot;-&quot;,28.4,31.2,&quot;-&quot;]}">
+  <section id="v10-waterfall" aria-label="FY2027 Capital Reserve Waterfall"><figure class="va-figure-card qe-figure" id="v10-civic-capital-waterfall" data-qe-modality="plot" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor</h2></div><div class="qe-plot-wrap" data-rigor="L2" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;waterfall&quot;,&quot;title&quot;:&quot;FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor&quot;,&quot;rigor&quot;:&quot;L2&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;yName&quot;:&quot;Capital Fund Balance / M USD&quot;,&quot;y&quot;:{&quot;name&quot;:&quot;Capital Fund Balance / M USD&quot;,&quot;min&quot;:0.0,&quot;max&quot;:100.0,&quot;interval&quot;:20.0},&quot;categories&quot;:[&quot;Opening Reserve&quot;,&quot;State Grant&quot;,&quot;Utility Bond&quot;,&quot;School HVAC&quot;,&quot;Water Main&quot;,&quot;Closing Balance&quot;],&quot;bases&quot;:[0.0,48.0,64.5,58.1,26.9,0.0],&quot;positive&quot;:[48.0,16.5,22.0,&quot;-&quot;,&quot;-&quot;,26.9],&quot;negative&quot;:[&quot;-&quot;,&quot;-&quot;,&quot;-&quot;,28.4,31.2,&quot;-&quot;]}">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-640" viewBox="0 0 640 296" role="img" aria-label="FY2027 Municipal Capital Reserve Waterfall vs. Policy Floor">
 <line x1="78.0" y1="232.0" x2="614.0" y2="232.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
 <text x="70.0" y="236.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text>
@@ -6610,7 +6910,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <g class="qe-svg-knockout"><rect class="qe-svg-knockout-bg" x="218.0" y="192.6" width="234.6" height="17.0" rx="2" fill="var(--bg-surface)" stroke="none"/><text x="335.3" y="205.1" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)">Policy Reserve Floor (15 M USD)</text></g>
 <text x="20" y="129.0" transform="rotate(-90 20 129.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Capital Fund Balance, B<tspan dy="2.2" font-size="9.2">cap</tspan><tspan dy="-2.2"> / M USD</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-param va-nums">B<sub>open</sub> = 48 M USD</span><span class="qe-leg-param va-nums">B<sub>close</sub> = 26.9 M USD</span><span class="qe-leg-param va-nums">B<sub>floor</sub> = 15 M USD</span></div>
+<div class="qe-param-legend"><span class="qe-param-strip"><span class="qe-leg-param va-nums">B<sub>open</sub> = 48 M USD</span><span class="qe-leg-param va-nums">B<sub>close</sub> = 26.9 M USD</span><span class="qe-leg-param va-nums">B<sub>floor</sub> = 15 M USD</span></span></div>
 </div><figcaption class="va-figure-caption">GAO/USWDS capital fund flow reconciling Opening Reserve (48.0 M USD) plus State Grant (+16.5 M USD) and Utility Bond (+22.0 M USD) against School HVAC outlay 28.4 M USD (-28.4 M USD delta) and Water Main outlay 31.2 M USD (-31.2 M USD delta) to Closing Contingency (26.9 M USD) above the 15.0 M USD statutory floor.</figcaption></figure></section>
   <section id="v10-budget-table" aria-label="GAO/USWDS Capital Obligation Matrix"><figure class="va-figure-card qe-figure" id="v10-civic-budget-table" data-qe-modality="table" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">FY2027 Municipal Capital Trade Matrix &amp; Reserve Coverage Ledger</h2></div><div class="va-bleed-wide va-table-wrap qe-table-wrap" tabindex="0" role="region" aria-label="FY2027 Municipal Capital Trade Matrix &amp; Reserve Coverage Ledger">
 <table class="va-data-table qe-table">
@@ -6720,10 +7020,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     </div>
   </section>
 
-  <section id="v11-plot" aria-label="Treasury Drawdown Plot"><figure class="va-figure-card qe-figure" id="v11-treasury-drawdown-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Stress Test Horizon, q / quarter&quot;,&quot;min&quot;:1.0,&quot;max&quot;:8.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Portfolio Liquidity Ratio, L_ratio / %&quot;,&quot;min&quot;:15.0,&quot;max&quot;:40.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;duration-shock-model&quot;,&quot;name&quot;:&quot;Deterministic Duration Model (+250 bps)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;duration-shock-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[1.0,36.5],[1.19444,35.7105],[1.38889,34.97295],[1.58333,34.28392],[1.77778,33.64022],[1.97222,33.03887],[2.16667,32.47709],[2.36111,31.95226],[2.55556,31.46197],[2.75,31.00393],[2.94444,30.57603],[3.13889,30.17628],[3.33333,29.80283],[3.52778,29.45395],[3.72222,29.12802],[3.91667,28.82353],[4.11111,28.53908],[4.30556,28.27335],[4.5,28.02509],[4.69444,27.79317],[4.88889,27.57651],[5.08333,27.3741],[5.27778,27.18501],[5.47222,27.00836],[5.66667,26.84333],[5.86111,26.68916],[6.05556,26.54513],[6.25,26.41058],[6.44444,26.28488],[6.63889,26.16745],[6.83333,26.05775],[7.02778,25.95526],[7.22222,25.85952],[7.41667,25.77007],[7.61111,25.68651],[7.80556,25.60845],[8.0,25.53552]]},{&quot;id&quot;:&quot;mc-median-liquidity&quot;,&quot;name&quot;:&quot;Monte Carlo Median Liquidity (n = 10,000)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;mc-median-liquidity&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,36.4,1.1],[2.0,32.6,1.3],[3.0,30.8,1.4],[4.0,28.4,1.5],[5.0,27.9,1.6],[6.0,26.2,1.6],[7.0,26.3,1.7],[8.0,25.1,1.8]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Regulatory Liquidity Floor (20.0%)&quot;,&quot;value&quot;:20.0,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;}]}">
+  <section id="v11-plot" aria-label="Treasury Drawdown Plot"><figure class="va-figure-card qe-figure" id="v11-treasury-drawdown-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m3" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m3" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m3&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Stress Test Horizon, q / quarter&quot;,&quot;min&quot;:1.0,&quot;max&quot;:8.0,&quot;interval&quot;:1.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Portfolio Liquidity Ratio, L / %&quot;,&quot;min&quot;:15.0,&quot;max&quot;:40.0,&quot;interval&quot;:5.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;duration-shock-model&quot;,&quot;name&quot;:&quot;Deterministic Duration Model (+250 bps)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;duration-shock-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[1.0,36.5],[1.19444,35.7105],[1.38889,34.97295],[1.58333,34.28392],[1.77778,33.64022],[1.97222,33.03887],[2.16667,32.47709],[2.36111,31.95226],[2.55556,31.46197],[2.75,31.00393],[2.94444,30.57603],[3.13889,30.17628],[3.33333,29.80283],[3.52778,29.45395],[3.72222,29.12802],[3.91667,28.82353],[4.11111,28.53908],[4.30556,28.27335],[4.5,28.02509],[4.69444,27.79317],[4.88889,27.57651],[5.08333,27.3741],[5.27778,27.18501],[5.47222,27.00836],[5.66667,26.84333],[5.86111,26.68916],[6.05556,26.54513],[6.25,26.41058],[6.44444,26.28488],[6.63889,26.16745],[6.83333,26.05775],[7.02778,25.95526],[7.22222,25.85952],[7.41667,25.77007],[7.61111,25.68651],[7.80556,25.60845],[8.0,25.53552]]},{&quot;id&quot;:&quot;mc-median-liquidity&quot;,&quot;name&quot;:&quot;Monte Carlo Median Liquidity (n = 10,000)&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;mc-median-liquidity&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[1.0,36.4,1.1],[2.0,32.6,1.3],[3.0,30.8,1.4],[4.0,28.4,1.5],[5.0,27.9,1.6],[6.0,26.2,1.6],[7.0,26.3,1.7],[8.0,25.1,1.8]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Regulatory Liquidity Floor (20.0%)&quot;,&quot;value&quot;:20.0,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;}]}">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Unit</span><span class="qe-cond-val va-nums">TREASURY-POOL-04</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">GAO / SEC-10Q +250 bps</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">n<sub>sub</sub></span><span class="qe-cond-val va-nums">10000</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">FRED-CPIU-2026Q4</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)">
-<defs><clipPath id="qe-clip-573225"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-827017"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="108.5" y1="26.0" x2="108.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="108.5" y1="250.0" x2="108.5" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="121.7" y1="26.0" x2="121.7" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -6851,7 +7151,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Stress Test Horizon, q / quarter</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Portfolio Liquidity Ratio, L<tspan dy="2.2" font-size="9.2">ratio</tspan><tspan dy="-2.2"> / %</tspan></text>
-<g clip-path="url(#qe-clip-573225)">
+<g clip-path="url(#qe-clip-827017)">
 <polygon points="78.0,205.2 574.0,205.2 574.0,250.0 78.0,250.0" fill="var(--status-err-bg)" opacity="0.45"/>
 <path d="M 78.0 205.2 L 574.0 205.2" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <polygon points="95.4,44.3 100.5,47.3 105.7,50.3 110.9,53.1 116.1,55.9 121.3,58.7 126.5,61.3 131.6,63.9 136.8,66.4 142.0,68.8 147.2,71.2 152.4,73.5 157.6,75.7 162.7,77.9 167.9,80.0 173.1,82.1 178.3,84.1 183.5,86.1 188.7,88.0 193.8,89.8 199.0,91.6 204.2,93.4 209.4,95.1 214.6,96.7 219.8,98.3 224.9,99.9 230.1,101.4 235.3,102.9 240.5,104.4 245.7,105.8 250.8,107.1 256.0,108.5 261.2,109.8 266.4,111.0 271.6,112.2 276.8,113.4 281.9,114.6 287.1,115.7 292.3,116.8 297.5,117.9 302.7,118.9 307.9,119.9 313.0,120.9 318.2,121.9 323.4,122.8 328.6,123.7 333.8,124.6 339.0,125.4 344.1,126.3 349.3,127.1 354.5,127.9 359.7,128.6 364.9,129.4 370.1,130.1 375.2,130.8 380.4,131.5 385.6,132.2 390.8,132.8 396.0,133.4 401.2,134.1 406.3,134.7 411.5,135.2 416.7,135.8 421.9,136.4 427.1,136.9 432.2,137.4 437.4,137.9 442.6,138.4 447.8,138.9 453.0,139.4 458.2,139.8 463.3,140.3 468.5,140.7 473.7,141.1 478.9,141.5 484.1,141.9 489.3,142.3 494.4,142.7 499.6,143.0 504.8,143.4 510.0,143.7 515.2,144.1 520.4,144.4 525.5,144.7 530.7,145.0 535.9,145.3 541.1,145.6 546.3,145.9 551.5,146.2 556.6,146.4 556.6,164.8 551.5,164.5 546.3,164.2 541.1,164.0 535.9,163.7 530.7,163.4 525.5,163.2 520.4,162.9 515.2,162.6 510.0,162.2 504.8,161.9 499.6,161.6 494.4,161.3 489.3,160.9 484.1,160.6 478.9,160.2 473.7,159.8 468.5,159.4 463.3,159.0 458.2,158.6 453.0,158.2 447.8,157.8 442.6,157.3 437.4,156.9 432.2,156.4 427.1,155.9 421.9,155.4 416.7,154.9 411.5,154.4 406.3,153.9 401.2,153.3 396.0,152.8 390.8,152.2 385.6,151.6 380.4,151.0 375.2,150.3 370.1,149.7 364.9,149.0 359.7,148.3 354.5,147.6 349.3,146.9 344.1,146.1 339.0,145.4 333.8,144.6 328.6,143.8 323.4,142.9 318.2,142.1 313.0,141.2 307.9,140.3 302.7,139.3 297.5,138.4 292.3,137.4 287.1,136.4 281.9,135.3 276.8,134.3 271.6,133.2 266.4,132.0 261.2,130.9 256.0,129.7 250.8,128.5 245.7,127.2 240.5,125.9 235.3,124.6 230.1,123.2 224.9,121.8 219.8,120.3 214.6,118.9 209.4,117.3 204.2,115.8 199.0,114.1 193.8,112.5 188.7,110.8 183.5,109.0 178.3,107.2 173.1,105.4 167.9,103.5 162.7,101.5 157.6,99.5 152.4,97.4 147.2,95.3 142.0,93.1 136.8,90.8 131.6,88.5 126.5,86.2 121.3,83.7 116.1,81.2 110.9,78.6 105.7,76.0 100.5,73.2 95.4,70.4" fill="var(--text-secondary)" opacity="0.14"/>
@@ -6920,7 +7220,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <circle cx="556.6" cy="344.9" r="3.2" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.4"/>
 <text x="84.0" y="319.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Normalized Residuals (yᵢ − ŷᵢ) / u<tspan dy="2.2" font-size="8.97">y</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Deterministic Duration Model (+250 bps) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Monte Carlo Median Liquidity (n = 10,000) · Discrete Sample (&#177;u<sub>y</sub>)</span><span class="qe-leg-param va-nums">Δ y = 250 bps</span><span class="qe-leg-param va-nums">L<sub>floor</sub> = 20%</span></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Deterministic Duration Model (+250 bps) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Monte Carlo Median Liquidity (n = 10,000) · Discrete Sample (&#177;u<sub>y</sub>)</span></span><span class="qe-param-strip"><span class="qe-leg-param va-nums">Δ y = 250 bps</span><span class="qe-leg-param va-nums">L<sub>floor</sub> = 20%</span></span></div>
 </div><figcaption class="va-figure-caption">L3 Quantitative Risk drawdown comparison of 10,000-path Monte Carlo median liquidity ratios (±u<sub>y</sub> IQR dispersion) against deterministic duration-convexity decay under a +250 bps parallel Treasury shock and the 20.0% minimum regulatory liquidity floor.</figcaption></figure></section>
 </div>
   </template>
@@ -6957,11 +7257,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   </section>
 
   <section id="v12-lab" class="qe-pedagogy-scope" aria-label="Interactive RC Discharge Experiment">
-    <figure class="va-figure-card qe-figure" id="v12-stem-rc-cooling-lab" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;First-Order RC Discharge Lab: V(t) = V\u2080 \u00b7 exp(\u2212t / \u03c4) [V\u2080 = 5.00 V, \u03c4 = 2.40 s]&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Elapsed Discharge Time, t / s&quot;,&quot;min&quot;:0.0,&quot;max&quot;:10.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Capacitor Voltage, V_c / V&quot;,&quot;min&quot;:0.0,&quot;max&quot;:5.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;rc-theoretical-decay&quot;,&quot;name&quot;:&quot;Analytical RC Model V_0 \u00b7 exp(\u2212t / \u03c4)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;path_loss&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[0.0,5.0],[0.27778,4.45353],[0.55556,3.96679],[0.83333,3.53324],[1.11111,3.14708],[1.38889,2.80312],[1.66667,2.49676],[1.94444,2.22388],[2.22222,1.98082],[2.5,1.76433],[2.77778,1.5715],[3.05556,1.39974],[3.33333,1.24676],[3.61111,1.1105],[3.88889,0.98913],[4.16667,0.88102],[4.44444,0.78473],[4.72222,0.69896],[5.0,0.62257],[5.27778,0.55453],[5.55556,0.49392],[5.83333,0.43994],[6.11111,0.39186],[6.38889,0.34903],[6.66667,0.31088],[6.94444,0.27691],[7.22222,0.24664],[7.5,0.21968],[7.77778,0.19567],[8.05556,0.17429],[8.33333,0.15524],[8.61111,0.13827],[8.88889,0.12316],[9.16667,0.1097],[9.44444,0.09771],[9.72222,0.08703],[10.0,0.07752]]},{&quot;id&quot;:&quot;student-scope-samples&quot;,&quot;name&quot;:&quot;Student Oscilloscope Samples&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;tx&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[0.0,4.98,0.06],[0.5,4.09,0.06],[1.0,3.26,0.06],[2.0,2.21,0.05],[2.4,1.82,0.05],[4.0,0.97,0.04],[6.0,0.39,0.04],[8.0,0.19,0.04],[10.0,0.08,0.03]]}],&quot;envelopes&quot;:[]}">
+    <figure class="va-figure-card qe-figure" id="v12-stem-rc-cooling-lab" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;First-Order RC Discharge Lab: V(t) = V\u2080 \u00b7 exp(\u2212t / \u03c4) [V\u2080 = 5.00 V, \u03c4 = 2.40 s]&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Elapsed Discharge Time, t / s&quot;,&quot;min&quot;:0.0,&quot;max&quot;:10.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Capacitor Voltage, V / V&quot;,&quot;min&quot;:0.0,&quot;max&quot;:5.0,&quot;interval&quot;:1.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;rc-theoretical-decay&quot;,&quot;name&quot;:&quot;Analytical RC Model V\u2080 \u00b7 exp(\u2212t / \u03c4)&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;path_loss&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[0.0,5.0],[0.27778,4.45353],[0.55556,3.96679],[0.83333,3.53324],[1.11111,3.14708],[1.38889,2.80312],[1.66667,2.49676],[1.94444,2.22388],[2.22222,1.98082],[2.5,1.76433],[2.77778,1.5715],[3.05556,1.39974],[3.33333,1.24676],[3.61111,1.1105],[3.88889,0.98913],[4.16667,0.88102],[4.44444,0.78473],[4.72222,0.69896],[5.0,0.62257],[5.27778,0.55453],[5.55556,0.49392],[5.83333,0.43994],[6.11111,0.39186],[6.38889,0.34903],[6.66667,0.31088],[6.94444,0.27691],[7.22222,0.24664],[7.5,0.21968],[7.77778,0.19567],[8.05556,0.17429],[8.33333,0.15524],[8.61111,0.13827],[8.88889,0.12316],[9.16667,0.1097],[9.44444,0.09771],[9.72222,0.08703],[10.0,0.07752]]},{&quot;id&quot;:&quot;student-scope-samples&quot;,&quot;name&quot;:&quot;Student Oscilloscope Samples&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;tx&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[0.0,4.98,0.06],[0.5,4.09,0.06],[1.0,3.26,0.06],[2.0,2.21,0.05],[2.4,1.82,0.05],[4.0,0.97,0.04],[6.0,0.39,0.04],[8.0,0.19,0.04],[10.0,0.08,0.03]]}],&quot;envelopes&quot;:[]}">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">RC-BENCH-RIG-04</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(22.4 ± 0.2) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Timebase</span><span class="qe-cond-val va-nums">Scope-10MHz-Ref</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">1.00 kHz</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">NIST-RC-LAB-2026</span></div></div>
 <div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">V(t) = </span><button type="button" class="va-pill qe-eq-term qe-term-tx" data-variant="chip" data-term="tx"><span>V<sub>0</sub> (5.00 V)</span></button> <span class="qe-eq-op">×</span> <button type="button" class="va-pill qe-eq-term qe-term-path_loss" data-variant="chip" data-term="path_loss"><span>exp(−t / τ) (τ = 2.40 s)</span></button></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="First-Order RC Discharge Lab: V(t) = V₀ · exp(−t / τ) [V₀ = 5.00 V, τ = 2.40 s]">
-<defs><clipPath id="qe-clip-962053"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-23004"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="118.4" y1="26.0" x2="118.4" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="118.4" y1="250.0" x2="118.4" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="141.5" y1="26.0" x2="141.5" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -7059,7 +7359,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Elapsed Discharge Time, t / s</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Capacitor Voltage, V<tspan dy="2.2" font-size="9.2">c</tspan><tspan dy="-2.2"> / V</tspan></text>
-<g clip-path="url(#qe-clip-962053)">
+<g clip-path="url(#qe-clip-23004)">
 <polygon points="95.4,26.0 100.5,27.7 105.7,37.9 110.9,47.6 116.1,56.8 121.3,65.7 126.5,74.1 131.6,82.1 136.8,89.8 142.0,97.1 147.2,104.1 152.4,110.8 157.6,117.2 162.7,123.2 167.9,129.0 173.1,134.6 178.3,139.9 183.5,144.9 188.7,149.7 193.8,154.3 199.0,158.7 204.2,162.8 209.4,166.8 214.6,170.6 219.8,174.3 224.9,177.7 230.1,181.0 235.3,184.2 240.5,187.2 245.7,190.1 250.8,192.8 256.0,195.4 261.2,197.9 266.4,200.3 271.6,202.6 276.8,204.7 281.9,206.8 287.1,208.8 292.3,210.7 297.5,212.5 302.7,214.2 307.9,215.8 313.0,217.4 318.2,218.9 323.4,220.3 328.6,221.7 333.8,223.0 339.0,224.2 344.1,225.4 349.3,226.5 354.5,227.6 359.7,228.6 364.9,229.6 370.1,230.5 375.2,231.4 380.4,232.3 385.6,233.1 390.8,233.8 396.0,234.6 401.2,235.3 406.3,236.0 411.5,236.6 416.7,237.2 421.9,237.8 427.1,238.4 432.2,238.9 437.4,239.4 442.6,239.9 447.8,240.3 453.0,240.8 458.2,241.2 463.3,241.6 468.5,242.0 473.7,242.4 478.9,242.7 484.1,243.0 489.3,243.4 494.4,243.7 499.6,244.0 504.8,244.2 510.0,244.5 515.2,244.7 520.4,245.0 525.5,245.2 530.7,245.4 535.9,245.6 541.1,245.8 546.3,246.0 551.5,246.2 556.6,246.4 556.6,246.7 551.5,246.5 546.3,246.3 541.1,246.2 535.9,246.0 530.7,245.8 525.5,245.6 520.4,245.4 515.2,245.2 510.0,244.9 504.8,244.7 499.6,244.4 494.4,244.2 489.3,243.9 484.1,243.6 478.9,243.3 473.7,242.9 468.5,242.6 463.3,242.3 458.2,241.9 453.0,241.5 447.8,241.1 442.6,240.7 437.4,240.2 432.2,239.7 427.1,239.3 421.9,238.7 416.7,238.2 411.5,237.6 406.3,237.0 401.2,236.4 396.0,235.8 390.8,235.1 385.6,234.4 380.4,233.6 375.2,232.8 370.1,232.0 364.9,231.2 359.7,230.2 354.5,229.3 349.3,228.3 344.1,227.3 339.0,226.2 333.8,225.0 328.6,223.8 323.4,222.6 318.2,221.3 313.0,219.9 307.9,218.5 302.7,216.9 297.5,215.4 292.3,213.7 287.1,212.0 281.9,210.1 276.8,208.2 271.6,206.2 266.4,204.1 261.2,201.9 256.0,199.6 250.8,197.2 245.7,194.7 240.5,192.0 235.3,189.2 230.1,186.3 224.9,183.3 219.8,180.1 214.6,176.7 209.4,173.2 204.2,169.5 199.0,165.7 193.8,161.6 188.7,157.4 183.5,153.0 178.3,148.3 173.1,143.5 167.9,138.3 162.7,133.0 157.6,127.4 152.4,121.5 147.2,115.4 142.0,108.9 136.8,102.1 131.6,95.0 126.5,87.6 121.3,79.8 116.1,71.7 110.9,63.1 105.7,54.2 100.5,44.8 95.4,35.0" fill="var(--tint-amber-fg)" opacity="0.14"/>
 <path d="M 95.4 26.0 L 100.5 36.2 L 105.7 46.0 L 110.9 55.4 L 116.1 64.3 L 121.3 72.7 L 126.5 80.9 L 131.6 88.6 L 136.8 96.0 L 142.0 103.0 L 147.2 109.7 L 152.4 116.2 L 157.6 122.3 L 162.7 128.1 L 167.9 133.7 L 173.1 139.0 L 178.3 144.1 L 183.5 148.9 L 188.7 153.6 L 193.8 158.0 L 199.0 162.2 L 204.2 166.2 L 209.4 170.0 L 214.6 173.7 L 219.8 177.2 L 224.9 180.5 L 230.1 183.7 L 235.3 186.7 L 240.5 189.6 L 245.7 192.4 L 250.8 195.0 L 256.0 197.5 L 261.2 199.9 L 266.4 202.2 L 271.6 204.4 L 276.8 206.5 L 281.9 208.5 L 287.1 210.4 L 292.3 212.2 L 297.5 213.9 L 302.7 215.6 L 307.9 217.1 L 313.0 218.6 L 318.2 220.1 L 323.4 221.4 L 328.6 222.8 L 333.8 224.0 L 339.0 225.2 L 344.1 226.3 L 349.3 227.4 L 354.5 228.4 L 359.7 229.4 L 364.9 230.4 L 370.1 231.3 L 375.2 232.1 L 380.4 232.9 L 385.6 233.7 L 390.8 234.5 L 396.0 235.2 L 401.2 235.9 L 406.3 236.5 L 411.5 237.1 L 416.7 237.7 L 421.9 238.3 L 427.1 238.8 L 432.2 239.3 L 437.4 239.8 L 442.6 240.3 L 447.8 240.7 L 453.0 241.1 L 458.2 241.5 L 463.3 241.9 L 468.5 242.3 L 473.7 242.7 L 478.9 243.0 L 484.1 243.3 L 489.3 243.6 L 494.4 243.9 L 499.6 244.2 L 504.8 244.5 L 510.0 244.7 L 515.2 244.9 L 520.4 245.2 L 525.5 245.4 L 530.7 245.6 L 535.9 245.8 L 541.1 246.0 L 546.3 246.2 L 551.5 246.4 L 556.6 246.5" fill="none" stroke="var(--tint-amber-fg)" stroke-width="1.8" stroke-dasharray="5,4" data-term="path_loss"/>
 <line x1="95.4" y1="26.0" x2="95.4" y2="29.6" stroke="var(--tint-indigo-fg)" stroke-width="1.3"/>
@@ -7131,7 +7431,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <circle cx="556.6" cy="341.0" r="3.2" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.4"/>
 <text x="84.0" y="319.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Normalized Residuals (yᵢ − ŷᵢ) / u<tspan dy="2.2" font-size="8.97">y</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--tint-amber-fg)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--tint-amber-fg)" stroke-width="2" stroke-dasharray="5,4"/></svg>Analytical RC Model V<sub>0</sub> · exp(−t / τ) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--tint-indigo-fg)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--tint-indigo-fg)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--tint-indigo-fg)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--tint-indigo-fg)" stroke-width="1.5"/></svg>Student Oscilloscope Samples · Discrete Sample (&#177;u<sub>y</sub>)</span><span class="qe-leg-param va-nums">V<sub>0</sub> = 5 V</span><span class="qe-leg-param va-nums">τ = 2.4 s</span></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--tint-amber-fg)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--tint-amber-fg)" stroke-width="2" stroke-dasharray="5,4"/></svg>Analytical RC Model V<sub>0</sub> · exp(−t / τ) · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--tint-indigo-fg)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--tint-indigo-fg)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--tint-indigo-fg)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--tint-indigo-fg)" stroke-width="1.5"/></svg>Student Oscilloscope Samples · Discrete Sample (&#177;u<sub>y</sub>)</span></span><span class="qe-param-strip"><span class="qe-leg-param va-nums">V<sub>0</sub> = 5 V</span><span class="qe-leg-param va-nums">τ = 2.4 s</span></span></div>
 </div><figcaption class="va-figure-caption">L3 STEM Interactive Lab pairing color-coupled exponential decay with discrete student oscilloscope measurements (±1σ uncertainty), 1–2–5 NIST axes, and bottom normalized residual strip.</figcaption></figure>
     <div class="v12-step-grid">
       <article class="v12-step-card" data-term="tx">
@@ -7173,10 +7473,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     <aside class="v9-params-aside" aria-label="Dynamometer Test Cell"><h3>Dynamometer Test Cell</h3><dl class="v9-params-list"><div class="v9-param-row"><dt>Engine Unit</dt><dd class="va-nums">ANL-D3-2.0L-CRDI</dd></div><div class="v9-param-row"><dt>Torque Standard</dt><dd class="va-nums">NIST-TRQ-2026-05</dd></div><div class="v9-param-row"><dt>Ambient Cell Temp</dt><dd class="va-nums">25.0 ± 0.5 °C</dd></div><div class="v9-param-row"><dt>Acquisition Rate</dt><dd class="va-nums">100.0 Hz Steady-State</dd></div><div class="v9-param-row"><dt>Peak Efficiency</dt><dd class="va-nums">η_bte = 42.8% @ 14.0 bar</dd></div></dl></aside>
   </div>
 
-  <section id="v13-plot" aria-label="Brake Thermal Efficiency Curve"><figure class="va-figure-card qe-figure" id="w05-v13-propulsion-bte-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Argonne D^3 Dynamometer Brake Thermal Efficiency (\u03b7(bte)) vs. IMEP&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Indicated Mean Effective Pressure, IMEP / bar&quot;,&quot;min&quot;:2.0,&quot;max&quot;:20.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Brake Thermal Efficiency, \u03b7(bte) / %&quot;,&quot;min&quot;:15.0,&quot;max&quot;:50.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;bte-poly-model&quot;,&quot;name&quot;:&quot;Cubic Polynomial Model&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;bte-poly-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[2.0,17.5424],[2.5,19.88107],[3.0,22.0848],[3.5,24.15672],[4.0,26.1],[4.5,27.91777],[5.0,29.6132],[5.5,31.18942],[6.0,32.6496],[6.5,33.99687],[7.0,35.2344],[7.5,36.36532],[8.0,37.3928],[8.5,38.31997],[9.0,39.15],[9.5,39.88602],[10.0,40.5312],[10.5,41.08867],[11.0,41.5616],[11.5,41.95312],[12.0,42.2664],[12.5,42.50457],[13.0,42.6708],[13.5,42.76822],[14.0,42.8],[14.5,42.76928],[15.0,42.6792],[15.5,42.53292],[16.0,42.3336],[16.5,42.08437],[17.0,41.7884],[17.5,41.44882],[18.0,41.0688],[18.5,40.65147],[19.0,40.2],[19.5,39.71752],[20.0,39.2072]]},{&quot;id&quot;:&quot;bte-dyn-samples&quot;,&quot;name&quot;:&quot;Argonne D^3 Dyn Runs&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;bte-dyn-samples&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[2.0,17.3,0.8],[4.0,26.5,0.7],[6.0,32.3,0.6],[8.0,37.8,0.6],[10.0,40.2,0.5],[12.0,42.4,0.5],[14.0,42.8,0.4],[16.0,42.1,0.5],[18.0,41.4,0.5],[20.0,38.9,0.6]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Knock / Thermal Derate Ceiling (46.0 %)&quot;,&quot;value&quot;:46.0,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;},{&quot;label&quot;:&quot;Cruise Efficiency Warning Floor (35.0 %)&quot;,&quot;value&quot;:35.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;}]}">
+  <section id="v13-plot" aria-label="Brake Thermal Efficiency Curve"><figure class="va-figure-card qe-figure" id="w05-v13-propulsion-bte-plot" data-qe-modality="plot" data-qe-rigor="L3" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP</h2></div><div class="qe-plot-wrap" data-rigor="L3" data-medium="m2" data-quiet-echarts="{&quot;kind&quot;:&quot;cartesian&quot;,&quot;title&quot;:&quot;Argonne D\u00b3 Dynamometer Brake Thermal Efficiency (\u03b7) vs. IMEP&quot;,&quot;rigor&quot;:&quot;L3&quot;,&quot;medium&quot;:&quot;m2&quot;,&quot;x&quot;:{&quot;name&quot;:&quot;Indicated Mean Effective Pressure, IMEP / bar&quot;,&quot;min&quot;:2.0,&quot;max&quot;:20.0,&quot;interval&quot;:2.0,&quot;log&quot;:false},&quot;y&quot;:{&quot;name&quot;:&quot;Brake Thermal Efficiency, \u03b7 / %&quot;,&quot;min&quot;:15.0,&quot;max&quot;:50.0,&quot;interval&quot;:5.0,&quot;log&quot;:false},&quot;series&quot;:[{&quot;id&quot;:&quot;bte-poly-model&quot;,&quot;name&quot;:&quot;Cubic Polynomial Model&quot;,&quot;epistemic&quot;:&quot;analytical_model&quot;,&quot;term&quot;:&quot;bte-poly-model&quot;,&quot;token&quot;:&quot;--text-secondary&quot;,&quot;dashed&quot;:true,&quot;data&quot;:[[2.0,17.5424],[2.5,19.88107],[3.0,22.0848],[3.5,24.15672],[4.0,26.1],[4.5,27.91777],[5.0,29.6132],[5.5,31.18942],[6.0,32.6496],[6.5,33.99687],[7.0,35.2344],[7.5,36.36532],[8.0,37.3928],[8.5,38.31997],[9.0,39.15],[9.5,39.88602],[10.0,40.5312],[10.5,41.08867],[11.0,41.5616],[11.5,41.95312],[12.0,42.2664],[12.5,42.50457],[13.0,42.6708],[13.5,42.76822],[14.0,42.8],[14.5,42.76928],[15.0,42.6792],[15.5,42.53292],[16.0,42.3336],[16.5,42.08437],[17.0,41.7884],[17.5,41.44882],[18.0,41.0688],[18.5,40.65147],[19.0,40.2],[19.5,39.71752],[20.0,39.2072]]},{&quot;id&quot;:&quot;bte-dyn-samples&quot;,&quot;name&quot;:&quot;Argonne D\u00b3 Dyn Runs&quot;,&quot;epistemic&quot;:&quot;discrete_measurement&quot;,&quot;term&quot;:&quot;bte-dyn-samples&quot;,&quot;token&quot;:&quot;--accent-focal&quot;,&quot;connect&quot;:true,&quot;symbol&quot;:&quot;circle&quot;,&quot;data&quot;:[[2.0,17.3,0.8],[4.0,26.5,0.7],[6.0,32.3,0.6],[8.0,37.8,0.6],[10.0,40.2,0.5],[12.0,42.4,0.5],[14.0,42.8,0.4],[16.0,42.1,0.5],[18.0,41.4,0.5],[20.0,38.9,0.6]]}],&quot;envelopes&quot;:[{&quot;label&quot;:&quot;Knock / Thermal Derate Ceiling (46.0 %)&quot;,&quot;value&quot;:46.0,&quot;type&quot;:&quot;abort&quot;,&quot;token&quot;:&quot;--status-danger&quot;},{&quot;label&quot;:&quot;Cruise Efficiency Warning Floor (35.0 %)&quot;,&quot;value&quot;:35.0,&quot;type&quot;:&quot;warning&quot;,&quot;token&quot;:&quot;--status-warn&quot;}]}">
 <div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">ANL-D3-2.0L-CRDI</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">Argonne D^3 Dyn-Cell</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(25.0 ± 0.5) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">f<sub>s</sub></span><span class="qe-cond-val va-nums">100.00 Hz</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">NIST-TRQ-2026-05</span></div></div>
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP"><div class="qe-svg-fallback"><svg class="qe-svg qe-svg-600" viewBox="0 0 600 402" role="img" aria-label="Argonne D^3 Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP">
-<defs><clipPath id="qe-clip-479868"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
+<defs><clipPath id="qe-clip-874521"><rect x="78.0" y="26.0" width="496.0" height="224.0"/></clipPath></defs>
 <line class="qe-grid-minor qe-m1-only" x1="108.2" y1="26.0" x2="108.2" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
 <line x1="108.2" y1="250.0" x2="108.2" y2="254.0" stroke="var(--border-strong)" stroke-width="0.8"/>
 <line class="qe-grid-minor qe-m1-only" x1="121.0" y1="26.0" x2="121.0" y2="250.0" stroke="var(--border-hairline)" stroke-width="0.5" stroke-dasharray="1,3"/>
@@ -7326,7 +7626,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <rect data-role="frame" x="78.0" y="26.0" width="496.0" height="224.0" fill="none" stroke="var(--text-primary)" stroke-width="1.1"/>
 <text x="326.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Indicated Mean Effective Pressure, IMEP / bar</text>
 <text x="22" y="138.0" transform="rotate(-90 22 138.0)" text-anchor="middle" font-family="var(--font-mono)" font-size="11.0" font-weight="700" fill="var(--text-primary)">Brake Thermal Efficiency, η<tspan dy="2.2" font-size="9.2">bte</tspan><tspan dy="-2.2"> / %</tspan></text>
-<g clip-path="url(#qe-clip-479868)">
+<g clip-path="url(#qe-clip-874521)">
 <polygon points="78.0,51.6 574.0,51.6 574.0,26.0 78.0,26.0" fill="var(--status-err-bg)" opacity="0.50"/>
 <path d="M 78.0 51.6 L 574.0 51.6" fill="none" stroke="var(--status-danger)" stroke-width="1.7" stroke-dasharray="8,3,2,3"/>
 <polygon points="78.0,122.0 574.0,122.0 574.0,250.0 78.0,250.0" fill="var(--status-warn-bg)" opacity="0.45"/>
@@ -7407,7 +7707,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <circle cx="556.6" cy="348.1" r="3.2" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.4"/>
 <text x="84.0" y="319.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Normalized Residuals (yᵢ − ŷᵢ) / u<tspan dy="2.2" font-size="8.97">y</tspan></text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
-<div class="qe-param-legend"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Cubic Polynomial Model · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Argonne D³ Dyn Runs · Discrete Sample (&#177;u<sub>y</sub>)</span><span class="qe-leg-param va-nums">η<sub>peak</sub> = 42.8%</span><span class="qe-leg-param va-nums">IMEP<sub>opt</sub> = 14 bar</span></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="1" y="3" width="18" height="8" fill="var(--text-secondary)" opacity="0.16"/><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="5,4"/></svg>Cubic Polynomial Model · Analytical Model</span><span class="qe-leg-item" data-epistemic="discrete"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="10" y1="1.5" x2="10" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.2"/><line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="var(--accent-focal)" stroke-width="1.1"/><line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="var(--accent-focal)" stroke-width="1.1"/><circle cx="10.0" cy="7.0" r="2.8" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="1.5"/></svg>Argonne D³ Dyn Runs · Discrete Sample (&#177;u<sub>y</sub>)</span></span><span class="qe-param-strip"><span class="qe-leg-param va-nums">η<sub>peak</sub> = 42.8%</span><span class="qe-leg-param va-nums">IMEP<sub>opt</sub> = 14 bar</span></span></div>
 </div><figcaption class="va-figure-caption">Steady-state propulsion dynamometer measurements (discrete points with ±u<sub>y</sub> whiskers) compared against cubic analytical efficiency model peaking at 42.8 % at 14.0 bar IMEP, bounded by cruise derate floor and thermal/knock ceiling.</figcaption></figure></section>
 </div>
   </template>

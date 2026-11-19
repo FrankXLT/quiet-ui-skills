@@ -315,14 +315,23 @@
 
   /* Progressive Apache ECharts SVG Host & M1 Print Fallback */
   .qe-plot-wrap[data-echarts-active="true"] .qe-svg-fallback { display: none; }
+  .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series { display: none; }
+  .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: none; }
+  .qe-legend-series, .qe-param-strip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.9rem; }
   .qe-echarts-host { inline-size: 100%; overflow: visible; }
   :root[data-medium="m1"] .qe-plot-wrap .qe-svg-fallback,
   .qe-plot-wrap[data-medium="m1"] .qe-svg-fallback { display: block; }
   :root[data-medium="m1"] .qe-plot-wrap .qe-echarts-host,
   .qe-plot-wrap[data-medium="m1"] .qe-echarts-host { display: none; }
+  :root[data-medium="m1"] .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series,
+  .qe-plot-wrap[data-medium="m1"][data-echarts-active="true"] .qe-legend-series { display: inline-flex; }
+  :root[data-medium="m1"] .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)),
+  .qe-plot-wrap[data-medium="m1"][data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: flex; }
   @media print {
     .qe-plot-wrap[data-echarts-active] .qe-svg-fallback,
     .qe-plot-wrap .qe-svg-fallback { display: block; }
+    .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series { display: inline-flex; }
+    .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: flex; }
     .qe-plot-wrap .qe-echarts-host, .qe-plot-modebar, .qe-eco-drawer { display: none; }
   }
   .qe-plot-modebar {
@@ -350,8 +359,54 @@
   .qe-eco-summary::-webkit-details-marker { display: none; }
   .qe-eco-summary::before { content: '+ '; font-family: var(--font-mono); }
   .qe-eco-drawer[open] .qe-eco-summary::before { content: '- '; }
-  .qe-eco-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem; margin-top: 0.45rem; }
-  .qe-eco-block { background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: var(--radius-inner); padding: 0.45rem 0.6rem; min-inline-size: 0; }
-  .qe-eco-head { margin: 0 0 0.28rem; font-size: var(--ts-xs); color: var(--text-secondary); }
-  .qe-eco-block pre { margin: 0; overflow-x: auto; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.4; color: var(--text-primary); }
+  .qe-eco-tabs-wrap { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .qe-eco-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid var(--border-hairline); }
+  .qe-eco-tablist { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
+  .qe-eco-tab {
+    position: relative;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.38rem 0.65rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 32px;
+  }
+  .qe-eco-tab[aria-selected="true"] { color: var(--text-primary); }
+  .qe-eco-tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0.4rem; right: 0.4rem; bottom: 0; height: 2px; background: var(--accent-focal); }
+  .qe-eco-tab:focus-visible, .qe-copy-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .qe-eco-copy-wrap { display: inline-flex; align-items: center; gap: 0.45rem; padding-bottom: 0.25rem; }
+  .qe-copy-btn {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-radius: var(--radius-inner);
+    padding: 0.22rem 0.55rem;
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    min-block-size: 28px;
+    min-inline-size: 44px;
+  }
+  .qe-copy-status { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--status-ok); opacity: 0; transition: opacity 0.15s ease; }
+  .qe-copy-status.is-visible { opacity: 1; }
+  .qe-eco-pre {
+    margin: 0;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.48;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    overflow-x: visible;
+  }
+  @media (forced-colors: active) {
+    .qe-eco-tab[aria-selected="true"]::after { background: Highlight; }
+  }
 }

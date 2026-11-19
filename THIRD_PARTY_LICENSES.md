@@ -41,9 +41,9 @@ All backplate photographs used in `hud-1`, `v15` (`M6`), `v16` (`M7`), and `v17`
 
 - `docs/assets/as08-14-2383.jpg` — Apollo 8 Earthrise (`NASA JSC`, `PD-USGov-NASA`)
 - `docs/assets/opt_hud_daylight_rwy.jpg` — `DF-ST-83-04217` Runway Final Approach (`U.S. DoD / DVIC`, `Public domain`)
-- `docs/assets/opt_hud_night_rwy.jpg` — Illuminated Runway EDSZ Night Forward Approach (`Wikimedia Commons`, `CC0 1.0`)
-- `docs/assets/opt_glass_day_hwy.jpg` — 10th Street Bridge Forward Suspension Deck (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)
-- `docs/assets/opt_glass_dusk_hwy.jpg` — Sunset Highway Horizon Glare (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)
-- `docs/assets/opt_glass_night_hwy.jpg` — Night Bridge Highway Forward Deck (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)
+- `docs/assets/opt_hud_night_rwy.jpg` — Airborne Final Approach Runway 26 at Dusk (`KBTP at dusk`, `Wikimedia Commons`, `CC0 1.0`)
+- `docs/assets/opt_glass_day_hwy.jpg` — Steel Arch Navigation Bridge over Calm River Channel (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)
+- `docs/assets/opt_glass_dusk_hwy.jpg` — Coast Guard Cutter Bow Sunset Harbor Channel Glare (`U.S. Coast Guard`, `Public domain`)
+- `docs/assets/opt_glass_night_hwy.jpg` — Night River Navigation Channel & Illuminated Cable-Stay Bridge (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)
 - `docs/assets/opt_frame_art.jpg` — Albert Bierstadt, *Mount Corcoran*, c. 1876–1877 (`National Gallery of Art Open Access`, `CC0 1.0`)
 - `docs/assets/opt_frame_landscape.jpg` — Calm Mountain Lake Reflection (`Wikimedia / Unsplash CC0 Archive`, `CC0 1.0`)

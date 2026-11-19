@@ -238,13 +238,13 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIsNotNone(v15_m)
         self.assertIsNotNone(v16_m)
         v15_html, v16_html = v15_m.group(1), v16_m.group(1)
-        for tok in ("v15-hud-stage", "v9-opt-photo", "assets/as08-14-2383.jpg", "assets/opt_hud_daylight_rwy.jpg", "assets/opt_hud_night_rwy.jpg", "v15-reticle-layer", "084°", "142", "8,520", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR", 'y="616"', 'y1="350"'):
+        for tok in ("v15-hud-stage", "v9-opt-photo", "assets/as08-14-2383.jpg", "assets/opt_hud_daylight_rwy.jpg", "assets/opt_hud_night_rwy.jpg", "v15-reticle-layer", "084°", "138", "1,180", "640 FT AGL · 3.0° GS", "VS -650 FPM", "PROP BTE 42.8% · IMEP 14.0 BAR", "Night ILS", "Orbital Limb", 'y="616"', 'y1="350"'):
             self.assertIn(tok, v15_html)
-        for bad in ("v15-scene-svg", "v15-earthrise-img", "BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip"):
+        for bad in ("v15-scene-svg", "v15-earthrise-img", "BORESIGHT", "NAV/PROPULSION HUD", "dual stroke halo", "v9-chip", "Night NVG"):
             self.assertNotIn(bad, v15_html)
-        for tok in ("v16-glass-viewport", "v9-opt-photo", "assets/opt_glass_day_hwy.jpg", "assets/opt_glass_dusk_hwy.jpg", "assets/opt_glass_night_hwy.jpg", "42", "45 mph DERATE LIMIT", "E-Bound Highway · 2.4 mi to Maint Turnout", "Following Gap: 2.8 s", "MCU Thermal Limit (85 °C)"):
+        for tok in ("v16-glass-viewport", "v9-opt-photo", "assets/opt_glass_day_hwy.jpg", "assets/opt_glass_dusk_hwy.jpg", "assets/opt_glass_night_hwy.jpg", "18.4", "kt SOG", "HOLD &lt;= 18 kt", "Channel Range Marker · 1.2 nm to Berth", "42.8% BTE", "HDG 084°T · Depth 14.2 m", "STBD DRIVE DERATE", "MCU Thermal Limit (85 °C)", "Hold &lt;= 18 kt · Inspect Aft J1939 Drop at Berth"):
             self.assertIn(tok, v16_html)
-        for bad in ("v16-scene-svg", "v16-corridor-svg", "v16-road-gap-badge", "0x18FEF100", "Offset: 0x", "SCRIM:", "NO FLASH", ">= 7.0:1", "preserves", "120 Ω", "v9-chip"):
+        for bad in ("v16-scene-svg", "v16-corridor-svg", "v16-road-gap-badge", "0x18FEF100", "Offset: 0x", "SCRIM:", "NO FLASH", ">= 7.0:1", "preserves", "120 Ω", "v9-chip", "45 mph", "E-Bound Highway", "DRIVETRAIN DERATE"):
             self.assertNotIn(bad, v16_html)
         for jpg_name in ("as08-14-2383.jpg", "opt_hud_daylight_rwy.jpg", "opt_hud_night_rwy.jpg", "opt_glass_day_hwy.jpg", "opt_glass_dusk_hwy.jpg", "opt_glass_night_hwy.jpg"):
             jpg_p = REPO_ROOT / "docs" / "assets" / jpg_name

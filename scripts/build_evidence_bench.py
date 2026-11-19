@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -25,6 +26,7 @@ SPECIMEN_FILES: tuple[tuple[str, str], ...] = (
     ("M6", "m6_schematics.json"),
     ("M6", "m6_systems_schematics.json"),
 )
+_SPECIMEN_PREFIX_RE = re.compile(r"^M[1-6]-L[1-3]:\s*")
 
 
 def _compile_bench_cards(spec_dir: Path) -> str:
@@ -33,9 +35,14 @@ def _compile_bench_cards(spec_dir: Path) -> str:
     for mod_code, fname in SPECIMEN_FILES:
         items = json.loads((spec_dir / fname).read_text(encoding="utf-8"))
         for spec in items:
-            modality = detect_modality(spec)
-            rigor = str((spec.get("metadata") or {}).get("rigor_level", "L2")).upper()
-            fig_html = compile_spec(spec, rigor=rigor, medium="m2", theme="white")
+            render_spec = dict(spec)
+            meta = dict(spec.get("metadata") or {})
+            if "title" in meta:
+                meta["title"] = _SPECIMEN_PREFIX_RE.sub("", str(meta["title"]))
+            render_spec["metadata"] = meta
+            modality = detect_modality(render_spec)
+            rigor = str(meta.get("rigor_level", "L2")).upper()
+            fig_html = compile_spec(render_spec, rigor=rigor, medium="m2", theme="white")
             is_wide = rigor == "L3" or modality in {"bitfield", "plot", "waveform", "schematic"} or (mod_code == "M2" and rigor == "L2")
             wide_cls = " qe-specimen-wide" if is_wide else ""
             cards_html.append(

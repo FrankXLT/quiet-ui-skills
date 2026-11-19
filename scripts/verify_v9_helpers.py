@@ -200,7 +200,7 @@ if (view === 'v15-collimated-flight-hud') {
   }
   const ret = document.querySelector('.v15-reticle-layer');
   const retTxt = ret ? (ret.textContent || '') : '';
-  for (const sym of ['142', '8,520', '084', '+5', '-5', 'VS -650 FPM', '42.8%']) {
+  for (const sym of ['138', '1,180', '084', '+5', '-5', 'VS -650 FPM', '42.8%']) {
     if (!retTxt.includes(sym)) errs.push(`[M6_RETICLE] Missing MIL-STD-1787B symbology '${sym}'`);
   }
   for (const bad of ['BORESIGHT', 'NAV/PROPULSION HUD', 'dual stroke halo']) {
@@ -341,17 +341,20 @@ if (view === 'v16-transparent-window-overlay' && w >= 1400) {
   const tb = document.getElementById('va-shell-topbar');
   if (tb && getComputedStyle(tb).display !== 'none') errs.push('[V16_FULLBLEED] Top shell bar not hidden on M7');
 }
+for (const pw of document.querySelectorAll('.qe-plot-wrap[data-echarts-active="true"]')) {
+  const ls = pw.querySelector('.qe-legend-series');
+  if (ls && getComputedStyle(ls).display !== 'none') errs.push('[SINGLE_LEGEND] Duplicate HTML legend visible over ECharts');
+  if (/\\b[A-Za-z]\\((?:pv|load|grid|rx|obs|bte)\\)/i.test(pw.innerText || '')) errs.push('[ECHARTS_ASCII] ASCII pseudo-subscript in plot');
+}
 return errs;
 """
-
 
 def set_viewport(driver: Any, width: int, height: int, scale: int = 1) -> None:
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": width, "height": height, "deviceScaleFactor": scale, "mobile": width < 600})
 
-
 def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     shots_dir.mkdir(parents=True, exist_ok=True)
-    shots = [
+    for fname, w, h, qs in (
         ("01_v01_icu_desktop_white.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=white"),
         ("02_v01_icu_desktop_oled.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=dark"),
         ("03_v01_icu_mobile_390x844.png", 390, 844, "view=v01-icu-bedside-terminal&theme=white"),
@@ -360,8 +363,7 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
         ("06_v02_trial_m1_print_sheet.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=dark&medium=m1"),
         ("07_v03_patient_desktop_white.png", 1440, 900, "view=v03-patient-recovery-companion&theme=white"),
         ("08_v03_patient_mobile_390x844.png", 390, 844, "view=v03-patient-recovery-companion&theme=white"),
-    ]
-    for fname, w, h, qs in shots:
+    ):
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?world=01-clinical-icu-and-trials&{qs}")
         time.sleep(0.35)
@@ -373,21 +375,19 @@ def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     time.sleep(0.2)
     driver.save_screenshot(str(shots_dir / "09_studio_why_this_view_bridge.png"))
 
-
 def capture_gate5_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
     shots_dir.mkdir(parents=True, exist_ok=True)
     v15_q = "domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud&theme=white"
     v16_q = "domain=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white"
-    shots = [
-        ("01_v15_hud_orbital_earthrise_clean_footer.png", 1440, 900, v15_q, None),
-        ("02_v15_hud_daylight_real_runway_photo.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"daylight\"]').click();"),
-        ("03_v15_hud_night_real_runway_photo.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
-        ("04_v16_glass_daylight_real_highway.png", 1440, 900, v16_q, None),
-        ("05_v16_glass_sunset_real_highway.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
-        ("06_v16_glass_night_real_highway.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
+    for fname, w, h, qs, hook in (
+        ("01_v15_hud_daylight_runway.png", 1440, 900, v15_q, None),
+        ("02_v15_hud_night_ils.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]').click();"),
+        ("03_v15_hud_orbital_limb.png", 1440, 900, v15_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v15-backplate-chips [data-backplate=\"earthrise\"]').click();"),
+        ("04_v16_glass_maritime_daylight.png", 1440, 900, v16_q, None),
+        ("05_v16_glass_maritime_sunset.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"dusk\"]').click();"),
+        ("06_v16_glass_maritime_night.png", 1440, 900, v16_q, "document.getElementById('va-stage-portal').contentDocument.querySelector('#v16-luminance-chips [data-luminance=\"night\"]').click();"),
         ("07_v16_glass_mobile_390x844_compact.png", 390, 844, v16_q, None),
-    ]
-    for fname, w, h, qs, hook in shots:
+    ):
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?{qs}")
         for _ in range(12):

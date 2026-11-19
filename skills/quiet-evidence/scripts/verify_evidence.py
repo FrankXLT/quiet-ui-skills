@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI Pillar 2 — Automated Metrology Verifier & Headless Selenium CDP Suite.
-
-Usage:
-  python3 -B skills/quiet-evidence/scripts/verify_evidence.py [--cdp] [--screenshots-dir DIR]
-"""
-
+"""Quiet UI Pillar 2 — Automated Metrology Verifier & Headless Selenium CDP Suite."""
 from __future__ import annotations
 
 import argparse
@@ -25,11 +20,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from compile_evidence import compile_spec  # noqa: E402
-from compilers.tokens_and_scales import (  # noqa: E402
-    compute_linear_125_scale,
-    compute_log_decade_scale,
-    format_quantity_header,
-)
+from compilers.tokens_and_scales import compute_linear_125_scale, compute_log_decade_scale, format_quantity_header  # noqa: E402
 
 
 def _find_repo_root() -> Path:
@@ -392,27 +383,40 @@ def verify_live_cdp(repo_root: Path, screenshots_dir: Path | None = None) -> lis
             if (!wrap || !btn || !drw) return 'missing bench echarts controls';
             btn.click(); drw.open = true;
             if (wrap.dataset.echartsActive !== 'true' || !wrap.querySelector('.qe-echarts-host svg')) return 'echarts did not activate';
-            if (!drw.textContent.includes('Plotly')) return 'ecosystem drawer missing Plotly snippet';
+            const ls = wrap.querySelector('.qe-legend-series');
+            if (ls && getComputedStyle(ls).display !== 'none') return 'duplicate legend series visible with active echarts';
+            const tabs = [...drw.querySelectorAll('.qe-eco-tab[role="tab"]')];
+            if (tabs.length !== 5) return 'expected 5 tabs in ecosystem drawer, got ' + tabs.length;
+            tabs[1].click();
+            const openPre = drw.querySelector('.qe-eco-panel:not([hidden]) pre');
+            if (!openPre || !openPre.textContent.includes('go.Scatter')) return 'plotly tab panel did not activate';
+            if (openPre.scrollWidth > openPre.clientWidth + 2) return 'eco pre horizontal scrollbar';
+            const cbtn = drw.querySelector('.qe-copy-btn');
+            if (!cbtn) return 'missing eco copy button';
+            cbtn.click();
             return '';
         """)
         if ec_bench_err:
             errs.append(f"[BENCH_ECHARTS] {ec_bench_err}")
         else:
+            time.sleep(0.15)
+            cpy_txt = driver.execute_script("return document.querySelector('.qe-eco-drawer .qe-copy-status')?.textContent || '';")
+            if not cpy_txt.strip():
+                errs.append("[BENCH_COPY] Copy Snippet click did not update status")
             driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
             time.sleep(0.15)
             pr_ec_err = driver.execute_script("""
                 const wrap = document.querySelector('.qe-plot-wrap[data-quiet-echarts]');
                 if (!wrap) return 'plot wrap missing in print';
-                const fb = wrap.querySelector('.qe-svg-fallback');
-                const host = wrap.querySelector('.qe-echarts-host');
+                const fb = wrap.querySelector('.qe-svg-fallback'), host = wrap.querySelector('.qe-echarts-host'), ls = wrap.querySelector('.qe-legend-series');
                 if (!fb || getComputedStyle(fb).display === 'none') return 'static fallback stayed hidden on active echarts print';
                 if (host && getComputedStyle(host).display !== 'none') return 'echarts host visible during print';
+                if (ls && getComputedStyle(ls).display === 'none') return 'legend stayed hidden during print';
                 return '';
             """)
             if pr_ec_err:
                 errs.append(f"[BENCH_ECHARTS_PRINT] {pr_ec_err}")
             driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
-
         if screenshots_dir is not None:
             _capture_proof_shots(driver, base_url, screenshots_dir)
     finally:
@@ -420,29 +424,22 @@ def verify_live_cdp(repo_root: Path, screenshots_dir: Path | None = None) -> lis
             driver.quit()
         srv.shutdown()
         srv.server_close()
-
     return errs
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Quiet UI Pillar 2 Evidence Metrology Verifier")
     parser.add_argument("--cdp", action="store_true", help="Run live Headless Chrome CDP gates")
     parser.add_argument("--screenshots-dir", default=None, help="Directory to save 8 full-res proof PNGs")
     args = parser.parse_args()
-
-    repo_root = _find_repo_root()
-    errors = verify_static_metrology(repo_root)
+    errors = verify_static_metrology(_find_repo_root())
     if args.cdp:
-        shots_dir = Path(args.screenshots_dir) if args.screenshots_dir else None
-        errors.extend(verify_live_cdp(repo_root, shots_dir))
-
+        errors.extend(verify_live_cdp(_find_repo_root(), Path(args.screenshots_dir) if args.screenshots_dir else None))
     if errors:
         print(f"[FAIL] {len(errors)} metrology verification error(s):")
         for e in errors:
             print(f"  - {e}")
         sys.exit(1)
     print("[PASS] 100% of Quiet UI Pillar 2 metrology & CDP gates succeeded!")
-
 
 if __name__ == "__main__":
     main()

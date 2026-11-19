@@ -1,21 +1,20 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.0 Phase 5.4 — World 06 (v17 & v18) Client Interactions */
+/* Quiet UI v9.0 Gate 5.5 — World 06 (v17 & v18) Client Interactions */
 (function (global) {
   'use strict';
+
+  function applyTempUnit(root, unit) {
+    if (!root) return;
+    var u = unit === 'f' ? 'f' : 'c';
+    root.setAttribute('data-temp-unit', u);
+    root.querySelectorAll('[data-temp-c][data-temp-f]').forEach(function (el) {
+      el.textContent = u === 'f' ? el.getAttribute('data-temp-f') : el.getAttribute('data-temp-c');
+    });
+  }
 
   function bootV17(doc) {
     var vp = doc.getElementById('v17-kiosk');
     if (!vp) return;
-    var readout = doc.getElementById('v17-scene-readout');
-
-    function syncReadout() {
-      if (!readout) return;
-      var bd = vp.dataset.v17Backdrop === 'landscape' ? 'Landscape' : 'Fine Art';
-      var sc = vp.dataset.v17Scene === 'cinema-dim'
-        ? 'Cinema Dim'
-        : (vp.dataset.v17Scene === 'night-quiet' ? 'Night Quiet' : 'Evening Warm');
-      readout.textContent = bd + ' · ' + sc;
-    }
 
     vp.querySelectorAll('button[data-v17-backdrop]').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -29,22 +28,31 @@
         vp.querySelectorAll('.v17-art-photo').forEach(function (img) {
           img.classList.toggle('is-active', img.dataset.backdrop === mode);
         });
-        syncReadout();
       });
     });
 
     vp.querySelectorAll('button[data-v17-scene]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var scene = btn.dataset.v17Scene || 'evening-warm';
+        var scene = btn.dataset.v17Scene || 'evening';
         vp.dataset.v17Scene = scene;
         vp.querySelectorAll('button[data-v17-scene]').forEach(function (b) {
           var active = b.dataset.v17Scene === scene;
           b.classList.toggle('is-active', active);
           b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
-        syncReadout();
       });
     });
+
+    var unitBtn = doc.getElementById('v17-unit-btn');
+    if (unitBtn) {
+      unitBtn.addEventListener('click', function () {
+        var next = (vp.getAttribute('data-temp-unit') || 'c') === 'c' ? 'f' : 'c';
+        applyTempUnit(vp, next);
+        unitBtn.setAttribute('data-v17-unit', next);
+        unitBtn.classList.toggle('is-active', next === 'f');
+        unitBtn.setAttribute('aria-pressed', next === 'f' ? 'true' : 'false');
+      });
+    }
   }
 
   function wireTwoStep(doc, cfg) {
@@ -60,7 +68,7 @@
       armBtn.setAttribute('aria-pressed', armed ? 'true' : 'false');
       execBtn.disabled = !armed;
       if (log && armed) {
-        log.textContent = cfg.name + ' ARMED — confirm Step 2 to actuate';
+        log.textContent = cfg.name + ' armed — tap Step 2 to confirm';
       }
     });
 
@@ -73,12 +81,13 @@
       armBtn.setAttribute('aria-pressed', 'false');
       execBtn.disabled = true;
       if (log) {
-        log.textContent = cfg.name + ' transitioned to ' + pill.textContent;
+        log.textContent = cfg.name + ' is now ' + pill.textContent.toLowerCase();
       }
     });
   }
 
   function bootV18(doc) {
+    var v18Root = doc.querySelector('.v9-view-v18');
     var filterBtns = doc.querySelectorAll('button[data-v18-filter]');
     var tiles = doc.querySelectorAll('.v18-zone-tile[data-v18-cat]');
     if (filterBtns.length && tiles.length) {
@@ -99,25 +108,37 @@
       });
     }
 
+    doc.querySelectorAll('button[data-v18-unit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var unit = btn.dataset.v18Unit || 'c';
+        applyTempUnit(v18Root, unit);
+        doc.querySelectorAll('button[data-v18-unit]').forEach(function (b) {
+          var active = b.dataset.v18Unit === unit;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      });
+    });
+
     wireTwoStep(doc, {
-      name: 'LOCK-FRONT-01',
+      name: 'Front door',
       armId: 'v18-lock-arm',
       execId: 'v18-lock-exec',
       pillId: 'v18-lock-pill',
       closedLabel: 'LOCKED',
       openLabel: 'UNLOCKED',
-      openBtnText: '2. Unlock Entry',
-      recloseBtnText: '2. Relock Entry',
+      openBtnText: '2. Unlock Door',
+      recloseBtnText: '2. Lock Door',
     });
     wireTwoStep(doc, {
-      name: 'GARAGE-BAY-01',
+      name: 'Garage door',
       armId: 'v18-garage-arm',
       execId: 'v18-garage-exec',
       pillId: 'v18-garage-pill',
       closedLabel: 'CLOSED',
       openLabel: 'OPEN',
-      openBtnText: '2. Open Bay Door',
-      recloseBtnText: '2. Close Bay Door',
+      openBtnText: '2. Open Garage',
+      recloseBtnText: '2. Close Garage',
     });
   }
 

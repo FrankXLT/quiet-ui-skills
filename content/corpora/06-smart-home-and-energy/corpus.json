@@ -2,8 +2,8 @@
   "$schema": "urn:quiet-ui:schema:v9:corpus",
   "world_id": "06-smart-home-and-energy",
   "world_index": 6,
-  "title": "Smart Home & Energy: Ambient Frame Kiosk & Companion Console",
-  "summary": "Two-view residential smart-home and distributed energy corpus pairing a frosted-glass picture-frame ambient kiosk (M5/M7, N0) with a responsive mobile-to-desktop Home Assistant console (M3, N2/N4) under strict synthetic metrics conservation.",
+  "title": "Smart Home & Energy: Framed Wall Gallery Kiosk & Companion Console",
+  "summary": "Residential smart-home and energy corpus pairing a matted picture-frame wall kiosk (M5/M7, N0) with a Mushroom-styled Home Assistant companion & 24h stacked Energy console (M3, N2/N4) under strict synthetic metrics conservation.",
   "canonical_metrics": {
     "solar_pv_kw": 5.1,
     "home_load_kw": 3.42,
@@ -18,103 +18,103 @@
     "solar_pv_kw": {
       "value": 5.1,
       "unit": "kW",
-      "quantity": "Rooftop Solar PV Active Power, P_pv",
+      "quantity": "Solar Production, P_pv",
       "evidence_file": "evidence/v18_whole_home_energy_plot.json",
-      "json_path": "$.series[0].data_points[7].y",
+      "json_path": "$.series[0].data_points[14].y",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "Peak afternoon PV generation 5.10 kW measured at PV-STRING-SOUTH (14:00 local window)."
+      "notes": "Peak afternoon solar production 5.10 kW from the south roof array (14:00 hourly window)."
     },
     "home_load_kw": {
       "value": 3.42,
       "unit": "kW",
-      "quantity": "Whole-Home Active Load, P_load",
+      "quantity": "Home Usage, P_load",
       "evidence_file": "evidence/v18_whole_home_energy_plot.json",
-      "json_path": "$.series[1].data_points[7].y",
+      "json_path": "$.series[5].data_points[14].y",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "Simultaneous whole-home panel load 3.42 kW across PANEL-MAIN-200A circuits."
+      "notes": "Simultaneous whole-home usage 3.42 kW across household circuits."
     },
     "net_grid_export_kw": {
       "value": -1.68,
       "unit": "kW",
-      "quantity": "Net Utility Grid Exchange, P_grid",
+      "quantity": "Grid Export, P_grid",
       "evidence_file": "evidence/v18_whole_home_energy_plot.json",
-      "json_path": "$.series[2].data_points[7].y",
+      "json_path": "$.series[3].data_points[14].y",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "Net export -1.68 kW (3.42 kW load minus 5.10 kW PV surplus) credited prior to evening TOU window."
+      "notes": "Net grid export -1.68 kW (3.42 kW home usage minus 5.10 kW solar production) ahead of the evening peak window."
     },
     "battery_soc_pct": {
       "value": 84.0,
       "unit": "%",
-      "quantity": "Home Battery State of Charge, SOC",
+      "quantity": "Home Battery Reserve, SOC",
       "evidence_file": "evidence/v17_home_comfort_and_safety_scalars.json",
       "json_path": "$.items[3].measurement.nominal_value",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "BATT-WALL-13KWH charged to 84.0 % reserve for 16:00-21:00 peak tariff ride-through."
+      "notes": "Home battery charged to 84.0 % reserve for 16:00-21:00 evening peak self-consumption."
     },
     "living_temp_c": {
       "value": 21.5,
       "unit": "°C",
-      "quantity": "Living Zone Dry-Bulb Temperature, T_living",
+      "quantity": "Living Room Temperature, T_living",
       "evidence_file": "evidence/v17_home_comfort_and_safety_scalars.json",
       "json_path": "$.items[0].measurement.nominal_value",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "ZONE-LIVING thermostat reading 21.5 °C within ASHRAE-55 comfort corridor (20.5-22.5 °C)."
+      "notes": "Living Room thermostat at 21.5 °C (71 °F) within comfortable indoor band."
     },
     "living_rh_pct": {
       "value": 44.0,
       "unit": "%",
-      "quantity": "Living Zone Relative Humidity, RH_living",
+      "quantity": "Living Room Humidity, RH_living",
       "evidence_file": "evidence/v17_home_comfort_and_safety_scalars.json",
       "json_path": "$.items[1].measurement.nominal_value",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "ZONE-LIVING hygrometer 44.0 %RH within 30-55 %RH quiet nominal band."
+      "notes": "Living Room hygrometer at 44.0 % RH within calm nominal band."
     },
     "leak_sensors_clear": {
       "value": 6,
       "unit": "1",
-      "quantity": "Perimeter Moisture Loop Clear Count, N_dry",
+      "quantity": "Leak Sensors Clear Count, N_dry",
       "evidence_file": "evidence/v18_zone_device_and_sensor_table.json",
       "json_path": "$.rows[4].numeric_value",
       "views": [
         "v17-picture-frame-home-kiosk",
         "v18-home-assistant-companion-console"
       ],
-      "notes": "All 6 moisture probes on LEAK-LOOP-06 reporting dry nominal continuity."
+      "notes": "All 6 water leak sensors reporting dry."
     },
     "peak_evening_tariff_usd_kwh": {
       "value": 0.34,
       "unit": "USD/kWh",
-      "quantity": "Evening Time-of-Use Tariff Rate, R_peak",
+      "quantity": "Evening Peak Rate, R_peak",
       "evidence_file": "evidence/v18_whole_home_energy_plot.json",
       "json_path": "$.tariff_schedule.peak_evening_usd_kwh",
       "views": [
         "v18-home-assistant-companion-console"
       ],
-      "notes": "Peak TOU window 16:00-21:00 at $0.34 / kWh triggers battery self-consumption dispatch."
+      "notes": "Peak electricity rate window 16:00-21:00 at $0.34 / kWh triggers battery discharge."
     }
   },
   "views": [
     {
       "id": "v17-picture-frame-home-kiosk",
-      "title": "Ambient Wall Picture-Frame Smart Home Kiosk",
+      "title": "Framed Wall Picture-Frame Smart Home Kiosk",
       "presenter": "Residential Spatial UI Designer",
       "audience": "Household Resident (Glance & Ambiance)",
       "lenses": [
@@ -136,14 +136,14 @@
         "evidence/v17_home_comfort_and_safety_scalars.json"
       ],
       "medium_constraints": {
-        "unobstructed_art_floor_pct": 68.0,
-        "glass_blur_px": 22,
+        "unobstructed_art_floor_pct": 76.0,
+        "glass_blur_px": 18,
         "zero_hud_crosshairs": true
       }
     },
     {
       "id": "v18-home-assistant-companion-console",
-      "title": "Responsive Home Assistant Mobile & Desktop Console",
+      "title": "Home Assistant Companion & Whole-Home Energy Console",
       "presenter": "Home Automation Systems Architect",
       "audience": "Household Operator (Mobile & Desktop)",
       "lenses": [
@@ -170,8 +170,8 @@
       "medium_constraints": {
         "mobile_nav_dock": "N4",
         "guarded_actuators": [
-          "LOCK-FRONT-01",
-          "GARAGE-BAY-01"
+          "Front Door",
+          "Garage Door"
         ]
       }
     }

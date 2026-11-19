@@ -37,17 +37,23 @@ class TestDomain06AndECharts(unittest.TestCase):
         )
         payload = build_echarts_payload(plot_spec, rigor="L2", medium="m3")
         self.assertIsNotNone(payload)
-        self.assertEqual(payload["kind"], "cartesian")
-        self.assertEqual(len(payload["series"]), 3)
-        self.assertEqual(payload["series"][0]["data"][7][1], 5.1)
-        self.assertEqual(payload["series"][2]["data"][7][1], -1.68)
+        self.assertEqual(payload["kind"], "stacked_bar")
+        self.assertEqual(len(payload["series"]), 6)
+        self.assertEqual(len(payload["categories"]), 24)
+        self.assertEqual(payload["series"][0]["data"][14], 5.1)
+        self.assertEqual(payload["series"][3]["data"][14], -1.68)
+        self.assertEqual(payload["series"][5]["data"][14], 3.42)
+        self.assertEqual(payload["y"]["interval"], 2.0)
 
         compiled_bench = compile_spec(plot_spec, chrome="bench", include_spec_drawer=True)
         self.assertIn("data-quiet-echarts=", compiled_bench)
         self.assertIn('class="qe-echarts-host"', compiled_bench)
-        self.assertIn("Inspect Ecosystem Config (ECharts · Plotly · Matplotlib)", compiled_bench)
-        self.assertIn("Plotly", render_ecosystem_drawer(plot_spec))
-        self.assertIn("Matplotlib", render_ecosystem_drawer(plot_spec))
+        self.assertIn("Inspect Ecosystem Config (ECharts · Plotly · Matplotlib · Bokeh · Mermaid)", compiled_bench)
+        drawer_html = render_ecosystem_drawer(plot_spec)
+        for eco_tok in ("Apache ECharts", "Plotly (Python)", "Matplotlib", "Bokeh", "Mermaid", "Copy Snippet"):
+            self.assertIn(eco_tok, drawer_html)
+        for bad_ascii in ("P(pv)", "P(load)", "P(rx)", "f(obs)", "eta(bte)", "\u03b7(bte)"):
+            self.assertNotIn(bad_ascii, compiled_bench)
 
     def test_domain_06_templates_and_all_8_exif_free_photos(self) -> None:
         html = build_v9_showcase(REPO_ROOT, ["05-physical-systems-auto-and-aero", "06-smart-home-and-energy"])
@@ -55,11 +61,14 @@ class TestDomain06AndECharts(unittest.TestCase):
         v18 = re.search(r'<template id="tpl-view-v18-home-assistant-companion-console">(.*?)</template>', html, flags=re.S)
         self.assertIsNotNone(v17)
         self.assertIsNotNone(v18)
-        for tok in ("opt_frame_art.jpg", "opt_frame_landscape.jpg", "5.10 kW", "3.42 kW", "-1.68 kW", "84%", "21.5 °C"):
+        for tok in ("opt_frame_art.jpg", "opt_frame_landscape.jpg", "Living Room", "21.5 °C", "Solar 5.1 kW", "Battery 84%", "All 6 Leak Sensors Dry", "Morning", "Evening", "Movie", "Goodnight", "Fine Art", "Photo"):
             self.assertIn(tok, v17.group(1))
-        self.assertNotIn("v15-reticle-layer", v17.group(1))
-        for tok in ("PANEL-MAIN-200A", "LOCK-FRONT-01", "GARAGE-BAY-01", "LEAK-LOOP-06", "5.10 kW", "-1.68 kW", "data-quiet-echarts="):
+        for bad_v17 in ("v15-reticle-layer", "ZONE-LIVING", "LEAK-LOOP-06"):
+            self.assertNotIn(bad_v17, v17.group(1))
+        for tok in ("Solar Production", "5.10 kW", "Home Usage", "3.42 kW", "Grid Export", "-1.68 kW", "Home Battery", "84%", "Front Door", "Garage Door", "data-quiet-echarts=", "stacked_bar"):
             self.assertIn(tok, v18.group(1))
+        for bad_scada in ("PANEL-MAIN-200A", "PV-STRING-SOUTH", "BATT-WALL-13KWH", "EVSE-GARAGE-48A", "ZONE-LIVING", "ZONE-STUDY", "LOCK-FRONT-01", "GARAGE-BAY-01", "LEAK-LOOP-06", "MATTER-1.4", "IEEE-2030.5", "HOME-DER-PANEL", "Residential Zones"):
+            self.assertNotIn(bad_scada, v18.group(1))
         for jpg_name in (
             "as08-14-2383.jpg", "opt_hud_daylight_rwy.jpg", "opt_hud_night_rwy.jpg",
             "opt_glass_day_hwy.jpg", "opt_glass_dusk_hwy.jpg", "opt_glass_night_hwy.jpg",
@@ -102,6 +111,16 @@ class TestDomain06AndECharts(unittest.TestCase):
             "series": [{"id": "bad", "epistemic_type": "analytical_model", "equation": "9^(9^9)"}],
         }
         self.assertIsNone(build_echarts_payload(evil))
+        auto_cart = {
+            "$schema": "urn:quiet-ui:schema:v9:plot", "plot_kind": "cartesian", "id": "auto-dom",
+            "axes": {"x_axis": {"quantity": "n"}, "y_axis": {"quantity": "d"}},
+            "series": [{"id": "s", "epistemic_type": "discrete_measurement", "data_points": [{"x": 18, "y": 24.98}, {"x": 22, "y": 25.02}]}],
+        }
+        a_cart_pay = build_echarts_payload(auto_cart)
+        self.assertGreaterEqual(a_cart_pay["x"]["max"], 22.0)
+        self.assertGreater(a_cart_pay["y"]["min"], 24.0)
+        empty_sb = {"$schema": "urn:quiet-ui:schema:v9:plot", "plot_kind": "stacked_bar", "id": "empty-sb", "series": [{"id": "s", "data_points": []}]}
+        self.assertIn("<svg", compile_spec(empty_sb, chrome="bench"))
 
 
 if __name__ == "__main__":

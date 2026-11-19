@@ -7,7 +7,7 @@ import json
 import math
 from typing import Any
 
-from .comparison_plots import compile_dumbbell, compile_forest, compile_waterfall
+from .comparison_plots import compile_dumbbell, compile_forest, compile_stacked_bar, compile_waterfall
 from .echarts_adapter import build_echarts_payload, render_echarts_toggle_bar
 from .plot_helpers import (
     DASH_RE as _DASH_RE,
@@ -343,7 +343,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
     if chrome == "bench" and payload is not None:
         parts.append(render_echarts_toggle_bar())
 
-    cond_html = render_test_condition_strip(spec.get("test_environment"), eff_rigor)
+    hide_cond = chrome == "embedded" and (eff_rigor == "L1" or kind == "stacked_bar")
+    cond_html = "" if hide_cond else render_test_condition_strip(spec.get("test_environment"), eff_rigor)
     if cond_html:
         parts.append(cond_html)
 
@@ -359,6 +360,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
     def _emit_plot(sub: dict[str, Any], k: str) -> str:
         if k == "waterfall":
             return compile_waterfall(sub, eff_rigor, medium)
+        if k == "stacked_bar":
+            return compile_stacked_bar(sub, eff_rigor, medium)
         if k == "dumbbell":
             return compile_dumbbell(sub)
         if k == "forest":
@@ -379,7 +382,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
         parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(comp.get("title", "Companion Plot"))}">{_emit_plot(comp, ck)}</div>')
 
     vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else spec.get("series", [])
-    legend_items: list[str] = []
+    series_items: list[str] = []
+    param_items: list[str] = []
     omit_l1_legend = eff_rigor == "L1" and chrome == "embedded" and len(vis_series) <= 1 and not spec.get("parametric_legend")
     if not omit_l1_legend:
         for idx, sr in enumerate(vis_series):
@@ -389,15 +393,17 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
             ep_lbl = "Discrete Sample (&#177;u<sub>y</sub>)" if ep_kind == "discrete" else "Analytical Model"
             swatch = _legend_swatch_svg(sr, st, col)
-            if eff_rigor == "L1" and chrome == "embedded":
-                legend_items.append(f'<span class="qe-leg-item">{swatch}{format_math_html(sr.get("name", "Series"))}</span>')
+            if (eff_rigor == "L1" and chrome == "embedded") or kind == "stacked_bar":
+                series_items.append(f'<span class="qe-leg-item">{swatch}{format_math_html(sr.get("name", "Series"))}</span>')
             else:
-                legend_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
+                series_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
     for param in spec.get("parametric_legend", []):
         u = str(param.get("unit", ""))
-        legend_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], u))}</span>')
-    if legend_items:
-        parts.append(f'<div class="qe-param-legend">{"".join(legend_items)}</div>')
+        param_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], u))}</span>')
+    if series_items or param_items:
+        s_span = f'<span class="qe-legend-series">{"".join(series_items)}</span>' if series_items else ""
+        p_span = f'<span class="qe-param-strip">{"".join(param_items)}</span>' if param_items else ""
+        parts.append(f'<div class="qe-param-legend">{s_span}{p_span}</div>')
 
     parts.append("</div>")
     return "\n".join(parts)

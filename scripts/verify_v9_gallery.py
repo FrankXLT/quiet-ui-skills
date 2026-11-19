@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.0 Gate 5.4 — Domain 06, ECharts & 8-Shot Retina Proof Helpers (<= 260L)."""
+"""Quiet UI v9.0 Gate 5.5 — Domain 06 HA, Single-Legend ECharts & 8-Shot Retina Proof Helpers."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from verify_v9_helpers import set_viewport
 
 def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
     set_viewport(driver, 1440, 900, 1)
-    # v17: picture-frame ambient kiosk, >= 68% unobstructed canvas, zero HUD crosshairs
+    # v17: matted picture frame, >= 76% unobstructed canvas, zero SCADA slugs, F/C unit toggle
     driver.get(f"{base_url}?world=06-smart-home-and-energy&view=v17-picture-frame-home-kiosk&theme=white")
     time.sleep(0.45)
     v17_res = driver.execute_script("""
@@ -21,6 +21,10 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
         const doc = f && f.contentDocument;
         if (!doc) return 'no doc';
         if (doc.querySelector('.v15-reticle-layer')) return 'forbidden HUD crosshair in v17';
+        const txt = doc.body.innerText || '';
+        for (const bad of ['ZONE-LIVING', 'LEAK-LOOP-06', 'PANEL-MAIN-200A']) {
+            if (txt.includes(bad)) return 'v17 leaked SCADA slug: ' + bad;
+        }
         const vp = doc.getElementById('v17-kiosk');
         const imgArt = doc.getElementById('v17-photo-art');
         if (!vp || !imgArt || !imgArt.complete || imgArt.naturalWidth < 1200) {
@@ -33,11 +37,13 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
             occ += Math.max(0, r.width) * Math.max(0, r.height);
         });
         const freeRatio = 1 - (occ / Math.max(1, vr.width * vr.height));
-        if (freeRatio < 0.68) return 'unobstructed art ratio too low: ' + freeRatio.toFixed(3);
+        if (freeRatio < 0.76) return 'unobstructed art ratio too low: ' + freeRatio.toFixed(3);
         const lBtn = doc.querySelector('button[data-v17-backdrop="landscape"]');
-        const sBtn = doc.querySelector('button[data-v17-scene="night-quiet"]');
-        if (!lBtn || !sBtn) return 'missing v17 backdrop/scene controls';
-        lBtn.click(); sBtn.click();
+        const sBtn = doc.querySelector('button[data-v17-scene="goodnight"]');
+        const uBtn = doc.getElementById('v17-unit-btn');
+        if (!lBtn || !sBtn || !uBtn) return 'missing v17 backdrop/scene/unit controls';
+        lBtn.click(); sBtn.click(); uBtn.click();
+        if (!vp.innerText.includes('71 °F')) return 'v17 unit toggle failed to convert 21.5 °C -> 71 °F';
         return 'ok';
     """)
     time.sleep(0.35)
@@ -51,7 +57,7 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
         if int(land_nw or 0) < 1200:
             errs.append(f"[V17_LANDSCAPE] landscape backdrop naturalWidth={land_nw} < 1200")
 
-    # v18 Mobile (390x844 -> N4 dock + >=44px targets + 0 overflow) & Desktop 2-step interlocks
+    # v18 Mobile (390x844 -> N4 dock + >=44px targets + 0 overflow) & Desktop Mushroom + Stacked ECharts
     set_viewport(driver, 390, 844, 1)
     driver.get(f"{base_url}?world=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white")
     time.sleep(0.45)
@@ -74,6 +80,17 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
     desk_res = driver.execute_script("""
         const doc = document.getElementById('va-stage-portal').contentDocument;
         if (!doc) return 'no doc';
+        const txt = doc.body.innerText || '';
+        for (const bad of ['PANEL-MAIN-200A', 'PV-STRING-SOUTH', 'BATT-WALL-13KWH', 'EVSE-GARAGE-48A', 'LOCK-FRONT-01', 'GARAGE-BAY-01', 'MATTER-1.4', 'IEEE-2030.5', 'HOME-DER-PANEL', 'Residential Zones']) {
+            if (txt.includes(bad)) return 'v18 leaked SCADA/internal string: ' + bad;
+        }
+        const wrap = doc.querySelector('#v18-energy .qe-plot-wrap');
+        if (!wrap || wrap.dataset.echartsActive !== 'true') return 'v18 stacked energy ECharts did not mount';
+        if (wrap.querySelector('.qe-cond-strip')) return 'v18 embedded stacked_bar leaked .qe-cond-strip';
+        const leg = wrap.querySelector('.qe-param-legend');
+        if (leg && getComputedStyle(leg).display !== 'none') return 'v18 duplicated static legend under active ECharts';
+        doc.querySelector('button[data-v18-unit="f"]').click();
+        if (!doc.getElementById('v18-rooms').innerText.includes('71 °F')) return 'v18 F/C unit switch failed';
         const ex1 = doc.getElementById('v18-lock-exec');
         const arm1 = doc.getElementById('v18-lock-arm');
         const pill1 = doc.getElementById('v18-lock-pill');
@@ -96,8 +113,8 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
 
 
 def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str]) -> None:
-    # Verify remaining swapped modes on v15/v16 load cleanly >= 1200px
     for wid, vw, btn_sel, mode_val in (
+        ("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "button[data-backplate='earthrise']", "earthrise"),
         ("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "button[data-backplate='lowlight']", "lowlight"),
         ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "button[data-luminance='daylight']", "daylight"),
         ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "button[data-luminance='night']", "night"),
@@ -110,7 +127,6 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
         if int(nw or 0) < 1200:
             errs.append(f"[PHOTO_LOAD] {vw}/{mode_val} naturalWidth={nw} < 1200")
 
-    # Verify Apache ECharts SVG mounts and re-themes white -> dark + M1 fallback
     for wid, vw in (
         ("04-civic-finance-and-stem-learning", "v10-civic-capital-budget-deck"),
         ("04-civic-finance-and-stem-learning", "v11-treasury-stress-test-solver"),
@@ -121,11 +137,14 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
         time.sleep(0.6)
         ec_ok = driver.execute_script("""
             const doc = document.getElementById('va-stage-portal').contentDocument;
-            const host = doc && doc.querySelector('.qe-plot-wrap[data-echarts-active="true"] .qe-echarts-host svg');
-            return !!host;
+            const wrap = doc && doc.querySelector('.qe-plot-wrap[data-echarts-active="true"]');
+            if (!wrap || !wrap.querySelector('.qe-echarts-host svg')) return 'missing svg';
+            const ls = wrap.querySelector('.qe-legend-series');
+            if (ls && getComputedStyle(ls).display !== 'none') return 'duplicate html legend series visible';
+            return 'ok';
         """)
-        if not ec_ok:
-            errs.append(f"[ECHARTS_MOUNT] {vw}: live ECharts SVG did not mount")
+        if ec_ok != "ok":
+            errs.append(f"[ECHARTS_MOUNT] {vw}: {ec_ok}")
             continue
         driver.execute_script("window.QuietStudioPortalV9.state.theme='dark'; window.QuietStudioPortalV9.applyState(false);")
         time.sleep(0.35)
@@ -136,7 +155,6 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
         if not dark_ok:
             errs.append(f"[ECHARTS_RETHEME] {vw}: failed dark retheme with live ECharts")
 
-    # M1 print fallback restores .qe-svg-fallback
     driver.get(f"{base_url}?world=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white&medium=m1")
     time.sleep(0.45)
     m1_ok = driver.execute_script("""
@@ -148,7 +166,7 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
     if not m1_ok:
         errs.append("[ECHARTS_M1_FALLBACK] v18 did not fall back to static .qe-svg-fallback under medium=m1")
 
-    # Bench Components toggle & Ecosystem Config drawer check via Studio Components tab
+    # Bench Components toggle, 5-tab Ecosystem Config viewer, zero M4-L1 prefixes & zero horizontal overflow
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
     time.sleep(0.35)
     driver.execute_script("document.getElementById('va-tab-components').click();")
@@ -156,21 +174,41 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
     bench_ok = driver.execute_script("""
         const bdoc = document.getElementById('va-stage-portal').contentDocument;
         if (!bdoc) return 'no bench doc';
+        const titles = [...bdoc.querySelectorAll('.qe-fig-title')].map(el => el.textContent.trim());
+        const badPre = titles.find(t => /^M[1-6]-L[1-3]:/.test(t));
+        if (badPre) return 'specimen title kept prefix: ' + badPre;
         const btn = bdoc.querySelector('.qe-plot-wrap .qe-mode-btn[data-qe-mode="echarts"]');
         const drw = bdoc.querySelector('.qe-eco-drawer');
         if (!btn || !drw) return 'missing toggle or eco drawer';
         btn.click(); drw.open = true;
         const wrap = btn.closest('.qe-plot-wrap');
         if (!wrap || wrap.dataset.echartsActive !== 'true' || !wrap.querySelector('.qe-echarts-host svg')) return 'bench echarts failed';
-        if (!drw.textContent.includes('Plotly') || !drw.textContent.includes('Matplotlib')) return 'missing adapter code';
+        const ls = wrap.querySelector('.qe-legend-series');
+        if (ls && getComputedStyle(ls).display !== 'none') return 'bench echarts leaked duplicate html legend series';
+        const tabs = [...drw.querySelectorAll('.qe-eco-tab[role="tab"]')];
+        if (tabs.length !== 5) return 'expected 5 eco tabs, got ' + tabs.length;
+        tabs[1].click();
+        const openPre = drw.querySelector('.qe-eco-panel:not([hidden]) pre');
+        if (!openPre || !openPre.textContent.includes('go.Scatter')) return 'plotly tab did not switch';
+        if (openPre.scrollWidth > openPre.clientWidth + 2) return 'eco pre horizontal scrollbar scrollWidth=' + openPre.scrollWidth + ' clientWidth=' + openPre.clientWidth;
+        const cbtn = drw.querySelector('.qe-copy-btn');
+        const cstat = drw.querySelector('.qe-copy-status');
+        if (!cbtn || !cstat) return 'missing eco copy button or status';
+        cbtn.click();
+        if (/\\b[A-Za-z]\\((?:pv|load|grid|rx|obs|bte)\\)/i.test(bdoc.body.innerText)) return 'bench leaked ASCII pseudo-subscript';
         return 'ok';
     """)
+    if bench_ok == "ok":
+        time.sleep(0.15)
+        cpy_txt = driver.execute_script("return document.getElementById('va-stage-portal').contentDocument.querySelector('.qe-eco-drawer .qe-copy-status')?.textContent || '';")
+        if not cpy_txt.strip():
+            errs.append("[BENCH_COPY] Copy Snippet click did not announce status")
     if bench_ok != "ok":
         errs.append(f"[BENCH_ECHARTS] {bench_ok}")
 
 
 def run_domain06_and_echarts_checks(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Execute Gate 5.4 CDP checks for Domain 06, 8 photos, and Apache ECharts."""
+    """Execute Gate 5.5 CDP checks for Domain 06, 8 photos, single-legend ECharts & 5-tab Bench."""
     errs: list[str] = []
     _check_v17_and_v18(driver, base_url, errs)
     _check_all_8_photos_and_echarts(driver, base_url, errs)
@@ -179,21 +217,19 @@ def run_domain06_and_echarts_checks(driver: Any, base_url: str, root_url: str) -
 
 
 def capture_gate54_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
-    """Capture 8 Retina (deviceScaleFactor=2) proof PNGs into session brain screenshots_gate54."""
+    """Capture 8 Gate 5.5 Retina (deviceScaleFactor=2) proof PNGs into screenshots_gate55."""
     out_dir.mkdir(parents=True, exist_ok=True)
     shots = [
-        ("01_v15_hud_night_unobstructed_runway.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-backplate='lowlight']\");if(b)b.click();"),
-        ("02_v16_glass_daylight_bridge_refraction.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "white", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-luminance='daylight']\");if(b)b.click();"),
-        ("03_v16_glass_night_driver_pov.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "dark", 1440, 900,
+        ("01_v15_hud_daylight_runway.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "white", 1440, 900, ""),
+        ("02_v15_hud_orbital_limb_inertial.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", 1440, 900,
+         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-backplate='earthrise']\");if(b)b.click();"),
+        ("03_v16_maritime_wheelhouse_daylight.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "white", 1440, 900, ""),
+        ("04_v16_maritime_wheelhouse_night.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "dark", 1440, 900,
          "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-luminance='night']\");if(b)b.click();"),
-        ("04_v17_ha_picture_frame_fine_art.png", "06-smart-home-and-energy", "v17-picture-frame-home-kiosk", "white", 1440, 900, ""),
-        ("05_v17_ha_picture_frame_landscape.png", "06-smart-home-and-energy", "v17-picture-frame-home-kiosk", "white", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-v17-backdrop='landscape']\");if(b)b.click();"),
-        ("06_v18_ha_desktop_console_echarts.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "dark", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const e=d.getElementById('v18-rooms');if(e)e.scrollIntoView({block:'start'});"),
-        ("07_v18_ha_mobile_390x844_companion.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "white", 390, 844, ""),
+        ("05_v17_ha_framed_gallery_art.png", "06-smart-home-and-energy", "v17-picture-frame-home-kiosk", "white", 1440, 900, ""),
+        ("06_v18_ha_desktop_mushroom_cards.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "dark", 1440, 900, ""),
+        ("07_v18_ha_24h_stacked_energy_echarts.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "white", 1440, 900,
+         "const d=document.getElementById('va-stage-portal').contentDocument;const e=d.getElementById('v18-energy');if(e)e.scrollIntoView({block:'center'});"),
     ]
     for fname, wid, vw, theme, w, h, js_hook in shots:
         set_viewport(driver, w, h, 2)
@@ -204,7 +240,6 @@ def capture_gate54_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
             time.sleep(0.45)
         driver.save_screenshot(str(out_dir / fname))
 
-    # Shot 08: Studio Components tab with Live Apache ECharts + open Ecosystem Config drawer
     set_viewport(driver, 1440, 900, 2)
     driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
     time.sleep(0.4)
@@ -222,5 +257,5 @@ def capture_gate54_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
         if (fig) fig.scrollIntoView({block: 'start'});
     """)
     time.sleep(0.45)
-    driver.save_screenshot(str(out_dir / "08_components_live_echarts_and_adapters.png"))
+    driver.save_screenshot(str(out_dir / "08_components_5tab_ecosystem_drawer.png"))
     set_viewport(driver, 1440, 900, 1)

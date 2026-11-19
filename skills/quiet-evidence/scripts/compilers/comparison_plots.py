@@ -7,7 +7,14 @@ import math
 from typing import Any
 
 from .svg_labels import halo_text, svg_knockout_label
-from .tokens_and_scales import compute_linear_125_scale, esc, format_math_svg, format_tick_numeral
+from .tokens_and_scales import (
+    SERIES_STYLES,
+    compute_linear_125_scale,
+    esc,
+    format_math_svg,
+    format_tick_numeral,
+    resolve_token,
+)
 
 
 def _proj_lin_y(val: float, sc: dict[str, Any], y0: float, ph: float) -> float:
@@ -189,5 +196,85 @@ def compile_forest(spec: dict[str, Any]) -> str:
         parts.append(f'<line x1="{px_hi:.1f}" y1="{cy - 4:.1f}" x2="{px_hi:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')
         parts.append(f'<rect data-role="marker" x="{px_m - 4:.1f}" y="{cy - 4:.1f}" width="8" height="8" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
         parts.append(halo_text(x0 + pw + 8.0, cy + 4.0, f"{est:.2f} ({lo:.2f}–{hi:.2f})", anchor="start", size=12.0, weight="600", fill=col, halo=False))
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+def compile_stacked_bar(spec: dict[str, Any], rigor: str, medium: str) -> str:
+    """Compile 24h positive/negative stacked bars + line overlay with NAVAIR 1-2-5 ticks."""
+    series_list = spec.get("series") or []
+    axes = spec.get("axes") or {}
+    xa, ya = axes.get("x_axis") or {}, axes.get("y_axis") or {}
+    n_pts = max((len(s.get("data_points") or []) for s in series_list), default=1)
+    cats = list(xa.get("categories") or [f"{i:02d}:00" for i in range(max(n_pts, 1))])
+    n_cats = max(len(cats), 1)
+    bar_series = [s for s in series_list if str(s.get("series_type") or "bar").lower() != "line"]
+    line_series = [s for s in series_list if str(s.get("series_type") or "bar").lower() == "line"]
+    pos_tot, neg_tot, all_y = [0.0] * n_cats, [0.0] * n_cats, [0.0]
+    for s in bar_series:
+        for i, pt in enumerate((s.get("data_points") or [])[:n_cats]):
+            v = float(pt.get("y") or 0.0)
+            if math.isfinite(v):
+                pos_tot[i] += max(0.0, v)
+                neg_tot[i] += min(0.0, v)
+    for s in line_series:
+        for pt in (s.get("data_points") or [])[:n_cats]:
+            yv = float(pt.get("y") or 0.0)
+            if math.isfinite(yv):
+                all_y.append(yv)
+    dom = ya.get("domain")
+    lo_b = float(dom[0]) if dom else min(min(neg_tot), min(all_y))
+    hi_b = float(dom[1]) if dom else max(max(pos_tot), max(all_y))
+    sc = compute_linear_125_scale(lo_b, hi_b, target_ticks=5)
+    x0, y0, pw, ph = 66.0, 22.0, 550.0, 212.0
+    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 296" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Stacked Energy Bar Chart"))}">']
+    for yv in sc["majors"]:
+        py = _proj_lin_y(yv, sc, y0, ph)
+        parts.append(f'<line x1="{x0}" y1="{py:.1f}" x2="{x0 + pw}" y2="{py:.1f}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
+        parts.append(halo_text(x0 - 8, py + 4, format_tick_numeral(yv, step=sc["step"]), anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+    y_zero = _proj_lin_y(0.0, sc, y0, ph) if sc["min"] <= 0.0 <= sc["max"] else (y0 + ph)
+    slot = pw / n_cats
+    bw = max(4.0, slot * 0.68)
+    for idx in range(n_cats):
+        bx = x0 + idx * slot + (slot - bw) / 2.0
+        pos_acc, neg_acc = 0.0, 0.0
+        for s_idx, sr in enumerate(bar_series):
+            pts = sr.get("data_points") or []
+            v = float(pts[idx].get("y") or 0.0) if idx < len(pts) else 0.0
+            if not math.isfinite(v) or abs(v) < 1e-9:
+                continue
+            col = resolve_token(sr.get("marker_color") or sr.get("stroke_color"), SERIES_STYLES[s_idx % len(SERIES_STYLES)]["stroke"])
+            if v > 0:
+                yt, yb = _proj_lin_y(pos_acc + v, sc, y0, ph), _proj_lin_y(pos_acc, sc, y0, ph)
+                pos_acc += v
+            else:
+                yt, yb = _proj_lin_y(neg_acc, sc, y0, ph), _proj_lin_y(neg_acc + v, sc, y0, ph)
+                neg_acc += v
+            parts.append(f'<rect data-role="bar" x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{max(1.5, yb - yt):.1f}" rx="1.5" fill="{col}" opacity="0.92"/>')
+        if idx % 4 == 0:
+            cx = x0 + (idx + 0.5) * slot
+            parts.append(halo_text(cx, y0 + ph + 18.0, str(cats[idx]), anchor="middle", size=11.0, fill="var(--text-secondary)", halo=False))
+    parts.append(f'<line x1="{x0}" y1="{y_zero:.1f}" x2="{x0 + pw}" y2="{y_zero:.1f}" stroke="var(--text-primary)" stroke-width="1.1"/>')
+    parts.append(f'<line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y0 + ph}" stroke="var(--text-primary)" stroke-width="1.1"/>')
+    for sr in line_series:
+        pts = sr.get("data_points") or []
+        col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), "var(--text-primary)")
+        coords = " ".join(
+            f"{x0 + (i + 0.5) * slot:.1f},{_proj_lin_y(float(pts[i].get('y') or 0.0), sc, y0, ph):.1f}"
+            for i in range(min(n_cats, len(pts)))
+            if math.isfinite(float(pts[i].get("y") or 0.0))
+        )
+        if coords:
+            parts.append(f'<polyline fill="none" stroke="{col}" stroke-width="2.1" points="{coords}"/>')
+    for env in (spec.get("envelopes") or [] if rigor in {"L2", "L3"} else []):
+        raw_thr = env.get("threshold_value")
+        if raw_thr is not None and math.isfinite(float(raw_thr)):
+            ey = max(y0 + 10.0, min(y0 + ph - 10.0, _proj_lin_y(float(raw_thr), sc, y0, ph)))
+            parts.append(f'<line x1="{x0}" y1="{ey:.1f}" x2="{x0 + pw}" y2="{ey:.1f}" stroke="var(--text-secondary)" stroke-width="1.2" stroke-dasharray="5,3"/>')
+            parts.append(svg_knockout_label(x0 + pw * 0.72, ey - 5.0, str(env.get("label") or ""), anchor="middle", size=10.5, weight="600", fill="var(--text-secondary)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
+    y_lbl = str(ya.get("quantity_calculus") or "Power (kW)")
+    x_lbl = str(xa.get("quantity_calculus") or "Hour of Day")
+    parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 38.0, x_lbl, anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False, math=False))
+    parts.append(f'<text x="18" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 18 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">{format_math_svg(y_lbl, 9.0)}</text>')
     parts.append("</svg>")
     return "\n".join(parts)

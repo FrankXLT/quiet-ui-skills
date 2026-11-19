@@ -194,13 +194,13 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
         "v16-transparent-window-overlay": {
             "option_label": "v16 · Smart-Glass Overlay Pod", "default_medium": "m7",
             "chromatic_code": "c4", "default_nav": "n0", "allowed_navs": ["n0"],
-            "nav_icon": "glasses", "nav_brand": "Smart Glass Pod",
-            "topbar_brand": "Transparent Combiner Pod", "rail_brand": "Combiner Pod",
+            "nav_icon": "glasses", "nav_brand": "Wheelhouse Smart Glass",
+            "topbar_brand": "Maritime Bridge Combiner", "rail_brand": "Wheelhouse Pod",
             "topbar_status": [], "nav_items": [], "nav_anchors": [],
             "inv_col": "v16-transparent-window-overlay", "short_tag": "v16",
             "mb_keywords": ("v16", "MCU"),
-            "bias_risk": "Unbacked transparent overlays and raw 32-bit hex bitfields obscure the forward road corridor and overload drivers under 100,000 lux daylight glare.",
-            "actionable_disposition": "Display conformal lane/gap cues with MCU 85 °C drivetrain derate (<= 45 mph) on high-contrast corner smoked glass (>= 7.0:1).",
+            "bias_risk": "Unbacked transparent overlays and raw 32-bit hex bitfields obscure the forward sea channel and overload bridge watchstanders under 100,000 lux water glare.",
+            "actionable_disposition": "Display conformal channel range cues with MCU 85 °C propulsion derate (<= 18 kt) on high-contrast corner smoked glass (>= 7.0:1).",
         },
     }
     return assemble_world_bundle(corpus, bp, "05 · Auto & Aerospace", view_cfg, html_map)

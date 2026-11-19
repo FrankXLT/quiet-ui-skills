@@ -133,6 +133,8 @@ def render_residual_strip(series: list[dict[str, Any]], x_sc: dict[str, Any], bo
 
 def legend_swatch_svg(sr: dict[str, Any], st: dict[str, str], col: str) -> str:
     """Emit legend swatch matching the exact series epistemic_type, dash pattern, and glyph."""
+    if sr.get("series_type") == "bar":
+        return f'<svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><rect x="3" y="2" width="14" height="10" rx="2" fill="{col}"/></svg>'
     if sr.get("epistemic_type") == "discrete_measurement":
         glyph = sr.get("marker_glyph", st["marker"])
         conn = f'<line x1="1" y1="7" x2="19" y2="7" stroke="{col}" stroke-width="1.3" opacity="0.65"/>' if sr.get("connect_piecewise") else ""
