@@ -48,6 +48,9 @@ _VIEW_SLUG_PLAIN: dict[str, str] = {
     "v16-transparent-window-overlay": "v16 · Smart-Glass Overlay Pod",
     "v17-picture-frame-home-kiosk": "v17 · Picture-Frame Home Kiosk",
     "v18-home-assistant-companion-console": "v18 · Home Assistant Companion Console",
+    "v19-product-roadmap-and-triage": "v19 · Product Release Roadmap & Triage",
+    "v20-student-capstone-lab-report": "v20 · Student Capstone Lab Report",
+    "v21-field-anomaly-escalation-tsn": "v21 · Field Anomaly Escalation Note",
 }
 
 _NAV_PLAIN: dict[str, str] = {

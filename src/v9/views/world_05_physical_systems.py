@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from world_directional_views import build_v21_html
+except ImportError:
+    from src.v9.views.world_directional_views import build_v21_html
+
+try:
     from world_05_optics import build_v15_hud_html, build_v16_glass_html
     from world_common import (
         assemble_world_bundle,
@@ -138,6 +143,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
         "canfd_bus": "v14_canfd_bus_schematic.json",
         "canfd_bit": "v14_canfd_arb_bitfield.json",
         "canfd_scope": "v14_canfd_reflection_scope.json",
+        "recovery_gantt": "v21_test_bay_recovery_gantt.json",
     }
     corpus, bp, specs = load_world_inputs(corpora_dir, "05-physical-systems-auto-and-aero", spec_files)
     cm = corpus["canonical_metrics"]
@@ -149,6 +155,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
         "v14-fieldbus-and-scope-debugger": _build_v14_html(corpus, specs),
         "v15-collimated-flight-hud": build_v15_hud_html(corpus),
         "v16-transparent-window-overlay": build_v16_glass_html(corpus),
+        "v21-field-anomaly-escalation-tsn": build_v21_html(corpus, {"bus_schematic": specs["canfd_bus"], "recovery_gantt": specs["recovery_gantt"]}),
     }
     v14_status = [
         {"text": "1 BUS WARN", "variant": "status", "state": "warn"},
@@ -201,6 +208,26 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "mb_keywords": ("v16", "MCU"),
             "bias_risk": "Unbacked transparent overlays and raw 32-bit hex bitfields obscure the forward sea channel and overload bridge watchstanders under 100,000 lux water glare.",
             "actionable_disposition": "Display conformal channel range cues with MCU 85 °C propulsion derate (<= 18 kt) on high-contrast corner smoked glass (>= 7.0:1).",
+        },
+        "v21-field-anomaly-escalation-tsn": {
+            "option_label": "v21 · Field Escalation TSN", "default_medium": "m3",
+            "chromatic_code": "c4", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
+            "nav_icon": "wrench", "nav_brand": "Bay 04 Escalation",
+            "topbar_brand": "Field TSN · Bay 04 CAN-FD Recovery", "rail_brand": "Escalation Steps",
+            "topbar_status": [], "nav_items": ["Fault Summary", "Isolation & Bus", "8.0 h Recovery"],
+            "nav_anchors": ["v21-symptom", "v21-diagnostics", "v21-recovery"],
+            "inv_col": "v21-field-anomaly-escalation-tsn", "short_tag": "v21",
+            "mb_keywords": ("v21", "troubleshooting"),
+            "invariants_fallback": {
+                "baseline": "Dual 120 Ω EOL termination, <= 0.3 m stub rule, 85 °C MCU derate limit, and 42.8% BTE target.",
+                "provenance": "Connects bench 0.35 µs differential reflection capture directly to J1939 bus schematic and 8.0 h bay Gantt.",
+                "margin": "Bay hold prevents re-energizing dyno test until stub trim, thermal purge, and EOL resistance verify clean.",
+                "disposition": "Field technician stages 8.0 h recovery package and routes unresolved jitter upward to Systems Lead.",
+            },
+            "bias_removed": "Unstructured Field Chat Threads & Isolated Hardware Logs",
+            "bias_risk": "Unstructured bench chat notes separate electrical stub symptoms from cooling recovery schedule and dyno release gates.",
+            "bias_replacement": "Bottom-up TSN escalation ladder linking stub/reflection proof to an 8.0 h dyno recovery Gantt and guarded handoff.",
+            "actionable_disposition": f"Contain 0.35 µs reflection (>0.3 m stub, 120 Ω EOL) and 85 °C MCU excursion before {bte:.1f}% BTE dyno retest within 8.0 h.",
         },
     }
     return assemble_world_bundle(corpus, bp, "05 · Auto & Aerospace", view_cfg, html_map)

@@ -15,6 +15,7 @@ Each view in World 04 projects canonical truth along an asymmetric presenter-to-
 | `v10-civic-capital-budget-deck` | Civic Policy Analyst | City/School Board & Citizens | `Program Manager`, `Consumer / Common Reader` | `T2` (1-3 min) | `M2`, `N1` | `Decision Contrast` | `L2` | Capital balance reconciliation (`M USD`) and reserve coverage (`%`); Waterfall (`M4`) + GAO/USWDS Table (`M2`) |
 | `v11-treasury-stress-test-solver` | Quantitative Risk Analyst | Treasury & Investment Committee | `Program Manager`, `Discipline Engineer` | `T2` (1-3 min) | `M3`, `N2` | `Decision Contrast` | `L3` | `+250 bps` liquidity drawdown (`%`) with Monte Carlo `±u_y` vs. deterministic model + `20.0%` regulatory floor; Cartesian Plot + Residual Strip (`M4`) |
 | `v12-stem-interactive-lab` | STEM Educator | Student & Lab Peer | `Educator / Mentor`, `Student / Learner` | `T3` (10-45 min) | `M1`, `M2`, `N1` | `Pedagogical Flow` | `L3` | `V(t) = V_0 * exp(-t / tau)` term-bound decay vs. discrete oscilloscope points (`±u_y`) + residual strip; Cartesian Plot (`M4`) |
+| `v20-student-capstone-lab-report` | Student Researcher | Educator & Capstone Judges | `Student / Learner`, `Educator / Mentor` | `T2` / `T3` (1-45 min) | `M2`, `N1` | `Pedagogical Flow` | `L3` | Upward Claim -> Method -> Data -> Error -> Critique proof: 5-bench dumbbell (`1.82 V` mean vs `1.84 V` theory, `±0.05 V`) + raw oscilloscope decay (`M4`) |
 
 ---
 
@@ -29,6 +30,8 @@ Each view in World 04 projects canonical truth along an asymmetric presenter-to-
 - **`v12-stem-interactive-lab` (`M1` Paper/Print + `M2` Editorial Web, `N1` Left Rail)**:
   - Unrolls cleanly for `@media print` lab hand-ins (`M1`) with inline `va-test-condition-block` (`RC-BENCH-RIG-04`, `T_amb = 22.4 ± 0.2 °C`, `f_s = 1.00 kHz`) and NIST `1-2-5` gridlines.
   - Preserves interactive `data-term` highlighting on screen (`M2`) binding `V_0 (5.00 V)` (`tx`) and `exp(-t / tau) (tau = 2.40 s)` (`path_loss`) directly to graph layers.
+- **`v20-student-capstone-lab-report` (`M2` Editorial Web, `N1` Left Rail)**:
+  - Structures Student -> Educator defense claim-first (`5.00 V` start, `tau = 2.40 s`, `1.82 V` five-bench mean vs `1.84 V` law) paired with synchronized rubric lens filters and zero-adjusted error checklist.
 
 ---
 
@@ -41,17 +44,18 @@ Directional translation eliminates habitual sender pathologies before rendering 
 | `v10` | **Opaque Municipal Fund Jargon & Fiscal Illusion**: Burying capital outlays inside multi-hundred-page bond prospectuses, hiding the `15.0 M USD` reserve floor, or omitting inflation escalation on the `31.2 M USD` Water Main package. | Project a single 6-step cash waterfall from `48.0 M USD` opening reserve to `26.9 M USD` closing contingency paired with an unmasked GAO/USWDS trade table flagging `REVIEW` (`_row_status: warn`) on Water Main (`179.3%` coverage). |
 | `v11` | **Deterministic Point-Forecast Masking**: Showing only a smooth average liquidity line under a `+250 bps` rate shock while concealing Monte Carlo tail dispersion (`±u_y`) and regulatory `20.0%` breach proximity. | Plot discrete `n = 10,000` Monte Carlo medians with explicit `±u_y` error whiskers against the dashed deterministic duration model (`corridor_rel: 0.04`), anchored to the `20.0%` lower abort envelope and bottom residual strip. |
 | `v12` | **Notation-First Overload & Dot-Connecting**: Dumping unanchored differential equations before physical intuition, drawing Bezier curves through noisy bench captures, or hiding units and test temperature. | Bind `V_0 (5.00 V)` (`tx`) and `exp(-t / tau) (tau = 2.40 s)` (`path_loss`) via matching Pedagogical Flow tokens on `>= 90%` neutral surface, display discrete circle markers with `±u_y` whiskers, and include `va-test-condition-block` (`T_amb = 22.4 ± 0.2 °C`, `f_s = 1.00 kHz`). |
+| `v20` | **Chronological Lab-Notebook Narration**: Burying quantitative repeatability results behind pages of equipment lists and hiding station-to-station drift. | Open with Headline Claim (`1.82 V` observed vs `1.84 V` predicted within `±0.05 V`), show 5-station before/after dumbbell against raw trace, and audit every bound via judge self-critique checklist. |
 
 ---
 
 ## 4. Verification of the 4 Universal Audience Evaluation Invariants
 
-| Invariant | `v10-civic-capital-budget-deck` | `v11-treasury-stress-test-solver` | `v12-stem-interactive-lab` |
-| :--- | :--- | :--- | :--- |
-| **1. Baseline & Corridor** | `15.0 M USD` lower Policy Reserve Floor envelope rendered across waterfall and referenced in every table row. | `20.0%` lower Regulatory Liquidity Floor abort envelope (`direction: "lower"`) rendered beneath Q1-Q8 drawdown. | `V(t) = 5.0 * exp(-x / 2.4)` analytical corridor (`corridor_rel: 0.04`) and `1-2-5` NIST axes (`0..10 s`, `0..5 V`). |
-| **2. Epistemic Provenance** | Distinguishes starting base (`48.0 M USD`), restricted/debt inflows (`+16.5`, `+22.0`), outlays (`-28.4`, `-31.2`), and net closing total (`26.9 M USD`). | Separates analytical duration model (`dashed` line + band) from discrete `n = 10,000` Monte Carlo medians (`circle` + `±u_y` whiskers) + residual strip. | Separates continuous RC model (`dashed` `path_loss` curve) from discrete student oscilloscope samples (`tx` circles + `±u_y` whiskers) + L3 condition strip. |
-| **3. Margin & Consequence** | Exposes `+11.9 M USD` (`179.3%` coverage) remaining above `15.0 M USD` floor without mental arithmetic. | Exposes `+8.4%` Q4 headroom and `+5.1%` Q8 floor headroom (`25.1% ± 1.8%` vs. `20.0%` floor) via direct pill callouts. | Exposes `1*tau = 2.40 s (1.84 V)` physical checkpoint and normalized residuals within `±0.8 sigma` (`[-2sigma, +2sigma]` band). |
-| **4. Actionable Disposition** | `NOMINAL` on School HVAC (`28.4 M USD`); `REVIEW` on Water Main (`31.2 M USD`) triggers Option B split vote. | `NOMINAL` liquidity runway authorizes Q3-Q4 coupon reinvestment schedule without forced asset sales. | `NOMINAL` experimental agreement clears student team to proceed from RC calibration to Section 2 frequency sweep. |
+| Invariant | `v10-civic-capital-budget-deck` | `v11-treasury-stress-test-solver` | `v12-stem-interactive-lab` | `v20-student-capstone-lab-report` |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Baseline & Corridor** | `15.0 M USD` lower Policy Reserve Floor envelope rendered across waterfall and referenced in every table row. | `20.0%` lower Regulatory Liquidity Floor abort envelope (`direction: "lower"`) rendered beneath Q1-Q8 drawdown. | `V(t) = 5.0 * exp(-x / 2.4)` analytical corridor (`corridor_rel: 0.04`) and `1-2-5` NIST axes (`0..10 s`, `0..5 V`). | `V_0 = 5.00 V` exponential benchmark predicting `1.84 V` at `tau = 2.40 s` within `±0.05 V` repeatability corridor. |
+| **2. Epistemic Provenance** | Distinguishes starting base (`48.0 M USD`), restricted/debt inflows (`+16.5`, `+22.0`), outlays (`-28.4`, `-31.2`), and net closing total (`26.9 M USD`). | Separates analytical duration model (`dashed` line + band) from discrete `n = 10,000` Monte Carlo medians (`circle` + `±u_y` whiskers) + residual strip. | Separates continuous RC model (`dashed` `path_loss` curve) from discrete student oscilloscope samples (`tx` circles + `±u_y` whiskers) + L3 condition strip. | Pairs raw oscilloscope capture with zero-adjusted 5-bench repeatability dumbbell shifts (`Stn 1..Stn 5`). |
+| **3. Margin & Consequence** | Exposes `+11.9 M USD` (`179.3%` coverage) remaining above `15.0 M USD` floor without mental arithmetic. | Exposes `+8.4%` Q4 headroom and `+5.1%` Q8 floor headroom (`25.1% ± 1.8%` vs. `20.0%` floor) via direct pill callouts. | Exposes `1*tau = 2.40 s (1.84 V)` physical checkpoint and normalized residuals within `±0.8 sigma` (`[-2sigma, +2sigma]` band). | Confirms `1.82 V` station mean lies inside `±0.05 V` calibration bound and all residuals remain `<= 0.8 sigma`. |
+| **4. Actionable Disposition** | `NOMINAL` on School HVAC (`28.4 M USD`); `REVIEW` on Water Main (`31.2 M USD`) triggers Option B split vote. | `NOMINAL` liquidity runway authorizes Q3-Q4 coupon reinvestment schedule without forced asset sales. | `NOMINAL` experimental agreement clears student team to proceed from RC calibration to Section 2 frequency sweep. | Cleared 4-point self-critique checklist authorizes capstone judge and instructor grading signoff. |
 
 ---
 
@@ -68,6 +72,10 @@ Directional translation eliminates habitual sender pathologies before rendering 
 ### 5.3 View `v12`: Educator / Mentor <-> Student / Learner
 - **Educator (`L3`)**: "Hold `R` and `C` fixed (`tau = 2.40 s`) and vary only discharge time `t`; color-link `V_0 (5.00 V)` to initial oscilloscope amplitude and `exp(-t / tau)` to decay slope."
 - **Student (`T3`)**: "Nine bench oscilloscope samples (`f_s = 1.00 kHz`, `22.4 ± 0.2 °C`) cross `1.82 ± 0.05 V` at `t = 2.40 s` (`V_0 / e = 1.84 V`), confirming first-order exponential behavior within probe uncertainty."
+
+### 5.4 View `v20`: Student / Researcher -> Educator / Judge
+- **Student (`L3`)**: "After correcting zero-offset drift across five lab stations, 1τ crossing mean settled at `1.82 V` vs `1.84 V` model inside `±0.05 V` calibration bounds and `<= 0.8 sigma` residuals."
+- **Educator (`T2`)**: "Headline repeatability claim verified across raw scope trace, 5-bench comparison dumbbell, and four-step error self-critique checklist."
 
 ---
 
@@ -91,6 +99,10 @@ All numerical values below are conserved identically across `corpus.json`, `evid
 | `q8_mc_median_liquidity_pct` | `25.1` | `%` | `v11_treasury_drawdown_plot.json` | Quarter 8 Monte Carlo median (`25.1 ± 1.8%`) |
 | `rc_v0_v` | `5.0` | `V` | `v12_stem_rc_cooling_lab.json` | Equation `5.0 * exp(-x / 2.4)`, pedagogical bar `V_0 (5.00 V)` |
 | `rc_tau_s` | `2.4` | `s` | `v12_stem_rc_cooling_lab.json` | Equation `exp(-x / 2.4)`, annotation `1 tau = 2.40 s (1.84 V)` |
+| `rc_vtau_v` | `1.84` | `V` | `v20_student_repeatability_dumbbell.json` | Theoretical `V_0 * exp(-1)` at `tau = 2.40 s` |
+| `rc_mean_trial_v` | `1.82` | `V` | `v20_student_repeatability_dumbbell.json` | Five-bench mean calibrated voltage (`Stn 1..Stn 5`) |
+| `rc_uncertainty_v` | `0.05` | `V` | `v20_student_repeatability_dumbbell.json` | Combined instrument calibration repeatability bound `±0.05 V` |
+| `rc_sigma_bound` | `0.8` | `sigma` | `v20_student_repeatability_dumbbell.json` | Maximum residual magnitude (`<= 0.8 sigma`) across trials |
 
 ---
 
@@ -104,4 +116,5 @@ All numerical values below are conserved identically across `corpus.json`, `evid
 | **CR-5 & TRG-07** (Calibration & Provenance) | `v11`, `v12` | Every L3 plot embeds `va-test-condition-block` with standard/cal ID and `f_s`/`n`. | `v11` emits `TREASURY-POOL-04`, `GAO / SEC-10Q +250 bps`, `n_sub = 10000`; `v12` emits `RC-BENCH-RIG-04`, `22.4 ± 0.2 °C`, `1.00 kHz`, `NIST-RC-LAB-2026`. | **PASS** |
 | **ER-1, ER-2 & TRG-09** (Cognitive Speed & Term Binding) | `v12` | One independent variable (`t / s`); `pedagogical_equation` terms color-bound to plot series. | `tx` binds `V_0 (5.00 V)` to scatter points; `path_loss` binds `exp(-t / tau)` to dashed model curve. | **PASS** |
 | **LR-1 & LR-2** (Error Bars & Residuals) | `v12` | Measured student points carry `±u_y` and bottom normalized residual strip. | All 9 samples include `u_y` (`0.03–0.06 V`) and `residual_strip.enabled = true`. | **PASS** |
-| **TRG-08** (Audience Match) | All | No unitless blobs for engineers; no hex dumps for boards/citizens. | `v10` uses plain GAO/USWDS table + waterfall; `v11`/`v12` use `1-2-5` NIST scales and residual strips. | **PASS** |
+| **ER-3 & Student-Upward** (`Student Upward Lab Presentation`) | `v20-student-capstone-lab-report` | Student -> Educator claim-first structure, zero-offset repeatability dumbbell, error propagation & self-critique checklist. | Conserves `5.00 V`, `2.40 s`, `1.84 V`, `1.82 V` trial mean, `±0.05 V`, `<= 0.8 sigma`. | **PASS** |
+| **TRG-08** (Audience Match) | All | No unitless blobs for engineers; no hex dumps for boards/citizens. | `v10` uses plain GAO/USWDS table + waterfall; `v11`/`v12`/`v20` use `1-2-5` NIST scales and repeatability comparisons. | **PASS** |

@@ -9,6 +9,7 @@ from typing import Any
 
 from .comparison_plots import compile_dumbbell, compile_forest, compile_stacked_bar, compile_waterfall
 from .echarts_adapter import build_echarts_payload, render_echarts_toggle_bar
+from .schedule_and_heatmap import compile_gantt, compile_heatmap
 from .plot_helpers import (
     DASH_RE as _DASH_RE,
     STYLE_DASHES as _STYLE_DASHES,
@@ -332,7 +333,7 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
     eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()
     kind = spec.get("plot_kind", "cartesian")
     payload = build_echarts_payload(spec, eff_rigor, medium)
-    payload_attr = f' data-quiet-echarts="{esc(json.dumps(payload, separators=(",", ":")))}"' if payload is not None else ""
+    payload_attr = f' data-quiet-echarts="{esc(json.dumps(payload, separators=(",", ":"), allow_nan=False))}"' if payload is not None else ""
     parts: list[str] = [f'<div class="qe-plot-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}"{payload_attr}>']
 
     if chrome == "bench" and payload is not None:
@@ -357,6 +358,10 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             return compile_waterfall(sub, eff_rigor, medium)
         if k == "stacked_bar":
             return compile_stacked_bar(sub, eff_rigor, medium)
+        if k == "gantt":
+            return compile_gantt(sub, eff_rigor, medium)
+        if k == "heatmap":
+            return compile_heatmap(sub, eff_rigor, medium)
         if k == "dumbbell":
             return compile_dumbbell(sub)
         if k == "forest":
@@ -392,6 +397,18 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
                 series_items.append(f'<span class="qe-leg-item">{swatch}{format_math_html(sr.get("name", "Series"))}</span>')
             else:
                 series_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
+    if kind == "gantt":
+        series_items.extend([
+            '<span class="qe-leg-item"><svg width="16" height="10" aria-hidden="true"><rect x="1" y="2" width="14" height="6" rx="1.5" fill="var(--accent-focal)"/></svg>Critical Path</span>',
+            '<span class="qe-leg-item"><svg width="16" height="10" aria-hidden="true"><rect x="1" y="2" width="14" height="6" rx="1.5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.1"/></svg>Standard / Float</span>',
+            '<span class="qe-leg-item"><svg width="14" height="10" aria-hidden="true"><polygon points="7,1 12,5 7,9 2,5" fill="var(--status-warn)"/></svg>Milestone</span>',
+        ])
+    elif kind == "dumbbell" and not series_items:
+        lbls = spec.get("series_labels") or ["Baseline", "After"]
+        series_items.extend([
+            f'<span class="qe-leg-item"><svg width="12" height="10" aria-hidden="true"><circle cx="6" cy="5" r="3.5" fill="var(--bg-canvas)" stroke="var(--text-muted)" stroke-width="1.5"/></svg>{esc(str(lbls[0]))}</span>',
+            f'<span class="qe-leg-item"><svg width="12" height="10" aria-hidden="true"><circle cx="6" cy="5" r="3.8" fill="var(--accent-focal)"/></svg>{esc(str(lbls[1] if len(lbls) > 1 else "After"))}</span>',
+        ])
     for param in spec.get("parametric_legend", []):
         u = str(param.get("unit", ""))
         param_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], u))}</span>')

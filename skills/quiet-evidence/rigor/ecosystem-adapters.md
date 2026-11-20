@@ -217,3 +217,16 @@ flowchart LR
   Batt["BATT-WALL-13KWH (84.0% SOC)"] --> Panel
   Panel --> Lock["LOCK-FRONT-01 (2-Step Guarded)"]
 ```
+
+For multi-day schedules (`plot_kind: "gantt"`), prefer native Mermaid `gantt` syntax with critical-path markers (`crit`) and milestones (`milestone`), while ECharts `QuietEChartsExt` renders `gantt`, `heatmap`, `dumbbell`, and `forest` onto `'svg'` hosts reading `--text-primary`, `--accent-focal`, and `--status-warn` at runtime:
+
+```mermaid
+gantt
+    title Release Cutover Schedule
+    dateFormat X
+    axisFormat %s
+    section Execution
+    API Freeze       :crit, t1, 0, 4
+    Integration QA   :t2, 4, 8
+    GA Milestone     :milestone, m1, 10, 10
+```

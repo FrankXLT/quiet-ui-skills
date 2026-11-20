@@ -3,7 +3,7 @@
   "world_id": "05-physical-systems-auto-and-aero",
   "world_index": 5,
   "title": "Physical Systems: Automotive Propulsion, CAN-FD Fieldbus & Aerospace Crew Displays",
-  "summary": "Four-view asymmetric translation corpus pairing Argonne D^3 brake thermal efficiency metrology and SAE J1939 CAN-FD bus/scope diagnostics with collimated HUD (M6) and transparent window overlay (M7) projections under strict numerical conservation.",
+  "summary": "Five-view asymmetric translation corpus pairing Argonne D^3 brake thermal efficiency metrology, SAE J1939 CAN-FD bus/scope diagnostics, collimated HUD (M6), transparent window overlay (M7), and bottom-up Field Anomaly Escalation TSN projections under strict numerical conservation.",
   "canonical_metrics": {
     "peak_bte_pct": 42.8,
     "canfd_termination_ohm": 120,
@@ -11,7 +11,9 @@
     "scope_dropout_us": 0.35,
     "canfd_arb_frame_hex": "0x18FEF100",
     "hud_sightline_keepout_pct": 65.0,
-    "window_scrim_min_contrast": 7.0
+    "window_scrim_min_contrast": 7.0,
+    "mcu_thermal_derate_c": 85.0,
+    "bay_recovery_window_h": 8.0
   },
   "evidence_bindings": {
     "peak_bte_pct": {
@@ -93,6 +95,22 @@
         "v14-fieldbus-and-scope-debugger"
       ],
       "notes": "32-bit aligned extended CAN-FD PGN 0xFEF1 header register binding bit [31] SOF_ARB_ERR interlock."
+    },
+    "mcu_thermal_derate_c": {
+      "value": 85.0,
+      "unit": "°C",
+      "quantity": "MCU Thermal Derate Ceiling, T_mcu_max",
+      "evidence_file": "evidence/v21_test_bay_recovery_gantt.json",
+      "json_path": "$.mcu_thermal_derate_c",
+      "views": ["v16-transparent-window-overlay", "v21-field-anomaly-escalation-tsn"]
+    },
+    "bay_recovery_window_h": {
+      "value": 8.0,
+      "unit": "h",
+      "quantity": "Total Bay Recovery & Retest Window, T_bay",
+      "evidence_file": "evidence/v21_test_bay_recovery_gantt.json",
+      "json_path": "$.axes.x_axis.domain[1]",
+      "views": ["v21-field-anomaly-escalation-tsn"]
     }
   },
   "views": [
@@ -209,6 +227,36 @@
         "window_scrim_min_contrast": 7.0,
         "halo_paint_order": "stroke fill",
         "scrim_backdrop": "smoked-luminance-adaptive"
+      }
+    },
+    {
+      "id": "v21-field-anomaly-escalation-tsn",
+      "title": "Test-Bay CAN-FD Reflection & Thermal Recovery Escalation Note",
+      "presenter": "Field / Test Technician",
+      "audience": "Systems & Controls Lead Engineer",
+      "lenses": [
+        "Technician / Operator",
+        "Project / Systems Engineer"
+      ],
+      "tempos": [
+        "T2"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": [
+        "N2"
+      ],
+      "rigor_level": "L2",
+      "evidence_refs": [
+        "evidence/v14_canfd_bus_schematic.json",
+        "evidence/v21_test_bay_recovery_gantt.json"
+      ],
+      "medium_constraints": {
+        "direction": "bottom-up-tsn",
+        "recovery_window_h": 8.0,
+        "mcu_thermal_derate_c": 85.0
       }
     }
   ]

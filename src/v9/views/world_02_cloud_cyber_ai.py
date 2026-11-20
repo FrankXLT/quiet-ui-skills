@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from world_directional_views import build_v19_html
+except ImportError:
+    from src.v9.views.world_directional_views import build_v19_html
+
+try:
     from world_common import (
         assemble_world_bundle,
         cm_val,
@@ -266,6 +271,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         "bitfield": "v05_tls_policy_bitfield.json",
         "schematics": "v05_zero_trust_and_er_schematics.json",
         "cal_plot": "v06_ai_calibration_plot.json",
+        "roadmap_gantt": "v19_release_roadmap_gantt.json",
     }
     corpus, bp, specs = load_world_inputs(corpora_dir, "02-cloud-cyber-and-ai-ops", spec_files)
     cm = corpus["canonical_metrics"]
@@ -277,6 +283,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         "v04-sre-incident-workbench": _build_v04_html(corpus, specs),
         "v05-zero-trust-ato-spec": _build_v05_html(corpus, specs),
         "v06-ai-drift-and-lineage-ide": _build_v06_html(corpus, specs),
+        "v19-product-roadmap-and-triage": build_v19_html(corpus, specs),
     }
     v06_status = [
         {"text": "1 DRIFT ALERT", "variant": "status", "state": "warn"},
@@ -313,6 +320,24 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "nav_anchors": ["v06-drift", "v06-cal", "v06-lineage"],
             "inv_col": "v06-ai-drift-and-lineage-ide", "short_tag": "v06",
             "bias_risk": "Aggregate accuracy scores mask severe high-confidence overconfidence (0.73 observed vs 0.85 predicted).",
+        },
+        "v19-product-roadmap-and-triage": {
+            "option_label": "v19 · Product Roadmap & Triage", "default_medium": "m3",
+            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "nav_icon": "list-check", "nav_brand": "Release Roadmap",
+            "topbar_brand": "Release Roadmap · 4 Launch Blockers", "rail_brand": "Roadmap Views",
+            "topbar_status": [], "nav_items": ["Gate Summary", "Critical-Path Gantt", "Blocker Queue"],
+            "nav_anchors": ["v19-disposition", "v19-gantt", "v19-triage"],
+            "inv_col": "v19-product-roadmap-and-triage", "short_tag": "v19",
+            "invariants_fallback": {
+                "baseline": "GA cutover gated on <= 250.0 ms p99 latency, 12.0 s OTel gap fix, and 0x8003B104 FIPS check.",
+                "provenance": "Schedule spans and float buffers trace directly to SRE, Security, and AI telemetry milestones.",
+                "margin": "Parallel security track holds +3.0 d float while critical-path tasks carry zero schedule float.",
+                "disposition": "Hold GA launch until all 4 tracked blockers clear and soak verification completes.",
+            },
+            "bias_removed": "Flat Unprioritized Ticket Cards & Hidden Critical Path",
+            "bias_risk": "Flat Kanban cards hide critical-path dependencies and mask zero-float blockers behind parallel UI polish.",
+            "bias_replacement": "Critical-path Gantt timelines coupled directly to 38px blocker triage rows and +3.0 d parallel float counters.",
         },
     }
     return assemble_world_bundle(corpus, bp, "02 · Cloud, Security & AI", view_cfg, html_map)

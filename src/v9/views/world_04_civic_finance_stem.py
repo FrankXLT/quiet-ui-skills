@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from world_directional_views import build_v20_html
+except ImportError:
+    from src.v9.views.world_directional_views import build_v20_html
+
+try:
     from world_common import (
         assemble_world_bundle,
         cm_val,
@@ -213,12 +218,14 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
         "table": "v10_civic_budget_table.json",
         "drawdown": "v11_treasury_drawdown_plot.json",
         "rc_lab": "v12_stem_rc_cooling_lab.json",
+        "repeatability": "v20_student_repeatability_dumbbell.json",
     }
     corpus, bp, specs = load_world_inputs(corpora_dir, "04-civic-finance-and-stem-learning", spec_files)
     html_map = {
         "v10-civic-capital-budget-deck": _build_v10_html(corpus, specs),
         "v11-treasury-stress-test-solver": _build_v11_html(corpus, specs),
         "v12-stem-interactive-lab": _build_v12_html(corpus, specs),
+        "v20-student-capstone-lab-report": build_v20_html(corpus, specs),
     }
     view_cfg = {
         "v10-civic-capital-budget-deck": {
@@ -256,6 +263,24 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_removed": "Notation-First Overload & Dot-Connecting",
             "bias_risk": "Learners mistake smoothed splines for physical oscilloscope data.",
             "bias_replacement": "Term-bound V₀ and exp(−t/τ) pills coupled to discrete ±u_y oscilloscope samples + residuals.",
+        },
+        "v20-student-capstone-lab-report": {
+            "option_label": "v20 · Student Capstone Lab Report", "default_medium": "m2",
+            "chromatic_code": "c2", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "nav_icon": "graduation-cap", "nav_brand": "Capstone Lab",
+            "topbar_brand": "Capstone Lab Report · τ = 2.40 s", "rail_brand": "Report Sections",
+            "topbar_status": [], "nav_items": ["Headline Claim", "Bench Repeatability", "Self-Critique"],
+            "nav_anchors": ["v20-claim", "v20-evidence", "v20-critique"],
+            "inv_col": "v20-student-capstone-lab-report", "short_tag": "v20",
+            "invariants_fallback": {
+                "baseline": "First-order RC discharge V_0 * exp(-t / tau) from V_0 = 5.00 V predicting 1.84 V at tau = 2.40 s.",
+                "provenance": "Pairs five-bench repeatability dumbbell against raw calibrated oscilloscope curve and error budget.",
+                "margin": "Five-station mean 1.82 V matches 1.84 V theory within ±0.05 V repeatability and <= 0.8 sigma.",
+                "disposition": "Cleared student self-critique checklist for educator and capstone judge grading signoff.",
+            },
+            "bias_removed": "Narrative-Last Lab Logs & Uncalibrated Averaging",
+            "bias_risk": "Forces judges to hunt through chronology for whether error bounds actually hold across rigs.",
+            "bias_replacement": "Lead-with-claim capstone defense pairing repeatability dumbbell with error bounds and self-critique.",
         },
     }
     return assemble_world_bundle(corpus, bp, "04 · Finance & STEM Lab", view_cfg, html_map)

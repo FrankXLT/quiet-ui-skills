@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Gates 14 (21-Specimen Components Library + ECharts) and 15 (v15 HUD & v16 Optics) for Quiet UI v9.0."""
+"""Gates 14 (36-Specimen Component Library + ECharts) and 15 (v15 HUD & v16 Optics) for Quiet UI v9.0."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from .selenium_gates import select_tier, set_cdp_viewport, switch_to_outer, swit
 
 
 def check_gate_14_atlas_standalone(driver: webdriver.Chrome, base_url: str) -> list[str]:
-    """Gate 14A: Standalone 21-specimen Components Library (evidence-bench.html) parity & mobile overflow."""
+    """Gate 14A: Standalone 36-specimen Components Library (evidence-bench.html) parity & mobile overflow."""
     errors: list[str] = []
     bench_url = urllib.parse.urljoin(base_url, "docs/bench/evidence-bench.html")
     set_cdp_viewport(driver, 390, 844)
@@ -20,7 +20,7 @@ def check_gate_14_atlas_standalone(driver: webdriver.Chrome, base_url: str) -> l
     res = driver.execute_script("""
         const errs = [];
         const cards = document.querySelectorAll('.qe-specimen');
-        if (cards.length !== 21) errs.push(`Expected 21 specimens, got ${cards.length}`);
+        if (cards.length !== 36) errs.push(`Expected 36 specimens, got ${cards.length}`);
         if (document.documentElement.scrollWidth > window.innerWidth + 2) {
             errs.push(`Mobile 390px overflow: ${document.documentElement.scrollWidth} > ${window.innerWidth}`);
         }
@@ -38,7 +38,7 @@ def check_gate_14_atlas_standalone(driver: webdriver.Chrome, base_url: str) -> l
 
 
 def check_gate_14_atlas_embedded(driver: webdriver.Chrome, base_url: str) -> list[str]:
-    """Gate 14B: Components tab inside Studio Shell loads 21 specimens, Live ECharts & 5-tab Eco Drawer."""
+    """Gate 14B: Components tab inside Studio Shell loads 36 specimens, Live ECharts & 5-tab Eco Drawer."""
     errors: list[str] = []
     set_cdp_viewport(driver, 1440, 900)
     driver.get(base_url)
@@ -46,12 +46,12 @@ def check_gate_14_atlas_embedded(driver: webdriver.Chrome, base_url: str) -> lis
     driver.execute_script("document.getElementById('va-tab-components').click();")
     for _ in range(25):
         time.sleep(0.08)
-        if driver.execute_script("const p=document.getElementById('va-stage-portal');return p?.contentDocument?.querySelectorAll('.qe-specimen').length===21;"):
+        if driver.execute_script("const p=document.getElementById('va-stage-portal');return p?.contentDocument?.querySelectorAll('.qe-specimen').length===36;"):
             break
     bench_ok = driver.execute_script("""
         const doc = document.getElementById('va-stage-portal')?.contentDocument;
         if (!doc) return 'missing portal document';
-        if (doc.querySelectorAll('.qe-specimen').length !== 21) return 'specimen count !== 21';
+        if (doc.querySelectorAll('.qe-specimen').length !== 36) return 'specimen count !== 36';
         const wraps = [...doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]')];
         if (wraps.length < 3) return 'expected >=3 ECharts specimens, found ' + wraps.length;
         for (const wrap of wraps) {

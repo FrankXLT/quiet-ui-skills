@@ -58,7 +58,7 @@ class TestTokensAndScales(unittest.TestCase):
 
 
 class TestEvidenceCompilers(unittest.TestCase):
-    def test_all_21_bench_specimens_compile(self) -> None:
+    def test_all_30_bench_specimens_compile(self) -> None:
         spec_dir = REPO_ROOT / "docs" / "bench" / "specimens"
         count = 0
         for jf in sorted(spec_dir.glob("*.json")):
@@ -75,7 +75,7 @@ class TestEvidenceCompilers(unittest.TestCase):
                     # Every <path must declare fill=
                     for m in re.finditer(r"<path\b[^>]*>", out):
                         self.assertIn("fill=", m.group(0))
-        self.assertEqual(count, 21)
+        self.assertEqual(count, 30)
 
     def test_rigor_continuum_and_epistemic_truth(self) -> None:
         plot_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_plots.json").read_text("utf-8"))
@@ -101,9 +101,10 @@ class TestEvidenceCompilers(unittest.TestCase):
         tok_css = (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text("utf-8")
         bench_css = (REPO_ROOT / "docs" / "bench" / "evidence-bench.css").read_text("utf-8")
         pills_css = (REPO_ROOT / "src" / "css" / "06-b-pills-and-annunciators.css").read_text("utf-8")
-        defined = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css + "\n" + bench_css + "\n" + pills_css))
-        for ref in re.findall(r"var\((--[a-z0-9-]+)", bench_css + "\n" + pills_css):
-            self.assertIn(ref, defined, f"Undefined CSS var in bench/pills CSS: {ref}")
+        dir_css = (REPO_ROOT / "src" / "v9" / "css" / "08-directional-and-planner.css").read_text("utf-8")
+        defined = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css + "\n" + bench_css + "\n" + pills_css + "\n" + dir_css))
+        for ref in re.findall(r"var\((--[a-z0-9-]+)", bench_css + "\n" + pills_css + "\n" + dir_css):
+            self.assertIn(ref, defined, f"Undefined CSS var in bench/pills/directional CSS: {ref}")
         tok_only = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css))
         for jf in sorted((REPO_ROOT / "docs" / "bench" / "specimens").glob("*.json")):
             for sp in json.loads(jf.read_text("utf-8")):
@@ -319,6 +320,39 @@ class TestEvidenceCompilers(unittest.TestCase):
             self.assertIn('viewBox="0 0 720', out_svg)
             for path_tag in re.findall(r"<path\b[^>]*>", out_svg):
                 self.assertIn("fill=", path_tag)
+
+    def test_phase61_gantt_heatmap_pipeline_interlock_and_ui_specimens(self) -> None:
+        sys.path.insert(0, str(REPO_ROOT / "scripts"))
+        from bench_ui_specimens import compile_ui_bridge_specimens
+        from compilers.echarts_adapter import build_echarts_payload, render_ecosystem_drawer
+
+        ev_plots = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_everyday_charts.json").read_text("utf-8"))
+        self.assertEqual(len(ev_plots), 5)
+        for sp in ev_plots:
+            out = compile_spec(sp, rigor=sp["metadata"]["rigor_level"], medium="m2")
+            self.assertIn("data-quiet-echarts", out)
+            pay = build_echarts_payload(sp, sp["metadata"]["rigor_level"], "m2")
+            self.assertIsNotNone(pay)
+            drawer = render_ecosystem_drawer(sp)
+            self.assertIn("Apache ECharts", drawer)
+
+        gantt_pay = build_echarts_payload(ev_plots[3], "L2", "m2")
+        self.assertEqual(gantt_pay["kind"], "gantt")
+        self.assertIn("gantt", render_ecosystem_drawer(ev_plots[3]))
+
+        hm_out = compile_spec(ev_plots[4], rigor="L2", medium="m2")
+        self.assertIn("linearGradient", hm_out)
+        self.assertIn("#0F172A", hm_out)
+
+        ev_topo = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m6_everyday_topologies.json").read_text("utf-8"))
+        self.assertEqual(len(ev_topo), 4)
+        self.assertIn("metrics_store" if False else "Metrics Store", compile_spec(ev_topo[1]))
+        self.assertIn("SAFE TRIP", compile_spec(ev_topo[2], rigor="L3"))
+
+        ui_html = compile_ui_bridge_specimens()
+        self.assertEqual(ui_html.count('<article class="qe-specimen'), 6)
+        self.assertIn("ui-coupled-tree-explorer", ui_html)
+        self.assertIn("br-review-room-gate-band", ui_html)
 
 
 if __name__ == "__main__":
