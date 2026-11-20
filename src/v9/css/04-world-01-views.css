@@ -45,10 +45,12 @@
   .v9-view-v01 .v01-scalars-fig > .va-figure-hdr,
   .v9-view-v01 .v01-scalars-fig > .va-figure-caption { display: none; }
   .v9-view-v01 .qe-scalar-grid { gap: 0.55rem; }
-  .v9-view-v01 .qe-scalar-card { padding: 0.42rem 0.6rem; gap: 0.18rem; }
-  .v9-view-v01 .qe-scalar-zone1 { min-block-size: 1.15rem; block-size: 1.15rem; }
-  .v9-view-v01 .qe-scalar-title { font-size: var(--ts-sm); line-height: 1.22; min-block-size: 2.44em; }
-  .v9-view-v01 .qe-scalar-zone2 { min-block-size: 3.15rem; gap: 0.18rem; }
+  @container stage (width >= 520px) {
+    .v9-view-v01 .qe-scalar-card { padding: 0.42rem 0.6rem; gap: 0.18rem; }
+    .v9-view-v01 .qe-scalar-zone1 { min-block-size: 1.15rem; block-size: 1.15rem; }
+    .v9-view-v01 .qe-scalar-title { font-size: var(--ts-sm); line-height: 1.22; min-block-size: 2.44em; }
+    .v9-view-v01 .qe-scalar-zone2 { min-block-size: 3.15rem; gap: 0.18rem; }
+  }
   .v9-view-v01 .v01-scope-fig { margin: 0; padding: 0.45rem 0.65rem; gap: 0.3rem; }
   .v9-view-v01 .v01-scope-fig .qe-cond-strip { padding: 0.24rem 0.5rem; gap: 0.25rem 0.7rem; }
   .v9-view-v01 .v01-scope-fig .qe-svg-720 { max-inline-size: min(100%, 760px); }
@@ -96,8 +98,7 @@
   @media screen {
     :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn { color: #090D16; }
   }
-  .v01-exec-btn:disabled { opacity: 0.45; cursor: not-allowed; background: var(--border-hairline); color: var(--text-muted); }
-
+  .v01-exec-btn:disabled { opacity: 0.72; cursor: not-allowed; background: var(--bg-elevated); color: var(--text-muted); border: 1px dashed var(--border-strong); }
   .v01-audit-box {
     background: var(--bg-elevated);
     border: 1px solid var(--border-hairline);
@@ -150,6 +151,7 @@
   }
   @container stage (width < 760px) {
     .v02-kpi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .v02-kpi-val { font-size: clamp(0.84rem, 3.4vw, 1.04rem); }
   }
   .v02-kpi-tile {
     background: var(--bg-elevated);
@@ -159,8 +161,9 @@
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
+    min-inline-size: 0;
   }
-  .v02-kpi-val { font-family: var(--font-mono); font-size: var(--ts-md); font-weight: 700; color: var(--accent-focal); }
+  .v02-kpi-val { font-family: var(--font-mono); font-size: var(--ts-md); font-weight: 700; color: var(--accent-focal); white-space: nowrap; }
   .v02-kpi-sub { font-size: var(--ts-xs); color: var(--text-secondary); }
 
   .v02-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; }

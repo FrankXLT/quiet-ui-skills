@@ -10,7 +10,7 @@
 2. **`quiet-evidence` (Metrology & Clean-Room Open-Standards SVG Compilers):** Deterministically compiles calibrated waveforms, analytical & calibration plots (`viewBox 600`), waterfall charts (`viewBox 640`), 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics (**`ITU-T Z.120` timed sequence lifelines**, **`NASA SP-2016-6105` $N^2$ interface matrices**, **`NRC NUREG-0492` fault trees**, P&ID topologies, RS-485/CAN-FD buses, and ER lineage graphs) from structured JSON with `1–2–5` ticks and SVG knockout halos.
 3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation ledgers.
 
-![Quiet UI 16-Tier Overview](docs/assets/hero_4family_overview.png)
+![Quiet UI v9.0 — 6-Domain Studio & 36-Component Suite](docs/assets/hero_4family_overview.png)
 
 ---
 

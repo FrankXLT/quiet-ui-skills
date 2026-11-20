@@ -148,7 +148,7 @@
       }
     },
     "items": [
-      {"label": "Cohort A (<= 45 yr)", "estimate": 0.68, "ci_low": 0.52, "ci_high": 0.89},
+      {"label": "Cohort A (≤ 45 yr)", "estimate": 0.68, "ci_low": 0.52, "ci_high": 0.89},
       {"label": "Cohort B (46-65 yr)", "estimate": 0.74, "ci_low": 0.60, "ci_high": 0.91},
       {"label": "Cohort C (> 65 yr)", "estimate": 0.84, "ci_low": 0.67, "ci_high": 1.05},
       {"label": "Renal Stratum II", "estimate": 0.71, "ci_low": 0.55, "ci_high": 0.92},

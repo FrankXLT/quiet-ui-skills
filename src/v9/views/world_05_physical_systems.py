@@ -65,14 +65,14 @@ def _build_v13_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     <article id="v13-prose" class="v9-prose-card">
       <h2>Torque-Cell Metrology, Polynomial Fit &amp; Operating Envelopes</h2>
       <p>Ten steady-state Argonne D³ dynamometer operating points spanning 2.0 to 20.0 bar Indicated Mean Effective Pressure (IMEP) establish peak Brake Thermal Efficiency {eta_html} = {bte:.1f} ± 0.4% at 14.0 bar. Uncorrelated discrete bench measurements preserve experimental variance separately from the cubic analytical curve and ±0.7% model envelope.</p>
-      <p>Cruising below the 35.0% efficiency floor incurs severe part-load pumping losses below 6.8 bar IMEP, whereas extrapolating above the 46.0% thermal and knock derate ceiling violates turbine-inlet temperature margins. Bottom normalized residuals remain bounded within ±0.8 sigma.</p>
+      <p>Cruising below the 35.0% efficiency floor incurs severe part-load pumping losses below 6.8 bar IMEP, whereas extrapolating above the 46.0% thermal and knock derate ceiling violates turbine-inlet temperature margins. Bottom normalized residuals remain bounded within ±0.8 σ.</p>
     </article>
     {render_params_aside("Dynamometer Test Cell", [
         ("Engine Unit", "ANL-D3-2.0L-CRDI"),
         ("Torque Standard", "NIST-TRQ-2026-05"),
         ("Ambient Cell Temp", "25.0 ± 0.5 °C"),
         ("Acquisition Rate", "100.0 Hz Steady-State"),
-        ("Peak Efficiency", f"η_bte = {bte:.1f}% @ 14.0 bar"),
+        ("Peak Efficiency", f"ηᵦₜₑ = {bte:.1f}% @ 14.0 bar"),
     ])}
   </div>
 
@@ -95,7 +95,7 @@ def _build_v14_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     <div class="v9-masthead-eyebrow">
       <span class="va-kicker">SAE J1939 CAN-FD · ISO 11898-2 · PGN 0xFEF1 ({frame_hex})</span>
       <div class="v9-masthead-tags">
-        <span class="va-pill" data-variant="tag">{ohm} Ω · Stub &lt;= {stub_m:.1f} m</span>
+        <span class="va-pill" data-variant="tag">{ohm} Ω · Stub ≤ {stub_m:.1f} m</span>
         <span id="v14-gate-pill" class="va-pill" data-variant="status" data-state="warn">MCU 0xEF WARN</span>
       </div>
     </div>

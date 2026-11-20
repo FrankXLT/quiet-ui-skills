@@ -3,7 +3,7 @@
   "id": "w05-v14-canfd-reflection-scope",
   "metadata": {
     "title": "CAN-FD 2 Mbps Stub Reflection & 0.35 µs Impedance Mismatch Dropout Scope",
-    "description": "Time-synchronized 3-channel bench capture showing differential CAN_H - CAN_L ringing, common-mode noise spike, and ACK_DELIM frame gate across a 0.35 µs impedance mismatch null dropout bounded by cursors T_A and T_B.",
+    "description": "Time-synchronized 3-channel bench capture showing differential CAN_H − CAN_L ringing, common-mode noise spike, and ACK_DELIM frame gate across a 0.35 µs impedance mismatch null dropout bounded by cursors Tₐ and Tᵦ.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z"
   },

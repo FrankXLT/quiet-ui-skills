@@ -57,7 +57,7 @@ def _render_l1_overview(meta: dict[str, Any], fields: list[dict[str, Any]]) -> s
         if name.upper() == "RESERVED":
             continue
         _, _, _, cur = _extract_field_val(meta, f, cur_reg)
-        label = name.replace("_", " ").title()
+        label = " ".join(w if w in {"PLL", "TX", "RX", "FEC", "CRC", "LOS", "FIFO", "DMA", "OCXO", "PTP", "PPS"} else w.title() for w in name.replace("_", " ").split())
         is_fault = "FAULT" in name.upper() or "LOS" in name.upper() or "ERR" in name.upper()
         if is_fault:
             if cur > 0:

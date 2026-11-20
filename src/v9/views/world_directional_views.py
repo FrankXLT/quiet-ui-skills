@@ -22,8 +22,8 @@ def build_v19_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     gantt_html = embed_compile(specs["roadmap_gantt"], "L2", "m3")
 
     rows = [
-        ("r1", "blocked", "P1", "Patch 12.0 s OTel scrape blindness before canary", "fault", "BLOCKED", "Owner: Observability · Critical Path (Day 0 -> 4) · 0.0 d float"),
-        ("r2", "blocked", "P1", f"Restore API p99 latency under {p99:.1f} ms ceiling", "fault", "CRITICAL", "Owner: Core Proxy · Depends on OTel patch (Day 4 -> 8) · 0.0 d float"),
+        ("r1", "blocked", "P1", "Patch 12.0 s OTel scrape blindness before canary", "fault", "BLOCKED", "Owner: Observability · Critical Path (Day 0 → 4) · 0.0 d float"),
+        ("r2", "blocked", "P1", f"Restore API p99 latency under {p99:.1f} ms ceiling", "fault", "CRITICAL", "Owner: Core Proxy · Depends on OTel patch (Day 4 → 8) · 0.0 d float"),
         ("r3", "active", "P2", f"Enforce strict TLS {hex_pol} policy gate across zones", "warn", f"+{flt:.1f} d FLOAT", f"Owner: Security · Non-blocking parallel track (+{flt:.1f} d schedule float)"),
         ("r4", "done", "P2", "Sign off 4-blocker soak checklist and GA cutover", "nominal", "TRACKED", f"Owner: Release PM · Verifies all {n_blk} tracked launch blockers before GA"),
     ]
@@ -55,9 +55,9 @@ def build_v19_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       <h2 class="v9-sec-title">Release Gate: CONDITIONAL HOLD · {n_blk} Tracked Launch Blockers Open</h2>
       <span class="va-pill" data-variant="status" data-state="warn">HOLD · +{flt:.1f} D FLOAT</span>
     </div>
-    <p class="qe-fig-desc">Critical path locks GA behind OTel telemetry gap closure ({gap:.1f} s blindspot) and tail latency recovery (&lt;= {p99:.1f} ms), while {hex_pol} mTLS verification retains +{flt:.1f} d parallel buffer.</p>
+    <p class="qe-fig-desc">Critical path locks GA behind OTel telemetry gap closure ({gap:.1f} s blindspot) and tail latency recovery (≤ {p99:.1f} ms), while {esc(hex_pol)} mTLS verification retains +{flt:.1f} d parallel buffer.</p>
     <div class="v9-br-checks">
-      <div class="v9-br-check"><span>p99 Ceiling Target</span><strong class="va-nums">&lt;= {p99:.1f} ms</strong></div>
+      <div class="v9-br-check"><span>p99 Ceiling Target</span><strong class="va-nums">≤ {p99:.1f} ms</strong></div>
       <div class="v9-br-check"><span>Scrape Gap Patch</span><strong class="va-nums">{gap:.1f} s window</strong></div>
       <div class="v9-br-check"><span>Policy Register</span><strong class="va-nums">{esc(hex_pol)}</strong></div>
       <div class="v9-br-check"><span>Security Track Buffer</span><strong class="va-nums">+{flt:.1f} d ({n_blk} blockers)</strong></div>
@@ -100,8 +100,8 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     <div class="v9-masthead-eyebrow">
       <span class="va-kicker">CAPSTONE-RC-LAB · 5-BENCH-REPEATABILITY · STUDENT-TO-EDUCATOR</span>
       <div class="v9-masthead-tags">
-        <span class="va-pill" data-variant="tag">V0 = {v0:.2f} V</span>
-        <span class="va-pill" data-variant="status" data-state="nominal">PASS · &lt;= {sig:.1f} SIGMA</span>
+        <span class="va-pill" data-variant="tag">V₀ = {v0:.2f} V</span>
+        <span class="va-pill" data-variant="status" data-state="nominal">PASS · ≤ {sig:.1f} σ</span>
       </div>
     </div>
     <h1 class="v9-masthead-title">Student Capstone RC Discharge Repeatability Report</h1>
@@ -112,9 +112,9 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     <div class="v20-claim-box">
       <div class="v9-br-head">
         <h2 class="v9-sec-title">Headline Claim: Bench RC Decay Confirms τ = {tau:.2f} s Within ±{u_cal:.2f} V Repeatability</h2>
-        <span class="va-pill" data-variant="status" data-state="nominal">PASS · &lt;= {sig:.1f} SIGMA</span>
+        <span class="va-pill" data-variant="status" data-state="nominal">PASS · ≤ {sig:.1f} σ</span>
       </div>
-      <p class="qe-fig-desc">Discharging from {v0:.2f} V across five lab benches yielded mean 1τ voltage {v_mean:.2f} V vs {v_tau:.2f} V theoretical crossing (exp(-1) * {v0:.2f} V), holding every residual inside ±{sig:.1f} σ with combined instrument uncertainty ±{u_cal:.2f} V.</p>
+      <p class="qe-fig-desc">Discharging from {v0:.2f} V across five lab benches yielded mean 1τ voltage {v_mean:.2f} V vs {v_tau:.2f} V theoretical crossing (exp(−1) · {v0:.2f} V), holding every residual inside ±{sig:.1f} σ with combined instrument uncertainty ±{u_cal:.2f} V.</p>
       <div class="v20-rubric-bar" id="v20-rubric-chips" role="group" aria-label="Reviewer rubric lens">
         <span class="v9-demo-label">Rubric Focus:</span>
         <button type="button" class="va-pill" data-variant="chip" data-v20-focus="claim" aria-pressed="true">Claim &amp; Theory</button>
@@ -125,7 +125,7 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     <div class="v20-method-grid">
       <div class="v9-demo-subcard" data-v20-card="claim"><span class="v9-demo-label">Step Input &amp; Law</span><strong class="va-nums">{v0:.2f} V · τ = {tau:.2f} s</strong><span class="qe-fig-desc">Theoretical 1τ target = {v_tau:.2f} V</span></div>
       <div class="v9-demo-subcard" data-v20-card="repeat"><span class="v9-demo-label">5-Station Mean</span><strong class="va-nums">{v_mean:.2f} V observed</strong><span class="qe-fig-desc">Pre-zero offset drift corrected</span></div>
-      <div class="v9-demo-subcard" data-v20-card="error"><span class="v9-demo-label">Uncertainty &amp; Residual</span><strong class="va-nums">±{u_cal:.2f} V · &lt;= {sig:.1f} σ</strong><span class="qe-fig-desc">All 9 scope runs within envelope</span></div>
+      <div class="v9-demo-subcard" data-v20-card="error"><span class="v9-demo-label">Uncertainty &amp; Residual</span><strong class="va-nums">±{u_cal:.2f} V · ≤ {sig:.1f} σ</strong><span class="qe-fig-desc">All 9 scope runs within envelope</span></div>
     </div>
   </section>
 
@@ -140,10 +140,10 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       <span class="va-nums" id="v20-focus-note" aria-live="polite">Focus: Claim &amp; Theory verified against {v_tau:.2f} V model</span>
     </div>
     <div class="v9-br-checks">
-      <div class="v9-br-check" data-v20-card="claim"><span>1. Zero-adjusted 1τ fit matches exp(-1) law ({v_tau:.2f} V)</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
+      <div class="v9-br-check" data-v20-card="claim"><span>1. Zero-adjusted 1τ fit matches exp(−1) law ({v_tau:.2f} V)</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
       <div class="v9-br-check" data-v20-card="repeat"><span>2. 5-station spread bounded around {v_mean:.2f} V mean</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
       <div class="v9-br-check" data-v20-card="error"><span>3. Probe offset zeroed within ±{u_cal:.2f} V repeatability</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
-      <div class="v9-br-check" data-v20-card="error"><span>4. Max standardized residual bounded &lt;= {sig:.1f} σ</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
+      <div class="v9-br-check" data-v20-card="error"><span>4. Max standardized residual bounded ≤ {sig:.1f} σ</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
     </div>
   </section>
 </div>"""
@@ -182,7 +182,7 @@ def build_v21_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     <p class="qe-fig-desc">Tech bench isolated a {drop:.2f} µs CAN-FD frame dropout traced to an unterminated harness branch (&gt; {stub:.1f} m max stub against dual {ohm} Ω EOL) plus MCU enclosure excursion reaching {derate:.0f} °C derate ahead of {bte:.1f}% BTE dyno verification.</p>
     <div class="v9-br-checks">
       <div class="v9-br-check"><span>EOL Resistance</span><strong class="va-nums">Dual {ohm} Ω</strong></div>
-      <div class="v9-br-check"><span>Stub Length Rule</span><strong class="va-nums">&lt;= {stub:.1f} m</strong></div>
+      <div class="v9-br-check"><span>Stub Length Rule</span><strong class="va-nums">≤ {stub:.1f} m</strong></div>
       <div class="v9-br-check"><span>Measured Dropout</span><strong class="va-nums">{drop:.2f} µs</strong></div>
       <div class="v9-br-check"><span>Thermal / Retest</span><strong class="va-nums">{derate:.0f} °C · {bte:.1f}% BTE</strong></div>
     </div>

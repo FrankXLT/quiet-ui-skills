@@ -3,6 +3,7 @@
 
 (function (global) {
   'use strict';
+  var V15_CLEANUPS = typeof WeakMap === 'function' ? new WeakMap() : null;
 
   function updateExecButton(btnA, btnB, execBtn) {
     if (!execBtn) return;
@@ -213,6 +214,35 @@
       _renderTicks(d, 'v15-spd-ticks', reg.spdCfg);
       _renderTicks(d, 'v15-alt-ticks', reg.altCfg);
     });
+
+    function syncV15Viewport() {
+      var stg = doc.getElementById('v15-hud-stage');
+      var svg = stg ? stg.querySelector('.v15-reticle-layer') : null;
+      if (!stg || !svg) return;
+      var w = stg.clientWidth || doc.documentElement.clientWidth || 1200;
+      var portrait = w < 600;
+      svg.setAttribute('viewBox', portrait ? '260 0 680 720' : '0 0 1200 720');
+      svg.classList.toggle('is-portrait', portrait);
+      var spdG = doc.getElementById('v15-hud-spd-grp');
+      var altG = doc.getElementById('v15-hud-alt-grp');
+      if (spdG) spdG.setAttribute('transform', portrait ? 'translate(224,0)' : '');
+      if (altG) altG.setAttribute('transform', portrait ? 'translate(-224,0)' : '');
+    }
+    var prevV15Cleanup = V15_CLEANUPS ? V15_CLEANUPS.get(doc) : null;
+    if (prevV15Cleanup) { prevV15Cleanup(); V15_CLEANUPS.delete(doc); }
+    var v15Stage = doc.getElementById('v15-hud-stage');
+    if (v15Stage) {
+      syncV15Viewport();
+      var v15Ro = typeof ResizeObserver === 'function' ? new ResizeObserver(syncV15Viewport) : null;
+      if (v15Ro) v15Ro.observe(v15Stage);
+      if (global.addEventListener) global.addEventListener('resize', syncV15Viewport);
+      if (V15_CLEANUPS) {
+        V15_CLEANUPS.set(doc, function () {
+          if (v15Ro) v15Ro.disconnect();
+          if (global.removeEventListener) global.removeEventListener('resize', syncV15Viewport);
+        });
+      }
+    }
 
     wireChipGroup(doc, 'v16-luminance-chips', null, function (btn, d) {
       const vp = d.getElementById('v16-glass-viewport');

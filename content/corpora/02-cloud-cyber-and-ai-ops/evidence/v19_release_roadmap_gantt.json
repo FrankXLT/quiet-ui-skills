@@ -20,7 +20,7 @@
   },
   "tasks": [
     {"id": "otel", "label": "Fix 12.0 s OTel Gap", "phase": "Stabilize", "start": 0, "end": 4, "critical": true},
-    {"id": "lat", "label": "Cut p99 <= 250.0 ms", "phase": "Stabilize", "start": 4, "end": 8, "critical": true, "depends_on": ["otel"]},
+    {"id": "lat", "label": "Cut p99 ≤ 250.0 ms", "phase": "Stabilize", "start": 4, "end": 8, "critical": true, "depends_on": ["otel"]},
     {"id": "fips", "label": "Enforce 0x8003B104", "phase": "Security", "start": 3, "end": 7, "float_days": 3.0, "critical": false},
     {"id": "ai", "label": "Drift Fallback Gate", "phase": "AI Ops", "start": 8, "end": 12, "critical": true, "depends_on": ["lat"]},
     {"id": "qa", "label": "4-Blocker Soak Signoff", "phase": "Verify", "start": 10, "end": 14, "float_days": 2.0, "critical": false, "depends_on": ["fips"]},

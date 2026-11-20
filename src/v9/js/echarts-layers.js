@@ -83,7 +83,7 @@
             distance: 6,
             formatter: env.label,
             color: col,
-            fontSize: 10.5,
+            fontSize: 11,
             fontWeight: 600,
             backgroundColor: t.bgSurface,
             borderColor: col,
@@ -342,7 +342,7 @@
         nameGap: 26,
         nameTextStyle: { color: t.textSecondary, fontSize: 11, fontWeight: 600 },
         axisLine: { onZero: true, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 11, interval: function (i) { return i % 4 === 0; } },
+        axisLabel: { color: t.textSecondary, fontSize: 11, interval: (payload.categories || []).length <= 12 ? 0 : function (i) { return i % 4 === 0; } },
       },
       yAxis: {
         type: 'value',

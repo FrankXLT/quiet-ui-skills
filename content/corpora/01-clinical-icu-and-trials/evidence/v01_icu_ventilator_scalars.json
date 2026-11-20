@@ -11,7 +11,7 @@
   "items": [
     {
       "metadata": {
-        "title": "Mean Arterial Pressure (Radial Arterial Line)",
+        "title": "Mean Arterial Pressure (Radial Line)",
         "rigor_level": "L3",
         "timestamp_utc": "2026-11-17T05:30:00Z",
         "subsystem": "ICU-BED-04-HEMO"
@@ -57,7 +57,7 @@
     },
     {
       "metadata": {
-        "title": "Ventilator PEEP (Commanded vs Actual Circuit Pressure)",
+        "title": "Ventilator PEEP (CMD vs ACT)",
         "rigor_level": "L3",
         "timestamp_utc": "2026-11-17T05:30:00Z",
         "subsystem": "ICU-BED-04-VENT"
@@ -65,8 +65,8 @@
       "quantity": {
         "symbol": "PEEP",
         "name": "Positive End-Expiratory Pressure",
-        "unit": "cmH2O",
-        "quantity_calculus": "PEEP / cmH2O"
+        "unit": "cmH₂O",
+        "quantity_calculus": "PEEP / cmH₂O"
       },
       "measurement": {
         "nominal_value": 10.2,
@@ -104,16 +104,16 @@
     },
     {
       "metadata": {
-        "title": "Pulse Oximetry Oxygen Saturation (SpO2)",
+        "title": "Pulse Oximetry (SpO₂)",
         "rigor_level": "L3",
         "timestamp_utc": "2026-11-17T05:30:00Z",
         "subsystem": "ICU-BED-04-OXI"
       },
       "quantity": {
-        "symbol": "SpO2",
+        "symbol": "SpO₂",
         "name": "Arterial Oxygen Saturation",
         "unit": "%",
-        "quantity_calculus": "SpO2 / %"
+        "quantity_calculus": "SpO₂ / %"
       },
       "measurement": {
         "nominal_value": 94.2,

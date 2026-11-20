@@ -83,6 +83,27 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 </div>"""
 
 
+def _v08_tile_svg(pts: tuple[float, ...], pct: float, target_pct: float, accent: str) -> str:
+    """Render compact M5 inline trend sparkline and target fill gauge."""
+    xs = [round(8 + i * (464 / (len(pts) - 1)), 1) for i in range(len(pts))]
+    poly = " ".join(f"{x},{round(31 - y * 23, 1)}" for x, y in zip(xs, pts))
+    ty = round(31 - target_pct * 23, 1)
+    ex, ey = xs[-1], round(31 - pts[-1] * 23, 1)
+    fill_w = round(max(4.0, min(464.0, pct * 464.0)), 1)
+    t_x = round(8 + target_pct * 464.0, 1)
+    return (
+        f'<div class="v08-kpi-visual" aria-hidden="true">'
+        f'<svg class="v08-kpi-spark" viewBox="0 0 480 46" preserveAspectRatio="xMidYMid meet">'
+        f'<line x1="8" y1="{ty}" x2="472" y2="{ty}" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="4 3"/>'
+        f'<polyline fill="none" stroke="{accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" points="{poly}"/>'
+        f'<circle cx="{ex}" cy="{ey}" r="3.5" fill="{accent}"/>'
+        f'<rect x="8" y="38" width="464" height="5" rx="2.5" fill="var(--bg-elevated)" stroke="var(--border-hairline)" stroke-width="0.6"/>'
+        f'<rect x="8" y="38" width="{fill_w}" height="5" rx="2.5" fill="{accent}"/>'
+        f'<line x1="{t_x}" y1="36" x2="{t_x}" y2="45" stroke="var(--text-primary)" stroke-width="1.5"/>'
+        f'</svg></div>'
+    )
+
+
 def _build_v08_html(corpus: dict[str, Any]) -> str:
     cm = corpus["canonical_metrics"]
     p_act = float(cm_val(cm, "bess_power_act_mw"))
@@ -92,6 +113,10 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     soc = float(cm_val(cm, "bess_soc_pct"))
     oee = float(cm_val(cm, "oee_yield_pct"))
     cpk = float(cm_val(cm, "spc_cpk"))
+    sp1 = _v08_tile_svg((0.72, 0.78, 0.81, 0.76, 0.84, 0.88, 0.85, 0.90), p_act / 26.0, p_cmd / 26.0, "var(--accent-focal)")
+    sp2 = _v08_tile_svg((0.52, 0.56, 0.50, 0.48, 0.54, 0.49, 0.51, 0.46), 0.72, 0.75, "var(--accent-primary)")
+    sp3 = _v08_tile_svg((0.48, 0.54, 0.60, 0.65, 0.70, 0.74, 0.77, 0.784), soc / 100.0, 0.80, "var(--accent-focal)")
+    sp4 = _v08_tile_svg((0.86, 0.88, 0.90, 0.91, 0.92, 0.93, 0.94, 0.942), oee / 100.0, 0.95, "var(--status-ok)")
 
     return f"""<div class="v9-stage-inner v9-view-v08">
   <header class="v08-wall-header">
@@ -107,28 +132,32 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
 
   <div class="v08-kpi-grid" aria-label="Primary Plant Floor Telemetry">
     <article class="v08-kpi-card">
-      <span class="v08-kpi-label">Microgrid Active Dispatch</span>
+      <div class="v08-kpi-head"><span class="v08-kpi-label">Microgrid Active Dispatch</span><span class="va-pill" data-variant="status" data-state="nominal">POI SYNCED</span></div>
+      {sp1}
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{p_act:.1f} MW</span>
         <span class="v08-kpi-target va-nums">Target {p_cmd:.1f} MW · Nominal</span>
       </div>
     </article>
     <article class="v08-kpi-card">
-      <span class="v08-kpi-label">Grid Synchrophasor Frequency</span>
+      <div class="v08-kpi-head"><span class="v08-kpi-label">Grid Synchrophasor Frequency</span><span class="va-pill" data-variant="status" data-state="nominal">LOCK ±0.02 Hz</span></div>
+      {sp2}
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{freq:.3f} Hz</span>
         <span class="v08-kpi-target va-nums">Reference {freq_cmd:.3f} Hz</span>
       </div>
     </article>
     <article class="v08-kpi-card">
-      <span class="v08-kpi-label">Battery Storage Charge (BESS)</span>
+      <div class="v08-kpi-head"><span class="v08-kpi-label">Battery Storage Charge (BESS)</span><span class="va-pill" data-variant="status" data-state="nominal">DISCHARGE READY</span></div>
+      {sp3}
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{soc:.1f}%</span>
         <span class="v08-kpi-target va-nums">Target 80.0% · Ready</span>
       </div>
     </article>
     <article class="v08-kpi-card" data-accent="emerald">
-      <span class="v08-kpi-label">Cell-03 Plant OEE Yield</span>
+      <div class="v08-kpi-head"><span class="v08-kpi-label">Cell-03 Plant OEE Yield</span><span class="va-pill" data-variant="status" data-state="nominal">SHIFT A</span></div>
+      {sp4}
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{oee:.1f}%</span>
         <span class="v08-kpi-target va-nums">Target 95.0% · Shift A On Track</span>
@@ -182,10 +211,10 @@ def _build_v09_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div class="v9-kpi-tile">
         <span class="va-kicker">PROCESS CAPABILITY {cpk_html}</span>
         <span class="v9-kpi-val va-nums" data-tone="ok">{cpk:.2f}</span>
-        <span class="v9-kpi-sub">Minimum Gate &gt;= 1.33 (+0.31)</span>
+        <span class="v9-kpi-sub">Minimum Gate ≥ 1.33 (+0.31)</span>
       </div>
       <div class="v9-kpi-tile">
-        <span class="va-kicker">CONTROL BAND (±3 SIGMA)</span>
+        <span class="va-kicker">CONTROL BAND (±3σ)</span>
         <span class="v9-kpi-val va-nums">{cl:.3f} mm</span>
         <span class="v9-kpi-sub">LCL {lcl:.3f} .. UCL {ucl:.3f} mm</span>
       </div>

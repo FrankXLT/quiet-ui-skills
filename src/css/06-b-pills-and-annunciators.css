@@ -62,6 +62,9 @@
     color: var(--status-warn);
     font-weight: 600;
   }
+  :root:is([data-theme="white"], :not([data-theme])) .va-pill[data-variant="status"][data-state="warn"] {
+    color: var(--tint-amber-fg);
+  }
   .va-pill[data-variant="status"][data-state="warn"]::before {
     content: "▲";
     content: "▲" / "";

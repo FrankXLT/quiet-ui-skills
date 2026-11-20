@@ -206,14 +206,14 @@ def _build_v18_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     energy_plot_html = embed_compile(specs["energy_plot"], "L2", "m3")
     device_table_html = embed_compile(specs["device_table"], "L2", "m3")
     params_aside = render_params_aside(
-        "Electricity Plan & Daily Goals",
+        "Time-of-Use Tariff & Automations",
         [
-            ("Solar Production", f"{pv_kw:.2f} kW peak array"),
-            ("Home Usage", f"{load_kw:.2f} kW current load"),
-            ("Grid Export", f"{net_kw:+.2f} kW sending surplus"),
-            ("Home Battery", f"{soc:.0f} % reserve charged"),
-            ("Evening Peak Rate", f"16:00–21:00 (${tariff:.2f}/kWh)"),
-            ("Leak Protection", f"All {dry_cnt} sensors dry"),
+            ("Off-Peak Rate Window", "21:00–16:00 ($0.14/kWh)"),
+            ("Peak Rate Window", f"16:00–21:00 (${tariff:.2f}/kWh)"),
+            ("Solar Export Rule", f"Export surplus above {soc:.0f}% SoC"),
+            ("Emergency Backup Floor", "Hold 20% minimum battery reserve"),
+            ("Pre-Cool Schedule", "Shift HVAC cycle ahead of 16:00"),
+            ("Leak Auto-Shutoff", f"Armed ({dry_cnt} sensors dry)"),
         ],
     )
 

@@ -376,10 +376,18 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
     comps = list(spec.get("companions", []))
     if spec.get("companion"):
         comps.insert(0, spec["companion"])
-    for comp in comps:
-        ck = comp.get("plot_kind", "dumbbell")
-        parts.append(f'<div class="qe-subpanel-title">{esc(comp.get("title", "Companion Plot"))}</div>')
-        parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(comp.get("title", "Companion Plot"))}">{_emit_plot(comp, ck)}</div>')
+    if comps:
+        if len(comps) > 1:
+            parts.append('<div class="qe-companions-grid">')
+        for comp in comps:
+            ck = comp.get("plot_kind", "dumbbell")
+            comp_inner = (
+                f'<div class="qe-subpanel-title">{format_math_html(comp.get("title", "Companion Plot"))}</div>'
+                f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(comp.get("title", "Companion Plot"))}">{_emit_plot(comp, ck)}</div>'
+            )
+            parts.append(f'<div class="qe-companion-item">{comp_inner}</div>' if len(comps) > 1 else comp_inner)
+        if len(comps) > 1:
+            parts.append("</div>")
 
     vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else spec.get("series", [])
     series_items: list[str] = []
@@ -391,12 +399,12 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             term = sr.get("term")
             col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), resolve_term_colors(term)["fg"] if term else st["stroke"])
             ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
-            ep_lbl = "Discrete Sample (&#177;u<sub>y</sub>)" if ep_kind == "discrete" else "Analytical Model"
+            ep_lbl = 'Discrete Sample\u00a0<span class="qe-unit-nw">(&#177;u<sub>y</sub>)</span>' if ep_kind == "discrete" else "Analytical Model"
             swatch = _legend_swatch_svg(sr, st, col)
             if (eff_rigor == "L1" and chrome == "embedded") or kind == "stacked_bar":
-                series_items.append(f'<span class="qe-leg-item">{swatch}{format_math_html(sr.get("name", "Series"))}</span>')
+                series_items.append(f'<span class="qe-leg-item">{swatch}<span class="qe-leg-txt">{format_math_html(sr.get("name", "Series"))}</span></span>')
             else:
-                series_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span>')
+                series_items.append(f'<span class="qe-leg-item" data-epistemic="{ep_kind}">{swatch}<span class="qe-leg-txt">{format_math_html(sr.get("name", "Series"))} · {ep_lbl}</span></span>')
     if kind == "gantt":
         series_items.extend([
             '<span class="qe-leg-item"><svg width="16" height="10" aria-hidden="true"><rect x="1" y="2" width="14" height="6" rx="1.5" fill="var(--accent-focal)"/></svg>Critical Path</span>',

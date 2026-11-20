@@ -43,9 +43,8 @@
   function buildGanttOption(_doc, payload, tokens, hostW) {
     var tasks = payload.tasks || [];
     var cats = tasks.map(function (t) { return t.label; });
-    var narrow = (hostW || 640) < 480;
-    var leftPad = narrow ? 114 : 162;
-    var maxChars = narrow ? 15 : 23;
+    var narrow = (hostW || 640) < 520;
+    var leftPad = narrow ? 126 : 162;
     var data = tasks.map(function (t, i) {
       return [i, t.start, t.end, t.float || 0, t.critical ? 1 : 0, t.milestone ? 1 : 0];
     });
@@ -69,7 +68,7 @@
           return (t.label || '') + '\n' + (t.start != null ? t.start : '') + ' → ' + (t.end != null ? t.end : '') + ' ' + unit + flt;
         },
       }),
-      grid: { left: leftPad, right: 24, top: 34, bottom: 44, containLabel: false },
+      grid: { left: leftPad, right: narrow ? 14 : 24, top: 34, bottom: 44, containLabel: false },
       xAxis: {
         type: 'value',
         name: (payload.x && payload.x.name) || ('Schedule, t / ' + unit),
@@ -78,7 +77,7 @@
         min: payload.x ? payload.x.min : 0,
         max: payload.x ? payload.x.max : undefined,
         interval: payload.x ? payload.x.interval : undefined,
-        nameTextStyle: { color: tokens.textPrimary, fontWeight: 700, fontSize: 11.5 },
+        nameTextStyle: { color: tokens.textPrimary, fontWeight: 700, fontSize: narrow ? 11 : 11.5 },
         axisLabel: { color: tokens.textSecondary, fontSize: 11 },
         splitLine: { lineStyle: { color: tokens.borderHairline } },
       },
@@ -91,7 +90,9 @@
         axisLabel: {
           color: tokens.textPrimary,
           fontSize: 11,
-          formatter: function (v) { return v.length > maxChars ? v.slice(0, maxChars - 1) + '…' : v; },
+          lineHeight: narrow ? 13 : 14,
+          width: narrow ? 118 : 154,
+          overflow: 'break',
         },
         splitLine: { show: true, lineStyle: { color: tokens.borderHairline } },
       },
@@ -194,20 +195,21 @@
     };
   }
 
-  function buildDumbbellOption(_doc, payload, tokens) {
+  function buildDumbbellOption(_doc, payload, tokens, hostW) {
     var items = payload.items || [];
     var cats = payload.categories || [];
-    var dense = cats.length > 8;
+    var narrow = (hostW || 640) < 520;
     var stems = items.map(function (it, i) { return [i, it.before, it.after]; });
     return {
       animation: false,
       tooltip: Object.assign(baseTooltip(tokens), { trigger: 'axis' }),
       legend: { top: 2, right: 12, textStyle: { color: tokens.textSecondary, fontSize: 11 } },
-      grid: { left: 66, right: 20, top: 36, bottom: 44 },
+      grid: { left: 68, right: 34, top: 36, bottom: 44 },
       xAxis: {
         type: 'category',
+        boundaryGap: true,
         data: cats,
-        axisLabel: { color: tokens.textSecondary, fontSize: 11, interval: dense ? 1 : 0 },
+        axisLabel: { color: tokens.textSecondary, fontSize: 11, interval: (cats.length <= 12 && !narrow) ? 0 : (cats.length > 8 ? 1 : 0) },
         axisLine: { lineStyle: { color: tokens.textPrimary } },
       },
       yAxis: {
@@ -316,11 +318,60 @@
     };
   }
 
+  function adaptMobileOpt(opt, payload, w, tokens) {
+    if (!opt || !payload) return opt;
+    var narrow = (w || 640) < 480;
+    var kind = payload.kind || 'cartesian';
+    var haloBg = tokens ? tokens.bgSurface : '#FFFFFF';
+    var textSec = tokens ? tokens.textSecondary : '#475569';
+    if (kind === 'stacked_bar') {
+      if (opt.series && opt.series[0] && opt.series[0].markLine && Array.isArray(opt.series[0].markLine.data)) {
+        opt.series[0].markLine.data.forEach(function (d) {
+          if (Number(d.yAxis) < 0) d.label = Object.assign({}, d.label, { position: 'insideStartBottom', distance: 4, fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+        });
+      }
+      if (narrow) {
+        if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 6, itemWidth: 10, textStyle: { color: textSec, fontSize: 11 } });
+        if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: 46, right: 12, top: 68, bottom: 44, containLabel: true });
+      }
+    } else if (kind === 'waterfall' && narrow) {
+      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: { color: textSec, fontSize: 11 } });
+      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: 48, right: 12, top: 48, bottom: 70, containLabel: true });
+      if (opt.xAxis && opt.xAxis.axisLabel) opt.xAxis.axisLabel = { color: textSec, fontSize: 11, interval: 0, rotate: 26 };
+      if (opt.series && opt.series[0] && opt.series[0].markLine && Array.isArray(opt.series[0].markLine.data)) {
+        opt.series[0].markLine.data.forEach(function (d) {
+          d.label = Object.assign({}, d.label, { position: 'insideStartTop', fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+        });
+      }
+    } else if (kind === 'cartesian' && narrow) {
+      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { top: 2, left: 6, right: 6, itemGap: 6, itemWidth: 12, textStyle: { color: textSec, fontSize: 11 } });
+      if (Array.isArray(opt.grid)) {
+        opt.grid[0] = Object.assign({}, opt.grid[0], { right: 14, top: 58 });
+        opt.grid[1] = Object.assign({}, opt.grid[1], { right: 14 });
+      } else if (opt.grid) {
+        opt.grid = Object.assign({}, opt.grid, { right: 14, top: 56 });
+      }
+      (opt.series || []).forEach(function (sr) {
+        if (sr.markPoint && Array.isArray(sr.markPoint.data)) {
+          sr.markPoint.data.forEach(function (pt) { if (pt.label) pt.label.fontSize = 11; });
+        }
+        if (sr.markLine && Array.isArray(sr.markLine.data)) {
+          sr.markLine.data.forEach(function (d) {
+            var pos = (d.label && String(d.label.formatter || '').toLowerCase().indexOf('floor') >= 0) ? 'insideStartBottom' : 'insideEndTop';
+            d.label = Object.assign({}, d.label, { position: pos, fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+          });
+        }
+      });
+    }
+    return opt;
+  }
+
   global.QuietEChartsExt = {
+    adaptMobileOpt: adaptMobileOpt,
     buildOption: function (doc, payload, tokens, hostW) {
       if (payload.kind === 'gantt') return buildGanttOption(doc, payload, tokens, hostW);
       if (payload.kind === 'heatmap') return buildHeatmapOption(doc, payload, tokens, hostW);
-      if (payload.kind === 'dumbbell') return buildDumbbellOption(doc, payload, tokens);
+      if (payload.kind === 'dumbbell') return buildDumbbellOption(doc, payload, tokens, hostW);
       if (payload.kind === 'forest') return buildForestOption(doc, payload, tokens, hostW);
       return null;
     },

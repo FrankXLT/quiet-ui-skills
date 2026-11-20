@@ -200,10 +200,19 @@
   .qe-cell-center { text-align: center; }
   .qe-row-winner td { background: var(--tint-indigo-bg); }
   @container (width < 360px) {
-    .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; }
+    .qe-table, .qe-table caption, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td {
+      display: block;
+      inline-size: 100%;
+      max-inline-size: 100%;
+      min-inline-size: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .qe-table caption { text-align: start; }
     .qe-table thead { display: none; }
     .qe-table tbody tr {
-      margin: 0.5rem;
+      margin: 0.45rem 0.25rem;
       padding: 0.45rem;
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-sm);
@@ -216,6 +225,8 @@
       margin-inline-end: 0.35rem;
     }
   }
+  .qe-companions-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; margin-top: 0.75rem; }
+  @media (min-width: 960px) { .qe-companions-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 
   .qe-bitfield-wrap, .qe-bitfield-l1 { display: flex; flex-direction: column; gap: 0.65rem; }
   .qe-bf-hdr { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; min-block-size: 1.375rem; }
@@ -270,6 +281,8 @@
     color: var(--text-secondary);
   }
   .qe-leg-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .qe-leg-txt { min-inline-size: 0; }
+  .qe-unit-nw { white-space: nowrap; }
   .qe-leg-svg { display: inline-block; flex-shrink: 0; }
   .qe-scope-readout {
     padding: 0.35rem 0.6rem;
@@ -421,20 +434,9 @@
 .qe-copy-status { font-family: var(--font-mono); font-size: 0.75rem; color: var(--status-ok); opacity: 0; transition: opacity 0.15s ease; }
 .qe-copy-status.is-visible { opacity: 1; }
 .qe-eco-pre {
-  margin: 0;
-  padding: 0.7rem 0.9rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-hairline);
-  border-radius: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  line-height: 1.48;
-  color: var(--text-primary);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  overflow-x: visible;
+  margin: 0; padding: 0.7rem 0.9rem;
+  background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: 8px;
+  font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.48; color: var(--text-primary);
+  white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; overflow-x: visible;
 }
-@media (forced-colors: active) {
-  .qe-eco-tab[aria-selected="true"]::after { background: Highlight; }
-}
+@media (forced-colors: active) { .qe-eco-tab[aria-selected="true"]::after { background: Highlight; } }

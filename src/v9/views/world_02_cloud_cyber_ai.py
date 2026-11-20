@@ -246,7 +246,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
       <div class="v9-kpi-tile">
         <span class="va-kicker">ROUTING RULE</span>
-        <span class="v9-kpi-val va-nums">{format_math_html("p_hat")} &gt;= 0.75</span>
+        <span class="v9-kpi-val va-nums">{format_math_html("p_hat")} ≥ 0.75</span>
         <span class="v9-kpi-sub">Escalate to deterministic policy</span>
       </div>
       <div class="v9-kpi-tile">
