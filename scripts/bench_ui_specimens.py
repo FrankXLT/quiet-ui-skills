@@ -103,7 +103,7 @@ def _spec_32_controls() -> str:
         "L2",
         "Guarded Industrial Switch & Calm Discrete Controls",
         "PILLAR 1 · ERGONOMIC ACTUATION",
-        "Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 C trim steppers.",
+        "Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 °C trim steppers.",
         body,
     )
 
@@ -111,7 +111,7 @@ def _spec_32_controls() -> str:
 def _spec_33_triage() -> str:
     rows = [
         ("r1", "open", "API token rotation grace window blocks canary ingest", "P1", "fault", "BLOCKED", "Owner: Security Gate · Target +1.0 d"),
-        ("r2", "open", "TSN boundary clock drift spikes under 85 C thermal ramp", "P1", "warn", "TRIAGED", "Owner: Controls Lab · Target +2.5 d"),
+        ("r2", "open", "TSN boundary clock drift spikes under 85 °C thermal ramp", "P1", "warn", "TRIAGED", "Owner: Controls Lab · Target +2.5 d"),
         ("r3", "done", "Verify zero SVG clipping on 390 px mobile viewport sweep", "P2", "nominal", "VERIFIED", "Owner: Release QA · Merged to integration"),
         ("r4", "open", "Publish calibrated RC cooling repeatability summary table", "P2", "warn", "REVIEW", "Owner: Lab Bench · Target +0.5 d"),
     ]
@@ -222,17 +222,17 @@ def _spec_36_bridge_runbook() -> str:
         '<div class="v9-demo-label">Field Diagnostic &amp; Recovery Sequence</div>'
         '<ol class="v9-runbook-steps">'
         '<li>Measure bus termination impedance across CAN_H / CAN_L (expect 60.0 Ω nominal with dual 120 Ω ends).</li>'
-        '<li>Inspect optical/TSN grandmaster lock offset against 0.35 us dropout ceiling before escalating.</li>'
+        '<li>Inspect optical/TSN grandmaster lock offset against 0.35 µs dropout ceiling before escalating.</li>'
         '<li>Capture deterministic trace bundle and attach calibration delta before resetting fault latch.</li>'
         '</ol>'
         '<pre class="v9-runbook-cmd" role="region" aria-label="Diagnostic command" tabindex="0"><code>diag-probe --bus tsn0 --check-eol --window 12s</code></pre>'
         '</div>'
         '<div class="v9-callout-stack">'
         '<div class="v9-callout-box is-warn">'
-        '<strong>Thermal Derating Watch</strong><br/>Defer load step above 85 C enclosure ambient until coolant delta recovers below 4 C.'
+        '<strong>Thermal Derating Watch</strong><br/>Defer load step above 85 °C enclosure ambient until coolant delta recovers below 4 °C.'
         '</div>'
         '<div class="v9-callout-box">'
-        '<strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 us) directly to Systems Controls Desk.'
+        '<strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 µs) directly to Systems Controls Desk.'
         '</div>'
         '</div></div>'
     )

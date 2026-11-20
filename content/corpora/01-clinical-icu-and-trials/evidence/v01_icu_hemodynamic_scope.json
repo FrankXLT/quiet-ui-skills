@@ -3,7 +3,7 @@
   "id": "v01-icu-hemodynamic-scope",
   "metadata": {
     "title": "ICU Bed-04 Synchronized Multi-Channel Hemodynamic & Capnography Scope",
-    "description": "Time-synchronized CH1 Radial Arterial Line (65 mmHg resuscitation floor), CH2 SpO2 Pleth, and CH3 ETCO2 across a 2.4 s motion-artifact dropout with dual inspection cursors T_A and T_B.",
+    "description": "Time-synchronized CH1 Radial Arterial Line (65 mmHg resuscitation floor), CH2 SpO₂ Pleth, and CH3 ETCO₂ across a 2.4 s motion-artifact dropout with dual inspection cursors Tₐ and Tᵦ.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z",
     "subsystem": "ICU-BED-04-WAVEFORM-BUS"

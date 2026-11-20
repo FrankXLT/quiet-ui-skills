@@ -4,7 +4,7 @@
     "id": "specimen-19-sequence",
     "metadata": {
       "title": "Specimen 19: ITU-T Z.120 Sequence Lifeline (Zero-Trust Handshake)",
-      "description": "Timed message exchange across field gateway, mutual-TLS proxy, policy engine, and audit log under <= 18 ms SLA budget.",
+      "description": "Timed message exchange across field gateway, mutual-TLS proxy, policy engine, and audit log under ≤ 18 ms SLA budget.",
       "rigor_level": "L2"
     },
     "schematic_kind": "sequence",

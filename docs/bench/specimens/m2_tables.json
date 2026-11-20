@@ -50,7 +50,7 @@
     "id": "bench-m2-l3-booktabs-heatmap",
     "metadata": {
       "title": "Optical Syntonization Ledger & 3x8 Phase-Excursion Heatmap",
-      "description": "Physical metrological ledger with NIST quantity calculus headers, +/- uncertainty alignment, and recovered v7.1 3x8 phase-excursion matrix.",
+      "description": "Physical metrological ledger with NIST quantity calculus headers, ± uncertainty alignment, and 8-node 3×8 phase-excursion matrix.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z"
     },

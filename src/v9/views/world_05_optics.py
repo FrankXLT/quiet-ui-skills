@@ -54,23 +54,27 @@ def _v15_reticle_svg(bte: float) -> str:
         <line x1="464" y1="121" x2="457" y2="111" stroke-width="1.6"/>
         <line x1="736" y1="121" x2="743" y2="111" stroke-width="1.6"/>
 
-        <text id="v15-hud-spd-unit" x="136" y="146" text-anchor="end" font-size="12">KT IAS</text>
-        <line x1="136" y1="160" x2="136" y2="560" stroke-width="2"/>
-        <g id="v15-spd-ticks">{spd_ticks}</g>
-        <path d="M136 312 L146 306 L146 318 Z" fill="none" stroke-width="1.8"/>
-        <path d="M42 340 L126 340 L140 360 L126 380 L42 380 Z" fill="none" stroke-width="2.2"/>
-        <text id="v15-hud-spd-val" x="90" y="367" text-anchor="middle" font-size="19">138</text>
-        <text id="v15-hud-spd-sub" x="44" y="590" text-anchor="start" font-size="13">GS 144 KT</text>
-        <text id="v15-hud-prop-line" x="44" y="624" text-anchor="start" font-size="14" data-bte="{bte:.1f}">PROP BTE {bte:.1f}% · IMEP 14.0 BAR</text>
+        <g id="v15-hud-spd-grp">
+          <text id="v15-hud-spd-unit" x="136" y="146" text-anchor="end" font-size="12">KT IAS</text>
+          <line x1="136" y1="160" x2="136" y2="560" stroke-width="2"/>
+          <g id="v15-spd-ticks">{spd_ticks}</g>
+          <path d="M136 312 L146 306 L146 318 Z" fill="none" stroke-width="1.8"/>
+          <path d="M42 340 L126 340 L140 360 L126 380 L42 380 Z" fill="none" stroke-width="2.2"/>
+          <text id="v15-hud-spd-val" x="90" y="367" text-anchor="middle" font-size="19">138</text>
+          <text id="v15-hud-spd-sub" x="44" y="590" text-anchor="start" font-size="13">GS 144 KT</text>
+          <text id="v15-hud-prop-line" x="44" y="624" text-anchor="start" font-size="14" data-bte="{bte:.1f}">PROP BTE {bte:.1f}% · IMEP 14.0 BAR</text>
+        </g>
 
-        <text id="v15-hud-alt-unit" x="1064" y="146" text-anchor="start" font-size="12">FT MSL</text>
-        <line x1="1064" y1="160" x2="1064" y2="560" stroke-width="2"/>
-        <g id="v15-alt-ticks">{alt_ticks}</g>
-        <path d="M1060 360 L1074 340 L1162 340 L1162 380 L1074 380 Z" fill="none" stroke-width="2.2"/>
-        <text id="v15-hud-alt-val" x="1116" y="367" text-anchor="middle" font-size="18">1,180</text>
-        <text id="v15-hud-rad-line" x="1158" y="572" text-anchor="end" font-size="13">640 FT AGL · 3.0° GS</text>
-        <text id="v15-hud-vs-line" x="1158" y="594" text-anchor="end" font-size="13">VS -650 FPM</text>
-        <text id="v15-hud-baro-line" x="1158" y="616" text-anchor="end" font-size="13">29.92 IN</text>
+        <g id="v15-hud-alt-grp">
+          <text id="v15-hud-alt-unit" x="1064" y="146" text-anchor="start" font-size="12">FT MSL</text>
+          <line x1="1064" y1="160" x2="1064" y2="560" stroke-width="2"/>
+          <g id="v15-alt-ticks">{alt_ticks}</g>
+          <path d="M1060 360 L1074 340 L1162 340 L1162 380 L1074 380 Z" fill="none" stroke-width="2.2"/>
+          <text id="v15-hud-alt-val" x="1116" y="367" text-anchor="middle" font-size="18">1,180</text>
+          <text id="v15-hud-rad-line" x="1158" y="572" text-anchor="end" font-size="13">640 FT AGL · 3.0° GS</text>
+          <text id="v15-hud-vs-line" x="1158" y="594" text-anchor="end" font-size="13">VS -650 FPM</text>
+          <text id="v15-hud-baro-line" x="1158" y="616" text-anchor="end" font-size="13">29.92 IN</text>
+        </g>
 
         <line x1="395" y1="360" x2="532" y2="360" stroke-width="1.8" opacity="0.86"/>
         <line x1="668" y1="360" x2="805" y2="360" stroke-width="1.8" opacity="0.86"/>

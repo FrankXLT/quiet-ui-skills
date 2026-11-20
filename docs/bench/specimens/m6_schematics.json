@@ -149,7 +149,7 @@
           {"from": "cal", "to": "lock", "label": "alpha_ok"},
           {"from": "lock", "to": "hold", "label": "rx_los"},
           {"from": "hold", "to": "fault", "label": ">42m"},
-          {"from": "hold", "to": "uncal", "label": "re-lock_sweep [10k DDMTD samples]"}
+          {"from": "hold", "to": "uncal", "label": "Relock Sweep [10k DDMTD samples]"}
         ]
       },
       {

@@ -301,10 +301,10 @@ def _render_heatmap_svg(hm: dict[str, Any]) -> str:
     """Render calibrated R x C phase-excursion heatmap with ISA-101 quiet-nominal cells."""
     cols = hm.get("col_labels", [])
     rows = hm.get("rows", [])
-    cell_w, cell_h, x0, y0 = 70.0, 24.0, 84.0, 26.0
-    vb_w = int(max(640.0, x0 + len(cols) * cell_w + 20.0))
+    cell_w, cell_h, x0, y0 = 78.0, 24.0, 76.0, 26.0
+    vb_w = int(max(640.0, x0 + len(cols) * cell_w + 16.0))
     vb_h = int(y0 + len(rows) * (cell_h + 6.0) + 18.0)
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-680" viewBox="0 0 {vb_w} {vb_h}" role="img" aria-label="{esc(hm.get("title", "Excursion Heatmap"))}">']
+    parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 {vb_w} {vb_h}" role="img" aria-label="{esc(hm.get("title", "Excursion Heatmap"))}">']
     for ci, clbl in enumerate(cols):
         cx = x0 + ci * cell_w + cell_w / 2.0
         parts.append(halo_text(cx, 16.0, str(clbl), anchor="middle", size=11.5, weight="700", fill="var(--text-secondary)", halo=False))

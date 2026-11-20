@@ -188,7 +188,7 @@
 
   /* v01 Mobile (< 520px): 2x2 summary <= 116px so Channel 1 waveform starts <= 320px above the fold */
   @container stage (width < 520px) {
-    .v9-stage-inner { padding: 0.4rem 0.5rem; gap: 0.38rem; }
+    .v9-stage-inner:not(.v9-view-v15):not(.v9-view-v16):not(.v9-view-v17) { padding: 0.4rem 0.5rem; gap: 0.38rem; }
     .v9-view-v01 .v9-masthead { display: none; }
     .v9-view-v01 .v01-scalars-fig {
       padding: 0;
@@ -211,7 +211,7 @@
       gap: 0.08rem;
       min-inline-size: 0;
       overflow: hidden;
-      min-block-size: 52px;
+      min-block-size: 56px;
       max-block-size: 56px;
     }
     .v9-view-v01 .qe-scalar-zone1,
@@ -224,22 +224,28 @@
       display: none;
     }
     .v9-view-v01 .qe-scalar-title {
-      font-size: 11px;
-      min-block-size: 0;
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 10.5px;
+      block-size: 24px;
+      line-height: 1.12;
+      white-space: normal;
+      overflow-wrap: break-word;
     }
     .v9-view-v01 .qe-scalar-zone2 {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
       min-block-size: 0;
-      gap: 0.12rem;
+      block-size: 20px;
+      gap: 0.2rem;
     }
-    .v9-view-v01 .qe-scalar-val { font-size: 0.72rem; line-height: 1.15; }
+    .v9-view-v01 .qe-scalar-disp { min-block-size: 0; gap: 0.15rem; flex-shrink: 0; }
+    .v9-view-v01 .qe-scalar-disp .va-pill { font-size: 8.5px; padding: 0.05rem 0.26rem; min-block-size: 15px; line-height: 1.1; }
+    .v9-view-v01 .qe-scalar-val { font-size: 10.2px; letter-spacing: -0.02em; line-height: 1.15; white-space: nowrap; }
+    .v9-view-v01 .v01-titration-pad { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem; }
+    .v9-view-v01 .v01-tactile-btn { min-inline-size: 0; padding: 0.38rem 0.45rem; font-size: 11.5px; }
+    .v9-view-v01 .v01-exec-btn { grid-column: 1 / -1; }
     .v9-view-v01 .v01-scope-fig {
       margin: 0;
       padding: 0.35rem 0.45rem;
@@ -250,7 +256,7 @@
     .v9-view-v01 .v01-scope-fig .qe-fig-title { font-size: 11.5px; }
   }
 
-  /* v01 Desktop (>= 960px stage): compact scalars + 720px scope so CH1..CH3 fit above 1440x900 fold */
+  /* v01 Desktop (>= 960px stage): compact scalars + wider 840px scope balanced above 1440x900 fold */
   @container stage (width >= 960px) {
     .v9-stage-inner.v9-view-v01 { padding: 0.45rem 1rem; gap: 0.32rem; }
     .v9-view-v01 .v9-masthead-compact { min-block-size: 28px; padding-bottom: 0.24rem; }
@@ -265,7 +271,7 @@
     .v9-view-v01 .v01-scope-fig { padding: 0.3rem 0.55rem; gap: 0.16rem; }
     .v9-view-v01 .v01-scope-fig .qe-fig-title { font-size: var(--ts-sm); }
     .v9-view-v01 .v01-scope-fig .qe-cond-strip { padding: 0.14rem 0.45rem; font-size: 11px; }
-    .v9-view-v01 .v01-scope-fig .qe-svg-720 { max-inline-size: min(100%, 720px); }
+    .v9-view-v01 .v01-scope-fig .qe-svg-720 { max-inline-size: min(100%, 840px); }
   }
 }
 

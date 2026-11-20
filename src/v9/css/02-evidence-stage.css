@@ -21,7 +21,7 @@
   .qe-svg-600 { max-inline-size: min(100%, 720px); }
   .qe-svg-640 { max-inline-size: min(100%, 760px); }
   .qe-svg-680 { max-inline-size: min(100%, 760px); }
-  .qe-svg-720 { max-inline-size: min(100%, 840px); }
+  .qe-svg-720 { max-inline-size: min(100%, 960px); margin-inline: auto; }
   .qe-gauge-svg { max-inline-size: min(100%, 360px); }
   .qe-spark-svg { max-inline-size: min(100%, 320px); }
   .va-figure-scroll { overflow-x: hidden; }
@@ -186,14 +186,18 @@
   .qe-cell-center { text-align: center; }
   .qe-row-winner td { background: var(--tint-indigo-bg); }
   @container (width < 360px) {
-    .qe-table, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td { display: block; max-inline-size: 100%; }
-    .qe-table thead { display: none; }
-    .qe-table tbody tr {
-      margin: 0.5rem;
-      padding: 0.45rem;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
+    .qe-table, .qe-table caption, .qe-table thead, .qe-table tbody, .qe-table tr, .qe-table th, .qe-table td {
+      display: block;
+      inline-size: 100%;
+      max-inline-size: 100%;
+      min-inline-size: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
+    .qe-table caption { text-align: start; font-size: var(--ts-xs); font-weight: 700; margin-bottom: 0.28rem; }
+    .qe-table thead { display: none; }
+    .qe-table tbody tr { margin: 0.45rem 0.25rem; padding: 0.45rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
     .qe-table th.num, .qe-table td.num, .qe-table .qe-cell-center { text-align: start; }
     .qe-table th[data-label]::before, .qe-table td[data-label]::before {
       content: attr(data-label) ": ";
@@ -201,7 +205,25 @@
       color: var(--text-muted);
       margin-inline-end: 0.35rem;
     }
+    .qe-bitfield-wrap .qe-table tbody tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.14rem 0.42rem;
+      margin: 0.24rem 0;
+      padding: 0.34rem 0.5rem;
+    }
+    .qe-bitfield-wrap .qe-table tr :is(th, td) { padding: 0; border: 0; }
+    .qe-bitfield-wrap .qe-table :is(th, td)[data-label]::before { content: none; }
+    .qe-bitfield-wrap .qe-table th[data-label="Bits"] { order: 1; font-weight: 700; color: var(--accent-focal); }
+    .qe-bitfield-wrap .qe-table td[data-label="Field"] { order: 2; font-weight: 600; }
+    .qe-bitfield-wrap .qe-table td[data-label="Access"] { order: 3; }
+    .qe-bitfield-wrap .qe-table td[data-label="Value"] { order: 4; margin-inline-start: auto; font-size: var(--ts-xs); }
+    .qe-bitfield-wrap .qe-table td[data-label="Reset"] { display: none; }
+    .qe-bitfield-wrap .qe-table td[data-label="Decode"] { order: 5; flex: 1 0 100%; font-size: var(--ts-xs); color: var(--text-secondary); line-height: 1.35; }
   }
+  .qe-companions-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; margin-top: 0.75rem; }
+  @container (width >= 960px) { .qe-companions-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 
   /* Test-Condition Header Block */
   .qe-cond-strip {
@@ -253,6 +275,8 @@
     color: var(--text-secondary);
   }
   .qe-leg-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .qe-leg-txt { min-inline-size: 0; }
+  .qe-unit-nw { white-space: nowrap; }
   .qe-leg-svg { display: inline-block; flex-shrink: 0; }
   .qe-scope-readout {
     padding: 0.35rem 0.6rem;

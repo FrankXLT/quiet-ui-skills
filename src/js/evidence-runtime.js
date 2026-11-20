@@ -88,8 +88,12 @@
     if (cursorLine) cursorLine.setAttribute('visibility', 'hidden');
     const wrap = svg.closest('.qe-waveform-wrap');
     const readout = wrap ? wrap.querySelector('.qe-scope-readout') : null;
-    if (readout && readout.dataset.default) {
-      readout.textContent = readout.dataset.default;
+    if (readout) {
+      if (readout._qeDefaultNodes && readout._qeDefaultNodes.length) {
+        readout.replaceChildren.apply(readout, readout._qeDefaultNodes.map(function (n) { return n.cloneNode(true); }));
+      } else if (readout.dataset.default) {
+        readout.textContent = readout.dataset.default;
+      }
     }
   }
 
@@ -98,6 +102,8 @@
       if (svg.dataset.qeScopeBound === '1') return;
       const wrap = svg.closest('.qe-waveform-wrap');
       const dataEl = wrap ? wrap.querySelector('.qe-scope-data') : null;
+      const roEl = wrap ? wrap.querySelector('.qe-scope-readout') : null;
+      if (roEl && !roEl._qeDefaultNodes) roEl._qeDefaultNodes = Array.from(roEl.childNodes, function (n) { return n.cloneNode(true); });
       if (!dataEl) return;
       let meta = null;
       try {

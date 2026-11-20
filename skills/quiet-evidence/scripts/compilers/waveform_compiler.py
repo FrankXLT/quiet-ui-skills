@@ -12,6 +12,7 @@ from .tokens_and_scales import (
     SERIES_STYLES,
     compute_linear_125_scale,
     esc,
+    format_math_html,
     format_math_svg,
     format_tick_numeral,
     render_test_condition_strip,
@@ -407,9 +408,10 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
             dt = abs(tb_v - ta)
             delta_banner = f'T_A = {ta:.2f}\u00a0{t_unit}  |  T_B = {tb_v:.2f}\u00a0{t_unit}  |  Δt = {dt:.2f}\u00a0{t_unit}{_format_freq_reciprocal(dt, t_unit)}'
 
-    meta_json = json.dumps({"t_min": t_min, "t_span": t_span, "t_unit": t_unit, "max_gap": max_gap, "x0": x0, "pw": pw, "channels": scope_meta_channels}, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    def_msg = esc(delta_banner) if delta_banner else "Hover, drag, or use Left/Right keys across channels to inspect timebase samples"
-    readout = f'<div class="qe-scope-readout va-nums" data-default="{def_msg}" aria-live="polite">{def_msg}</div>'
+    meta_json = json.dumps({"t_min": t_min, "t_span": t_span, "t_unit": t_unit, "max_gap": max_gap, "x0": x0, "pw": pw, "channels": scope_meta_channels}, separators=(",", ":"), allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+    def_msg = esc(delta_banner.replace("T_A", "TA").replace("T_B", "TB")) if delta_banner else "Hover, drag, or use Left/Right keys across channels to inspect timebase samples"
+    def_html = format_math_html(delta_banner) if delta_banner else def_msg
+    readout = f'<div class="qe-scope-readout va-nums" data-default="{def_msg}" aria-live="polite">{def_html}</div>'
     return f'<div class="va-figure-scroll qe-scope-scroll" tabindex="0" role="region" aria-label="{esc(spec.get("metadata", {}).get("title", "Scope"))}">{"".join(parts)}</div>{readout}<script type="application/json" class="qe-scope-data">{meta_json}</script>'
 
 

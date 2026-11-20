@@ -19,17 +19,17 @@
         "id": "runs",
         "label": "telemetry_runs",
         "focal": true,
-        "columns": ["PK run_id : uuid", "FK asset_id -> assets", "sample_rate_hz : float"]
+        "columns": ["PK run_id : uuid", "FK asset_id → assets", "sample_rate_hz : float"]
       },
       {
         "id": "certs",
         "label": "calibration_certs",
-        "columns": ["PK cert_id : uuid", "FK asset_id -> assets", "valid_until : date"]
+        "columns": ["PK cert_id : uuid", "FK asset_id → assets", "valid_until : date"]
       },
       {
         "id": "events",
         "label": "anomaly_events",
-        "columns": ["PK event_id : uuid", "FK run_id -> telemetry_runs", "severity_code : int"]
+        "columns": ["PK event_id : uuid", "FK run_id → telemetry_runs", "severity_code : int"]
       }
     ],
     "relations": [
@@ -85,13 +85,13 @@
       "response_window_ms": 12.0
     },
     "sensors": [
-      {"id": "cha", "label": "Channel A Loop", "reading": "104.2 C (TRIP)", "tripped": true},
-      {"id": "chb", "label": "Channel B Loop", "reading": "103.8 C (TRIP)", "tripped": true},
-      {"id": "chc", "label": "Channel C Loop", "reading": "94.1 C (ARMED)", "tripped": false}
+      {"id": "cha", "label": "Channel A Loop", "reading": "104.2 °C (TRIP)", "tripped": true},
+      {"id": "chb", "label": "Channel B Loop", "reading": "103.8 °C (TRIP)", "tripped": true},
+      {"id": "chc", "label": "Channel C Loop", "reading": "94.1 °C (ARMED)", "tripped": false}
     ],
     "voter": {
       "label": "2oo3 Logic Voter",
-      "rule": "Trip if >= 2 Channels",
+      "rule": "Trip if ≥ 2 Channels",
       "decision": "QUORUM 2/3 REACHED"
     },
     "actuators": [

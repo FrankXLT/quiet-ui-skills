@@ -110,7 +110,7 @@ def build_v9_showcase(repo_root: Path, world_ids: list[str]) -> str:
         f'  <template id="tpl-view-{esc(vid)}">\n{html}\n  </template>'
         for vid, html in all_templates.items()
     )
-    manifest_json = json.dumps({"worlds": worlds_meta}, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e")
+    manifest_json = json.dumps({"worlds": worlds_meta}, separators=(",", ":"), allow_nan=False).replace("<", "\\u003c").replace(">", "\\u003e")
 
     shell_html = (repo_root / "src" / "v9" / "chrome" / "studio-shell-v9.html").read_text(encoding="utf-8")
     replacements = {

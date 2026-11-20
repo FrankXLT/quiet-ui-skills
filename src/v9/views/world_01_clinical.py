@@ -12,6 +12,7 @@ try:
     from world_common import (
         assemble_world_bundle,
         embed_compile,
+        format_math_html,
         inject_fig_class,
         load_world_inputs,
         render_params_aside,
@@ -20,6 +21,7 @@ except ImportError:
     from src.v9.views.world_common import (
         assemble_world_bundle,
         embed_compile,
+        format_math_html,
         inject_fig_class,
         load_world_inputs,
         render_params_aside,
@@ -47,11 +49,11 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     peep_cmd = cm["peep_cmd_cmh2o"]
     peep_act = cm["peep_act_cmh2o"]
     drop_m = cm["dropout_duration_s"]
+    ta_html, tb_html = format_math_html("T_A"), format_math_html("T_B")
 
     scalars_html = embed_compile(specs["scalars"], "L3", "m4")
     scalars_html = inject_fig_class(scalars_html, "v01-scalars-fig")
     scalars_html = _inject_mobile_tile(scalars_html, float(drop_m["value"]))
-
     scope_html = embed_compile(specs["scope"], "L3", "m4")
     scope_html = inject_fig_class(scope_html, "v01-scope-fig")
 
@@ -95,8 +97,8 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div id="v01-alarms" class="v01-audit-box" role="log" aria-live="polite" aria-label="Clinical Interlock Audit Log">
         <span class="va-kicker">CLINICAL TITRATION AUDIT LOG</span>
         <div id="v01-audit-list" class="v01-audit-list">
-          <div class="v01-audit-item">[05:30:00Z] Motion-artifact dropout ({drop_m["value"]:.1f} s) bracketed T_A={drop_m["cursor_a_s"]:.1f} s to T_B={drop_m["cursor_b_s"]:.1f} s; verify transducer before titration.</div>
-          <div class="v01-audit-item">[05:29:54Z] MAP excursion {map_m["value"]:.1f} mmHg below {map_m["lower_limit"]:.1f} mmHg floor (abort {map_m["abort_lower_limit"]:.1f} mmHg); PEEP {peep_act["value"]:.1f} vs {peep_cmd["value"]:.1f} cmH2O CMD.</div>
+          <div class="v01-audit-item">[05:30:00Z] Motion-artifact dropout ({drop_m["value"]:.1f} s) bracketed {ta_html}={drop_m["cursor_a_s"]:.1f} s to {tb_html}={drop_m["cursor_b_s"]:.1f} s; verify transducer before titration.</div>
+          <div class="v01-audit-item">[05:29:54Z] MAP excursion {map_m["value"]:.1f} mmHg below {map_m["lower_limit"]:.1f} mmHg floor (abort {map_m["abort_lower_limit"]:.1f} mmHg); PEEP {peep_act["value"]:.1f} vs {peep_cmd["value"]:.1f} cmH<sub>2</sub>O CMD.</div>
         </div>
       </div>
     </div>
@@ -131,7 +133,7 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     <div class="v02-left-page">
       <section id="v02-disposition" class="v02-gate-band" aria-label="Executive Gate Disposition">
         <div class="v02-gate-top">
-          <h2 class="v02-gate-rec">RECOMMEND CONDITIONAL AUTHORIZATION: SOFA &gt;= 8 &amp; Lactate &gt; 2 <span class="qe-unit">mmol/L</span></h2>
+          <h2 class="v02-gate-rec">RECOMMEND CONDITIONAL AUTHORIZATION: SOFA ≥ 8 &amp; Lactate &gt; 2 <span class="qe-unit">mmol/L</span></h2>
           <span class="va-pill" data-variant="status" data-state="warn">CONDITIONAL</span>
         </div>
         <div class="v02-kpi-strip">
@@ -141,7 +143,7 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
             <span class="v02-kpi-sub">Primary ITT (n = {ov["cohort_n"]:,})</span>
           </div>
           <div class="v02-kpi-tile">
-            <span class="va-kicker">SOFA &gt;= 8 STRATUM</span>
+            <span class="va-kicker">SOFA ≥ 8 STRATUM</span>
             <span class="v02-kpi-val va-nums">{sf["value"]:.2f} [{sf["ci_low"]:.2f}, {sf["ci_high"]:.2f}]</span>
             <span class="v02-kpi-sub">Decisive benefit (n = {sf["cohort_n"]})</span>
           </div>
@@ -151,7 +153,7 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
             <span class="v02-kpi-sub">Decisive benefit (n = {lc["cohort_n"]})</span>
           </div>
           <div class="v02-kpi-tile">
-            <span class="va-kicker">KDIGO STAGE &gt;= 2 AKI</span>
+            <span class="va-kicker">KDIGO STAGE ≥ 2 AKI</span>
             <span class="v02-kpi-val va-nums">{aki["value"]:.1f} ± {aki["expanded_uncertainty"]:.1f}%</span>
             <span class="v02-kpi-sub">vs {aki["control_value"]:.1f}% Control Arm</span>
           </div>
@@ -159,8 +161,8 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
         <div id="v02-subgroup-chips" class="v02-filter-bar va-sheet-hide" role="group" aria-label="Filter Clinical Subgroups">
           <button type="button" class="va-pill v02-chip is-active" data-variant="chip" data-subgroup="all" aria-pressed="true" data-summary="All 4 CONSORT strata shown (ITT n=1,240; Overall HR 0.74 [0.61, 0.90]).">All Strata</button>
           <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="overall" aria-pressed="false" data-summary="Overall Cohort (n=1,240): HR 0.74 [0.61, 0.90] — statistically decisive below HR=1.0.">Overall (n=1,240)</button>
-          <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="age" aria-pressed="false" data-summary="Age >= 65 yr (n=612): HR 0.79 [0.62, 1.01] crosses null (1.0); muted secondary series.">Age &gt;= 65 (n=612)</button>
-          <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="sofa" aria-pressed="false" data-summary="SOFA >= 8 (n=486): HR 0.68 [0.52, 0.89] — strongest vasopressor-sparing effect.">SOFA &gt;= 8 (n=486)</button>
+          <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="age" aria-pressed="false" data-summary="Age ≥ 65 yr (n=612): HR 0.79 [0.62, 1.01] crosses null (1.0); muted secondary series.">Age ≥ 65 (n=612)</button>
+          <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="sofa" aria-pressed="false" data-summary="SOFA ≥ 8 (n=486): HR 0.68 [0.52, 0.89] — strongest vasopressor-sparing effect.">SOFA ≥ 8 (n=486)</button>
           <button type="button" class="va-pill v02-chip" data-variant="chip" data-subgroup="lactate" aria-pressed="false" data-summary="Lactate > 2 mmol/L (n=704): HR 0.71 [0.54, 0.93] — decisive survival margin.">Lactate &gt; 2 (n=704)</button>
         </div>
         <div id="v02-filter-readout" class="v02-filter-readout va-sheet-hide" aria-live="polite">All 4 CONSORT strata shown (ITT n=1,240; Overall HR 0.74 [0.61, 0.90]).</div>
@@ -169,14 +171,14 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       <div class="v9-editorial-grid">
         <article id="v02-methods" class="v02-prose-col">
           <h2>Cohort Design, Null-Crossing Stratification &amp; Renal Safety</h2>
-          <p>Across the intention-to-treat population (n = {ov["cohort_n"]:,}, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of {ov["value"]:.2f} (95% CI [{ov["ci_low"]:.2f}, {ov["ci_high"]:.2f}]). Decisive benefit concentrates in high-acuity strata: SOFA &gt;= 8 (n = {sf["cohort_n"]}, HR {sf["value"]:.2f} [{sf["ci_low"]:.2f}, {sf["ci_high"]:.2f}]) and Lactate &gt; 2 mmol/L (n = {lc["cohort_n"]}, HR {lc["value"]:.2f} [{lc["ci_low"]:.2f}, {lc["ci_high"]:.2f}]).</p>
-          <p>Conversely, the Age &gt;= 65 yr subgroup (n = {ag["cohort_n"]}, HR {ag["value"]:.2f} [{ag["ci_low"]:.2f}, {ag["ci_high"]:.2f}]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage &gt;= 2 acute kidney injury decreased to {aki["value"]:.1f} ± {aki["expanded_uncertainty"]:.1f}% versus {aki["control_value"]:.1f}% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
+          <p>Across the intention-to-treat population (n = {ov["cohort_n"]:,}, 620 protocol vs. 620 control), the protocol achieved an overall 28-day mortality hazard ratio of {ov["value"]:.2f} (95% CI [{ov["ci_low"]:.2f}, {ov["ci_high"]:.2f}]). Decisive benefit concentrates in high-acuity strata: SOFA ≥ 8 (n = {sf["cohort_n"]}, HR {sf["value"]:.2f} [{sf["ci_low"]:.2f}, {sf["ci_high"]:.2f}]) and Lactate &gt; 2 mmol/L (n = {lc["cohort_n"]}, HR {lc["value"]:.2f} [{lc["ci_low"]:.2f}, {lc["ci_high"]:.2f}]).</p>
+          <p>Conversely, the Age ≥ 65 yr subgroup (n = {ag["cohort_n"]}, HR {ag["value"]:.2f} [{ag["ci_low"]:.2f}, {ag["ci_high"]:.2f}]) crosses the 1.0 null boundary and remains deemphasized relative to significant high-acuity strata. KDIGO Stage ≥ 2 acute kidney injury decreased to {aki["value"]:.1f} ± {aki["expanded_uncertainty"]:.1f}% versus {aki["control_value"]:.1f}% control, while refractory hypotension (MAP &lt; 65 mmHg, 8.6 ± 1.5% vs. 11.2%) remains under mandatory WATCH surveillance.</p>
         </article>
         {render_params_aside("Protocol & DSMB Parameters", [
             ("Trial Identifier", "TRIAL-SEPSIS-2026-P3"),
             ("Analysis Set", "ITT (620 vs. 620, n = 1,240)"),
             ("Regression Model", "Stratified Cox PH (95% CI)"),
-            ("Null Crossing Guard", f"Age >= 65 CI high = {ag['ci_high']:.2f}"),
+            ("Null Crossing Guard", f"Age ≥ 65 CI high = {ag['ci_high']:.2f}"),
             ("Renal Safety WATCH", "MAP < 65 mmHg (8.6% vs 11.2%)"),
         ])}
       </div>
@@ -211,26 +213,30 @@ def _build_v03_vitals(specs: dict[str, Any]) -> tuple[str, dict[str, Any], dict[
     map_item["metadata"]["title"] = "Resting Blood Pressure"
     map_item["metadata"]["plain_label"] = "Arm Cuff Check"
     map_item["metadata"].pop("subsystem", None)
-    map_item["quantity"]["target_label"] = "Goal: 65 mmHg or higher"
+    map_item["quantity"]["target_label"] = "Goal: ≥ 65 mmHg"
     map_item["status_annunciator"]["l1_label"] = "Recheck in 15 min"
 
     spo2_item = copy.deepcopy(raw_sc["items"][2])
     spo2_item["metadata"]["title"] = "Oxygen Level (Pulse Oximeter)"
     spo2_item["metadata"]["plain_label"] = "Finger Sensor Check"
     spo2_item["metadata"].pop("subsystem", None)
-    spo2_item["quantity"]["target_label"] = "Goal: 92% or higher"
+    spo2_item["quantity"]["target_label"] = "Goal: ≥ 92%"
     spo2_item["status_annunciator"]["l1_label"] = "On Track"
+
+    spo2_card, map_card = copy.deepcopy(spo2_item), copy.deepcopy(map_item)
+    spo2_card.pop("sparkline", None)
+    map_card.pop("sparkline", None)
 
     l1_spec = {
         "$schema": "urn:quiet-ui:schema:v9:scalar",
         "id": "v03-patient-home-vitals",
         "metadata": {
             "title": "Your Daily Recovery Vitals",
-            "description": "Plain-language home targets from your hospital discharge plan.",
+            "description": "Plain-language home targets without redundant chart traces.",
             "rigor_level": "L1",
             "timestamp_utc": "2026-11-17T05:30:00Z",
         },
-        "items": [spo2_item, map_item],
+        "items": [spo2_card, map_card],
     }
     html = embed_compile(l1_spec, "L1", "m3")
     return html, spo2_item, map_item
@@ -250,7 +256,7 @@ def _build_v03_charts(spo2_item: dict[str, Any], map_item: dict[str, Any]) -> st
             "y_axis": {"quantity": "Oxygen", "unit": "%", "quantity_calculus": "Oxygen Saturation (%)", "scale_type": "linear", "domain": [88, 100]},
         },
         "envelopes": [
-            {"label": "Goal >= 92%", "threshold_value": 92.0, "type": "warning", "direction": "lower", "stroke_color": "var(--tint-emerald-fg)"},
+            {"label": "Goal ≥ 92%", "threshold_value": 92.0, "type": "warning", "direction": "lower", "stroke_color": "var(--tint-emerald-fg)"},
         ],
         "series": [
             {"id": "spo2_home", "name": "Oxygen Level (%)", "epistemic_type": "discrete_measurement", "connect_piecewise": True, "term": "oxygen-goal", "stroke_color": "var(--tint-emerald-fg)", "marker_glyph": "circle", "data_points": spo2_pts},
@@ -278,10 +284,10 @@ def _build_v03_charts(spo2_item: dict[str, Any], map_item: dict[str, Any]) -> st
     return (
         '<div class="qe-equation-bar" aria-label="Daily Care Plan">'
         '<span class="qe-eq-lhs">Daily Plan = </span>'
-        '<button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target &gt;= 92%</button>'
+        '<button type="button" class="va-pill qe-eq-term qe-term-oxygen-goal" data-variant="chip" data-term="oxygen-goal" aria-pressed="false">Oxygen Target ≥ 92%</button>'
         '<span class="qe-eq-op"> + </span>'
         '<button type="button" class="va-pill qe-eq-term qe-term-hydration-check" data-variant="chip" data-term="hydration-check" aria-pressed="false">Hydration &amp; Standing Check</button>'
-        '<span class="qe-eq-op"> -&gt; </span>'
+        '<span class="qe-eq-op"> → </span>'
         '<button type="button" class="va-pill qe-eq-term qe-term-bp-threshold" data-variant="chip" data-term="bp-threshold" aria-pressed="false">Clinic Call (&lt; 65 mmHg)</button>'
         '</div>'
         '<div class="v03-charts-grid">'
@@ -300,7 +306,7 @@ def _build_v03_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     return f"""<div class="v9-stage-inner v9-view-v03">
   <div class="va-m1-block-only v9-m1-folio">
     <span>HOME CARE SUMMARY · DISCHARGE RECOVERY PLAN</span>
-    <span>OXYGEN GOAL &gt;= {spo2_m["lower_limit"]:.1f}% · BP CHECK-IN {map_m["lower_limit"]:.1f} mmHg</span>
+    <span>OXYGEN GOAL ≥ {spo2_m["lower_limit"]:.1f}% · BP CHECK-IN {map_m["lower_limit"]:.1f} mmHg</span>
   </div>
   <header class="v9-masthead">
     <div class="v9-masthead-eyebrow">
@@ -326,7 +332,7 @@ def _build_v03_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     {charts_html}
     <div class="v03-checklist-grid">
       <article class="v03-check-card" data-term="oxygen-goal">
-        <h3>1. Oxygen Target &gt;= {spo2_m["lower_limit"]:.1f}%</h3>
+        <h3>1. Oxygen Target ≥ {spo2_m["lower_limit"]:.1f}%</h3>
         <p>Current reading: {spo2_m["value"]:.1f}%. Sit upright for 2 minutes before clipping the finger sensor.</p>
         <label class="v03-check-label"><input type="checkbox" checked> Morning pulse-ox logged</label>
       </article>

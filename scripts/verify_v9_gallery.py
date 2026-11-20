@@ -57,6 +57,21 @@ def _check_v17_and_v18(driver: Any, base_url: str, errs: list[str]) -> None:
         if int(land_nw or 0) < 1200:
             errs.append(f"[V17_LANDSCAPE] landscape backdrop naturalWidth={land_nw} < 1200")
 
+    set_viewport(driver, 390, 844, 1)
+    driver.get(f"{base_url}?world=06-smart-home-and-energy&view=v17-picture-frame-home-kiosk&theme=white")
+    time.sleep(0.45)
+    v17_mob = driver.execute_script("""
+        const doc = document.getElementById('va-stage-portal').contentDocument;
+        if (!doc) return 'no doc';
+        if (doc.documentElement.scrollWidth > doc.documentElement.clientWidth + 1) return 'v17 mobile x-overflow';
+        const fr = doc.getElementById('v17-kiosk'), im = doc.getElementById('v17-photo-art');
+        if (!fr || !im) return 'missing v17 elements';
+        const ratio = im.getBoundingClientRect().height / Math.max(1, fr.getBoundingClientRect().height);
+        return ratio >= 0.82 ? 'ok' : 'imgRect/frameRect=' + ratio.toFixed(3) + ' < 0.82';
+    """)
+    if v17_mob != "ok":
+        errs.append(f"[V17_MOBILE_FILL] {v17_mob}")
+
     # v18 Mobile (390x844 -> N4 dock + >=44px targets + 0 overflow) & Desktop Mushroom + Stacked ECharts
     set_viewport(driver, 390, 844, 1)
     driver.get(f"{base_url}?world=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white")

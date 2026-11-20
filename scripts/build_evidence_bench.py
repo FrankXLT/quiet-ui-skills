@@ -29,7 +29,7 @@ SPECIMEN_FILES: tuple[tuple[str, str], ...] = (
     ("M6", "m6_systems_schematics.json"),
     ("M6", "m6_everyday_topologies.json"),
 )
-_SPECIMEN_PREFIX_RE = re.compile(r"^M[1-6]-L[1-3]:\s*")
+_SPECIMEN_PREFIX_RE = re.compile(r"^(?:M[1-6]-L[1-3]|Specimen\s+\d+)\s*[:—-]\s*")
 
 
 def _compile_bench_cards(spec_dir: Path) -> str:
@@ -46,7 +46,7 @@ def _compile_bench_cards(spec_dir: Path) -> str:
             modality = detect_modality(render_spec)
             rigor = str(meta.get("rigor_level", "L2")).upper()
             fig_html = compile_spec(render_spec, rigor=rigor, medium="m2", theme="white")
-            is_wide = rigor == "L3" or modality in {"bitfield", "plot", "waveform", "schematic"} or (mod_code == "M2" and rigor == "L2")
+            is_wide = rigor == "L3" or modality in {"bitfield", "plot", "waveform", "schematic"} or mod_code == "M2"
             wide_cls = " qe-specimen-wide" if is_wide else ""
             cards_html.append(
                 f'<article class="qe-specimen{wide_cls}" data-modality="{esc(mod_code)}" '

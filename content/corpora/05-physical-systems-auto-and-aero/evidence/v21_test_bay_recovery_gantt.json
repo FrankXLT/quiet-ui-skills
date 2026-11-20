@@ -4,7 +4,7 @@
   "plot_kind": "gantt",
   "metadata": {
     "title": "Test-Bay CAN-FD & MCU Thermal Recovery Schedule (8.0 h)",
-    "description": "Bottom-up field technician recovery schedule restoring 120 ohm EOL, <= 0.3 m stub, clearing 0.35 us dropout, cooling MCU below 85 C derate, and retesting 42.8% BTE.",
+    "description": "Bottom-up field technician recovery schedule restoring 120 Ω EOL, ≤ 0.3 m stub, clearing 0.35 µs dropout, cooling MCU below 85 °C derate, and retesting 42.8% BTE.",
     "rigor_level": "L2",
     "audience": "Systems & Controls Engineer"
   },
@@ -19,13 +19,13 @@
     }
   },
   "tasks": [
-    {"id": "stub", "label": "Trim Stub <= 0.3 m", "phase": "Harness", "start": 0.0, "end": 1.5, "critical": true},
-    {"id": "eol", "label": "Verify Dual 120 Ohm", "phase": "Harness", "start": 1.5, "end": 2.5, "critical": true, "depends_on": ["stub"]},
-    {"id": "scope", "label": "Clear 0.35 us Dropout", "phase": "Scope", "start": 2.5, "end": 4.5, "critical": true, "depends_on": ["eol"]},
-    {"id": "therm", "label": "Cool MCU < 85 C", "phase": "Thermal", "start": 1.5, "end": 3.5, "float_hours": 1.0, "critical": false},
+    {"id": "stub", "label": "Trim Stub ≤ 0.3 m", "phase": "Harness", "start": 0.0, "end": 1.5, "critical": true},
+    {"id": "eol", "label": "Verify Dual 120 Ω", "phase": "Harness", "start": 1.5, "end": 2.5, "critical": true, "depends_on": ["stub"]},
+    {"id": "scope", "label": "Clear 0.35 µs Dropout", "phase": "Scope", "start": 2.5, "end": 4.5, "critical": true, "depends_on": ["eol"]},
+    {"id": "therm", "label": "Cool MCU < 85 °C", "phase": "Thermal", "start": 1.5, "end": 3.5, "float_hours": 1.0, "critical": false},
     {"id": "dyno", "label": "Retest 42.8% BTE", "phase": "Dyno", "start": 4.5, "end": 7.5, "critical": true, "depends_on": ["scope", "therm"]},
     {"id": "sign", "label": "Bay Signoff Gate", "phase": "Signoff", "start": 7.5, "end": 8.0, "critical": true, "milestone": true, "depends_on": ["dyno"]}
   ],
   "mcu_thermal_derate_c": 85.0,
-  "conservation_notes": "Conserves 120 ohm EOL, 0.3 m max stub, 0.35 us dropout, 85 C MCU derate, and 42.8% BTE dyno verification across 8.0 h."
+  "conservation_notes": "Conserves 120 Ω EOL, 0.3 m max stub, 0.35 µs dropout, 85 °C MCU derate, and 42.8% BTE dyno verification across 8.0 h."
 }

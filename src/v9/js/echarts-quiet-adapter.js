@@ -307,6 +307,7 @@
       : isExtKind ? (ext ? ext.buildOption(doc, payload, readTokens(doc), w) : null)
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
+    if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, readTokens(doc));
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.echartsActive = 'true';
