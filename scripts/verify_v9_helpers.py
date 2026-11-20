@@ -87,7 +87,10 @@ if (view === 'v01-icu-bedside-terminal') {
   }
   if (w <= 420) {
     const grid = document.querySelector('.qe-scalar-grid');
-    if (grid && grid.getBoundingClientRect().height > 118) errs.push(`[MOBILE_GRID] 2x2 vitals height=${grid.getBoundingClientRect().height.toFixed(1)}px > 118px`);
+    if (grid && grid.getBoundingClientRect().height > 148) errs.push(`[MOBILE_GRID] 2x2 vitals height=${grid.getBoundingClientRect().height.toFixed(1)}px > 148px`);
+    for (const c of document.querySelectorAll('.v9-view-v01 .qe-scalar-card')) {
+      if (c.scrollHeight > c.clientHeight + 1) errs.push(`[MOBILE_CARD_CLIP] v01 scalar card vertical clip ${c.scrollHeight} > ${c.clientHeight}`);
+    }
     if (!scopeSvg || scopeSvg.getBoundingClientRect().top > 340) errs.push(`[MOBILE_TOP_FOLD] Scope SVG top=${scopeSvg ? scopeSvg.getBoundingClientRect().top.toFixed(1) : 'missing'} > 340px`);
     const ch1 = scopeSvg ? scopeSvg.querySelector('rect[data-role="channel"]') : null;
     if (!ch1 || ch1.getBoundingClientRect().top > 320) errs.push(`[MOBILE_CH1] CH1 top=${ch1 ? ch1.getBoundingClientRect().top.toFixed(1) : 'missing'} > 320px`);

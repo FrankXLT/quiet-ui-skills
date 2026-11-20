@@ -56,8 +56,47 @@ def _compile_bench_cards(spec_dir: Path) -> str:
     return "".join(cards_html)
 
 
+def _bundle_bench_css() -> str:
+    """Bundle layered tokens, shell, pills, bench, and view styles inline for GitHub Pages."""
+    parts: list[str] = ["@layer reset, tokens, shell, archetypes, views, evidence, utilities;"]
+    tok_f = REPO_ROOT / "tokens" / "quiet-ui-tokens.css"
+    if tok_f.exists():
+        parts.append(f"@layer tokens {{\n{tok_f.read_text(encoding='utf-8')}\n}}")
+    for rel in (
+        "src/css/00-layers-and-reset.css",
+        "src/css/01-stage-and-containers.css",
+        "src/css/06-b-pills-and-annunciators.css",
+        "docs/bench/evidence-bench.css",
+        "src/v9/css/08-directional-and-planner.css",
+    ):
+        fpath = REPO_ROOT / rel
+        if fpath.exists():
+            txt = re.sub(r"^@layer\s+[a-zA-Z0-9_,\s-]+;\s*", "", fpath.read_text(encoding="utf-8"), flags=re.M)
+            parts.append(txt)
+    return re.sub(r"</\s*style", r"<\/style", "\n\n".join(parts), flags=re.I)
+
+
+def _bundle_bench_js() -> str:
+    """Bundle bench runtime, ECharts adapters, and filter controls inline for GitHub Pages."""
+    parts = [
+        (REPO_ROOT / rel).read_text(encoding="utf-8")
+        for rel in (
+            "src/js/evidence-runtime.js",
+            "src/v9/js/echarts-layers.js",
+            "src/v9/js/echarts-schedule-heatmap.js",
+            "src/v9/js/echarts-sankey-strip.js",
+            "src/v9/js/echarts-quiet-adapter.js",
+            "docs/bench/bench.js",
+        )
+        if (REPO_ROOT / rel).exists()
+    ]
+    return re.sub(r"</\s*script", r"<\/script", "\n\n".join(parts), flags=re.I)
+
+
 def _render_bench_shell(cards_markup: str) -> str:
     """Wrap compiled bench cards into accessible HTML5 shell."""
+    css_bundle = _bundle_bench_css()
+    js_bundle = _bundle_bench_js()
     return f"""<!DOCTYPE html>
 <html lang="en" data-theme="white" data-medium="m2">
 <head>
@@ -65,12 +104,9 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
   <title>Quiet UI v9.0 — 3-Pillar Component Library (39 Specimens)</title>
-  <link rel="stylesheet" href="../../tokens/quiet-ui-tokens.css" />
-  <link rel="stylesheet" href="../../src/css/00-layers-and-reset.css" />
-  <link rel="stylesheet" href="../../src/css/01-stage-and-containers.css" />
-  <link rel="stylesheet" href="../../src/css/06-b-pills-and-annunciators.css" />
-  <link rel="stylesheet" href="./evidence-bench.css" />
-  <link rel="stylesheet" href="../../src/v9/css/08-directional-and-planner.css" />
+  <style id="qe-bench-styles">
+{css_bundle}
+  </style>
 </head>
 <body>
   <a href="#bench-main" class="qe-skip-link">Skip to component specimens</a>
@@ -131,12 +167,9 @@ def _render_bench_shell(cards_markup: str) -> str:
     <section class="qe-bench-grid" aria-label="39 3-Pillar Components">{cards_markup}</section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
-  <script src="../../src/js/evidence-runtime.js"></script>
-  <script src="../../src/v9/js/echarts-layers.js"></script>
-  <script src="../../src/v9/js/echarts-schedule-heatmap.js"></script>
-  <script src="../../src/v9/js/echarts-sankey-strip.js"></script>
-  <script src="../../src/v9/js/echarts-quiet-adapter.js"></script>
-  <script src="./bench.js"></script>
+  <script id="qe-bench-runtime">
+{js_bundle}
+  </script>
 </body>
 </html>
 """

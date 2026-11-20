@@ -36,7 +36,7 @@ WORLD_BUILDERS: dict[str, Callable[[Path], dict[str, Any]]] = {
 
 def bundle_v9_stage_css(repo_root: Path) -> str:
     """Bundle layered tokens, core shells, pill grammar, evidence styles & v9 remediations."""
-    parts: list[str] = ["@layer reset, tokens, shell, archetypes, evidence, utilities;"]
+    parts: list[str] = ["@layer reset, tokens, shell, archetypes, views, evidence, utilities;"]
     tok_f = repo_root / "tokens" / "quiet-ui-tokens.css"
     if tok_f.exists():
         parts.append(f"@layer tokens {{\n{tok_f.read_text(encoding='utf-8')}\n}}")

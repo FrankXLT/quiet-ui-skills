@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* Quiet UI v9.0 Phase 2 — Standalone Qualification Bench & Evidence Components (Zero Cascade Overrides) */
 
-@layer reset, tokens, shell, archetypes, evidence, utilities;
+@layer reset, tokens, shell, archetypes, views, evidence, utilities;
 
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
