@@ -65,9 +65,67 @@ def _heatmap_snippets(payload: dict[str, Any]) -> tuple[str, str, str, str]:
     return plotly, mpl, bokeh, mermaid
 
 
+def _sankey_snippets(payload: dict[str, Any]) -> tuple[str, str, str, str]:
+    title = str(payload.get("title") or "Flow Sankey")
+    unit = str(payload.get("unit") or "")
+    links = payload.get("links") or []
+    plotly = (
+        "fig = go.Figure(go.Sankey(node=dict(label=[n['name'] for n in nodes]),\n"
+        f"    link=dict(source=src_idx, target=dst_idx, value=[l['value'] for l in links])))\n"
+        f"fig.update_layout(template='plotly_white', title='{title}')"
+    )
+    mpl = (
+        "from matplotlib.sankey import Sankey\n"
+        "Sankey(ax=ax, unit=' " + unit + "', flows=[l['value'] for l in links]).finish()\n"
+        f"ax.set_title('{title}')"
+    )
+    bokeh = (
+        "p = figure(title='" + title + "', toolbar_location=None)\n"
+        "p.bezier(x0='x0', y0='y0', x1='x1', y1='y1', cx0='mx', cy0='y0', cx1='mx', cy1='y1', source=src)"
+    )
+    m_lines = ["flowchart LR"]
+    for lk in links[:6]:
+        m_lines.append(f"    {lk['source'].replace(' ', '_')} -->|\"{lk['value']} {unit}\"| {lk['target'].replace(' ', '_')}")
+    return plotly, mpl, bokeh, "\n".join(m_lines)
+
+
+def _strip_chart_snippets(payload: dict[str, Any]) -> tuple[str, str, str, str]:
+    title = str(payload.get("title") or "Telemetry Strip Chart")
+    x_lbl = str((payload.get("x") or {}).get("name") or "Elapsed Time, t / s")
+    tracks = payload.get("tracks") or []
+    plotly = (
+        f"fig = make_subplots(rows={max(1, len(tracks))}, cols=1, shared_xaxes=True)\n"
+        "for i, tr in enumerate(tracks, 1):\n"
+        "    fig.add_scatter(x=t, y=tr['y'], row=i, col=1, name=tr['name'])\n"
+        f"fig.update_layout(template='plotly_white', xaxis_title='{x_lbl}')"
+    )
+    mpl = (
+        f"fig, axes = plt.subplots({max(1, len(tracks))}, 1, sharex=True)\n"
+        "for ax, tr in zip(axes, tracks):\n"
+        "    ax.axhspan(*tr['nominalBand'], color='#ECFDF5', alpha=0.6); ax.plot(t, tr['y'])\n"
+        f"axes[-1].set_xlabel('{x_lbl}'); fig.suptitle('{title}')"
+    )
+    bokeh = (
+        "figs = [figure(height=120, x_range=x_rng, y_axis_label=tr['unit']) for tr in tracks]\n"
+        "show(column(*figs))"
+    )
+    first_pts = ((tracks[0].get("data") if tracks else None) or [])[::20][:6]
+    vals = [round(p[1], 2) for p in first_pts]
+    mermaid = f"xychart-beta\n    title \"{title}\"\n    x-axis {[p[0] for p in first_pts]}\n    line {vals}"
+    return plotly, mpl, bokeh, mermaid
+
+
 def eco_snippets(payload: dict[str, Any]) -> list[tuple[str, str, str]]:
     """Generate copyable 5-ecosystem snippets (ECharts, Plotly, Matplotlib, Bokeh, Mermaid)."""
     kind = payload["kind"]
+    if kind == "sankey":
+        echarts_cfg = json.dumps({"renderer": "svg", "kind": "sankey", "nodes": payload.get("nodes", [])[:6], "links": payload.get("links", [])[:6]}, indent=2, ensure_ascii=False)
+        plotly, mpl, bokeh, mermaid = _sankey_snippets(payload)
+        return [("echarts", "Apache ECharts", echarts_cfg), ("plotly", "Plotly (Python)", plotly), ("matplotlib", "Matplotlib", mpl), ("bokeh", "Bokeh", bokeh), ("mermaid", "Mermaid", mermaid)]
+    if kind == "strip_chart":
+        echarts_cfg = json.dumps({"renderer": "svg", "kind": "strip_chart", "xAxis": payload.get("x"), "dataZoom": [{"type": "slider"}], "tracks": [{"name": t["name"], "unit": t["unit"], "nominalBand": t.get("nominalBand")} for t in payload.get("tracks", [])]}, indent=2, ensure_ascii=False)
+        plotly, mpl, bokeh, mermaid = _strip_chart_snippets(payload)
+        return [("echarts", "Apache ECharts", echarts_cfg), ("plotly", "Plotly (Python)", plotly), ("matplotlib", "Matplotlib", mpl), ("bokeh", "Bokeh", bokeh), ("mermaid", "Mermaid", mermaid)]
     x_lbl = str((payload.get("x") or {}).get("name") or "Category")
     y_lbl = str((payload.get("y") or {}).get("name") or payload.get("yName") or "Value")
     echarts_obj: dict[str, Any] = {

@@ -75,7 +75,7 @@ class TestEvidenceCompilers(unittest.TestCase):
                     # Every <path must declare fill=
                     for m in re.finditer(r"<path\b[^>]*>", out):
                         self.assertIn("fill=", m.group(0))
-        self.assertEqual(count, 30)
+        self.assertEqual(count, 33)
 
     def test_rigor_continuum_and_epistemic_truth(self) -> None:
         plot_specs = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_plots.json").read_text("utf-8"))
@@ -327,7 +327,7 @@ class TestEvidenceCompilers(unittest.TestCase):
         from compilers.echarts_adapter import build_echarts_payload, render_ecosystem_drawer
 
         ev_plots = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_everyday_charts.json").read_text("utf-8"))
-        self.assertEqual(len(ev_plots), 5)
+        self.assertEqual(len(ev_plots), 7)
         for sp in ev_plots:
             out = compile_spec(sp, rigor=sp["metadata"]["rigor_level"], medium="m2")
             self.assertIn("data-quiet-echarts", out)
@@ -353,6 +353,47 @@ class TestEvidenceCompilers(unittest.TestCase):
         self.assertEqual(ui_html.count('<article class="qe-specimen'), 6)
         self.assertIn("ui-coupled-tree-explorer", ui_html)
         self.assertIn("br-review-room-gate-band", ui_html)
+
+    def test_phase63b_sankey_scatter_strip_and_abp(self) -> None:
+        from compilers.echarts_adapter import build_echarts_payload, render_ecosystem_drawer
+
+        m4 = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m4_everyday_charts.json").read_text("utf-8"))
+        sankey_sp = next(s for s in m4 if s["id"] == "bench-m4-sankey-power-balance")
+        s_out = compile_spec(sankey_sp, rigor="L2", medium="m2")
+        self.assertIn("qe-sankey-svg", s_out)
+        self.assertIn("178.5 kW (71.4%)", s_out)
+        self.assertEqual(build_echarts_payload(sankey_sp)["kind"], "sankey")
+        self.assertIn("go.Sankey", render_ecosystem_drawer(sankey_sp))
+
+        scatter_sp = next(s for s in m4 if s["id"] == "bench-m4-scatter-regime-cloud")
+        sc_out = compile_spec(scatter_sp, rigor="L3", medium="m2")
+        self.assertIn("140 °C Derate", sc_out)
+        self.assertNotIn("u<sub>y</sub>", sc_out)
+        sc_pay = build_echarts_payload(scatter_sp, rigor="L3", medium="m2")
+        self.assertEqual(sum(len(sr["data"]) for sr in sc_pay["series"][:3]), 84)
+        self.assertFalse(sc_pay["series"][0]["connectPiecewise"])
+
+        m5 = json.loads((REPO_ROOT / "docs" / "bench" / "specimens" / "m5_waveforms.json").read_text("utf-8"))
+        strip_sp = next(s for s in m5 if s["id"] == "bench-m5-strip-chart-telemetry")
+        st_out = compile_spec(strip_sp, rigor="L3", medium="m2")
+        self.assertIn("EXCURSION", st_out)
+        self.assertIn("Nom 2850–3050", st_out)
+        self.assertIn('"dt":0.5', st_out)
+        self.assertIn("Inspect Ecosystem Config", st_out)
+        st_pay = build_echarts_payload(strip_sp, rigor="L3", medium="m2")
+        self.assertEqual(st_pay["kind"], "strip_chart")
+        self.assertEqual(len(st_pay["tracks"]), 4)
+        self.assertEqual(len(st_pay["tracks"][0]["data"]), 120)
+
+        v01 = json.loads((REPO_ROOT / "content" / "corpora" / "01-clinical-icu-and-trials" / "evidence" / "v01_icu_hemodynamic_scope.json").read_text("utf-8"))
+        self.assertEqual(v01["channels"][0]["domain"], [40.0, 120.0])
+        self.assertGreaterEqual(len(v01["channels"][0]["samples"]), 260)
+        # Verify dicrotic notch dip & rebound inside first full beat (t=0.40..1.20)
+        ch1_map = {p[0]: p[1] for p in v01["channels"][0]["samples"] if p[1] is not None}
+        self.assertGreater(ch1_map[0.5], 90.0)
+        self.assertLess(ch1_map[0.7], ch1_map[0.75])
+        v01_out = compile_spec(v01, rigor="L3", medium="m4")
+        self.assertIn("DROPOUT 2.4", v01_out)
 
 
 if __name__ == "__main__":

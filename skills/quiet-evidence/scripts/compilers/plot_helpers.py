@@ -240,6 +240,18 @@ def render_residual_strip(
     return parts
 
 
+def series_has_uncertainty(sr: dict[str, Any]) -> bool:
+    """Return True when discrete points carry y_unc error intervals (default True if empty)."""
+    pts = sr.get("data_points") or []
+    if not pts:
+        return True
+    return any(
+        (isinstance(p, dict) and p.get("y_unc") is not None)
+        or (isinstance(p, (list, tuple)) and len(p) >= 3 and p[2] is not None)
+        for p in pts
+    )
+
+
 def legend_swatch_svg(sr: dict[str, Any], st: dict[str, str], col: str) -> str:
     """Emit legend swatch matching the exact series epistemic_type, dash pattern, and glyph."""
     if sr.get("series_type") == "bar":
@@ -251,7 +263,7 @@ def legend_swatch_svg(sr: dict[str, Any], st: dict[str, str], col: str) -> str:
             f'<line x1="10" y1="1.5" x2="10" y2="12.5" stroke="{col}" stroke-width="1.2"/>'
             f'<line x1="7.5" y1="1.5" x2="12.5" y2="1.5" stroke="{col}" stroke-width="1.1"/>'
             f'<line x1="7.5" y1="12.5" x2="12.5" y2="12.5" stroke="{col}" stroke-width="1.1"/>'
-        )
+        ) if series_has_uncertainty(sr) else ""
         glyph_svg = render_marker(10.0, 7.0, glyph, 5.5, col, "var(--bg-canvas)")
         return f'<svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true">{conn}{whisker}{glyph_svg}</svg>'
     dash = resolve_series_dash(sr, st)

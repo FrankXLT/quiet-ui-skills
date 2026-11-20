@@ -236,7 +236,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
     for wid, vid in (("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec"), ("03-industrial-grid-and-manufacturing", "v09-spc-quality-and-modbus-report"), ("05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph")):
         errs.extend(_audit_stage(driver, f"{base_url}?world={wid}&view={vid}&medium=m1&theme=white", 1440, 900, f"M1_{vid[:3].upper()}"))
 
-    # Studio 2-Mode switching: Examples -> Components (36 Specimens) -> Examples
+    # Studio 2-Mode switching: Examples -> Components (39 Specimens) -> Examples
     driver.get(f"{base_url}?domain=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
     time.sleep(0.28)
     driver.execute_script("document.getElementById('va-tab-components').click();")
@@ -244,10 +244,10 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
     comp_ok = driver.execute_script(
         "const p=document.getElementById('va-stage-portal'),d=document.querySelector('.va-domain-ctrl'),pd=p&&p.contentDocument;"
         "return !!(document.documentElement.dataset.studioView==='components' && p.src.includes('bench/evidence-bench.html') && "
-        "getComputedStyle(d).display==='none' && pd && pd.querySelectorAll('.qe-specimen').length===36 && pd.querySelectorAll('[data-schema-modality=\"schematic\"] svg').length>=8);"
+        "getComputedStyle(d).display==='none' && pd && pd.querySelectorAll('.qe-specimen').length===39 && pd.querySelectorAll('[data-schema-modality=\"schematic\"] svg').length>=8);"
     )
     if not comp_ok:
-        errs.append("[STUDIO_MODE] Components tab failed to mount 36-specimen library or hide Domain selector")
+        errs.append("[STUDIO_MODE] Components tab failed to mount 39-specimen library or hide Domain selector")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.35)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples' && !p.hasAttribute('src');"):

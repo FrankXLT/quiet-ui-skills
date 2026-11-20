@@ -10,14 +10,14 @@
 2. **`quiet-evidence` (Metrology & Clean-Room Open-Standards SVG Compilers):** Deterministically compiles calibrated waveforms, analytical & calibration plots (`viewBox 600`), waterfall charts (`viewBox 640`), 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics (**`ITU-T Z.120` timed sequence lifelines**, **`NASA SP-2016-6105` $N^2$ interface matrices**, **`NRC NUREG-0492` fault trees**, P&ID topologies, RS-485/CAN-FD buses, and ER lineage graphs) from structured JSON with `1–2–5` ticks and SVG knockout halos.
 3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation ledgers.
 
-![Quiet UI v9.0 — 6-Domain Studio & 36-Component Suite](docs/assets/hero_4family_overview.png)
+![Quiet UI v9.0 — 6-Domain Studio & 39-Component Suite](docs/assets/hero_4family_overview.png)
 
 ---
 
 ## Quick Start & Installation
 
 - **Live v9.0 Interactive Studio (`6 Domains · 21 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
-- **3-Pillar Component Library (`36 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, triage queues, ARIA trees, `gantt`/`heatmap`/statistical plots (`Quiet SVG | Live ECharts`), systems schematics, and decision bridges.
+- **3-Pillar Component Library (`39 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, triage queues, ARIA trees, `gantt`/`heatmap`/statistical plots (`Quiet SVG | Live ECharts`), systems schematics, and decision bridges.
 - **Deep-Link Any State:** Append `?mode=examples&domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
 
 ```bash
@@ -99,7 +99,7 @@ All 16 tiers and all 21 domain views default to **Pure White (`data-theme="white
 # 1. Verify v9 Visual Contract, markdown CSS token parity & 21 CDP Gates
 python3 -B skills/quiet-ui/scripts/verify_visual_contract.py quiet-ui-showcase.html --check-docs --cdp
 
-# 2. Verify Pillar 2 quantitative metrology & all 30 JSON + 6 UI/Bridge component specimens
+# 2. Verify Pillar 2 quantitative metrology & all 33 JSON + 6 UI/Bridge component specimens
 python3 -B skills/quiet-evidence/scripts/verify_evidence.py --cdp
 
 # 3. Verify 6-domain 21-view conservation ledgers & v9 studio matrix
@@ -121,7 +121,7 @@ quiet-ui-skills/
 ├── install.sh                                       # 1-command plugin & 3-pillar cross-agent installer
 ├── tokens/quiet-ui-tokens.css                       # Standalone 4-theme CSS design tokens (MIT)
 ├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
-├── docs/bench/evidence-bench.html                   # 36-specimen deterministic 3-Pillar Component Library
+├── docs/bench/evidence-bench.html                   # 39-specimen deterministic 3-Pillar Component Library
 ├── docs/v9/quiet-ui-v9-showcase.html                # Versioned v9.0 archive mirror
 ├── customizations/                                  # Personal (21v) & Brand (17v) starter kits (MIT)
 └── skills/

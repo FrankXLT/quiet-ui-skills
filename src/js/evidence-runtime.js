@@ -20,6 +20,8 @@
       const t0 = Number(a[0]);
       const t1 = Number(b[0]);
       if (targetT >= t0 && targetT <= t1) {
+        if (Math.abs(targetT - t0) < 1e-6 && a[1] !== null && a[1] !== undefined) return a;
+        if (Math.abs(targetT - t1) < 1e-6 && b[1] !== null && b[1] !== undefined) return b;
         if (a[1] === null || a[1] === undefined || b[1] === null || b[1] === undefined) {
           return null;
         }
@@ -56,7 +58,7 @@
       cursorLine.setAttribute('visibility', 'visible');
     }
 
-    const wrap = svg.closest('.qe-waveform-wrap');
+    const wrap = svg.closest('.qe-waveform-wrap') || svg.closest('.qe-plot-wrap');
     const readout = wrap ? wrap.querySelector('.qe-scope-readout') : null;
     if (!readout) return;
 
@@ -86,7 +88,7 @@
   function clearScopeCursor(svg) {
     const cursorLine = svg.querySelector('.qe-live-cursor');
     if (cursorLine) cursorLine.setAttribute('visibility', 'hidden');
-    const wrap = svg.closest('.qe-waveform-wrap');
+    const wrap = svg.closest('.qe-waveform-wrap') || svg.closest('.qe-plot-wrap');
     const readout = wrap ? wrap.querySelector('.qe-scope-readout') : null;
     if (readout) {
       if (readout._qeDefaultNodes && readout._qeDefaultNodes.length) {
@@ -100,7 +102,7 @@
   function initWaveforms() {
     document.querySelectorAll('svg[data-qe-scope="true"]').forEach(function (svg) {
       if (svg.dataset.qeScopeBound === '1') return;
-      const wrap = svg.closest('.qe-waveform-wrap');
+      const wrap = svg.closest('.qe-waveform-wrap') || svg.closest('.qe-plot-wrap');
       const dataEl = wrap ? wrap.querySelector('.qe-scope-data') : null;
       const roEl = wrap ? wrap.querySelector('.qe-scope-readout') : null;
       if (roEl && !roEl._qeDefaultNodes) roEl._qeDefaultNodes = Array.from(roEl.childNodes, function (n) { return n.cloneNode(true); });
@@ -117,7 +119,8 @@
       svg.addEventListener('pointerleave', function () { clearScopeCursor(svg); });
       svg.addEventListener('keydown', function (ev) {
         const curT = Number(svg.dataset.qeCursorT || meta.t_min);
-        const step = (meta.t_span || 1) / 40;
+        const dt = Number(meta.dt);
+        const step = (Number.isFinite(dt) && dt > 0 && ((meta.t_span || 1) / dt) <= 200) ? dt : ((meta.t_span || 1) / 40);
         if (ev.key === 'ArrowRight') { ev.preventDefault(); renderScopeAtTime(svg, meta, curT + step); }
         else if (ev.key === 'ArrowLeft') { ev.preventDefault(); renderScopeAtTime(svg, meta, curT - step); }
         else if (ev.key === 'Home') { ev.preventDefault(); renderScopeAtTime(svg, meta, meta.t_min); }

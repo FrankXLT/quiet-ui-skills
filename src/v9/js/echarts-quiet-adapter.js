@@ -189,12 +189,11 @@
 
     if (layers) series = series.concat(layers.makeSlopedEnvelopes(payload, t, cssVar, doc, 0));
     if (envData.length) {
-      for (var m = 0; m < series.length; m += 1) {
-        if (series[m].type === 'line' || series[m].type === 'scatter') {
-          series[m].markLine = { silent: true, symbol: ['none', 'none'], data: envData };
-          break;
-        }
-      }
+      series.push({
+        type: 'line', silent: true, legendHoverLink: false, tooltip: { show: false },
+        symbol: 'none', lineStyle: { opacity: 0 }, itemStyle: { opacity: 0 }, data: [],
+        markLine: { silent: true, symbol: ['none', 'none'], data: envData }, z: 5,
+      });
     }
     var xAxisBase = {
       type: xMeta.log ? 'log' : 'value',
@@ -209,12 +208,15 @@
       axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: (xMeta.logMapped && layers) ? layers.fmtLogDecade : (xMeta.log ? undefined : fmtLinearTick) },
       splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
     };
+    var totalScatterPts = (payload.series || []).reduce(function (acc, sr) {
+      return (sr.epistemic !== 'analytical_model' && !sr.connectPiecewise) ? acc + (sr.data || []).length : acc;
+    }, 0);
     var opt = {
       animation: false,
       backgroundColor: 'transparent',
       textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
       tooltip: {
-        trigger: 'axis',
+        trigger: totalScatterPts >= 20 ? 'item' : 'axis',
         renderMode: 'richText',
         confine: true,
         backgroundColor: t.bgElevated,
@@ -244,24 +246,6 @@
     return (payload.residuals && layers) ? layers.attachResidualStrip(opt, payload, t, xAxisBase) : opt;
   }
 
-  function buildWaterfallOption(doc, payload) {
-    var t = readTokens(doc);
-    var layers = getLayers();
-    if (layers && typeof layers.buildWaterfallOption === 'function') {
-      return layers.buildWaterfallOption(doc, payload, t, buildEnvelopes(doc, payload, t));
-    }
-    return { animation: false, backgroundColor: 'transparent', series: [] };
-  }
-
-  function buildStackedBarOption(doc, payload) {
-    var t = readTokens(doc);
-    var layers = getLayers();
-    if (layers && typeof layers.buildStackedBarOption === 'function') {
-      return layers.buildStackedBarOption(doc, payload, t, buildEnvelopes(doc, payload, t), resolveSeriesColor);
-    }
-    return { animation: false, backgroundColor: 'transparent', series: [] };
-  }
-
   function shouldEnableECharts(doc, wrap) {
     var rootMed = (doc.documentElement.dataset.medium || '').toLowerCase();
     var wrapMed = (wrap.dataset.medium || '').toLowerCase();
@@ -281,6 +265,7 @@
       }
       host.hidden = true;
     }
+    delete wrap.dataset.qeMountKey;
     wrap.dataset.echartsActive = 'false';
   }
 
@@ -293,23 +278,33 @@
     host.hidden = false;
     var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8);
     var w = avail > 0 ? avail : 300;
+    var ss = getGlobal('QuietEChartsSankeyStrip');
+    var isSS = payload.kind === 'sankey' || payload.kind === 'strip_chart';
     var hasRes = !!(payload.residuals && Array.isArray(payload.residuals.points) && payload.residuals.points.length);
-    var h = hasRes
-      ? Math.round(w < 500 ? 335 : Math.min(410, Math.max(365, w * 0.54)))
-      : Math.round(w < 500 ? 255 : Math.min(340, Math.max(255, w * 0.44)));
+    var h = (isSS && ss && typeof ss.calcHeight === 'function') ? ss.calcHeight(payload, w)
+      : (hasRes ? Math.round(w < 500 ? 335 : Math.min(410, Math.max(365, w * 0.54))) : Math.round(w < 500 ? 255 : Math.min(340, Math.max(255, w * 0.44))));
+    var mKey = [doc.documentElement.dataset.theme || '', doc.documentElement.dataset.medium || '', wrap.dataset.activeTerm || '', wrap.dataset.echartsMode || '', w].join('|');
+    var inst = lib.getInstanceByDom(host);
+    if (inst && wrap.dataset.qeMountKey === mKey) {
+      inst.resize({ width: w, height: h });
+      wrap.dataset.echartsActive = 'true';
+      return;
+    }
     host.style.width = w + 'px';
     host.style.height = h + 'px';
-    var inst = lib.getInstanceByDom(host) || lib.init(host, null, { renderer: 'svg', width: w, height: h });
-    var ext = getGlobal('QuietEChartsExt');
+    if (!inst) inst = lib.init(host, null, { renderer: 'svg', width: w, height: h });
+    var tok = readTokens(doc), layers = getLayers(), ext = getGlobal('QuietEChartsExt');
     var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
-    var opt = payload.kind === 'waterfall' ? buildWaterfallOption(doc, payload)
-      : payload.kind === 'stacked_bar' ? buildStackedBarOption(doc, payload)
-      : isExtKind ? (ext ? ext.buildOption(doc, payload, readTokens(doc), w) : null)
+    var opt = isSS ? (ss ? ss.buildOption(doc, payload, tok, w) : null)
+      : payload.kind === 'waterfall' ? (layers ? layers.buildWaterfallOption(doc, payload, tok, buildEnvelopes(doc, payload, tok)) : null)
+      : payload.kind === 'stacked_bar' ? (layers ? layers.buildStackedBarOption(doc, payload, tok, buildEnvelopes(doc, payload, tok), resolveSeriesColor) : null)
+      : isExtKind ? (ext ? ext.buildOption(doc, payload, tok, w) : null)
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
-    if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, readTokens(doc));
+    if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, tok);
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
+    wrap.dataset.qeMountKey = mKey;
     wrap.dataset.echartsActive = 'true';
   }
 

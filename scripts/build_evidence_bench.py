@@ -33,7 +33,7 @@ _SPECIMEN_PREFIX_RE = re.compile(r"^(?:M[1-6]-L[1-3]|Specimen\s+\d+)\s*[:—-]\s
 
 
 def _compile_bench_cards(spec_dir: Path) -> str:
-    """Compile all 30 JSON specimens + 6 Pillar 1/3 interactive specimens into grid cards."""
+    """Compile all 33 JSON specimens + 6 Pillar 1/3 interactive specimens into grid cards."""
     cards_html: list[str] = []
     for mod_code, fname in SPECIMEN_FILES:
         items = json.loads((spec_dir / fname).read_text(encoding="utf-8"))
@@ -64,7 +64,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.0 — 3-Pillar Component Library (36 Specimens)</title>
+  <title>Quiet UI v9.0 — 3-Pillar Component Library (39 Specimens)</title>
   <link rel="stylesheet" href="../../tokens/quiet-ui-tokens.css" />
   <link rel="stylesheet" href="../../src/css/00-layers-and-reset.css" />
   <link rel="stylesheet" href="../../src/css/01-stage-and-containers.css" />
@@ -78,7 +78,7 @@ def _render_bench_shell(cards_markup: str) -> str:
     <div class="qe-topbar-inner">
       <div class="qe-brand">
         <span class="va-kicker">QUIET UI v9.0 · 3-PILLAR COMPONENT GALLERY</span>
-        <h1>Component Library (36 Specimens × 4 Themes)</h1>
+        <h1>Component Library (39 Specimens × 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -126,14 +126,15 @@ def _render_bench_shell(cards_markup: str) -> str:
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
       <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, triage rows, ARIA trees, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">36 of 36 specimens visible</span>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">39 of 39 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="36 3-Pillar Components">{cards_markup}</section>
+    <section class="qe-bench-grid" aria-label="39 3-Pillar Components">{cards_markup}</section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script src="../../src/js/evidence-runtime.js"></script>
   <script src="../../src/v9/js/echarts-layers.js"></script>
   <script src="../../src/v9/js/echarts-schedule-heatmap.js"></script>
+  <script src="../../src/v9/js/echarts-sankey-strip.js"></script>
   <script src="../../src/v9/js/echarts-quiet-adapter.js"></script>
   <script src="./bench.js"></script>
 </body>
@@ -142,7 +143,7 @@ def _render_bench_shell(cards_markup: str) -> str:
 
 
 def build_bench(out_path: Path | None = None) -> Path:
-    """Compile all 36 3-pillar component specimens into docs/bench/evidence-bench.html."""
+    """Compile all 39 3-pillar component specimens into docs/bench/evidence-bench.html."""
     cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
     target = out_path or (REPO_ROOT / "docs" / "bench" / "evidence-bench.html")
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -152,4 +153,4 @@ def build_bench(out_path: Path | None = None) -> Path:
 
 if __name__ == "__main__":
     written = build_bench()
-    print(f"[OK] Built 3-Pillar Component Library (36 specimens) -> {written}")
+    print(f"[OK] Built 3-Pillar Component Library (39 specimens) -> {written}")

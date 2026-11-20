@@ -9,6 +9,7 @@ from typing import Any
 
 from .comparison_plots import compile_dumbbell, compile_forest, compile_stacked_bar, compile_waterfall
 from .echarts_adapter import build_echarts_payload, render_echarts_toggle_bar
+from .sankey_and_strip import compile_sankey
 from .schedule_and_heatmap import compile_gantt, compile_heatmap
 from .plot_helpers import (
     DASH_RE as _DASH_RE,
@@ -20,6 +21,7 @@ from .plot_helpers import (
     render_residual_strip as _render_residual_strip,
     resolve_series_dash as _resolve_series_dash,
     sample_model_points as _sample_model_points,
+    series_has_uncertainty as _series_has_uncertainty,
     visible_series as _visible_series,
 )
 from .svg_labels import (
@@ -366,6 +368,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             return compile_dumbbell(sub)
         if k == "forest":
             return compile_forest(sub)
+        if k == "sankey":
+            return compile_sankey(sub, eff_rigor, medium)
         return _compile_cartesian(sub, eff_rigor, medium)
 
     echarts_host = '<div class="qe-echarts-host" hidden></div>' if payload is not None else ""
@@ -399,7 +403,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             term = sr.get("term")
             col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), resolve_term_colors(term)["fg"] if term else st["stroke"])
             ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
-            ep_lbl = 'Discrete Sample\u00a0<span class="qe-unit-nw">(&#177;u<sub>y</sub>)</span>' if ep_kind == "discrete" else "Analytical Model"
+            has_unc = _series_has_uncertainty(sr)
+            ep_lbl = ('Discrete Sample\u00a0<span class="qe-unit-nw">(&#177;u<sub>y</sub>)</span>' if has_unc else 'Discrete Sample') if ep_kind == "discrete" else "Analytical Model"
             swatch = _legend_swatch_svg(sr, st, col)
             if (eff_rigor == "L1" and chrome == "embedded") or kind == "stacked_bar":
                 series_items.append(f'<span class="qe-leg-item">{swatch}<span class="qe-leg-txt">{format_math_html(sr.get("name", "Series"))}</span></span>')

@@ -221,7 +221,7 @@ Structured topology and systems diagrams route through `skills/quiet-evidence/sc
 - **Timed Sequence Lifelines (`sequence`)** — ITU-T Z.120 actors, lifelines, activation bars, sync/reply arrows, and timing annotations.
 - **$N^2$ Interface Matrix (`n2_matrix`)** — NASA SP-2016-6105 diagonal subsystem blocks with upper/lower off-diagonal coupling callouts.
 - **Fault Tree Analysis (`fault_tree`)** — NRC NUREG-0492 top event, OR/AND gates, and primary basic events.
-- **Plant/Bus/Pipeline/Interlock/ER (`pid`, `bus`, `pipeline`, `interlock`, `er_lineage`) & Schedule/Matrix (`gantt`, `heatmap`)** — Orthogonal process instrumentation, DAG data pipelines, `2oo3` safety voting matrices, critical-path Gantt charts, and WCAG-calibrated 2D heatmaps.
+- **Plant/Bus/Pipeline/Interlock/ER (`pid`, `bus`, `pipeline`, `interlock`, `er_lineage`) & Schedule/Matrix/Flow/Strip (`gantt`, `heatmap`, `sankey`, `strip_chart`)** — Orthogonal process instrumentation, DAG data pipelines, `2oo3` safety voting matrices, critical-path Gantt charts, WCAG-calibrated 2D heatmaps, flow-conserving Sankeys, 2D multivariate scatter clouds, and synchronized multi-track telemetry strip charts.
 
 **Routing Strategy**: Author a structured JSON spec for the required system topology, validate conservation laws and bounds, and compile deterministic theme-bound `<svg>` output with halo labels and zero ungrounded freehand coordinates.
 

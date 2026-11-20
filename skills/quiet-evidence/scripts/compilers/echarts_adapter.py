@@ -17,33 +17,15 @@ from .plot_helpers import (
     sample_model_points,
     visible_series,
 )
+from .sankey_and_strip import build_sankey_echarts_payload, build_strip_chart_echarts_payload
 from .tokens_and_scales import compute_linear_125_scale
 
 _MATH_SUBS: tuple[tuple[str, str], ...] = (
-    (", B_cap", ""),
-    ("B_cap", "B"),
-    ("L_ratio", "L"),
-    ("eta_bte", "\u03b7"),
-    ("f_obs", "f\u2092\u1d66\u209b"),
-    ("p_hat", "p\u0302"),
-    ("y_hat", "y\u0302"),
-    ("X_bar", "X\u0304"),
-    ("sigma_y", "\u03c3\u1d67"),
-    ("C_pk", "C\u209a\u2096"),
-    ("P_load", "Home Load"),
-    ("P_grid", "Net Grid"),
-    ("P_pv", "Solar Power"),
-    ("P_rx", "P\u1d63\u2093"),
-    ("V_0", "V\u2080"),
-    ("f_0", "f\u2080"),
-    ("V_c", "V"),
-    ("t_rms", "t\u1d63\u2098\u209b"),
-    ("R_net", "R\u2099\u2091\u209c"),
-    ("alpha_fiber", "\u03b1"),
-    ("tau_s", "\u03c4"),
-    ("D^3", "D\u00b3"),
-    ("+/-", "\u00b1"),
-    ("u_y", "u"),
+    (", B_cap", ""), ("B_cap", "B"), ("L_ratio", "L"), ("eta_bte", "\u03b7"), ("f_obs", "f\u2092\u1d66\u209b"),
+    ("p_hat", "p\u0302"), ("y_hat", "y\u0302"), ("X_bar", "X\u0304"), ("sigma_y", "\u03c3\u1d67"), ("C_pk", "C\u209a\u2096"),
+    ("P_load", "Home Load"), ("P_grid", "Net Grid"), ("P_pv", "Solar Power"), ("P_rx", "P\u1d63\u2093"),
+    ("V_0", "V\u2080"), ("f_0", "f\u2080"), ("V_c", "V"), ("t_rms", "t\u1d63\u2098\u209b"), ("R_net", "R\u2099\u2091\u209c"),
+    ("alpha_fiber", "\u03b1"), ("tau_s", "\u03c4"), ("D^3", "D\u00b3"), ("+/-", "\u00b1"), ("u_y", "u"),
 )
 _WORD_TAU_RE = re.compile(r"\btau\b")
 _SIGMA_WORD_RE = re.compile(r"\bsigma\b")
@@ -338,19 +320,15 @@ def _build_forest_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict
 
 def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str = "m2") -> dict[str, Any] | None:
     """Build deterministic semantic ECharts descriptor matching plot_compiler domain scaling."""
-    kind = str(spec.get("plot_kind") or "cartesian")
-    if kind == "waterfall":
-        return _build_waterfall_payload(spec, rigor, medium)
-    if kind == "stacked_bar":
-        return _build_stacked_bar_payload(spec, rigor, medium)
-    if kind == "gantt":
-        return _build_gantt_payload(spec, rigor, medium)
-    if kind == "heatmap":
-        return _build_heatmap_payload(spec, rigor, medium)
-    if kind == "dumbbell":
-        return _build_dumbbell_payload(spec, rigor, medium)
-    if kind == "forest":
-        return _build_forest_payload(spec, rigor, medium)
+    kind = str(spec.get("plot_kind") or spec.get("waveform_kind") or "cartesian")
+    builders = {
+        "waterfall": _build_waterfall_payload, "stacked_bar": _build_stacked_bar_payload,
+        "gantt": _build_gantt_payload, "heatmap": _build_heatmap_payload,
+        "dumbbell": _build_dumbbell_payload, "forest": _build_forest_payload,
+        "sankey": build_sankey_echarts_payload, "strip_chart": build_strip_chart_echarts_payload,
+    }
+    if kind in builders:
+        return builders[kind](spec, rigor, medium)
     if kind != "cartesian":
         return None
     axes = spec.get("axes") or {}

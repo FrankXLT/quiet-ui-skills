@@ -7,6 +7,7 @@ import json
 import math
 from typing import Any
 
+from .sankey_and_strip import compile_strip_chart_block
 from .svg_labels import avoid_label_overlaps, halo_text, svg_knockout_label
 from .tokens_and_scales import (
     SERIES_STYLES,
@@ -428,6 +429,8 @@ def compile_waveform(spec: dict[str, Any], rigor: str | None = None, medium: str
         parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Day Arc"))}">{_compile_day_arc(spec)}</div>')
     elif kind == "sequence":
         parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Sequence Diagram"))}">{_compile_sequence(spec)}</div>')
+    elif kind == "strip_chart":
+        parts.append(compile_strip_chart_block(spec, eff_rigor, medium, chrome=chrome))
     else:
         parts.append(_compile_scope(spec, eff_rigor, medium))
     parts.append("</div>")
