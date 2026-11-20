@@ -30,7 +30,7 @@ Quiet UI v9.0 abandons rigid monolithic page templates and artificial walls betw
    - Enforces deterministic compilation via zero-dependency Python/JS builders consuming structured JSON specs (`urn:quiet-ui:schema:v9:*`), completely terminating freehand SVG coordinate guessing.
 
 3. **Pillar 3 — Directional Presenter-to-Audience Bridge & Murder Board (`skills/quiet-bridge/`)**:
-   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (18 presenter-to-audience pairs)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
+   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (21 presenter-to-audience pairs)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
    - Projects across seven foundational audience lenses: *Technician/Operator*, *Discipline Engineer*, *Project/Systems Engineer*, *Program Manager*, *Consumer/Common Reader*, *Educator/Mentor*, and *Student/Learner*.
    - Operates across three decision tempos: *Tactical* (5–15s anomaly intervention), *Executive* (1–3m gate compression *within that leader's discipline*), and *Analytical* (10–45m full evidentiary proof).
    - Enforces the **4 Universal Audience Evaluation Invariants** across every domain view:
@@ -221,14 +221,14 @@ Structured topology and systems diagrams route through `skills/quiet-evidence/sc
 - **Timed Sequence Lifelines (`sequence`)** — ITU-T Z.120 actors, lifelines, activation bars, sync/reply arrows, and timing annotations.
 - **$N^2$ Interface Matrix (`n2_matrix`)** — NASA SP-2016-6105 diagonal subsystem blocks with upper/lower off-diagonal coupling callouts.
 - **Fault Tree Analysis (`fault_tree`)** — NRC NUREG-0492 top event, OR/AND gates, and primary basic events.
-- **Plant/Bus/Pipeline/ER (`pid`, `bus`, `pipeline`, `interlock`, `er_lineage`)** — Orthogonal process instrumentation, bus arbitration, data lineage, and interlock matrices.
+- **Plant/Bus/Pipeline/Interlock/ER (`pid`, `bus`, `pipeline`, `interlock`, `er_lineage`) & Schedule/Matrix (`gantt`, `heatmap`)** — Orthogonal process instrumentation, DAG data pipelines, `2oo3` safety voting matrices, critical-path Gantt charts, and WCAG-calibrated 2D heatmaps.
 
 **Routing Strategy**: Author a structured JSON spec for the required system topology, validate conservation laws and bounds, and compile deterministic theme-bound `<svg>` output with halo labels and zero ungrounded freehand coordinates.
 
 ### 6.2 Starter Customization Kits (`personal-starter` & `brand-starter`)
 The customization workspaces under `customizations/`:
-- `customizations/personal-starter/` (personal portfolio / workspace theme)
-- `customizations/brand-starter/` (enterprise brand palette)
+- `customizations/personal-starter/` (personal portfolio / workspace theme — all 21 domain views)
+- `customizations/brand-starter/` (enterprise brand palette — 17 product/engineering domain views)
 
 **Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.0:
 - Starters compile deterministically using `customizations/scripts/build_showcase.py`.
@@ -251,17 +251,19 @@ The `Educator <-> Student / Learner` vector is distinct from both specialist-to-
    - Progression intentionally ramps from `L1` (conceptual mental model and high-level block diagram) to `L2` (functional interface states and parameter tables) to `L3` (authentic NIST units, $1\text{--}2\text{--}5$ intervals, discrete measured runs with repeatability corridors vs. continuous theoretical curves).
    - Students are never shown ungrounded cartoon charts; authentic metrology is scaffolded with clear explanatory callouts and plain-language glossaries.
 
-### 7.2 The Asymmetric Flow: Educator vs. Student
+### 7.2 The Asymmetric Flow: Educator vs. Student & Field Tech -> Systems Lead
 
 ```
 [Educator as Presenter] ──► Prerequisite Anchoring ──► Worked Derivations ──► Interactive Probing
                                                                                       │
                                                                                       ▼
-[Student as Presenter]  ──► Scientific Hypothesis   ──► Apparatus Diagram  ──► Measured vs Theory
+[Student as Presenter]  ──► Headline Claim & Law   ──► Bench Dumbbell     ──► Error & Critique
+[Technician Escalation] ──► Symptom & Measurements ──► Bus/Thermal Isolate──► Recovery Gantt
 ```
 
 - **Educator as Presenter**: Scrubs the "curse of expertise" (unexplained leaps in derivations, ungrounded notation), enforces worked examples before problem sets, and embeds interactive parameter sliders.
-- **Student as Presenter (Lab Reports & Capstones)**: Replaces chronological data dumping with formal scientific structure: *Hypothesis* &rarr; *Controlled/Independent/Dependent Variables* &rarr; *Apparatus Schematic* &rarr; *Discrete Runs with $\pm 1\sigma$ Error Bars vs. Theoretical Model* &rarr; *Physical Error Analysis*.
+- **Student as Presenter (Lab Reports & Capstones)**: Replaces chronological data dumping with formal upward structure: *Headline Claim* &rarr; *Apparatus & Controlled Variables* &rarr; *Replicated Repeatability Dumbbell with $\pm 1\sigma$ Bounds* &rarr; *Physical Error Analysis & Self-Critique*.
+- **Field Technician -> Systems Engineer (TSN Escalation)**: Structures field troubleshooting from observed physical symptom, hardware isolation checklist, and bay recovery Gantt before escalation signoff.
 
 ---
 

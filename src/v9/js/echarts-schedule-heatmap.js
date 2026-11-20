@@ -1,0 +1,328 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet Evidence — ECharts Option Builders for Gantt, Heatmap, Dumbbell & Forest */
+(function (global) {
+  'use strict';
+
+  var HEATMAP_STOPS = [[239, 246, 255], [147, 197, 253], [253, 230, 138], [251, 191, 36], [110, 38, 14]];
+  var HEATMAP_RAMP = ['#EFF6FF', '#93C5FD', '#FDE68A', '#FBBF24', '#6E260E'];
+
+  function srgbLin(ch) {
+    var s = ch / 255.0;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  }
+
+  function heatmapCellInk(frac) {
+    var u = Math.max(0, Math.min(1, Number.isFinite(frac) ? frac : 0));
+    var seg = Math.min(3, Math.floor(u * 4));
+    var f = (u - seg * 0.25) / 0.25;
+    var c0 = HEATMAP_STOPS[seg], c1 = HEATMAP_STOPS[seg + 1];
+    var r = Math.round(c0[0] + f * (c1[0] - c0[0]));
+    var g = Math.round(c0[1] + f * (c1[1] - c0[1]));
+    var b = Math.round(c0[2] + f * (c1[2] - c0[2]));
+    var lum = 0.2126 * srgbLin(r) + 0.7152 * srgbLin(g) + 0.0722 * srgbLin(b);
+    return (1.05 / (lum + 0.05)) >= ((lum + 0.05) / 0.0585) ? '#FFFFFF' : '#0F172A';
+  }
+
+  function clampX(x, cs) {
+    var lo = cs ? cs.x : -1e6;
+    var hi = cs ? (cs.x + cs.width) : 1e6;
+    return Math.max(lo, Math.min(hi, x));
+  }
+
+  function baseTooltip(tokens) {
+    return {
+      trigger: 'item',
+      renderMode: 'richText',
+      backgroundColor: tokens.bgSurface,
+      borderColor: tokens.borderStrong,
+      borderWidth: 1,
+      textStyle: { color: tokens.textPrimary, fontSize: 12, fontFamily: 'Inter, sans-serif' },
+    };
+  }
+
+  function buildGanttOption(_doc, payload, tokens, hostW) {
+    var tasks = payload.tasks || [];
+    var cats = tasks.map(function (t) { return t.label; });
+    var narrow = (hostW || 640) < 480;
+    var leftPad = narrow ? 114 : 162;
+    var maxChars = narrow ? 15 : 23;
+    var data = tasks.map(function (t, i) {
+      return [i, t.start, t.end, t.float || 0, t.critical ? 1 : 0, t.milestone ? 1 : 0];
+    });
+    var unit = payload.unit || 'd';
+    var todayText = payload.todayLabel || ('Today (' + payload.todayMarker + unit + ')');
+    var markLine = payload.todayMarker != null ? {
+      symbol: ['none', 'none'],
+      silent: true,
+      lineStyle: { color: tokens.statusDanger, type: 'dashed', width: 1.6 },
+      label: { show: true, formatter: todayText, color: tokens.statusDanger, fontSize: 11, fontWeight: 700, position: 'start', distance: 6, rotate: 0 },
+      data: [{ xAxis: payload.todayMarker }],
+    } : undefined;
+
+    return {
+      animation: false,
+      tooltip: Object.assign(baseTooltip(tokens), {
+        formatter: function (p) {
+          var idx = p && Array.isArray(p.value) ? p.value[0] : -1;
+          var t = tasks[idx] || {};
+          var flt = t.float ? (' · +' + t.float + unit + ' float') : '';
+          return (t.label || '') + '\n' + (t.start != null ? t.start : '') + ' → ' + (t.end != null ? t.end : '') + ' ' + unit + flt;
+        },
+      }),
+      grid: { left: leftPad, right: 24, top: 34, bottom: 44, containLabel: false },
+      xAxis: {
+        type: 'value',
+        name: (payload.x && payload.x.name) || ('Schedule, t / ' + unit),
+        nameLocation: 'middle',
+        nameGap: 26,
+        min: payload.x ? payload.x.min : 0,
+        max: payload.x ? payload.x.max : undefined,
+        interval: payload.x ? payload.x.interval : undefined,
+        nameTextStyle: { color: tokens.textPrimary, fontWeight: 700, fontSize: 11.5 },
+        axisLabel: { color: tokens.textSecondary, fontSize: 11 },
+        splitLine: { lineStyle: { color: tokens.borderHairline } },
+      },
+      yAxis: {
+        type: 'category',
+        inverse: true,
+        data: cats,
+        axisLine: { lineStyle: { color: tokens.borderStrong } },
+        axisTick: { show: false },
+        axisLabel: {
+          color: tokens.textPrimary,
+          fontSize: 11,
+          formatter: function (v) { return v.length > maxChars ? v.slice(0, maxChars - 1) + '…' : v; },
+        },
+        splitLine: { show: true, lineStyle: { color: tokens.borderHairline } },
+      },
+      series: [{
+        type: 'custom',
+        name: 'Schedule',
+        renderItem: function (params, api) {
+          var idx = api.value(0), s = api.value(1), e = api.value(2), flt = api.value(3);
+          var crit = api.value(4) === 1, mile = api.value(5) === 1;
+          var pS = api.coord([s, idx]), pE = api.coord([e, idx]), pF = api.coord([e + flt, idx]);
+          if (!Number.isFinite(pS[0]) || !Number.isFinite(pE[0]) || !Number.isFinite(pS[1])) return null;
+          var cs = params && params.coordSys ? params.coordSys : null;
+          var xS = clampX(pS[0], cs), xE = clampX(pE[0], cs), xF = clampX(pF[0], cs);
+          var h = Math.min(14, Math.max(8, api.size([0, 1])[1] * 0.52));
+          if (mile) {
+            return {
+              type: 'polygon',
+              shape: { points: [[xE, pE[1] - 7], [xE + 7, pE[1]], [xE, pE[1] + 7], [xE - 7, pE[1]]] },
+              style: { fill: tokens.statusWarn, stroke: tokens.bgSurface, lineWidth: 1.2 },
+            };
+          }
+          var children = [{
+            type: 'rect',
+            shape: { x: xS, y: pS[1] - h / 2, width: Math.max(4, xE - xS), height: h, r: 2.5 },
+            style: { fill: crit ? tokens.accentFocal : tokens.bgElevated, stroke: crit ? tokens.bgSurface : tokens.accentFocal, lineWidth: crit ? 0.8 : 1.4 },
+          }];
+          if (flt > 0 && xF > xE + 2) {
+            children.push({
+              type: 'rect',
+              shape: { x: xE, y: pS[1] - h * 0.36, width: xF - xE, height: h * 0.72, r: 2 },
+              style: { fill: tokens.bgSurface, stroke: tokens.textSecondary, lineWidth: 1, lineDash: [3, 2] },
+            });
+          }
+          return { type: 'group', children: children };
+        },
+        data: data,
+        markLine: markLine,
+      }],
+    };
+  }
+
+  function buildHeatmapOption(_doc, payload, tokens, hostW) {
+    var zMin = payload.min != null ? payload.min : 0;
+    var zMax = payload.max != null ? payload.max : 100;
+    var zSpan = (zMax - zMin) || 1;
+    var leftPad = (hostW || 640) < 480 ? 96 : 142;
+    var data = (payload.cells || []).map(function (c) {
+      return {
+        value: c,
+        label: { color: heatmapCellInk((c[2] - zMin) / zSpan) },
+      };
+    });
+    return {
+      animation: false,
+      tooltip: Object.assign(baseTooltip(tokens), {
+        formatter: function (p) {
+          var v = (p && Array.isArray(p.value)) ? p.value : [0, 0, 0];
+          var xc = (payload.xCategories || [])[v[0]] || '';
+          var yc = (payload.yCategories || [])[v[1]] || '';
+          return yc + ' · ' + xc + '\n' + v[2] + (payload.unit ? ' ' + payload.unit : '');
+        },
+      }),
+      grid: { left: leftPad, right: 24, top: 38, bottom: 54 },
+      xAxis: {
+        type: 'category',
+        position: 'top',
+        data: payload.xCategories || [],
+        axisLabel: { color: tokens.textPrimary, fontSize: 11, fontWeight: 600 },
+        splitArea: { show: false },
+      },
+      yAxis: {
+        type: 'category',
+        data: payload.yCategories || [],
+        axisLabel: { color: tokens.textPrimary, fontSize: 11, fontWeight: 600 },
+      },
+      visualMap: {
+        min: zMin,
+        max: zMax,
+        orient: 'horizontal',
+        left: 'center',
+        bottom: 6,
+        itemWidth: 11,
+        itemHeight: 130,
+        inRange: { color: HEATMAP_RAMP },
+        text: [String(zMax), String(zMin)],
+        textStyle: { color: tokens.textSecondary, fontSize: 11 },
+      },
+      series: [{
+        type: 'heatmap',
+        data: data,
+        itemStyle: { borderColor: tokens.bgSurface, borderWidth: 1.5 },
+        label: {
+          show: payload.rigor !== 'L1',
+          fontSize: 11,
+          fontFamily: 'JetBrains Mono, monospace',
+          fontWeight: 700,
+          formatter: function (p) { return String((p.value && p.value[2] != null) ? p.value[2] : ''); },
+        },
+      }],
+    };
+  }
+
+  function buildDumbbellOption(_doc, payload, tokens) {
+    var items = payload.items || [];
+    var cats = payload.categories || [];
+    var dense = cats.length > 8;
+    var stems = items.map(function (it, i) { return [i, it.before, it.after]; });
+    return {
+      animation: false,
+      tooltip: Object.assign(baseTooltip(tokens), { trigger: 'axis' }),
+      legend: { top: 2, right: 12, textStyle: { color: tokens.textSecondary, fontSize: 11 } },
+      grid: { left: 66, right: 20, top: 36, bottom: 44 },
+      xAxis: {
+        type: 'category',
+        data: cats,
+        axisLabel: { color: tokens.textSecondary, fontSize: 11, interval: dense ? 1 : 0 },
+        axisLine: { lineStyle: { color: tokens.textPrimary } },
+      },
+      yAxis: {
+        type: 'value',
+        name: payload.y ? payload.y.name : '',
+        nameLocation: 'middle',
+        nameGap: 44,
+        min: payload.y ? payload.y.min : undefined,
+        max: payload.y ? payload.y.max : undefined,
+        interval: payload.y ? payload.y.interval : undefined,
+        nameTextStyle: { color: tokens.textPrimary, fontSize: 11, fontWeight: 700 },
+        axisLabel: { color: tokens.textSecondary, fontSize: 11 },
+        splitLine: { lineStyle: { color: tokens.borderHairline } },
+      },
+      series: [
+        {
+          type: 'custom',
+          silent: true,
+          tooltip: { show: false },
+          renderItem: function (_p, api) {
+            var xIdx = api.value(0), pB = api.coord([xIdx, api.value(1)]), pA = api.coord([xIdx, api.value(2)]);
+            if (!Number.isFinite(pB[0]) || !Number.isFinite(pB[1]) || !Number.isFinite(pA[1])) return null;
+            return { type: 'line', shape: { x1: pB[0], y1: pB[1], x2: pA[0], y2: pA[1] }, style: { stroke: tokens.borderStrong, lineWidth: 2 } };
+          },
+          data: stems,
+        },
+        {
+          name: payload.beforeLabel || 'Baseline',
+          type: 'scatter',
+          symbolSize: 8,
+          itemStyle: { color: tokens.bgSurface, borderColor: tokens.textSecondary, borderWidth: 1.8 },
+          data: items.map(function (it) { return it.before; }),
+        },
+        {
+          name: payload.afterLabel || 'After',
+          type: 'scatter',
+          symbolSize: 9,
+          itemStyle: { color: tokens.accentFocal, borderColor: tokens.bgSurface, borderWidth: 1.2 },
+          data: items.map(function (it) { return it.after; }),
+        },
+      ],
+    };
+  }
+
+  function buildForestOption(_doc, payload, tokens, hostW) {
+    var items = payload.items || [];
+    var leftPad = (hostW || 640) < 480 ? 112 : 164;
+    var data = items.map(function (it, i) { return [i, it.ciLow, it.estimate, it.ciHigh, it.pooled ? 1 : 0, it.sig ? 1 : 0]; });
+    return {
+      animation: false,
+      tooltip: Object.assign(baseTooltip(tokens), {
+        formatter: function (p) {
+          var idx = p && Array.isArray(p.value) ? p.value[0] : -1;
+          var it = items[idx] || {};
+          return (it.label || '') + '\n' + it.estimate + ' (95% CI: ' + it.ciLow + ' to ' + it.ciHigh + ')';
+        },
+      }),
+      grid: { left: leftPad, right: 26, top: 22, bottom: 44 },
+      xAxis: {
+        type: 'value',
+        name: payload.x ? payload.x.name : 'Effect (95% CI)',
+        nameLocation: 'middle',
+        nameGap: 26,
+        min: payload.x ? payload.x.min : undefined,
+        max: payload.x ? payload.x.max : undefined,
+        interval: payload.x ? payload.x.interval : undefined,
+        nameTextStyle: { color: tokens.textPrimary, fontSize: 11.5, fontWeight: 700 },
+        axisLabel: { color: tokens.textSecondary, fontSize: 11 },
+        splitLine: { lineStyle: { color: tokens.borderHairline } },
+      },
+      yAxis: {
+        type: 'category',
+        data: payload.categories || [],
+        axisLabel: { color: tokens.textPrimary, fontSize: 11, width: leftPad - 16, overflow: 'truncate' },
+        axisTick: { show: false },
+      },
+      series: [{
+        type: 'custom',
+        renderItem: function (params, api) {
+          var yi = api.value(0), lo = api.coord([api.value(1), yi]), mid = api.coord([api.value(2), yi]), hi = api.coord([api.value(3), yi]);
+          if (!Number.isFinite(lo[0]) || !Number.isFinite(mid[0]) || !Number.isFinite(hi[0]) || !Number.isFinite(mid[1])) return null;
+          var cs = params && params.coordSys ? params.coordSys : null;
+          var xLo = clampX(lo[0], cs), xMid = clampX(mid[0], cs), xHi = clampX(hi[0], cs);
+          var col = api.value(5) === 1 ? tokens.accentFocal : tokens.textSecondary;
+          var children = [
+            { type: 'line', shape: { x1: xLo, y1: lo[1], x2: xHi, y2: hi[1] }, style: { stroke: col, lineWidth: 1.8 } },
+            { type: 'line', shape: { x1: xLo, y1: lo[1] - 4, x2: xLo, y2: lo[1] + 4 }, style: { stroke: col, lineWidth: 1.4 } },
+            { type: 'line', shape: { x1: xHi, y1: hi[1] - 4, x2: xHi, y2: hi[1] + 4 }, style: { stroke: col, lineWidth: 1.4 } },
+          ];
+          if (api.value(4) === 1) {
+            children.push({ type: 'polygon', shape: { points: [[xMid, mid[1] - 6], [xMid + 7, mid[1]], [xMid, mid[1] + 6], [xMid - 7, mid[1]]] }, style: { fill: col, stroke: tokens.bgSurface, lineWidth: 1 } });
+          } else {
+            children.push({ type: 'rect', shape: { x: xMid - 4, y: mid[1] - 4, width: 8, height: 8 }, style: { fill: col, stroke: tokens.bgSurface, lineWidth: 1 } });
+          }
+          return { type: 'group', children: children };
+        },
+        data: data,
+        markLine: {
+          symbol: ['none', 'none'],
+          silent: true,
+          lineStyle: { color: tokens.textPrimary, type: 'dashed', width: 1.4 },
+          label: { show: false },
+          data: [{ xAxis: payload.nullValue != null ? payload.nullValue : 1 }],
+        },
+      }],
+    };
+  }
+
+  global.QuietEChartsExt = {
+    buildOption: function (doc, payload, tokens, hostW) {
+      if (payload.kind === 'gantt') return buildGanttOption(doc, payload, tokens, hostW);
+      if (payload.kind === 'heatmap') return buildHeatmapOption(doc, payload, tokens, hostW);
+      if (payload.kind === 'dumbbell') return buildDumbbellOption(doc, payload, tokens);
+      if (payload.kind === 'forest') return buildForestOption(doc, payload, tokens, hostW);
+      return null;
+    },
+  };
+}(typeof window !== 'undefined' ? window : this));

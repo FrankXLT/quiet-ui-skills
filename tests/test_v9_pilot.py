@@ -161,7 +161,7 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertIsNotNone(m)
         manifest = json.loads(m.group(1))
         self.assertEqual(len(manifest["worlds"]), 5)
-        self.assertEqual(sum(len(w["views"]) for w in manifest["worlds"]), 16)
+        self.assertEqual(sum(len(w["views"]) for w in manifest["worlds"]), 19)
         for world in manifest["worlds"]:
             self.assertTrue(world.get("conservation_ledger"), f"Missing conservation ledger for {world['world_id']}")
             for vw in world["views"]:
@@ -305,6 +305,29 @@ class TestV9AllWorldsShowcase(unittest.TestCase):
         self.assertEqual(l3_pay["residuals"]["points"][0][1], 0.0)
         self.assertNotIn("PANEL-MAIN-200A", scrub_prose("PANEL-MAIN-200A uses M7 and L3 Booktabs for N4"))
         self.assertNotIn("Booktabs", scrub_prose("L3 Booktabs table in v18-home-assistant-companion-console"))
+
+    def test_phase62_directional_views_conservation_and_hygiene(self) -> None:
+        m = re.search(r'<script[^>]*id="va-v9-manifest"[^>]*>(.*?)</script>', self.unified_html, flags=re.S)
+        manifest = json.loads(m.group(1))
+        by_id = {vw["view_id"]: vw for w in manifest["worlds"] for vw in w["views"]}
+        for vid in ("v19-product-roadmap-and-triage", "v20-student-capstone-lab-report", "v21-field-anomaly-escalation-tsn"):
+            self.assertIn(vid, by_id, f"Missing {vid} in 5-world build")
+            tpl_m = re.search(rf'<template id="tpl-view-{vid}">(.*?)</template>', self.unified_html, flags=re.S)
+            self.assertIsNotNone(tpl_m)
+            frag = tpl_m.group(1)
+            self.assertNotIn("!important", frag.lower())
+            self.assertNotIn("qe-fig-badges", frag)
+            for leak in ("QUIET-BRIDGE", "Murder-Board", "Decision Contrast", "Pedagogical Flow", "Quiet Cockpit"):
+                self.assertNotIn(leak, frag)
+        v19_txt = re.search(r'<template id="tpl-view-v19-product-roadmap-and-triage">(.*?)</template>', self.unified_html, flags=re.S).group(1)
+        for tok in ("250.0", "12.0 s", "0x8003B104", "+3.0 d", "4 Tracked"):
+            self.assertIn(tok, v19_txt)
+        v20_txt = re.search(r'<template id="tpl-view-v20-student-capstone-lab-report">(.*?)</template>', self.unified_html, flags=re.S).group(1)
+        for tok in ("5.00 V", "2.40 s", "1.84 V", "1.82 V", "0.05 V", "0.8"):
+            self.assertIn(tok, v20_txt)
+        v21_txt = re.search(r'<template id="tpl-view-v21-field-anomaly-escalation-tsn">(.*?)</template>', self.unified_html, flags=re.S).group(1)
+        for tok in ("120 Ω", "0.3 m", "0.35 µs", "85 °C", "42.8%", "8.0 h"):
+            self.assertIn(tok, v21_txt)
 
 
 if __name__ == "__main__":

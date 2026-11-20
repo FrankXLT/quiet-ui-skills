@@ -1,0 +1,138 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-27-m6-er-lineage",
+    "schematic_kind": "er_lineage",
+    "metadata": {
+      "title": "Telemetry Warehouse Relational Lineage",
+      "description": "2x2 Crow's-Foot entity schema binding calibrated test assets to time-series telemetry and anomaly logs.",
+      "rigor_level": "L2",
+      "audience": "Data & Systems Architect"
+    },
+    "entities": [
+      {
+        "id": "assets",
+        "label": "assets",
+        "columns": ["PK asset_id : uuid", "serial_code : text", "bay_location : text"]
+      },
+      {
+        "id": "runs",
+        "label": "telemetry_runs",
+        "focal": true,
+        "columns": ["PK run_id : uuid", "FK asset_id -> assets", "sample_rate_hz : float"]
+      },
+      {
+        "id": "certs",
+        "label": "calibration_certs",
+        "columns": ["PK cert_id : uuid", "FK asset_id -> assets", "valid_until : date"]
+      },
+      {
+        "id": "events",
+        "label": "anomaly_events",
+        "columns": ["PK event_id : uuid", "FK run_id -> telemetry_runs", "severity_code : int"]
+      }
+    ],
+    "relations": [
+      {"from": "assets", "to": "runs"},
+      {"from": "assets", "to": "certs"},
+      {"from": "runs", "to": "events"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-28-m6-pipeline-dag",
+    "schematic_kind": "pipeline",
+    "metadata": {
+      "title": "Streaming Metric Ingest & Schema Validation DAG",
+      "description": "Four-stage data pipeline separating raw ingestion, schema checking, dead-letter quarantine, and aggregation.",
+      "rigor_level": "L2",
+      "audience": "Data Platform Engineer"
+    },
+    "stages": ["Ingest", "Parse", "Normalize", "Validate", "Publish"],
+    "nodes": [
+      {"id": "edge", "label": "Edge Broker", "metric": "18.4k msg/s", "stage": 0},
+      {"id": "batch", "label": "Batch Archive", "metric": "JSON / Parquet", "stage": 0},
+      {"id": "parse", "label": "Frame Parser", "metric": "UTC Align", "stage": 1},
+      {"id": "units", "label": "Unit Normalizer", "metric": "NIST SP 811", "stage": 2, "focal": true},
+      {"id": "schema", "label": "Schema Gate", "metric": "0.02% Reject", "stage": 3, "focal": true},
+      {"id": "dlq", "label": "Quarantine Queue", "metric": "Dead Letter", "stage": 3, "stroke": "var(--status-warn)"},
+      {"id": "store", "label": "Metrics Store", "metric": "99.98% OK", "stage": 4, "stroke": "var(--status-ok)"}
+    ],
+    "edges": [
+      {"from": "edge", "to": "parse"},
+      {"from": "batch", "to": "units"},
+      {"from": "parse", "to": "units"},
+      {"from": "units", "to": "schema"},
+      {"from": "schema", "to": "dlq"},
+      {"from": "schema", "to": "store"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-29-m6-interlock-2oo3",
+    "schematic_kind": "interlock",
+    "metadata": {
+      "title": "Triple-Modular Redundant (2oo3) Thermal Interlock",
+      "description": "Majority voter safety matrix with active trip actuators and 4-state truth table verification.",
+      "rigor_level": "L3",
+      "audience": "Controls & Safety Engineer",
+      "drawing_number": "ILK-2OO3-402"
+    },
+    "test_environment": {
+      "dut_id": "VOTER-TMR-04",
+      "supply_voltage_v": 24.0,
+      "ambient_temperature_c": 24.1,
+      "response_window_ms": 12.0
+    },
+    "sensors": [
+      {"id": "cha", "label": "Channel A Loop", "reading": "104.2 C (TRIP)", "tripped": true},
+      {"id": "chb", "label": "Channel B Loop", "reading": "103.8 C (TRIP)", "tripped": true},
+      {"id": "chc", "label": "Channel C Loop", "reading": "94.1 C (ARMED)", "tripped": false}
+    ],
+    "voter": {
+      "label": "2oo3 Logic Voter",
+      "rule": "Trip if >= 2 Channels",
+      "decision": "QUORUM 2/3 REACHED"
+    },
+    "actuators": [
+      {"id": "contactor", "label": "Heater Contactor", "state": "OPEN (SAFE)", "tripped": true},
+      {"id": "bypass", "label": "Coolant Solenoid", "state": "ENERGIZED", "tripped": false}
+    ],
+    "truth_rows": [
+      {"pattern": "A=0 B=0 C=0", "outcome": "HOLD (0/3)", "trip": false},
+      {"pattern": "A=1 B=0 C=0", "outcome": "FAULT ALERT (1/3)", "trip": false},
+      {"pattern": "A=1 B=1 C=0", "outcome": "SAFE TRIP (2/3)", "trip": true},
+      {"pattern": "A=1 B=1 C=1", "outcome": "SAFE TRIP (3/3)", "trip": true}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:schematic",
+    "id": "bench-30-m6-stem-prereq",
+    "schematic_kind": "pipeline",
+    "metadata": {
+      "title": "Engineering Curriculum Prerequisite Dependency Graph",
+      "description": "Four-term course dependency DAG mapping foundational math and physics into capstone instrumentation.",
+      "rigor_level": "L1",
+      "audience": "Curriculum Committee & Students"
+    },
+    "stages": ["Term 1", "Term 2", "Term 3", "Capstone"],
+    "nodes": [
+      {"id": "calc1", "label": "Calculus I", "metric": "MATH-101", "stage": 0},
+      {"id": "phys1", "label": "Mechanics", "metric": "PHYS-110", "stage": 0},
+      {"id": "deq", "label": "Diff Equations", "metric": "MATH-204", "stage": 1, "focal": true},
+      {"id": "em", "label": "Circuits & E&M", "metric": "PHYS-220", "stage": 1},
+      {"id": "ctrl", "label": "Linear Controls", "metric": "ENGR-312", "stage": 2, "focal": true},
+      {"id": "meas", "label": "Instrumentation", "metric": "ENGR-340", "stage": 2},
+      {"id": "cap", "label": "Senior Lab", "metric": "ENGR-490", "stage": 3, "stroke": "var(--status-ok)"}
+    ],
+    "edges": [
+      {"from": "calc1", "to": "deq"},
+      {"from": "phys1", "to": "em"},
+      {"from": "deq", "to": "ctrl"},
+      {"from": "em", "to": "ctrl"},
+      {"from": "em", "to": "meas"},
+      {"from": "ctrl", "to": "cap"},
+      {"from": "meas", "to": "cap"}
+    ]
+  }
+]

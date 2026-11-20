@@ -51,6 +51,7 @@ def bundle_v9_stage_css(repo_root: Path) -> str:
         "src/v9/css/05-world-02-05-views.css",
         "src/v9/css/06-m5-m6-m7-physics.css",
         "src/v9/css/07-world-06-smart-home.css",
+        "src/v9/css/08-directional-and-planner.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():
@@ -67,6 +68,7 @@ def bundle_v9_stage_js(repo_root: Path) -> str:
         for rel in (
             "src/js/evidence-runtime.js",
             "src/v9/js/echarts-layers.js",
+            "src/v9/js/echarts-schedule-heatmap.js",
             "src/v9/js/echarts-quiet-adapter.js",
             "src/v9/js/world-01-interactions.js",
             "src/v9/js/world-02-05-interactions.js",

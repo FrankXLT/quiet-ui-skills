@@ -36,8 +36,8 @@ class TestCorporaConservation(unittest.TestCase):
         self.assertTrue(res["ok"], "Corpora audit failed:\n" + "\n".join(res["errors"]))
         s = res["stats"]
         self.assertEqual(s["worlds"], 6)
-        self.assertEqual(s["views"], 18)
-        self.assertEqual(s["evidence_specs"], 23)
+        self.assertEqual(s["views"], 21)
+        self.assertEqual(s["evidence_specs"], 26)
         self.assertEqual(set(s["mediums"]), REQUIRED_MEDIUMS)
         self.assertEqual(set(s["lenses"]), REQUIRED_LENSES)
         self.assertEqual(set(s["tempos"]), REQUIRED_TEMPOS)

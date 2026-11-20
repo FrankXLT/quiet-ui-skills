@@ -227,8 +227,8 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
         for fpath in sorted([attr_p, corp_p, blue_p, *ev_files]):
             if fpath.is_file():
                 _check_file_hygiene(fpath, _rel_path(fpath, corpora_dir), errors)
-        if not (3 <= len(ev_files) <= 4):
-            errors.append(f"[{wrel}] Expected 3-4 evidence/*.json specs, found {len(ev_files)}")
+        if not (3 <= len(ev_files) <= 5):
+            errors.append(f"[{wrel}] Expected 3-5 evidence/*.json specs, found {len(ev_files)}")
         total_evidence += len(ev_files)
         if not (corp_p.is_file() and blue_p.is_file()):
             continue
@@ -314,8 +314,8 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
         errors.extend(f"[{wrel}] Evidence spec '{ub}' lacks any entry in evidence_bindings" for ub in sorted(set(parsed_evidence) - bound_files))
         errors.extend(f"[{wrel}] Canonical metric '{um}' lacks any entry in evidence_bindings" for um in sorted(set(metrics) - bound_metrics))
 
-    if total_views != 18:
-        errors.append(f"Expected 18 total views across 6 worlds, found {total_views}")
+    if total_views != 21:
+        errors.append(f"Expected 21 total views across 6 worlds, found {total_views}")
     for key, req in (("mediums", REQUIRED_MEDIUMS), ("lenses", REQUIRED_LENSES), ("tempos", REQUIRED_TEMPOS), ("budgets", REQUIRED_BUDGETS), ("modalities", REQUIRED_MODALITIES)):
         if (miss := sorted(req - cov[key])) or (extra := sorted(cov[key] - req)):
             errors.append(f"Matrix coverage mismatch for {key}: missing={miss}, unexpected={extra}")

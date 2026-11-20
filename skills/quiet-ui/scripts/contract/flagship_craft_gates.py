@@ -87,12 +87,12 @@ def check_gate_20_domain_layout(driver: webdriver.Chrome, base_url: str) -> list
 
 
 def check_gate_21_substance_landmarks(driver: webdriver.Chrome, base_url: str, repo_root: Path) -> list[str]:
-    """Gate 21: All 6 Domains x 18 Views and Why? modal mount cleanly with zero taxonomy or robot-speak leaks."""
+    """Gate 21: All 6 Domains x 21 Views and Why? modal mount cleanly with zero taxonomy or robot-speak leaks."""
     errors: list[str] = []
     set_cdp_viewport(driver, 1440, 900)
     views = _get_manifest_views(driver)
-    if len(views) != 18:
-        errors.append(f"[GATE_21_MANIFEST] Expected 18 views across 6 domains, found {len(views)}")
+    if len(views) != 21:
+        errors.append(f"[GATE_21_MANIFEST] Expected 21 views across 6 domains, found {len(views)}")
     leak_re = r"\b(?:L[123]|M[1-7]|N[0-4])\b|\[data-term\]|\bBooktabs\b|\bHome Nominal\b|\bUnlock Arm\b|\bArm Door\b|PANEL-MAIN-200A|ZONE-LIVING|LOCK-FRONT-01"
     for vid in views:
         select_tier(driver, vid)

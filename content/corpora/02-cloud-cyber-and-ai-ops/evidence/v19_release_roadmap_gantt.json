@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v19-release-roadmap-gantt",
+  "plot_kind": "gantt",
+  "metadata": {
+    "title": "Platform Hardening & Telemetry Release Roadmap",
+    "description": "Engineering-to-Product release schedule conserving 250.0 ms SLO ceiling, 12.0 s OTel gap remediation, 0x8003B104 policy enforcement, +3.0 d float, and 4 tracked blockers.",
+    "rigor_level": "L2",
+    "audience": "Product Manager & Engineering Leadership"
+  },
+  "today_day": 8.0,
+  "today_label": "Today (Day 8)",
+  "axes": {
+    "x_axis": {
+      "quantity": "t",
+      "quantity_calculus": "Release Schedule, t / d",
+      "unit": "d",
+      "domain": [0, 18]
+    }
+  },
+  "tasks": [
+    {"id": "otel", "label": "Fix 12.0 s OTel Gap", "phase": "Stabilize", "start": 0, "end": 4, "critical": true},
+    {"id": "lat", "label": "Cut p99 <= 250.0 ms", "phase": "Stabilize", "start": 4, "end": 8, "critical": true, "depends_on": ["otel"]},
+    {"id": "fips", "label": "Enforce 0x8003B104", "phase": "Security", "start": 3, "end": 7, "float_days": 3.0, "critical": false},
+    {"id": "ai", "label": "Drift Fallback Gate", "phase": "AI Ops", "start": 8, "end": 12, "critical": true, "depends_on": ["lat"]},
+    {"id": "qa", "label": "4-Blocker Soak Signoff", "phase": "Verify", "start": 10, "end": 14, "float_days": 2.0, "critical": false, "depends_on": ["fips"]},
+    {"id": "cutover", "label": "Prod Cutover Gate", "phase": "Release", "start": 12, "end": 16, "critical": true, "depends_on": ["ai"]},
+    {"id": "ga", "label": "GA Release Signoff", "phase": "Release", "start": 16, "end": 16, "critical": true, "milestone": true, "depends_on": ["cutover"]}
+  ],
+  "tracked_blockers": 4,
+  "conservation_notes": "Conserves 250.0 ms p99 ceiling, 12.0 s OTel scrape gap remediation, 0x8003B104 policy register, +3.0 d security float, and 4 tracked blockers."
+}

@@ -10,31 +10,24 @@
     'v12-stem-interactive-lab': true,
     'v13-propulsion-archival-monograph': true,
     'v18-home-assistant-companion-console': true,
+    'v19-product-roadmap-and-triage': true,
+    'v20-student-capstone-lab-report': true,
+    'v21-field-anomaly-escalation-tsn': true,
   };
   var PALETTE_TOKENS = ['--accent-focal', '--status-warn', '--text-secondary', '--status-danger'];
   var ROOT_LISTENERS = new WeakSet();
   var RESIZE_OBSERVERS = new WeakMap();
   var COPY_TIMERS = new WeakMap();
 
-  function getLib() {
-    if (global.echarts) return global.echarts;
+  function getGlobal(name) {
+    if (global[name]) return global[name];
     try {
-      if (global.parent && global.parent !== global && global.parent.echarts) {
-        return global.parent.echarts;
-      }
+      if (global.parent && global.parent !== global && global.parent[name]) return global.parent[name];
     } catch (_err) {}
     return null;
   }
-
-  function getLayers() {
-    if (global.QuietEChartsLayers) return global.QuietEChartsLayers;
-    try {
-      if (global.parent && global.parent !== global && global.parent.QuietEChartsLayers) {
-        return global.parent.QuietEChartsLayers;
-      }
-    } catch (_err) {}
-    return null;
-  }
+  function getLib() { return getGlobal('echarts'); }
+  function getLayers() { return getGlobal('QuietEChartsLayers'); }
 
   function cssVar(doc, token, fallback) {
     try {
@@ -298,7 +291,8 @@
     var payload;
     try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
-    var w = Math.max(300, Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8));
+    var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8);
+    var w = avail > 0 ? avail : 300;
     var hasRes = !!(payload.residuals && Array.isArray(payload.residuals.points) && payload.residuals.points.length);
     var h = hasRes
       ? Math.round(w < 500 ? 335 : Math.min(410, Math.max(365, w * 0.54)))
@@ -306,7 +300,13 @@
     host.style.width = w + 'px';
     host.style.height = h + 'px';
     var inst = lib.getInstanceByDom(host) || lib.init(host, null, { renderer: 'svg', width: w, height: h });
-    var opt = payload.kind === 'waterfall' ? buildWaterfallOption(doc, payload) : (payload.kind === 'stacked_bar' ? buildStackedBarOption(doc, payload) : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || ''));
+    var ext = getGlobal('QuietEChartsExt');
+    var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
+    var opt = payload.kind === 'waterfall' ? buildWaterfallOption(doc, payload)
+      : payload.kind === 'stacked_bar' ? buildStackedBarOption(doc, payload)
+      : isExtKind ? (ext ? ext.buildOption(doc, payload, readTokens(doc), w) : null)
+      : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
+    if (!opt) { disposeWrap(wrap, lib); return; }
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.echartsActive = 'true';
@@ -381,7 +381,7 @@
         if (ecoTab) { activateEcoTab(ecoTab); return; }
         var copyBtn = ev.target && ev.target.closest ? ev.target.closest('.qe-copy-btn') : null;
         if (copyBtn) { copyEcoSnippet(copyBtn); return; }
-        var termBtn = ev.target && ev.target.closest ? ev.target.closest('[data-term]') : null;
+        var termBtn = ev.target && ev.target.closest ? ev.target.closest('button[data-term], .qe-eq-term[data-term]') : null;
         if (termBtn) {
           var term = termBtn.dataset.term || '';
           var scopeEl = termBtn.closest('.qe-figure, .v9-stage-inner') || doc;

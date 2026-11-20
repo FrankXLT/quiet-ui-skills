@@ -1,0 +1,45 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v20-student-repeatability-dumbbell",
+  "plot_kind": "dumbbell",
+  "metadata": {
+    "title": "Five-Station RC Bench Repeatability at t = 2.40 s",
+    "description": "Comparison of raw pre-zero voltage vs calibrated t = 2.40 s crossing (mean 1.82 V vs 1.84 V theory, u = +/-0.05 V, <= 0.8 sigma) across V_0 = 5.00 V rigs.",
+    "rigor_level": "L3",
+    "audience": "Capstone Jury & Lab Instructor"
+  },
+  "test_environment": {
+    "dut_id": "RC-CAPSTONE-5BENCH",
+    "ambient_temperature_c": 22.4,
+    "temperature_uncertainty_c": 0.2,
+    "calibration_id": "NIST-RC-LAB-2026"
+  },
+  "series_labels": ["Pre-Zero Offset (V)", "Calibrated at 2.40 s (V)"],
+  "axes": {
+    "x_axis": {
+      "quantity": "Station",
+      "quantity_calculus": "Lab Bench Station"
+    },
+    "y_axis": {
+      "quantity": "V_c",
+      "quantity_calculus": "Crossing Potential / V",
+      "unit": "V",
+      "domain": [1.5, 2.2]
+    }
+  },
+  "dumbbells": [
+    {"label": "Stn 1", "before": 1.94, "after": 1.82},
+    {"label": "Stn 2", "before": 1.97, "after": 1.84},
+    {"label": "Stn 3", "before": 1.91, "after": 1.80},
+    {"label": "Stn 4", "before": 1.96, "after": 1.83},
+    {"label": "Stn 5", "before": 1.93, "after": 1.81}
+  ],
+  "parametric_legend": [
+    {"symbol": "V_0", "value": 5.0, "unit": "V"},
+    {"symbol": "tau", "value": 2.4, "unit": "s"},
+    {"symbol": "V_theory", "value": 1.84, "unit": "V"},
+    {"symbol": "V_mean", "value": 1.82, "unit": "V"},
+    {"symbol": "u_cal", "value": 0.05, "unit": "V"},
+    {"symbol": "sigma_max", "value": 0.8, "unit": "sigma"}
+  ]
+}

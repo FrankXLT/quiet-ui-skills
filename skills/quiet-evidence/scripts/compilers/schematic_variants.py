@@ -238,3 +238,129 @@ def compile_er_lineage(spec: dict[str, Any]) -> str:
             parts.append(f'<line x1="{sx:.1f}" y1="{sy:.1f}" x2="{dx:.1f}" y2="{dy:.1f}" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>')
     parts.append("</svg>")
     return "\n".join(parts)
+
+
+def compile_pipeline(spec: dict[str, Any]) -> str:
+    """Compile multi-stage DAG data/prerequisite pipeline with orthogonal routed connectors."""
+    nodes = spec.get("nodes", [])
+    edges = spec.get("edges", [])
+    stages = spec.get("stages", [])
+    if not nodes:
+        return '<svg class="qe-svg qe-svg-720" viewBox="0 0 720 180" role="img" aria-label="Pipeline DAG"></svg>'
+
+    by_stage: dict[int, list[dict[str, Any]]] = {}
+    for nd in nodes:
+        st = int(nd.get("stage", nd.get("col", 0)))
+        by_stage.setdefault(st, []).append(nd)
+    n_cols = max(by_stage.keys()) + 1
+    max_rows = max(len(v) for v in by_stage.values())
+    x0, y0 = 16.0, 40.0 if stages else 22.0
+    col_step = 688.0 / max(n_cols, 1)
+    nw = min(176.0, max(108.0, col_step - 24.0))
+    row_step = 66.0
+    nh = 46.0
+    vb_h = int(y0 + max_rows * row_step + 14.0)
+
+    parts: list[str] = [
+        f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Pipeline DAG"))}">',
+        '<defs><marker id="qe-pipe-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">'
+        '<path d="M 0 1 L 10 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>',
+    ]
+    for ci, st_lbl in enumerate(stages[:n_cols]):
+        hx = x0 + ci * col_step + nw / 2.0
+        parts.append(halo_text(hx, 22.0, str(st_lbl), anchor="middle", size=11.5, weight="700", font="var(--font-sans)", fill="var(--text-secondary)", halo=False))
+
+    coords: dict[str, tuple[float, float, float, float]] = {}
+    for st_idx, st_nodes in sorted(by_stage.items()):
+        total_h = len(st_nodes) * row_step
+        top_pad = (max_rows * row_step - total_h) / 2.0
+        for ri, nd in enumerate(st_nodes):
+            nx = float(nd.get("x")) if "x" in nd else (x0 + st_idx * col_step)
+            ny = float(nd.get("y")) if "y" in nd else (y0 + top_pad + ri * row_step)
+            coords[str(nd["id"])] = (nx, ny, nw, nh)
+
+    for ed in edges:
+        src, dst = coords.get(str(ed.get("from"))), coords.get(str(ed.get("to")))
+        if not src or not dst:
+            continue
+        if abs(dst[0] - src[0]) < 1.0:
+            vx = src[0] + src[2] / 2.0
+            sy = src[1] + src[3] if dst[1] >= src[1] else src[1]
+            dy = dst[1] - 2.0 if dst[1] >= src[1] else dst[1] + dst[3] + 2.0
+            d = f"M {vx:.1f} {sy:.1f} V {dy:.1f}"
+        else:
+            sx, sy = src[0] + src[2], src[1] + src[3] / 2.0
+            dx, dy = dst[0], dst[1] + dst[3] / 2.0
+            mx = (sx + dx) / 2.0
+            d = f"M {sx:.1f} {sy:.1f} H {mx:.1f} V {dy:.1f} H {dx - 2:.1f}"
+        parts.append(f'<path d="{d}" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>')
+
+    for nd in nodes:
+        nx, ny, w, h = coords[str(nd["id"])]
+        focal = bool(nd.get("focal"))
+        col = resolve_token(nd.get("stroke"), "var(--accent-focal)" if focal else "var(--border-strong)")
+        bg = "var(--tint-indigo-bg)" if focal else "var(--bg-card)"
+        parts.append(f'<rect data-role="node" x="{nx:.1f}" y="{ny:.1f}" width="{w:.1f}" height="{h:.1f}" rx="5" fill="{bg}" stroke="{col}" stroke-width="1.5"/>')
+        lbl = str(nd.get("label") or nd["id"])
+        metric = str(nd.get("metric") or "")
+        ty = ny + (18.0 if metric else 27.0)
+        parts.append(halo_text(nx + w / 2.0, ty, lbl, anchor="middle", size=11.5, weight="700", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+        if metric:
+            parts.append(halo_text(nx + w / 2.0, ny + 36.0, metric, anchor="middle", size=11.5, fill="var(--accent-focal)" if focal else "var(--text-secondary)", halo=False))
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+def compile_interlock(spec: dict[str, Any]) -> str:
+    """Compile safety voting interlock schematic (sensors -> 2oo3 voter -> final trip actuator + truth strip)."""
+    sensors = spec.get("sensors") or []
+    voter = spec.get("voter") or {"label": "2oo3 Safety Voter", "rule": "Trip if >= 2 Channels"}
+    actuators = spec.get("actuators") or [{"label": "Shutoff Relay", "state": "DE-ENERGIZED"}]
+    truth_rows = spec.get("truth_rows") or []
+    vb_h = 276 if truth_rows else 222
+
+    parts: list[str] = [
+        f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Safety Interlock Matrix"))}">',
+        '<defs><marker id="qe-il-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">'
+        '<path d="M 0 1 L 10 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>',
+    ]
+    vx, vy, vw, vh = 276.0, 52.0, 168.0, 96.0
+    for idx, ch in enumerate(sensors[:4]):
+        sy = 24.0 + idx * 54.0
+        tripped = bool(ch.get("tripped"))
+        sc = "var(--status-danger)" if tripped else "var(--status-ok)"
+        bg = "var(--status-err-bg)" if tripped else "var(--bg-card)"
+        parts.append(f'<rect data-role="node" x="24" y="{sy:.1f}" width="184" height="42" rx="4" fill="{bg}" stroke="{sc}" stroke-width="1.5"/>')
+        parts.append(halo_text(116.0, sy + 17.0, str(ch.get("label") or f"CH-{idx+1}"), anchor="middle", size=11.5, weight="700", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+        parts.append(halo_text(116.0, sy + 33.0, str(ch.get("reading") or ("TRIP" if tripped else "ARMED")), anchor="middle", size=11.5, weight="600", fill=sc, halo=False))
+        port_y = vy + 20.0 + idx * 28.0
+        parts.append(f'<path d="M 208 {sy + 21:.1f} H 242 V {port_y:.1f} H {vx - 2:.1f}" fill="none" stroke="{sc if tripped else "var(--border-strong)"}" stroke-width="1.4" marker-end="url(#qe-il-arr)"/>')
+
+    parts.append(f'<rect data-role="node" x="{vx:.1f}" y="{vy:.1f}" width="{vw:.1f}" height="{vh:.1f}" rx="6" fill="var(--tint-amber-bg)" stroke="var(--status-warn)" stroke-width="1.8"/>')
+    parts.append(halo_text(vx + vw / 2.0, vy + 36.0, str(voter.get("label") or "2oo3 Voter"), anchor="middle", size=12.0, weight="700", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+    parts.append(halo_text(vx + vw / 2.0, vy + 58.0, str(voter.get("rule") or "2-of-3 Majority"), anchor="middle", size=11.5, fill="var(--status-warn)", halo=False))
+    if voter.get("decision"):
+        parts.append(halo_text(vx + vw / 2.0, vy + 78.0, str(voter["decision"]), anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", halo=False))
+
+    for ai, act in enumerate(actuators[:2]):
+        ay = 52.0 + ai * 62.0
+        is_trip = bool(act.get("tripped"))
+        ac = "var(--status-danger)" if is_trip else "var(--accent-focal)"
+        parts.append(f'<path d="M {vx + vw:.1f} {vy + 32 + ai * 32:.1f} H 480 V {ay + 22:.1f} H 510" fill="none" stroke="{ac}" stroke-width="1.6" marker-end="url(#qe-il-arr)"/>')
+        parts.append(f'<rect data-role="node" x="512" y="{ay:.1f}" width="184" height="44" rx="4" fill="var(--bg-card)" stroke="{ac}" stroke-width="1.6"/>')
+        parts.append(halo_text(604.0, ay + 18.0, str(act.get("label") or "Actuator"), anchor="middle", size=11.5, weight="700", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+        parts.append(halo_text(604.0, ay + 34.0, str(act.get("state") or "SAFE"), anchor="middle", size=11.5, weight="700", fill=ac, halo=False))
+
+    if truth_rows:
+        parts.append('<rect x="24" y="206" width="672" height="54" rx="4" fill="var(--bg-elevated)" stroke="var(--border-hairline)" stroke-width="1"/>')
+        parts.append(halo_text(38.0, 224.0, "Truth Table:", anchor="start", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
+        col_w = 520.0 / max(len(truth_rows), 1)
+        for ti, tr in enumerate(truth_rows[:4]):
+            tx = 150.0 + ti * col_w
+            parts.append(halo_text(tx, 224.0, str(tr.get("pattern") or ""), anchor="start", size=11.5, fill="var(--text-secondary)", halo=False))
+            tcol = "var(--status-danger)" if tr.get("trip") else "var(--status-ok)"
+            parts.append(halo_text(tx, 245.0, str(tr.get("outcome") or ""), anchor="start", size=11.5, weight="700", fill=tcol, halo=False))
+
+    parts.append("</svg>")
+    return "\n".join(parts)
+

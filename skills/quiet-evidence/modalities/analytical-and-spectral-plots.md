@@ -162,11 +162,13 @@ Quiet UI mandates a split-panel configuration whenever measured data is compared
 
 ---
 
-## 5. Cross-Domain Statistical Variants (`forest`, `waterfall`, `dumbbell`, Shewhart SPC)
+## 5. Cross-Domain Statistical, Schedule & Matrix Variants (`forest`, `waterfall`, `dumbbell`, `gantt`, `heatmap`, Shewhart SPC)
 
-The plot compiler consumes `"plot_kind"` (`"cartesian"` default, `"forest"`, `"waterfall"`, `"dumbbell"`) and optional `"companions"` subpanels under `urn:quiet-ui:schema:v9:plot`:
+The plot compiler consumes `"plot_kind"` (`"cartesian"` default, `"forest"`, `"waterfall"`, `"dumbbell"`, `"stacked_bar"`, `"gantt"`, `"heatmap"`) and optional `"companions"` subpanels under `urn:quiet-ui:schema:v9:plot`:
 - **Shewhart SPC Control Charts** (`cartesian`): Pair empirical subgroup runs (`X_bar`) against `CL` centerline, dashed `UCL/LCL` (`±3σ`), and redline `USL/LSL` specification envelopes, tagging `C_pk` and subgroup size `n` in `test_environment`.
-- **Subgroup CI Forest Plots** (`forest`): Render point estimates, `95% CI` horizontal whiskers, and null-effect reference lines (`OR = 1.0` or `HR = 1.0`) calibrated on NAVAIR `1-2-5` ticks for `CONSORT` clinical and civic impact briefs.
+- **Subgroup CI Forest Plots** (`forest`): Render point estimates, `95% CI` horizontal whiskers, diamond pooled markers (`pooled: true`), and null-effect reference lines (`OR = 1.0` or `HR = 1.0`) calibrated on NAVAIR `1-2-5` ticks.
+- **Schedule Gantt Charts** (`gantt`): Accepts `tasks` (`[{id, label, phase, start, end, float_days|float_hours, critical, milestone, depends_on}]`), `today_day`, and `axes.x_axis` (`t / d` or `t / h`) on NAVAIR `1-2-5` ticks with orthogonal dependency elbows and dashed margin tails.
+- **Calibrated 2D Matrix Heatmaps** (`heatmap`): Accepts `x_categories`, `y_categories`, `matrix` (2D numeric grid), and `scale` (`quantity_calculus`, `unit`, `domain`, `decimals`), binding WCAG-calibrated Blue-to-Copper ramp stops and auto-contrast cell numerals (`#0F172A` vs `#FFFFFF`).
 
 ---
 

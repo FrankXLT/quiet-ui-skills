@@ -10,7 +10,9 @@ from .schematic_variants import (
     compile_delta_lanes,
     compile_er_lineage,
     compile_fsm,
+    compile_interlock,
     compile_optical_stack,
+    compile_pipeline,
     compile_sankey,
     compile_wardley,
 )
@@ -26,7 +28,7 @@ def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: st
     """Compile Modality 6 (urn:quiet-ui:schema:v9:schematic) into orthogonal HTML/SVG."""
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L2")).upper()
-    kind = str(spec.get("schematic_kind", "topology")).lower()
+    kind = str(spec.get("schematic_kind") or spec.get("diagram_subtype") or "topology").lower()
 
     dispatch = {
         "mil1553b": compile_differential_bus,
@@ -42,6 +44,8 @@ def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: st
         "wardley": compile_wardley,
         "sankey": compile_sankey,
         "er_lineage": compile_er_lineage,
+        "pipeline": compile_pipeline,
+        "interlock": compile_interlock,
         "sequence": compile_sequence,
         "n2_matrix": compile_n2_matrix,
         "fault_tree": compile_fault_tree,
@@ -50,7 +54,7 @@ def compile_schematic(spec: dict[str, Any], rigor: str | None = None, medium: st
     panels: list[str] = []
     if spec.get("panels"):
         for sub in spec["panels"]:
-            sk = str(sub.get("schematic_kind", "topology")).lower()
+            sk = str(sub.get("schematic_kind") or sub.get("diagram_subtype") or "topology").lower()
             renderer = dispatch.get(sk, lambda s: compile_topology_enclave(s, eff_rigor))
             title = sub.get("title", "")
             cap = f'<div class="qe-subpanel-title">{esc(title)}</div>' if title else ""

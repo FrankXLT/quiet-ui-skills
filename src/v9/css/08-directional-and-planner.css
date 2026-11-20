@@ -1,0 +1,297 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.0 — Phases 6.1 & 6.2 Shared UI/Bridge Specimens + Directional Views (v19, v20, v21) */
+
+@layer views {
+/* ---------- Pillar 1 & 3 Bench Specimen Shared Layouts ---------- */
+.qe-fig-hdr { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem; }
+.qe-fig-kicker { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.15rem; }
+.qe-fig-desc { margin: 0 0 0.6rem; font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.48; }
+.qe-bench-body { margin-top: 0.35rem; }
+.v9-sec-title { margin: 0; font-size: var(--ts-base); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+
+.v9-demo-stack { display: flex; flex-direction: column; gap: 0.75rem; }
+.v9-demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.v9-demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+.v9-demo-subcard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.v9-demo-label {
+  font-family: var(--font-mono);
+  font-size: var(--ts-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Scoped Interactive Chips & Segmented Controls (inherits 06-b pill grammar) */
+:is(.v9-demo-chips, .v9-triage-wrap, .v20-rubric-bar, .v21-step-nav) .va-pill[data-variant="chip"] {
+  cursor: pointer;
+  min-block-size: 28px;
+  padding: 0.22rem 0.72rem;
+  font-size: var(--ts-xs);
+  font-weight: 600;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+:is(.v9-demo-chips, .v9-triage-wrap, .v20-rubric-bar, .v21-step-nav) .va-pill[data-variant="chip"][aria-pressed="true"] {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--bg-canvas);
+}
+
+/* Two-Step Guarded Interlock Pad */
+.v9-guard-pad {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+}
+.v9-guard-btn {
+  min-block-size: 32px;
+  padding: 0.32rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--ts-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+.v9-guard-btn.is-armed {
+  border-color: var(--status-warn);
+  background: var(--tint-amber-bg);
+  color: var(--tint-amber-fg);
+}
+.v9-guard-confirm {
+  border-color: var(--status-danger);
+  background: var(--status-danger);
+  color: var(--bg-canvas);
+}
+.v9-guard-btn[hidden] { display: none; }
+.v9-guard-btn:focus-visible, .v9-stepper-btn:focus-visible, .v9-seg-btn:focus-visible, .v9-triage-row:focus-visible {
+  outline: 2px solid var(--accent-focal);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Segmented Control & Stepper */
+.v9-seg-group {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+.v9-seg-btn {
+  min-block-size: 32px;
+  padding: 0.28rem 0.68rem;
+  border: 0;
+  border-right: 1px solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--ts-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+.v9-seg-btn:first-child { border-start-start-radius: var(--radius-xs); border-end-start-radius: var(--radius-xs); }
+.v9-seg-btn:last-child { border-right: 0; border-start-end-radius: var(--radius-xs); border-end-end-radius: var(--radius-xs); }
+.v9-seg-btn[aria-pressed="true"] { background: var(--accent-primary); color: var(--bg-canvas); }
+.v9-stepper { display: inline-flex; align-items: center; gap: 0.45rem; }
+.v9-stepper-btn {
+  min-inline-size: 34px;
+  min-block-size: 32px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+.v9-stepper-val { font-family: var(--font-mono); font-size: var(--ts-base); font-weight: 700; color: var(--text-primary); }
+
+/* 38px Issue Triage Queue (v19 + Specimen 33) */
+.v9-triage-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+.v9-triage-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.45rem; }
+.v9-triage-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+.v9-triage-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: 38px;
+  padding: 0.38rem 0.72rem;
+  border: 0;
+  border-bottom: 1px solid var(--border-hairline);
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--ts-sm);
+}
+.v9-triage-row:last-child { border-bottom: 0; }
+.v9-triage-row[aria-selected="true"] {
+  background: var(--tint-indigo-bg);
+  box-shadow: inset 3px 0 0 var(--accent-focal);
+}
+.v9-triage-row[hidden] { display: none; }
+.v9-triage-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.v9-triage-meta {
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  font-size: var(--ts-sm);
+  color: var(--text-secondary);
+}
+
+/* 3-Pane Tree Explorer (Specimen 34) */
+.v9-tree-shell {
+  display: grid;
+  grid-template-columns: minmax(195px, 235px) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+.v9-tree-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0.45rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elevated);
+}
+.v9-tree-nav ul { list-style: none; margin: 0.15rem 0 0.2rem 0.85rem; padding: 0; }
+.v9-tree-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-block-size: 30px;
+  padding: 0.25rem 0.48rem;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--ts-xs);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+.v9-tree-btn[aria-selected="true"] { background: var(--tint-indigo-bg); color: var(--tint-indigo-fg); }
+.v9-tree-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 1px; }
+.v9-tree-detail {
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Pillar 3 Decision Bridges (BLUF Gate & Split Runbook) */
+.v9-br-banner {
+  border: 1px solid var(--border-strong);
+  border-left: 4px solid var(--status-warn);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-elevated);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.v9-br-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.v9-br-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.45rem; }
+.v9-br-check {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface);
+  font-size: var(--ts-xs);
+}
+.v9-split-runbook { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.85fr); gap: 0.8rem; }
+.v9-runbook-steps { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.42rem; font-size: var(--ts-sm); }
+.v9-runbook-cmd {
+  margin: 0.35rem 0 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-xs);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  font-family: var(--font-mono);
+  font-size: var(--ts-xs);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.v9-callout-stack { display: flex; flex-direction: column; gap: 0.5rem; }
+.v9-callout-box {
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-elevated);
+  font-size: var(--ts-sm);
+}
+.v9-callout-box.is-warn { border-left: 3px solid var(--status-warn); background: var(--tint-amber-bg); color: var(--tint-amber-fg); }
+
+:root[data-theme="white"] :is(.v9-br-banner, .v9-triage-row, .v9-guard-pad, .v9-br-check) .va-pill[data-variant="status"][data-state="warn"] {
+  color: var(--tint-amber-fg);
+}
+
+/* ---------- Directional Stage Views (v19, v20, v21) ---------- */
+.v20-claim-box {
+  border: 1px solid var(--border-strong);
+  border-left: 4px solid var(--accent-focal);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  background: var(--bg-elevated);
+}
+.v20-rubric-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-top: 0.45rem; }
+.v20-method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.65rem; margin: 0.65rem 0 0; }
+.v21-step-nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.65rem; }
+.v21-step-panel[hidden] { display: none; }
+.v21-handoff-banner {
+  border: 1px solid var(--border-strong);
+  border-left: 4px solid var(--status-danger);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.9rem;
+  background: var(--bg-elevated);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .v9-tree-shell, .v9-split-runbook { grid-template-columns: 1fr; }
+  .v9-triage-row { grid-template-columns: auto minmax(0, 1fr); row-gap: 0.25rem; }
+}
+
+@media (forced-colors: active) {
+  .va-pill[data-variant="chip"][aria-pressed="true"],
+  .v9-seg-btn[aria-pressed="true"] {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
+}
+}

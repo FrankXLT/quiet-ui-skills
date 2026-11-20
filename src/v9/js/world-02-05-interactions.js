@@ -219,6 +219,84 @@
       if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
       if (vp && btn.dataset.contrast) vp.setAttribute('data-contrast', btn.dataset.contrast);
     });
+
+    function selectV19Row(target, shouldFocus) {
+      doc.querySelectorAll('#v19-triage .v9-triage-row').forEach(function (r) {
+        var on = r === target;
+        r.setAttribute('aria-selected', on ? 'true' : 'false');
+        r.tabIndex = on ? 0 : -1;
+      });
+      var box = doc.getElementById('v19-triage-detail');
+      if (box) box.textContent = target ? (target.dataset.v19Meta || '') : 'No matching items in filter.';
+      if (shouldFocus && target && target.focus) target.focus();
+    }
+
+    wireChipGroup(doc, 'v19-filter-chips', null, function (btn, d) {
+      var want = btn.dataset.v19Filter || 'all';
+      var visible = [];
+      d.querySelectorAll('#v19-triage .v9-triage-row').forEach(function (r) {
+        r.hidden = want !== 'all' && r.dataset.v19State !== want;
+        if (!r.hidden) visible.push(r);
+      });
+      var cur = d.querySelector('#v19-triage .v9-triage-row[aria-selected="true"]');
+      if (!cur || cur.hidden) selectV19Row(visible[0] || null, false);
+    });
+    doc.querySelectorAll('#v19-triage .v9-triage-row').forEach(function (row) {
+      row.addEventListener('click', function () { selectV19Row(row, false); });
+      row.addEventListener('keydown', function (ev) {
+        var vis = Array.prototype.slice.call(doc.querySelectorAll('#v19-triage .v9-triage-row')).filter(function (r) { return !r.hidden; });
+        var idx = vis.indexOf(row);
+        if (idx < 0 || !vis.length) return;
+        var nxt = -1;
+        if (ev.key === 'ArrowDown') nxt = Math.min(vis.length - 1, idx + 1);
+        else if (ev.key === 'ArrowUp') nxt = Math.max(0, idx - 1);
+        else if (ev.key === 'Home') nxt = 0;
+        else if (ev.key === 'End') nxt = vis.length - 1;
+        if (nxt >= 0) { ev.preventDefault(); selectV19Row(vis[nxt], true); }
+      });
+    });
+
+    wireChipGroup(doc, 'v20-rubric-chips', null, function (btn, d) {
+      var focus = btn.dataset.v20Focus || 'claim';
+      d.querySelectorAll('[data-v20-card]').forEach(function (c) {
+        c.style.outline = c.dataset.v20Card === focus ? '2px solid var(--accent-focal)' : 'none';
+      });
+      var note = d.getElementById('v20-focus-note');
+      if (note) note.textContent = 'Focus: ' + btn.textContent.trim() + ' inspected against 1.84 V theory';
+    });
+
+    wireChipGroup(doc, 'v21-step-chips', null, function (btn, d) {
+      var step = btn.dataset.v21Step || 'wire';
+      d.querySelectorAll('.v21-step-panel').forEach(function (p) {
+        p.hidden = p.dataset.v21Panel !== step;
+      });
+    });
+    var v21Arm = doc.getElementById('v21-handoff-arm');
+    var v21Send = doc.getElementById('v21-handoff-send');
+    var v21Can = doc.getElementById('v21-handoff-cancel');
+    var v21St = doc.getElementById('v21-handoff-status');
+    if (v21Arm && v21Send && v21St) {
+      var resetV21 = function (sent) {
+        v21Arm.classList.remove('is-armed');
+        v21Arm.setAttribute('aria-expanded', 'false');
+        v21Send.hidden = true;
+        if (v21Can) v21Can.hidden = true;
+        v21St.dataset.state = sent ? 'nominal' : 'warn';
+        v21St.textContent = sent ? 'HANDOFF SENT · 8.0 H' : 'BAY HOLD · PREPARE';
+        if (v21Arm.focus) v21Arm.focus();
+      };
+      v21Arm.addEventListener('click', function () {
+        if (v21Arm.getAttribute('aria-expanded') === 'true') { resetV21(false); return; }
+        v21Arm.classList.add('is-armed');
+        v21Arm.setAttribute('aria-expanded', 'true');
+        v21Send.hidden = false;
+        if (v21Can) v21Can.hidden = false;
+        v21St.dataset.state = 'warn';
+        v21St.textContent = 'ARMED · CONFIRM';
+      });
+      v21Send.addEventListener('click', function () { resetV21(true); });
+      if (v21Can) v21Can.addEventListener('click', function () { resetV21(false); });
+    }
   }
 
   global.QuietWorlds02To05Runtime = { boot: wireWorlds02To05 };

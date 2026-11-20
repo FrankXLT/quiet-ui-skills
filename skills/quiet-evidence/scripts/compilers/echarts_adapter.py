@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
-import json
 import math
 import re
 from typing import Any
 
+from .echarts_snippets import render_ecosystem_drawer_from_payload
 from .plot_helpers import (
     axis_scale,
     build_corridor_band,
@@ -17,7 +17,7 @@ from .plot_helpers import (
     sample_model_points,
     visible_series,
 )
-from .tokens_and_scales import compute_linear_125_scale, esc
+from .tokens_and_scales import compute_linear_125_scale
 
 _MATH_SUBS: tuple[tuple[str, str], ...] = (
     (", B_cap", ""),
@@ -195,6 +195,147 @@ def _build_stacked_bar_payload(spec: dict[str, Any], rigor: str, medium: str) ->
     }
 
 
+def _build_gantt_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict[str, Any] | None:
+    tasks_raw = spec.get("tasks") or []
+    if not tasks_raw:
+        return None
+    xa = (spec.get("axes") or {}).get("x_axis") or {}
+    unit = str(xa.get("unit") or ("h" if "Hour" in str(xa.get("quantity_calculus") or "") else "d"))
+    vals: list[float] = [float(t.get("start", 0.0)) for t in tasks_raw] + [float(t.get("end", 0.0)) + max(0.0, float(t.get("float_days") or t.get("float_hours") or 0.0)) for t in tasks_raw]
+    if spec.get("today_day") is not None:
+        vals.append(float(spec["today_day"]))
+    x_sc = axis_scale(xa, vals)
+    tasks_out = [
+        {
+            "id": str(t.get("id") or f"t{i}"),
+            "label": _plain_text(t.get("label") or f"Task {i + 1}"),
+            "phase": _plain_text(t.get("phase") or "Execution"),
+            "start": float(t.get("start", 0.0)),
+            "end": float(t.get("end", t.get("start", 0.0))),
+            "float": max(0.0, float(t.get("float_days") or t.get("float_hours") or 0.0)),
+            "critical": bool(t.get("critical", False)),
+            "milestone": bool(t.get("milestone", False)),
+            "dependsOn": [str(d) for d in (t.get("depends_on") or [])],
+            "owner": _plain_text(t.get("owner") or ""),
+        }
+        for i, t in enumerate(tasks_raw)
+    ]
+    return {
+        "kind": "gantt",
+        "title": _plain_text((spec.get("metadata") or {}).get("title") or "Schedule Gantt"),
+        "rigor": rigor,
+        "medium": medium,
+        "unit": unit,
+        "x": {"name": _plain_text(xa.get("quantity_calculus") or f"Schedule, t / {unit}"), "min": x_sc["min"], "max": x_sc["max"], "interval": x_sc.get("step")},
+        "y": {"name": "Workstream / Task"},
+        "todayMarker": float(spec["today_day"]) if spec.get("today_day") is not None else None,
+        "todayLabel": _plain_text(spec.get("today_label") or "") or None,
+        "tasks": tasks_out,
+    }
+
+def _build_heatmap_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict[str, Any] | None:
+    x_cats = [_plain_text(c) for c in (spec.get("x_categories") or [])]
+    y_cats = [_plain_text(c) for c in (spec.get("y_categories") or [])]
+    matrix = spec.get("matrix") or []
+    if not x_cats or not y_cats or not matrix:
+        return None
+    vals: list[float] = []
+    cells: list[list[Any]] = []
+    n_y = len(y_cats)
+    for ri, row in enumerate(matrix[:n_y]):
+        yi = n_y - 1 - ri
+        for ci, raw_v in enumerate(row[:len(x_cats)]):
+            if raw_v is not None and math.isfinite(float(raw_v)):
+                fv = float(raw_v)
+                vals.append(fv)
+                cells.append([ci, yi, round(fv, 3)])
+    dom = (spec.get("scale") or {}).get("domain")
+    v_min = float(dom[0]) if isinstance(dom, (list, tuple)) and len(dom) == 2 else min(vals or [0.0])
+    v_max = float(dom[1]) if isinstance(dom, (list, tuple)) and len(dom) == 2 else max(vals or [100.0])
+    z_sc = compute_linear_125_scale(v_min, v_max if v_max > v_min else v_min + 1.0, target_ticks=5)
+    z_lbl = _plain_text((spec.get("scale") or {}).get("quantity_calculus") or "Intensity / %")
+    return {
+        "kind": "heatmap",
+        "title": _plain_text((spec.get("metadata") or {}).get("title") or "2D Matrix Heatmap"),
+        "rigor": rigor,
+        "medium": medium,
+        "x": {"name": _plain_text(((spec.get("axes") or {}).get("x_axis") or {}).get("quantity_calculus") or "Dimension X")},
+        "y": {"name": _plain_text(((spec.get("axes") or {}).get("y_axis") or {}).get("quantity_calculus") or "Dimension Y")},
+        "xCategories": x_cats,
+        "yCategories": list(reversed(y_cats)),
+        "cells": cells,
+        "min": z_sc["min"],
+        "max": z_sc["max"],
+        "unit": str((spec.get("scale") or {}).get("unit") or ""),
+        "quantityLabel": z_lbl,
+    }
+
+
+def _build_dumbbell_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict[str, Any] | None:
+    items = spec.get("dumbbells") or []
+    if not items:
+        return None
+    ya = (spec.get("axes") or {}).get("y_axis") or {}
+    xa = (spec.get("axes") or {}).get("x_axis") or {}
+    vals = [float(it["before"]) for it in items] + [float(it["after"]) for it in items]
+    dom = ya.get("domain") or xa.get("domain")
+    if isinstance(dom, (list, tuple)) and len(dom) == 2:
+        lo_d, hi_d = float(dom[0]), float(dom[1])
+    else:
+        lo_r, hi_r = min(vals), max(vals)
+        sp = (hi_r - lo_r) or abs(hi_r) or 1.0
+        lo_d = 0.0 if (0.0 < lo_r <= hi_r * 0.25) else (lo_r - sp * 0.15)
+        hi_d = hi_r + sp * 0.15
+    y_sc = compute_linear_125_scale(lo_d, hi_d, target_ticks=5)
+    lbls = spec.get("series_labels") or ["Baseline", "After"]
+    return {
+        "kind": "dumbbell",
+        "title": _plain_text((spec.get("metadata") or {}).get("title") or "Before vs After Comparison"),
+        "rigor": rigor,
+        "medium": medium,
+        "unit": str(ya.get("unit") or ""),
+        "x": {"name": _plain_text(xa.get("quantity_calculus") or "Segment")},
+        "y": {"name": _plain_text(ya.get("quantity_calculus") or "Metric"), "min": y_sc["min"], "max": y_sc["max"], "interval": y_sc["step"]},
+        "beforeLabel": _plain_text(lbls[0] if len(lbls) > 0 else "Baseline"),
+        "afterLabel": _plain_text(lbls[1] if len(lbls) > 1 else "After"),
+        "categories": [_plain_text(it["label"]) for it in items],
+        "items": [{"label": _plain_text(it["label"]), "before": float(it["before"]), "after": float(it["after"])} for it in items],
+    }
+
+
+def _build_forest_payload(spec: dict[str, Any], rigor: str, medium: str) -> dict[str, Any] | None:
+    items = spec.get("items") or spec.get("subgroups") or []
+    if not items:
+        return None
+    xa = (spec.get("axes") or {}).get("x_axis") or {}
+    null_v = float(spec.get("null_value", 1.0))
+    vals = [null_v] + [float(v) for it in items for v in (it["ci_low"], it["estimate"], it["ci_high"])]
+    dom = xa.get("domain")
+    x_sc = compute_linear_125_scale(float(dom[0]) if dom else min(vals), float(dom[1]) if dom else max(vals), target_ticks=5)
+    rev_items = list(reversed(items))
+    return {
+        "kind": "forest",
+        "title": _plain_text((spec.get("metadata") or {}).get("title") or "Subgroup Confidence Forest"),
+        "rigor": rigor,
+        "medium": medium,
+        "nullValue": null_v,
+        "x": {"name": _plain_text(xa.get("quantity_calculus") or "Effect (95% CI)"), "min": x_sc["min"], "max": x_sc["max"], "interval": x_sc["step"]},
+        "y": {"name": "Subgroup"},
+        "categories": [_plain_text(it["label"]) for it in rev_items],
+        "items": [
+            {
+                "label": _plain_text(it["label"]),
+                "estimate": float(it["estimate"]),
+                "ciLow": float(it["ci_low"]),
+                "ciHigh": float(it["ci_high"]),
+                "pooled": bool(it.get("pooled") or it.get("kind") == "pooled"),
+                "sig": float(it["ci_high"]) < null_v or float(it["ci_low"]) > null_v,
+            }
+            for it in rev_items
+        ],
+    }
+
+
 def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str = "m2") -> dict[str, Any] | None:
     """Build deterministic semantic ECharts descriptor matching plot_compiler domain scaling."""
     kind = str(spec.get("plot_kind") or "cartesian")
@@ -202,6 +343,14 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
         return _build_waterfall_payload(spec, rigor, medium)
     if kind == "stacked_bar":
         return _build_stacked_bar_payload(spec, rigor, medium)
+    if kind == "gantt":
+        return _build_gantt_payload(spec, rigor, medium)
+    if kind == "heatmap":
+        return _build_heatmap_payload(spec, rigor, medium)
+    if kind == "dumbbell":
+        return _build_dumbbell_payload(spec, rigor, medium)
+    if kind == "forest":
+        return _build_forest_payload(spec, rigor, medium)
     if kind != "cartesian":
         return None
     axes = spec.get("axes") or {}
@@ -216,13 +365,14 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
     for s in raw_series:
         if str(s.get("epistemic_type") or "discrete_measurement") != "analytical_model":
             for p in (s.get("data_points") or s.get("points") or []):
-                x_vals.append(float(p["x"]))
-                if p.get("y") is not None:
-                    yv = float(p["y"])
+                rx, ry, ru = p.get("x"), p.get("y"), p.get("u_y")
+                if rx is not None and math.isfinite(float(rx)):
+                    x_vals.append(float(rx))
+                if ry is not None and math.isfinite(float(ry)):
+                    yv = float(ry)
                     y_vals.append(yv)
-                    raw_u = p.get("u_y")
-                    if show_u and raw_u is not None and math.isfinite(float(raw_u)):
-                        uv = abs(float(raw_u))
+                    if show_u and ru is not None and math.isfinite(float(ru)):
+                        uv = abs(float(ru))
                         y_vals.extend((yv + uv, max(yv - uv, 1e-12) if log_y else (yv - uv)))
     x_sc = axis_scale(xa, x_vals)
     x_min, x_max = float(x_sc["min"]), float(x_sc["max"])
@@ -242,13 +392,17 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
             if not y_dom:
                 y_vals.extend(p[1] for p in pts)
         else:
-            pts_err = [[float(p["x"]), None if p.get("y") is None else float(p["y"]), float(p.get("u_y") or 0.0) if show_u else 0.0] for p in (s.get("data_points") or s.get("points") or [])]
+            pts_err = [
+                [float(p["x"]), None if (p.get("y") is None or not math.isfinite(float(p["y"]))) else float(p["y"]), float(p["u_y"]) if (show_u and p.get("u_y") is not None and math.isfinite(float(p["u_y"]))) else 0.0]
+                for p in (s.get("data_points") or s.get("points") or [])
+                if p.get("x") is not None and math.isfinite(float(p["x"]))
+            ]
             series_out.append({"id": str(s.get("id") or "meas"), "name": _plain_text(s.get("name") or "Measurement"), "epistemic": "discrete_measurement", "term": str(s.get("term") or s.get("id") or ""), "token": tok, "colorExplicit": col_exp, "connectPiecewise": bool(s.get("connect_piecewise", False)), "symbol": str(s.get("marker_glyph") or "circle"), "data": pts_err})
     if not series_out:
         return None
     envs_raw = spec.get("envelopes") or [] if (rigor in {"L2", "L3"} or spec.get("show_l1_envelopes")) else []
     if not y_dom:
-        y_vals.extend(float(e["threshold_value"]) for e in envs_raw if "threshold_value" in e and math.isfinite(float(e["threshold_value"])))
+        y_vals.extend(float(e["threshold_value"]) for e in envs_raw if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
     y_sc = axis_scale(ya, y_vals)
     y_lo, y_hi = float(y_sc["min"]), float(y_sc["max"])
     if rigor in {"L2", "L3"}:
@@ -265,17 +419,13 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
             cpts = clip_curve_to_y(_sample_analytical_series(spec, {"equation": e["equation"]}, x_min, x_max, log_x), y_lo, y_hi, log_x=log_x, log_y=log_y)
             if len(cpts) >= 2:
                 env_out.append({**edef, "points": cpts, "strokeStyle": str(e.get("stroke_style") or "dashed")})
-        elif "threshold_value" in e and math.isfinite(float(e["threshold_value"])):
+        elif e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])):
             env_out.append({**edef, "value": float(e["threshold_value"])})
     out: dict[str, Any] = {
-        "kind": "cartesian",
-        "title": _plain_text((spec.get("metadata") or {}).get("title") or "Analytical Plot"),
-        "rigor": rigor,
-        "medium": medium,
+        "kind": "cartesian", "title": _plain_text((spec.get("metadata") or {}).get("title") or "Analytical Plot"),
+        "rigor": rigor, "medium": medium, "series": series_out, "envelopes": env_out,
         "x": {"name": _plain_text(xa.get("quantity_calculus") or xa.get("quantity") or "x"), "min": x_sc["min"], "max": x_sc["max"], "interval": x_sc.get("step"), "log": log_x},
         "y": {"name": _plain_text(ya.get("quantity_calculus") or ya.get("quantity") or "y"), "min": y_sc["min"], "max": y_sc["max"], "interval": y_sc.get("step"), "log": log_y},
-        "series": series_out,
-        "envelopes": env_out,
     }
     if bool((spec.get("residual_strip") or {}).get("enabled")) and rigor == "L3":
         r_pts = compute_normalized_residuals(raw_series, log_x=log_x, legend=spec.get("parametric_legend"))
@@ -283,80 +433,16 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
             out["residuals"] = {"label": "Normalized Residuals (y\u1d62 \u2212 y\u0302\u1d62) / u", "bound": 2.0, "points": [[round_coord(xv), round(rv, 3)] for xv, rv in r_pts]}
     return out
 
-
 def render_echarts_toggle_bar() -> str:
     """Render accessible [Quiet SVG | Live ECharts] bench mode toggle."""
     return (
         '<div class="qe-plot-modebar" role="group" aria-label="Plot rendering backend">'
         '<span class="qe-modebar-label">Renderer</span>'
         '<button type="button" class="qe-mode-btn is-active" data-qe-mode="svg" aria-pressed="true">Quiet SVG</button>'
-        '<button type="button" class="qe-mode-btn" data-qe-mode="echarts" aria-pressed="false">Live ECharts</button>'
-        '</div>'
+        '<button type="button" class="qe-mode-btn" data-qe-mode="echarts" aria-pressed="false">Live ECharts</button></div>'
     )
-
-
-def _eco_snippets(payload: dict[str, Any]) -> list[tuple[str, str, str]]:
-    kind = payload["kind"]
-    x_lbl = str(payload.get("x", {}).get("name") or "Category")
-    y_lbl = str(payload.get("y", {}).get("name") or payload.get("yName") or "Value")
-    echarts_cfg = json.dumps({
-        "renderer": "svg",
-        "xAxis": {"name": x_lbl, "type": "log" if payload.get("x", {}).get("log") else ("category" if kind in {"waterfall", "stacked_bar"} else "value")},
-        "yAxis": {"name": y_lbl, "type": "log" if payload.get("y", {}).get("log") else "value", "min": payload.get("y", {}).get("min"), "max": payload.get("y", {}).get("max"), "interval": payload.get("y", {}).get("interval")},
-        "markLine": [{"yAxis": e["value"], "name": e["label"]} for e in payload.get("envelopes", []) if "value" in e],
-    }, indent=2, ensure_ascii=False)
-    if kind == "stacked_bar":
-        plotly = f"for s in stack_series:\n    fig.add_bar(x=hours, y=s['data'], name=s['name'])\nfig.update_layout(barmode='relative', template='plotly_white', yaxis_title='{y_lbl}')"
-        mpl = f"ax.bar(hours, solar, label='Solar'); ax.bar(hours, export, label='Export')\nax.spines[['top', 'right']].set_visible(False)\nax.set(xlabel='{x_lbl}', ylabel='{y_lbl}')"
-        bokeh = f"p = figure(x_range=hours, y_axis_label='{y_lbl}', toolbar_location=None)\np.vbar_stack(['solar', 'grid', 'batt'], x='hour', width=0.7, source=src)"
-        mermaid = f"xychart-beta\n    title \"{payload.get('title', 'Energy')}\"\n    x-axis [\"00:00\", \"06:00\", \"12:00\", \"14:00\", \"18:00\", \"23:00\"]\n    y-axis \"{y_lbl}\" {payload['y']['min']} --> {payload['y']['max']}\n    bar [0, 0.28, 4.94, 5.10, 1.12, 0]"
-    else:
-        plotly = f"fig.add_trace(go.Scatter(x=x, y=y, mode='markers+lines', error_y=dict(type='data', array=u_y)))\nfig.update_layout(template='plotly_white', xaxis_title='{x_lbl}', yaxis_title='{y_lbl}')"
-        mpl = f"ax.errorbar(x, y, yerr=u_y, fmt='o-', capsize=3, elinewidth=1.2)\nax.spines[['top', 'right']].set_visible(False)\nax.set(xlabel='{x_lbl}', ylabel='{y_lbl}')"
-        bokeh = f"p = figure(x_axis_label='{x_lbl}', y_axis_label='{y_lbl}', toolbar_location=None)\np.line(x, y, line_width=2); p.add_layout(Whisker(base='x', upper='hi', lower='lo', source=src))"
-        mermaid = f"xychart-beta\n    title \"{payload.get('title', 'Plot')}\"\n    y-axis \"{y_lbl}\"\n    line [0, 25, 50, 75, 100]"
-    return [
-        ("echarts", "Apache ECharts", echarts_cfg),
-        ("plotly", "Plotly (Python)", plotly),
-        ("matplotlib", "Matplotlib", mpl),
-        ("bokeh", "Bokeh", bokeh),
-        ("mermaid", "Mermaid", mermaid),
-    ]
-
 
 def render_ecosystem_drawer(spec: dict[str, Any]) -> str:
     """Render full-width 5-tab ecosystem code viewer with Copy Snippet button."""
     payload = build_echarts_payload(spec, rigor=str((spec.get("metadata") or {}).get("rigor_level", "L3")))
-    if payload is None:
-        return ""
-    slug = re.sub(r"[^a-z0-9]+", "-", str(spec.get("id") or "plot").lower()).strip("-") or "plot"
-    uid = f"qe-eco-{slug}"
-    tabs: list[str] = []
-    panels: list[str] = []
-    for idx, (key, label, code) in enumerate(_eco_snippets(payload)):
-        sel = "true" if idx == 0 else "false"
-        t_idx = "0" if idx == 0 else "-1"
-        hid = "" if idx == 0 else ' hidden="until-found"'
-        tid, pid = f"{uid}-tab-{key}", f"{uid}-panel-{key}"
-        tabs.append(
-            f'<button type="button" class="qe-eco-tab" role="tab" id="{tid}" aria-controls="{pid}" '
-            f'aria-selected="{sel}" tabindex="{t_idx}">{esc(label)}</button>'
-        )
-        panels.append(
-            f'<div class="qe-eco-panel" role="tabpanel" id="{pid}" aria-labelledby="{tid}"{hid}>'
-            f'<pre class="qe-eco-pre" tabindex="0"><code>{esc(code)}</code></pre></div>'
-        )
-    return (
-        f'<details class="qe-eco-drawer" data-eco-root="{uid}">'
-        '<summary class="qe-eco-summary">Inspect Ecosystem Config (ECharts · Plotly · Matplotlib · Bokeh · Mermaid)</summary>'
-        '<div class="qe-eco-tabs-wrap">'
-        '<div class="qe-eco-bar">'
-        '<div class="qe-eco-tablist" role="tablist" aria-label="Plotting Ecosystem Formats">'
-        f'{"".join(tabs)}</div>'
-        '<div class="qe-eco-copy-wrap">'
-        '<button type="button" class="qe-copy-btn" aria-label="Copy active ecosystem code snippet">Copy Snippet</button>'
-        '<span class="qe-copy-status" role="status" aria-live="polite"></span>'
-        '</div></div>'
-        f'<div class="qe-eco-panels">{"".join(panels)}</div>'
-        '</div></details>'
-    )
+    return render_ecosystem_drawer_from_payload(spec, payload)

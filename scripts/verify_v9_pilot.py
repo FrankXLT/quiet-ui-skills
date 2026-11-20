@@ -30,10 +30,10 @@ BRAND_V9 = REPO_ROOT / "customizations" / "brand-starter" / "showcase.html"
 
 ALL_WORLDS_VIEWS: list[tuple[str, tuple[str, ...]]] = [
     ("01-clinical-icu-and-trials", ("v01-icu-bedside-terminal", "v02-trial-regulatory-brief", "v03-patient-recovery-companion")),
-    ("02-cloud-cyber-and-ai-ops", ("v04-sre-incident-workbench", "v05-zero-trust-ato-spec", "v06-ai-drift-and-lineage-ide")),
+    ("02-cloud-cyber-and-ai-ops", ("v04-sre-incident-workbench", "v05-zero-trust-ato-spec", "v06-ai-drift-and-lineage-ide", "v19-product-roadmap-and-triage")),
     ("03-industrial-grid-and-manufacturing", ("v07-grid-scada-poi-console", "v08-plant-floor-wall-kiosk", "v09-spc-quality-and-modbus-report")),
-    ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab")),
-    ("05-physical-systems-auto-and-aero", ("v13-propulsion-archival-monograph", "v14-fieldbus-and-scope-debugger", "v15-collimated-flight-hud", "v16-transparent-window-overlay")),
+    ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab", "v20-student-capstone-lab-report")),
+    ("05-physical-systems-auto-and-aero", ("v13-propulsion-archival-monograph", "v14-fieldbus-and-scope-debugger", "v15-collimated-flight-hud", "v16-transparent-window-overlay", "v21-field-anomaly-escalation-tsn")),
     ("06-smart-home-and-energy", ("v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console")),
 ]
 
@@ -236,7 +236,7 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
     for wid, vid in (("02-cloud-cyber-and-ai-ops", "v05-zero-trust-ato-spec"), ("03-industrial-grid-and-manufacturing", "v09-spc-quality-and-modbus-report"), ("05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph")):
         errs.extend(_audit_stage(driver, f"{base_url}?world={wid}&view={vid}&medium=m1&theme=white", 1440, 900, f"M1_{vid[:3].upper()}"))
 
-    # Studio 2-Mode switching: Examples -> Components (21 Specimens) -> Examples
+    # Studio 2-Mode switching: Examples -> Components (36 Specimens) -> Examples
     driver.get(f"{base_url}?domain=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
     time.sleep(0.28)
     driver.execute_script("document.getElementById('va-tab-components').click();")
@@ -244,17 +244,17 @@ def _verify_worlds_02_05_and_studio(driver: Any, base_url: str, root_url: str) -
     comp_ok = driver.execute_script(
         "const p=document.getElementById('va-stage-portal'),d=document.querySelector('.va-domain-ctrl'),pd=p&&p.contentDocument;"
         "return !!(document.documentElement.dataset.studioView==='components' && p.src.includes('bench/evidence-bench.html') && "
-        "getComputedStyle(d).display==='none' && pd && pd.querySelectorAll('.qe-specimen').length===21 && pd.querySelectorAll('[data-schema-modality=\"schematic\"] svg').length>=6);"
+        "getComputedStyle(d).display==='none' && pd && pd.querySelectorAll('.qe-specimen').length===36 && pd.querySelectorAll('[data-schema-modality=\"schematic\"] svg').length>=8);"
     )
     if not comp_ok:
-        errs.append("[STUDIO_MODE] Components tab failed to mount 21-specimen library or hide Domain selector")
+        errs.append("[STUDIO_MODE] Components tab failed to mount 36-specimen library or hide Domain selector")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.35)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples' && !p.hasAttribute('src');"):
         errs.append("[STUDIO_MODE] Failed to return from Components to Examples")
 
     # Starters check
-    for rel, min_views in (("customizations/personal-starter/showcase.html", 18), ("customizations/brand-starter/showcase.html", 14)):
+    for rel, min_views in (("customizations/personal-starter/showcase.html", 21), ("customizations/brand-starter/showcase.html", 17)):
         driver.get(f"{root_url}/{rel}")
         time.sleep(0.35)
         cnt = driver.execute_script("const m=JSON.parse(document.getElementById('va-v9-manifest').textContent);return m.worlds.reduce((a,w)=>a+w.views.length,0);")
@@ -376,7 +376,7 @@ def verify_cdp(screenshots_dir: Path | None = None, all_worlds: bool = False) ->
 def main() -> int:
     parser = argparse.ArgumentParser(description="Quiet UI v9.0 Pilot & 6-World CDP Verifier")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome CDP matrix & behavioral gates")
-    parser.add_argument("--all-worlds", action="store_true", help="Verify all 6 Worlds x 18 Views on quiet-ui-showcase.html")
+    parser.add_argument("--all-worlds", action="store_true", help="Verify all 6 Worlds x 21 Views on quiet-ui-showcase.html")
     parser.add_argument("--screenshots-dir", default=None, help="Directory to write Retina proof PNGs")
     args = parser.parse_args()
 
@@ -388,7 +388,7 @@ def main() -> int:
         for e in errs:
             print(f"  - {e}")
         return 1
-    scope = "6 Worlds x 18 Views" if args.all_worlds else "World 01 Pilot"
+    scope = "6 Worlds x 21 Views" if args.all_worlds else "World 01 Pilot"
     print(f"[PASS] 100% of Quiet UI v9.0 ({scope}) static & CDP gates succeeded!")
     return 0
 

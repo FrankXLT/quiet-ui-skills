@@ -207,108 +207,120 @@ def _check_all_8_photos_and_echarts(driver: Any, base_url: str, errs: list[str])
         errs.append(f"[BENCH_ECHARTS] {bench_ok}")
 
 
+def _check_phase62_directional_views(driver: Any, base_url: str, errs: list[str]) -> None:
+    set_viewport(driver, 1440, 900, 1)
+    # v19: ECharts Gantt active + filter/click triage rows
+    driver.get(f"{base_url}?world=02-cloud-cyber-and-ai-ops&view=v19-product-roadmap-and-triage&theme=white")
+    time.sleep(0.55)
+    v19_res = driver.execute_script("""
+        const d = document.getElementById('va-stage-portal')?.contentDocument;
+        if (!d) return 'no doc';
+        const wrap = d.querySelector('#v19-gantt .qe-plot-wrap');
+        if (!wrap || wrap.dataset.echartsActive !== 'true' || !wrap.querySelector('.qe-echarts-host svg')) return 'v19 gantt echarts inactive';
+        const rows = d.querySelectorAll('#v19-triage .v9-triage-row');
+        if (rows.length !== 4) return 'expected 4 triage rows, got ' + rows.length;
+        rows[2].click();
+        if (!(d.getElementById('v19-triage-detail')?.textContent || '').includes('+3.0 d')) return 'v19 triage click failed';
+        d.querySelector('#v19-filter-chips [data-v19-filter="blocked"]')?.click();
+        const vis = [...rows].filter(r => !r.hidden).length;
+        return vis === 2 ? 'ok' : 'expected 2 filtered rows, got ' + vis;
+    """)
+    if v19_res != "ok":
+        errs.append(f"[V19_PLANNER] {v19_res}")
+
+    # v20: Student upward rubric chips & M1 print compatibility + ECharts dumbbell/scope
+    driver.get(f"{base_url}?world=04-civic-finance-and-stem-learning&view=v20-student-capstone-lab-report&theme=paper")
+    time.sleep(0.55)
+    v20_res = driver.execute_script("""
+        const d = document.getElementById('va-stage-portal')?.contentDocument;
+        if (!d) return 'no doc';
+        const wraps = [...d.querySelectorAll('#v20-evidence .qe-plot-wrap')];
+        if (wraps.length !== 2 || !wraps.every(w => w.dataset.echartsActive === 'true')) return 'v20 echarts not active on both plots';
+        d.querySelector('#v20-rubric-chips [data-v20-focus="error"]')?.click();
+        return (d.getElementById('v20-focus-note')?.textContent || '').includes('Error Bounds') ? 'ok' : 'v20 rubric toggle failed';
+    """)
+    if v20_res != "ok":
+        errs.append(f"[V20_STUDENT] {v20_res}")
+
+    # v21: Field Tech isolation tabs, 8.0h recovery Gantt & systems escalation confirm
+    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v21-field-anomaly-escalation-tsn&theme=dark")
+    time.sleep(0.55)
+    v21_res = driver.execute_script("""
+        const d = document.getElementById('va-stage-portal')?.contentDocument;
+        if (!d) return 'no doc';
+        const wrap = d.querySelector('#v21-recovery .qe-plot-wrap');
+        if (!wrap || wrap.dataset.echartsActive !== 'true') return 'v21 recovery gantt echarts inactive';
+        d.querySelector('#v21-step-chips [data-v21-step="thermal"]')?.click();
+        const tp = d.querySelector('[data-v21-panel="thermal"]');
+        if (!tp || tp.hidden) return 'v21 thermal step panel stayed hidden';
+        d.getElementById('v21-handoff-arm')?.click();
+        d.getElementById('v21-handoff-send')?.click();
+        return (d.getElementById('v21-handoff-status')?.textContent || '').includes('HANDOFF SENT') ? 'ok' : 'v21 escalation handoff failed';
+    """)
+    if v21_res != "ok":
+        errs.append(f"[V21_TSN] {v21_res}")
+
+
 def run_domain06_and_echarts_checks(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Execute Gate 5.5 CDP checks for Domain 06, 8 photos, single-legend ECharts & 5-tab Bench."""
+    """Execute Gate 5.5/6.2 CDP checks for Domain 06, 8 photos, single-legend ECharts, v19-v21 & 5-tab Bench."""
     errs: list[str] = []
     _check_v17_and_v18(driver, base_url, errs)
     _check_all_8_photos_and_echarts(driver, base_url, errs)
+    _check_phase62_directional_views(driver, base_url, errs)
     set_viewport(driver, 1440, 900, 1)
     return errs
 
 
-def capture_gate54_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
-    """Capture 8 Gate 5.5 Retina (deviceScaleFactor=2) proof PNGs into screenshots_gate55."""
-    out_dir.mkdir(parents=True, exist_ok=True)
-    shots = [
-        ("01_v15_hud_daylight_runway.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "white", 1440, 900, ""),
-        ("02_v15_hud_orbital_limb_inertial.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-backplate='earthrise']\");if(b)b.click();"),
-        ("03_v16_maritime_wheelhouse_daylight.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "white", 1440, 900, ""),
-        ("04_v16_maritime_wheelhouse_night.png", "05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", "dark", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-luminance='night']\");if(b)b.click();"),
-        ("05_v17_ha_framed_gallery_art.png", "06-smart-home-and-energy", "v17-picture-frame-home-kiosk", "white", 1440, 900, ""),
-        ("06_v18_ha_desktop_mushroom_cards.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "dark", 1440, 900, ""),
-        ("07_v18_ha_24h_stacked_energy_echarts.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "white", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const e=d.getElementById('v18-energy');if(e)e.scrollIntoView({block:'center'});"),
-    ]
-    for fname, wid, vw, theme, w, h, js_hook in shots:
-        set_viewport(driver, w, h, 2)
-        driver.get(f"{base_url}?world={wid}&view={vw}&theme={theme}")
-        time.sleep(0.55)
-        if js_hook:
-            driver.execute_script(js_hook)
-            time.sleep(0.45)
-        driver.save_screenshot(str(out_dir / fname))
-
-    set_viewport(driver, 1440, 900, 2)
-    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")
-    time.sleep(0.4)
-    driver.execute_script("document.getElementById('va-tab-components').click();")
-    time.sleep(0.85)
-    driver.execute_script("""
-        const bdoc = document.getElementById('va-stage-portal').contentDocument;
-        const wrap = bdoc && bdoc.querySelector('.qe-plot-wrap[data-quiet-echarts]');
-        if (!wrap) return;
-        const btn = wrap.querySelector('.qe-mode-btn[data-qe-mode="echarts"]');
-        if (btn) btn.click();
-        const fig = wrap.closest('.qe-figure');
-        const drw = fig && fig.querySelector('.qe-eco-drawer');
-        if (drw) drw.open = true;
-        if (fig) fig.scrollIntoView({block: 'start'});
-    """)
-    time.sleep(0.45)
-    driver.save_screenshot(str(out_dir / "08_components_5tab_ecosystem_drawer.png"))
-    set_viewport(driver, 1440, 900, 1)
-
-
 def capture_gate41_gallery(driver: Any, base_url: str, shots_dir: Path) -> None:
+    """Capture Gate 4.1 World 01 Retina proof screenshots."""
     shots_dir.mkdir(parents=True, exist_ok=True)
     for fname, w, h, qs in (
         ("01_v01_icu_desktop_white.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=white"),
         ("02_v01_icu_desktop_oled.png", 1440, 900, "view=v01-icu-bedside-terminal&theme=dark"),
         ("03_v01_icu_mobile_390x844.png", 390, 844, "view=v01-icu-bedside-terminal&theme=white"),
         ("04_v02_trial_desktop_paper.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=paper"),
-        ("05_v02_trial_foldable_840x1050.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=white&vp=840x1050"),
-        ("06_v02_trial_m1_print_sheet.png", 1440, 900, "view=v02-trial-regulatory-brief&theme=dark&medium=m1"),
-        ("07_v03_patient_desktop_white.png", 1440, 900, "view=v03-patient-recovery-companion&theme=white"),
-        ("08_v03_patient_mobile_390x844.png", 390, 844, "view=v03-patient-recovery-companion&theme=white"),
     ):
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?world=01-clinical-icu-and-trials&{qs}")
         time.sleep(0.35)
         driver.save_screenshot(str(shots_dir / fname))
-    set_viewport(driver, 1440, 900, 2)
-    driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v02-trial-regulatory-brief&theme=dark-paper")
-    time.sleep(0.3)
-    driver.execute_script("document.getElementById('va-bridge-btn').click();")
-    time.sleep(0.2)
-    driver.save_screenshot(str(shots_dir / "09_studio_why_this_view_bridge.png"))
+    set_viewport(driver, 1440, 900, 1)
 
 
 def capture_phase6_gallery(driver: Any, base_url: str, out_dir: Path) -> None:
-    """Capture 8 Phase 6 Retina (deviceScaleFactor=2) proof PNGs from live :8788 showcase."""
+    """Capture 8 Phase 6.1 & 6.2 Retina (deviceScaleFactor=2) proof PNGs into screenshots_phase62."""
     out_dir.mkdir(parents=True, exist_ok=True)
-    shots = [
-        ("01_v02_foldable_840x1050_masthead.png", "01-clinical-icu-and-trials", "v02-trial-regulatory-brief", "white", 840, 1050, ""),
-        ("02_v10_civic_waterfall_echarts.png", "04-civic-finance-and-stem-learning", "v10-civic-capital-budget-deck", "white", 1440, 900, ""),
-        ("03_v12_stem_rc_lab_residuals.png", "04-civic-finance-and-stem-learning", "v12-stem-interactive-lab", "white", 1440, 900, ""),
-        ("04_v13_propulsion_bte_residuals.png", "05-physical-systems-auto-and-aero", "v13-propulsion-archival-monograph", "paper", 1440, 900, ""),
-        ("05_v15_hud_daylight_horizon50.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "white", 1440, 900, ""),
-        ("06_v15_hud_nightfall_ils_horizon50.png", "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const b=d.querySelector(\"button[data-backplate='lowlight']\");if(b)b.click();"),
-        ("07_v18_ha_companion_stacked_energy.png", "06-smart-home-and-energy", "v18-home-assistant-companion-console", "white", 1440, 900,
-         "const d=document.getElementById('va-stage-portal').contentDocument;const e=d.getElementById('v18-energy');if(e)e.scrollIntoView({block:'center'});"),
+    comp_shots = [
+        ("01_components_gantt_and_heatmap_echarts.png", "bench-25-m4-schedule-gantt", "M4", True),
+        ("02_components_dumbbell_and_forest_plots.png", "bench-23-m4-dumbbell-12", "M4", False),
+        ("03_components_ui_controls_and_pills.png", "ui-pill-and-status-grammar", "UI", False),
+        ("04_components_triage_and_tree_explorer.png", "ui-compact-triage-queue", "UI", False),
     ]
-    for fname, wid, vw, theme, w, h, hook in shots:
+    for fname, focus_id, mod_val, enable_ec in comp_shots:
+        set_viewport(driver, 1440, 900, 2)
+        driver.get(f"{base_url}?mode=components&theme=white")
+        time.sleep(0.85)
+        driver.execute_script(
+            "const bd=document.getElementById('va-stage-portal').contentDocument;"
+            "const sel=bd.getElementById('bench-modality-filter');"
+            "if(sel){sel.value=arguments[1];sel.dispatchEvent(new Event('change'));}"
+            "if(arguments[2]){bd.querySelectorAll('.qe-mode-btn[data-qe-mode=\"echarts\"]').forEach(b=>b.click());}"
+            "const el=bd.getElementById(arguments[0]);if(el)el.scrollIntoView({block:'start'});",
+            focus_id, mod_val, enable_ec,
+        )
+        time.sleep(0.4)
+        driver.save_screenshot(str(out_dir / fname))
+
+    stage_shots = [
+        ("05_v19_saas_release_gantt_and_triage.png", "02-cloud-cyber-and-ai-ops", "v19-product-roadmap-and-triage", "white", 1440, 900),
+        ("06_v20_student_capstone_lab_report.png", "04-civic-finance-and-stem-learning", "v20-student-capstone-lab-report", "paper", 1440, 900),
+        ("07_v21_field_tech_escalation_tsn.png", "05-physical-systems-auto-and-aero", "v21-field-anomaly-escalation-tsn", "dark", 1440, 900),
+        ("08_v19_mobile_390x844_responsive.png", "02-cloud-cyber-and-ai-ops", "v19-product-roadmap-and-triage", "white", 390, 844),
+    ]
+    for fname, wid, vw, theme, w, h in stage_shots:
         set_viewport(driver, w, h, 2)
         driver.get(f"{base_url}?world={wid}&view={vw}&theme={theme}")
-        time.sleep(0.55)
-        if hook:
-            driver.execute_script(hook)
-            time.sleep(0.45)
+        time.sleep(0.6)
         driver.save_screenshot(str(out_dir / fname))
-    set_viewport(driver, 1440, 900, 2)
-    driver.get(f"{base_url}?world=05-physical-systems-auto-and-aero&view=v16-transparent-window-overlay&theme=white")
-    time.sleep(0.55)
-    driver.save_screenshot(str(out_dir / "08_v16_maritime_glass_daylight.png"))
     set_viewport(driver, 1440, 900, 1)
+

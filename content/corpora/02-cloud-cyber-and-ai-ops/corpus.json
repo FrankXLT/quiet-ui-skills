@@ -3,7 +3,7 @@
   "world_id": "02-cloud-cyber-and-ai-ops",
   "world_index": 2,
   "title": "Cloud, Cyber & AI Ops",
-  "description": "Three-view distillation corpus covering real-time SRE tail-latency incident command, NIST SP 800-207 zero-trust ATO boundary governance, and NIST AI RMF 100-1 calibration drift and telemetry lineage.",
+  "description": "Four-view distillation corpus covering real-time SRE tail-latency incident command, NIST SP 800-207 zero-trust ATO boundary governance, NIST AI RMF 100-1 calibration drift and telemetry lineage, and Product Release Roadmap & Blocker Triage.",
   "canonical_metrics": {
     "p99_threshold_ms": 250.0,
     "p99_peak_ms": 420.0,
@@ -23,7 +23,9 @@
     "ece_drift_score": 0.050,
     "ece_drift_threshold": 0.040,
     "overconfidence_gate_offset": -0.08,
-    "sample_count": 1200
+    "sample_count": 1200,
+    "roadmap_float_days": 3.0,
+    "tracked_blockers": 4
   },
   "evidence_bindings": {
     "p99_threshold_ms": {
@@ -120,6 +122,16 @@
       "file": "evidence/v06_ai_calibration_plot.json",
       "json_path": "$.parametric_legend[2].value",
       "unit": "1"
+    },
+    "roadmap_float_days": {
+      "file": "evidence/v19_release_roadmap_gantt.json",
+      "json_path": "$.tasks[2].float_days",
+      "unit": "d"
+    },
+    "tracked_blockers": {
+      "file": "evidence/v19_release_roadmap_gantt.json",
+      "json_path": "$.tracked_blockers",
+      "unit": "1"
     }
   },
   "views": [
@@ -200,6 +212,31 @@
         "evidence/v06_ai_calibration_plot.json"
       ],
       "actionable_disposition": "ECE = 0.050 exceeds 0.040 drift ceiling across N = 1200 validation samples (overconfidence -0.120 at p_hat = 0.85); route p_hat >= 0.75 predictions to deterministic fallback."
+    },
+    {
+      "id": "v19-product-roadmap-and-triage",
+      "title": "Platform Hardening Release Roadmap & Blocker Triage",
+      "presenter": "Engineering Lead",
+      "audience": "Product Manager & Design Lead",
+      "lenses": [
+        "Program Manager",
+        "Project / Systems Engineer"
+      ],
+      "tempos": [
+        "T2"
+      ],
+      "mediums": [
+        "M3"
+      ],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": [
+        "N1"
+      ],
+      "rigor_level": "L2",
+      "evidence_refs": [
+        "evidence/v19_release_roadmap_gantt.json"
+      ],
+      "actionable_disposition": "Hold GA cutover until 4 tracked launch blockers clear: patch 12.0 s OTel gap, restore p99 <= 250.0 ms, enforce 0x8003B104 policy, preserving +3.0 d security float."
     }
   ]
 }

@@ -137,6 +137,7 @@ def compile_dumbbell(spec: dict[str, Any]) -> str:
     parts.append(f'<line x1="{x0}" y1="{y0 + ph}" x2="{x0 + pw}" y2="{y0 + ph}" stroke="var(--text-primary)" stroke-width="1.1"/>')
 
     slot = pw / max(len(items), 1)
+    dense = len(items) > 8
     b_pts, a_pts, markers, labels = [], [], [], []
     sep = "" if unit in {"%", "°"} else "\u00a0"
     for i, it in enumerate(items):
@@ -148,8 +149,12 @@ def compile_dumbbell(spec: dict[str, Any]) -> str:
         markers.append(f'<line x1="{cx:.1f}" y1="{yb:.1f}" x2="{cx:.1f}" y2="{ya:.1f}" stroke="var(--border-strong)" stroke-width="2.0"/>')
         markers.append(f'<circle cx="{cx:.1f}" cy="{yb:.1f}" r="4.5" fill="var(--bg-canvas)" stroke="var(--text-muted)" stroke-width="1.6"/>')
         markers.append(f'<circle cx="{cx:.1f}" cy="{ya:.1f}" r="4.8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1.2"/>')
-        labels.append(halo_text(cx, ya - 9.0, f'{float(it["after"]):.1f}{sep}{unit}', anchor="middle", size=11.5, weight="700", fill="var(--accent-focal)"))
-        labels.append(halo_text(cx, y0 + ph + 19.0, str(it["label"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
+        val_txt = f'{float(it["after"]):.1f}' if dense else f'{float(it["after"]):.1f}{sep}{unit}'
+        val_y = (ya - 10.0) if (ya >= yb or ya > y0 + 20.0) else (ya + 17.0)
+        if not dense or i % 2 == 0 or abs(ya - yb) >= 18.0:
+            labels.append(halo_text(cx, val_y, val_txt, anchor="middle", size=11.5, weight="700", fill="var(--accent-focal)"))
+        x_row_y = y0 + ph + (34.0 if (dense and i % 2 == 1) else 18.0)
+        labels.append(halo_text(cx, x_row_y, str(it["label"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
 
     if len(b_pts) >= 2:
         parts.append(f'<polyline fill="none" stroke="var(--text-muted)" stroke-width="1.3" stroke-dasharray="4,3" points="{" ".join(b_pts)}"/>')
@@ -196,7 +201,11 @@ def compile_forest(spec: dict[str, Any]) -> str:
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy:.1f}" x2="{px_hi:.1f}" y2="{cy:.1f}" stroke="{col}" stroke-width="1.8"/>')
         parts.append(f'<line x1="{px_lo:.1f}" y1="{cy - 4:.1f}" x2="{px_lo:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')
         parts.append(f'<line x1="{px_hi:.1f}" y1="{cy - 4:.1f}" x2="{px_hi:.1f}" y2="{cy + 4:.1f}" stroke="{col}" stroke-width="1.4"/>')
-        parts.append(f'<rect data-role="marker" x="{px_m - 4:.1f}" y="{cy - 4:.1f}" width="8" height="8" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
+        if it.get("pooled") or it.get("kind") == "pooled":
+            d_pts = f"{px_m:.1f},{cy - 6:.1f} {px_m + 7:.1f},{cy:.1f} {px_m:.1f},{cy + 6:.1f} {px_m - 7:.1f},{cy:.1f}"
+            parts.append(f'<polygon data-role="marker" points="{d_pts}" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
+        else:
+            parts.append(f'<rect data-role="marker" x="{px_m - 4:.1f}" y="{cy - 4:.1f}" width="8" height="8" fill="{col}" stroke="var(--bg-canvas)" stroke-width="1"/>')
         parts.append(halo_text(x0 + pw + 8.0, cy + 4.0, f"{est:.2f} ({lo:.2f}–{hi:.2f})", anchor="start", size=12.0, weight="600", fill=col, halo=False))
     parts.append("</svg>")
     return "\n".join(parts)
@@ -253,9 +262,9 @@ def compile_stacked_bar(spec: dict[str, Any], rigor: str, medium: str) -> str:
                 yt, yb = _proj_lin_y(neg_acc, sc, y0, ph), _proj_lin_y(neg_acc + v, sc, y0, ph)
                 neg_acc += v
             parts.append(f'<rect data-role="bar" x="{bx:.1f}" y="{yt:.1f}" width="{bw:.1f}" height="{max(1.5, yb - yt):.1f}" rx="1.5" fill="{col}" opacity="0.92"/>')
-        if idx % 4 == 0:
+        if idx % (1 if n_cats <= 8 else 4) == 0:
             cx = x0 + (idx + 0.5) * slot
-            parts.append(halo_text(cx, y0 + ph + 18.0, str(cats[idx]), anchor="middle", size=11.0, fill="var(--text-secondary)", halo=False))
+            parts.append(halo_text(cx, y0 + ph + 18.0, str(cats[idx]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
     parts.append(f'<line x1="{x0}" y1="{y_zero:.1f}" x2="{x0 + pw}" y2="{y_zero:.1f}" stroke="var(--text-primary)" stroke-width="1.1"/>')
     parts.append(f'<line x1="{x0}" y1="{y0}" x2="{x0}" y2="{y0 + ph}" stroke="var(--text-primary)" stroke-width="1.1"/>')
     for sr in line_series:
@@ -273,7 +282,7 @@ def compile_stacked_bar(spec: dict[str, Any], rigor: str, medium: str) -> str:
         if raw_thr is not None and math.isfinite(float(raw_thr)):
             ey = max(y0 + 10.0, min(y0 + ph - 10.0, _proj_lin_y(float(raw_thr), sc, y0, ph)))
             parts.append(f'<line x1="{x0}" y1="{ey:.1f}" x2="{x0 + pw}" y2="{ey:.1f}" stroke="var(--text-secondary)" stroke-width="1.2" stroke-dasharray="5,3"/>')
-            parts.append(svg_knockout_label(x0 + pw * 0.72, ey - 5.0, str(env.get("label") or ""), anchor="middle", size=10.5, weight="600", fill="var(--text-secondary)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
+            parts.append(svg_knockout_label(x0 + pw * 0.72, ey - 5.0, str(env.get("label") or ""), anchor="middle", size=11.5, weight="600", fill="var(--text-secondary)", surface_fill="var(--bg-surface)", x_bounds=(x0 + 8.0, x0 + pw - 8.0), math=False))
     y_lbl = str(ya.get("quantity_calculus") or "Power (kW)")
     x_lbl = str(xa.get("quantity_calculus") or "Hour of Day")
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 38.0, x_lbl, anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False, math=False))
