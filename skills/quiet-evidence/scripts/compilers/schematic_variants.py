@@ -152,33 +152,7 @@ def compile_wardley(spec: dict[str, Any]) -> str:
     return "\n".join(parts)
 
 
-def compile_sankey(spec: dict[str, Any]) -> str:
-    """Compile multi-stage telemetry Sankey diagram with proportional ribbons."""
-    nodes = spec.get("nodes", [])
-    flows = spec.get("flows", [])
-    parts: list[str] = ['<svg class="qe-svg qe-svg-720" viewBox="0 0 720 248" role="img" aria-label="Telemetry Flow Sankey">']
-    nmap = {n["id"]: n for n in nodes}
-    for fl in flows:
-        s, d = nmap.get(fl["from"]), nmap.get(fl["to"])
-        if not s or not d:
-            continue
-        x1 = float(s["x"]) + float(s.get("w", 140))
-        x2 = float(d["x"])
-        mx = (x1 + x2) / 2.0
-        sy0, sy1 = float(fl["sy0"]), float(fl["sy1"])
-        dy0, dy1 = float(fl["dy0"]), float(fl["dy1"])
-        fill = resolve_token(fl.get("fill"), "var(--tint-indigo-bg)")
-        p = f"M {x1:.1f} {sy0:.1f} C {mx:.1f} {sy0:.1f}, {mx:.1f} {dy0:.1f}, {x2:.1f} {dy0:.1f} L {x2:.1f} {dy1:.1f} C {mx:.1f} {dy1:.1f}, {mx:.1f} {sy1:.1f}, {x1:.1f} {sy1:.1f} Z"
-        parts.append(f'<path d="{p}" fill="{fill}" stroke="var(--border-hairline)" stroke-width="1"/>')
-    for nd in nodes:
-        nx, ny, nw, nh = float(nd["x"]), float(nd["y"]), float(nd.get("w", 140)), float(nd.get("h", 64))
-        col = resolve_token(nd.get("stroke"), "var(--border-strong)")
-        parts.append(f'<rect data-role="node" x="{nx:.1f}" y="{ny:.1f}" width="{nw:.1f}" height="{nh:.1f}" rx="4" fill="var(--bg-card)" stroke="{col}" stroke-width="1.5"/>')
-        parts.append(halo_text(nx + nw / 2.0, ny + nh / 2.0 - 4.0, str(nd["label"]), anchor="middle", size=11.5, weight="700", fill="var(--text-primary)", halo=False))
-        if nd.get("metric"):
-            parts.append(halo_text(nx + nw / 2.0, ny + nh / 2.0 + 14.0, str(nd["metric"]), anchor="middle", size=11.5, fill=col, halo=False))
-    parts.append("</svg>")
-    return "\n".join(parts)
+from .sankey_and_strip import compile_sankey  # noqa: F401
 
 
 def compile_er_lineage(spec: dict[str, Any]) -> str:

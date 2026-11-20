@@ -158,7 +158,7 @@ def _compile_single_dict(
             f'<pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for {title}"><code>{esc(raw_text)}</code></pre>'
             "</details>"
         )
-    eco_drawer = render_ecosystem_drawer(data) if (include_spec_drawer and chrome == "bench" and modality == "plot") else ""
+    eco_drawer = render_ecosystem_drawer(data) if (include_spec_drawer and chrome == "bench" and (modality == "plot" or data.get("waveform_kind") == "strip_chart")) else ""
     badges = (
         f'<span class="qe-fig-badges"><span class="va-pill" data-variant="tag">{esc(modality.upper())}</span>'
         f'<span class="va-pill" data-variant="tag">{esc(eff_rigor)}</span></span>'

@@ -61,7 +61,8 @@ class TestV9World01Pilot(unittest.TestCase):
 
         for bad_tick in (">-120<", ">-100<", ">-50<"):
             self.assertNotIn(bad_tick, v01)
-        self.assertIn(">160<", v01)
+        self.assertIn(">120<", v01)
+        self.assertIn(">40<", v01)
         self.assertIn(">50<", v01)
         self.assertIn("Checked Today · 5:30 AM", v03)
         self.assertIn("On Track", v03)

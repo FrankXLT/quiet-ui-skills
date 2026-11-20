@@ -38,8 +38,11 @@ def _shot(driver: Any) -> Image.Image:
     return Image.open(BytesIO(base64.b64decode(raw))).convert("RGB").resize((PANEL_W, PANEL_H - HDR_H), Image.Resampling.LANCZOS)
 
 
-def _capture_showcase(driver: Any, base_url: str, wid: str, vid: str, theme: str, extra_js: str = "") -> Image.Image:
-    driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": CAP_W, "height": CAP_H, "deviceScaleFactor": 1.0, "mobile": False})
+def _capture_showcase(
+    driver: Any, base_url: str, wid: str, vid: str, theme: str, extra_js: str = "", fit_sel: str = ""
+) -> Image.Image:
+    cap_w, cap_h = CAP_W, CAP_H
+    driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": cap_w, "height": cap_h, "deviceScaleFactor": 1.0, "mobile": False})
     driver.get(f"{base_url}/quiet-ui-showcase.html?world={wid}&view={vid}&theme={theme}")
     for _ in range(50):
         ok = driver.execute_script(
@@ -51,13 +54,24 @@ def _capture_showcase(driver: Any, base_url: str, wid: str, vid: str, theme: str
         if ok:
             break
         time.sleep(0.08)
+    if fit_sel:
+        need_h = driver.execute_script(
+            "const f=document.getElementById('va-stage-portal'),d=f&&f.contentDocument,el=d&&d.querySelector(arguments[0]);"
+            "return el ? Math.ceil(el.getBoundingClientRect().bottom + 14) : 0;",
+            fit_sel,
+        )
+        if need_h and int(need_h) > cap_h:
+            cap_h = int(need_h)
+            cap_w = round(cap_h * PANEL_W / (PANEL_H - HDR_H))
+            driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": cap_w, "height": cap_h, "deviceScaleFactor": 1.0, "mobile": False})
+            time.sleep(0.12)
     driver.execute_script(
         "const bar=document.getElementById('va-studio-bar');if(bar)bar.style.display='none';"
         "['va-portal-mat','va-portal-scaler','va-stage-portal'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.height=arguments[0]+'px';el.style.minHeight=arguments[0]+'px';}});"
         "const f=document.getElementById('va-stage-portal'),d=f&&f.contentDocument;"
         + extra_js +
         "if(f&&f.contentWindow&&f.contentWindow.QuietEChartsAdapter)f.contentWindow.QuietEChartsAdapter.refresh(d);",
-        CAP_H,
+        cap_h,
     )
     return _shot(driver)
 
@@ -66,7 +80,7 @@ def _capture_bench(driver: Any, base_url: str) -> Image.Image:
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": CAP_W, "height": CAP_H, "deviceScaleFactor": 1.0, "mobile": False})
     driver.get(f"{base_url}/docs/bench/evidence-bench.html?theme=dark-paper")
     for _ in range(50):
-        if driver.execute_script("return document.querySelectorAll('.qe-specimen').length===36&&!!window.QuietEChartsAdapter;"):
+        if driver.execute_script("return document.querySelectorAll('.qe-specimen').length===39&&!!window.QuietEChartsAdapter;"):
             break
         time.sleep(0.08)
     driver.execute_script(
@@ -89,7 +103,7 @@ def _composite(panels: list[tuple[str, str, Image.Image]]) -> Image.Image:
     draw.rectangle([0, 0, 1600, 42], fill="#0B1120")
     draw.line([(0, 42), (1600, 42)], fill="#1E293B", width=1)
     draw.text((24, 10), "QUIET UI v9.0", fill="#38BDF8", font=f_title)
-    draw.text((152, 14), "6-Domain Studio (21 Views)  ·  36 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
+    draw.text((152, 14), "6-Domain Studio (21 Views)  ·  39 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
     rb = "Themes: White  ·  Dark  ·  Paper  ·  Dark-Paper   |   NIST 1-2-5  ·  Zero Truncation"
     draw.text((1576 - draw.textbbox((0, 0), rb, font=f_sub)[2], 15), rb, fill="#94A3B8", font=f_sub)
     for (x, y), (label, badge, img) in zip([(24, 52), (806, 52), (24, 487), (806, 487)], panels):
@@ -114,10 +128,10 @@ def main() -> int:
         driver = webdriver.Chrome(options=opts)
         base = f"http://127.0.0.1:{srv.server_address[1]}"
         night_js = "const nb=d&&d.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]');if(nb)nb.click();"
-        panels = [("v01 · Clinical ICU Waveform & Vital Scope", "DOMAIN 01 · WHITE", _capture_showcase(driver, base, "01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "white")),
+        panels = [("v01 · Clinical ICU Waveform & Vital Scope", "DOMAIN 01 · WHITE", _capture_showcase(driver, base, "01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "white", fit_sel="#v01-hemo")),
                   ("v15 · Collimated Night Flight HUD Optics", "DOMAIN 05 · DARK", _capture_showcase(driver, base, "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", night_js)),
                   ("v18 · Home Assistant Energy & Climate", "DOMAIN 06 · PAPER", _capture_showcase(driver, base, "06-smart-home-and-energy", "v18-home-assistant-companion-console", "paper")),
-                  ("Component Library · ECharts Gantt & ATO Enclave", "36 SPECIMENS · DARK-PAPER", _capture_bench(driver, base))]
+                  ("Component Library · ECharts Gantt & ATO Enclave", "39 SPECIMENS · DARK-PAPER", _capture_bench(driver, base))]
         hero = _composite(panels)
         OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
         meta = PngInfo()

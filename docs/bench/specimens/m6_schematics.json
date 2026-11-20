@@ -36,20 +36,21 @@
       {
         "schematic_kind": "sankey",
         "title": "Panel C: Zero-Copy Telemetry Flow Sankey (142.8 Gbps Net)",
+        "unit": "Gbps",
         "nodes": [
-          {"id": "src", "label": "8x SECTORS", "metric": "142.8 Gbps", "x": 30, "y": 32, "w": 146, "h": 182, "stroke": "var(--status-ok)"},
-          {"id": "dma", "label": "PCIe BAR0 Ring", "metric": "133.6 Gbps", "x": 276, "y": 32, "w": 154, "h": 112, "stroke": "var(--accent-focal)"},
-          {"id": "kal", "label": "Kalman Audit", "metric": "9.2 Gbps", "x": 276, "y": 156, "w": 154, "h": 58, "stroke": "var(--status-warn)"},
-          {"id": "ts", "label": "TimescaleDB", "metric": "92.4 Gbps", "x": 524, "y": 32, "w": 166, "h": 58, "stroke": "var(--status-ok)"},
-          {"id": "hil", "label": "Live HIL Stream", "metric": "41.2 Gbps", "x": 524, "y": 98, "w": 166, "h": 54, "stroke": "var(--accent-focal)"},
-          {"id": "al", "label": "Alert Ledger", "metric": "9.2 Gbps", "x": 524, "y": 160, "w": 166, "h": 54, "stroke": "var(--status-warn)"}
+          {"id": "src", "label": "8x SECTORS", "stage": 0, "color": "var(--status-ok)"},
+          {"id": "dma", "label": "PCIe BAR0 Ring", "stage": 1, "color": "var(--accent-focal)"},
+          {"id": "kal", "label": "Kalman Audit", "stage": 1, "color": "var(--status-warn)"},
+          {"id": "ts", "label": "TimescaleDB", "stage": 2, "color": "var(--status-ok)"},
+          {"id": "hil", "label": "Live HIL Stream", "stage": 2, "color": "var(--accent-focal)"},
+          {"id": "al", "label": "Alert Ledger", "stage": 2, "color": "var(--status-warn)"}
         ],
-        "flows": [
-          {"from": "src", "to": "dma", "sy0": 40, "sy1": 150, "dy0": 40, "dy1": 134, "fill": "var(--tint-indigo-bg)"},
-          {"from": "src", "to": "kal", "sy0": 158, "sy1": 206, "dy0": 162, "dy1": 206, "fill": "var(--tint-amber-bg)"},
-          {"from": "dma", "to": "ts", "sy0": 40, "sy1": 94, "dy0": 38, "dy1": 84, "fill": "var(--tint-emerald-bg)"},
-          {"from": "dma", "to": "hil", "sy0": 98, "sy1": 136, "dy0": 104, "dy1": 146, "fill": "var(--tint-indigo-bg)"},
-          {"from": "kal", "to": "al", "sy0": 164, "sy1": 206, "dy0": 166, "dy1": 208, "fill": "var(--tint-amber-bg)"}
+        "links": [
+          {"source": "src", "target": "dma", "value": 133.6, "color": "var(--accent-focal)"},
+          {"source": "src", "target": "kal", "value": 9.2, "color": "var(--status-warn)"},
+          {"source": "dma", "target": "ts", "value": 92.4, "color": "var(--status-ok)"},
+          {"source": "dma", "target": "hil", "value": 41.2, "color": "var(--accent-focal)"},
+          {"source": "kal", "target": "al", "value": 9.2, "color": "var(--status-warn)"}
         ]
       }
     ]

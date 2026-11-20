@@ -217,5 +217,70 @@
       [96.4, 94.6, 97.5, 98.9, 98.2, 99.0, 99.5],
       [100.0, 99.9, 99.8, 99.9, 100.0, 99.9, 100.0]
     ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "bench-m4-sankey-power-balance",
+    "plot_kind": "sankey",
+    "metadata": {
+      "title": "Microgrid & Inverter Power-Conversion Sankey (250.0 kW Net)",
+      "description": "Flow-conserving microgrid energy balance from Solar Array and Grid Import through DC Bus to Critical AC Load, Battery Charge, and Thermal Losses.",
+      "rigor_level": "L2",
+      "audience": "Energy Systems Engineering"
+    },
+    "unit": "kW",
+    "nodes": [
+      {"id": "solar", "label": "Solar Array", "stage": 0, "color": "var(--status-ok)"},
+      {"id": "grid", "label": "Grid Import", "stage": 0, "color": "var(--accent-focal)"},
+      {"id": "dcbus", "label": "DC Bus", "stage": 1, "color": "var(--tint-violet-fg)"},
+      {"id": "load", "label": "AC Critical Load", "stage": 2, "color": "var(--status-ok)"},
+      {"id": "batt", "label": "Battery Charge", "stage": 2, "color": "var(--accent-focal)"},
+      {"id": "loss", "label": "Thermal Loss", "stage": 2, "color": "var(--status-warn)"}
+    ],
+    "links": [
+      {"source": "solar", "target": "dcbus", "value": 165.0, "color": "var(--status-ok)"},
+      {"source": "grid", "target": "dcbus", "value": 85.0, "color": "var(--accent-focal)"},
+      {"source": "dcbus", "target": "load", "value": 178.5, "color": "var(--status-ok)"},
+      {"source": "dcbus", "target": "batt", "value": 54.0, "color": "var(--accent-focal)"},
+      {"source": "dcbus", "target": "loss", "value": 17.5, "color": "var(--status-warn)"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "bench-m4-scatter-regime-cloud",
+    "plot_kind": "cartesian",
+    "metadata": {
+      "title": "Traction Inverter Torque–Junction Thermal Scatter Cloud (n = 84 Dyno Runs)",
+      "description": "Multivariate 2D SiC MOSFET junction temperature (T_j) scatter across Nominal Cooling (n=52), Coolant Flow Derate (n=20), and Cavitation Fault (n=12) regimes with OLS ±2σ corridor and 140 °C SiC derate ceiling.",
+      "rigor_level": "L3",
+      "audience": "Power Electronics & Thermal Validation"
+    },
+    "test_environment": {"dut_id": "DYNO-SIC-INV-08", "coolant_lpm": 12.0, "dc_bus_v": 800, "sample_count": 84},
+    "axes": {
+      "x_axis": {"quantity": "tau", "quantity_calculus": "Continuous Shaft Torque, τ / (N·m)", "unit": "N·m", "domain": [0.0, 350.0]},
+      "y_axis": {"quantity": "T_j", "quantity_calculus": "Junction Temp, T_j / °C", "unit": "°C", "domain": [40.0, 160.0]}
+    },
+    "envelopes": [{"id": "sic-derate", "label": "140 °C Derate", "type": "abort", "direction": "upper", "threshold_value": 140.0, "stroke_color": "var(--status-danger)"}],
+    "series": [
+      {"id": "nominal-cooling", "name": "Nominal Cooling (n = 52)", "epistemic_type": "discrete_measurement", "connect_piecewise": false, "marker_glyph": "circle", "marker_size_px": 5.0, "marker_color": "var(--accent-focal)", "data_points": [
+          {"x": 21.1, "y": 51.5}, {"x": 23.3, "y": 55.9}, {"x": 28.0, "y": 68.3}, {"x": 33.8, "y": 67.2}, {"x": 39.5, "y": 61.2}, {"x": 57.0, "y": 69.8}, {"x": 51.8, "y": 60.2}, {"x": 60.0, "y": 60.7},
+          {"x": 62.9, "y": 58.4}, {"x": 73.4, "y": 77.1}, {"x": 77.9, "y": 66.5}, {"x": 91.1, "y": 66.5}, {"x": 94.0, "y": 68.4}, {"x": 91.3, "y": 75.9}, {"x": 103.1, "y": 84.3}, {"x": 110.6, "y": 78.5},
+          {"x": 121.4, "y": 62.6}, {"x": 118.4, "y": 81.2}, {"x": 130.1, "y": 86.8}, {"x": 141.3, "y": 82.4}, {"x": 132.3, "y": 75.7}, {"x": 140.8, "y": 94.1}, {"x": 146.1, "y": 84.6}, {"x": 161.9, "y": 83.9},
+          {"x": 159.7, "y": 84.7}, {"x": 161.8, "y": 89.1}, {"x": 179.4, "y": 90.3}, {"x": 174.0, "y": 93.7}, {"x": 190.3, "y": 94.5}, {"x": 189.0, "y": 91.7}, {"x": 194.3, "y": 101.3}, {"x": 197.2, "y": 93.5},
+          {"x": 211.1, "y": 99.2}, {"x": 208.6, "y": 98.9}, {"x": 214.1, "y": 98.5}, {"x": 228.5, "y": 102.0}, {"x": 239.7, "y": 97.0}, {"x": 246.6, "y": 94.7}, {"x": 245.6, "y": 96.9}, {"x": 248.6, "y": 102.5},
+          {"x": 256.7, "y": 112.7}, {"x": 270.8, "y": 114.5}, {"x": 266.9, "y": 105.8}, {"x": 272.2, "y": 112.1}, {"x": 285.3, "y": 119.6}, {"x": 290.7, "y": 105.4}, {"x": 292.5, "y": 105.0}, {"x": 304.8, "y": 123.4},
+          {"x": 306.7, "y": 114.7}, {"x": 311.0, "y": 124.1}, {"x": 315.1, "y": 116.1}, {"x": 324.8, "y": 132.0}
+        ]},
+      {"id": "coolant-derate", "name": "Flow Derate (n = 20)", "epistemic_type": "discrete_measurement", "connect_piecewise": false, "marker_glyph": "triangle", "marker_size_px": 5.5, "marker_color": "var(--status-warn)", "data_points": [
+          {"x": 199.0, "y": 117.6}, {"x": 194.6, "y": 120.2}, {"x": 208.9, "y": 118.0}, {"x": 206.3, "y": 123.0}, {"x": 210.8, "y": 119.9}, {"x": 219.6, "y": 120.9}, {"x": 225.5, "y": 122.8}, {"x": 229.6, "y": 125.8},
+          {"x": 245.6, "y": 125.7}, {"x": 245.1, "y": 125.9}, {"x": 249.9, "y": 124.9}, {"x": 258.9, "y": 128.2}, {"x": 267.6, "y": 124.1}, {"x": 275.4, "y": 129.2}, {"x": 273.9, "y": 124.7}, {"x": 291.6, "y": 130.7},
+          {"x": 287.9, "y": 125.9}, {"x": 300.4, "y": 131.9}, {"x": 304.0, "y": 134.4}, {"x": 312.6, "y": 132.9}
+        ]},
+      {"id": "cavitation-fault", "name": "Cavitation Fault (n = 12)", "epistemic_type": "discrete_measurement", "connect_piecewise": false, "marker_glyph": "diamond", "marker_size_px": 6.0, "marker_color": "var(--status-danger)", "data_points": [
+          {"x": 227.6, "y": 142.7}, {"x": 241.7, "y": 142.3}, {"x": 250.3, "y": 142.9}, {"x": 253.1, "y": 146.4}, {"x": 267.6, "y": 146.2}, {"x": 276.7, "y": 147.9}, {"x": 288.9, "y": 147.8}, {"x": 296.4, "y": 150.9},
+          {"x": 302.5, "y": 149.7}, {"x": 312.4, "y": 152.2}, {"x": 328.0, "y": 149.9}, {"x": 336.7, "y": 152.8}
+        ]},
+      {"id": "ols-thermal-fit", "name": "OLS Thermal Fit (±2σ)", "epistemic_type": "analytical_model", "equation": "51.4 + 0.218 * x", "stroke_color": "var(--text-primary)", "stroke_style": "dashed", "corridor_abs": 9.5}
+    ]
   }
 ]

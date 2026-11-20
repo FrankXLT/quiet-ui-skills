@@ -69,6 +69,7 @@ def bundle_v9_stage_js(repo_root: Path) -> str:
             "src/js/evidence-runtime.js",
             "src/v9/js/echarts-layers.js",
             "src/v9/js/echarts-schedule-heatmap.js",
+            "src/v9/js/echarts-sankey-strip.js",
             "src/v9/js/echarts-quiet-adapter.js",
             "src/v9/js/world-01-interactions.js",
             "src/v9/js/world-02-05-interactions.js",

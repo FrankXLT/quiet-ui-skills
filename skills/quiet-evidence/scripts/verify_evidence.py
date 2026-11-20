@@ -102,9 +102,15 @@ def verify_static_metrology(repo_root: Path) -> list[str]:
                 errs.append("[HEATMAP_STD] Specimen 26 missing calibrated gradient or WCAG contrast ink")
             if sp.get("id") == "bench-29-m6-interlock-2oo3" and ("2oo3 Logic Voter" not in out or "SAFE TRIP" not in out):
                 errs.append("[INTERLOCK_STD] Specimen 29 missing 2oo3 voter or truth table output")
+            if sp.get("id") == "bench-m4-sankey-power-balance" and ("qe-sankey-svg" not in out or "178.5 kW (71.4%)" not in out):
+                errs.append("[SANKEY_STD] Missing flow-conserving Sankey SVG or conserved kW percentage")
+            if sp.get("id") == "bench-m4-scatter-regime-cloud" and ("Nominal Cooling" not in out or "140 °C Derate" not in out):
+                errs.append("[SCATTER_STD] Missing 2D multivariate scatter cloud or 140 C ceiling")
+            if sp.get("id") == "bench-m5-strip-chart-telemetry" and ("EXCURSION" not in out or "data-quiet-echarts" not in out):
+                errs.append("[STRIP_STD] Missing 4-track telemetry strip chart readout or ECharts payload")
 
-    if total != 30:
-        errs.append(f"[BENCH_COUNT] Expected 30 JSON component specimens, compiled {total}")
+    if total != 33:
+        errs.append(f"[BENCH_COUNT] Expected 33 JSON component specimens, compiled {total}")
     return errs
 
 
@@ -241,8 +247,8 @@ def verify_live_cdp(repo_root: Path, screenshots_dir: Path | None = None) -> lis
 
         p61_err = driver.execute_script("""
             const specs = document.querySelectorAll('.qe-specimen');
-            if (specs.length !== 36) return 'expected 36 specimens, found ' + specs.length;
-            for (const cid of ['bench-23-m4-dumbbell-12', 'bench-24-m4-forest-pooled', 'bench-25-m4-schedule-gantt', 'bench-26-m4-coverage-heatmap']) {
+            if (specs.length !== 39) return 'expected 39 specimens, found ' + specs.length;
+            for (const cid of ['bench-23-m4-dumbbell-12', 'bench-24-m4-forest-pooled', 'bench-25-m4-schedule-gantt', 'bench-26-m4-coverage-heatmap', 'bench-m4-sankey-power-balance', 'bench-m4-scatter-regime-cloud', 'bench-m5-strip-chart-telemetry']) {
               const card = document.getElementById(cid);
               const btn = card && card.querySelector('.qe-mode-btn[data-qe-mode="echarts"]');
               if (!btn) return 'missing echarts button on ' + cid;
