@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Quiet UI v9.1 — Interactive Studio</title>
+  <title>Quiet UI v9.2 — Interactive Studio</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style id="va-studio-chrome-css">
 /* SPDX-License-Identifier: Apache-2.0 */
@@ -448,7 +448,7 @@ dialog#va-bridge-dialog {
     <div class="va-bar-left">
       <div class="va-studio-brand">
         <svg class="va-brand-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5 14 4.8 8 8 2 4.8 8 1.5Z" fill="none"/><path d="M2 8l6 3.2L14 8" fill="none"/><path d="M2 11.2 8 14.5l6-3.3" fill="none"/></svg>
-        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.1</span></span>
+        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.2</span></span>
       </div>
       <div id="va-studio-mode-tablist" class="va-mode-tablist" role="tablist" aria-label="Studio Mode">
         <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab is-active" data-studio-tab="examples" aria-selected="true">Examples</button>
@@ -495,7 +495,7 @@ dialog#va-bridge-dialog {
       <div class="va-drag-handle va-drag-w"></div>
       <div class="va-drag-handle va-drag-e"></div>
       <div class="va-drag-handle va-drag-s"></div>
-      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.1 Preview Stage"></iframe>
+      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.2 Preview Stage"></iframe>
     </div>
   </main>
 
@@ -939,7 +939,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.1 — Layer Declarations & Universal CSS Reset
+   Quiet UI v9.2 — Layer Declarations & Universal CSS Reset
    ========================================================================== */
 
 @layer reset {
@@ -1033,7 +1033,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.1 — Stage Container, Primitives & Responsive Figures/Tables
+   Quiet UI v9.2 — Stage Container, Primitives & Responsive Figures/Tables
    ========================================================================== */
 
 @layer shell {
@@ -1375,12 +1375,54 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       min-block-size: 44px;
     }
   }
+
+  /* Dense 4-up / 2-up Operational KPI Gauge Cards (.va-kpi-gauge-card) */
+  .va-kpi-gauge-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; min-inline-size: 0; }
+  .va-kpi-gauge-card { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.75rem 0.875rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-card); min-inline-size: 0; }
+  .va-kpi-gauge-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+  .va-kpi-gauge-label { font-family: var(--font-sans); font-size: var(--ts-sm); font-weight: 600; color: var(--text-secondary); }
+  .va-kpi-gauge-val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); line-height: 1.15; }
+  .va-kpi-gauge-track { position: relative; block-size: 6px; border-radius: var(--radius-pill); background: var(--bg-elevated); border: 1px solid var(--border-hairline); overflow: visible; }
+  .va-kpi-gauge-fill { block-size: 100%; border-radius: var(--radius-pill); background: var(--accent-primary); transition: inline-size 160ms ease; }
+  .va-kpi-gauge-card[data-state="warn"] .va-kpi-gauge-fill { background: var(--status-warn); }
+  .va-kpi-gauge-card[data-state="fault"] .va-kpi-gauge-fill { background: var(--status-danger); }
+  .va-kpi-gauge-target { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
+  .va-kpi-gauge-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xs); color: var(--text-muted); }
+
+  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) */
+  .va-toolbar-joined { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; padding: 0.35rem 0; min-inline-size: 0; }
+  .va-tb-group { display: inline-flex; flex-wrap: wrap; align-items: stretch; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-elevated); overflow: hidden; min-inline-size: 0; max-inline-size: 100%; }
+  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .va-tb-btn:last-child { border-inline-end: 0; }
+  .va-tb-btn[aria-pressed="true"], .va-tb-btn[data-active="true"] { background: var(--bg-surface); color: var(--accent-primary); box-shadow: inset 0 -2px 0 var(--accent-primary); }
+  .va-tb-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+  .va-tb-sep { display: inline-block; inline-size: 1px; block-size: 1.25rem; background: var(--border-subtle); align-self: center; }
+
+  /* GFM Task Checkboxes, Unclipped Outline Links & Aspect-Safe Galleries */
+  ul.contains-task-list, ul.va-task-list { list-style: none; padding-inline-start: 0.25rem; }
+  li.task-list-item, .va-task-list > li { list-style: none; display: flex; align-items: baseline; gap: 0.45rem; }
+  a.va-nav-link, button.va-tb-btn { max-inline-size: 100%; }
+  .va-media-contain { inline-size: 100%; block-size: auto; max-block-size: 420px; object-fit: contain; background: var(--bg-elevated); border-radius: var(--radius-inner); }
+  .va-compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
+  .va-compare-grid[data-orient="landscape"] { grid-template-columns: minmax(0, 1fr); }
+
+  @media (max-width: 960px) {
+    .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (pointer: coarse), (max-width: 720px) {
+    .va-tb-sep { display: none; }
+    .va-tb-btn { min-block-size: 44px; min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    .va-pill[data-variant="chip"], button.va-pill { min-block-size: 44px; min-inline-size: 44px; }
+  }
 }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.1 — Polymorphic Navigation Shells (n0..n4) & Native Drawers
+   Quiet UI v9.2 — Polymorphic Navigation Shells (n0..n4) & Native Drawers
    ========================================================================== */
 
 @layer shell {
@@ -4190,6 +4232,58 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border-color: Highlight;
   }
 }
+
+.qe-data-contract {
+  margin-top: 0.55rem;
+  border-top: 1px dashed var(--border-hairline);
+  padding-top: 0.45rem;
+  font-size: var(--ts-xs);
+  color: var(--text-secondary);
+}
+
+.qe-data-contract > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.qe-data-contract > summary::-webkit-details-marker {
+  display: none;
+}
+
+.qe-data-contract > summary::before {
+  content: "▸";
+  font-size: 0.75em;
+  color: var(--text-muted);
+}
+
+.qe-data-contract[open] > summary::before {
+  content: "▾";
+}
+
+.qe-data-contract-body {
+  margin-top: 0.45rem;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-sans);
+  line-height: 1.4;
+}
+
+.qe-data-contract-body code {
+  font-family: var(--font-mono);
+  font-size: var(--ts-xs);
+  color: var(--text-primary);
+}
 }
 
   </script>
@@ -4479,6 +4573,296 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
 })(window, document);
+
+
+// SPDX-License-Identifier: Apache-2.0
+(function (root) {
+  'use strict';
+
+  var _measureCtx = null;
+
+  function getMeasureCtx() {
+    if (_measureCtx) return _measureCtx;
+    if (typeof document !== 'undefined' && document.createElement) {
+      var canvas = document.createElement('canvas');
+      if (canvas && canvas.getContext) _measureCtx = canvas.getContext('2d');
+    }
+    return _measureCtx;
+  }
+
+  function measureTextPx(text, fontSpec) {
+    var s = String(text == null ? '' : text);
+    var ctx = getMeasureCtx();
+    if (ctx) {
+      ctx.font = fontSpec || '11px Inter, system-ui, sans-serif';
+      return ctx.measureText(s).width;
+    }
+    return s.length * 6.8;
+  }
+
+  function roundClean(v) {
+    return Math.abs(v) < 1e-12 ? 0 : Number(v.toFixed(10));
+  }
+
+  function niceStep125(rawStep) {
+    if (!Number.isFinite(rawStep) || rawStep <= 0) return 1;
+    var exp = Math.floor(Math.log10(rawStep));
+    var pow = Math.pow(10, exp);
+    var frac = rawStep / pow;
+    var mant = 1;
+    if (frac > 5) mant = 10;
+    else if (frac > 2) mant = 5;
+    else if (frac > 1) mant = 2;
+    return mant * pow;
+  }
+
+  function niceScale125(minVal, maxVal, opts) {
+    var cfg = opts || {};
+    var targetTicks = Math.max(2, Number(cfg.targetTicks || 5));
+    var lo = Number(minVal);
+    var hi = Number(maxVal);
+    if (!Number.isFinite(lo)) lo = 0;
+    if (!Number.isFinite(hi)) hi = lo + 1;
+    if (cfg.includeZero) {
+      lo = Math.min(lo, 0);
+      hi = Math.max(hi, 0);
+    }
+    if (lo > hi) { var tmp = lo; lo = hi; hi = tmp; }
+    if (Math.abs(hi - lo) < 1e-9) {
+      var pad = Math.abs(lo) > 1e-6 ? Math.abs(lo) * 0.2 : 1;
+      lo = cfg.includeZero && lo >= 0 ? 0 : lo - pad;
+      hi = hi + pad;
+    }
+    var step = niceStep125((hi - lo) / (targetTicks - 1));
+    var sMin = roundClean(Math.floor(lo / step + 1e-9) * step);
+    if (cfg.clampMin !== undefined && cfg.clampMin !== null && Number.isFinite(Number(cfg.clampMin))) {
+      sMin = Math.max(Number(cfg.clampMin), sMin);
+    }
+    var sMax = roundClean(Math.ceil(hi / step - 1e-9) * step);
+    if (sMax <= sMin) sMax = roundClean(sMin + step);
+    var ticks = [];
+    var guard = 0;
+    for (var cur = sMin; cur <= sMax + step * 1e-4 && guard < 24; cur += step, guard += 1) {
+      ticks.push(roundClean(cur));
+    }
+    return { min: sMin, max: sMax, step: roundClean(step), ticks: ticks };
+  }
+
+  function formatTick(v, step) {
+    if (!Number.isFinite(v)) return '';
+    if (Math.abs(v) < 1e-12) return '0';
+    var st = Math.abs(Number(step || 1));
+    var dec = st >= 1 ? 0 : Math.min(4, Math.max(1, Math.ceil(-Math.log10(st)) + 1));
+    return roundClean(v).toLocaleString(undefined, { maximumFractionDigits: dec });
+  }
+
+  function firstUnclosedIdx(str) {
+    var p = [], b = [];
+    for (var i = 0; i < str.length; i += 1) {
+      var c = str[i];
+      if (c === '(') p.push(i);
+      else if (c === ')' && p.length) p.pop();
+      else if (c === '[') b.push(i);
+      else if (c === ']' && b.length) b.pop();
+    }
+    var ip = p.length ? p[0] : Infinity;
+    var ib = b.length ? b[0] : Infinity;
+    var m = Math.min(ip, ib);
+    return Number.isFinite(m) ? m : -1;
+  }
+
+  function balanceDelimiters(str) {
+    var out = String(str || '').replace(/[\s,(\[:/-]+$/, '');
+    var guard = 0;
+    while (guard < 8) {
+      var idx = firstUnclosedIdx(out);
+      if (idx === -1) break;
+      if (idx > 0) {
+        out = out.slice(0, idx).replace(/[\s,(\[:/-]+$/, '');
+      } else {
+        out = out.slice(1).replace(/^[\s(\[]+/, '');
+      }
+      guard += 1;
+    }
+    return out;
+  }
+
+  function truncateTokenSafe(str, limit) {
+    var cut = Math.max(2, limit - 1);
+    var head = balanceDelimiters(str.slice(0, cut).replace(/\s+\S*$/, '') || str.slice(0, cut));
+    return (head || str.replace(/[(\[]/g, '').slice(0, cut)) + '\u2026';
+  }
+
+  function wrapLabelLines(text, maxChars, maxLines) {
+    var raw = String(text == null ? '' : text).trim().replace(/\s+/g, ' ');
+    var limit = Math.max(6, Number(maxChars || 18));
+    var capLines = Math.max(1, Number(maxLines || 2));
+    if (!raw || raw.length <= limit) return raw ? [balanceDelimiters(raw) || raw] : [''];
+    var words = raw.split(' ');
+    var lines = [];
+    var cur = '';
+    for (var i = 0; i < words.length; i += 1) {
+      var w = words[i];
+      if (!cur) {
+        cur = w;
+      } else if ((cur.length + 1 + w.length) <= limit) {
+        cur += ' ' + w;
+      } else {
+        lines.push(cur);
+        if (lines.length >= capLines) {
+          cur = '';
+          break;
+        }
+        cur = w;
+      }
+    }
+    if (cur && lines.length < capLines) lines.push(cur);
+    if (lines.length === 1 && lines[0].length > limit) {
+      return [truncateTokenSafe(lines[0], limit)];
+    }
+    var consumedWords = lines.join(' ').split(' ').length;
+    if (consumedWords < words.length || (lines.length === capLines && lines.join(' ').length < raw.length)) {
+      lines[lines.length - 1] = truncateTokenSafe(lines[lines.length - 1], limit);
+    }
+    for (var li = 0; li < lines.length - 1; li += 1) {
+      if (firstUnclosedIdx(lines[li]) !== -1 && firstUnclosedIdx(lines.join(' ')) !== -1) {
+        lines[li] = balanceDelimiters(lines[li]) || lines[li].replace(/[(\[]/g, '');
+      }
+    }
+    return lines;
+  }
+
+  function measureCategoryGutter(labels, opts) {
+    var cfg = opts || {};
+    var list = Array.isArray(labels) ? labels : [];
+    var minPx = Number(cfg.minPx != null ? cfg.minPx : 64);
+    var maxPx = Number(cfg.maxPx != null ? cfg.maxPx : 176);
+    var padPx = Number(cfg.padPx != null ? cfg.padPx : 18);
+    var maxChars = Number(cfg.maxChars != null ? cfg.maxChars : 22);
+    var fontSpec = cfg.font || '11px Inter, system-ui, sans-serif';
+    var maxW = 0;
+    var wrappedLabels = list.map(function (lbl) {
+      var lines = wrapLabelLines(lbl, maxChars, cfg.maxLines || 2);
+      lines.forEach(function (ln) {
+        maxW = Math.max(maxW, measureTextPx(ln, fontSpec));
+      });
+      return lines.join('\n');
+    });
+    var gutterPx = Math.max(minPx, Math.min(maxPx, Math.ceil(maxW + padPx)));
+    return { gutterPx: gutterPx, maxLinePx: Math.ceil(maxW), wrappedLabels: wrappedLabels };
+  }
+
+  function filterNonOverlappingTicks(ticks, opts) {
+    var list = Array.isArray(ticks) ? ticks.slice() : [];
+    var cfg = opts || {};
+    var axis = cfg.axis === 'y' ? 'y' : 'x';
+    var gap = Math.max(2, Number(cfg.minGapPx != null ? cfg.minGapPx : 10));
+    var fontSpec = cfg.font || '11px JetBrains Mono, monospace';
+    var lineH = Number(cfg.lineHeightPx || 14);
+    var keepEnds = !!cfg.keepEnds;
+    list.sort(function (a, b) { return Number(a.pos || 0) - Number(b.pos || 0); });
+    var kept = [];
+    var lastEnd = -Infinity;
+    list.forEach(function (tk, idx) {
+      var pos = Number(tk.pos || 0);
+      var lbl = String(tk.label != null ? tk.label : tk.value);
+      var span = axis === 'x' ? Math.max(18, measureTextPx(lbl, fontSpec)) : lineH;
+      var lo = pos - span * 0.5;
+      var hi = pos + span * 0.5;
+      var isLast = idx === list.length - 1;
+      if (lo >= lastEnd + gap) {
+        kept.push(tk);
+        lastEnd = hi;
+      } else if (keepEnds && isLast && kept.length > 0) {
+        var prev = kept[kept.length - 1];
+        var prevSpan = axis === 'x' ? Math.max(18, measureTextPx(String(prev.label != null ? prev.label : prev.value), fontSpec)) : lineH;
+        if (kept.length > 1) {
+          var beforePrev = kept[kept.length - 2];
+          var bSpan = axis === 'x' ? Math.max(18, measureTextPx(String(beforePrev.label != null ? beforePrev.label : beforePrev.value), fontSpec)) : lineH;
+          if ((lo - (Number(beforePrev.pos || 0) + bSpan * 0.5)) >= gap && (lo - (Number(prev.pos || 0) + prevSpan * 0.5)) < gap) {
+            kept[kept.length - 1] = tk;
+            lastEnd = hi;
+          }
+        }
+      }
+    });
+    return kept;
+  }
+
+  function placeReferenceLabel(docOrSvg, opts) {
+    var cfg = opts || {};
+    var doc = (docOrSvg && docOrSvg.ownerDocument) ? docOrSvg.ownerDocument : (typeof document !== 'undefined' ? document : null);
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var text = String(cfg.text || '');
+    var plotX0 = Number(cfg.plotX0 != null ? cfg.plotX0 : 0);
+    var plotX1 = Number(cfg.plotX1 != null ? cfg.plotX1 : 600);
+    var plotY0 = Number(cfg.plotY0 != null ? cfg.plotY0 : 0);
+    var plotY1 = Number(cfg.plotY1 != null ? cfg.plotY1 : 260);
+    var fontSpec = cfg.font || '600 11px JetBrains Mono, monospace';
+    var estW = Math.ceil(measureTextPx(text, fontSpec));
+    var x = Number(cfg.x != null ? cfg.x : (plotX1 - 8));
+    var y = Number(cfg.y != null ? cfg.y : (plotY0 + 14));
+    var anchor = cfg.anchor || (x > (plotX0 + plotX1) * 0.6 ? 'end' : (x < (plotX0 + plotX1) * 0.4 ? 'start' : 'middle'));
+    var padX = 6;
+    if (anchor === 'start') {
+      var minS = plotX0 + padX, maxS = Math.max(minS, plotX1 - estW - padX);
+      x = Math.max(minS, Math.min(maxS, x));
+    } else if (anchor === 'end') {
+      var minE = Math.min(plotX1 - padX, plotX0 + estW + padX), maxE = Math.max(minE, plotX1 - padX);
+      x = Math.max(minE, Math.min(maxE, x));
+    } else {
+      var midLo = Math.min(plotX1 - padX, plotX0 + estW * 0.5 + padX), midHi = Math.max(midLo, plotX1 - estW * 0.5 - padX);
+      x = Math.max(midLo, Math.min(midHi, x));
+    }
+    var yLo = plotY0 + 13, yHi = Math.max(yLo, plotY1 - 6);
+    y = Math.max(yLo, Math.min(yHi, y));
+    var haloColor = cfg.haloColor || 'var(--bg-surface, #FFFFFF)';
+    var fillColor = cfg.fill || 'var(--text-secondary, #334155)';
+    if (!doc || typeof doc.createElementNS !== 'function') {
+      return { x: x, y: y, anchor: anchor, text: text, estWidth: estW };
+    }
+    var g = doc.createElementNS(svgNS, 'g');
+    g.setAttribute('data-role', 'ref-label');
+    var rx = anchor === 'start' ? x - 4 : (anchor === 'end' ? x - estW - 4 : x - estW * 0.5 - 4);
+    var bg = doc.createElementNS(svgNS, 'rect');
+    bg.setAttribute('x', rx.toFixed(1));
+    bg.setAttribute('y', (y - 11.5).toFixed(1));
+    bg.setAttribute('width', (estW + 8).toFixed(1));
+    bg.setAttribute('height', '15');
+    bg.setAttribute('rx', '2');
+    bg.setAttribute('fill', haloColor);
+    bg.setAttribute('fill-opacity', '0.94');
+    bg.setAttribute('stroke', 'none');
+    g.appendChild(bg);
+    var txt = doc.createElementNS(svgNS, 'text');
+    txt.setAttribute('x', x.toFixed(1));
+    txt.setAttribute('y', y.toFixed(1));
+    txt.setAttribute('text-anchor', anchor);
+    txt.setAttribute('font-family', cfg.fontFamily || 'var(--font-mono, ui-monospace)');
+    txt.setAttribute('font-size', String(cfg.fontSize || 11));
+    txt.setAttribute('font-weight', String(cfg.fontWeight || 600));
+    txt.setAttribute('fill', fillColor);
+    txt.setAttribute('stroke', haloColor);
+    txt.setAttribute('stroke-width', '3.2');
+    txt.setAttribute('stroke-linejoin', 'round');
+    txt.setAttribute('paint-order', 'stroke fill');
+    txt.textContent = text;
+    g.appendChild(txt);
+    if (docOrSvg && docOrSvg.nodeType === 1) docOrSvg.appendChild(g);
+    return g;
+  }
+
+  var api = {
+    niceScale125: niceScale125,
+    formatTick: formatTick,
+    wrapLabelLines: wrapLabelLines,
+    measureCategoryGutter: measureCategoryGutter,
+    filterNonOverlappingTicks: filterNonOverlappingTicks,
+    placeReferenceLabel: placeReferenceLabel,
+  };
+  root.QuietSvgLayout = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
+}(typeof window !== 'undefined' ? window : globalThis));
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
@@ -5059,7 +5443,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     var zMin = payload.min != null ? payload.min : 0;
     var zMax = payload.max != null ? payload.max : 100;
     var zSpan = (zMax - zMin) || 1;
-    var leftPad = (hostW || 640) < 480 ? 96 : 142;
+    var leftPad = (hostW || 640) < 480 ? 10 : 16;
     var data = (payload.cells || []).map(function (c) {
       return {
         value: c,
@@ -5076,7 +5460,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           return yc + ' · ' + xc + '\n' + v[2] + (payload.unit ? ' ' + payload.unit : '');
         },
       }),
-      grid: { left: leftPad, right: 24, top: 38, bottom: 54 },
+      grid: { left: leftPad, right: 24, top: 20, bottom: 54, containLabel: true },
       xAxis: {
         type: 'category',
         position: 'top',
@@ -5125,12 +5509,21 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       animation: false,
       tooltip: Object.assign(baseTooltip(tokens), { trigger: 'axis' }),
       legend: { top: 2, right: 12, textStyle: { color: tokens.textSecondary, fontSize: 11 } },
-      grid: { left: 68, right: 34, top: 36, bottom: 44 },
+      grid: { left: 68, right: 24, top: 36, bottom: 48, containLabel: true },
       xAxis: {
         type: 'category',
         boundaryGap: true,
         data: cats,
-        axisLabel: { color: tokens.textSecondary, fontSize: 11, interval: (cats.length <= 12 && !narrow) ? 0 : (cats.length > 8 ? 1 : 0) },
+        axisLabel: {
+          color: tokens.textSecondary,
+          fontSize: 11,
+          interval: 0,
+          formatter: function (v) {
+            if (!narrow) return v;
+            var lines = (typeof global.QuietSvgLayout !== 'undefined') ? global.QuietSvgLayout.wrapLabelLines(v, 10, 2) : String(v).split(' ');
+            return lines.join('\n');
+          },
+        },
         axisLine: { lineStyle: { color: tokens.textPrimary } },
       },
       yAxis: {
@@ -5177,7 +5570,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function buildForestOption(_doc, payload, tokens, hostW) {
     var items = payload.items || [];
-    var leftPad = (hostW || 640) < 480 ? 112 : 164;
+    var narrow = (hostW || 640) < 480;
+    var leftPad = narrow ? 12 : 16;
     var data = items.map(function (it, i) { return [i, it.ciLow, it.estimate, it.ciHigh, it.pooled ? 1 : 0, it.sig ? 1 : 0]; });
     return {
       animation: false,
@@ -5188,7 +5582,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           return (it.label || '') + '\n' + it.estimate + ' (95% CI: ' + it.ciLow + ' to ' + it.ciHigh + ')';
         },
       }),
-      grid: { left: leftPad, right: 26, top: 22, bottom: 44 },
+      grid: { left: leftPad, right: 24, top: 22, bottom: 44, containLabel: true },
       xAxis: {
         type: 'value',
         name: payload.x ? payload.x.name : 'Effect (95% CI)',
@@ -5204,7 +5598,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       yAxis: {
         type: 'category',
         data: payload.categories || [],
-        axisLabel: { color: tokens.textPrimary, fontSize: 11, width: leftPad - 16, overflow: 'truncate' },
+        axisLabel: {
+          color: tokens.textPrimary,
+          fontSize: 11,
+          formatter: function (v) {
+            var s = String(v || '');
+            if (!narrow || s.length <= 16) return s;
+            if (typeof global.QuietSvgLayout !== 'undefined') return global.QuietSvgLayout.wrapLabelLines(s, 15, 2).join('\n');
+            return s;
+          },
+        },
         axisTick: { show: false },
       },
       series: [{
@@ -5275,12 +5678,25 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       }
     } else if (kind === 'waterfall' && narrow) {
       if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: { color: textSec, fontSize: 11 } });
-      var wrappedWfY = wrapAxisNames(opt.yAxis, 16, 36);
-      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 56 : 48, right: 12, top: 52, bottom: 68, containLabel: true });
-      if (opt.xAxis && opt.xAxis.axisLabel) opt.xAxis.axisLabel = { color: textSec, fontSize: 11, interval: 0, rotate: 26 };
+      var wrappedWfY = wrapAxisNames(opt.yAxis, 14, 46);
+      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 64 : 52, right: 12, top: 52, bottom: 62, containLabel: true });
+      if (opt.xAxis && opt.xAxis.axisLabel) {
+        opt.xAxis.axisLabel = {
+          color: textSec,
+          fontSize: 11,
+          lineHeight: 13,
+          interval: 0,
+          rotate: 0,
+          formatter: function (v) {
+            if (typeof global.QuietSvgLayout !== 'undefined') return global.QuietSvgLayout.wrapLabelLines(v, 9, 2).join('\n');
+            var w = String(v).split(' ');
+            return w.length >= 2 ? w.slice(0, Math.ceil(w.length / 2)).join(' ') + '\n' + w.slice(Math.ceil(w.length / 2)).join(' ') : v;
+          },
+        };
+      }
       if (opt.series && opt.series[0] && opt.series[0].markLine && Array.isArray(opt.series[0].markLine.data)) {
         opt.series[0].markLine.data.forEach(function (d) {
-          d.label = Object.assign({}, d.label, { position: 'insideStartTop', fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+          d.label = Object.assign({}, d.label, { position: 'insideStartTop', fontSize: 11, backgroundColor: haloBg, padding: [2, 5], borderRadius: 2 });
         });
       }
     } else if (kind === 'cartesian' && narrow) {
@@ -5515,6 +5931,100 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 }(typeof window !== 'undefined' ? window : this));
 
 
+// SPDX-License-Identifier: Apache-2.0
+(function (root) {
+  'use strict';
+
+  function ensureGridContainLabel(opt) {
+    if (!opt) return opt;
+    if (Array.isArray(opt.grid)) {
+      opt.grid = opt.grid.map(function (g) {
+        return Object.assign({ containLabel: true }, g || {});
+      });
+    } else if (opt.grid && typeof opt.grid === 'object') {
+      opt.grid = Object.assign({ containLabel: true }, opt.grid);
+    }
+    return opt;
+  }
+
+  function applyNiceLinearAxisBounds(opt, payload) {
+    if (!opt || !payload || !root.QuietSvgLayout) return opt;
+    if (payload.y && (payload.y.log || payload.y.logMapped)) return opt;
+    var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
+    if (yAxes[0] && yAxes[0].type === 'value' && yAxes[0].max === undefined) {
+      var vals = [];
+      (payload.series || []).forEach(function (sr) {
+        (sr.data || []).forEach(function (pt) {
+          var raw = Array.isArray(pt) ? pt[1] : (pt && typeof pt === 'object' ? pt.value : pt);
+          if (raw === null || raw === undefined || raw === '' || typeof raw === 'boolean') return;
+          var v = Number(raw);
+          if (Number.isFinite(v)) vals.push(v);
+        });
+      });
+      (payload.envelopes || []).forEach(function (env) {
+        if (typeof env.value === 'number' && Number.isFinite(env.value)) vals.push(env.value);
+      });
+      if (vals.length) {
+        var rawMin = Math.min.apply(null, vals);
+        var rawMax = Math.max.apply(null, vals);
+        var lo = yAxes[0].min !== undefined ? Number(yAxes[0].min) : rawMin;
+        var span = rawMax - rawMin;
+        var hi = rawMax + (span > 0 ? span * 0.06 : (Math.abs(rawMax) * 0.06 || 1));
+        var sc = root.QuietSvgLayout.niceScale125(lo, hi, { targetTicks: 5, includeZero: lo >= 0 });
+        if (yAxes[0].min === undefined) yAxes[0].min = sc.min;
+        yAxes[0].max = sc.max;
+        if (yAxes[0].interval === undefined) yAxes[0].interval = sc.step;
+      }
+    }
+    return opt;
+  }
+
+  function applySafeMarkLines(opt, tokens) {
+    if (!opt || !Array.isArray(opt.series)) return opt;
+    var haloBg = (tokens && tokens.bgSurface) ? tokens.bgSurface : '#FFFFFF';
+    opt.series.forEach(function (sr) {
+      if (!sr || !sr.markLine || !Array.isArray(sr.markLine.data)) return;
+      var parentLbl = sr.markLine.label || {};
+      sr.markLine.data = sr.markLine.data.map(function (entry) {
+        if (!entry || typeof entry !== 'object') return entry;
+        if (entry.xAxis !== undefined || (parentLbl.position && !(entry.label && entry.label.position))) {
+          return entry;
+        }
+        var lbl = Object.assign({}, entry.label || {});
+        var rawTxt = String(lbl.formatter || entry.name || '').toLowerCase();
+        if (!lbl.position) {
+          lbl.position = rawTxt.indexOf('floor') >= 0 ? 'insideStartBottom' : 'insideEndTop';
+        }
+        if (lbl.distance === undefined) lbl.distance = 4;
+        if (!lbl.fontSize || lbl.fontSize < 11) lbl.fontSize = 11;
+        if (!lbl.backgroundColor) lbl.backgroundColor = haloBg;
+        if (!lbl.padding) lbl.padding = [2, 5];
+        if (!lbl.borderRadius) lbl.borderRadius = 2;
+        return Object.assign({}, entry, { label: lbl });
+      });
+    });
+    return opt;
+  }
+
+  function normalizeOption(opt, payload, tokens) {
+    if (!opt) return opt;
+    ensureGridContainLabel(opt);
+    applySafeMarkLines(opt, tokens);
+    if (payload && (payload.kind === 'cartesian' || !payload.kind)) {
+      applyNiceLinearAxisBounds(opt, payload);
+    }
+    return opt;
+  }
+
+  root.QuietEChartsDefaults = {
+    ensureGridContainLabel: ensureGridContainLabel,
+    applyNiceLinearAxisBounds: applyNiceLinearAxisBounds,
+    applySafeMarkLines: applySafeMarkLines,
+    normalizeOption: normalizeOption,
+  };
+}(typeof window !== 'undefined' ? window : globalThis));
+
+
 /* SPDX-License-Identifier: Apache-2.0 */
 /* Quiet Evidence — Runtime Apache ECharts (SVG) + 5-Tab Ecosystem Viewer */
 (function (global) {
@@ -5640,7 +6150,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         name: env.label || String(env.value),
         yAxis: env.value,
         lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
-        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 10.5, fontWeight: 600 },
+        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
       });
     });
     return items;
@@ -5821,6 +6331,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
     if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, tok);
+    var defaults = getGlobal('QuietEChartsDefaults');
+    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok);
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.qeMountKey = mKey;
@@ -7896,29 +8408,29 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <path d="M 637.1 207.0 H 644.1 V 222.0 H 629.1 V 237.0 H 635.1" fill="none" stroke="var(--text-muted)" stroke-width="1.1" marker-end="url(#qe-gantt-arr)"/>
 <text x="188.0" y="61.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Fix 12.0 s OTel Gap</text>
 <rect x="198.0" y="50.0" width="109.8" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="313.8" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">4d</text>
+<text x="313.8" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">4d</text>
 <text x="188.0" y="91.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Cut p99 ≤ 250.0 ms</text>
 <rect x="307.8" y="80.0" width="109.8" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="423.6" y="91.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">4d</text>
+<text x="423.6" y="91.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">4d</text>
 <text x="188.0" y="121.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Enforce 0x8003B104</text>
 <rect x="280.3" y="110.0" width="109.8" height="14" rx="2.5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.2"/>
 <rect x="390.1" y="112.0" width="82.3" height="10" rx="2" fill="var(--bg-surface)" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="3,2"/>
-<text x="478.4" y="121.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)">+3d</text>
+<text x="478.4" y="121.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">+3d</text>
 <text x="188.0" y="151.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Drift Fallback Gate</text>
 <rect x="417.6" y="140.0" width="109.8" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="533.3" y="151.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">4d</text>
+<text x="533.3" y="151.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">4d</text>
 <text x="188.0" y="181.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="600" fill="var(--text-primary)">4-Blocker Soak Signoff</text>
 <rect x="472.4" y="170.0" width="109.8" height="14" rx="2.5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.2"/>
 <rect x="582.2" y="172.0" width="54.9" height="10" rx="2" fill="var(--bg-surface)" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="3,2"/>
-<text x="643.1" y="181.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)">+2d</text>
+<text x="643.1" y="181.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">+2d</text>
 <text x="188.0" y="211.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Prod Cutover Gate</text>
 <rect x="527.3" y="200.0" width="109.8" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="643.1" y="211.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">4d</text>
+<text x="643.1" y="211.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">4d</text>
 <text x="188.0" y="241.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">GA Release Signoff</text>
 <polygon points="637.1,230.0 644.1,237.0 637.1,244.0 630.1,237.0" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1.2"/>
-<text x="626.1" y="241.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">16 d</text>
+<text x="626.1" y="241.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">16 d</text>
 <line x1="417.6" y1="36.0" x2="417.6" y2="252.0" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="4,3"/>
-<text x="417.6" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)">Today (Day 8)</text>
+<text x="417.6" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Today (Day 8)</text>
 <rect data-role="frame" x="198.0" y="42.0" width="494.0" height="210.0" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
 <text x="445.0" y="290.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Release Schedule, t / d</text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>
@@ -10288,25 +10800,25 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 <path d="M 661.1 177.0 H 668.1 V 192.0 H 653.1 V 207.0 H 659.1" fill="none" stroke="var(--text-muted)" stroke-width="1.1" marker-end="url(#qe-gantt-arr)"/>
 <text x="188.0" y="61.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Trim Stub ≤ 0.3 m</text>
 <rect x="198.0" y="50.0" width="92.6" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="296.6" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">1.5h</text>
+<text x="296.6" y="61.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">1.5h</text>
 <text x="188.0" y="91.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Verify Dual 120 Ω</text>
 <rect x="290.6" y="80.0" width="61.8" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="358.4" y="91.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">1h</text>
+<text x="358.4" y="91.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">1h</text>
 <text x="188.0" y="121.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Clear 0.35 µs Dropout</text>
 <rect x="352.4" y="110.0" width="123.5" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="481.9" y="121.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">2h</text>
+<text x="481.9" y="121.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">2h</text>
 <text x="188.0" y="151.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="600" fill="var(--text-primary)">Cool MCU &lt; 85 °C</text>
 <rect x="290.6" y="140.0" width="123.5" height="14" rx="2.5" fill="var(--tint-indigo-bg)" stroke="var(--accent-primary)" stroke-width="1.2"/>
 <rect x="414.1" y="142.0" width="61.8" height="10" rx="2" fill="var(--bg-surface)" stroke="var(--text-muted)" stroke-width="1.1" stroke-dasharray="3,2"/>
-<text x="481.9" y="151.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)">+1h</text>
+<text x="481.9" y="151.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-muted)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">+1h</text>
 <text x="188.0" y="181.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Retest 42.8% BTE</text>
 <rect x="475.9" y="170.0" width="185.2" height="14" rx="2.5" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="0.9"/>
-<text x="469.9" y="181.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)">3h</text>
+<text x="469.9" y="181.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">3h</text>
 <text x="188.0" y="211.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Bay Signoff Gate</text>
 <polygon points="692.0,200.0 699.0,207.0 692.0,214.0 685.0,207.0" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1.2"/>
-<text x="681.0" y="211.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)">8 h</text>
+<text x="681.0" y="211.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-warn)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">8 h</text>
 <line x1="352.4" y1="36.0" x2="352.4" y2="222.0" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="4,3"/>
-<text x="352.4" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)">Bay Clock (2.5 h)</text>
+<text x="352.4" y="24.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">Bay Clock (2.5 h)</text>
 <rect data-role="frame" x="198.0" y="42.0" width="494.0" height="180.0" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
 <text x="445.0" y="260.0" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">Bay Elapsed Hour, t / h</text>
 </svg></div><div class="qe-echarts-host" hidden></div></div>

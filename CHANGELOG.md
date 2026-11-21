@@ -2,6 +2,19 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.2.0] - 2026-11-21
+
+### Added
+- **Data-First Widget Binding (`skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`)**: Mandates inspecting live data schemas before picking specimens (`Data-to-Widget Binding Map`), omitting unbacked sub-slots cleanly, labeling thin buffers as `Warming up — N samples collected`, blocking retroactive scoring against new thresholds, and banning inline demo mock arrays, Quiet self-badges in app chrome, and exposed `brain:` storage prefixes.
+- **Component Library v9.2 (`41 Specimens` + Data Contracts)**: Added Specimen 37 (`.va-kpi-gauge-card` 4-up/2-up gauges omitting unbacked targets & marking warmup), Specimen 38 (`.va-toolbar-joined` 27px desktop / 44px touch ARIA toolbar), and `Data Inputs & Honest Fallback` disclosures on all 41 specimens.
+- **Browser SVG & ECharts Chart Layout Helpers (`src/js/quiet-svg-chart-layout.js`, `src/js/echarts-layout-defaults.js`)**: Bundled `window.QuietSvgLayout` (`niceScale125`, `wrapLabelLines`, `measureCategoryGutter`, `filterNonOverlappingTicks`, `placeReferenceLabel`) into `quiet-evidence-bundle.js` and enforced ECharts `containLabel: true` + haloed inside `markLine` defaults and non-truncating mobile label wrapping.
+- **Upgraded Portable Auditor (`skills/quiet-ui/scripts/audit_quiet_html.py` + `audit_quiet_checks.py`)**: Added `--web-root`, repeatable `--mount-prefix /prefix=dir`, `--allow-showcase-chrome`, static/DOM honesty checks (`[SELF_BADGE]`, `[INTERNAL_ID]`, `[INLINE_MOCK_DATA]`), and CDP `390px / 900px / 1440px` detection of SVG text/line overlaps (`[SVG_TEXT_OVERLAP]`, `[SVG_LINE_COLLISION]`) and unclosed/clipped labels (`[LABEL_TRUNCATED]`).
+
+### Fixed
+- **`install.sh`**: Removed `"visual-architecture-system"` from the legacy skill purge loop so `./install.sh` preserves external installed visual skills.
+- **`schedule_and_heatmap.py` Gantt Halos**: Enabled SVG knockout halos on Gantt float/duration/milestone annotations that cross vertical gridlines.
+- **M3 Foldable & Mixed-Aspect Rules**: Lowered split-reader breakpoint to `>= 860px`, compacted sticky `< 1100px` chrome to brand-only, documented GFM checkbox bullet cleanup, and added `.va-media-contain` + orientation-aware `.va-compare-grid`.
+
 ## [9.1.0] - 2026-11-20
 
 ### Added

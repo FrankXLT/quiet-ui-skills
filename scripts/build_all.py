@@ -46,7 +46,12 @@ def _render_evidence_bundle_css() -> str:
 
 
 def _render_evidence_bundle_js() -> str:
-    js = (REPO_ROOT / "src" / "js" / "evidence-runtime.js").read_text(encoding="utf-8")
+    parts = [
+        (REPO_ROOT / rel).read_text(encoding="utf-8")
+        for rel in ("src/js/evidence-runtime.js", "src/js/quiet-svg-chart-layout.js")
+        if (REPO_ROOT / rel).exists()
+    ]
+    js = "\n\n".join(parts)
     return re.sub(r"</\s*script", r"<\/script", js, flags=re.I)
 
 

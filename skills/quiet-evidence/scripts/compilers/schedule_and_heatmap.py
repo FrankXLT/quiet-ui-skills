@@ -131,9 +131,9 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
             parts.append(f'<polygon points="{pts}" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1.2"/>')
             m_lbl = f"{float(t.get('end', 0.0)):g} {unit}"
             if px_e < x0 + pw - 74.0:
-                parts.append(halo_text(px_e + 11.0, cy + 4.0, m_lbl, anchor="start", size=11.5, weight="700", fill="var(--status-warn)", halo=False))
+                parts.append(halo_text(px_e + 11.0, cy + 4.0, m_lbl, anchor="start", size=11.5, weight="700", fill="var(--status-warn)", halo=True))
             else:
-                parts.append(halo_text(px_e - 11.0, cy + 4.0, m_lbl, anchor="end", size=11.5, weight="700", fill="var(--status-warn)", halo=False))
+                parts.append(halo_text(px_e - 11.0, cy + 4.0, m_lbl, anchor="end", size=11.5, weight="700", fill="var(--status-warn)", halo=True))
         else:
             bw = max(5.0, px_e - px_s)
             b_fill = "var(--accent-focal)" if crit else "var(--tint-indigo-bg)"
@@ -148,9 +148,9 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
                 note_col = "var(--text-muted)" if flt > 0.0 else "var(--accent-focal)"
                 anchor_r = px_f if flt > 0.0 else px_e
                 if anchor_r < x0 + pw - 46.0:
-                    parts.append(halo_text(anchor_r + 6.0, cy + 4.0, note, anchor="start", size=11.5, weight="600", fill=note_col, halo=False))
+                    parts.append(halo_text(anchor_r + 6.0, cy + 4.0, note, anchor="start", size=11.5, weight="600", fill=note_col, halo=True))
                 elif px_s > x0 + 48.0:
-                    parts.append(halo_text(px_s - 6.0, cy + 4.0, note, anchor="end", size=11.5, weight="600", fill=note_col, halo=False))
+                    parts.append(halo_text(px_s - 6.0, cy + 4.0, note, anchor="end", size=11.5, weight="600", fill=note_col, halo=True))
 
     if spec.get("today_day") is not None:
         td = float(spec["today_day"])
@@ -158,7 +158,7 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
         parts.append(f'<line x1="{tx:.1f}" y1="{y0 - 6:.1f}" x2="{tx:.1f}" y2="{y0 + ph:.1f}" stroke="var(--status-danger)" stroke-width="1.6" stroke-dasharray="4,3"/>')
         lbl_tx = max(x0 + 46.0, min(x0 + pw - 46.0, tx))
         t_lbl = str(spec.get("today_label") or f"Today ({td:g}{unit})")
-        parts.append(halo_text(lbl_tx, 24.0, t_lbl, anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", halo=False))
+        parts.append(halo_text(lbl_tx, 24.0, t_lbl, anchor="middle", size=11.5, weight="700", fill="var(--status-danger)", halo=True))
 
     parts.append(f'<rect data-role="frame" x="{x0}" y="{y0}" width="{pw}" height="{ph}" fill="none" stroke="var(--border-strong)" stroke-width="1"/>')
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 38.0, axis_lbl, anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))

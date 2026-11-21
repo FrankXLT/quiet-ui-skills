@@ -11,16 +11,16 @@ Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and phy
 
 ## 1. The 6-Invariant Pre-Evidence Reasoning Contract
 
-Before compiling or generating any quantitative visual, verify all six physical invariants:
+Before compiling or generating any quantitative visual, complete the [Data-to-Widget Binding Map](../quiet-ui/foundation/data-grounding-and-widget-binding.md) (omit absent targets/baselines, never hardcode inline demo arrays, and disclose `Warming up — N samples collected` when `N < 10`) and verify all six physical invariants:
 1. **Governing Relationship / Equation**: Declare the physical model, transfer function, or algebraic relation governing the series.
 2. **NIST Quantities & SI Units**: Enforce NIST SP 811 quantity calculus (`Quantity / Unit`). Label all axes and parameters with explicit units.
 3. **Scale Steps & Bounds**: Major ticks must follow $1\text{--}2\text{--}5 \times 10^n$ steps or integer log decades. Minor log ticks ($2\dots 9$) are mandatory on log scales.
 4. **Trace Epistemology**: Measured physical data points MUST use discrete geometric markers. Analytical models MUST use continuous curves. Never connect discrete points with arbitrary Bezier splines.
-5. **Limit & Abort Envelopes**: Operational ceilings, abort boundaries, and confidence corridors ($\pm 1\sigma$, $95\%\,\text{CI}$) must be explicitly demarcated.
+5. **Limit & Abort Envelopes**: Operational ceilings, abort boundaries, and confidence corridors ($\pm 1\sigma$, $95\%\,\text{CI}$) must be explicitly demarcated with haloed labels; never grade prior runs retroactively without an effective-date annotation.
 6. **Grayscale & Dash Redundancy**: Multi-series plots must be distinguishable by stroke dash pattern or marker glyph in pure black-and-white print.
 
 > [!IMPORTANT]
-> **Hard Ban on Freehand SVG Guessing**: LLMs MUST NOT guess SVG coordinate numbers freehand. Author structured JSON specifications conforming to `urn:quiet-ui:schema:v9:<modality>` and compile via deterministic Python/JS builders.
+> **Hard Ban on Freehand SVG Guessing**: LLMs MUST NOT guess SVG coordinate numbers freehand. Author `urn:quiet-ui:schema:v9:<modality>` JSON via `compile_evidence.py`, or route dynamic browser SVGs through bundled `window.QuietSvgLayout` (`quiet-evidence-bundle.js`).
 
 ---
 
@@ -32,7 +32,7 @@ Load ONLY the specific rigor and modality guides matching your active visualizat
 - [rigor/metrology-and-nist-units.md](rigor/metrology-and-nist-units.md): NIST SP 811 unit calculus, SI prefixes, Roman vs. italic symbols, significant figures, and parameter blocks.
 - [rigor/scales-ticks-and-uncertainty.md](rigor/scales-ticks-and-uncertainty.md): NAVAIR FTM-108 $1\text{--}2\text{--}5$ intervals, minor log ticks, $\pm 1\sigma$ corridors, dropout gaps, and interpolation grids.
 - [rigor/conditions-and-envelopes.md](rigor/conditions-and-envelopes.md): Test-condition headers, discrete test markers vs. model curves, limit envelopes, and stroke halos.
-- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): Standards-compliant adapters for Apache ECharts (SVG + CSS tokens), Plotly, Matplotlib, Bokeh, and Mermaid.
+- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): Standards-compliant `window.QuietSvgLayout` SVG helpers, Apache ECharts (`containLabel: true` + haloed `markLine`), Plotly, Matplotlib, Bokeh, and Mermaid.
 
 ### The 6 Visual Modalities
 - [modalities/scalar-readouts-and-gauges.md](modalities/scalar-readouts-and-gauges.md): Scalar readouts, single-value callouts, dynamic gauges, and status annunciator pills.
@@ -46,10 +46,10 @@ Load ONLY the specific rigor and modality guides matching your active visualizat
 
 ## 3. CLI & Python API Usage
 
-Compile any `urn:quiet-ui:schema:v9:<modality>` JSON spec directly from `~/.agents/skills/quiet-evidence/` (or prefix `skills/quiet-evidence/` from the repo root) with zero third-party dependencies:
+Compile any `urn:quiet-ui:schema:v9:<modality>` JSON spec directly from `~/.agents/skills/quiet-evidence/` (or prefix `skills/quiet-evidence/` from the repo root) with zero third-party dependencies (`assets/quiet-evidence-bundle.{css,js}` includes `window.QuietSvgLayout` for dynamic browser charts):
 
 ```bash
-# Write a portable self-contained HTML5 document (uses bundled CSS & interactive scope runtime)
+# Write a portable self-contained HTML5 document (uses bundled CSS, QuietSvgLayout & scope runtime)
 python3 -B scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html
 
 # Emit an embeddable HTML/SVG <figure> fragment to stdout

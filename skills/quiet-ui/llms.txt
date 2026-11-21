@@ -1,9 +1,9 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.1
+# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.2
 
 > 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
-- **v9.1 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
-- **3-Pillar Component Library (`39 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + UI/Bridge Controls)
+- **v9.2 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
+- **3-Pillar Component Library (`41 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + UI/Bridge Controls + Data Contracts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
 - **License:** Apache 2.0 (Core 3-Pillar Plugin) + MIT (Customizations, Tokens & 100% of Generated UI/SVG Deliverables)
@@ -40,12 +40,14 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 4. **Concentric Border-Radius Math & NASA Human-Factors Invariants:**
    - `--radius-inner: max(0px, calc(var(--radius-card, 8px) - var(--inset-pad, 4px)))` across `auto|sharp|subtle|rounded|soft`.
    - NASA-STD-3001/HIDH rules: telemetry vs effectors separation, `CMD`/`ACT` feedback, 2-step guarded actuation (`ARM` -> `EXECUTE`), quiet cockpit nominal neutrality, and `STALE` flags.
+5. **Data-First Widget Binding (`skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`):**
+   - Inspect live schemas and produce a **Data-to-Widget Binding Map** *before* picking specimens. Omit absent target/delta sub-slots, never borrow targets across pools, show `Warming up — N samples collected` when `N < 10`, avoid retroactive scoring against newly added rules, and keep inline mock JS arrays, `Quiet` self-badges, and raw `brain:` IDs out of app chrome.
 
 ## 3. Pillar 1 — `quiet-ui` (7 Delivery Mediums)
 
 - `M1` — Paper & Ink Print Sheets (unboxed, `@media print` optimized)
 - `M2` — Editorial Web Monographs, RFCs & Two-Column Proof Layouts (`72ch`)
-- `M3` — Stateful Web Workbenches, Fleet Grids & Split-Pane Planners
+- `M3` — Stateful Web Workbenches, `.va-kpi-gauge-card` 4-up rows, `.va-toolbar-joined` bars, unfolded `>= 860px` split readers, and aspect-aware comparisons
 - `M4` — Walk-Up POI Terminals & Guarded Industrial SCADA Consoles
 - `M5` — 10-Foot Ambient Wall Displays (`>= 32px` KPIs, zero decorative chrome)
 - `M6` — Collimated Optical HUDs (`>= 65%` unobstructed central keep-out zone)
@@ -53,14 +55,14 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 ## 4. Pillar 2 — `quiet-evidence` (6 Deterministic Evidence Modalities)
 
-- **Modalities (`compile_evidence.py`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs alignment & collapsible mobile disclosures), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest with pooled diamonds, `gantt` schedules, and `heatmap` matrices with `1–2–5` ticks and `svg_knockout_label`), `bitfields` (32/64-bit MSB-left hardware register strips + decode table), and `schematics` (`pid`, `pipeline`, `bus`, `interlock`, `er_lineage`, plus clean-room open standards `sequence` [`ITU-T Z.120`], `n2_matrix` [`NASA SP-2016-6105`], and `fault_tree` [`NRC NUREG-0492`]).
+- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs alignment & collapsible mobile disclosures), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest with pooled diamonds, `gantt` schedules, and `heatmap` matrices with `1–2–5` ticks and `svg_knockout_label`; browser SVGs use `QuietSvgLayout` and ECharts uses `containLabel: true` + haloed `markLine`), `bitfields` (32/64-bit MSB-left hardware register strips + decode table), and `schematics` (`pid`, `pipeline`, `bus`, `interlock`, `er_lineage`, plus clean-room open standards `sequence` [`ITU-T Z.120`], `n2_matrix` [`NASA SP-2016-6105`], and `fault_tree` [`NRC NUREG-0492`]).
 
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.1.0).
-- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`) and portable auditor (`audit_quiet_html.py`).
-- [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}`), and metrology router (`6` modalities).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.2.0).
+- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`).
+- [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & review-room contract router.
 - [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows, 4-variant pill grammar, and verification lifecycle.
 - [scripts/build_all.py](scripts/build_all.py): Canonical single-command artifact synchronizer & `--check` drift gate.

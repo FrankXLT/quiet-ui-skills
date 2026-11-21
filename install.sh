@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for Quiet UI v9.1.0 Plugin & 3 Skills
+# quiet-ui-skills — 1-Command Installer for Quiet UI v9.2.0 Plugin & 3 Skills
 # Bundles:
 #   1. Antigravity Native Plugin -> ~/.gemini/config/plugins/quiet-ui-skills
 #   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}
@@ -24,8 +24,8 @@ for sk in "${PILLAR_SKILLS[@]}"; do
   fi
 done
 
-if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" ]]; then
-  echo "[ERROR] Missing portable skill assets or audit_quiet_html.py; run python3 -B scripts/build_all.py first." >&2
+if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_checks.py" ]]; then
+  echo "[ERROR] Missing portable skill assets or auditor modules; run python3 -B scripts/build_all.py first." >&2
   exit 1
 fi
 
@@ -62,7 +62,7 @@ install_plugin_bundle() {
   for sk in "${PILLAR_SKILLS[@]}"; do
     copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${plugin_dest}/skills/${sk}"
   done
-  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.1.0 -> ${plugin_dest}"
+  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.2.0 -> ${plugin_dest}"
 }
 
 if [[ $# -ge 1 ]]; then
@@ -74,11 +74,11 @@ if [[ $# -ge 1 ]]; then
     for sk in "${PILLAR_SKILLS[@]}"; do
       copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${TARGET_ROOT}/${sk}"
     done
-    echo "[OK] Installed 3 pillar skills v9.1.0 -> ${TARGET_ROOT}"
+    echo "[OK] Installed 3 pillar skills v9.2.0 -> ${TARGET_ROOT}"
   fi
 else
   # 1. Purge only repo-owned legacy loose skill directories so they never shadow the plugin
-  for legacy in "visual-architecture-system" "${PILLAR_SKILLS[@]}"; do
+  for legacy in "${PILLAR_SKILLS[@]}"; do
     rm -rf "${HOME}/.gemini/config/skills/${legacy}" "${HOME}/.agents/skills/${legacy}"
   done
 

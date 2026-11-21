@@ -305,7 +305,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.1 — Layer Declarations & Universal CSS Reset
+   Quiet UI v9.2 — Layer Declarations & Universal CSS Reset
    ========================================================================== */
 
 @layer reset {
@@ -399,7 +399,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.1 — Stage Container, Primitives & Responsive Figures/Tables
+   Quiet UI v9.2 — Stage Container, Primitives & Responsive Figures/Tables
    ========================================================================== */
 
 @layer shell {
@@ -740,6 +740,48 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
       min-block-size: 44px;
     }
+  }
+
+  /* Dense 4-up / 2-up Operational KPI Gauge Cards (.va-kpi-gauge-card) */
+  .va-kpi-gauge-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; min-inline-size: 0; }
+  .va-kpi-gauge-card { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.75rem 0.875rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-card); min-inline-size: 0; }
+  .va-kpi-gauge-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+  .va-kpi-gauge-label { font-family: var(--font-sans); font-size: var(--ts-sm); font-weight: 600; color: var(--text-secondary); }
+  .va-kpi-gauge-val { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); line-height: 1.15; }
+  .va-kpi-gauge-track { position: relative; block-size: 6px; border-radius: var(--radius-pill); background: var(--bg-elevated); border: 1px solid var(--border-hairline); overflow: visible; }
+  .va-kpi-gauge-fill { block-size: 100%; border-radius: var(--radius-pill); background: var(--accent-primary); transition: inline-size 160ms ease; }
+  .va-kpi-gauge-card[data-state="warn"] .va-kpi-gauge-fill { background: var(--status-warn); }
+  .va-kpi-gauge-card[data-state="fault"] .va-kpi-gauge-fill { background: var(--status-danger); }
+  .va-kpi-gauge-target { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
+  .va-kpi-gauge-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xs); color: var(--text-muted); }
+
+  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) */
+  .va-toolbar-joined { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; padding: 0.35rem 0; min-inline-size: 0; }
+  .va-tb-group { display: inline-flex; flex-wrap: wrap; align-items: stretch; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-elevated); overflow: hidden; min-inline-size: 0; max-inline-size: 100%; }
+  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .va-tb-btn:last-child { border-inline-end: 0; }
+  .va-tb-btn[aria-pressed="true"], .va-tb-btn[data-active="true"] { background: var(--bg-surface); color: var(--accent-primary); box-shadow: inset 0 -2px 0 var(--accent-primary); }
+  .va-tb-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+  .va-tb-sep { display: inline-block; inline-size: 1px; block-size: 1.25rem; background: var(--border-subtle); align-self: center; }
+
+  /* GFM Task Checkboxes, Unclipped Outline Links & Aspect-Safe Galleries */
+  ul.contains-task-list, ul.va-task-list { list-style: none; padding-inline-start: 0.25rem; }
+  li.task-list-item, .va-task-list > li { list-style: none; display: flex; align-items: baseline; gap: 0.45rem; }
+  a.va-nav-link, button.va-tb-btn { max-inline-size: 100%; }
+  .va-media-contain { inline-size: 100%; block-size: auto; max-block-size: 420px; object-fit: contain; background: var(--bg-elevated); border-radius: var(--radius-inner); }
+  .va-compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
+  .va-compare-grid[data-orient="landscape"] { grid-template-columns: minmax(0, 1fr); }
+
+  @media (max-width: 960px) {
+    .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (pointer: coarse), (max-width: 720px) {
+    .va-tb-sep { display: none; }
+    .va-tb-btn { min-block-size: 44px; min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    .va-pill[data-variant="chip"], button.va-pill { min-block-size: 44px; min-inline-size: 44px; }
   }
 }
 

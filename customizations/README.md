@@ -1,4 +1,4 @@
-# Quiet UI Customizations Architecture (v9.1)
+# Quiet UI Customizations Architecture (v9.2)
 
 > **Customize in 60 Seconds (Show Inspiration Examples)**  
 > Transform Quiet UI into your own bespoke design system in under a minute by providing 1–3 inspirational examples (screenshots, URLs, brand guides) or brand hexes.

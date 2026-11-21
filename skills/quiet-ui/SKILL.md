@@ -3,7 +3,7 @@ name: quiet-ui
 description: Design system and UI architecture skill generating responsive HTML interfaces across 7 delivery mediums with 4-theme tokens, concentric geometry, and human-factors controls grounded in ISA-101, FDA IEC 62366, and NASA-STD-3001.
 ---
 
-# Quiet UI v9.1 — Qualitative Delivery Medium Physics & Shells
+# Quiet UI v9.2 — Qualitative Delivery Medium Physics & Shells
 
 Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, editorial briefs, and optical HUDs alike.
 
@@ -20,7 +20,8 @@ Before proposing or generating any interface code, verify project scope isolatio
 
 ## 2. Pre-Edit Output Contract
 
-Every interface response MUST begin by explicitly declaring the **Pre-Edit Output Contract**:
+Every interface response MUST inspect real source schemas first and declare the **Pre-Edit Output Contract**:
+- **Data-to-Widget Binding Map**: Source endpoint/fields, units, omitted absent sub-slots, and warmup fallback (`Warming up — N samples collected` if `N < 10`).
 - **Medium**: Selected from `M1` through `M7`.
 - **Chromatic Purpose Budget**: Selected from `Archival Proof`, `Pedagogical Flow`, `Decision Contrast`, or `Quiet Cockpit`.
 - **Navigation Shell**: Selected from `N0` (undecorated stage), `N1` (left rail/drawer), `N2` (top bar), `N3` (composite), or `N4` (mobile bottom dock).
@@ -33,15 +34,16 @@ Every interface response MUST begin by explicitly declaring the **Pre-Edit Outpu
 Load ONLY the specific foundation and medium guides matching your active vector:
 
 ### Foundation Guides
+- [foundation/data-grounding-and-widget-binding.md](foundation/data-grounding-and-widget-binding.md): Mandatory Data-to-Widget Binding Map, sub-slot omission, `N < 10` warmup labels, zero mock arrays/self-badges/raw `brain:` IDs.
 - [foundation/tokens-and-surfaces.md](foundation/tokens-and-surfaces.md): 4-theme OKLCH tokens, 4-way mirror parity, concentric radius math, and border depth rules.
 - [foundation/typography-and-hierarchy.md](foundation/typography-and-hierarchy.md): 3-role font stack, fluid 4K scale, 72ch prose vs. `.va-bleed-wide`, table clipping rules.
 - [foundation/chromatic-purpose-budgets.md](foundation/chromatic-purpose-budgets.md): Archival Proof, Pedagogical Flow, Decision Contrast, and Quiet Cockpit token rations.
-- [foundation/navigation-morphing.md](foundation/navigation-morphing.md): Polymorphic shells `N0–N4`, foldable 820px eyebrow nav, mobile 390px touch hit targets, and `@media print`.
+- [foundation/navigation-morphing.md](foundation/navigation-morphing.md): Polymorphic shells `N0–N4`, unfolded `>= 860px` split readers, compact joined toolbars, mobile 390px touch hit targets, and `@media print`.
 
 ### Delivery Medium Physics
 - [mediums/m1-paper-and-print.md](mediums/m1-paper-and-print.md): Paper & Print sheet physics, `@page` rules, high-contrast ink, and unrolled figures.
 - [mediums/m2-editorial-web.md](mediums/m2-editorial-web.md): Editorial monographs, RFC specifications, research briefs, and multi-column figures.
-- [mediums/m3-stateful-web-app.md](mediums/m3-stateful-web-app.md): Stateful workbenches, dual-pane task dispatchers, and responsive bento grids.
+- [mediums/m3-stateful-web-app.md](mediums/m3-stateful-web-app.md): Stateful workbenches, `.va-kpi-gauge-card`, `.va-toolbar-joined`, aspect-aware comparisons, and split panes.
 - [mediums/m4-walkup-poi-terminal.md](mediums/m4-walkup-poi-terminal.md): Point-of-Interest kiosks, guarded touch targets, and high-visibility contrast.
 - [mediums/m5-ambient-wall-kiosk.md](mediums/m5-ambient-wall-kiosk.md): 10-foot ambient wall displays, high-readability telemetry, and status glanceability.
 - [mediums/m6-collimated-optical-hud.md](mediums/m6-collimated-optical-hud.md): Collimated optical HUD, >=65% central keep-out, peripheral symbology, and monochrome green/cyan.
@@ -51,14 +53,14 @@ Load ONLY the specific foundation and medium guides matching your active vector:
 
 ## 4. Portable HTML/CSS Auditor (`scripts/audit_quiet_html.py`)
 
-Verify any external HTML/CSS file, directory, or live localhost URL (run inside `~/.agents/skills/quiet-ui/` or prefix `skills/quiet-ui/` from the repo root) against Quiet UI's `!important` ban, `>= 11px` font floor, accessible `<svg>` `viewBox`/label contract, and responsive `<table>` wrapping:
+Verify any external HTML/CSS/JS asset tree or live localhost URL (`~/.agents/skills/quiet-ui/` or `skills/quiet-ui/`) against Quiet UI styling, data honesty (`v9.x Quiet` self-badges, raw `brain:` IDs, mock JS arrays), SVG text/line collisions, and truncation bugs:
 
 ```bash
-# Zero-dependency static audit (runs anywhere via stdlib Python)
-python3 -B scripts/audit_quiet_html.py path/to/page.html
+# Zero-dependency static audit across mounted assets (runs anywhere via stdlib Python)
+python3 -B scripts/audit_quiet_html.py path/to/page.html --web-root path/to/dist --mount-prefix /web=/path/to/web
 
-# Live Headless Chrome sweep across 390px, 820px, and 1440px (requires selenium + Chrome)
-python3 -B scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp
+# Live Headless Chrome sweep across 390px, 900px, and 1440px (requires selenium + Chrome)
+python3 -B scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp --mount-prefix /web=/path/to/web
 ```
 
 ---

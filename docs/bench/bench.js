@@ -246,6 +246,52 @@
         }
       }
     });
+
+    document.addEventListener('click', function (ev) {
+      const tbBtn = ev.target && ev.target.closest ? ev.target.closest('[data-joined-toolbar] .va-tb-btn') : null;
+      if (tbBtn) {
+        const bar = tbBtn.closest('[data-joined-toolbar]');
+        const status = bar && bar.parentElement ? bar.parentElement.querySelector('[data-tb-status]') : null;
+        if (tbBtn.dataset.tbGroup) {
+          bar.querySelectorAll('.va-tb-btn[data-tb-group="' + tbBtn.dataset.tbGroup + '"]').forEach(function (b) {
+            b.setAttribute('aria-pressed', b === tbBtn ? 'true' : 'false');
+          });
+        } else if (tbBtn.dataset.tbAction === 'reset') {
+          bar.querySelectorAll('.va-tb-btn[data-tb-group]').forEach(function (b) {
+            const def = b.dataset.tbVal === '24h' || b.dataset.tbVal === 'all';
+            b.setAttribute('aria-pressed', def ? 'true' : 'false');
+          });
+        }
+        if (status) {
+          const wAct = bar.querySelector('.va-tb-btn[data-tb-group="window"][aria-pressed="true"]');
+          const sAct = bar.querySelector('.va-tb-btn[data-tb-group="scope"][aria-pressed="true"]');
+          const extra = tbBtn.dataset.tbAction === 'export' ? ' · Export CSV queued (real endpoint)' : '';
+          status.textContent = 'Window: ' + (wAct ? wAct.textContent.trim() : '24h') + ' · Scope: ' + (sAct ? sAct.textContent.trim() : 'All Runs') + extra;
+        }
+        return;
+      }
+      const kpiBtn = ev.target && ev.target.closest ? ev.target.closest('[data-kpi-toggle-state]') : null;
+      if (kpiBtn) {
+        const root = kpiBtn.closest('[data-kpi-demo-wrap]');
+        const warmup = kpiBtn.getAttribute('aria-pressed') !== 'true';
+        kpiBtn.setAttribute('aria-pressed', warmup ? 'true' : 'false');
+        const note = root ? root.querySelector('[data-kpi-warmup-note]') : null;
+        const valEl = root ? root.querySelector('[data-kpi-warmup-val]') : null;
+        const fillEl = root ? root.querySelector('[data-kpi-warmup-fill]') : null;
+        const barEl = root ? root.querySelector('[data-kpi-warmup-bar]') : null;
+        if (warmup) {
+          if (valEl) valEl.textContent = '3 calls';
+          if (fillEl) fillEl.style.inlineSize = '6%';
+          if (barEl) barEl.setAttribute('aria-valuenow', '6');
+          if (note) note.textContent = 'Warming up — 3 samples collected (uptime 12m)';
+        } else {
+          if (valEl) valEl.textContent = '48 calls';
+          if (fillEl) fillEl.style.inlineSize = '72%';
+          if (barEl) barEl.setAttribute('aria-valuenow', '72');
+          if (note) note.textContent = 'Steady window — 48 samples (24h)';
+        }
+      }
+    });
   }
 
   function bootBench() {

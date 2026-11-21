@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.py"
+CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
 COMPILER_SRC = REPO_ROOT / "skills" / "quiet-evidence" / "scripts" / "compile_evidence.py"
 
 VALID_HTML = """<!DOCTYPE html>
@@ -51,6 +53,7 @@ class TestPortableAuditor(unittest.TestCase):
         self.tmp_dir = Path(self._tmp.name)
         self.auditor = self.tmp_dir / "audit_quiet_html.py"
         shutil.copy2(AUDITOR_SRC, self.auditor)
+        shutil.copy2(CHECKS_SRC, self.tmp_dir / "audit_quiet_checks.py")
 
     def tearDown(self) -> None:
         self._tmp.cleanup()
@@ -139,6 +142,161 @@ class TestPortableAuditor(unittest.TestCase):
         r5 = self._run_auditor(trav_html)
         self.assertEqual(r5.returncode, 1)
         self.assertIn("[TABLE_WRAP]", r5.stdout)
+
+    def test_v92_mount_prefix_honesty_self_badge_brain_and_mock_arrays(self) -> None:
+        mount_root = self.tmp_dir / "mounted_web"
+        mount_root.mkdir()
+        (mount_root / "app.css").write_text("body { font-size: 13px; }\n.bad { color: red !important; }", encoding="utf-8")
+        (mount_root / "views.js").write_text(
+            "function load(isDemo, r) {\n"
+            "  let rows = [];\n"
+            "  if (!rows.length && isDemo) { rows = [{a: 1}, {a: 2}]; }\n"
+            "  return `brain:${r.id}`;\n"
+            "}\n",
+            encoding="utf-8",
+        )
+        (mount_root / "demo_snapshot.js").write_text("window.DEMO_SNAPSHOT = { rows: [{a: 1}, {a: 2}] };", encoding="utf-8")
+        (mount_root / "clean.js").write_text("const clean = (s) => String(s).replace(/^brain:/, '');", encoding="utf-8")
+
+        app_html = self.tmp_dir / "app.html"
+        app_html.write_text(
+            '<!DOCTYPE html><html lang="en"><body>'
+            '<header class="top"><span class="va-pill">v9.1 Quiet</span></header>'
+            '<link rel="stylesheet" href="/web/app.css">'
+            '<script src="/web/views.js?v=1"></script>'
+            '<script src="/web/demo_snapshot.js"></script>'
+            '<script src="/web/clean.js"></script>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        res = self._run_auditor(app_html, "--mount-prefix", f"/web={mount_root}")
+        self.assertEqual(res.returncode, 1, res.stdout)
+        self.assertIn("[SELF_BADGE]", res.stdout)
+        self.assertIn("[IMPORTANT]", res.stdout)
+        self.assertIn("[INLINE_MOCK_DATA]", res.stdout)
+        self.assertIn("[INTERNAL_ID]", res.stdout)
+        self.assertNotIn("demo_snapshot.js", res.stdout)
+        self.assertNotIn("clean.js", res.stdout)
+
+        ok_html = self.tmp_dir / "showcase.html"
+        ok_html.write_text(
+            '<!DOCTYPE html><html lang="en"><body>'
+            '<header class="top"><span>Quiet UI v9.2 Showcase</span></header>'
+            '<script src="/web/clean.js"></script>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        res_ok = self._run_auditor(ok_html, "--allow-showcase-chrome", "--mount-prefix", f"/web={mount_root}")
+        self.assertEqual(res_ok.returncode, 0, res_ok.stdout + res_ok.stderr)
+
+    def test_v92_cdp_svg_collisions_and_truncation(self) -> None:
+        if os.environ.get("QUIET_SKIP_CDP") == "1":
+            self.skipTest("QUIET_SKIP_CDP=1")
+        try:
+            import selenium  # noqa: F401
+        except ImportError:
+            if os.environ.get("QUIET_REQUIRE_CDP") == "1":
+                raise
+            self.skipTest("selenium not installed")
+
+        bad_svg_html = self.tmp_dir / "bad_cdp.html"
+        bad_svg_html.write_text(
+            '<!DOCTYPE html><html lang="en"><head><style>'
+            "body{font-size:14px;background:#fff} nav a{display:block;width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}"
+            "</style></head><body>"
+            '<nav><a href="#x">inspect_visual_artifacts</a></nav>'
+            '<svg viewBox="0 0 320 140" width="320" height="140" role="img" aria-label="Collision specimen">'
+            '<line x1="20" y1="60" x2="300" y2="60" stroke="#666" stroke-width="1.5"/>'
+            '<text x="80" y="64" font-size="12">Avg 1,871</text>'
+            '<text x="40" y="120" font-size="12">11-19</text>'
+            '<text x="58" y="120" font-size="12">11-19</text>'
+            '<text x="150" y="120" font-size="12">Gemini 4 Argon (Pr</text>'
+            "</svg></body></html>",
+            encoding="utf-8",
+        )
+        res_bad = self._run_auditor(bad_svg_html, "--cdp")
+        self.assertEqual(res_bad.returncode, 1, res_bad.stdout)
+        self.assertIn("[SVG_LINE_COLLISION]", res_bad.stdout)
+        self.assertIn("[SVG_TEXT_OVERLAP]", res_bad.stdout)
+        self.assertIn("[LABEL_TRUNCATED]", res_bad.stdout)
+
+        halo_ok_html = self.tmp_dir / "halo_cdp.html"
+        halo_ok_html.write_text(
+            '<!DOCTYPE html><html lang="en"><head><style>body{font-size:14px;background:#fff}</style></head><body>'
+            '<svg viewBox="0 0 320 140" width="320" height="140" role="img" aria-label="Haloed specimen">'
+            '<line x1="20" y1="60" x2="300" y2="60" stroke="#666" stroke-width="1.5"/>'
+            '<text x="80" y="64" font-size="12" paint-order="stroke fill" stroke="#ffffff" stroke-width="4">Avg 1,871</text>'
+            '<text x="40" y="120" font-size="12">11-18</text>'
+            '<text x="160" y="120" font-size="12">11-19</text>'
+            '<text x="240" y="120" font-size="12">Gemini 4 Argon (Pro)</text>'
+            "</svg></body></html>",
+            encoding="utf-8",
+        )
+        res_good = self._run_auditor(halo_ok_html, "--cdp")
+        self.assertEqual(res_good.returncode, 0, res_good.stdout + res_good.stderr)
+
+    def test_v92_edge_case_regressions(self) -> None:
+        mount_root = self.tmp_dir / "reg_web"
+        mount_root.mkdir()
+        (mount_root / "clean.css").write_text(
+            "/* Safe comment without !important or font-size: 9px */\n"
+            ":root { --my-font-size: 9px; }\n"
+            "body { font-size: 13px; }\n",
+            encoding="utf-8",
+        )
+        (mount_root / "clean_branch.js").write_text(
+            "if (isDemo) { load(); }\nconst COLS = [{a: 1}, {b: 2}];\n",
+            encoding="utf-8",
+        )
+        (mount_root / "bad_branch.js").write_text(
+            "function pick(isDemo) {\n  if (isDemo) return [{a: 1}, {b: 2}];\n}\n",
+            encoding="utf-8",
+        )
+        (self.tmp_dir / "outside.js").write_text("const MOCK_ROWS = [{a: 1}, {a: 2}];\n", encoding="utf-8")
+
+        clean_html = self.tmp_dir / "reg_clean.html"
+        clean_html.write_text(
+            '<!DOCTYPE html><html lang="en"><head>'
+            '<link rel="stylesheet" href="/web/clean.css">'
+            "</head><body>"
+            '<header><img src="/web/logo.png" alt=""><input type="search" aria-label="Filter"><span>0 Quiet Alerts</span></header>'
+            "<main><p>v9.1 Quiet prose in main does not trigger</p></main>"
+            '<script src="/web/clean_branch.js"></script>'
+            '<script src="/web/../outside.js"></script>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        res_clean = self._run_auditor(clean_html, "--web-root", str(self.tmp_dir), "--mount-prefix", f"/web={mount_root}")
+        self.assertEqual(res_clean.returncode, 0, res_clean.stdout + res_clean.stderr)
+
+        hdr_void_bad = self.tmp_dir / "reg_hdr_bad.html"
+        hdr_void_bad.write_text(
+            '<!DOCTYPE html><html lang="en"><body>'
+            '<header><img src="/web/logo.png" alt=""><input type="text"><span>v9.1 Quiet</span></header>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        res_hdr = self._run_auditor(hdr_void_bad)
+        self.assertEqual(res_hdr.returncode, 1, res_hdr.stdout)
+        self.assertIn("[SELF_BADGE]", res_hdr.stdout)
+
+        bad_ui_badge = self.tmp_dir / "reg_quiet_hyphen.html"
+        bad_ui_badge.write_text(
+            '<!DOCTYPE html><html lang="en"><body><header><span>Quiet-UI</span></header></body></html>',
+            encoding="utf-8",
+        )
+        res_ui = self._run_auditor(bad_ui_badge)
+        self.assertEqual(res_ui.returncode, 1, res_ui.stdout)
+        self.assertIn("[SELF_BADGE]", res_ui.stdout)
+
+        bad_branch_html = self.tmp_dir / "reg_bad_branch.html"
+        bad_branch_html.write_text(
+            '<!DOCTYPE html><html lang="en"><body><script src="/web/bad_branch.js"></script></body></html>',
+            encoding="utf-8",
+        )
+        res_br = self._run_auditor(bad_branch_html, "--mount-prefix", f"/web={mount_root}")
+        self.assertEqual(res_br.returncode, 1, res_br.stdout)
+        self.assertIn("[INLINE_MOCK_DATA]", res_br.stdout)
 
 
 if __name__ == "__main__":

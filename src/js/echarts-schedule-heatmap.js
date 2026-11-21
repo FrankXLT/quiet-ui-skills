@@ -138,7 +138,7 @@
     var zMin = payload.min != null ? payload.min : 0;
     var zMax = payload.max != null ? payload.max : 100;
     var zSpan = (zMax - zMin) || 1;
-    var leftPad = (hostW || 640) < 480 ? 96 : 142;
+    var leftPad = (hostW || 640) < 480 ? 10 : 16;
     var data = (payload.cells || []).map(function (c) {
       return {
         value: c,
@@ -155,7 +155,7 @@
           return yc + ' · ' + xc + '\n' + v[2] + (payload.unit ? ' ' + payload.unit : '');
         },
       }),
-      grid: { left: leftPad, right: 24, top: 38, bottom: 54 },
+      grid: { left: leftPad, right: 24, top: 20, bottom: 54, containLabel: true },
       xAxis: {
         type: 'category',
         position: 'top',
@@ -204,12 +204,21 @@
       animation: false,
       tooltip: Object.assign(baseTooltip(tokens), { trigger: 'axis' }),
       legend: { top: 2, right: 12, textStyle: { color: tokens.textSecondary, fontSize: 11 } },
-      grid: { left: 68, right: 34, top: 36, bottom: 44 },
+      grid: { left: 68, right: 24, top: 36, bottom: 48, containLabel: true },
       xAxis: {
         type: 'category',
         boundaryGap: true,
         data: cats,
-        axisLabel: { color: tokens.textSecondary, fontSize: 11, interval: (cats.length <= 12 && !narrow) ? 0 : (cats.length > 8 ? 1 : 0) },
+        axisLabel: {
+          color: tokens.textSecondary,
+          fontSize: 11,
+          interval: 0,
+          formatter: function (v) {
+            if (!narrow) return v;
+            var lines = (typeof global.QuietSvgLayout !== 'undefined') ? global.QuietSvgLayout.wrapLabelLines(v, 10, 2) : String(v).split(' ');
+            return lines.join('\n');
+          },
+        },
         axisLine: { lineStyle: { color: tokens.textPrimary } },
       },
       yAxis: {
@@ -256,7 +265,8 @@
 
   function buildForestOption(_doc, payload, tokens, hostW) {
     var items = payload.items || [];
-    var leftPad = (hostW || 640) < 480 ? 112 : 164;
+    var narrow = (hostW || 640) < 480;
+    var leftPad = narrow ? 12 : 16;
     var data = items.map(function (it, i) { return [i, it.ciLow, it.estimate, it.ciHigh, it.pooled ? 1 : 0, it.sig ? 1 : 0]; });
     return {
       animation: false,
@@ -267,7 +277,7 @@
           return (it.label || '') + '\n' + it.estimate + ' (95% CI: ' + it.ciLow + ' to ' + it.ciHigh + ')';
         },
       }),
-      grid: { left: leftPad, right: 26, top: 22, bottom: 44 },
+      grid: { left: leftPad, right: 24, top: 22, bottom: 44, containLabel: true },
       xAxis: {
         type: 'value',
         name: payload.x ? payload.x.name : 'Effect (95% CI)',
@@ -283,7 +293,16 @@
       yAxis: {
         type: 'category',
         data: payload.categories || [],
-        axisLabel: { color: tokens.textPrimary, fontSize: 11, width: leftPad - 16, overflow: 'truncate' },
+        axisLabel: {
+          color: tokens.textPrimary,
+          fontSize: 11,
+          formatter: function (v) {
+            var s = String(v || '');
+            if (!narrow || s.length <= 16) return s;
+            if (typeof global.QuietSvgLayout !== 'undefined') return global.QuietSvgLayout.wrapLabelLines(s, 15, 2).join('\n');
+            return s;
+          },
+        },
         axisTick: { show: false },
       },
       series: [{
@@ -354,12 +373,25 @@
       }
     } else if (kind === 'waterfall' && narrow) {
       if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: { color: textSec, fontSize: 11 } });
-      var wrappedWfY = wrapAxisNames(opt.yAxis, 16, 36);
-      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 56 : 48, right: 12, top: 52, bottom: 68, containLabel: true });
-      if (opt.xAxis && opt.xAxis.axisLabel) opt.xAxis.axisLabel = { color: textSec, fontSize: 11, interval: 0, rotate: 26 };
+      var wrappedWfY = wrapAxisNames(opt.yAxis, 14, 46);
+      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 64 : 52, right: 12, top: 52, bottom: 62, containLabel: true });
+      if (opt.xAxis && opt.xAxis.axisLabel) {
+        opt.xAxis.axisLabel = {
+          color: textSec,
+          fontSize: 11,
+          lineHeight: 13,
+          interval: 0,
+          rotate: 0,
+          formatter: function (v) {
+            if (typeof global.QuietSvgLayout !== 'undefined') return global.QuietSvgLayout.wrapLabelLines(v, 9, 2).join('\n');
+            var w = String(v).split(' ');
+            return w.length >= 2 ? w.slice(0, Math.ceil(w.length / 2)).join(' ') + '\n' + w.slice(Math.ceil(w.length / 2)).join(' ') : v;
+          },
+        };
+      }
       if (opt.series && opt.series[0] && opt.series[0].markLine && Array.isArray(opt.series[0].markLine.data)) {
         opt.series[0].markLine.data.forEach(function (d) {
-          d.label = Object.assign({}, d.label, { position: 'insideStartTop', fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+          d.label = Object.assign({}, d.label, { position: 'insideStartTop', fontSize: 11, backgroundColor: haloBg, padding: [2, 5], borderRadius: 2 });
         });
       }
     } else if (kind === 'cartesian' && narrow) {

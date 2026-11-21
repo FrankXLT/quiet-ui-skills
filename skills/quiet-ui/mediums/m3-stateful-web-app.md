@@ -190,7 +190,18 @@ M3 consoles frequently host high-frequency telemetry streams. To avoid UI thrash
 
 ---
 
-## 6. Anti-Patterns & Operational Violations
+## 6. Dense Cockpit Controls, Foldable Split (>= 860px) & Media Comparison Rules
+
+Follow these mandatory `M3` density and layout constraints on operational dashboards, documentation readers, and runbooks:
+
+1. **Compact Operational KPI Gauge Row (`.va-kpi-gauge-grid` / `.va-kpi-gauge-card`)**: Use a 4-up desktop (`2-up` `< 960px`) card strip carrying headline scalar, proportional fill gauge (`.va-kpi-gauge-track` / `.va-kpi-gauge-fill`), optional target pin marker (`.va-kpi-gauge-target` — omit completely if unbacked), and 2–3 tabular sub-stats. Never replace real gauge progress with 8 puffy text-only prose boxes.
+2. **Joined Single-Row Workspace Toolbar (`.va-toolbar-joined` / `.va-tb-group` / `.va-tb-btn`)**: Group related filter toggles, scope selectors, and export actions (`role="toolbar"` wrapping `role="group"` button clusters separated by `.va-tb-sep`) inside compact `26–28px` desktop strips (`44px` minimum under `@media (pointer: coarse)` or `< 720px`) instead of letting `32px` loose pills wrap across `4–5` rows. Apply `aria-pressed` only to stateful toggle buttons.
+3. **Foldable Split-Pane Readers (`>= 860px`) & Zero Synthetic Jump Sidebars**: Keep list + document readers side-by-side down to `>= 860px` (unfolded foldable screens) instead of hiding behind full-screen modals until `1200px`. Collapse scrolled sticky chrome `< 1100px` to the brand row only, and never invent a `6–7` link left-rail jump sidebar for a single continuous page.
+4. **GFM Task Lists, Outline Links & Aspect-Safe Galleries (`object-fit: contain`)**: Strip `list-style: none` on `ul.contains-task-list li.task-list-item` so `[x]` / `[ ]` checkboxes never double with bullet dots. Ensure `<a class="va-nav-link">` outline items wrap instead of `text-overflow` clipping mid-word. Use `.va-media-contain` (`object-fit: contain`) on mixed-aspect galleries, and set `.va-compare-grid[data-orient="landscape"]` to stack 16:9 / 1440x900 landscape captures vertically (`1fr`) rather than squeezing them side-by-side inside narrow portrait frames.
+
+---
+
+## 7. Anti-Patterns & Operational Violations
 
 | Violation | System Failure | Quiet UI Resolution |
 | :--- | :--- | :--- |
@@ -198,4 +209,8 @@ M3 consoles frequently host high-frequency telemetry streams. To avoid UI thrash
 | Unconstrained stage spanning 3840px monitors | Left rail at x=0, inspector at x=3800; operator experiences extreme neck strain. | Constrain workspace stage using `var(--stage-workspace-max)`. |
 | Full-page re-renders on telemetry packet arrival | UI drops frames, freezes mouse clicks, and causes input stutter. | Isolate real-time updates to dedicated CSS variables and `<canvas>`. |
 | Ambiguous keyboard focus states | Operator triggers destructive state change on unintended node. | Implement visible 2px solid focus rings on all interactive rows. |
-| Inflexible modal overlays for telemetry inspection | Modals block view of master queue, preventing side-by-side comparison. | Use persistent side-by-side collapsible split panes instead of modals. |
+| Full-screen modal viewer at 900px foldable width | Blocks master list when unfolded tablet width easily fits split reader. | Use `.va-split-reader` at `>= 860px` instead of full-screen modal overlays. |
+| Five-row wrapped `32px` filter pills & sticky 3-bar headers | Consumes half the vertical viewport on desktops and foldables. | Consolidate into `.va-toolbar-joined` (`26–28px`) and brand-only sticky `< 1100px`. |
+| Double bullet + checkbox or clipped outline nav links | Corrupted markdown task lists and truncated navigation labels (`inspect_visu`). | Reset `list-style: none` on `.contains-task-list` and allow multi-line outline wrapping. |
+| Landscape (`1440x900`) shots side-by-side in portrait `Compare (2)` | Leaves `60–70%` vertical letterbox voids and unreadable thumbnail text. | Use `object-fit: contain` (`.va-media-contain`) and stack landscape comparisons (`1fr`). |
+

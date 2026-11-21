@@ -68,9 +68,11 @@ def bundle_stage_js(repo_root: Path) -> str:
         (repo_root / rel).read_text(encoding="utf-8")
         for rel in (
             "src/js/evidence-runtime.js",
+            "src/js/quiet-svg-chart-layout.js",
             "src/js/echarts-layers.js",
             "src/js/echarts-schedule-heatmap.js",
             "src/js/echarts-sankey-strip.js",
+            "src/js/echarts-layout-defaults.js",
             "src/js/echarts-quiet-adapter.js",
             "src/js/world-01-interactions.js",
             "src/js/world-02-05-interactions.js",
@@ -131,7 +133,7 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build Quiet UI v9.1 Multi-Domain Showcase")
+    parser = argparse.ArgumentParser(description="Build Quiet UI v9.2 Multi-Domain Showcase")
     parser.add_argument("--worlds", default="all", help="Comma-separated domain IDs or 'all' (default: all)")
     parser.add_argument("--output", default="quiet-ui-showcase.html", help="Output HTML file path")
     args = parser.parse_args()
@@ -143,7 +145,7 @@ def main() -> int:
         out_path = REPO_ROOT / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html_out, encoding="utf-8")
-    print(f"[OK] Built Quiet UI v9.1 showcase ({len(selected)} domain(s)) -> {out_path}")
+    print(f"[OK] Built Quiet UI v9.2 showcase ({len(selected)} domain(s)) -> {out_path}")
     return 0
 
 

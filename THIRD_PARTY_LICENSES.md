@@ -1,6 +1,6 @@
 # Third-Party Licenses & Provenance Declaration
 
-Quiet UI Skills v9.1 operates with **zero external CDN requests and zero non-Apache/MIT runtime dependencies** across its 3-pillar architecture (`skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`). All shipped HTML deliverables are 100% self-contained and offline-capable.
+Quiet UI Skills v9.2 operates with **zero external CDN requests and zero non-Apache/MIT runtime dependencies** across its 3-pillar architecture (`skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`). All shipped HTML deliverables are 100% self-contained and offline-capable.
 
 ---
 

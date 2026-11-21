@@ -230,3 +230,37 @@ gantt
     Integration QA   :t2, 4, 8
     GA Milestone     :milestone, m1, 10, 10
 ```
+
+---
+
+## 7. Browser-Side Dynamic SVG Layout (`window.QuietSvgLayout`) & ECharts Safe Defaults
+
+When interactive dashboards synthesize live `<svg>` charts in browser JavaScript (rather than pre-compiling static specs through Python), route axis ticks, category gutters, word wrapping, and reference lines through **`window.QuietSvgLayout`** (automatically bundled into `quiet-evidence-bundle.js`):
+
+```javascript
+const { niceScale125, wrapLabelLines, measureCategoryGutter, filterNonOverlappingTicks, placeReferenceLabel } = window.QuietSvgLayout;
+
+// 1. Auto-size left margin for long horizontal labels before drawing axes
+const cats = wrapLabelLines("Gemini 4 Argon (Pro) Long Run", 20, 2);
+const gutter = measureCategoryGutter(rawLabels, { minPx: 68, maxPx: 176, maxChars: 20 });
+
+// 2. Calibrate 1-2-5 numeric scale & filter dense X ticks to prevent label collision
+const yScale = niceScale125(0, Math.max(...values), { targetTicks: 5, includeZero: true });
+const visibleXTicks = filterNonOverlappingTicks(rawTicks, { axis: 'x', minGapPx: 12, keepEnds: true });
+
+// 3. Draw Avg / Ceiling reference labels with opaque background + paint-order stroke halo
+placeReferenceLabel(svgEl, {
+  text: "Ceiling 120",
+  x: plotRight - 6,
+  y: ceilingY - 5,
+  anchor: "end",
+  plotX0, plotX1: plotRight, plotY0, plotY1: plotBottom,
+  haloColor: "var(--bg-surface)",
+});
+```
+
+### ECharts Guardrails (`QuietEChartsDefaults` & Standalone Option Builder Rules)
+- Always set `grid: { containLabel: true }` so multi-line or unit-heavy tick labels never clip outside the SVG viewport.
+- Always compute `yAxis.max` via NIST `1-2-5` padding (`niceScale125`) when auto-scaling so peak bars do not collide with horizontal reference lines.
+- Always configure `markLine.label` with inside alignment (`insideEndTop` / `insideStartBottom`) plus opaque background halo (`backgroundColor: 'var(--bg-surface)'`, `padding: [2, 5]`) so dashed lines never strike through text glyphs.
+

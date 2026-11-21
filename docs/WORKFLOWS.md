@@ -1,17 +1,17 @@
-# Quiet UI v9.1 — Master Engineering Workflows & Architecture
+# Quiet UI v9.2 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.1 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.2 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.1 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.2 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.1
+                                      QUIET UI v9.2
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼
@@ -67,8 +67,9 @@ Before touching HTML or CSS, the agent executes the 3-question intake interrogat
 3. **Delivery Medium**: What physical surface displays the artifact?
    - Print sheet (`M1`), desktop monitor (`M2`/`M3`), walk-up POI (`M4`), ambient wall (`M5`), or optical HUD (`M6`/`M7`).
 
-### Step 2. Medium & Chromatic Lock
-The agent consults `skills/quiet-ui/` to emit the Pre-Edit Output Contract:
+### Step 2. Data-to-Widget Binding, Medium & Chromatic Lock
+The agent inspects real backend schemas and emits the **Pre-Edit Output Contract** (`skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`):
+- **Data-to-Widget Binding Map**: Exact source field, physical unit, omitted absent sub-slots (`target == null`), and `Warming up — N samples collected` fallback when `N < 10`.
 - **Medium**: Selected from `M1` through `M7`.
 - **Chromatic Purpose Budget**: Selected from:
   - *Archival Proof*: $\ge 90\%$ neutral black/gray ink, single accent token for focal result.
@@ -82,20 +83,20 @@ The agent consults `skills/quiet-ui/` to emit the Pre-Edit Output Contract:
 ### Step 3. Quantitative Evidence Modeling
 For every plot, table, gauge, or schematic, the agent consults `skills/quiet-evidence/`:
 - Formulates the governing equation and NIST SP 811 units.
-- Selects the target rigor level (`L1`, `L2`, or `L3`).
+- Selects the target rigor level (`L1`, `L2`, or `L3`) and verifies sample size `N` and policy effective dates before grading historical runs.
 - Emits a clean JSON specification conforming to `urn:quiet-ui:schema:v9:<modality>`.
-- Passes the JSON specification to the deterministic compiler for exact SVG coordinate generation.
+- Compiles SVG geometry deterministically via `compile_evidence.py`, or routes browser-drawn SVG charts through `window.QuietSvgLayout` (`quiet-svg-chart-layout.js`) so ticks, gutters, label wrapping, and reference halos never collide.
 
 ### Step 4. Adversarial Murder Board Audit
-Before declaring the interface complete, the agent runs the Murder Board rubric matching the audience lens. If any redline triggers (e.g., missing units on numbers, ungrounded Bezier splines, amber status during nominal states, or table truncation on desktop), the artifact is blocked.
+Before declaring the interface complete, the agent runs the Murder Board rubric matching the audience lens. If any redline triggers (e.g., data-slot fabrication, cross-pool borrowed targets, missing units, ungrounded Bezier splines, amber status during nominal states, or table truncation on desktop), the artifact is blocked.
 
 ---
 
 ## 3. Workflow B — Multi-Audience Distillation & Numerical Conservation
 
-A frequent failure mode in technical reporting is creating separate, unlinked documents for executives, engineers, and operators, causing numbers to drift. Quiet UI v9.1 enforces the **Numerical Conservation Law**:
+A frequent failure mode in technical reporting is creating separate, unlinked documents for executives, engineers, and operators, causing numbers to drift. Quiet UI v9.2 enforces the **Numerical Conservation Law**:
 
-> **Numerical Conservation Invariant**: When distilling one primary system or incident into multiple audience views, the underlying physical truth (parameters, sample rates, abort limits, timestamps, and citations) MUST derive from a single canonical JSON dataset. Presentation alters only framing, compression tempo, and coordinate density—never the underlying numbers.
+> **Numerical Conservation Invariant**: When distilling one primary system or incident into multiple audience views, the underlying physical truth (parameters, sample rates, abort limits, timestamps, and citations) MUST derive from a single canonical JSON dataset and explicit Data-to-Widget Binding Map. Presentation alters only framing, compression tempo, and coordinate density—never the underlying numbers or unbacked targets.
 
 ```
                          Canonical Numerical Dataset (JSON Truth)
@@ -216,7 +217,7 @@ Quiet UI formalizes the **Review-Room Dual-Layer Pattern**:
 
 ## 6. Workflow E — Clean-Room Open-Standards Schematic & Starter Customization Flows
 
-Quiet UI v9.1 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
+Quiet UI v9.2 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
 
 ### 6.1 Clean-Room Open-Standards Schematic Compilers (`quiet-evidence`)
 Structured topology and systems diagrams route through `skills/quiet-evidence/scripts/compilers/schematic_compiler.py` (`urn:quiet-ui:schema:v9:schematic`), covering:
@@ -232,7 +233,7 @@ The customization workspaces under `customizations/`:
 - `customizations/personal-starter/` (personal portfolio / workspace theme — all 21 domain views)
 - `customizations/brand-starter/` (enterprise brand palette — 17 product/engineering domain views)
 
-**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.1:
+**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.2:
 - Starters compile deterministically using `customizations/scripts/build_showcase.py`.
 - They gain immediate access to all seven delivery mediums (`M1`–`M7`) and six data modalities (`M1`–`M6`) without modifying their `customization.json` schema.
 
@@ -288,6 +289,10 @@ To guarantee visual calm, metrological integrity, and accessibility, every Quiet
 | **4. `svg-knockout`** | `svg_knockout_label()` / right-gutter | Borderless canvas/enclave-matched SVG `<rect stroke="none">` + `<text>` or right-gutter `text-anchor="start"`. | Chart envelopes, diagonal slope text (`atan2`), schematic wire labels, shared waveform `DROPOUT` banners. |
 
    Side-by-side scalar cards MUST lock `.qe-scalar-top` (`min-block-size: 1.375rem`), title height, `.qe-scalar-val-row`, and `<svg class="qe-gauge-svg">` baselines within `<= 1.0px`.
+7. **Made-Up Demo Data & Borrowed Targets**: Never construct views specimen-first, borrow targets across pools (`Target 14.28%` on non-partner pools), omit `Warming up — N samples collected` when `N < 10`, retroactively grade old runs against newly added rules, or embed inline mock JS arrays (`MOCK_`, `demoRows`, etc.).
+8. **Chrome Self-Badges & Raw Agent Storage Prefixes**: Never stamp `v9.x Quiet` / `Quiet UI` badges into external application headers or expose `brain:<uuid>` storage paths in visible DOM/templates.
+9. **SVG Label Collisions & Mid-Word Chops**: Route browser-built SVG charts through `window.QuietSvgLayout` (`1-2-5` scales, tick overlap filtering, word-boundary wrap, haloed reference lines) and ECharts through `containLabel: true` + haloed inside `markLine` defaults.
+10. **Foldable & Mixed-Aspect Regressions**: Use `.va-toolbar-joined` (`26–28px` desktop, `>= 44px` touch) instead of 5-row pill wraps, lower split readers to `>= 860px`, hide sticky subbars `< 1100px`, reset GFM `[x]` list bullets (`list-style: none`), and enforce `.va-media-contain` / orientation-aware `.va-compare-grid` for landscape captures.
 
 ---
 
@@ -299,12 +304,12 @@ Artifact Inception ──► [Gate 0: Contract Lock] ──► [Gate 1: Schema S
 
 | Lifecycle Phase | Active Pillar | Artifact Produced | Verification Gate Rule |
 | :--- | :--- | :--- | :--- |
-| **0. Intake & Scoping** | `quiet-bridge` | Audience Vector Contract | 3-question "Grill Me" response recorded |
-| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4` valid, concentric radius satisfied |
-| **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validation passed against offline URN |
-| **3. Compilation** | `quiet-evidence` | Calibrated SVG Figures | $1\text{--}2\text{--}5$ ticks verified, halos rendered |
+| **0. Intake & Scoping** | `quiet-bridge` + `quiet-ui` | Data Binding Map & Audience Contract | Real payload fields verified; absent slots omitted; `N < 10` warmup marked |
+| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4` valid, `>= 860px` foldable split & concentric radii satisfied |
+| **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validation passed against offline URN; zero hardcoded mock arrays |
+| **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | $1\text{--}2\text{--}5$ ticks verified, haloed references, zero text/line overlap |
 | **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room Composition | BLUF band aligned with physics proof below |
-| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | Zero `!important`, zero drift (`build_all.py --check`), zero broken links |
+| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | Zero `!important`, zero self-badges/mock arrays, zero drift (`build_all.py --check`) |
 
 Run the full verification loop before shipping:
 
@@ -312,7 +317,7 @@ Run the full verification loop before shipping:
 python3 -B scripts/build_all.py --check
 QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
-python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome
 ```
 
 

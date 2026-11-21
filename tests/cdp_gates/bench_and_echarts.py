@@ -93,7 +93,23 @@ def _check_bench_page(driver: Any, bench_url: str, errs: list[str]) -> None:
     time.sleep(0.25)
     ec_err = driver.execute_script("""
         const specs = document.querySelectorAll('.qe-specimen');
-        if (specs.length !== 39) return 'expected 39 specimens, found ' + specs.length;
+        if (specs.length !== 41) return 'expected 41 specimens, found ' + specs.length;
+        const contracts = document.querySelectorAll('.qe-specimen .qe-data-contract');
+        if (contracts.length !== 41) return 'expected 41 data contracts, found ' + contracts.length;
+        const tbBtn = document.querySelector('[data-joined-toolbar] .va-tb-btn[data-tb-val="7d"]');
+        const tbStatus = document.querySelector('[data-tb-status]');
+        if (!tbBtn || !tbStatus) return 'missing joined toolbar specimen 38';
+        tbBtn.click();
+        if (!tbStatus.textContent.includes('7d')) return 'joined toolbar failed state update';
+        const kpiToggle = document.querySelector('[data-kpi-toggle-state]');
+        const kpiNote = document.querySelector('[data-kpi-warmup-note]');
+        const kpiBar = document.querySelector('[data-kpi-warmup-bar]');
+        if (!kpiToggle || !kpiNote || !kpiBar || !kpiNote.textContent.includes('Warming up')) return 'missing warmup KPI specimen 37';
+        if (kpiBar.getAttribute('aria-valuenow') !== '6') return 'expected initial warmup aria-valuenow=6';
+        kpiToggle.click();
+        if (kpiBar.getAttribute('aria-valuenow') !== '72' || !kpiNote.textContent.includes('Steady window')) return 'KPI toggle failed aria-valuenow=72 update';
+        kpiToggle.click();
+        if (kpiBar.getAttribute('aria-valuenow') !== '6') return 'KPI toggle failed return to warmup';
         const wraps = [...document.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]')];
         if (wraps.length < 11) return 'expected >=11 ECharts specimens, found ' + wraps.length;
         for (const w of wraps) {
@@ -138,14 +154,14 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
             if failed_res:
                 errs.append(f"[DOCS_ROOT_404] {path}: {failed_res}")
 
-        # Verify Components tab inside /docs root loads all 39 specimens
+        # Verify Components tab inside /docs root loads all 41 specimens
         driver.get(f"{docs_root_url}/")
         time.sleep(0.25)
         driver.execute_script("document.getElementById('va-tab-components').click();")
         time.sleep(0.5)
         cnt = driver.execute_script("return document.getElementById('va-stage-portal')?.contentDocument?.querySelectorAll('.qe-specimen').length || 0;")
-        if int(cnt) != 39:
-            errs.append(f"[DOCS_COMPONENTS_TAB] expected 39 specimens, got {cnt}")
+        if int(cnt) != 41:
+            errs.append(f"[DOCS_COMPONENTS_TAB] expected 41 specimens, got {cnt}")
 
         # Verify all 8 optical/gallery photos resolve cleanly under docs/ web root
         for wid, vid, expected_n in (
@@ -168,14 +184,17 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
             sys.path.insert(0, str(auditor_scripts))
         from audit_quiet_html import audit_cdp_urls  # noqa: E402
 
-        errs.extend(f"[PORTABLE_AUDITOR_CDP] {e}" for e in audit_cdp_urls([f"{docs_root_url}/", f"{docs_root_url}/bench/evidence-bench.html"]))
+        errs.extend(
+            f"[PORTABLE_AUDITOR_CDP] {e}"
+            for e in audit_cdp_urls([f"{docs_root_url}/", f"{docs_root_url}/bench/evidence-bench.html"], allow_showcase_chrome=True)
+        )
     finally:
         srv.shutdown()
         srv.server_close()
 
 
 def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Verify standalone bench (39 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
+    """Verify standalone bench (41 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
     errs: list[str] = []
     _check_bench_page(driver, f"{root_url}/docs/bench/evidence-bench.html", errs)
 
@@ -185,8 +204,8 @@ def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[
     time.sleep(0.25)
     driver.execute_script("document.getElementById('va-tab-components').click();")
     time.sleep(0.5)
-    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===39;"):
-        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 39 specimens")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===41;"):
+        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 41 specimens")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.25)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples'&&!p.hasAttribute('src');"):

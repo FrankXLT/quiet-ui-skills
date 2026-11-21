@@ -7,8 +7,11 @@ from __future__ import annotations
 from html import escape as _esc
 from typing import Any
 
+from bench_data_contracts import contract_for_ui_specimen
+
 
 def _wrap_card(spec_id: str, mod_code: str, schema_mod: str, rigor: str, title: str, kicker: str, subtitle: str, body_html: str) -> str:
+    contract_html = contract_for_ui_specimen(spec_id)
     return (
         f'<article class="qe-specimen qe-specimen-wide" data-modality="{_esc(mod_code)}" '
         f'data-schema-modality="{_esc(schema_mod)}" data-rigor="{_esc(rigor)}">'
@@ -22,6 +25,7 @@ def _wrap_card(spec_id: str, mod_code: str, schema_mod: str, rigor: str, title: 
         '</div>'
         f'<p class="qe-fig-desc">{_esc(subtitle)}</p>'
         f'<div class="qe-bench-body">{body_html}</div>'
+        f'{contract_html}'
         '</div></article>'
     )
 
@@ -248,8 +252,101 @@ def _spec_36_bridge_runbook() -> str:
     )
 
 
+def _spec_37_kpi_gauge_cards() -> str:
+    body = (
+        '<div class="v9-demo-stack" data-kpi-demo-wrap>'
+        '<div class="v9-demo-row" style="justify-content:space-between;align-items:center">'
+        '<span class="v9-demo-label">4-up Desktop / 2-up Tablet KPI Gauges (Absent Sub-Slots Omitted Cleanly)</span>'
+        '<button type="button" class="va-pill" data-variant="chip" data-kpi-toggle-state aria-pressed="true">Simulate Post-Restart Warmup (N=3)</button>'
+        '</div>'
+        '<div class="va-kpi-gauge-grid">'
+        '<div class="va-kpi-gauge-card" data-state="nominal">'
+        '<div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Partner Quota</span><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span></div>'
+        '<div class="va-kpi-gauge-val">68.4%</div>'
+        '<div class="va-kpi-gauge-track" role="progressbar" aria-label="Partner Quota Utilization" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100">'
+        '<div class="va-kpi-gauge-fill" style="inline-size:68.4%"></div>'
+        '<span class="va-kpi-gauge-target" style="inset-inline-start:71.4%" title="Daily target 71.4%"></span>'
+        '</div>'
+        '<div class="va-kpi-gauge-stats"><span>6.84M / 10M</span><span>n=482</span><span>Target 71.4%</span></div>'
+        '</div>'
+        '<div class="va-kpi-gauge-card" data-state="nominal">'
+        '<div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Core Compute</span><span class="va-pill" data-variant="tag">NO TARGET PIN</span></div>'
+        '<div class="va-kpi-gauge-val">41.2%</div>'
+        '<div class="va-kpi-gauge-track" role="progressbar" aria-label="Core Compute Utilization" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100">'
+        '<div class="va-kpi-gauge-fill" style="inline-size:41.2%"></div>'
+        '</div>'
+        '<div class="va-kpi-gauge-stats"><span>82.4M / 200M</span><span>n=1,920</span></div>'
+        '</div>'
+        '<div class="va-kpi-gauge-card" data-state="warn">'
+        '<div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Queue Depth</span><span class="va-pill" data-variant="status" data-state="warn">ADVISORY</span></div>'
+        '<div class="va-kpi-gauge-val">84.0%</div>'
+        '<div class="va-kpi-gauge-track" role="progressbar" aria-label="Queue Depth" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100">'
+        '<div class="va-kpi-gauge-fill" style="inline-size:84%"></div>'
+        '<span class="va-kpi-gauge-target" style="inset-inline-start:80%" title="Queue advisory threshold 80%"></span>'
+        '</div>'
+        '<div class="va-kpi-gauge-stats"><span>42 / 50 slots</span><span>p95 180 ms</span></div>'
+        '</div>'
+        '<div class="va-kpi-gauge-card" data-state="nominal">'
+        '<div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div>'
+        '<div class="va-kpi-gauge-val" data-kpi-warmup-val>3 calls</div>'
+        '<div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100">'
+        '<div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div>'
+        '</div>'
+        '<div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div>'
+        '</div>'
+        '</div>'
+        '</div>'
+    )
+    return _wrap_card(
+        "ui-dense-kpi-gauge-cards",
+        "UI",
+        "ui-kpi-gauges",
+        "M3",
+        "Dense Operational KPI Gauge Row & Omitted Target Pin",
+        "PILLAR 1 · M3 COCKPIT PRIMITIVE",
+        "Compact 4-up/2-up gauge cards preserving used/limit tracks while omitting absent target pins and marking thin warmup buffers.",
+        body,
+    )
+
+
+def _spec_38_joined_toolbar() -> str:
+    body = (
+        '<div class="v9-demo-stack">'
+        '<div class="va-toolbar-joined" role="toolbar" aria-label="Telemetry filter and export controls" data-joined-toolbar>'
+        '<div class="va-tb-group" role="group" aria-label="Time window">'
+        '<button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="24h" aria-pressed="true">24h</button>'
+        '<button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="7d" aria-pressed="false">7d</button>'
+        '<button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="30d" aria-pressed="false">30d</button>'
+        '</div>'
+        '<span class="va-tb-sep" role="separator" aria-orientation="vertical"></span>'
+        '<div class="va-tb-group" role="group" aria-label="Cohort scope">'
+        '<button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="all" aria-pressed="true">All Runs (482)</button>'
+        '<button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="excursions" aria-pressed="false">Excursions (19)</button>'
+        '<button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="post" aria-pressed="false">Since Ceiling Effective</button>'
+        '</div>'
+        '<span class="va-tb-sep" role="separator" aria-orientation="vertical"></span>'
+        '<div class="va-tb-group" role="group" aria-label="Export actions">'
+        '<button type="button" class="va-tb-btn" data-tb-action="export">Export CSV</button>'
+        '<button type="button" class="va-tb-btn" data-tb-action="reset">Reset</button>'
+        '</div>'
+        '</div>'
+        '<div class="v9-triage-meta" data-tb-status aria-live="polite">Window: 24h · Scope: All Runs (482)</div>'
+        '</div>'
+    )
+    return _wrap_card(
+        "ui-joined-workspace-toolbar",
+        "UI",
+        "ui-joined-toolbar",
+        "M3",
+        "Compact Joined Workspace Toolbar (27px Desktop / 44px Touch)",
+        "PILLAR 1 · M3 TOOLBAR GRAMMAR",
+        "Single-row ARIA toolbar with hairline-joined filter groups that wrap cleanly on 900px foldables and expand to 44px touch targets on phones.",
+        body,
+    )
+
+
 def compile_ui_bridge_specimens() -> str:
-    """Compile all 6 Pillar 1 (UI) and Pillar 3 (BR) interactive gallery cards."""
+    """Compile all 8 Pillar 1 (UI) and Pillar 3 (BR) interactive gallery cards."""
     return "".join([
         _spec_31_pills(),
         _spec_32_controls(),
@@ -257,4 +354,6 @@ def compile_ui_bridge_specimens() -> str:
         _spec_34_tree(),
         _spec_35_bridge_gate(),
         _spec_36_bridge_runbook(),
+        _spec_37_kpi_gauge_cards(),
+        _spec_38_joined_toolbar(),
     ])

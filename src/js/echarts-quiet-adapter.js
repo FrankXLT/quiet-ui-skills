@@ -123,7 +123,7 @@
         name: env.label || String(env.value),
         yAxis: env.value,
         lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
-        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 10.5, fontWeight: 600 },
+        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
       });
     });
     return items;
@@ -304,6 +304,8 @@
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
     if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, tok);
+    var defaults = getGlobal('QuietEChartsDefaults');
+    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok);
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.qeMountKey = mKey;

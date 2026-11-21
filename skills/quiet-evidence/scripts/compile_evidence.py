@@ -111,7 +111,7 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
             "docs/bench/evidence-bench.css",
         ),
     ) or _FALLBACK_TOKENS_CSS
-    js = _load_bundle_asset("quiet-evidence-bundle.js", ("src/js/evidence-runtime.js",))
+    js = _load_bundle_asset("quiet-evidence-bundle.js", ("src/js/evidence-runtime.js", "src/js/quiet-svg-chart-layout.js"))
     scheme = "dark" if theme in {"dark", "dark-paper"} else "light"
     return (
         "<!DOCTYPE html>\n"

@@ -43,12 +43,13 @@ Desktop layouts have expansive horizontal real estate. Placing mobile dock navig
 
 ---
 
-## 3. Foldable 820px–1050px Eyebrow Compaction
+## 3. Foldable >= 860px Split Reader & Sticky Compaction
 
-Dual-screen and foldable devices (e.g., 820px width) suffer from severe vertical fold congestion when stacked breadcrumbs, title bars, and status bars consume the top 450px of the viewport:
+Dual-screen and unfolded foldable devices (e.g., `860px–1080px` width, such as an unfolded Pixel Fold at `900px`) suffer from severe vertical fold congestion when stacked breadcrumbs, title bars, and status bars consume the top 450px—and suffer equally when master-detail views fall back to full-screen modals instead of side-by-side split readers:
 
-- **Full Desktop Mode ($\ge 1100\text{px}$)**: Eyebrow kicker, H1 title, status chips, and action buttons stack in three distinct horizontal rows.
-- **Compact Eyebrow Mode ($820\text{px} - 1050\text{px}$)**: Eyebrow kicker and title compress into a single inline flex line; action buttons convert into icon-only pill triggers; status chips fold into a compact summary dropdown.
+- **Full Desktop Mode ($\ge 1100\text{px}$)**: Eyebrow kicker, H1 title, status chips, and compact joined toolbar rows sit comfortably above content; split drawers open cleanly side-by-side.
+- **Unfolded Foldable Mode ($860\text{px} - 1099\text{px}$)**: Lower the split-reader breakpoint from `1200px` down to **`>= 860px`** so side-by-side list + detail inspector panes stay open concurrently on unfolded foldables instead of hijacking the screen with a modal overlay. Collapse sticky chrome above scroll strictly to a single-line **brand-only header** (hide secondary utility/filter strips when scrolled `< 1100px`) and replace multi-row filter pills with compact `.va-toolbar-joined` controls.
+- **Zero Synthetic In-Page Jump Sidebars**: Never invent a floating or left-rail section jump menu (`6–7` anchor links) for a single vertically scrollable page unless genuine multi-view route state requires navigation.
 
 ```
 [Desktop Stack >= 1100px]
@@ -58,7 +59,7 @@ Dual-screen and foldable devices (e.g., 820px width) suffer from severe vertical
 | Status: [ONLINE]  Version: 2.4.1  Timestamp: 14:02:11Z        |
 +---------------------------------------------------------------+
 
-[Compact Foldable 820px Eyebrow Line]
+[Compact Foldable 860px Eyebrow Line]
 +---------------------------------------------------------------+
 | SUBSYSTEM / H1: Orbital Propulsion Array  [ONLINE] [v2.4] [...]|
 +---------------------------------------------------------------+
@@ -124,8 +125,8 @@ Paper output must represent raw data without software navigation chrome:
     justify-content: center;
   }
 
-  /* Foldable Eyebrow Compaction */
-  @media (min-width: 820px) and (max-width: 1050px) {
+  /* Unfolded Foldable >= 860px Split Reader + Sticky < 1100px Brand-Only Compaction */
+  @media (min-width: 860px) and (max-width: 1099px) {
     .va-header-stack {
       display: flex;
       align-items: baseline;
@@ -137,6 +138,14 @@ Paper output must represent raw data without software navigation chrome:
     .va-header-stack h1 {
       font-size: var(--ts-base);
       display: inline;
+    }
+    .va-header-subbar {
+      display: none;
+    }
+    .va-split-reader {
+      display: grid;
+      grid-template-columns: minmax(15rem, 36%) minmax(0, 1fr);
+      gap: 0.75rem;
     }
   }
 }
@@ -170,7 +179,9 @@ Paper output must represent raw data without software navigation chrome:
 | Violation | Problem Caused | Architectural Solution |
 | :--- | :--- | :--- |
 | N4 Bottom Dock on 1440p desktop screen | Stretches 4 icons across 2560px bottom; looks broken and unprofessional. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
-| Uncollapsed 3-row header on 820px foldable | Consumes 40% of the upper screen before any data or chart is visible. | Apply inline eyebrow compaction on viewports $820\text{px} - 1050\text{px}$. |
-| Touch buttons under 44px on mobile | Operator mis-taps adjacent telemetry switches in high-stress field conditions. | Enforce `--res-touch-min: 44px` on coarse pointers and mobile viewports. |
+| Inventing a 6–7 link in-page jump sidebar on a single scrollable page | Wastes horizontal space and adds fake multi-view navigation chrome. | Omit left section-jump rails on single-scroll pages; use compact top section pills if needed. |
+| Sticky 3-bar utility header at `< 1100px` | Steals top viewport height while scrolling unfolded `900px` foldables. | Collapse scrolled sticky headers `< 1100px` to brand-only line (`display: none` on `.va-header-subbar`). |
+| Full-screen reader modal on unfolded `900px` foldable (`fold >= 860px`) | Forces full-screen takeover because split threshold waited for `1200px`. | Lower split-pane threshold to `>= 860px` so list and reader stay side-by-side. |
+| Touch buttons under 44px on mobile | Operator mis-taps adjacent telemetry switches in high-stress field conditions. | Enforce `--res-touch-min: 44px` inside `@media (pointer: coarse), (max-width: 720px)`. |
 | Navigation rails visible on printed reports | Wastes paper and inks useless software navigation links on static sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |
 | Unclosable drawer overlay on small desktop | Obscures data table columns and prevents simultaneous inspection. | Auto-morph N1 from drawer to persistent rail at $\ge 1100\text{px}$. |
