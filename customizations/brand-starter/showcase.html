@@ -5266,11 +5266,27 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       }
     } else if (kind === 'cartesian' && narrow) {
       if (opt.legend) opt.legend = Object.assign({}, opt.legend, { top: 2, left: 6, right: 6, itemGap: 6, itemWidth: 12, textStyle: { color: textSec, fontSize: 11 } });
+      var wrappedX = false;
+      var maxAxChars = Math.max(18, Math.floor(((w || 320) - 96) / 10.5));
+      var xAxes = Array.isArray(opt.xAxis) ? opt.xAxis : (opt.xAxis ? [opt.xAxis] : []);
+      xAxes.forEach(function (ax) {
+        if (!ax || typeof ax.name !== 'string' || ax.name.indexOf('\n') >= 0 || ax.name.length <= maxAxChars) return;
+        var mid = Math.floor(ax.name.length * 0.56);
+        var sp = ax.name.lastIndexOf(' ', mid);
+        if (sp < 8) sp = ax.name.indexOf(' ', mid);
+        if (sp > 4 && sp < ax.name.length - 3) {
+          ax.name = ax.name.slice(0, sp) + '\n' + ax.name.slice(sp + 1);
+          ax.nameTextStyle = Object.assign({}, ax.nameTextStyle, { fontSize: 11, lineHeight: 13 });
+          ax.nameGap = Math.max(20, (ax.nameGap || 28) - 4);
+          wrappedX = true;
+        }
+      });
       if (Array.isArray(opt.grid)) {
-        opt.grid[0] = Object.assign({}, opt.grid[0], { right: 14, top: 58 });
-        opt.grid[1] = Object.assign({}, opt.grid[1], { right: 14 });
+        opt.grid[0] = Object.assign({}, opt.grid[0], { right: 14, top: 58, bottom: wrappedX ? 140 : 132 });
+        opt.grid[1] = Object.assign({}, opt.grid[1], { right: 14, bottom: wrappedX ? 54 : 46 });
+        if (wrappedX && opt.graphic && opt.graphic[0]) opt.graphic[0] = Object.assign({}, opt.graphic[0], { bottom: 120 });
       } else if (opt.grid) {
-        opt.grid = Object.assign({}, opt.grid, { right: 14, top: 56 });
+        opt.grid = Object.assign({}, opt.grid, { right: 14, top: 56, bottom: wrappedX ? 58 : 52 });
       }
       (opt.series || []).forEach(function (sr) {
         if (sr.markPoint && Array.isArray(sr.markPoint.data)) {
