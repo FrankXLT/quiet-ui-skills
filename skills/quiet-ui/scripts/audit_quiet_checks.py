@@ -1,51 +1,36 @@
 # SPDX-License-Identifier: Apache-2.0
-"""Static, asset-resolution, data-honesty, and CDP SVG/DOM check helpers for Quiet UI."""
+"""CDP DOM/SVG audit script and backwards-compatible check exports for Quiet UI."""
 
 from __future__ import annotations
 
-import re
+import functools
+import os
+import sys
+import threading
+import time
 import urllib.parse
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
-SKIP_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache", "dist", "build"}
-VIEWPORTS: tuple[tuple[int, int], ...] = ((390, 844), (900, 1080), (1440, 900))
+_SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPT_DIR)
 
-_IMPORTANT_RE = re.compile(r"!\s*important\b", re.IGNORECASE)
-_FONT_PX_RE = re.compile(r"(?<![A-Za-z0-9_-])font-size\s*:\s*([0-9]*\.?[0-9]+)\s*px\b", re.IGNORECASE)
-COMMENT_RE = re.compile(r"/\*.*?\*/", re.DOTALL)
-_NARROW_AT_RE = re.compile(r"@media[^{]*?(?:max-width\s*:\s*\d+px|pointer\s*:\s*coarse)[^{]*\{", re.IGNORECASE)
-OVERFLOW_RULE_RE = re.compile(r"([^{};]+)\{[^{}]*overflow(?:-x)?\s*:\s*(?:auto|scroll)\b[^{}]*\}", re.IGNORECASE | re.DOTALL)
-WRAPPER_CLASS_HINTS = {"va-table-wrap", "qe-table-wrap", "table-wrap", "table-scroll", "overflow-x-auto"}
-SELF_BADGE_RE = re.compile(
-    r"\b(?:(?:v\d+(?:\.\d+)*|\d+\.\d+(?:\.\d+)*)\s*[·•|-]?\s*Quiet(?:[\s-]+UI)?|Quiet(?:[\s-]+UI)(?:\s+v\d|\s+Pillar|\s+Skills)?|Quiet-Evidence\s+L[1-3]|Pillar\s+[123]\s+M[1-7])\b",
-    re.IGNORECASE,
+from audit_static_rules import (  # noqa: E402, F401
+    BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
+    VIEWPORTS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, check_hidden_layer_css,
+    compute_mount_scopes, extract_layer_order, find_closing_delim, has_demo_branch_mock_array,
+    has_responsive_table_stacking, is_asset_in_scope, matches_exclude, parse_mount_prefixes,
+    resolve_asset_detail, resolve_asset_path,
 )
-BRAIN_TEXT_RE = re.compile(r"(?:\bbrain:[0-9a-z_-]{6,}\b|\.gemini/antigravity/brain/)", re.IGNORECASE)
-_BRAIN_JS_RE = re.compile(
-    r"(?:`[^`]*brain:\$\{[^`]+`|['\"]brain:['\"]\s*\+|\bbrain:[0-9a-z_-]{6,}\b|\.gemini/antigravity/brain/)",
-    re.IGNORECASE,
-)
-_NAMED_MOCK_ARR_RE = re.compile(
-    r"(?:const|let|var)?\s*\b(?:(?:MOCK|FAKE|DUMMY|STUB)_[A-Z0-9_]+|(?:mock|fake|dummy|demo|stub)(?:Rows|Runs|Series|Data|Items|Metrics|Logs|Events|Cards))\s*=\s*\[\s*\{",
-    re.IGNORECASE,
-)
-_DEMO_GUARD_RE = re.compile(
-    r"\b(?:isDemo|demoMode|useDemo)\b|\bdemo\s*[!=]==?|(?:get|has)\(\s*['\"]demo['\"]",
-    re.IGNORECASE,
-)
-_DEMO_TERNARY_RE = re.compile(
-    r"\b(?:isDemo|demoMode|useDemo)\b\s*\?\s*\[\s*\{[\s\S]{1,400}?\}\s*,\s*\{",
-    re.IGNORECASE,
-)
-_MULTI_OBJ_ARR_RE = re.compile(r"(?:=|\breturn)\s*\[\s*\{[\s\S]{1,400}?\}\s*,\s*\{", re.IGNORECASE)
 
 CDP_AUDIT_JS = r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
 function pushErr(msg) { if (!seen.has(msg)) { seen.add(msg); errs.push(msg); } }
-const SELF_BADGE_RE = /\b(?:(?:v\d+(?:\.\d+)*|\d+\.\d+(?:\.\d+)*)\s*[·•|-]?\s*Quiet(?:[\s-]+UI)?|Quiet(?:[\s-]+UI)(?:\s+v\d|\s+Pillar|\s+Skills)?|Quiet-Evidence\s+L[1-3]|Pillar\s+[123]\s+M[1-7])\b/i;
+const SELF_BADGE_RE = /(?<![A-Za-z0-9_/-])\b(?:(?:v\d+(?:\.\d+)*|\d+\.\d+(?:\.\d+)*)\s*[·•|-]?\s*Quiet(?:[\s-]+UI)?|Quiet(?:[\s-]+UI)(?:\s+v\d|\s+Pillar|\s+Skills)?|Quiet-Evidence\s+L[1-3]|Pillar\s+[123]\s+M[1-7])\b(?![-_][A-Za-z0-9]|\/)/i;
 const BRAIN_RE = /(?:\bbrain:[0-9a-z_-]{6,}\b|\.gemini\/antigravity\/brain\/)/i;
 const MATH_INTERVAL_RE = /(?:\[[^\]\[]+,\s*[^()\[]+\)|\([^()\[]+,\s*[^\]\[]+\])/g;
 
@@ -56,48 +41,34 @@ function isVis(el, cs) {
 }
 
 function unclosedDelim(txt) {
-  const cleaned = String(txt || '').replace(MATH_INTERVAL_RE, '');
   let p = 0, b = 0;
-  for (const ch of cleaned) {
-    if (ch === '(') p += 1;
-    else if (ch === ')' && p > 0) p -= 1;
-    else if (ch === '[') b += 1;
-    else if (ch === ']' && b > 0) b -= 1;
+  for (const ch of String(txt || '').replace(MATH_INTERVAL_RE, '')) {
+    if (ch === '(') p += 1; else if (ch === ')' && p > 0) p -= 1;
+    else if (ch === '[') b += 1; else if (ch === ']' && b > 0) b -= 1;
   }
   return p > 0 || b > 0;
 }
-
 function getRotDeg(el, cs) {
   const tf = (cs && cs.transform && cs.transform !== 'none') ? cs.transform : (el.getAttribute('transform') || '');
   if (!tf) return 0;
   const mRot = tf.match(/rotate\(\s*([-0-9.]+)/i);
   if (mRot) return Math.abs(parseFloat(mRot[1]) || 0);
   const mMat = tf.match(/matrix\(\s*([-0-9.eE]+)\s*,\s*([-0-9.eE]+)/i);
-  if (mMat) {
-    const a = parseFloat(mMat[1]), b = parseFloat(mMat[2]);
-    return (Number.isFinite(a) && Number.isFinite(b)) ? Math.abs(Math.atan2(b, a) * 180 / Math.PI) : 0;
-  }
-  return 0;
+  if (!mMat) return 0;
+  const a = parseFloat(mMat[1]), b = parseFloat(mMat[2]);
+  return (Number.isFinite(a) && Number.isFinite(b)) ? Math.abs(Math.atan2(b, a) * 180 / Math.PI) : 0;
 }
-
-function isTransparentPaint(c) {
-  return !c || c === 'none' || c === 'transparent' || /^rgba\([^)]*,\s*0(?:\.0+)?\s*\)$/.test(c);
-}
-
+function isTransparentPaint(c) { return !c || c === 'none' || c === 'transparent' || /^rgba\([^)]*,\s*0(?:\.0+)?\s*\)$/.test(c); }
 function hasTextHalo(doc, txtEl, win) {
   if (txtEl.classList && txtEl.classList.contains('va-svg-halo-text')) return true;
-  const cs = win.getComputedStyle(txtEl);
-  const po = String(txtEl.getAttribute('paint-order') || cs.paintOrder || '').toLowerCase();
+  const cs = win.getComputedStyle(txtEl), po = String(txtEl.getAttribute('paint-order') || cs.paintOrder || '').toLowerCase();
   const st = String(txtEl.getAttribute('stroke') || cs.stroke || 'none').toLowerCase();
   const sw = parseFloat(txtEl.getAttribute('stroke-width') || cs.strokeWidth || '0');
   if (po.includes('stroke') && !isTransparentPaint(st) && sw >= 2) return true;
   const prev = txtEl.previousElementSibling;
-  if (prev && (prev.tagName || '').toLowerCase() === 'rect') {
-    const pf = String(prev.getAttribute('fill') || win.getComputedStyle(prev).fill || 'none').toLowerCase();
-    if (!isTransparentPaint(pf)) {
-      const pr = prev.getBoundingClientRect(), tr = txtEl.getBoundingClientRect();
-      if (pr.left <= tr.left + 2 && pr.right >= tr.right - 2 && pr.top <= tr.top + 2 && pr.bottom >= tr.bottom - 2) return true;
-    }
+  if (prev && (prev.tagName || '').toLowerCase() === 'rect' && !isTransparentPaint(String(prev.getAttribute('fill') || win.getComputedStyle(prev).fill || 'none').toLowerCase())) {
+    const pr = prev.getBoundingClientRect(), tr = txtEl.getBoundingClientRect();
+    if (pr.left <= tr.left + 2 && pr.right >= tr.right - 2 && pr.top <= tr.top + 2 && pr.bottom >= tr.bottom - 2) return true;
   }
   return false;
 }
@@ -177,6 +148,73 @@ function auditSvg(svg, doc, win, ctxTag) {
   }
 }
 
+function getCartesianPlotBox(svg, win) {
+  const sr = svg.getBoundingClientRect();
+  if (sr.width < 120 || sr.height < 80 || svg.getAttribute('aria-hidden') === 'true') return null;
+  if (svg.closest('.qe-schematic-wrap, .qe-bitfield-wrap, .qe-heatmap-wrap, [data-axis-align="independent"]')) return null;
+  if (svg.matches('.qe-schematic-svg, .qe-bitfield-svg, .qe-gauge-svg, .qe-spark-svg, .qe-sparkline-svg, .va-schematic-svg, .qe-sankey-svg, .qe-heatmap-svg')) return null;
+  const al = (svg.getAttribute('aria-label') || '').toLowerCase();
+  if (/\b(heatmap|heat map|sankey|schematic|topology|register|bitfield|fsm|state machine|schedule|gantt|sequence|lineage|pipeline dag|interlock)\b/.test(al)) return null;
+  const wrap = svg.closest('.qe-plot-wrap[data-quiet-echarts]');
+  if (wrap && wrap.dataset.quietEcharts) {
+    try {
+      const m = JSON.parse(wrap.dataset.quietEcharts);
+      if (m && (m.axisAlign === 'independent' || /^(sankey|heatmap|gantt|gauge|radar|pie|treemap)$/i.test(String(m.kind || '')))) return null;
+    } catch (_e) {}
+  }
+  const fr = svg.querySelector('.qe-plot-frame, [data-role="frame"]');
+  if (fr && isVis(fr, win.getComputedStyle(fr))) {
+    const r = fr.getBoundingClientRect();
+    if (r.width >= 50 && r.height >= 35) return { xl: r.left, xr: r.right, yt: r.top, yb: r.bottom };
+  }
+  for (const rc of svg.querySelectorAll('rect')) {
+    const rcs = win.getComputedStyle(rc);
+    if (!isVis(rc, rcs)) continue;
+    const fill = String(rc.getAttribute('fill') || rcs.fill || 'none').toLowerCase();
+    const st = String(rc.getAttribute('stroke') || rcs.stroke || 'none').toLowerCase();
+    if (!isTransparentPaint(fill) || isTransparentPaint(st)) continue;
+    const rr = rc.getBoundingClientRect();
+    if (rr.width >= sr.width * 0.35 && rr.width < sr.width * 0.985 && rr.height >= sr.height * 0.25 && rr.height < sr.height * 0.985) {
+      return { xl: rr.left, xr: rr.right, yt: rr.top, yb: rr.bottom };
+    }
+  }
+  const hMap = new Map(), vLines = [], orthoPaths = [];
+  for (const el of svg.querySelectorAll('line, path')) {
+    const cs = win.getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity || '1') < 0.05) continue;
+    const st = String(el.getAttribute('stroke') || cs.stroke || 'none').toLowerCase();
+    if (isTransparentPaint(st)) continue;
+    const fill = String(el.getAttribute('fill') || cs.fill || 'none').toLowerCase();
+    const lr = el.getBoundingClientRect();
+    if (el.tagName.toLowerCase() === 'path' && !isTransparentPaint(fill) && lr.height > 3.5 && lr.width > 3.5) continue;
+    if (lr.height <= 3.5 && lr.width >= sr.width * 0.25 && lr.width < sr.width * 0.985) {
+      const key = `${Math.round(lr.left / 2) * 2}:${Math.round(lr.right / 2) * 2}`;
+      if (!hMap.has(key)) hMap.set(key, { n: 0, xl: lr.left, xr: lr.right, yt: lr.top, yb: lr.bottom, w: lr.width });
+      const b = hMap.get(key); b.n += 1; b.yt = Math.min(b.yt, lr.top); b.yb = Math.max(b.yb, lr.bottom);
+    } else if (lr.width <= 3.5 && lr.height >= sr.height * 0.25 && lr.height < sr.height * 0.985) {
+      vLines.push(lr);
+    } else if (el.tagName.toLowerCase() === 'path' && lr.width >= sr.width * 0.25 && lr.width < sr.width * 0.985 && lr.height >= sr.height * 0.25 && lr.height < sr.height * 0.985) {
+      const d = (el.getAttribute('d') || '').trim();
+      if (!/[CcSsQqTtAa]/.test(d)) orthoPaths.push(lr);
+    }
+  }
+  let best = null;
+  for (const b of hMap.values()) {
+    const sc = b.n * 100 + (b.yb - b.yt) + b.w * 0.1;
+    if (!best || sc > best.sc) best = { ...b, sc };
+  }
+  if (!best && orthoPaths.length) best = { xl: orthoPaths[0].left, xr: orthoPaths[0].right, yt: orthoPaths[0].top, yb: orthoPaths[0].bottom };
+  if (!best) return null;
+  let yt = best.yt, yb = best.yb;
+  for (const vl of vLines) {
+    if (Math.abs(vl.left - best.xl) <= 10 || Math.abs(vl.right - best.xr) <= 10 || Math.abs(vl.bottom - yb) <= 6) {
+      yt = Math.min(yt, vl.top); yb = Math.max(yb, vl.bottom);
+    }
+  }
+  if (svg.querySelectorAll('text').length < 2 && !fr && !wrap) return null;
+  return (best.xr - best.xl >= 40 && yb - yt >= 25) ? { xl: best.xl, xr: best.xr, yt, yb } : null;
+}
+
 function auditDoc(doc, maxW, ctxTag) {
   if (!doc || !doc.documentElement) return;
   const win = doc.defaultView || window;
@@ -208,15 +246,106 @@ function auditDoc(doc, maxW, ctxTag) {
     }
   }
   if (!allowShowcase) {
-    for (const hdr of doc.querySelectorAll('header, nav, .va-topbar, .v9-topbar, .va-brand, .v9-brand, [class*="kicker"], [class*="badge"], [class*="pill"]')) {
+    const explicitChrome = '.va-shell-topbar, .va-shell-brand, .va-topbar, .v9-topbar, .va-brand, .v9-brand, .topbar, [role="banner"], [role="navigation"]';
+    for (const hdr of doc.querySelectorAll('header, footer, nav, ' + explicitChrome)) {
+      if (hdr.closest('main') && !hdr.matches(explicitChrome)) continue;
       const cs = win.getComputedStyle(hdr);
       if (!isVis(hdr, cs)) continue;
       const t = (hdr.textContent || '').trim();
       const m = t.match(SELF_BADGE_RE);
       if (m) pushErr(`[SELF_BADGE${ctxTag}] @${vw}px: application chrome contains framework self-badge '${m[0]}'`);
     }
+    const bands = [];
+    for (const el of (doc.body ? doc.body.querySelectorAll('*') : [])) {
+      if (/^(SCRIPT|STYLE|NOSCRIPT|SVG)$/.test(el.tagName)) continue;
+      if (el.closest('dialog, [role="dialog"], [aria-modal="true"]')) continue;
+      const cs = win.getComputedStyle(el);
+      if ((cs.position !== 'sticky' && cs.position !== 'fixed') || !isVis(el, cs)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.height >= win.innerHeight * 0.75 && !el.matches('header, nav, [role="banner"], [role="navigation"]')) continue;
+      if (r.width >= maxW * 0.5 && r.height > 4 && r.top >= -4 && r.top < 120 && r.bottom > 0) {
+        bands.push([Math.max(0, r.top), Math.min(win.innerHeight, r.bottom)]);
+      }
+    }
+    bands.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const merged = [];
+    for (const [s, e] of bands) {
+      if (!merged.length || s > merged[merged.length - 1][1]) merged.push([s, e]);
+      else merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], e);
+    }
+    const stickyH = merged.reduce((acc, [s, e]) => acc + (e - s), 0);
+    if (stickyH > 64) {
+      pushErr(`[STICKY_CHROME_BLOAT${ctxTag}] @${vw}px: top sticky/fixed header chrome height=${stickyH.toFixed(1)}px > 64px`);
+    }
+    const radPx = (v, h) => { const n = parseFloat(v || '0'); return String(v || '').endsWith('%') ? (n / 100) * h : n; };
+    const isPill = (el) => {
+      if (!el || /^(IMG|SVG|CANVAS|VIDEO)$/.test(el.tagName) || (el.tagName === 'INPUT' && /^(checkbox|radio)$/i.test(el.type || '')) || el.closest('svg, pre')) return false;
+      const cs = win.getComputedStyle(el), r = el.getBoundingClientRect(), pw = el.parentElement ? el.parentElement.getBoundingClientRect().width : vw;
+      if (!isVis(el, cs) || r.height < 16 || r.height > 48 || !(pw > 0 && r.width < pw * 0.65)) return false;
+      if (radPx(cs.borderTopLeftRadius, r.height) < r.height * 0.42 || radPx(cs.borderBottomRightRadius, r.height) < r.height * 0.42) return false;
+      return !isTransparentPaint(cs.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some((s) => parseFloat(cs['border' + s + 'Width'] || '0') > 0 && !isTransparentPaint(cs['border' + s + 'Color']));
+    };
+    const hdrSel = 'header, [role="banner"], .va-shell-topbar, .va-topbar, .v9-topbar, .topbar, [class*="topbar"], .va-pane-hdr, .va-figure-hdr, .qe-card-head, [class*="card-head"], [class*="card-hdr"], [class*="panel-head"], [class*="panel-hdr"], [class*="section-head"], [class*="section-hdr"]';
+    const auditedHdrs = new Set();
+    for (const hdr of doc.querySelectorAll(hdrSel)) {
+      if (!isVis(hdr, win.getComputedStyle(hdr)) || hdr.getBoundingClientRect().height > 220) continue;
+      auditedHdrs.add(hdr);
+      const pills = [...hdr.querySelectorAll('*')].filter((el) => isPill(el));
+      if (pills.filter((el) => !pills.some((p) => p !== el && p.contains(el))).length > 2) pushErr(`[PILL_SPRAWL${ctxTag}] @${vw}px: header/topbar contains >2 visible stadium pills`);
+    }
+    const cardSel = 'main, section, article, .va-card, .card, .va-panel-tonal, .va-figure-card, .va-pane';
+    const rawBody = [];
+    for (const el of (doc.body ? doc.body.querySelectorAll('*') : [])) {
+      const hAnc = el.closest(hdrSel);
+      if (el.matches('button, a, [role="button"], [role="tab"]') || el.closest('button, a, [role="button"], [role="tab"]') || (hAnc && auditedHdrs.has(hAnc)) || !isPill(el)) continue;
+      rawBody.push(el);
+    }
+    const bodyPills = new Map();
+    for (const el of rawBody.filter((el) => !rawBody.some((p) => p !== el && p.contains(el)))) {
+      const box = el.closest(cardSel) || doc.body;
+      bodyPills.set(box, (bodyPills.get(box) || 0) + 1);
+    }
+    for (const cnt of bodyPills.values()) { if (cnt >= 6) pushErr(`[PILL_SPRAWL${ctxTag}] @${vw}px: card/section body has ${cnt} (>=6) non-interactive stadium pills`); }
+    const hasRectTb = [...doc.querySelectorAll('.va-toolbar-joined button, .va-tb-btn, [role="toolbar"] button, [class*="toolbar"] button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, button, [role="button"]')].some((b) => {
+      if (b.closest('[role="tablist"]')) return false;
+      const cs = win.getComputedStyle(b), r = b.getBoundingClientRect();
+      if (!isVis(b, cs) || r.height < 16 || r.height > 48) return false;
+      const hasInk = !isTransparentPaint(cs.backgroundColor) || ['Top', 'Right', 'Bottom', 'Left'].some((s) => parseFloat(cs['border' + s + 'Width'] || '0') > 0 && !isTransparentPaint(cs['border' + s + 'Color']));
+      return hasInk && radPx(cs.borderTopLeftRadius, r.height) <= 8 && radPx(cs.borderBottomRightRadius, r.height) <= 8;
+    });
+    if (hasRectTb) {
+      for (const tl of doc.querySelectorAll('[role="tablist"]')) {
+        if (isVis(tl, win.getComputedStyle(tl)) && [...tl.querySelectorAll('[role="tab"], button, a')].some((t) => isPill(t))) {
+          pushErr(`[PILL_SPRAWL${ctxTag}] @${vw}px: [role="tablist"] uses stadium pill tabs alongside rectangular toolbar buttons`);
+        }
+      }
+    }
   }
-  for (const svg of doc.querySelectorAll('svg')) auditSvg(svg, doc, win, ctxTag);
+  const plots = [];
+  for (const svg of doc.querySelectorAll('svg')) {
+    auditSvg(svg, doc, win, ctxTag);
+    const cs = win.getComputedStyle(svg);
+    if (!isVis(svg, cs) || svg.closest('[hidden]')) continue;
+    const box = getCartesianPlotBox(svg, win);
+    if (box) plots.push({ svg, sr: svg.getBoundingClientRect(), box, alignRoot: svg.closest('.va-plot-row, .va-plot-grid, [data-plot-align]'), flow: svg.closest('main, section') || doc.body });
+  }
+  for (let i = 0; i < plots.length; i += 1) {
+    for (let j = i + 1; j < plots.length; j += 1) {
+      const a = plots[i], b = plots[j];
+      if (a.alignRoot || b.alignRoot) { if (a.alignRoot !== b.alignRoot) continue; }
+      else if (allowShowcase) continue;
+      if (Math.abs(a.sr.left - b.sr.left) <= 24 && Math.abs(a.sr.right - b.sr.right) <= 24) {
+        const dxL = Math.abs(a.box.xl - b.box.xl), dxR = Math.abs(a.box.xr - b.box.xr);
+        if (dxL > 2.0 || dxR > 2.0) pushErr(`[PLOT_AXIS_MISALIGN${ctxTag}] @${vw}px: column plots differ dxLeft=${dxL.toFixed(1)}px dxRight=${dxR.toFixed(1)}px (> 2px)`);
+      }
+      const ovY = Math.min(a.sr.bottom, b.sr.bottom) - Math.max(a.sr.top, b.sr.top);
+      const ovX = Math.min(a.sr.right, b.sr.right) - Math.max(a.sr.left, b.sr.left);
+      if (ovY > Math.min(a.sr.height, b.sr.height) * 0.35 && ovX < 16) {
+        const dyT = Math.abs(a.box.yt - b.box.yt), dyB = Math.abs(a.box.yb - b.box.yb);
+        if (dyT > 2.0 || dyB > 2.0) pushErr(`[PLOT_AXIS_MISALIGN${ctxTag}] @${vw}px: row plots differ dyTop=${dyT.toFixed(1)}px dyBottom=${dyB.toFixed(1)}px (> 2px)`);
+      }
+    }
+  }
   const walker = doc.createTreeWalker(doc.body || doc.documentElement, NodeFilter.SHOW_TEXT);
   let n, fontChecked = false;
   while ((n = walker.nextNode())) {
@@ -248,163 +377,71 @@ return errs;
 """
 
 
-def parse_mount_prefixes(raw_items: list[str] | None) -> dict[str, Path]:
-    """Parse repeatable PREFIX=DIR CLI flags into normalized mount prefix mappings."""
-    out: dict[str, Path] = {}
-    for item in raw_items or ():
-        if "=" not in item:
-            continue
-        pfx, raw_dir = item.split("=", 1)
-        norm = "/" + pfx.strip().strip("/") if pfx.strip() != "/" else "/"
-        out[norm] = Path(raw_dir).expanduser().resolve()
-    return out
+class _SafeHTTPHandler(SimpleHTTPRequestHandler):
+    def __init__(self, *args: Any, directory: str, **kwargs: Any) -> None:
+        super().__init__(*args, directory=directory, **kwargs)
 
+    def translate_path(self, path: str) -> str:
+        out = Path(super().translate_path(path)).resolve()
+        root = Path(self.directory).resolve()
+        return str(out) if out.is_relative_to(root) else str(root / "__forbidden__")
 
-def resolve_asset_path(
-    ref: str,
-    base_dir: Path | None = None,
-    web_root: Path | None = None,
-    mount_prefixes: dict[str, Path] | None = None,
-) -> Path | None:
-    """Resolve an HTML stylesheet or script src reference cleanly inside mounted roots."""
-    if not ref or ref.startswith(("http://", "https://", "//", "data:", "blob:")):
-        return None
-    raw = urllib.parse.unquote(ref.split("?", 1)[0].split("#", 1)[0]).strip()
-    if not raw:
-        return None
-    if raw.startswith("/"):
-        for pfx, mdir in sorted((mount_prefixes or {}).items(), key=lambda kv: len(kv[0]), reverse=True):
-            if raw == pfx or raw.startswith(pfx.rstrip("/") + "/"):
-                mdir_res = mdir.resolve()
-                tail = raw[len(pfx):].lstrip("/")
-                cand = (mdir_res / tail).resolve() if tail else mdir_res
-                if not cand.is_relative_to(mdir_res):
-                    return None
-                if cand.is_file():
-                    return cand
-        if web_root is not None:
-            wr = web_root.resolve()
-            cand = (wr / raw.lstrip("/")).resolve()
-            if cand.is_relative_to(wr) and cand.is_file():
-                return cand
-    for root in (base_dir, web_root):
-        if root is None:
-            continue
-        rdir = root.resolve()
-        cand = (rdir / raw.lstrip("/")).resolve() if raw.startswith("/") else (rdir / raw).resolve()
-        if cand.is_relative_to(rdir) and cand.is_file():
-            return cand
-    return None
-
-
-def audit_css_text(css_text: str, source: str, errs: list[str]) -> None:
-    clean_css = COMMENT_RE.sub("", css_text)
-    if _IMPORTANT_RE.search(clean_css):
-        errs.append(f"[IMPORTANT] {source}: contains forbidden '!important' declaration")
-    for m in _FONT_PX_RE.finditer(clean_css):
-        if float(m.group(1)) < 11.0:
-            errs.append(f"[FONT_FLOOR] {source}: hardcoded font-size {m.group(1)}px < 11px")
-
-
-def _find_closing_delim(text: str, start: int, open_ch: str, close_ch: str) -> int:
-    depth, i, n, quote = 1, start + 1, len(text), ""
-    while i < n and depth > 0:
-        ch = text[i]
-        if quote:
-            if ch == "\\" and i + 1 < n:
-                i += 2
-                continue
-            if ch == quote:
-                quote = ""
-        elif ch in ("'", '"', "`"):
-            quote = ch
-        elif ch == "/" and i + 1 < n and text[i + 1] == "/":
-            nl = text.find("\n", i + 2)
-            i = n if nl < 0 else nl + 1
-            continue
-        elif ch == "/" and i + 1 < n and text[i + 1] == "*":
-            end = text.find("*/", i + 2)
-            i = n if end < 0 else end + 2
-            continue
-        elif ch == open_ch:
-            depth += 1
-        elif ch == close_ch:
-            depth -= 1
-        i += 1
-    return i if depth == 0 else -1
-
-
-def has_demo_branch_mock_array(js_text: str) -> bool:
-    if _DEMO_TERNARY_RE.search(js_text):
-        return True
-    n = len(js_text)
-    for m in re.finditer(r"\bif\s*\(", js_text, re.IGNORECASE):
-        cond_end = _find_closing_delim(js_text, m.end() - 1, "(", ")")
-        if cond_end < 0 or not _DEMO_GUARD_RE.search(js_text[m.end() : cond_end - 1]):
-            continue
-        i = cond_end
-        while i < n and js_text[i].isspace():
-            i += 1
-        if i >= n:
-            continue
-        if js_text[i] == "{":
-            blk_end = _find_closing_delim(js_text, i, "{", "}")
-            body = js_text[i : blk_end if blk_end > 0 else n]
-        else:
-            b_depth, k_depth, j, quote = 0, 0, i, ""
-            while j < n:
-                ch = js_text[j]
-                if quote:
-                    if ch == "\\" and j + 1 < n:
-                        j += 2
-                        continue
-                    if ch == quote:
-                        quote = ""
-                    j += 1
-                    continue
-                if ch in ("'", '"', "`"):
-                    quote = ch
-                elif ch == "{":
-                    b_depth += 1
-                elif ch == "}":
-                    if b_depth == 0 and k_depth == 0:
-                        break
-                    b_depth = max(0, b_depth - 1)
-                elif ch == "[":
-                    k_depth += 1
-                elif ch == "]":
-                    k_depth = max(0, k_depth - 1)
-                elif ch in (";", "\n") and b_depth == 0 and k_depth == 0:
-                    j += 1
-                    break
-                j += 1
-            body = js_text[i:j]
-        if _MULTI_OBJ_ARR_RE.search(body):
-            return True
-    return False
-
-
-def audit_js_text(js_text: str, source: str, errs: list[str]) -> None:
-    fname = Path(urllib.parse.urlsplit(source).path or source).name.lower()
-    if fname.startswith("demo_snapshot") or fname.endswith(".min.js"):
+    def log_message(self, format: str, *args: Any) -> None:
         return
-    m_id = _BRAIN_JS_RE.search(js_text)
-    if m_id:
-        errs.append(f"[INTERNAL_ID] {source}: exposes raw agent storage identifier '{m_id.group(0)[:40]}'")
-    if _NAMED_MOCK_ARR_RE.search(js_text) or has_demo_branch_mock_array(js_text):
-        errs.append(f"[INLINE_MOCK_DATA] {source}: contains hardcoded inline demo/mock object array")
 
 
-def has_responsive_table_stacking(css_text: str) -> bool:
-    for m in _NARROW_AT_RE.finditer(css_text):
-        start, depth, i = m.end(), 1, m.end()
-        while i < len(css_text) and depth > 0:
-            if css_text[i] == "{":
-                depth += 1
-            elif css_text[i] == "}":
-                depth -= 1
-            i += 1
-        block = css_text[start:i]
-        if re.search(r"\btable\b", block, re.I) and re.search(r"display\s*:\s*(?:block|grid|flex)", block, re.I):
-            return True
-    return False
+def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> list[str]:
+    """Audit URLs in Headless Chrome across 390, 820, and 1440 viewports."""
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
+
+    opts = Options()
+    chrome_bin = os.environ.get("CHROME_BIN")
+    if chrome_bin:
+        opts.binary_location = chrome_bin
+    for arg in (
+        "--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan",
+        "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage",
+    ):
+        opts.add_argument(arg)
+    errs: list[str] = []
+    driver_bin = os.environ.get("CHROMEDRIVER_BIN")
+    driver = webdriver.Chrome(service=Service(executable_path=driver_bin), options=opts) if driver_bin else webdriver.Chrome(options=opts)
+    try:
+        for url in urls:
+            driver.get(url)
+            time.sleep(0.28)
+            uses_theme = bool(driver.execute_script("return document.documentElement.hasAttribute('data-theme') || !!document.querySelector('[data-theme]');"))
+            themes = ("white", "dark") if uses_theme else ("default",)
+            for th in themes:
+                if th != "default":
+                    driver.execute_script("document.documentElement.setAttribute('data-theme', arguments[0]);", th)
+                for w, h in VIEWPORTS:
+                    driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": w, "height": h, "deviceScaleFactor": 1, "mobile": w < 600})
+                    time.sleep(0.12)
+                    res = driver.execute_script(CDP_AUDIT_JS, {"allowShowcase": allow_showcase_chrome})
+                    errs.extend(f"[{url} theme={th}] {e}" for e in res)
+    finally:
+        driver.quit()
+    return errs
+
+
+def run_cdp_target(target: str, html_files: list[Path], *, allow_showcase_chrome: bool = False) -> list[str]:
+    """Serve local HTML target directory if needed and execute audit_cdp_urls."""
+    if target.startswith(("http://", "https://")):
+        return audit_cdp_urls([target], allow_showcase_chrome=allow_showcase_chrome)
+    if not html_files:
+        return []
+    root = Path(target).resolve()
+    serve_dir = root.parent if root.is_file() else root
+    srv = ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(_SafeHTTPHandler, directory=str(serve_dir)))
+    srv.daemon_threads = True
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    try:
+        base = f"http://127.0.0.1:{srv.server_address[1]}"
+        urls = [f"{base}/{urllib.parse.quote(f.relative_to(serve_dir).as_posix(), safe='/')}" for f in html_files]
+        return audit_cdp_urls(urls, allow_showcase_chrome=allow_showcase_chrome)
+    finally:
+        srv.shutdown()
+        srv.server_close()

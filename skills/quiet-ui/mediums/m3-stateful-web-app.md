@@ -67,7 +67,7 @@ M3 consoles frequently host high-frequency telemetry streams. To avoid UI thrash
 ## 4. Concrete CSS Architecture
 
 ```css
-@layer quiet.mediums, quiet.workspace;
+@layer quiet.mediums, quiet.workspace, utilities;
 
 @layer quiet.workspace {
   /* M3 Workbench Root Grid */
@@ -133,6 +133,13 @@ M3 consoles frequently host high-frequency telemetry streams. To avoid UI thrash
     outline-offset: -1px;
   }
 }
+
+@layer utilities {
+  .hidden,
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+}
 ```
 
 ---
@@ -190,14 +197,16 @@ M3 consoles frequently host high-frequency telemetry streams. To avoid UI thrash
 
 ---
 
-## 6. Dense Cockpit Controls, Foldable Split (>= 860px) & Media Comparison Rules
+## 6. Dense Cockpit Controls, Foldable Split (`>= 780px`) & Media Rules
 
-Follow these mandatory `M3` density and layout constraints on operational dashboards, documentation readers, and runbooks:
+Follow these mandatory `M3` density, coarse-pointer, and first-viewport constraints on operational dashboards, documentation readers, and runbooks:
 
 1. **Compact Operational KPI Gauge Row (`.va-kpi-gauge-grid` / `.va-kpi-gauge-card`)**: Use a 4-up desktop (`2-up` `< 960px`) card strip carrying headline scalar, proportional fill gauge (`.va-kpi-gauge-track` / `.va-kpi-gauge-fill`), optional target pin marker (`.va-kpi-gauge-target` — omit completely if unbacked), and 2–3 tabular sub-stats. Never replace real gauge progress with 8 puffy text-only prose boxes.
-2. **Joined Single-Row Workspace Toolbar (`.va-toolbar-joined` / `.va-tb-group` / `.va-tb-btn`)**: Group related filter toggles, scope selectors, and export actions (`role="toolbar"` wrapping `role="group"` button clusters separated by `.va-tb-sep`) inside compact `26–28px` desktop strips (`44px` minimum under `@media (pointer: coarse)` or `< 720px`) instead of letting `32px` loose pills wrap across `4–5` rows. Apply `aria-pressed` only to stateful toggle buttons.
-3. **Foldable Split-Pane Readers (`>= 860px`) & Zero Synthetic Jump Sidebars**: Keep list + document readers side-by-side down to `>= 860px` (unfolded foldable screens) instead of hiding behind full-screen modals until `1200px`. Collapse scrolled sticky chrome `< 1100px` to the brand row only, and never invent a `6–7` link left-rail jump sidebar for a single continuous page.
-4. **GFM Task Lists, Outline Links & Aspect-Safe Galleries (`object-fit: contain`)**: Strip `list-style: none` on `ul.contains-task-list li.task-list-item` so `[x]` / `[ ]` checkboxes never double with bullet dots. Ensure `<a class="va-nav-link">` outline items wrap instead of `text-overflow` clipping mid-word. Use `.va-media-contain` (`object-fit: contain`) on mixed-aspect galleries, and set `.va-compare-grid[data-orient="landscape"]` to stack 16:9 / 1440x900 landscape captures vertically (`1fr`) rather than squeezing them side-by-side inside narrow portrait frames.
+2. **Joined Workspace Toolbar & Coarse-Pointer Discipline (`.va-toolbar-joined` / `.va-overlay-control`)**: Group related toggles (`role="toolbar"` wrapping `role="group"` segments) at `26–28px` desktop (`32–34px` on `pointer: coarse` tablets/foldables `>= 768px`; `44px` only on interactive `< 700px` handset controls). Keep read-only `.va-pill` / `.va-badge` pills compact (`20–22px`, `2–4px` vertical padding), and give `20–24px` overlay corner controls an invisible `44x44px` `::after` hit box (`.va-overlay-control`).
+3. **Foldable Split-Pane Readers & Subgrid Plots (`>= 780px` / `820px` CSS)** + Sticky Budget: Keep `.va-split-reader`, `.va-chart-grid-2`, and `.va-plot-row` / `.va-plot-grid` (`subgrid` card tracks `[header, plot-stage, footer]`) open concurrently down to `>= 780px` (matching real `780–841px` unfolded foldables). Keep sticky header bars to **1 single `space-between` row (`<= 56px`)** (hiding inactive mode filters; enforced `< 64px` by `[STICKY_CHROME_BLOAT]`), keep inspector headers **`<= 2` compact rows (`<= 96px`)** so primary content enters within the top 30%, collapse `0`-issue audit tables inside `<details>`, and never invent synthetic jump sidebars for a single continuous page.
+4. **GFM Task Lists, Outline Links & Aspect-Safe Galleries (`object-fit: contain`)**: Strip `list-style: none` on `ul.contains-task-list li.task-list-item` so `[x]` / `[ ]` checkboxes never double with bullet dots. Ensure `<a class="va-nav-link">` outline items wrap cleanly. Use `.va-media-contain` (`object-fit: contain`) on mixed-aspect galleries, and set `.va-compare-grid[data-orient="landscape"]` to stack 16:9 / 1440x900 landscape captures vertically (`1fr`).
+5. **Unified Hairline `M3` Multi-Pane Frame & Page-Wide Coherence (`.va-workbench-panes` / `.va-pane` / `.va-pane-hdr`)**: Render `[Left Sidebar | Center Reader | Right Gallery]` as flat peer panes inside `.va-workbench-panes` divided by `1px solid var(--border-subtle)` hairlines with aligned `40px` `.va-pane-hdr` headers, plain right-aligned tabular counts (`.va-pane-count`, e.g. `15` instead of circle bubbles), and zero nested cards-inside-cards. Limit the entire page to `<= 3` repeating card structures, `<= 1` chart per half-width card, unified `.booktabs` row styling, and one cohesive `--chart-1..5` palette.
+6. **`ResizeObserver` & `min-width: 0` Chart Hosts (`observeChartResize`)**: Wrap dynamic ECharts hosts with `QuietEChartsDefaults.observeChartResize(hostEl, chart)` (`ResizeObserver` + `requestAnimationFrame` with cleanup returned for unmount/dispose) and enforce `min-width: 0; max-width: 100%;` on `.va-card`, `.va-pane`, `.qe-plot-wrap`, `.qe-echarts-host`, and grid children so half-screen (`~720px`) snaps and vertical tab bars never freeze charts at partial width or spawn horizontal scrollbars.
 
 ---
 
@@ -207,10 +216,9 @@ Follow these mandatory `M3` density and layout constraints on operational dashbo
 | :--- | :--- | :--- |
 | Non-tabular numbers in live streaming table | Column numbers vibrate horizontally, causing nausea and misreading. | Always apply `font-variant-numeric: tabular-nums`. |
 | Unconstrained stage spanning 3840px monitors | Left rail at x=0, inspector at x=3800; operator experiences extreme neck strain. | Constrain workspace stage using `var(--stage-workspace-max)`. |
-| Full-page re-renders on telemetry packet arrival | UI drops frames, freezes mouse clicks, and causes input stutter. | Isolate real-time updates to dedicated CSS variables and `<canvas>`. |
-| Ambiguous keyboard focus states | Operator triggers destructive state change on unintended node. | Implement visible 2px solid focus rings on all interactive rows. |
-| Full-screen modal viewer at 900px foldable width | Blocks master list when unfolded tablet width easily fits split reader. | Use `.va-split-reader` at `>= 860px` instead of full-screen modal overlays. |
-| Five-row wrapped `32px` filter pills & sticky 3-bar headers | Consumes half the vertical viewport on desktops and foldables. | Consolidate into `.va-toolbar-joined` (`26–28px`) and brand-only sticky `< 1100px`. |
-| Double bullet + checkbox or clipped outline nav links | Corrupted markdown task lists and truncated navigation labels (`inspect_visu`). | Reset `list-style: none` on `.contains-task-list` and allow multi-line outline wrapping. |
-| Landscape (`1440x900`) shots side-by-side in portrait `Compare (2)` | Leaves `60–70%` vertical letterbox voids and unreadable thumbnail text. | Use `object-fit: contain` (`.va-media-contain`) and stack landscape comparisons (`1fr`). |
+| Ambiguous keyboard focus or sticky bar overlap | Focused element hidden behind sticky bar on keyboard navigation. | Set `scroll-padding-top` to header height + visible 2px focus rings. |
+| Full-screen modal viewer at `820px` foldable width | Blocks master list when unfolded tablet width easily fits split reader. | Use `.va-split-reader` / `.va-plot-row` (`subgrid`) at `>= 780px`. |
+| Multi-row `> 64px` sticky bars, `> 96px` headers, or expanded `0`-issue tables | Pushes primary evidence below top 30% fold (`[STICKY_CHROME_BLOAT]`). | Enforce 1-row `<= 56px` sticky bar, `<= 2`-row header, collapsed `<details>` audit tables. |
+| Inflated `40px` read-only `.va-pill` / `44px` filled corner circles on tablets | Static badges look clickable and circles obscure media thumbnails. | Keep badges `20–22px`, toolbars `32–34px` `>= 768px`, corner rings `22px` + `::after`. |
+| `.hidden` declared inside `@layer reset` or `@layer base` | Later `shell`/`views` flex/grid rules silently override `.hidden`. | Declare `utilities` last in `@layer` order and put `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities`. |
 

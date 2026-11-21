@@ -69,12 +69,13 @@ $$\text{Radius}_{\text{inner}} = \max(0\text{px}, \text{Radius}_{\text{card}} - 
 | `rounded` | `12px` | `4px` | `8px` | `8px` | `2px` | Editorial web, walkup kiosks |
 | `soft` | `18px` | `4px` | `14px` | `10px` | `2px` | Consumer portals, ambient wall views |
 
-### 4-Variant `.va-pill` Geometry & Baseline Alignment Lock
-Quiet UI replaces generic pill boxes with a deterministic 4-variant system (`@layer shell` in `src/css/03-pills-and-annunciators.css`):
-- **Round = Clickable Invariant**: Non-interactive status annunciators and metadata keycaps (`status`, `tag`) use `--radius-xs` (`2px`, or `0px` under `data-corners="sharp"`). Full stadium curvature (`--radius-pill: 999px`) is reserved strictly for interactive `chip` controls (`<button>`, `<a>`, `[role="button"]`).
-- **Zero-Inflation `18px` / `22px` Baseline Lock**: Every `.va-pill[data-variant="status"]` and `.va-pill[data-variant="tag"]` locks `block-size: 1.125rem` (`18px`), `line-height: 1`, `text-box: trim-both cap alphabetic`, `font-family: var(--font-mono)`, `font-variant-numeric: tabular-nums`, and lives inside a `.qe-scalar-top` / `.qe-bit-meta` / `.qe-card-head` flex row with `min-block-size: 1.375rem` (`22px`). Presence or absence of a stale/fault pill never shifts sibling baselines (`<= 1.0px`).
-- **Chromium-Safe Chroma Mixing**: Excursion borders and subtle surface washes mix semantic danger/warn tokens using `color-mix(in oklab, ...)` rather than `in oklch`, avoiding Chromium's neutral hue-interpolation collapse while preserving 4-theme parity.
-- **Border Token Parity**: Static keycaps (`data-variant="tag"`) bind to `var(--border-subtle)` (`var(--border-hairline)`) across all 4 `[data-theme]` blocks.
+### 4-Variant `.va-pill` Geometry, Pill Restraint & Unified Corner Family
+Quiet UI replaces generic `999px` pill sprawl with strict restraint (`@layer shell` in `src/css/03-pills-and-annunciators.css` and `01-stage-and-containers.css`):
+- **Ban Passive `999px` Pills (`[PILL_SPRAWL]`)**: Dates, versions, counts, subtitles, commit hashes, and units MUST render as plain unboxed muted text (`.va-meta-inline` — `color: var(--text-muted); font-size: var(--ts-xs); font-variant-numeric: tabular-nums;`). File/mode switchers use clean underline or rectangular `--radius-sm` (`4–6px`) tabs (`.va-tab-strip` / `.va-tab`, or `[data-variant="segmented"]`) instead of stadium capsules alongside square toolbars.
+- **Unified `.va-badge` Corners & Restraint**: `.va-badge` shares `border-radius: var(--radius-sm, 5px)` with buttons and toolbars (`<= 1` semantic state exception badge `HEALTHY`/`WARN`/`FAULT` per card header; `> 2` header pills or `>= 6` passive body pills fail `[PILL_SPRAWL]`).
+- **Round = Clickable Invariant**: Non-interactive annunciators and keycaps (`status`, `tag`) use `--radius-xs` (`2px`, or `0px` under `sharp`). Full stadium curvature (`--radius-pill: 999px`) is strictly limited to isolated clickable `chip` controls (`<= 2` per header).
+- **Zero-Inflation `18px` / `22px` Baseline Lock & Cohesive Chart Ramp**: `.va-pill[data-variant="status"]` / `tag` lock `18px` height (`min-block-size: 1.375rem` row, `<= 1.0px` baseline drift). All charts page-wide bind to the unified `--chart-1`..`--chart-5` semantic ramp (`--accent-primary`, `--tint-indigo-fg`, `--tint-emerald-fg`, `--tint-amber-fg`, `--text-muted`).
+- **Chromium-Safe Chroma Mixing & Token Parity**: Excursion borders use `color-mix(in oklab, ...)` and static keycaps bind to `var(--border-subtle)` across all 4 `[data-theme]` blocks.
 
 ---
 
@@ -127,7 +128,7 @@ If the output yields more than one unique hash, token mirror parity is broken an
 ## 5. CSS Architecture & Concrete Layer Classes
 
 ```css
-@layer quiet.tokens, quiet.surfaces, quiet.components;
+@layer quiet.tokens, quiet.surfaces, quiet.components, utilities;
 
 @layer quiet.surfaces {
   .va-shell {
@@ -169,7 +170,17 @@ If the output yields more than one unique hash, token mirror parity is broken an
     border-radius: var(--radius-card);
   }
 }
+
+@layer utilities {
+  .hidden,
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+}
 ```
+
+> [!IMPORTANT]
+> Always declare `utilities` **last** in your `@layer ...;` statement and place `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities` (`src/css/00-layers-and-reset.css`). Putting `.hidden` inside `@layer reset` or `@layer base` lets `display: flex` / `grid` in later layers (`shell`, `views`) override `.hidden` without `!important`, while `:not([hidden="until-found"])` keeps Find-in-page (`beforematch`) panels functional.
 
 ---
 
@@ -181,4 +192,5 @@ If the output yields more than one unique hash, token mirror parity is broken an
 | Uniform 12px Radius on Outer & Inner | Causes optical corner jamming where inner element cuts through margin. | Apply concentric formula: `var(--radius-inner) = max(0, card - inset)`. |
 | 3+ Nested Border Lines | Creates visual noise ("barnacle cage") that degrades scan speed. | Replace inner borders with surface elevation tints (`var(--bg-elevated)`). |
 | Per-Component Custom Themes | Destroys cognitive predictability across multi-panel interfaces. | Restrict surface tokens to the global `data-theme` scope. |
+| `.hidden` in `@layer reset` or `@layer base` | Later layers (`display: flex` / `grid`) silently override `.hidden` (`[HIDDEN_LAYER]`). | Declare `utilities` last in `@layer` order and define `.hidden` inside `@layer utilities`. |
 | Divergent Local Token Copies | Causes drift between local prototypes and production renders. | Enforce 4-way SHA-256 mirror parity check before commits. |

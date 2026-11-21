@@ -1,4 +1,4 @@
-# AGENTS.md — Quiet UI Skills (`v9.2.0`)
+# AGENTS.md — Quiet UI Skills (`v9.2.1`)
 
 Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Follow the mode boundary, commands, and invariants below verbatim.
 
@@ -28,8 +28,8 @@ Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Fol
 python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html
 python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --fragment
 
-# Audit any external HTML/CSS/JS tree or URL (static stdlib or --cdp across 390px, 900px, 1440px)
-python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/page.html --web-root path/to/dist
+# Audit any external HTML/CSS/JS tree or URL (subpath-scoped --mount-prefix, --exclude, or --cdp)
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/web/v9 --mount-prefix /web=/path/to/web --exclude "*.min.js"
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp --mount-prefix /web=/path/to/web
 
 # Sync mirrors, rebuild skills/quiet-evidence/assets/, Studio, Component Library & starters
@@ -73,16 +73,16 @@ python3 -B scripts/serve_showcase.py --port 8788
 - Select one primary medium matching physical viewing distance and chrome weight:
   - `M1` Paper & Print (`0%` box weight, static SVG fallback, `break-inside: avoid`)
   - `M2` Editorial Web / Spec / RFC (`15%–25%` hairline rules, prose measure `<= 72ch`)
-  - `M3` Stateful Web App / Workbench (`N1` left spine or `N3` dual nav, compact `.va-toolbar-joined`, `.va-kpi-gauge-card`, unfolded foldable split reader at `>= 860px`)
+  - `M3` Stateful Web App / Workbench (`N1` left spine or `N3` dual nav, `.va-workbench-panes`/`.va-pane`/`.va-pane-hdr` flat `40px` hairline-divided panes, compact `.va-toolbar-joined` `32–34px` on `>= 768px` coarse tablets / `44px` on `< 700px` handsets, `.va-tab-strip`/`.va-tab` rectangular/underline tabs, `.va-meta-inline` unboxed muted metadata, `--radius-sm` `.va-badge`, `.va-kpi-gauge-card`, unfolded foldable split/plot grids at `>= 780px` / `820px` CSS)
   - `M4` Walk-Up POI Terminal (`N1` zone rail, guarded `ARM -> EXECUTE` effectors, `>= 44px` touch targets)
   - `M5` Ambient Wall Kiosk (10-foot luminance figure-ground contrast, enlarged telemetry readouts)
   - `M6` Collimated Optical HUD (`>= 65%` open central sightline, monochrome phosphor peripheral symbology)
   - `M7` Transparent Window Overlay (smoked-glass `.va-hud-pod` cards, stroke text halos, glare rejection)
-- Never activate bottom mobile dock `N4` at desktop/tablet widths (`>= 700px`), never invent single-page jump sidebars on clean single-scroll views, and hide subheader utility bars on sticky `< 1100px`.
+- Enforce **Page-Wide Coherence & Pill Restraint**: `<= 3` repeating card structures, `<= 1` chart/half-width card, unified `.booktabs` rows, 1 cohesive `--chart-1..5` palette, plain `.va-meta-inline` dates/counts/hashes, `<= 1` semantic state `.va-badge`/header (`[PILL_SPRAWL]` bans `> 2` header pills, `>= 6` passive body pills, and stadium tabs beside square toolbars). Never activate `N4` at `>= 700px`, never exceed `56px` sticky topbar (`[STICKY_CHROME_BLOAT] > 64px`), collapse `0`-issue audit tables in `<details>`, and hide subheader utility bars `< 1100px`.
 
 ### Pillar 2 — `quiet-evidence` (Metrology & Offline Schemas)
 - Supported canonical `$schema` URNs: `urn:quiet-ui:schema:v9:scalar`, `table`, `bitfield`, `plot` (`plot_kind`: `cartesian`, `waterfall`, `stacked_bar`, `gantt`, `heatmap`, `dumbbell`, `forest`, `sankey`), `waveform` (including `waveform_kind: "strip_chart"`), and `schematic` (`sequence` `ITU-T Z.120`, `n2_matrix` `NASA SP-2016-6105`, `fault_tree` `NRC NUREG-0492`, `pid_loop`, `differential_bus`/`can_fd`/`fieldbus`/`rs485`/`modbus`/`mil1553b`, `enclave_topology`, `er_lineage`).
-- Dynamic browser-built SVGs use `window.QuietSvgLayout` (`niceScale125`, `wrapLabelLines`, `measureCategoryGutter`, `filterNonOverlappingTicks`, `placeReferenceLabel` with knockout halos); ECharts plots use `containLabel: true` and haloed `markLine` defaults, falling back identically to deterministic Python SVGs.
+- Dynamic browser SVGs use `window.QuietSvgLayout` (`niceScale125`, `sharedNiceScale125`, `buildCanonicalTimeGrid`, `computeGridFrameGutters`, `wrapLabelLines`, `measureCategoryGutter`, `filterNonOverlappingTicks`, `placeReferenceLabel`); multi-plot ECharts grids use `alignPlotGridFrames` / `alignSharedAxes` (`containLabel: false` column/row pixel registration, unit/event-conditional spans, `[PLOT_AXIS_MISALIGN] <= 2px`), single charts use `normalizeOption` (`applySafeLegendLayout`), and chart hosts bind `observeChartResize(hostEl, chart)` + `min-width: 0; max-width: 100%;` so half-screen (`~720px`) snaps never freeze chart widths. Keep `N <= 3` as stat/micro-bars, `N <= 8` as `.va-inline-bar` tables, and never duplicate total vs. stacked time-series denominators.
 - Standalone usage outside this repo works cleanly via bundled `skills/quiet-evidence/assets/quiet-evidence-bundle.{css,js}` and `skills/quiet-evidence/scripts/compile_evidence.py`.
 
 ### Pillar 3 — `quiet-bridge` (Audience Lenses & Numerical Conservation)
@@ -94,7 +94,7 @@ python3 -B scripts/serve_showcase.py --port 8788
 ## 5. CSS `@layer` Cascade & Status Pill Grammar
 
 - Preserve the canonical cascade order declared in `src/css/00-layers-and-reset.css`:
-  `@layer reset, tokens, shell, archetypes, views, evidence, utilities;`
+  `@layer reset, tokens, shell, archetypes, views, evidence, utilities;` (declare `utilities` last and place `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities`).
 - Never write `!important` in stylesheets, inline styles, or templates.
 - All themes bind semantically through `[data-theme]` on `<html>`: `white` (default), `paper`, `dark-paper`, and `dark`.
 - Use the 4-variant `.va-pill` grammar (`data-variant="status|tag|chip"` with `data-state="nominal|warn|fault"`, plus borderless SVG knockout halos) backed strictly by semantic tokens (`--status-ok`, `--status-warn`, `--status-danger`, `--status-err`)—never color nominal telemetry amber or crimson.

@@ -16,6 +16,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.py"
 CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
+STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
 COMPILER_SRC = REPO_ROOT / "skills" / "quiet-evidence" / "scripts" / "compile_evidence.py"
 
 VALID_HTML = """<!DOCTYPE html>
@@ -54,6 +55,7 @@ class TestPortableAuditor(unittest.TestCase):
         self.auditor = self.tmp_dir / "audit_quiet_html.py"
         shutil.copy2(AUDITOR_SRC, self.auditor)
         shutil.copy2(CHECKS_SRC, self.tmp_dir / "audit_quiet_checks.py")
+        shutil.copy2(STATIC_RULES_SRC, self.tmp_dir / "audit_static_rules.py")
 
     def tearDown(self) -> None:
         self._tmp.cleanup()
@@ -297,6 +299,113 @@ class TestPortableAuditor(unittest.TestCase):
         res_br = self._run_auditor(bad_branch_html, "--mount-prefix", f"/web={mount_root}")
         self.assertEqual(res_br.returncode, 1, res_br.stdout)
         self.assertIn("[INLINE_MOCK_DATA]", res_br.stdout)
+
+    def test_v921_hidden_layer_chrome_self_badge_exclude_and_mount_scoping(self) -> None:
+        early_hidden = self.tmp_dir / "bad_hidden.css"
+        early_hidden.write_text(
+            "@layer base, shell, utilities;\n@layer base { .hidden { display: none; } }\n@layer shell { .panel { display: flex; } }\n",
+            encoding="utf-8",
+        )
+        r_hl1 = self._run_auditor(early_hidden)
+        self.assertEqual(r_hl1.returncode, 1, r_hl1.stdout)
+        self.assertIn("[HIDDEN_LAYER]", r_hl1.stdout)
+
+        bad_order = self.tmp_dir / "bad_order.css"
+        bad_order.write_text(
+            "@layer utilities, views;\n@layer utilities { .hidden { display: none; } }\n",
+            encoding="utf-8",
+        )
+        r_hl2 = self._run_auditor(bad_order)
+        self.assertEqual(r_hl2.returncode, 1, r_hl2.stdout)
+        self.assertIn("[HIDDEN_LAYER]", r_hl2.stdout)
+
+        good_hidden = self.tmp_dir / "good_hidden.css"
+        good_hidden.write_text(
+            "@layer reset, base, shell, utilities;\n"
+            "@layer base { .bg { background: url(https://example.com/a.png); } }\n"
+            "@layer shell { .qe-specimen[hidden] { display: none; } }\n"
+            '@layer utilities { .hidden, [hidden]:not([hidden="until-found"]) { display: none; } }\n',
+            encoding="utf-8",
+        )
+        r_hl_ok = self._run_auditor(good_hidden)
+        self.assertEqual(r_hl_ok.returncode, 0, r_hl_ok.stdout + r_hl_ok.stderr)
+
+        web_dir = self.tmp_dir / "web"
+        v9_dir = web_dir / "v9"
+        v9_dir.mkdir(parents=True)
+        (web_dir / "demo_data.js").write_text("const cid = `brain:${x}`;", encoding="utf-8")
+        (v9_dir / "styles.css").write_text(
+            "@layer base, utilities;\n@layer utilities { .hidden, [hidden] { display: none; } }\n",
+            encoding="utf-8",
+        )
+        (v9_dir / "app.js").write_text("const ok = 1;", encoding="utf-8")
+        (v9_dir / "index.html").write_text(
+            '<!DOCTYPE html><html lang="en"><head><link rel="stylesheet" href="/web/v9/styles.css"></head><body>'
+            '<header class="va-shell-topbar"><span class="va-pill">quiet-ui-skills</span></header>'
+            '<main><span class="va-pill">quiet-ui-skills-28</span><span class="v9-card-kicker">Quiet UI Specimen</span></main>'
+            '<script src="/web/v9/app.js"></script><script src="/web/demo_data.js"></script>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        r_sub = self._run_auditor(v9_dir, "--mount-prefix", f"/web={web_dir}")
+        self.assertEqual(r_sub.returncode, 0, r_sub.stdout + r_sub.stderr)
+        sys.path.insert(0, str(self.tmp_dir))
+        from audit_static_rules import compute_mount_scopes  # noqa: E402
+        self.assertEqual(compute_mount_scopes("http://127.0.0.1:8765/web/v9/overview", {"/web": web_dir}), {"/web": v9_dir.resolve()})
+
+        r_ext = self._run_auditor(v9_dir, "--mount-prefix", f"/web={web_dir}", "--audit-mounted-external")
+        self.assertEqual(r_ext.returncode, 1, r_ext.stdout)
+        self.assertIn("[INTERNAL_ID]", r_ext.stdout)
+
+        r_exc = self._run_auditor(v9_dir, "--mount-prefix", f"/web={web_dir}", "--audit-mounted-external", "--exclude", "demo_data.js")
+        self.assertEqual(r_exc.returncode, 0, r_exc.stdout + r_exc.stderr)
+
+        miss_html = v9_dir / "missing.html"
+        miss_html.write_text('<!DOCTYPE html><html lang="en"><body><script src="/web/missing.js"></script></body></html>', encoding="utf-8")
+        r_miss = self._run_auditor(miss_html, "--mount-prefix", f"/web={web_dir}")
+        self.assertEqual(r_miss.returncode, 1, r_miss.stdout)
+        self.assertIn("[MISSING_ASSET]", r_miss.stdout)
+
+        hdr_badge = self.tmp_dir / "chrome_badge.html"
+        hdr_badge.write_text('<!DOCTYPE html><html lang="en"><body><div class="va-shell-topbar"><span>v9.2 Quiet</span></div></body></html>', encoding="utf-8")
+        self.assertIn("[SELF_BADGE]", self._run_auditor(hdr_badge).stdout)
+        opt_bad = self.tmp_dir / "opt_close_bad.html"
+        opt_bad.write_text('<!DOCTYPE html><html lang="en"><body><header><ul><li>A<li>B</ul><p>v9.2 Quiet</header><main><p>Ok</p></main></body></html>', encoding="utf-8")
+        self.assertIn("[SELF_BADGE]", self._run_auditor(opt_bad).stdout)
+        opt_ok = self.tmp_dir / "opt_close_ok.html"
+        opt_ok.write_text('<!DOCTYPE html><html lang="en"><body><header><p>Safe</header><main><p>v9.2 Quiet</p></main></body></html>', encoding="utf-8")
+        self.assertEqual(self._run_auditor(opt_ok).returncode, 0)
+
+    def test_v921_cdp_chrome_self_badge_and_slug_exemption(self) -> None:
+        if os.environ.get("QUIET_SKIP_CDP") == "1":
+            self.skipTest("QUIET_SKIP_CDP=1")
+        try:
+            import selenium  # noqa: F401
+        except ImportError:
+            if os.environ.get("QUIET_REQUIRE_CDP") == "1":
+                raise
+            self.skipTest("selenium not installed")
+
+        ok_slug = self.tmp_dir / "cdp_slug_ok.html"
+        ok_slug.write_text(
+            '<!DOCTYPE html><html lang="en"><head><style>body{font-size:14px;background:#fff}</style></head><body>'
+            '<header class="va-shell-topbar"><span class="va-pill">quiet-ui-skills</span></header>'
+            '<main><span class="va-pill">quiet-ui-skills-28</span><span class="v9-card-kicker">Quiet UI Ref</span></main>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        self.assertEqual(self._run_auditor(ok_slug, "--cdp").returncode, 0)
+
+        bad_chrome = self.tmp_dir / "cdp_chrome_bad.html"
+        bad_chrome.write_text(
+            '<!DOCTYPE html><html lang="en"><head><style>body{font-size:14px;background:#fff}</style></head><body>'
+            '<header class="va-shell-topbar"><span>v9.2 Quiet</span></header>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        r_cdp_bad = self._run_auditor(bad_chrome, "--cdp")
+        self.assertEqual(r_cdp_bad.returncode, 1, r_cdp_bad.stdout)
+        self.assertIn("[SELF_BADGE]", r_cdp_bad.stdout)
 
 
 if __name__ == "__main__":

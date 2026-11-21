@@ -146,7 +146,73 @@
     margin: 0;
   }
 
-  /* Badges & Status */
+  /* Badges, Inline Metadata & Architectural Corner Tabs */
+  .va-meta-inline {
+    color: var(--text-muted);
+    font-size: var(--ts-xs);
+    font-variant-numeric: var(--font-nums, tabular-nums);
+    line-height: 1.35;
+  }
+
+  .va-tab-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--border-hairline);
+    min-width: 0;
+    max-width: 100%;
+  }
+  .va-tab {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-block-size: 32px;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm, 5px) var(--radius-sm, 5px) 0 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .va-tab:hover { color: var(--text-primary); }
+  .va-tab[aria-selected="true"], .va-tab.is-active { color: var(--accent-primary); }
+  .va-tab[aria-selected="true"]::after, .va-tab.is-active::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    border-block-end: 2px solid var(--accent-primary);
+  }
+  .va-tab:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+  .va-tab-strip[data-variant="segmented"] {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm, 5px);
+    background: var(--bg-elevated);
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab {
+    min-block-size: 28px;
+    padding: 0.2rem 0.6rem;
+    border-radius: max(0px, calc(var(--radius-sm, 5px) - 1px));
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab[aria-selected="true"],
+  .va-tab-strip[data-variant="segmented"] .va-tab.is-active {
+    background: var(--bg-surface);
+    border-color: var(--border-hairline);
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab[aria-selected="true"]::after,
+  .va-tab-strip[data-variant="segmented"] .va-tab.is-active::after { content: none; }
+
   .va-badge {
     display: inline-flex;
     align-items: center;
@@ -154,7 +220,7 @@
     font-size: var(--ts-xs);
     font-weight: 600;
     padding: 0.15rem 0.5rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 5px);
     border: 1px solid var(--border-hairline);
     background: var(--bg-elevated);
     color: var(--text-secondary);
@@ -170,7 +236,7 @@
     background: var(--status-warn-bg);
     color: var(--status-warn);
     border: 1px solid var(--status-warn);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 5px);
     padding: 0.15rem 0.45rem;
     font-size: var(--ts-xs);
     font-weight: 600;
@@ -302,45 +368,20 @@
   table.booktabs td { white-space: normal; }
   table.booktabs td strong,
   table.booktabs td code { white-space: nowrap; }
-}
 
-@layer utilities {
-  .mono { font-family: var(--font-mono); font-variant-numeric: var(--font-nums); }
-  .tabular-nums { font-variant-numeric: var(--font-nums); }
-  th.num, td.num, .num {
-    text-align: right;
-    font-family: var(--font-mono);
-    font-variant-numeric: var(--font-nums);
-    white-space: nowrap;
-  }
-
-  .math-bar { text-decoration: overline; }
-
-  .va-bleed-wide { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; }
-
-  .sq-status {
-    display: inline-block;
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 2px;
-    margin-right: 0.35rem;
-    vertical-align: middle;
-    background: var(--text-muted);
-  }
-  .sq-ok   { background: var(--status-ok); }
-  .sq-warn { background: var(--status-warn); }
-  .sq-err  { background: var(--status-err); }
-
-  /* Phone Portrait (<480px / data-form-factor="touch") >= 44px Hit Targets */
-  [data-form-factor="touch"] :is(button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) {
-    min-block-size: 44px;
-  }
-
-  @media (max-width: 480px) {
-    button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-      min-block-size: 44px;
-    }
+  /* Inline Bullet-Bar Table (N <= 8) & Multi-Plot Subgrid Alignment (>= 780px) */
+  tr.va-row-compact td, tr.va-row-compact th { padding-block: 0.28rem; block-size: 2rem; }
+  .va-inline-bar { position: relative; display: block; inline-size: 100%; min-inline-size: 72px; block-size: 8px; border-radius: var(--radius-pill); background: var(--bg-elevated); border: 1px solid var(--border-hairline); overflow: visible; }
+  .va-inline-bar-fill { display: block; block-size: 100%; border-radius: var(--radius-pill); background: var(--accent-primary); }
+  .va-inline-bar-fill[data-state="warn"] { background: var(--status-warn); }
+  .va-inline-bar-fill[data-state="fault"] { background: var(--status-danger); }
+  .va-inline-bar-pin { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
+  .va-split-reader, .va-chart-grid-2, .va-plot-row, .va-plot-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; min-inline-size: 0; }
+  @media (min-width: 780px) {
+    .va-split-reader { grid-template-columns: minmax(15rem, 36%) minmax(0, 1fr); }
+    .va-chart-grid-2, .va-plot-row, .va-plot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    :is(.va-plot-row, .va-plot-grid) > .va-card { display: grid; grid-row: span 3; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-rows: subgrid; align-content: stretch; }
+    :is(.va-plot-row, .va-plot-grid) > .va-card > :is(.qe-plot-wrap, .va-figure-scroll, svg) { align-self: end; }
   }
 
   /* Dense 4-up / 2-up Operational KPI Gauge Cards (.va-kpi-gauge-card) */
@@ -356,32 +397,52 @@
   .va-kpi-gauge-target { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
   .va-kpi-gauge-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xs); color: var(--text-muted); }
 
-  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) */
+  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) & Component Layouts */
   .va-toolbar-joined { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; padding: 0.35rem 0; min-inline-size: 0; }
   .va-tb-group { display: inline-flex; flex-wrap: wrap; align-items: stretch; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-elevated); overflow: hidden; min-inline-size: 0; max-inline-size: 100%; }
-  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; max-inline-size: 100%; }
   .va-tb-btn:last-child { border-inline-end: 0; }
   .va-tb-btn[aria-pressed="true"], .va-tb-btn[data-active="true"] { background: var(--bg-surface); color: var(--accent-primary); box-shadow: inset 0 -2px 0 var(--accent-primary); }
   .va-tb-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
   .va-tb-sep { display: inline-block; inline-size: 1px; block-size: 1.25rem; background: var(--border-subtle); align-self: center; }
-
-  /* GFM Task Checkboxes, Unclipped Outline Links & Aspect-Safe Galleries */
   ul.contains-task-list, ul.va-task-list { list-style: none; padding-inline-start: 0.25rem; }
   li.task-list-item, .va-task-list > li { list-style: none; display: flex; align-items: baseline; gap: 0.45rem; }
-  a.va-nav-link, button.va-tb-btn { max-inline-size: 100%; }
+  a.va-nav-link { max-inline-size: 100%; }
   .va-media-contain { inline-size: 100%; block-size: auto; max-block-size: 420px; object-fit: contain; background: var(--bg-elevated); border-radius: var(--radius-inner); }
   .va-compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
   .va-compare-grid[data-orient="landscape"] { grid-template-columns: minmax(0, 1fr); }
+  .va-card, .va-pane, .qe-plot-wrap, :is(.va-plot-row, .va-plot-grid, .va-chart-grid-2, .va-split-reader) > * { min-width: 0; max-width: 100%; }
+  .va-pill:not(button):not(a):not([role="button"]):not([role="tab"]), .va-badge { block-size: auto; min-block-size: 20px; max-block-size: 22px; padding-block: 2px; }
+  button.va-overlay-control, .va-overlay-control { position: relative; inline-size: 22px; block-size: 22px; min-inline-size: 22px; min-block-size: 22px; display: inline-flex; align-items: center; justify-content: center; }
+  button.va-overlay-control::after, .va-overlay-control::after { content: ""; position: absolute; inset: -11px; }
+}
 
-  @media (max-width: 960px) {
-    .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@layer utilities {
+  .mono { font-family: var(--font-mono); font-variant-numeric: var(--font-nums); }
+  .tabular-nums { font-variant-numeric: var(--font-nums); }
+  th.num, td.num, .num { text-align: right; font-family: var(--font-mono); font-variant-numeric: var(--font-nums); white-space: nowrap; }
+  .math-bar { text-decoration: overline; }
+  .va-bleed-wide { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; }
+  .sq-status { display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 2px; margin-right: 0.35rem; vertical-align: middle; background: var(--text-muted); }
+  .sq-ok   { background: var(--status-ok); }
+  .sq-warn { background: var(--status-warn); }
+  .sq-err  { background: var(--status-err); }
+
+  /* Responsive Column & Touch Overrides (Zero display-override on non-hidden components) */
+  [data-form-factor="touch"] :is(button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
+  @media (max-width: 480px) {
+    button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) { min-block-size: 44px; }
   }
-  @media (max-width: 560px) {
-    .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); }
-  }
-  @media (pointer: coarse), (max-width: 720px) {
+  @media (max-width: 960px) { .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-tb-sep { display: none; }
-    .va-tb-btn { min-block-size: 44px; min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
-    .va-pill[data-variant="chip"], button.va-pill { min-block-size: 44px; min-inline-size: 44px; }
+    .va-tb-btn, .va-tab { min-block-size: 44px; }
+    .va-tb-btn { min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 44px; min-inline-size: 44px; }
+  }
+  @media (pointer: coarse) and (min-width: 768px) {
+    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; }
   }
 }

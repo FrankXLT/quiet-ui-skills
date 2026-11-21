@@ -88,6 +88,15 @@
   --hud-pod-accent: #38BDF8;
 }
 
+/* 7. Cohesive Page-Wide Chart Palette (--chart-1..5) */
+:root, [data-theme] {
+  --chart-1: var(--accent-primary);
+  --chart-2: var(--tint-indigo-fg);
+  --chart-3: var(--tint-emerald-fg);
+  --chart-4: var(--tint-amber-fg);
+  --chart-5: var(--text-muted);
+}
+
 h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* Concentric 5-Stop Corner Radius Dial (`data-corners="auto|sharp|subtle|rounded|soft"`) */
@@ -268,46 +277,50 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --density-meta-display: none;
 }
 
-/* Coarse Pointer & Stage-Portal Touch Parity (>=44px WCAG 2.5.5) */
-@media (max-width: 1099px), (pointer: coarse) { :root { --res-touch-min: 44px; --res-grid-cols: 2; } }
+/* Coarse Pointer & Stage-Portal Touch Parity (44px handsets; 34px >=768px foldables) */
+@media (max-width: 1099px) { :root { --res-grid-cols: 2; } }
+@media (pointer: coarse) and (min-width: 768px) { :root { --res-touch-min: 34px; } }
+@media (max-width: 699px), (pointer: coarse) and (max-width: 767px) { :root { --res-touch-min: 44px; } }
 @media (max-width: 640px) { :root { --res-touch-min: 44px; --res-grid-cols: 1; } }
 :root[data-form-factor="touch"] { --res-touch-min: 44px; }
 
-/* Zero-Override Core Token Utilities */
-.va-nums { font-variant-numeric: var(--font-nums); }
-.va-kicker {
-  font-family: var(--font-sans);
-  font-size: var(--ts-xs);
-  font-weight: 600;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  line-height: 1.35;
-  color: var(--text-muted);
-}
-.va-pill-btn {
-  border-radius: var(--radius-pill);
-  min-block-size: var(--res-touch-min, 32px);
-  padding: 0.25rem 0.75rem;
-  font-family: var(--font-sans);
-  font-size: var(--ts-sm);
-  font-weight: 600;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-surface);
-  color: var(--text-primary);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  cursor: pointer;
-}
-.va-hud-pod,
-.va-glass-panel {
-  background: var(--hud-pod-bg);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  border: 1px solid var(--hud-pod-border);
-  border-radius: var(--radius-card);
-  color: var(--hud-pod-text);
-  padding: var(--density-card-pad);
+/* Zero-Override Core Token Utilities (@layer tokens sits below @layer utilities .hidden) */
+@layer tokens {
+  .va-nums { font-variant-numeric: var(--font-nums); }
+  .va-kicker {
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    color: var(--text-muted);
+  }
+  .va-pill-btn {
+    border-radius: var(--radius-sm);
+    min-block-size: var(--res-touch-min, 32px);
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: var(--ts-sm);
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+  }
+  .va-hud-pod,
+  .va-glass-panel {
+    background: var(--hud-pod-bg);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid var(--hud-pod-border);
+    border-radius: var(--radius-card);
+    color: var(--hud-pod-text);
+    padding: var(--density-card-pad);
+  }
 }
 
 }
@@ -404,6 +417,14 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   summary { list-style: none; cursor: pointer; }
   summary::-webkit-details-marker { display: none; }
 }
+
+@layer utilities {
+  .hidden,
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+}
+
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
@@ -554,7 +575,73 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     margin: 0;
   }
 
-  /* Badges & Status */
+  /* Badges, Inline Metadata & Architectural Corner Tabs */
+  .va-meta-inline {
+    color: var(--text-muted);
+    font-size: var(--ts-xs);
+    font-variant-numeric: var(--font-nums, tabular-nums);
+    line-height: 1.35;
+  }
+
+  .va-tab-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--border-hairline);
+    min-width: 0;
+    max-width: 100%;
+  }
+  .va-tab {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-block-size: 32px;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm, 5px) var(--radius-sm, 5px) 0 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .va-tab:hover { color: var(--text-primary); }
+  .va-tab[aria-selected="true"], .va-tab.is-active { color: var(--accent-primary); }
+  .va-tab[aria-selected="true"]::after, .va-tab.is-active::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    border-block-end: 2px solid var(--accent-primary);
+  }
+  .va-tab:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+  .va-tab-strip[data-variant="segmented"] {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm, 5px);
+    background: var(--bg-elevated);
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab {
+    min-block-size: 28px;
+    padding: 0.2rem 0.6rem;
+    border-radius: max(0px, calc(var(--radius-sm, 5px) - 1px));
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab[aria-selected="true"],
+  .va-tab-strip[data-variant="segmented"] .va-tab.is-active {
+    background: var(--bg-surface);
+    border-color: var(--border-hairline);
+  }
+  .va-tab-strip[data-variant="segmented"] .va-tab[aria-selected="true"]::after,
+  .va-tab-strip[data-variant="segmented"] .va-tab.is-active::after { content: none; }
+
   .va-badge {
     display: inline-flex;
     align-items: center;
@@ -562,7 +649,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     font-size: var(--ts-xs);
     font-weight: 600;
     padding: 0.15rem 0.5rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 5px);
     border: 1px solid var(--border-hairline);
     background: var(--bg-elevated);
     color: var(--text-secondary);
@@ -578,7 +665,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background: var(--status-warn-bg);
     color: var(--status-warn);
     border: 1px solid var(--status-warn);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 5px);
     padding: 0.15rem 0.45rem;
     font-size: var(--ts-xs);
     font-weight: 600;
@@ -710,45 +797,20 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   table.booktabs td { white-space: normal; }
   table.booktabs td strong,
   table.booktabs td code { white-space: nowrap; }
-}
 
-@layer utilities {
-  .mono { font-family: var(--font-mono); font-variant-numeric: var(--font-nums); }
-  .tabular-nums { font-variant-numeric: var(--font-nums); }
-  th.num, td.num, .num {
-    text-align: right;
-    font-family: var(--font-mono);
-    font-variant-numeric: var(--font-nums);
-    white-space: nowrap;
-  }
-
-  .math-bar { text-decoration: overline; }
-
-  .va-bleed-wide { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; }
-
-  .sq-status {
-    display: inline-block;
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 2px;
-    margin-right: 0.35rem;
-    vertical-align: middle;
-    background: var(--text-muted);
-  }
-  .sq-ok   { background: var(--status-ok); }
-  .sq-warn { background: var(--status-warn); }
-  .sq-err  { background: var(--status-err); }
-
-  /* Phone Portrait (<480px / data-form-factor="touch") >= 44px Hit Targets */
-  [data-form-factor="touch"] :is(button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) {
-    min-block-size: 44px;
-  }
-
-  @media (max-width: 480px) {
-    button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-      min-block-size: 44px;
-    }
+  /* Inline Bullet-Bar Table (N <= 8) & Multi-Plot Subgrid Alignment (>= 780px) */
+  tr.va-row-compact td, tr.va-row-compact th { padding-block: 0.28rem; block-size: 2rem; }
+  .va-inline-bar { position: relative; display: block; inline-size: 100%; min-inline-size: 72px; block-size: 8px; border-radius: var(--radius-pill); background: var(--bg-elevated); border: 1px solid var(--border-hairline); overflow: visible; }
+  .va-inline-bar-fill { display: block; block-size: 100%; border-radius: var(--radius-pill); background: var(--accent-primary); }
+  .va-inline-bar-fill[data-state="warn"] { background: var(--status-warn); }
+  .va-inline-bar-fill[data-state="fault"] { background: var(--status-danger); }
+  .va-inline-bar-pin { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
+  .va-split-reader, .va-chart-grid-2, .va-plot-row, .va-plot-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; min-inline-size: 0; }
+  @media (min-width: 780px) {
+    .va-split-reader { grid-template-columns: minmax(15rem, 36%) minmax(0, 1fr); }
+    .va-chart-grid-2, .va-plot-row, .va-plot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    :is(.va-plot-row, .va-plot-grid) > .va-card { display: grid; grid-row: span 3; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-rows: subgrid; align-content: stretch; }
+    :is(.va-plot-row, .va-plot-grid) > .va-card > :is(.qe-plot-wrap, .va-figure-scroll, svg) { align-self: end; }
   }
 
   /* Dense 4-up / 2-up Operational KPI Gauge Cards (.va-kpi-gauge-card) */
@@ -764,33 +826,53 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-kpi-gauge-target { position: absolute; inset-block-start: -3px; inline-size: 2px; block-size: 12px; background: var(--text-primary); border-radius: var(--radius-xs); transform: translateX(-1px); }
   .va-kpi-gauge-stats { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: var(--ts-xs); color: var(--text-muted); }
 
-  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) */
+  /* Compact Joined Workspace Toolbar (.va-toolbar-joined) & Component Layouts */
   .va-toolbar-joined { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; padding: 0.35rem 0; min-inline-size: 0; }
   .va-tb-group { display: inline-flex; flex-wrap: wrap; align-items: stretch; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--bg-elevated); overflow: hidden; min-inline-size: 0; max-inline-size: 100%; }
-  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .va-tb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; min-block-size: 27px; padding: 0 0.6rem; border: 0; border-inline-end: 1px solid var(--border-hairline); background: transparent; color: var(--text-secondary); font-family: var(--font-sans); font-size: var(--ts-xs); font-weight: 600; cursor: pointer; white-space: nowrap; max-inline-size: 100%; }
   .va-tb-btn:last-child { border-inline-end: 0; }
   .va-tb-btn[aria-pressed="true"], .va-tb-btn[data-active="true"] { background: var(--bg-surface); color: var(--accent-primary); box-shadow: inset 0 -2px 0 var(--accent-primary); }
   .va-tb-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
   .va-tb-sep { display: inline-block; inline-size: 1px; block-size: 1.25rem; background: var(--border-subtle); align-self: center; }
-
-  /* GFM Task Checkboxes, Unclipped Outline Links & Aspect-Safe Galleries */
   ul.contains-task-list, ul.va-task-list { list-style: none; padding-inline-start: 0.25rem; }
   li.task-list-item, .va-task-list > li { list-style: none; display: flex; align-items: baseline; gap: 0.45rem; }
-  a.va-nav-link, button.va-tb-btn { max-inline-size: 100%; }
+  a.va-nav-link { max-inline-size: 100%; }
   .va-media-contain { inline-size: 100%; block-size: auto; max-block-size: 420px; object-fit: contain; background: var(--bg-elevated); border-radius: var(--radius-inner); }
   .va-compare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; align-items: start; }
   .va-compare-grid[data-orient="landscape"] { grid-template-columns: minmax(0, 1fr); }
+  .va-card, .va-pane, .qe-plot-wrap, :is(.va-plot-row, .va-plot-grid, .va-chart-grid-2, .va-split-reader) > * { min-width: 0; max-width: 100%; }
+  .va-pill:not(button):not(a):not([role="button"]):not([role="tab"]), .va-badge { block-size: auto; min-block-size: 20px; max-block-size: 22px; padding-block: 2px; }
+  button.va-overlay-control, .va-overlay-control { position: relative; inline-size: 22px; block-size: 22px; min-inline-size: 22px; min-block-size: 22px; display: inline-flex; align-items: center; justify-content: center; }
+  button.va-overlay-control::after, .va-overlay-control::after { content: ""; position: absolute; inset: -11px; }
+}
 
-  @media (max-width: 960px) {
-    .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@layer utilities {
+  .mono { font-family: var(--font-mono); font-variant-numeric: var(--font-nums); }
+  .tabular-nums { font-variant-numeric: var(--font-nums); }
+  th.num, td.num, .num { text-align: right; font-family: var(--font-mono); font-variant-numeric: var(--font-nums); white-space: nowrap; }
+  .math-bar { text-decoration: overline; }
+  .va-bleed-wide { inline-size: 100%; max-inline-size: 100%; min-inline-size: 0; }
+  .sq-status { display: inline-block; inline-size: 8px; block-size: 8px; border-radius: 2px; margin-right: 0.35rem; vertical-align: middle; background: var(--text-muted); }
+  .sq-ok   { background: var(--status-ok); }
+  .sq-warn { background: var(--status-warn); }
+  .sq-err  { background: var(--status-err); }
+
+  /* Responsive Column & Touch Overrides (Zero display-override on non-hidden components) */
+  [data-form-factor="touch"] :is(button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
+  @media (max-width: 480px) {
+    button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) { min-block-size: 44px; }
   }
-  @media (max-width: 560px) {
-    .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); }
-  }
-  @media (pointer: coarse), (max-width: 720px) {
+  @media (max-width: 960px) { .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-tb-sep { display: none; }
-    .va-tb-btn { min-block-size: 44px; min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
-    .va-pill[data-variant="chip"], button.va-pill { min-block-size: 44px; min-inline-size: 44px; }
+    .va-tb-btn, .va-tab { min-block-size: 44px; }
+    .va-tb-btn { min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 44px; min-inline-size: 44px; }
+  }
+  @media (pointer: coarse) and (min-width: 768px) {
+    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; }
   }
 }
 
@@ -11212,6 +11294,161 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     return g;
   }
 
+  function toEpochMs(val) {
+    if (typeof val === 'number') return Number.isFinite(val) ? val : NaN;
+    if (val instanceof Date) return val.getTime();
+    if (typeof val === 'string' && val.trim() !== '') {
+      var trimmed = val.trim();
+      return /^-?\d+(?:\.\d+)?$/.test(trimmed) ? Number(trimmed) : Date.parse(trimmed);
+    }
+    return NaN;
+  }
+
+  function buildCanonicalTimeGrid(startMs, endMs, stepMs, opts) {
+    var s = toEpochMs(startMs);
+    var e = toEpochMs(endMs);
+    var step = Number(stepMs);
+    if (!Number.isFinite(s) || !Number.isFinite(e) || !Number.isFinite(step) || step <= 0 || e < s) {
+      return [];
+    }
+    var cfg = opts || {};
+    if (cfg.align) s = Math.floor(s / step) * step;
+    var maxBuckets = Math.max(1, Math.min(10000, Number(cfg.maxBuckets || 5000)));
+    var intStep = Number.isInteger(s) && Number.isInteger(step);
+    var out = [];
+    for (var i = 0; i < maxBuckets; i += 1) {
+      var cur = s + i * step;
+      if (cur > e + step * 1e-6) break;
+      out.push(intStep ? Math.round(cur) : roundClean(cur));
+    }
+    return out;
+  }
+
+  function extractNumericValues(node, out, depth) {
+    var d = depth || 0;
+    if (node == null || typeof node === 'boolean') return;
+    if (typeof node === 'number') {
+      if (Number.isFinite(node)) out.push(node);
+      return;
+    }
+    if (Array.isArray(node)) {
+      if (d >= 2 && node.length === 2 && (node[0] == null || typeof node[0] !== 'object') && (node[1] == null || typeof node[1] !== 'object')) {
+        if (node[1] !== null && node[1] !== undefined && node[1] !== '' && typeof node[1] !== 'boolean') {
+          var yPair = Number(node[1]);
+          if (Number.isFinite(yPair)) out.push(yPair);
+        }
+        return;
+      }
+      for (var i = 0; i < node.length; i += 1) extractNumericValues(node[i], out, d + 1);
+      return;
+    }
+    if (typeof node === 'object') {
+      if (Array.isArray(node.data)) extractNumericValues(node.data, out, 1);
+      else if (node.value !== undefined && node.value !== null && typeof node.value !== 'boolean') {
+        if (Array.isArray(node.value)) extractNumericValues(node.value, out, 2);
+        else {
+          var vObj = Number(node.value);
+          if (Number.isFinite(vObj)) out.push(vObj);
+        }
+      }
+    }
+  }
+
+  function sharedNiceScale125(seriesArrays, opts) {
+    var vals = [];
+    extractNumericValues(seriesArrays, vals, 0);
+    var cfg = Object.assign({}, opts || {});
+    if (!vals.length) return niceScale125(0, 1, cfg);
+    var lo = Math.min.apply(null, vals);
+    var hi = Math.max.apply(null, vals);
+    if (cfg.includeZero === undefined) cfg.includeZero = lo >= 0;
+    if (cfg.headroomRatio) {
+      var span = hi - lo;
+      hi += (span > 0 ? span : (Math.abs(hi) || 1)) * Number(cfg.headroomRatio);
+    }
+    return niceScale125(lo, hi, cfg);
+  }
+
+  function maxLabelWidthPx(labels, fontSpec) {
+    var list = Array.isArray(labels) ? labels : [];
+    var w = 0;
+    for (var i = 0; i < list.length; i += 1) {
+      var lines = String(list[i] == null ? '' : list[i]).split('\n');
+      for (var j = 0; j < lines.length; j += 1) {
+        w = Math.max(w, measureTextPx(lines[j], fontSpec));
+      }
+    }
+    return Math.ceil(w);
+  }
+
+  function measureCellGutters(cell, cfg) {
+    var tickFont = cell.tickFont || cfg.tickFont || '11px JetBrains Mono, monospace';
+    var yTicks = cell.yTicks || cell.leftTicks || cell.ticks || [];
+    var rTicks = cell.rightTicks || [];
+    var hasRight = !!(cell.hasRightAxis || rTicks.length || cell.rightTitle);
+    var leftW = Math.max(cell.minLeft || cfg.minLeft || 44, (yTicks.length ? maxLabelWidthPx(yTicks, tickFont) + 12 : 44) + (cell.yLabel || cell.leftTitle ? 18 : 0));
+    var rightW = Math.max(cell.minRight || cfg.minRight || (hasRight ? 48 : 16), hasRight ? maxLabelWidthPx(rTicks, tickFont) + 14 + (cell.rightTitle ? 18 : 0) : 16);
+    var topH = Math.max(cell.minTop || cfg.minTop || 20, (cell.titleHeight || 0) + (cell.topLegendHeight || (cell.hasTopLegend ? 28 : 0)) + (cell.hasTopYName ? 26 : 16));
+    var botH = Math.max(cell.minBottom || cfg.minBottom || 34, (cell.xTicks && cell.xTicks.length ? 22 : 14) + (cell.xLabel || cell.bottomTitle ? 18 : 0) + (cell.bottomLegendHeight || (cell.hasBottomLegend ? 30 : 0)));
+    return {
+      left: Math.min(cfg.maxLeft || 190, leftW),
+      right: Math.min(cfg.maxRight || 160, rightW),
+      top: topH,
+      bottom: botH,
+      padX: Number(cell.containerPadX || 0),
+      stageHeight: Number(cell.stageHeight || 0),
+    };
+  }
+
+  function computeGridFrameGutters(plotsMatrix, opts) {
+    var cfg = opts || {};
+    var mat = [];
+    if (Array.isArray(plotsMatrix) && plotsMatrix.length) {
+      if (Array.isArray(plotsMatrix[0])) mat = plotsMatrix;
+      else if (cfg.orientation === 'row') mat = [plotsMatrix];
+      else mat = plotsMatrix.map(function (p) { return [p]; });
+    }
+    var rows = mat.length;
+    var cols = mat.reduce(function (m, row) { return Math.max(m, Array.isArray(row) ? row.length : 0); }, 0);
+    var colLeft = [], colRight = [], colPadX = [], rowTop = [], rowBottom = [], rowStageH = [];
+    var r, c, raw = [];
+    for (c = 0; c < cols; c += 1) { colLeft[c] = 0; colRight[c] = 0; colPadX[c] = 0; }
+    for (r = 0; r < rows; r += 1) {
+      rowTop[r] = 0; rowBottom[r] = 0; rowStageH[r] = 0; raw[r] = [];
+      var row = Array.isArray(mat[r]) ? mat[r] : [];
+      for (c = 0; c < row.length; c += 1) {
+        if (!row[c]) { raw[r][c] = null; continue; }
+        var g = measureCellGutters(row[c], cfg);
+        raw[r][c] = g;
+        colLeft[c] = Math.max(colLeft[c], g.left);
+        colRight[c] = Math.max(colRight[c], g.right);
+        colPadX[c] = Math.max(colPadX[c], g.padX);
+        rowTop[r] = Math.max(rowTop[r], g.top);
+        rowBottom[r] = Math.max(rowBottom[r], g.bottom);
+        rowStageH[r] = Math.max(rowStageH[r], g.stageHeight);
+      }
+    }
+    var cells = [];
+    for (r = 0; r < rows; r += 1) {
+      cells[r] = [];
+      for (c = 0; c < cols; c += 1) {
+        if (!raw[r] || !raw[r][c]) { cells[r][c] = null; continue; }
+        cells[r][c] = {
+          row: r,
+          col: c,
+          left: colLeft[c],
+          right: colRight[c],
+          top: rowTop[r],
+          bottom: rowBottom[r],
+          padX: colPadX[c],
+          stageHeight: rowStageH[r],
+          containLabel: false,
+        };
+      }
+    }
+    return { rows: rows, cols: cols, colLeft: colLeft, colRight: colRight, colPadX: colPadX, rowTop: rowTop, rowBottom: rowBottom, rowStageHeight: rowStageH, cells: cells };
+  }
+
   var api = {
     niceScale125: niceScale125,
     formatTick: formatTick,
@@ -11219,6 +11456,9 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     measureCategoryGutter: measureCategoryGutter,
     filterNonOverlappingTicks: filterNonOverlappingTicks,
     placeReferenceLabel: placeReferenceLabel,
+    buildCanonicalTimeGrid: buildCanonicalTimeGrid,
+    sharedNiceScale125: sharedNiceScale125,
+    computeGridFrameGutters: computeGridFrameGutters,
   };
   root.QuietSvgLayout = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -12297,13 +12537,8 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
 
   function ensureGridContainLabel(opt) {
     if (!opt) return opt;
-    if (Array.isArray(opt.grid)) {
-      opt.grid = opt.grid.map(function (g) {
-        return Object.assign({ containLabel: true }, g || {});
-      });
-    } else if (opt.grid && typeof opt.grid === 'object') {
-      opt.grid = Object.assign({ containLabel: true }, opt.grid);
-    }
+    if (Array.isArray(opt.grid)) opt.grid = opt.grid.map(function (g) { return Object.assign({ containLabel: true }, g || {}); });
+    else if (opt.grid && typeof opt.grid === 'object') opt.grid = Object.assign({ containLabel: true }, opt.grid);
     return opt;
   }
 
@@ -12325,10 +12560,8 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
         if (typeof env.value === 'number' && Number.isFinite(env.value)) vals.push(env.value);
       });
       if (vals.length) {
-        var rawMin = Math.min.apply(null, vals);
-        var rawMax = Math.max.apply(null, vals);
-        var lo = yAxes[0].min !== undefined ? Number(yAxes[0].min) : rawMin;
-        var span = rawMax - rawMin;
+        var rawMin = Math.min.apply(null, vals), rawMax = Math.max.apply(null, vals);
+        var lo = yAxes[0].min !== undefined ? Number(yAxes[0].min) : rawMin, span = rawMax - rawMin;
         var hi = rawMax + (span > 0 ? span * 0.06 : (Math.abs(rawMax) * 0.06 || 1));
         var sc = root.QuietSvgLayout.niceScale125(lo, hi, { targetTicks: 5, includeZero: lo >= 0 });
         if (yAxes[0].min === undefined) yAxes[0].min = sc.min;
@@ -12347,14 +12580,10 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       var parentLbl = sr.markLine.label || {};
       sr.markLine.data = sr.markLine.data.map(function (entry) {
         if (!entry || typeof entry !== 'object') return entry;
-        if (entry.xAxis !== undefined || (parentLbl.position && !(entry.label && entry.label.position))) {
-          return entry;
-        }
+        if (entry.xAxis !== undefined || (parentLbl.position && !(entry.label && entry.label.position))) return entry;
         var lbl = Object.assign({}, entry.label || {});
         var rawTxt = String(lbl.formatter || entry.name || '').toLowerCase();
-        if (!lbl.position) {
-          lbl.position = rawTxt.indexOf('floor') >= 0 ? 'insideStartBottom' : 'insideEndTop';
-        }
+        if (!lbl.position) lbl.position = rawTxt.indexOf('floor') >= 0 ? 'insideStartBottom' : 'insideEndTop';
         if (lbl.distance === undefined) lbl.distance = 4;
         if (!lbl.fontSize || lbl.fontSize < 11) lbl.fontSize = 11;
         if (!lbl.backgroundColor) lbl.backgroundColor = haloBg;
@@ -12366,22 +12595,391 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     return opt;
   }
 
-  function normalizeOption(opt, payload, tokens) {
-    if (!opt) return opt;
-    ensureGridContainLabel(opt);
-    applySafeMarkLines(opt, tokens);
-    if (payload && (payload.kind === 'cartesian' || !payload.kind)) {
-      applyNiceLinearAxisBounds(opt, payload);
+  function applySafeLegendLayout(opt, containerWidth) {
+    if (!opt || !opt.legend) return opt;
+    var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
+    var baseGridIdx = (yAxes[0] && yAxes[0].gridIndex) || 0;
+    var hasRightYAxis = yAxes.length > 1 && yAxes.some(function (ax, idx) {
+      if (!ax) return false;
+      if (ax.position === 'right') return true;
+      return idx > 0 && (ax.gridIndex === undefined || ax.gridIndex === baseGridIdx);
+    });
+    var w = Number(containerWidth || 0);
+    var isNarrow = w > 0 && w < 640;
+    var legends = Array.isArray(opt.legend) ? opt.legend : [opt.legend];
+    var needBottomPad = false;
+    var maxItems = 0;
+
+    legends.forEach(function (lg) {
+      if (!lg || typeof lg !== 'object' || lg.show === false) return;
+      var nItems = Array.isArray(lg.data) ? lg.data.length : (Array.isArray(opt.series) ? opt.series.length : 0);
+      maxItems = Math.max(maxItems, nItems);
+      var isScroll = lg.type === 'scroll';
+      var optInScroll = !!(lg.quietAllowScroll || lg.allowScroll);
+
+      if (isScroll && (isNarrow || !optInScroll)) {
+        lg.type = 'plain';
+        if (lg.orient === 'vertical') lg.orient = 'horizontal';
+        delete lg.top;
+        lg.bottom = 0;
+        lg.left = 'center';
+        delete lg.right;
+        if (lg.itemGap == null) lg.itemGap = 10;
+        needBottomPad = true;
+      } else if (hasRightYAxis && lg.bottom == null) {
+        if (lg.orient === 'vertical') lg.orient = 'horizontal';
+        delete lg.top;
+        lg.bottom = 0;
+        if (lg.left == null || lg.left === 'right' || typeof lg.left === 'number') {
+          lg.left = 'center';
+          delete lg.right;
+        }
+        needBottomPad = true;
+      } else if (hasRightYAxis && lg.bottom != null) {
+        needBottomPad = true;
+      }
+    });
+
+    if (needBottomPad) {
+      var minBot = (isNarrow && maxItems >= 3) ? 46 : 38;
+      if (Array.isArray(opt.grid) && opt.grid.length) {
+        var gi = opt.grid.length - 1;
+        if (opt.grid[gi] && typeof opt.grid[gi] === 'object') opt.grid[gi] = Object.assign({ containLabel: true }, opt.grid[gi], { bottom: Math.max(Number(opt.grid[gi].bottom) || 0, minBot) });
+      } else if (opt.grid && typeof opt.grid === 'object') {
+        opt.grid = Object.assign({ containLabel: true }, opt.grid, { bottom: Math.max(Number(opt.grid.bottom) || 0, minBot) });
+      } else opt.grid = { containLabel: true, bottom: minBot };
     }
     return opt;
   }
 
-  root.QuietEChartsDefaults = {
-    ensureGridContainLabel: ensureGridContainLabel,
-    applyNiceLinearAxisBounds: applyNiceLinearAxisBounds,
-    applySafeMarkLines: applySafeMarkLines,
-    normalizeOption: normalizeOption,
+  function normalizeOption(opt, payload, tokens, containerWidth) {
+    if (!opt) return opt;
+    ensureGridContainLabel(opt);
+    applySafeMarkLines(opt, tokens);
+    applySafeLegendLayout(opt, containerWidth);
+    if (payload && (payload.kind === 'cartesian' || !payload.kind)) applyNiceLinearAxisBounds(opt, payload);
+    return opt;
+  }
+
+  function getSvgLayout() {
+    if (root.QuietSvgLayout) return root.QuietSvgLayout;
+    if (typeof require === 'function') { try { return require('./quiet-svg-chart-layout.js'); } catch (_err) {} }
+    return null;
+  }
+
+  function toMatrix(matrixOrList, opts) {
+    if (!Array.isArray(matrixOrList) || !matrixOrList.length) return [];
+    if (Array.isArray(matrixOrList[0])) return matrixOrList;
+    return (opts && opts.orientation === 'row') ? [matrixOrList] : matrixOrList.map(function (opt) { return [opt]; });
+  }
+
+  function inferAxisUnit(opt, ax, optKey, axKey) {
+    if (opt && opt[optKey]) return String(opt[optKey]).trim();
+    if (ax && ax[axKey]) return String(ax[axKey]).trim();
+    if (ax && ax.name) {
+      var m = String(ax.name).match(/(?:\(([^)]+)\)|\/\s*([^\s/]+))\s*$/);
+      if (m) return (m[1] || m[2]).trim();
+    }
+    return '__default__';
+  }
+
+  function syncColumnXSpans(mat, opts) {
+    var cols = mat.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
+    var fillVal = opts && opts.fillValue !== undefined ? opts.fillValue : 0;
+    var forcedX = (opts && (opts.timeGrid || opts.xBuckets)) || null;
+    for (var c = 0; c < cols; c += 1) {
+      var groups = {};
+      for (var r = 0; r < mat.length; r += 1) {
+        var opt = mat[r] && mat[r][c];
+        if (!opt) continue;
+        var xAx = Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis;
+        if (!xAx || opt.independentXSpan || xAx.quietIndependentSpan) continue;
+        var evKey = opt.eventKey != null ? opt.eventKey : (opts && opts.eventKey != null ? opts.eventKey : '');
+        var xKey = inferAxisUnit(opt, xAx, 'xUnit', 'quietUnit') + '|' + String(evKey) + '|' + String(xAx.type || 'category');
+        if (!groups[xKey]) groups[xKey] = [];
+        groups[xKey].push({ opt: opt, xAx: xAx });
+      }
+      Object.keys(groups).forEach(function (k) {
+        var grp = groups[k];
+        if (grp.length < 2 && !forcedX) return;
+        var xType = grp[0].xAx.type || 'category';
+        if (xType === 'category') {
+          var seen = Object.create(null);
+          var union = forcedX ? forcedX.slice() : [];
+          if (!forcedX) {
+            grp.forEach(function (entry) {
+              (entry.xAx.data || []).forEach(function (lbl) {
+                var sk = String(lbl);
+                if (!seen[sk]) { seen[sk] = true; union.push(lbl); }
+              });
+            });
+            if (union.length > 1 && union.every(function (v) { return typeof v === 'number' || /^\d{4}-\d{2}-\d{2}|^\d{1,2}:\d{2}/.test(String(v)); })) {
+              union.sort(function (a, b) {
+                if (typeof a === 'number' && typeof b === 'number') return a - b;
+                var ta = Date.parse(String(a)), tb = Date.parse(String(b));
+                return (Number.isFinite(ta) && Number.isFinite(tb)) ? ta - tb : String(a).localeCompare(String(b));
+              });
+            }
+          }
+          grp.forEach(function (entry) {
+            var oldCats = Array.isArray(entry.xAx.data) ? entry.xAx.data : [];
+            (entry.opt.series || []).forEach(function (sr) {
+              if (!Array.isArray(sr.data)) return;
+              var byCat = Object.create(null);
+              sr.data.forEach(function (pt, idx) {
+                if (Array.isArray(pt)) byCat[String(pt[0])] = pt[1];
+                else if (idx < oldCats.length) byCat[String(oldCats[idx])] = pt;
+              });
+              if (oldCats.length || sr.data.every(function (pt) { return Array.isArray(pt); })) {
+                sr.data = union.map(function (b) {
+                  var bk = String(b);
+                  return Object.prototype.hasOwnProperty.call(byCat, bk) ? byCat[bk] : fillVal;
+                });
+              }
+            });
+            entry.xAx.data = union.slice();
+          });
+        } else if (xType === 'time' || xType === 'value') {
+          var isT = xType === 'time';
+          var xs = [];
+          var parseX = function (rawV) {
+            if (typeof rawV === 'number') return Number.isFinite(rawV) ? rawV : NaN;
+            if (rawV instanceof Date) return rawV.getTime();
+            if (typeof rawV === 'string' && rawV.trim() !== '') {
+              var s = rawV.trim();
+              if (/^-?\d+(?:\.\d+)?$/.test(s)) return Number(s);
+              if (isT) { var ts = Date.parse(s); return Number.isFinite(ts) ? ts : NaN; }
+              return Number(s);
+            }
+            return NaN;
+          };
+          grp.forEach(function (entry) {
+            var xm0 = parseX(entry.xAx.min), xm1 = parseX(entry.xAx.max);
+            if (Number.isFinite(xm0)) xs.push(xm0);
+            if (Number.isFinite(xm1)) xs.push(xm1);
+            (entry.opt.series || []).forEach(function (sr) {
+              (sr.data || []).forEach(function (pt) {
+                var rawX = Array.isArray(pt) ? pt[0] : (pt && typeof pt === 'object' && Array.isArray(pt.value) ? pt.value[0] : NaN);
+                var xv = parseX(rawX);
+                if (Number.isFinite(xv)) xs.push(xv);
+              });
+            });
+          });
+          if (forcedX && forcedX.length) {
+            var fx0 = parseX(forcedX[0]), fx1 = parseX(forcedX[forcedX.length - 1]);
+            if (Number.isFinite(fx0)) xs.push(fx0);
+            if (Number.isFinite(fx1)) xs.push(fx1);
+          }
+          if (xs.length) {
+            var loX = Math.min.apply(null, xs), hiX = Math.max.apply(null, xs);
+            grp.forEach(function (entry) { entry.xAx.min = loX; entry.xAx.max = hiX; });
+          }
+        }
+      });
+    }
+  }
+
+  function collectAxisYValues(opt, axisIdx) {
+    var vals = [];
+    var stackPos = {}, stackNeg = {};
+    (opt.series || []).forEach(function (sr) {
+      if (!sr || Number(sr.yAxisIndex || 0) !== axisIdx) return;
+      var sKey = sr.stack ? String(sr.stack) : null;
+      if (sKey && !stackPos[sKey]) { stackPos[sKey] = {}; stackNeg[sKey] = {}; }
+      (sr.data || []).forEach(function (pt, idx) {
+        var raw = Array.isArray(pt) ? pt[1] : (pt && typeof pt === 'object' ? (Array.isArray(pt.value) ? pt.value[1] : pt.value) : pt);
+        if (raw === null || raw === undefined || raw === '' || typeof raw === 'boolean') return;
+        var v = Number(raw);
+        if (!Number.isFinite(v)) return;
+        if (sKey) {
+          var bk = Array.isArray(pt) ? String(pt[0]) : (pt && typeof pt === 'object' && Array.isArray(pt.value) ? String(pt.value[0]) : String(idx));
+          if (v >= 0) stackPos[sKey][bk] = (stackPos[sKey][bk] || 0) + v;
+          else stackNeg[sKey][bk] = (stackNeg[sKey][bk] || 0) + v;
+        } else vals.push(v);
+      });
+      if (sr.markLine && Array.isArray(sr.markLine.data)) {
+        sr.markLine.data.forEach(function (ml) {
+          var mv = ml && ml.yAxis !== undefined ? Number(ml.yAxis) : NaN;
+          if (Number.isFinite(mv)) vals.push(mv);
+        });
+      }
+    });
+    [stackPos, stackNeg].forEach(function (map) {
+      Object.keys(map).forEach(function (sk) {
+        Object.keys(map[sk]).forEach(function (bk) { vals.push(map[sk][bk]); });
+      });
+    });
+    return vals;
+  }
+
+  function syncUnitYSpans(mat, opts, svgLayout) {
+    if (!svgLayout || (opts && opts.alignY === false)) return;
+    var groups = {};
+    mat.forEach(function (row) {
+      row.forEach(function (opt) {
+        if (!opt) return;
+        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
+        var y0 = yAxes[0];
+        if (!y0 || (y0.type && y0.type !== 'value') || opt.independentYSpan || y0.quietZoomedScale || y0.quietIndependentSpan) return;
+        var uk = inferAxisUnit(opt, y0, 'yUnit', 'quietUnit');
+        if (!groups[uk]) groups[uk] = [];
+        groups[uk].push({ opt: opt, y0: y0 });
+      });
+    });
+    Object.keys(groups).forEach(function (uk) {
+      var grp = groups[uk];
+      var allVals = [];
+      grp.forEach(function (entry) { Array.prototype.push.apply(allVals, collectAxisYValues(entry.opt, 0)); });
+      if (!allVals.length) return;
+      var sc = svgLayout.sharedNiceScale125(allVals, {
+        targetTicks: (opts && opts.targetYTicks) || 5,
+        includeZero: opts ? opts.includeZero : undefined,
+        headroomRatio: (opts && opts.headroomRatio != null) ? opts.headroomRatio : 0.06,
+      });
+      grp.forEach(function (entry) {
+        var hadMax = entry.y0.max !== undefined;
+        if (grp.length > 1 || entry.y0.min === undefined) entry.y0.min = sc.min;
+        if (grp.length > 1 || !hadMax) entry.y0.max = sc.max;
+        if (grp.length > 1 || (!hadMax && entry.y0.interval === undefined)) entry.y0.interval = sc.step;
+      });
+    });
+  }
+
+  function formatAxisTickList(ax, fallbackVals, svgLayout) {
+    var lo = ax && ax.min != null && Number.isFinite(Number(ax.min)) ? Number(ax.min) : (fallbackVals.length ? Math.min.apply(null, fallbackVals) : 0);
+    var hi = ax && ax.max != null && Number.isFinite(Number(ax.max)) ? Number(ax.max) : (fallbackVals.length ? Math.max.apply(null, fallbackVals) : 100);
+    var sc = svgLayout ? svgLayout.niceScale125(lo, hi, { targetTicks: 5 }) : { ticks: [lo, hi], step: (hi - lo) || 1 };
+    var fmt = ax && ax.axisLabel && typeof ax.axisLabel.formatter === 'function' ? ax.axisLabel.formatter : null;
+    return sc.ticks.map(function (v) { return fmt ? String(fmt(v)) : (svgLayout ? svgLayout.formatTick(v, sc.step) : String(v)); });
+  }
+
+  var _baseGridMap = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+  function alignPlotGridFrames(matrixOrList, opts) {
+    var cfg = opts || {};
+    var svgLayout = getSvgLayout();
+    var mat = toMatrix(matrixOrList, cfg);
+    if (!mat.length) return matrixOrList;
+    mat.forEach(function (row) {
+      row.forEach(function (opt) {
+        if (!opt) return;
+        var rawG = Array.isArray(opt.grid) ? (opt.grid[0] || {}) : (opt.grid || {});
+        if (_baseGridMap && !_baseGridMap.has(opt)) _baseGridMap.set(opt, Object.assign({}, rawG));
+        applySafeMarkLines(opt, cfg.tokens);
+        applySafeLegendLayout(opt, cfg.containerWidth);
+      });
+    });
+    var collapseCols = !!(cfg.collapseColumns || (Number(cfg.containerWidth || 0) > 0 && Number(cfg.containerWidth) < (cfg.stackBreakpoint || 780)));
+    var spanMat = collapseCols ? mat.reduce(function (a, r) { r.forEach(function (o) { if (o) a.push([o]); }); return a; }, []) : mat;
+    syncColumnXSpans(spanMat, cfg);
+    syncUnitYSpans(mat, cfg, svgLayout);
+    if (!svgLayout) return matrixOrList;
+
+    var descMat = mat.map(function (row) {
+      return row.map(function (opt) {
+        if (!opt) return null;
+        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
+        var xAx = Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis;
+        var g0 = Array.isArray(opt.grid) ? (opt.grid[0] || {}) : (opt.grid || {});
+        var baseG = (_baseGridMap && _baseGridMap.get(opt)) || g0;
+        var lg = Array.isArray(opt.legend) ? opt.legend[0] : opt.legend;
+        var lgOn = !!(lg && lg.show !== false);
+        var hasBotLg = !!(lgOn && (lg.bottom != null || lg.top === 'bottom'));
+        var hasTopLg = !!(lgOn && !hasBotLg);
+        var lgItems = Array.isArray(lg && lg.data) ? lg.data.length : (Array.isArray(opt.series) ? opt.series.length : 0);
+        var lgNarrow = Number(cfg.containerWidth || 0) > 0 && Number(cfg.containerWidth) < 640;
+        var lgBotFloor = hasBotLg ? ((lgNarrow && lgItems >= 3) ? 46 : 38) : 0;
+        var baseBot = typeof baseG.bottom === 'number' ? baseG.bottom : null;
+        var y0 = yAxes[0] || {}, y1 = yAxes.length > 1 ? yAxes[1] : null;
+        var primVals = collectAxisYValues(opt, 0), secVals = y1 ? collectAxisYValues(opt, 1) : [];
+        var xData = xAx && Array.isArray(xAx.data) && xAx.data.length ? xAx.data : ['0', '1'];
+        var titleObj = Array.isArray(opt.title) ? opt.title[0] : opt.title;
+        return {
+          yTicks: formatAxisTickList(y0, primVals, svgLayout),
+          rightTicks: y1 ? formatAxisTickList(y1, secVals.length ? secVals : [0, 100], svgLayout) : [],
+          hasRightAxis: !!y1, rightTitle: y1 ? y1.name : '',
+          yLabel: y0.name && y0.nameLocation === 'middle' ? y0.name : '',
+          hasTopYName: !!(y0.name && (!y0.nameLocation || y0.nameLocation === 'end')),
+          titleHeight: (titleObj && titleObj.show !== false && titleObj.text) ? 28 : 0,
+          xTicks: xData, xLabel: xAx && xAx.name ? xAx.name : '',
+          hasTopLegend: hasTopLg, hasBottomLegend: hasBotLg,
+          topLegendHeight: hasTopLg ? 28 : 0, bottomLegendHeight: lgBotFloor,
+          minLeft: typeof baseG.left === 'number' ? baseG.left : (cfg.minLeft || 44),
+          minRight: typeof baseG.right === 'number' ? baseG.right : (cfg.minRight || (y1 ? 48 : 16)),
+          minTop: typeof baseG.top === 'number' ? baseG.top : (cfg.minTop || 24),
+          minBottom: Math.max(baseBot !== null ? baseBot : (cfg.minBottom || 34), lgBotFloor),
+          stageHeight: Number(opt.quietStageHeight || cfg.stageHeight || 0), containerPadX: Number(opt.quietContainerPadX || 0),
+        };
+      });
+    });
+
+    var applyCell = function (opt, cell) {
+      if (!opt || !cell) return;
+      if (Array.isArray(opt.grid) && opt.grid.length) {
+        opt.grid[0] = Object.assign({}, opt.grid[0], { containLabel: false, left: cell.left, right: cell.right, top: cell.top });
+        if (opt.grid.length === 1) opt.grid[0].bottom = cell.bottom;
+      } else opt.grid = Object.assign({}, opt.grid || {}, { containLabel: false, left: cell.left, right: cell.right, top: cell.top, bottom: cell.bottom });
+    };
+    var flatIdx = [], gutterInput = collapseCols ? descMat.reduce(function (acc, row, r) {
+      row.forEach(function (cell, c) { if (cell) { flatIdx.push([r, c, acc.length]); acc.push([cell]); } });
+      return acc;
+    }, []) : descMat;
+    var gutters = svgLayout.computeGridFrameGutters(gutterInput, cfg);
+    if (collapseCols) flatIdx.forEach(function (t) { applyCell(mat[t[0]][t[1]], gutters.cells[t[2]] && gutters.cells[t[2]][0]); });
+    else mat.forEach(function (row, r) { row.forEach(function (opt, c) { applyCell(opt, gutters.cells[r] && gutters.cells[r][c]); }); });
+    return matrixOrList;
+  }
+
+  function observeChartResize(hostEl, chart, opts) {
+    if (!hostEl || !chart || typeof chart.resize !== 'function') return function () {};
+    var raf = typeof root.requestAnimationFrame === 'function' ? root.requestAnimationFrame.bind(root) : function (fn) { return setTimeout(fn, 16); };
+    var cancelRaf = typeof root.cancelAnimationFrame === 'function' ? root.cancelAnimationFrame.bind(root) : clearTimeout;
+    var lastW = Math.round(hostEl.clientWidth || 0), rafId = 0, dead = false, ro = null, onWin = null;
+    var cleanup = function () {
+      dead = true;
+      if (rafId) { cancelRaf(rafId); rafId = 0; }
+      if (ro) { ro.disconnect(); ro = null; }
+      if (onWin && typeof root.removeEventListener === 'function') { root.removeEventListener('resize', onWin); onWin = null; }
+    };
+    var trigger = function () {
+      if (dead) return;
+      if (chart.isDisposed && chart.isDisposed()) { cleanup(); return; }
+      if (rafId) return;
+      rafId = raf(function () {
+        rafId = 0;
+        if (dead || (chart.isDisposed && chart.isDisposed())) { cleanup(); return; }
+        var w = Math.round(hostEl.clientWidth || 0);
+        if (w <= 0 || w === lastW) return;
+        lastW = w;
+        if (opts && typeof opts.onResize === 'function') opts.onResize(w, chart, hostEl);
+        else chart.resize();
+      });
+    };
+    if (typeof root.ResizeObserver === 'function') {
+      ro = new root.ResizeObserver(function () {
+        if (dead || (chart.isDisposed && chart.isDisposed())) { cleanup(); return; }
+        var w = Math.round(hostEl.clientWidth || 0);
+        if (w > 0 && w !== lastW) trigger();
+      });
+      ro.observe(hostEl);
+      return cleanup;
+    }
+    if (typeof root.addEventListener === 'function') { onWin = trigger; root.addEventListener('resize', onWin); }
+    return cleanup;
+  }
+
+  function alignSharedAxes(optionsArray, opts) {
+    return alignPlotGridFrames(optionsArray, Object.assign({ orientation: 'column' }, opts || {}));
+  }
+
+  var api = {
+    ensureGridContainLabel: ensureGridContainLabel, applyNiceLinearAxisBounds: applyNiceLinearAxisBounds,
+    applySafeMarkLines: applySafeMarkLines, applySafeLegendLayout: applySafeLegendLayout,
+    alignPlotGridFrames: alignPlotGridFrames, alignSharedAxes: alignSharedAxes,
+    observeChartResize: observeChartResize, normalizeOption: normalizeOption,
   };
+  root.QuietEChartsDefaults = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
 }(typeof window !== 'undefined' ? window : globalThis));
 
 
@@ -12391,19 +12989,14 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   'use strict';
 
   var AUTO_VIEWS = {
-    'v06-ai-drift-and-lineage-ide': true,
-    'v10-civic-capital-budget-deck': true,
-    'v11-treasury-stress-test-solver': true,
-    'v12-stem-interactive-lab': true,
-    'v13-propulsion-archival-monograph': true,
-    'v18-home-assistant-companion-console': true,
-    'v19-product-roadmap-and-triage': true,
-    'v20-student-capstone-lab-report': true,
-    'v21-field-anomaly-escalation-tsn': true,
+    'v06-ai-drift-and-lineage-ide': true, 'v10-civic-capital-budget-deck': true, 'v11-treasury-stress-test-solver': true,
+    'v12-stem-interactive-lab': true, 'v13-propulsion-archival-monograph': true, 'v18-home-assistant-companion-console': true,
+    'v19-product-roadmap-and-triage': true, 'v20-student-capstone-lab-report': true, 'v21-field-anomaly-escalation-tsn': true,
   };
   var PALETTE_TOKENS = ['--accent-focal', '--status-warn', '--text-secondary', '--status-danger'];
   var ROOT_LISTENERS = new WeakSet();
   var RESIZE_OBSERVERS = new WeakMap();
+  var HOST_RESIZE_CLEANUPS = new WeakMap();
   var COPY_TIMERS = new WeakMap();
 
   function getGlobal(name) {
@@ -12644,6 +13237,8 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   }
 
   function disposeWrap(wrap, lib) {
+    var unobserve = HOST_RESIZE_CLEANUPS.get(wrap);
+    if (typeof unobserve === 'function') { unobserve(); HOST_RESIZE_CLEANUPS.delete(wrap); }
     var host = wrap.querySelector('.qe-echarts-host');
     if (host) {
       if (lib && typeof lib.getInstanceByDom === 'function') {
@@ -12657,15 +13252,13 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   }
 
   function mountWrap(doc, wrap, lib) {
-    var host = wrap.querySelector('.qe-echarts-host');
-    var scroll = wrap.querySelector('.va-figure-scroll');
+    var host = wrap.querySelector('.qe-echarts-host'), scroll = wrap.querySelector('.va-figure-scroll');
     if (!host || !scroll || !lib || !shouldEnableECharts(doc, wrap)) { disposeWrap(wrap, lib); return; }
     var payload;
     try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
-    var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8);
-    var w = avail > 0 ? avail : 300;
-    var ss = getGlobal('QuietEChartsSankeyStrip');
+    var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8), w = avail > 0 ? avail : 300;
+    var ss = getGlobal('QuietEChartsSankeyStrip'), defaults = getGlobal('QuietEChartsDefaults');
     var isSS = payload.kind === 'sankey' || payload.kind === 'strip_chart';
     var hasRes = !!(payload.residuals && Array.isArray(payload.residuals.points) && payload.residuals.points.length);
     var h = (isSS && ss && typeof ss.calcHeight === 'function') ? ss.calcHeight(payload, w)
@@ -12674,14 +13267,21 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     if (isFinite(maxH) && maxH > 120) h = Math.min(h, Math.round(maxH));
     var mKey = [doc.documentElement.dataset.theme || '', doc.documentElement.dataset.medium || '', wrap.dataset.activeTerm || '', wrap.dataset.echartsMode || '', w, h].join('|');
     var inst = lib.getInstanceByDom(host);
+    host.style.width = '100%';
+    host.style.height = h + 'px';
     if (inst && wrap.dataset.qeMountKey === mKey) {
       inst.resize({ width: w, height: h });
       wrap.dataset.echartsActive = 'true';
+      if (defaults && typeof defaults.observeChartResize === 'function' && !HOST_RESIZE_CLEANUPS.has(wrap)) {
+        HOST_RESIZE_CLEANUPS.set(wrap, defaults.observeChartResize(host, inst, { onResize: function () { mountWrap(doc, wrap, lib); } }));
+      }
       return;
     }
-    host.style.width = w + 'px';
-    host.style.height = h + 'px';
-    if (!inst) inst = lib.init(host, null, { renderer: 'svg', width: w, height: h });
+    if (!inst) {
+      var staleClean = HOST_RESIZE_CLEANUPS.get(wrap);
+      if (typeof staleClean === 'function') { staleClean(); HOST_RESIZE_CLEANUPS.delete(wrap); }
+      inst = lib.init(host, null, { renderer: 'svg', width: w, height: h });
+    }
     var tok = readTokens(doc), layers = getLayers(), ext = getGlobal('QuietEChartsExt');
     var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
     var opt = isSS ? (ss ? ss.buildOption(doc, payload, tok, w) : null)
@@ -12691,12 +13291,14 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
     if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, tok);
-    var defaults = getGlobal('QuietEChartsDefaults');
-    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok);
+    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok, w);
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.qeMountKey = mKey;
     wrap.dataset.echartsActive = 'true';
+    if (defaults && typeof defaults.observeChartResize === 'function' && !HOST_RESIZE_CLEANUPS.has(wrap)) {
+      HOST_RESIZE_CLEANUPS.set(wrap, defaults.observeChartResize(host, inst, { onResize: function () { mountWrap(doc, wrap, lib); } }));
+    }
   }
 
   function activateEcoTab(tabBtn) {
@@ -12813,9 +13415,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
 
   function refresh(docRef) {
     var doc = docRef || global.document;
-    if (!doc) return;
-    var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
+    if (doc) { var lib = getLib(); doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); }); }
   }
 
   function disposeAll(docRef) {

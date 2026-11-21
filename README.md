@@ -1,4 +1,4 @@
-# Quiet UI Skills (`v9.2.0`)
+# Quiet UI Skills (`v9.2.1`)
 
 [![Quiet UI CI](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/Plugin%20%26%203--Pillar%20Engine-Apache%202.0-blue.svg)](LICENSE)
@@ -115,7 +115,7 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --
 ```text
 quiet-ui-skills/
 ├── AGENTS.md / CLAUDE.md                          # Agent-native build, test & invariant contracts
-├── plugin.json                                      # Native Antigravity plugin manifest (v9.2.0)
+├── plugin.json                                      # Native Antigravity plugin manifest (v9.2.1)
 ├── pyproject.toml                                   # PEP 621 zero-runtime-dep metadata & [dev] extras
 ├── quiet-ui-showcase.html                           # Unified 6-domain 21-view Quiet UI v9.2 Studio
 ├── assets/logo.svg                                  # High-contrast square plugin icon

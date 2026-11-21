@@ -47,7 +47,7 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 - `M1` — Paper & Ink Print Sheets (unboxed, `@media print` optimized)
 - `M2` — Editorial Web Monographs, RFCs & Two-Column Proof Layouts (`72ch`)
-- `M3` — Stateful Web Workbenches, `.va-kpi-gauge-card` 4-up rows, `.va-toolbar-joined` bars, unfolded `>= 860px` split readers, and aspect-aware comparisons
+- `M3` — Stateful Web Workbenches, `.va-workbench-panes` / `.va-pane` / `.va-pane-hdr` hairline columns, `.va-kpi-gauge-card` 4-up rows, `.va-toolbar-joined` bars (`32–34px` coarse tablet / `44px` handset, `--radius-sm` `20–22px` badges), `.va-tab-strip` / `.va-meta-inline` pill restraint (`[PILL_SPRAWL]`), Page-Wide Coherence (`<= 3` card structures, 1 `--chart-1..5` ramp), unfolded `>= 780px` (`820px`) split readers & `subgrid` plot rows, and `<= 56px` sticky headers
 - `M4` — Walk-Up POI Terminals & Guarded Industrial SCADA Consoles
 - `M5` — 10-Foot Ambient Wall Displays (`>= 32px` KPIs, zero decorative chrome)
 - `M6` — Collimated Optical HUDs (`>= 65%` unobstructed central keep-out zone)
@@ -55,12 +55,12 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 ## 4. Pillar 2 — `quiet-evidence` (6 Deterministic Evidence Modalities)
 
-- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs alignment & collapsible mobile disclosures), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest with pooled diamonds, `gantt` schedules, and `heatmap` matrices with `1–2–5` ticks and `svg_knockout_label`; browser SVGs use `QuietSvgLayout` and ECharts uses `containLabel: true` + haloed `markLine`), `bitfields` (32/64-bit MSB-left hardware register strips + decode table), and `schematics` (`pid`, `pipeline`, `bus`, `interlock`, `er_lineage`, plus clean-room open standards `sequence` [`ITU-T Z.120`], `n2_matrix` [`NASA SP-2016-6105`], and `fault_tree` [`NRC NUREG-0492`]).
+- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs & `N <= 8` `.va-inline-bar` bullet rows), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest, `gantt`, `heatmap`; browser SVGs use `QuietSvgLayout` including `buildCanonicalTimeGrid`, `sharedNiceScale125`, and `computeGridFrameGutters`, while ECharts uses `alignPlotGridFrames` / `alignSharedAxes` for `containLabel: false` column/row pixel registration, `applySafeLegendLayout`, and `observeChartResize`), `bitfields`, and `schematics`.
 
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.2.0).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.2.1).
 - [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & review-room contract router.

@@ -562,6 +562,161 @@
     return g;
   }
 
+  function toEpochMs(val) {
+    if (typeof val === 'number') return Number.isFinite(val) ? val : NaN;
+    if (val instanceof Date) return val.getTime();
+    if (typeof val === 'string' && val.trim() !== '') {
+      var trimmed = val.trim();
+      return /^-?\d+(?:\.\d+)?$/.test(trimmed) ? Number(trimmed) : Date.parse(trimmed);
+    }
+    return NaN;
+  }
+
+  function buildCanonicalTimeGrid(startMs, endMs, stepMs, opts) {
+    var s = toEpochMs(startMs);
+    var e = toEpochMs(endMs);
+    var step = Number(stepMs);
+    if (!Number.isFinite(s) || !Number.isFinite(e) || !Number.isFinite(step) || step <= 0 || e < s) {
+      return [];
+    }
+    var cfg = opts || {};
+    if (cfg.align) s = Math.floor(s / step) * step;
+    var maxBuckets = Math.max(1, Math.min(10000, Number(cfg.maxBuckets || 5000)));
+    var intStep = Number.isInteger(s) && Number.isInteger(step);
+    var out = [];
+    for (var i = 0; i < maxBuckets; i += 1) {
+      var cur = s + i * step;
+      if (cur > e + step * 1e-6) break;
+      out.push(intStep ? Math.round(cur) : roundClean(cur));
+    }
+    return out;
+  }
+
+  function extractNumericValues(node, out, depth) {
+    var d = depth || 0;
+    if (node == null || typeof node === 'boolean') return;
+    if (typeof node === 'number') {
+      if (Number.isFinite(node)) out.push(node);
+      return;
+    }
+    if (Array.isArray(node)) {
+      if (d >= 2 && node.length === 2 && (node[0] == null || typeof node[0] !== 'object') && (node[1] == null || typeof node[1] !== 'object')) {
+        if (node[1] !== null && node[1] !== undefined && node[1] !== '' && typeof node[1] !== 'boolean') {
+          var yPair = Number(node[1]);
+          if (Number.isFinite(yPair)) out.push(yPair);
+        }
+        return;
+      }
+      for (var i = 0; i < node.length; i += 1) extractNumericValues(node[i], out, d + 1);
+      return;
+    }
+    if (typeof node === 'object') {
+      if (Array.isArray(node.data)) extractNumericValues(node.data, out, 1);
+      else if (node.value !== undefined && node.value !== null && typeof node.value !== 'boolean') {
+        if (Array.isArray(node.value)) extractNumericValues(node.value, out, 2);
+        else {
+          var vObj = Number(node.value);
+          if (Number.isFinite(vObj)) out.push(vObj);
+        }
+      }
+    }
+  }
+
+  function sharedNiceScale125(seriesArrays, opts) {
+    var vals = [];
+    extractNumericValues(seriesArrays, vals, 0);
+    var cfg = Object.assign({}, opts || {});
+    if (!vals.length) return niceScale125(0, 1, cfg);
+    var lo = Math.min.apply(null, vals);
+    var hi = Math.max.apply(null, vals);
+    if (cfg.includeZero === undefined) cfg.includeZero = lo >= 0;
+    if (cfg.headroomRatio) {
+      var span = hi - lo;
+      hi += (span > 0 ? span : (Math.abs(hi) || 1)) * Number(cfg.headroomRatio);
+    }
+    return niceScale125(lo, hi, cfg);
+  }
+
+  function maxLabelWidthPx(labels, fontSpec) {
+    var list = Array.isArray(labels) ? labels : [];
+    var w = 0;
+    for (var i = 0; i < list.length; i += 1) {
+      var lines = String(list[i] == null ? '' : list[i]).split('\n');
+      for (var j = 0; j < lines.length; j += 1) {
+        w = Math.max(w, measureTextPx(lines[j], fontSpec));
+      }
+    }
+    return Math.ceil(w);
+  }
+
+  function measureCellGutters(cell, cfg) {
+    var tickFont = cell.tickFont || cfg.tickFont || '11px JetBrains Mono, monospace';
+    var yTicks = cell.yTicks || cell.leftTicks || cell.ticks || [];
+    var rTicks = cell.rightTicks || [];
+    var hasRight = !!(cell.hasRightAxis || rTicks.length || cell.rightTitle);
+    var leftW = Math.max(cell.minLeft || cfg.minLeft || 44, (yTicks.length ? maxLabelWidthPx(yTicks, tickFont) + 12 : 44) + (cell.yLabel || cell.leftTitle ? 18 : 0));
+    var rightW = Math.max(cell.minRight || cfg.minRight || (hasRight ? 48 : 16), hasRight ? maxLabelWidthPx(rTicks, tickFont) + 14 + (cell.rightTitle ? 18 : 0) : 16);
+    var topH = Math.max(cell.minTop || cfg.minTop || 20, (cell.titleHeight || 0) + (cell.topLegendHeight || (cell.hasTopLegend ? 28 : 0)) + (cell.hasTopYName ? 26 : 16));
+    var botH = Math.max(cell.minBottom || cfg.minBottom || 34, (cell.xTicks && cell.xTicks.length ? 22 : 14) + (cell.xLabel || cell.bottomTitle ? 18 : 0) + (cell.bottomLegendHeight || (cell.hasBottomLegend ? 30 : 0)));
+    return {
+      left: Math.min(cfg.maxLeft || 190, leftW),
+      right: Math.min(cfg.maxRight || 160, rightW),
+      top: topH,
+      bottom: botH,
+      padX: Number(cell.containerPadX || 0),
+      stageHeight: Number(cell.stageHeight || 0),
+    };
+  }
+
+  function computeGridFrameGutters(plotsMatrix, opts) {
+    var cfg = opts || {};
+    var mat = [];
+    if (Array.isArray(plotsMatrix) && plotsMatrix.length) {
+      if (Array.isArray(plotsMatrix[0])) mat = plotsMatrix;
+      else if (cfg.orientation === 'row') mat = [plotsMatrix];
+      else mat = plotsMatrix.map(function (p) { return [p]; });
+    }
+    var rows = mat.length;
+    var cols = mat.reduce(function (m, row) { return Math.max(m, Array.isArray(row) ? row.length : 0); }, 0);
+    var colLeft = [], colRight = [], colPadX = [], rowTop = [], rowBottom = [], rowStageH = [];
+    var r, c, raw = [];
+    for (c = 0; c < cols; c += 1) { colLeft[c] = 0; colRight[c] = 0; colPadX[c] = 0; }
+    for (r = 0; r < rows; r += 1) {
+      rowTop[r] = 0; rowBottom[r] = 0; rowStageH[r] = 0; raw[r] = [];
+      var row = Array.isArray(mat[r]) ? mat[r] : [];
+      for (c = 0; c < row.length; c += 1) {
+        if (!row[c]) { raw[r][c] = null; continue; }
+        var g = measureCellGutters(row[c], cfg);
+        raw[r][c] = g;
+        colLeft[c] = Math.max(colLeft[c], g.left);
+        colRight[c] = Math.max(colRight[c], g.right);
+        colPadX[c] = Math.max(colPadX[c], g.padX);
+        rowTop[r] = Math.max(rowTop[r], g.top);
+        rowBottom[r] = Math.max(rowBottom[r], g.bottom);
+        rowStageH[r] = Math.max(rowStageH[r], g.stageHeight);
+      }
+    }
+    var cells = [];
+    for (r = 0; r < rows; r += 1) {
+      cells[r] = [];
+      for (c = 0; c < cols; c += 1) {
+        if (!raw[r] || !raw[r][c]) { cells[r][c] = null; continue; }
+        cells[r][c] = {
+          row: r,
+          col: c,
+          left: colLeft[c],
+          right: colRight[c],
+          top: rowTop[r],
+          bottom: rowBottom[r],
+          padX: colPadX[c],
+          stageHeight: rowStageH[r],
+          containLabel: false,
+        };
+      }
+    }
+    return { rows: rows, cols: cols, colLeft: colLeft, colRight: colRight, colPadX: colPadX, rowTop: rowTop, rowBottom: rowBottom, rowStageHeight: rowStageH, cells: cells };
+  }
+
   var api = {
     niceScale125: niceScale125,
     formatTick: formatTick,
@@ -569,6 +724,9 @@
     measureCategoryGutter: measureCategoryGutter,
     filterNonOverlappingTicks: filterNonOverlappingTicks,
     placeReferenceLabel: placeReferenceLabel,
+    buildCanonicalTimeGrid: buildCanonicalTimeGrid,
+    sharedNiceScale125: sharedNiceScale125,
+    computeGridFrameGutters: computeGridFrameGutters,
   };
   root.QuietSvgLayout = api;
   if (typeof module === 'object' && module.exports) module.exports = api;

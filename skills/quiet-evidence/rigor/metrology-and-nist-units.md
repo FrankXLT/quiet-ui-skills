@@ -151,7 +151,17 @@ Before releasing any Pillar 2 chart, matrix, or readout, audit these four invari
 
 ---
 
-## 7. Integration Links
+## 7. Cross-Plot Domain & Pixel Spine Registration
+
+When two or more quantitative plots are co-displayed or switched across peer cohort views:
+
+1. **Shared X-Axis Canonical Time Grid**: Bind sibling plots covering the same time window to one zero-filled `[t_min, t_max]` bucket array (`QuietSvgLayout.buildCanonicalTimeGrid`), identical tick step, and column-locked inner `[x_left, x_right]` frame pixels so vertical comparisons never drift when a sparse series drops empty buckets.
+2. **Unit-Locked `[0, Y_max]` Ceilings**: Lock co-displayed plots or filter cohorts sharing a physical unit (`yUnit`) to one unified $1\text{--}2\text{--}5$ scale and identical SI prefix (`QuietSvgLayout.sharedNiceScale125`). Mark magnified secondary cutouts explicitly (`Zoomed scale: 0..Y` / `quietZoomedScale`).
+3. **Disparate Units & Differing Event Lengths**: Co-displayed plots *may* use independent X domains when X units differ (`Time` vs. `Distance`) or when comparing events of unequal duration (`eventKey` / `independentXSpan`), and *may* use independent Y domains when Y units differ (`kPa` vs. `°C` / `independentYSpan`) — while **always** keeping column `[x_left, x_right]` and row `[y_top, y_bottom]` inner plot-box pixels registered within $\le 2\,\text{px}$.
+
+---
+
+## 8. Integration Links
 - Back to Pillar Overview: [SKILL.md](../SKILL.md)
 - Scales & Ticks Architecture: [scales-ticks-and-uncertainty.md](scales-ticks-and-uncertainty.md)
 - Conditions & Envelopes: [conditions-and-envelopes.md](conditions-and-envelopes.md)

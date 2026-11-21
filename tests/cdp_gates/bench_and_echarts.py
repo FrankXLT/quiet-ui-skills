@@ -212,4 +212,61 @@ def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[
         errs.append("[STUDIO_EXAMPLES_RETURN] failed to return to Examples")
 
     _check_docs_http_root(driver, errs)
+    _check_echarts_legend_guards(driver, f"{root_url}/docs/bench/evidence-bench.html", errs)
     return errs
+
+
+def _check_echarts_legend_guards(driver: Any, bench_url: str, errs: list[str]) -> None:
+    """Verify QuietEChartsDefaults.applySafeLegendLayout renders clean 390px SVG legends in Chrome."""
+    set_viewport(driver, 390, 844, 1)
+    driver.get(f"{bench_url}?theme=white")
+    time.sleep(0.25)
+    msg = driver.execute_script("""
+        const D = window.QuietEChartsDefaults;
+        if (!D || typeof D.applySafeLegendLayout !== 'function' || typeof window.echarts === 'undefined') return 'missing QuietEChartsDefaults';
+        const opt = D.normalizeOption({
+          animation: false,
+          legend: { type: 'scroll', top: 2, right: 8, data: ['Payload (KB)', 'RPC Calls', 'SLA Ceiling', 'Warmup Avg'] },
+          grid: { left: 10, right: 16, top: 30, bottom: 20, containLabel: true },
+          xAxis: { type: 'category', data: ['IDE', 'Cloud', 'CLI'] },
+          yAxis: [{ type: 'value', name: 'KB' }, { type: 'value', name: 'Calls' }],
+          series: [
+            { name: 'Payload (KB)', type: 'bar', yAxisIndex: 0, data: [12, 18, 9] },
+            { name: 'RPC Calls', type: 'bar', yAxisIndex: 1, data: [40, 22, 14] },
+            { name: 'SLA Ceiling', type: 'line', yAxisIndex: 0, data: [20, 20, 20] },
+            { name: 'Warmup Avg', type: 'line', yAxisIndex: 0, data: [10, 14, 11] }
+          ]
+        }, null, null, 350);
+        if (opt.legend.type !== 'plain' || opt.legend.bottom !== 0 || opt.legend.top !== undefined) return 'legend not normalized at 350px';
+        if (opt.grid.bottom < 46) return 'grid.bottom too small: ' + opt.grid.bottom;
+        const resOpt = D.normalizeOption({
+          legend: { top: 2, left: 64, data: ['Meas', 'Model'] },
+          grid: [{ top: 44, bottom: 132 }, { bottom: 46, height: 64 }],
+          xAxis: [{ gridIndex: 0 }, { gridIndex: 1 }],
+          yAxis: [{ gridIndex: 0 }, { gridIndex: 1 }],
+          series: []
+        }, null, null, 350);
+        if (resOpt.legend.top !== 2) return 'multi-grid residual legend wrongly moved';
+        const box = document.createElement('div');
+        box.style.cssText = 'width:350px;height:260px;';
+        document.body.appendChild(box);
+        const chart = window.echarts.init(box, null, { renderer: 'svg', width: 350, height: 260 });
+        chart.setOption(opt, true);
+        const texts = [...box.querySelectorAll('svg text')].map(t => ({ txt: (t.textContent || '').trim(), r: t.getBoundingClientRect() })).filter(x => x.txt && x.r.width > 0);
+        if (texts.some(x => x.txt === '1/2')) { chart.dispose(); box.remove(); return 'scroll paginator 1/2 rendered'; }
+        for (let i = 0; i < texts.length; i++) {
+          for (let j = i + 1; j < texts.length; j++) {
+            const ovW = Math.min(texts[i].r.right, texts[j].r.right) - Math.max(texts[i].r.left, texts[j].r.left);
+            const ovH = Math.min(texts[i].r.bottom, texts[j].r.bottom) - Math.max(texts[i].r.top, texts[j].r.top);
+            if (ovW > 2.5 && ovH > 4.5) {
+              const bad = texts[i].txt + ' vs ' + texts[j].txt;
+              chart.dispose(); box.remove();
+              return 'overlap at 350px: ' + bad;
+            }
+          }
+        }
+        chart.dispose(); box.remove();
+        return '';
+    """)
+    if msg:
+        errs.append(f"[ECHARTS_LEGEND_GUARD] {msg}")

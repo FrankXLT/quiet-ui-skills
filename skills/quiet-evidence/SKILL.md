@@ -3,7 +3,7 @@ name: quiet-evidence
 description: Quantitative data metrology and structural topology skill compiling NIST 1-2-5 plots, bitfields, HIL waveforms, and MIL-STD schematics from deterministic JSON schemas.
 ---
 
-# Quiet UI Pillar 2 — Unified Quantitative Evidence & Metrology
+# Quiet UI Pillar 2 (`v9.2.1`) — Unified Quantitative Evidence & Metrology
 
 Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 · Orientation`, `L2 · Governance`, `L3 · Physical, Clinical & Metrological`).
 
@@ -18,6 +18,8 @@ Before compiling or generating any quantitative visual, complete the [Data-to-Wi
 4. **Trace Epistemology**: Measured physical data points MUST use discrete geometric markers. Analytical models MUST use continuous curves. Never connect discrete points with arbitrary Bezier splines.
 5. **Limit & Abort Envelopes**: Operational ceilings, abort boundaries, and confidence corridors ($\pm 1\sigma$, $95\%\,\text{CI}$) must be explicitly demarcated with haloed labels; never grade prior runs retroactively without an effective-date annotation.
 6. **Grayscale & Dash Redundancy**: Multi-series plots must be distinguishable by stroke dash pattern or marker glyph in pure black-and-white print.
+7. **Cross-Plot Axis & Spine Registration**: Co-displayed plots for a shared window MUST share zero-filled canonical time buckets (`buildCanonicalTimeGrid`), column-locked `[x_left, x_right]` / row-locked `[y_top, y_bottom]` `containLabel: false` pixel spines (`computeGridFrameGutters` / `alignPlotGridFrames`), and shared `1–2–5` Y ceilings per unit (`sharedNiceScale125`) — while differing `xUnit`/`eventKey` or disparate `yUnit` values keep independent domain spans without breaking spine pixel alignment.
+8. **Chart Form by Category Count (`N`) & Zero Duplicate Denominators**: `N <= 3` categories render as stat strips or micro-bars (`<= 72px`), never `>= 180px` sparse bars; `N <= 8` comparisons with exact values use `.va-inline-bar` bullet tables (`<= 32px`/row); never pair a standalone total-volume chart with a stacked breakdown over the same buckets.
 
 > [!IMPORTANT]
 > **Hard Ban on Freehand SVG Guessing**: LLMs MUST NOT guess SVG coordinate numbers freehand. Author `urn:quiet-ui:schema:v9:<modality>` JSON via `compile_evidence.py`, or route dynamic browser SVGs through bundled `window.QuietSvgLayout` (`quiet-evidence-bundle.js`).
@@ -29,10 +31,10 @@ Before compiling or generating any quantitative visual, complete the [Data-to-Wi
 Load ONLY the specific rigor and modality guides matching your active visualization:
 
 ### Rigor & Metrology Standards
-- [rigor/metrology-and-nist-units.md](rigor/metrology-and-nist-units.md): NIST SP 811 unit calculus, SI prefixes, Roman vs. italic symbols, significant figures, and parameter blocks.
+- [rigor/metrology-and-nist-units.md](rigor/metrology-and-nist-units.md): NIST SP 811 unit calculus, SI prefixes, Roman vs. italic symbols, significant figures, and cross-plot unit/event span rules.
 - [rigor/scales-ticks-and-uncertainty.md](rigor/scales-ticks-and-uncertainty.md): NAVAIR FTM-108 $1\text{--}2\text{--}5$ intervals, minor log ticks, $\pm 1\sigma$ corridors, dropout gaps, and interpolation grids.
 - [rigor/conditions-and-envelopes.md](rigor/conditions-and-envelopes.md): Test-condition headers, discrete test markers vs. model curves, limit envelopes, and stroke halos.
-- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): Standards-compliant `window.QuietSvgLayout` SVG helpers, Apache ECharts (`containLabel: true` + haloed `markLine`), Plotly, Matplotlib, Bokeh, and Mermaid.
+- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): `window.QuietSvgLayout` (`buildCanonicalTimeGrid`, `sharedNiceScale125`, `computeGridFrameGutters`), `QuietEChartsDefaults` (`alignPlotGridFrames`, `alignSharedAxes`, `applySafeLegendLayout`), Plotly, Matplotlib, Bokeh, and Mermaid.
 
 ### The 6 Visual Modalities
 - [modalities/scalar-readouts-and-gauges.md](modalities/scalar-readouts-and-gauges.md): Scalar readouts, single-value callouts, dynamic gauges, and status annunciator pills.

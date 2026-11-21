@@ -92,3 +92,11 @@
   summary { list-style: none; cursor: pointer; }
   summary::-webkit-details-marker { display: none; }
 }
+
+@layer utilities {
+  .hidden,
+  [hidden]:not([hidden="until-found"]) {
+    display: none;
+  }
+}
+

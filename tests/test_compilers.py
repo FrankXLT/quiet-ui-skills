@@ -227,6 +227,95 @@ class TestEvidenceCompilers(unittest.TestCase):
             )
             self.assertTrue(frag.stdout.lstrip().startswith("<figure"))
 
+    def test_echarts_safe_legend_layout_guards(self) -> None:
+        defaults_js = (REPO_ROOT / "src" / "js" / "echarts-layout-defaults.js").read_text(encoding="utf-8")
+        adapter_js = (REPO_ROOT / "src" / "js" / "echarts-quiet-adapter.js").read_text(encoding="utf-8")
+        self.assertIn("applySafeLegendLayout", defaults_js)
+        self.assertIn("normalizeOption(opt, payload, tok, w)", adapter_js)
+        node_bin = shutil.which("node")
+        if node_bin:
+            script = (
+                f"const D = require({json.dumps(str(REPO_ROOT / 'src' / 'js' / 'echarts-layout-defaults.js'))});\n"
+                "const s1 = D.normalizeOption({ legend: { type: 'scroll', top: 2, data: ['A', 'B', 'C'] }, grid: { left: 10, bottom: 18 }, xAxis: { type: 'category' }, yAxis: { type: 'value' }, series: [] }, null, null, 390);\n"
+                "if (s1.legend.type !== 'plain' || s1.legend.bottom !== 0 || s1.legend.top !== undefined || s1.grid.bottom < 46) throw new Error('scroll 390 failed: ' + JSON.stringify(s1));\n"
+                "const s2 = D.normalizeOption({ legend: { type: 'scroll', allowScroll: true, top: 2, data: ['A', 'B'] }, grid: {}, xAxis: { type: 'category' }, yAxis: { type: 'value' }, series: [] }, null, null, 900);\n"
+                "if (s2.legend.type !== 'scroll') throw new Error('opt-in 900 failed');\n"
+                "const s3 = D.normalizeOption({ legend: { type: 'scroll', allowScroll: true, top: 2, data: ['A', 'B'] }, grid: {}, xAxis: { type: 'category' }, yAxis: { type: 'value' }, series: [] }, null, null, 390);\n"
+                "if (s3.legend.type !== 'plain' || s3.legend.bottom !== 0) throw new Error('narrow scroll override failed');\n"
+                "const d1 = D.normalizeOption({ legend: { top: 4, right: 12, data: ['Steps', 'Tok/Step'] }, grid: { top: 30, bottom: 20 }, xAxis: { type: 'category' }, yAxis: [{ type: 'value', name: 'Steps' }, { type: 'value', name: 'Tok/Step' }], series: [] }, null, null, 480);\n"
+                "if (d1.legend.bottom !== 0 || d1.legend.top !== undefined || d1.grid.bottom < 38) throw new Error('dual yAxis failed: ' + JSON.stringify(d1));\n"
+                "const r1 = D.normalizeOption({ legend: { top: 2, left: 64, data: ['Meas', 'Model'] }, grid: [{ top: 44, bottom: 132 }, { bottom: 46, height: 64 }], xAxis: [{ gridIndex: 0 }, { gridIndex: 1 }], yAxis: [{ gridIndex: 0 }, { gridIndex: 1 }], series: [] }, null, null, 390);\n"
+                "if (r1.legend.top !== 2 || r1.legend.bottom !== undefined) throw new Error('residual strip legend displaced: ' + JSON.stringify(r1));\n"
+                "const v1 = D.normalizeOption({ legend: { type: 'scroll', orient: 'vertical', right: 0, top: 'middle', bottom: null, data: ['A', 'B', 'C'] }, grid: [{ top: 20, bottom: 80 }, { bottom: 18, height: 60 }], xAxis: [{ gridIndex: 0 }, { gridIndex: 1 }], yAxis: [{ gridIndex: 0 }, { gridIndex: 1 }], series: [] }, null, null, 390);\n"
+                "if (v1.legend.orient !== 'horizontal' || v1.legend.bottom !== 0 || v1.grid[1].bottom < 46) throw new Error('vertical/multi-grid failed: ' + JSON.stringify(v1));\n"
+                "const n1 = D.normalizeOption({ legend: { top: 2, bottom: null, data: ['X', 'Y'] }, grid: { top: 20, bottom: 12 }, yAxis: [{ type: 'value' }, { type: 'value' }], series: [] }, null, null, 720);\n"
+                "if (n1.legend.bottom !== 0 || n1.legend.top !== undefined || n1.grid.bottom < 38) throw new Error('null bottom failed: ' + JSON.stringify(n1));\n"
+            )
+            with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=True) as tf:
+                tf.write(script)
+                tf.flush()
+                subprocess.run([node_bin, tf.name], check=True)
+
+    def test_v921_shared_axes_and_grid_frame_gutters(self) -> None:
+        layout_js = REPO_ROOT / "src" / "js" / "quiet-svg-chart-layout.js"
+        defaults_js = REPO_ROOT / "src" / "js" / "echarts-layout-defaults.js"
+        node_bin = shutil.which("node")
+        self.assertIsNotNone(node_bin, "Node.js required to verify QuietSvgLayout/QuietEChartsDefaults helpers")
+        script = (
+            f"const L = require({json.dumps(str(layout_js))});\n"
+            f"const D = require({json.dumps(str(defaults_js))});\n"
+            "const tg = L.buildCanonicalTimeGrid(1000, 4000, 1000);\n"
+            "if (JSON.stringify(tg) !== '[1000,2000,3000,4000]') throw new Error('time grid mismatch: ' + JSON.stringify(tg));\n"
+            "if (L.buildCanonicalTimeGrid(4000, 1000, 1000).length !== 0 || L.buildCanonicalTimeGrid(0, 1000, 0).length !== 0) throw new Error('invalid time grid not empty');\n"
+            "const iso = L.buildCanonicalTimeGrid('2026-11-21T00:00:00Z', '2026-11-21T00:02:00Z', 60000);\n"
+            "if (iso.length !== 3 || iso[1] - iso[0] !== 60000) throw new Error('iso grid failed');\n"
+            "const sc = L.sharedNiceScale125([[12, 48], { data: [[0, 5], { value: 190 }] }], { targetTicks: 5 });\n"
+            "if (sc.min !== 0 || sc.max !== 200 || sc.step !== 50) throw new Error('sharedNiceScale125 failed: ' + JSON.stringify(sc));\n"
+            "const signed = L.sharedNiceScale125([[-42, -8]], { targetTicks: 5 });\n"
+            "if (signed.max !== 0 || signed.min > -42) throw new Error('signed scale failed: ' + JSON.stringify(signed));\n"
+            "const xySeries = L.sharedNiceScale125([[[100000, 12], [200000, 48]], [[100000, 5], [200000, 80]]], { targetTicks: 5 });\n"
+            "if (xySeries.max > 200 || xySeries.max < 80) throw new Error('xy pair ignored or leaked X: ' + JSON.stringify(xySeries));\n"
+            "const gf = L.computeGridFrameGutters([\n"
+            "  [{ yTicks: ['0', '6,000,000'], hasRightAxis: false }, { yTicks: ['0', '10'], hasRightAxis: true, rightTicks: ['0', '100k'] }],\n"
+            "  [{ yTicks: ['0', '3.5M'], xTicks: ['10:00', '10:30'], xLabel: 'Time' }, { yTicks: ['0', '10'], bottomLegendHeight: 46 }]\n"
+            "]);\n"
+            "if (gf.cells[0][0].left !== gf.cells[1][0].left || gf.cells[0][0].containLabel !== false) throw new Error('col0 left gutter mismatch');\n"
+            "if (gf.cells[0][1].right !== gf.cells[1][1].right || gf.cells[1][0].bottom !== gf.cells[1][1].bottom) throw new Error('2D row/col gutter mismatch');\n"
+            "const optA = { xAxis: { type: 'category', data: ['10:15'] }, yAxis: { type: 'value', name: 'Volume (k)' }, series: [{ name: 'A', type: 'bar', data: [42] }] };\n"
+            "const optB = { xAxis: { type: 'category', data: ['10:00', '10:15', '10:30'] }, yAxis: { type: 'value', name: 'Volume (k)' }, series: [{ name: 'B1', type: 'bar', stack: 'v', data: [100, 200, 150] }, { name: 'B2', type: 'bar', stack: 'v', data: [50, 80, 90] }] };\n"
+            "D.alignSharedAxes([optA, optB]);\n"
+            "if (JSON.stringify(optA.xAxis.data) !== JSON.stringify(['10:00', '10:15', '10:30'])) throw new Error('shared x buckets failed');\n"
+            "if (JSON.stringify(optA.series[0].data) !== JSON.stringify([0, 42, 0])) throw new Error('zero-fill remap failed: ' + JSON.stringify(optA.series[0].data));\n"
+            "if (optA.yAxis.max !== optB.yAxis.max || optA.yAxis.max < 280 || optA.grid.containLabel !== false || optA.grid.left !== optB.grid.left) throw new Error('shared Y/left failed');\n"
+            "const r0c0 = { xUnit: 'time', eventKey: 'ev1', yUnit: 'kPa', xAxis: { type: 'category', data: ['0s', '1s'] }, yAxis: { type: 'value', name: 'P (kPa)' }, series: [{ data: [10, 420] }] };\n"
+            "const r0c1 = { xUnit: 'deg', yUnit: 'degC', xAxis: { type: 'category', data: ['N', 'E', 'S'] }, yAxis: [{ type: 'value', name: 'T (C)' }, { type: 'value', name: '%' }], legend: { data: ['Temp', '%'] }, series: [{ data: [20, 45, 30] }] };\n"
+            "const r1c0 = { xUnit: 'time', eventKey: 'ev2', yUnit: 'degC', xAxis: { type: 'category', data: ['0s', '1s', '2s'] }, yAxis: { type: 'value', name: 'T (C)' }, series: [{ data: [15, 22, 18] }] };\n"
+            "const r1c1 = { xUnit: 'deg', yUnit: 'pct', xAxis: { type: 'category', data: ['N', 'S'] }, yAxis: { type: 'value', name: 'Duty (%)' }, series: [{ data: [60, 80] }] };\n"
+            "D.alignPlotGridFrames([[r0c0, r0c1], [r1c0, r1c1]]);\n"
+            "if (r0c0.yAxis.max === r1c0.yAxis.max || r0c0.xAxis.data.length !== 2 || r1c0.xAxis.data.length !== 3) throw new Error('disparate unit/event isolation failed');\n"
+            "if (r0c0.grid.left !== r1c0.grid.left || r0c1.grid.right !== r1c1.grid.right || r0c0.grid.top !== r0c1.grid.top) throw new Error('2D grid gutter registration failed');\n"
+            "const gapSc = L.sharedNiceScale125([[[1700000000000, 12], [1700000001000, null], { value: [1700000002000, 48] }]]);\n"
+            "if (gapSc.max !== 60 || gapSc.min !== 0) throw new Error('null pair leaked X into Y: ' + JSON.stringify(gapSc));\n"
+            "const tmA = { xUnit: 't', yUnit: 'pct', xAxis: { type: 'time' }, yAxis: { type: 'value', min: 0, max: 100 }, legend: { data: ['S'] }, series: [{ type: 'line', data: [{ value: ['2026-11-21T00:05:00Z', 1.2] }] }] };\n"
+            "const tmB = { xUnit: 't', yUnit: 'ms', xAxis: { type: 'time' }, yAxis: [{ type: 'value' }, { type: 'value', max: 100 }], legend: { data: ['L1', 'L2', 'L3'] }, series: [{ type: 'bar', stack: 'd', data: [['2026-11-21T00:00:00Z', 100], ['2026-11-21T00:10:00Z', 40]] }, { type: 'bar', stack: 'd', data: [['2026-11-21T00:00:00Z', -30], ['2026-11-21T00:10:00Z', 20]] }] };\n"
+            "D.alignPlotGridFrames([tmA], {});\n"
+            "if (tmA.yAxis.interval !== undefined || tmA.grid.top < 44) throw new Error('fixed-bound interval or default top legend broken: ' + JSON.stringify(tmA));\n"
+            "D.alignPlotGridFrames([[tmA, tmB]], { containerWidth: 390 });\n"
+            "const b390 = tmB.grid.bottom;\n"
+            "if (tmA.xAxis.min !== Date.parse('2026-11-21T00:00:00Z') || tmA.xAxis.max !== Date.parse('2026-11-21T00:10:00Z')) throw new Error('ISO time sync failed');\n"
+            "if (tmA.grid.right !== tmB.grid.right || tmB.yAxis[0].max < 100 || tmB.yAxis[0].min > -30) throw new Error('390px collapse right or diverging stack failed: ' + JSON.stringify([tmA.grid, tmB.yAxis[0]]));\n"
+            "D.alignPlotGridFrames([[tmA, tmB]], { containerWidth: 1440 });\n"
+            "const b1440a = tmA.grid.bottom, b1440b = tmB.grid.bottom;\n"
+            "D.alignPlotGridFrames([[tmA, tmB]], { containerWidth: 1440 });\n"
+            "D.alignPlotGridFrames([[tmA, tmB]], { containerWidth: 1440 });\n"
+            "if (!(tmA.grid.right < tmB.grid.right)) throw new Error('1440px resize restore failed');\n"
+            "if (!(b1440a === tmA.grid.bottom && b1440b === tmB.grid.bottom && b1440b < b390)) throw new Error('bottom gutter ratcheted on resize: ' + JSON.stringify([b390, b1440a, b1440b, tmA.grid.bottom, tmB.grid.bottom]));\n"
+        )
+        with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=True) as tf:
+            tf.write(script)
+            tf.flush()
+            subprocess.run([node_bin, tf.name], check=True)
+
 
 if __name__ == "__main__":
     unittest.main()

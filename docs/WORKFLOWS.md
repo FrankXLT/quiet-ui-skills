@@ -1,7 +1,7 @@
-# Quiet UI v9.2 — Master Engineering Workflows & Architecture
+# Quiet UI v9.2.1 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.2 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.2.1 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
@@ -290,9 +290,11 @@ To guarantee visual calm, metrological integrity, and accessibility, every Quiet
 
    Side-by-side scalar cards MUST lock `.qe-scalar-top` (`min-block-size: 1.375rem`), title height, `.qe-scalar-val-row`, and `<svg class="qe-gauge-svg">` baselines within `<= 1.0px`.
 7. **Made-Up Demo Data & Borrowed Targets**: Never construct views specimen-first, borrow targets across pools (`Target 14.28%` on non-partner pools), omit `Warming up — N samples collected` when `N < 10`, retroactively grade old runs against newly added rules, or embed inline mock JS arrays (`MOCK_`, `demoRows`, etc.).
-8. **Chrome Self-Badges & Raw Agent Storage Prefixes**: Never stamp `v9.x Quiet` / `Quiet UI` badges into external application headers or expose `brain:<uuid>` storage paths in visible DOM/templates.
-9. **SVG Label Collisions & Mid-Word Chops**: Route browser-built SVG charts through `window.QuietSvgLayout` (`1-2-5` scales, tick overlap filtering, word-boundary wrap, haloed reference lines) and ECharts through `containLabel: true` + haloed inside `markLine` defaults.
-10. **Foldable & Mixed-Aspect Regressions**: Use `.va-toolbar-joined` (`26–28px` desktop, `>= 44px` touch) instead of 5-row pill wraps, lower split readers to `>= 860px`, hide sticky subbars `< 1100px`, reset GFM `[x]` list bullets (`list-style: none`), and enforce `.va-media-contain` / orientation-aware `.va-compare-grid` for landscape captures.
+8. **Chrome Self-Badges & Raw Agent Storage Prefixes**: Never stamp `v9.x Quiet` / `Quiet UI` badges into external application chrome (`header`, `footer`, `nav`, `[role="banner"]`, `.va-shell-topbar`, `.va-shell-brand`, `.topbar`) or expose `brain:<uuid>` storage paths in visible DOM/templates; kebab-case repo/ticket slugs (`quiet-ui-skills*`) in workspace pills remain valid.
+9. **Axis Spine Registration & Chart Form (`N`)**: Synchronize co-displayed windows on canonical zero-filled buckets (`buildCanonicalTimeGrid`), lock unit-matched `1–2–5` Y bounds (`sharedNiceScale125`), and register column `[x_left, x_right]` / row `[y_top, y_bottom]` `containLabel: false` pixel gutters (`computeGridFrameGutters`, `alignPlotGridFrames`, `alignSharedAxes`, `.va-plot-row` `subgrid`, `[PLOT_AXIS_MISALIGN] <= 2px`) while allowing independent domain spans across disparate `xUnit`/`eventKey`/`yUnit` pairs. Render `N <= 3` as stat strips/micro-bars (`<= 72px`), `N <= 8` comparisons as `.va-inline-bar` bullet tables (`<= 32px`/row), never duplicate total vs. stacked time-series denominators, and route legends via `applySafeLegendLayout`.
+10. **Foldable `>= 780px` (`820px`), Chrome Budget & Coarse-Pointer Discipline**: Use `.va-toolbar-joined` (`26–28px` desktop, `32–34px` on `>= 768px` coarse tablets, `44px` only on `< 700px` handsets) while keeping read-only `.va-pill`/`.va-badge` (`--radius-sm`) pills `20–22px` and extending corner overlays via `::after` (`.va-overlay-control`). Keep sticky headers to 1 row (`<= 56px`, `[STICKY_CHROME_BLOAT] > 64px`), detail headers `<= 96px`, `0`-issue audit tables inside `<details>`, and split/plot grids at `>= 780px`.
+11. **Cascade-Layer `.hidden` Shadowing (`[HIDDEN_LAYER]`)**: Always declare `utilities` last in `@layer` order and define `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities` (`src/css/00-layers-and-reset.css`) so earlier `shell`/`views` flex/grid rules never override hidden state while preserving Find-in-page (`beforematch`) searchability.
+12. **Page-Wide Coherence, Pill Restraint (`[PILL_SPRAWL]`), Hairline Panes & `ResizeObserver` Chart Hosts**: Limit pages to `<= 3` repeating card structures, `<= 1` chart per half-width card, unified `.booktabs` rows, and one `--chart-1..5` ramp. Render dates, versions, counts, and hashes as plain `.va-meta-inline` text, use `.va-tab-strip`/`.va-tab` for switchers, reserve `.va-badge` (`<= 1`/header) for state exceptions, lay out `M3` columns with `.va-workbench-panes`/`.va-pane`/`.va-pane-hdr` (`40px`), and bind ECharts hosts to `observeChartResize(hostEl, chart)` + `min-width: 0; max-width: 100%;`.
 
 ---
 
@@ -304,12 +306,12 @@ Artifact Inception ──► [Gate 0: Contract Lock] ──► [Gate 1: Schema S
 
 | Lifecycle Phase | Active Pillar | Artifact Produced | Verification Gate Rule |
 | :--- | :--- | :--- | :--- |
-| **0. Intake & Scoping** | `quiet-bridge` + `quiet-ui` | Data Binding Map & Audience Contract | Real payload fields verified; absent slots omitted; `N < 10` warmup marked |
-| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4` valid, `>= 860px` foldable split & concentric radii satisfied |
+| **0. Intake & Scoping** | `quiet-bridge` + `quiet-ui` | Data Binding Map & Audience Contract | Real payload fields verified; absent slots omitted; `N < 10` warmup marked; chart form matched to `N` |
+| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4` valid, `.va-workbench-panes`, terminal `@layer utilities` `.hidden` (`[HIDDEN_LAYER]`), `>= 780px` split, sticky `<= 56px`, Pill Restraint (`[PILL_SPRAWL]`) |
 | **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validation passed against offline URN; zero hardcoded mock arrays |
-| **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | $1\text{--}2\text{--}5$ ticks verified, haloed references, zero text/line overlap |
+| **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | $1\text{--}2\text{--}5$ ticks verified, `alignPlotGridFrames` (`[PLOT_AXIS_MISALIGN] <= 2px`), `observeChartResize`, `applySafeLegendLayout`, `--chart-1..5`, zero overlap |
 | **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room Composition | BLUF band aligned with physics proof below |
-| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | Zero `!important`, zero self-badges/mock arrays, zero drift (`build_all.py --check`) |
+| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | `390/820/1440px` CDP sweep (`[STICKY_CHROME_BLOAT]`, `[PLOT_AXIS_MISALIGN]`, `[PILL_SPRAWL]`), subpath `--mount-prefix`, zero drift (`build_all.py --check`) |
 
 Run the full verification loop before shipping:
 

@@ -28,8 +28,11 @@ Component Library cards demonstrate maximum anatomical density—they are **not*
 
 - **Zero Cross-Domain Target Borrowing**: Never copy a policy target from one resource pool onto an unrelated metric card just to match card heights. Example: placing `"Target 14.28% partner/d"` onto an unlimited or Google-pool model gauge misleads operators because that target applies to weekly partner-pool allocation, not per-model throughput.
 - **Omit When Absent**: Inside `.va-kpi-gauge-card`, keep headline metric + horizontal fill gauge when `limit` is known, and omit optional `delta` or `target_pin` DOM nodes when absent rather than inserting `"Target: N/A"` filler lines or placeholder percentages.
-- **Preserve Quantitative Density**: Do not replace genuine progress meters or measured tabular pairs (`used / limit`, `p50 / p95 / max`) with qualitative text cards when real numbers exist in the payload.
-- **Reject Engineering Self-Filler**: Do not pad operational user dashboards with internal repository or code-hygiene badges (e.g., `"64/64 <= 500L"`, git commit SHAs, file-count pills) unless the view specifically serves CI/repository auditing.
+- **Preserve Quantitative Density & Select Form by Category Count (`N`)**:
+  - **`N <= 3` Categories -> Stat Strip or Micro-Bar (`<= 72px` tall)**: Never ship a `>= 180px` Cartesian bar chart dominated by blank space for 2–3 categories; use a stat strip or horizontal micro-bar.
+  - **Zero Duplicate Time-Series Denominators**: Never render a standalone total-volume chart next to a stacked breakdown over the same buckets; merge into **one** stacked chart with `Avg` / `P95` total reference lines.
+  - **`N <= 8` Comparison + Exact Figures -> Inline Bullet-Bar Table**: Never stack a 4–8 bar chart above a matching table; embed `.va-inline-bar` / `.va-inline-bar-fill` / `.va-inline-bar-pin` directly inside `.va-row-compact` table rows (`<= 32px`/row).
+- **Reject Engineering Self-Filler & Pill Sprawl**: Do not pad operational user dashboards with internal repository or code-hygiene badges (e.g., `"64/64 <= 500L"`, git commit SHAs, file-count pills) unless the view specifically serves CI/repository auditing. Render dates, versions, counts, subtitles, hashes, and units as plain unboxed muted text (`.va-meta-inline`), use `.va-tab-strip` / `.va-tab` (`4–6px` or underline) for file/mode switchers, and reserve `.va-badge` (`--radius-sm`, max `1` per card header) strictly for semantic state exceptions (`HEALTHY`/`WARN`/`FAULT`).
 
 ---
 
@@ -91,19 +94,19 @@ Compare how an agent handles partial telemetry without fabricating fields or str
 
 Every specimen in `docs/bench/evidence-bench.html` exposes a compact `<details class="qe-data-contract">Data Inputs &amp; Honest Fallback</details>` contract listing required fields, optional slots to omit when null, and warmup fallback wording.
 
-Before declaring UI work complete, run the updated portable auditor:
+Before declaring UI work complete, run the updated portable auditor (mounts under `--mount-prefix` automatically verify existence via `[MISSING_ASSET]` and scope CSS/JS linting to subdirectory/subpath targets unless `--audit-mounted-external` is passed; use `--exclude` for vendored/legacy assets):
 
 ```bash
 # Static check across mounted web assets (stdlib only, zero dependencies)
-python3 -B skills/quiet-ui/scripts/audit_quiet_html.py /path/to/dist/index.html \
-  --web-root /path/to/dist --mount-prefix /web/v9=/path/to/web/v9
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py /path/to/dist/v9 \
+  --mount-prefix /web=/path/to/dist --exclude "*.min.js"
 
-# Live headless inspection across 390x844, 900x1080, and 1440x900
+# Live headless inspection across 390x844, 820x1080, and 1440x900
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8765/web/v9?demo=1 \
-  --cdp --mount-prefix /web/v9=/path/to/web/v9 --mount-prefix /web=/path/to/web
+  --cdp --mount-prefix /web=/path/to/web
 ```
 
-The auditor enforces zero self-referential `Quiet` chrome badges, zero raw `brain:` storage prefixes in UI DOM/templates, zero inline mock JS arrays in view scripts, zero unclosed/truncated chart labels, and zero colliding `<text>` or `<line>`-through-`<text>` SVG primitives.
+The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_LAYER]`), cumulative sticky/fixed header height `<= 64px` (`[STICKY_CHROME_BLOAT]`), `<= 2px` inner plot-box axis alignment (`[PLOT_AXIS_MISALIGN]`), pill restraint (`[PILL_SPRAWL]`), zero chrome `Quiet` badges (exempting kebab-case repo/ticket slugs like `quiet-ui-skills`), zero raw `brain:` IDs, zero inline mock arrays, zero clipped controls, and zero SVG text/line collisions.
 
 ---
 

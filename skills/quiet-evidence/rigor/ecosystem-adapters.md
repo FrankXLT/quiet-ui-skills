@@ -238,14 +238,20 @@ gantt
 When interactive dashboards synthesize live `<svg>` charts in browser JavaScript (rather than pre-compiling static specs through Python), route axis ticks, category gutters, word wrapping, and reference lines through **`window.QuietSvgLayout`** (automatically bundled into `quiet-evidence-bundle.js`):
 
 ```javascript
-const { niceScale125, wrapLabelLines, measureCategoryGutter, filterNonOverlappingTicks, placeReferenceLabel } = window.QuietSvgLayout;
+const {
+  niceScale125, sharedNiceScale125, buildCanonicalTimeGrid,
+  computeGridFrameGutters, wrapLabelLines, measureCategoryGutter,
+  filterNonOverlappingTicks, placeReferenceLabel,
+} = window.QuietSvgLayout;
 
-// 1. Auto-size left margin for long horizontal labels before drawing axes
-const cats = wrapLabelLines("Gemini 4 Argon (Pro) Long Run", 20, 2);
+// 1. Canonical zero-filled X buckets & shared 1-2-5 Y bounds across peer cohorts
+const buckets = buildCanonicalTimeGrid(tMinMs, tMaxMs, stepMs);
+const yShared = sharedNiceScale125([cohortASeries, cohortBSeries], { targetTicks: 5, headroomRatio: 0.06 });
+
+// 2. Column/row/2D pixel registration (containLabel: false locks [x_left, x_right] & [y_top, y_bottom])
+const gutters = computeGridFrameGutters([[topLeftDesc, topRightDesc], [botLeftDesc, botRightDesc]]);
 const gutter = measureCategoryGutter(rawLabels, { minPx: 68, maxPx: 176, maxChars: 20 });
-
-// 2. Calibrate 1-2-5 numeric scale & filter dense X ticks to prevent label collision
-const yScale = niceScale125(0, Math.max(...values), { targetTicks: 5, includeZero: true });
+const cats = wrapLabelLines("Primary Model Cohort (Long Run)", 20, 2);
 const visibleXTicks = filterNonOverlappingTicks(rawTicks, { axis: 'x', minGapPx: 12, keepEnds: true });
 
 // 3. Draw Avg / Ceiling reference labels with opaque background + paint-order stroke halo
@@ -259,8 +265,13 @@ placeReferenceLabel(svgEl, {
 });
 ```
 
-### ECharts Guardrails (`QuietEChartsDefaults` & Standalone Option Builder Rules)
-- Always set `grid: { containLabel: true }` so multi-line or unit-heavy tick labels never clip outside the SVG viewport.
-- Always compute `yAxis.max` via NIST `1-2-5` padding (`niceScale125`) when auto-scaling so peak bars do not collide with horizontal reference lines.
-- Always configure `markLine.label` with inside alignment (`insideEndTop` / `insideStartBottom`) plus opaque background halo (`backgroundColor: 'var(--bg-surface)'`, `padding: [2, 5]`) so dashed lines never strike through text glyphs.
-
+### ECharts Guardrails (`QuietEChartsDefaults` & Multi-Plot Spine Registration)
+- For standalone single charts, `normalizeOption` enforces `grid: { containLabel: true }`, haloed inside `markLine.label` (`padding: [2, 5]`), and `1-2-5` `yAxis.max` padding.
+- Route single-chart options through `QuietEChartsDefaults.normalizeOption(opt, payload, tokens, containerWidth)` (`applySafeLegendLayout`):
+  - **Narrow `390px` Scroll-Legend Guard**: Converts `< 640px` or unopted `type: 'scroll'` legends into wrapping `'plain'` at `bottom: 0` so paginator arrows never overlap text.
+  - **Dual Right-Hand Y-Axis Legend Guard**: Anchors legends on right-axis plots to `bottom: 0` (`left: 'center'`) with `grid.bottom >= 38` (`>= 46` narrow `>= 3` items).
+- **Multi-Plot Columns, Rows & `R x C` Grids (`alignPlotGridFrames` / `alignSharedAxes`)**: Leaving `containLabel: true` across stacked or side-by-side ECharts plots causes varying inner shifts (`"6M"` vs. `"3.5M"` or right Y-axes). Pass `[p0, p1]` or `[[r0c0, r0c1], [r1c0, r1c1]]` to `QuietEChartsDefaults.alignPlotGridFrames(matrix, opts)` (or `alignSharedAxes(list, opts)` for column stacks):
+  - Pre-measures left/right Y ticks, axis titles, and legend clearances, then writes explicit column-max `left`/`right` and row-max `top`/`bottom` pixel gutters with `containLabel: false` (`<= 2px` `[PLOT_AXIS_MISALIGN]` spine registration).
+  - Re-indexes sparse category series onto canonical zero-filled X buckets down matching `(col, xUnit, eventKey)` columns while letting differing `xUnit`/`eventKey` (`independentXSpan`) or differing `yUnit` (`independentYSpan` / `quietZoomedScale`) retain independent domain spans.
+  - Pair side-by-side cards with `.va-plot-row` / `.va-plot-grid` CSS `subgrid` so uneven 1- vs. 2-line headers never shift adjacent `<svg>` stages vertically.
+- **Responsive `ResizeObserver` & Cohesive Palette (`observeChartResize` + `--chart-1..5`)**: Attach `QuietEChartsDefaults.observeChartResize(hostEl, chart)` (with `requestAnimationFrame` debounce and cleanup returned for unmount/`disposeWrap`) alongside `min-width: 0; max-width: 100%;` on `.va-card`, `.va-pane`, `.qe-plot-wrap`, and `.qe-echarts-host` so half-screen (`~720px`) snaps and vertical tab bars never freeze chart widths. Draw all series page-wide from the unified `--chart-1..5` ramp.

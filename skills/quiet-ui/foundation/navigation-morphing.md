@@ -43,35 +43,37 @@ Desktop layouts have expansive horizontal real estate. Placing mobile dock navig
 
 ---
 
-## 3. Foldable >= 860px Split Reader & Sticky Compaction
+## 3. Foldable >= 780px Split Reader, First-Screen & Sticky Budget
 
-Dual-screen and unfolded foldable devices (e.g., `860px–1080px` width, such as an unfolded Pixel Fold at `900px`) suffer from severe vertical fold congestion when stacked breadcrumbs, title bars, and status bars consume the top 450px—and suffer equally when master-detail views fall back to full-screen modals instead of side-by-side split readers:
+Dual-screen and unfolded foldable devices (e.g., `780px–1099px` width; Pixel/Galaxy Fold at `820px` CSS px) suffer from vertical fold congestion when stacked header rows consume the first screen or master-detail views fall back to full-screen modals instead of side-by-side split readers:
 
-- **Full Desktop Mode ($\ge 1100\text{px}$)**: Eyebrow kicker, H1 title, status chips, and compact joined toolbar rows sit comfortably above content; split drawers open cleanly side-by-side.
-- **Unfolded Foldable Mode ($860\text{px} - 1099\text{px}$)**: Lower the split-reader breakpoint from `1200px` down to **`>= 860px`** so side-by-side list + detail inspector panes stay open concurrently on unfolded foldables instead of hijacking the screen with a modal overlay. Collapse sticky chrome above scroll strictly to a single-line **brand-only header** (hide secondary utility/filter strips when scrolled `< 1100px`) and replace multi-row filter pills with compact `.va-toolbar-joined` controls.
+- **Full Desktop Mode ($\ge 1100\text{px}$)**: Eyebrow kicker, H1 title, status chips, and compact joined toolbar rows sit cleanly above content; split drawers open side-by-side.
+- **Unfolded Foldable Mode ($\ge 780\text{px}$ to $1099\text{px}$)**: Lower the split-reader (`.va-split-reader`) and 2-column secondary chart/plot grid (`.va-chart-grid-2`, `.va-plot-row`, `.va-plot-grid`) breakpoint to **`>= 780px`** so side-by-side panes and `subgrid` plot cards stay open concurrently at `820px` instead of triggering modal overlays.
+- **First-Viewport Chrome Budget (`<= 56px` Sticky / `<= 96px` Inspector Header)**: Sticky/fixed top bars MUST fit on **one single `space-between` row (`<= 56px` tall)** (`<= 64px` audited cumulative cap `[STICKY_CHROME_BLOAT]`; hide mode-specific filter strips when viewing other modes, and set `scroll-padding-top` so focused targets clear sticky bars). Detail/inspector headers must stay **`<= 2` compact rows (`<= 96px`)** so primary content starts within the top 30% of the screen, and `0`-issue diagnostic/audit tables should collapse inside `<details>` by default (`ISA-101` quiet nominal principle).
 - **Zero Synthetic In-Page Jump Sidebars**: Never invent a floating or left-rail section jump menu (`6–7` anchor links) for a single vertically scrollable page unless genuine multi-view route state requires navigation.
 
 ```
 [Desktop Stack >= 1100px]
 +---------------------------------------------------------------+
-| KICKER: SUBSYSTEM / TELEMETRY                                 |
-| H1: Orbital Propulsion Stage Array Analysis                   |
-| Status: [ONLINE]  Version: 2.4.1  Timestamp: 14:02:11Z        |
+| KICKER: SUBSYSTEM / H1: Propulsion Array  [ONLINE] [v2.4]     |
 +---------------------------------------------------------------+
 
-[Compact Foldable 860px Eyebrow Line]
+[Compact Foldable 780px..1099px Eyebrow Line (<= 56px sticky)]
 +---------------------------------------------------------------+
-| SUBSYSTEM / H1: Orbital Propulsion Array  [ONLINE] [v2.4] [...]|
+| SUBSYSTEM / H1: Propulsion Array         [ONLINE] [Filter v]  |
 +---------------------------------------------------------------+
 ```
 
 ---
 
-## 4. Mobile 390px Touch Hit Targets & KPI Strips
+## 4. Coarse-Pointer `44px` Interactive vs. `20–22px` Badges & KPI Strips
 
-At mobile widths ($< 700\text{px}$ and down to 390px phone screens):
-- **NASA-STD-3001 & WCAG 2.5.5 Touch Conformance**: All interactive touch targets must meet a hard floor of **$44\text{px} \times 44\text{px}$** (`--res-touch-min: 44px`).
-- **Telemetry Inversion**: Heavy waveform charts or multi-series tables must not push key metrics below the fold. Place a compact **$2\times 2$ grid or horizontal swipeable KPI strip** directly above the primary canvas.
+Across handsets (`< 700px` / `390px`) and coarse-pointer tablets/foldables (`>= 768px`):
+- **Interactive-Only `44px` Hit Targets**: `@media (pointer: coarse)` `44x44px` sizing applies **only to interactive controls** (`button`, `a[href]`, `select`, `input`, `[role="button"]`, `[role="tab"]`, `[role="checkbox"]`) on `< 700px` handsets (or coarse `< 768px`).
+- **Compact `20–22px` Read-Only Badges**: Static `.va-pill` status/tag labels (`.va-pill:not(button):not(a):not([role="button"]):not([role="tab"])`) and `.va-badge` pills MUST stay `20–22px` tall (`2–4px` vertical pad) on phones, tablets, and foldables so metadata never inflates into `40px` button lookalikes.
+- **Tablet & Foldable Joined Toolbars (`>= 768px`)**: On `pointer: coarse` tablets and unfolded foldables (`>= 768px`), `.va-toolbar-joined` segments use `32–34px` visual height (`44px` visual height applies strictly `< 700px`).
+- **Overlay Corner Hit Boxes (`.va-overlay-control`)**: Corner controls keep a `20–24px` visible circle and provide `44x44px` touch tolerance via an invisible `::after { inset: -11px; }` pseudo-element.
+- **Telemetry Inversion**: Place a compact **$2\times 2$ grid or swipeable KPI strip** directly above primary handset charts.
 
 ---
 
@@ -125,28 +127,22 @@ Paper output must represent raw data without software navigation chrome:
     justify-content: center;
   }
 
-  /* Unfolded Foldable >= 860px Split Reader + Sticky < 1100px Brand-Only Compaction */
-  @media (min-width: 860px) and (max-width: 1099px) {
-    .va-header-stack {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-    }
-    .va-header-stack .va-kicker {
-      margin-inline-end: 0.25rem;
-    }
-    .va-header-stack h1 {
-      font-size: var(--ts-base);
-      display: inline;
-    }
-    .va-header-subbar {
-      display: none;
-    }
+  /* Unfolded Foldable >= 780px Split Reader + Sticky < 1100px Single-Row Compaction */
+  @media (min-width: 780px) {
     .va-split-reader {
       display: grid;
       grid-template-columns: minmax(15rem, 36%) minmax(0, 1fr);
       gap: 0.75rem;
     }
+    .va-chart-grid-2, .va-plot-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+  }
+  @media (min-width: 780px) and (max-width: 1099px) {
+    .va-header-stack { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+    .va-header-subbar { display: none; }
   }
 }
 
@@ -178,10 +174,9 @@ Paper output must represent raw data without software navigation chrome:
 
 | Violation | Problem Caused | Architectural Solution |
 | :--- | :--- | :--- |
-| N4 Bottom Dock on 1440p desktop screen | Stretches 4 icons across 2560px bottom; looks broken and unprofessional. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
-| Inventing a 6–7 link in-page jump sidebar on a single scrollable page | Wastes horizontal space and adds fake multi-view navigation chrome. | Omit left section-jump rails on single-scroll pages; use compact top section pills if needed. |
-| Sticky 3-bar utility header at `< 1100px` | Steals top viewport height while scrolling unfolded `900px` foldables. | Collapse scrolled sticky headers `< 1100px` to brand-only line (`display: none` on `.va-header-subbar`). |
-| Full-screen reader modal on unfolded `900px` foldable (`fold >= 860px`) | Forces full-screen takeover because split threshold waited for `1200px`. | Lower split-pane threshold to `>= 860px` so list and reader stay side-by-side. |
-| Touch buttons under 44px on mobile | Operator mis-taps adjacent telemetry switches in high-stress field conditions. | Enforce `--res-touch-min: 44px` inside `@media (pointer: coarse), (max-width: 720px)`. |
-| Navigation rails visible on printed reports | Wastes paper and inks useless software navigation links on static sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |
-| Unclosable drawer overlay on small desktop | Obscures data table columns and prevents simultaneous inspection. | Auto-morph N1 from drawer to persistent rail at $\ge 1100\text{px}$. |
+| N4 Bottom Dock on `>= 700px` screens | Stretches icons across bottom; breaks tablet/desktop chrome. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
+| Inventing an in-page jump sidebar on one continuous scroll page | Wastes horizontal space and fabricates fake multi-view navigation. | Omit left section-jump rails; use compact top section pills if needed. |
+| Stacked multi-row sticky header `> 64px` (`[STICKY_CHROME_BLOAT]`) | Steals top viewport height on `390px` phones and `820px` foldables. | Fit sticky bars on 1 single row (`<= 56px`), hide unused mode controls, collapse `0`-issue tables in `<details>`. |
+| Full-screen modal viewer at `820px` foldable width | Hides master list because split waited for `860–1200px`. | Lower split-reader & 2-col plot grid threshold to `>= 780px` (`820px` CSS tested). |
+| Coarse-pointer `44px` rule inflating static `.va-badge`/`.va-pill` labels or `44px` filled thumbnail circles | Turns compact metadata chips into button lookalikes and obscures media. | Scope `44px` strictly to interactive controls `< 700px`, use `32–34px` toolbars `>= 768px`, and extend corner overlays via invisible `::after`. |
+| Navigation rails visible on printed reports | Wastes paper and inks interactive navigation links on sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |

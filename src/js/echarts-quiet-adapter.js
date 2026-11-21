@@ -4,19 +4,14 @@
   'use strict';
 
   var AUTO_VIEWS = {
-    'v06-ai-drift-and-lineage-ide': true,
-    'v10-civic-capital-budget-deck': true,
-    'v11-treasury-stress-test-solver': true,
-    'v12-stem-interactive-lab': true,
-    'v13-propulsion-archival-monograph': true,
-    'v18-home-assistant-companion-console': true,
-    'v19-product-roadmap-and-triage': true,
-    'v20-student-capstone-lab-report': true,
-    'v21-field-anomaly-escalation-tsn': true,
+    'v06-ai-drift-and-lineage-ide': true, 'v10-civic-capital-budget-deck': true, 'v11-treasury-stress-test-solver': true,
+    'v12-stem-interactive-lab': true, 'v13-propulsion-archival-monograph': true, 'v18-home-assistant-companion-console': true,
+    'v19-product-roadmap-and-triage': true, 'v20-student-capstone-lab-report': true, 'v21-field-anomaly-escalation-tsn': true,
   };
   var PALETTE_TOKENS = ['--accent-focal', '--status-warn', '--text-secondary', '--status-danger'];
   var ROOT_LISTENERS = new WeakSet();
   var RESIZE_OBSERVERS = new WeakMap();
+  var HOST_RESIZE_CLEANUPS = new WeakMap();
   var COPY_TIMERS = new WeakMap();
 
   function getGlobal(name) {
@@ -257,6 +252,8 @@
   }
 
   function disposeWrap(wrap, lib) {
+    var unobserve = HOST_RESIZE_CLEANUPS.get(wrap);
+    if (typeof unobserve === 'function') { unobserve(); HOST_RESIZE_CLEANUPS.delete(wrap); }
     var host = wrap.querySelector('.qe-echarts-host');
     if (host) {
       if (lib && typeof lib.getInstanceByDom === 'function') {
@@ -270,15 +267,13 @@
   }
 
   function mountWrap(doc, wrap, lib) {
-    var host = wrap.querySelector('.qe-echarts-host');
-    var scroll = wrap.querySelector('.va-figure-scroll');
+    var host = wrap.querySelector('.qe-echarts-host'), scroll = wrap.querySelector('.va-figure-scroll');
     if (!host || !scroll || !lib || !shouldEnableECharts(doc, wrap)) { disposeWrap(wrap, lib); return; }
     var payload;
     try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
-    var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8);
-    var w = avail > 0 ? avail : 300;
-    var ss = getGlobal('QuietEChartsSankeyStrip');
+    var avail = Math.round((scroll.clientWidth || wrap.clientWidth || 640) - 8), w = avail > 0 ? avail : 300;
+    var ss = getGlobal('QuietEChartsSankeyStrip'), defaults = getGlobal('QuietEChartsDefaults');
     var isSS = payload.kind === 'sankey' || payload.kind === 'strip_chart';
     var hasRes = !!(payload.residuals && Array.isArray(payload.residuals.points) && payload.residuals.points.length);
     var h = (isSS && ss && typeof ss.calcHeight === 'function') ? ss.calcHeight(payload, w)
@@ -287,14 +282,21 @@
     if (isFinite(maxH) && maxH > 120) h = Math.min(h, Math.round(maxH));
     var mKey = [doc.documentElement.dataset.theme || '', doc.documentElement.dataset.medium || '', wrap.dataset.activeTerm || '', wrap.dataset.echartsMode || '', w, h].join('|');
     var inst = lib.getInstanceByDom(host);
+    host.style.width = '100%';
+    host.style.height = h + 'px';
     if (inst && wrap.dataset.qeMountKey === mKey) {
       inst.resize({ width: w, height: h });
       wrap.dataset.echartsActive = 'true';
+      if (defaults && typeof defaults.observeChartResize === 'function' && !HOST_RESIZE_CLEANUPS.has(wrap)) {
+        HOST_RESIZE_CLEANUPS.set(wrap, defaults.observeChartResize(host, inst, { onResize: function () { mountWrap(doc, wrap, lib); } }));
+      }
       return;
     }
-    host.style.width = w + 'px';
-    host.style.height = h + 'px';
-    if (!inst) inst = lib.init(host, null, { renderer: 'svg', width: w, height: h });
+    if (!inst) {
+      var staleClean = HOST_RESIZE_CLEANUPS.get(wrap);
+      if (typeof staleClean === 'function') { staleClean(); HOST_RESIZE_CLEANUPS.delete(wrap); }
+      inst = lib.init(host, null, { renderer: 'svg', width: w, height: h });
+    }
     var tok = readTokens(doc), layers = getLayers(), ext = getGlobal('QuietEChartsExt');
     var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
     var opt = isSS ? (ss ? ss.buildOption(doc, payload, tok, w) : null)
@@ -304,12 +306,14 @@
       : buildCartesianOption(doc, payload, wrap.dataset.activeTerm || '');
     if (!opt) { disposeWrap(wrap, lib); return; }
     if (ext && typeof ext.adaptMobileOpt === 'function') opt = ext.adaptMobileOpt(opt, payload, w, tok);
-    var defaults = getGlobal('QuietEChartsDefaults');
-    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok);
+    if (defaults && typeof defaults.normalizeOption === 'function') opt = defaults.normalizeOption(opt, payload, tok, w);
     inst.setOption(opt, true);
     inst.resize({ width: w, height: h });
     wrap.dataset.qeMountKey = mKey;
     wrap.dataset.echartsActive = 'true';
+    if (defaults && typeof defaults.observeChartResize === 'function' && !HOST_RESIZE_CLEANUPS.has(wrap)) {
+      HOST_RESIZE_CLEANUPS.set(wrap, defaults.observeChartResize(host, inst, { onResize: function () { mountWrap(doc, wrap, lib); } }));
+    }
   }
 
   function activateEcoTab(tabBtn) {
@@ -426,9 +430,7 @@
 
   function refresh(docRef) {
     var doc = docRef || global.document;
-    if (!doc) return;
-    var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
+    if (doc) { var lib = getLib(); doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); }); }
   }
 
   function disposeAll(docRef) {
