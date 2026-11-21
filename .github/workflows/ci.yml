@@ -53,6 +53,7 @@ jobs:
           python-version: "3.12"
 
       - name: Set up Chrome for Headless CDP
+        id: setup_chrome
         uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
@@ -67,9 +68,14 @@ jobs:
       - name: Run full 21-view, optics, ECharts & bench CDP test suite
         env:
           QUIET_REQUIRE_CDP: "1"
+          CHROME_BIN: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROMEDRIVER_BIN: ${{ steps.setup_chrome.outputs.chromedriver-path }}
         run: python3 -B -m unittest discover -s tests -v
 
       - name: Audit showcase & bench in Headless Chrome CDP mode
+        env:
+          CHROME_BIN: ${{ steps.setup_chrome.outputs.chrome-path }}
+          CHROMEDRIVER_BIN: ${{ steps.setup_chrome.outputs.chromedriver-path }}
         run: |
           python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
           python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --cdp

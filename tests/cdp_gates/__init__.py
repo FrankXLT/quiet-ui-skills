@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import functools
+import os
 import threading
 import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -51,11 +52,16 @@ def create_headless_driver() -> Any:
     """Create a Headless Chrome WebDriver configured for deterministic CDP audits."""
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
 
     opts = Options()
+    chrome_bin = os.environ.get("CHROME_BIN")
+    if chrome_bin:
+        opts.binary_location = chrome_bin
     for arg in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--window-size=1440,900"):
         opts.add_argument(arg)
-    return webdriver.Chrome(options=opts)
+    driver_bin = os.environ.get("CHROMEDRIVER_BIN")
+    return webdriver.Chrome(service=Service(executable_path=driver_bin), options=opts) if driver_bin else webdriver.Chrome(options=opts)
 
 
 def set_viewport(driver: Any, width: int, height: int, scale: int = 1) -> None:

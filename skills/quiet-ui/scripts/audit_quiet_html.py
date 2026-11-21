@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI Pillar 1 — Portable Static & Headless Chrome HTML/CSS Linter (<= 340L)."""
+"""Quiet UI Pillar 1 — Portable Static & Headless Chrome HTML/CSS Linter."""
 from __future__ import annotations
 
 import argparse
 import functools
 import json
+import os
 import re
 import sys
 import threading
@@ -297,12 +298,17 @@ def audit_cdp_urls(urls: list[str]) -> list[str]:
     """Audit URLs in Headless Chrome across 390, 820, and 1440 viewports."""
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
 
     opts = Options()
+    chrome_bin = os.environ.get("CHROME_BIN")
+    if chrome_bin:
+        opts.binary_location = chrome_bin
     for arg in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"):
         opts.add_argument(arg)
     errs: list[str] = []
-    driver = webdriver.Chrome(options=opts)
+    driver_bin = os.environ.get("CHROMEDRIVER_BIN")
+    driver = webdriver.Chrome(service=Service(executable_path=driver_bin), options=opts) if driver_bin else webdriver.Chrome(options=opts)
     try:
         for url in urls:
             driver.get(url)
