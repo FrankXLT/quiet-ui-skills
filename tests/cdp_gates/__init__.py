@@ -58,7 +58,10 @@ def create_headless_driver() -> Any:
     chrome_bin = os.environ.get("CHROME_BIN")
     if chrome_bin:
         opts.binary_location = chrome_bin
-    for arg in ("--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu", "--window-size=1440,900"):
+    for arg in (
+        "--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan",
+        "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage", "--window-size=1440,900",
+    ):
         opts.add_argument(arg)
     driver_bin = os.environ.get("CHROMEDRIVER_BIN")
     return webdriver.Chrome(service=Service(executable_path=driver_bin), options=opts) if driver_bin else webdriver.Chrome(options=opts)

@@ -195,13 +195,12 @@ class TestCoherenceAndResize(unittest.TestCase):
         r_clean = self._run_auditor(page_p, "--cdp", "--exclude", "echarts.min.js")
         self.assertEqual(r_clean.returncode, 0, r_clean.stdout + r_clean.stderr)
 
-        from selenium import webdriver
-        from selenium.webdriver.chrome.options import Options
+        tests_dir = str(REPO_ROOT / "tests")
+        if tests_dir not in sys.path:
+            sys.path.insert(0, tests_dir)
+        from cdp_gates import create_headless_driver  # noqa: E402
 
-        opts = Options()
-        for a in ("--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage"):
-            opts.add_argument(a)
-        drv = webdriver.Chrome(options=opts)
+        drv = create_headless_driver()
         try:
             drv.get(page_p.as_uri())
             drv.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": 1440, "height": 900, "deviceScaleFactor": 1, "mobile": False})
