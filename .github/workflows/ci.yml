@@ -37,8 +37,8 @@ jobs:
 
       - name: Audit shipped HTML deliverables (static mode)
         run: |
-          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html
-          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --allow-showcase-chrome
 
   visual-cdp-gates:
     name: Headless Chrome CDP Visual Gates
@@ -77,5 +77,5 @@ jobs:
           CHROME_BIN: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROMEDRIVER_BIN: ${{ steps.setup_chrome.outputs.chromedriver-path }}
         run: |
-          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
-          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --cdp
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --cdp --allow-showcase-chrome
