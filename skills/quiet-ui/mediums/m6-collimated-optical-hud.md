@@ -83,7 +83,7 @@ Optical see-through displays cannot project "black" (black is simply transparent
     inset: 0;
     inline-size: 100vw;
     block-size: 100vh;
-    background: transparent !important;
+    background: transparent;
     color: #4ADE80; /* Phosphor Green */
     font-family: var(--font-mono);
     pointer-events: none;

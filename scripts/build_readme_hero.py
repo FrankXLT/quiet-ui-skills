@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.0 — Reproducible README 2x2 Hero Banner Builder (1600x920, <= 280 KB)."""
+"""Quiet UI v9.1 — Reproducible README 2x2 Hero Banner Builder (1600x920, <= 280 KB)."""
 from __future__ import annotations
 
-import base64, functools, os, sys, threading, time
+import base64
+import functools
+import os
+import threading
+import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from pathlib import Path
@@ -15,21 +19,41 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-OUT_PATH = REPO_ROOT / "docs" / "assets" / "hero_4family_overview.png"
-FONT_BOLD = "/usr/share/fonts/google-carlito-fonts/Carlito-Bold.ttf"
-FONT_MONO = "/usr/share/fonts/adwaita-mono-fonts/AdwaitaMono-Regular.ttf"
+OUT_PATH = REPO_ROOT / "docs" / "assets" / "quiet-ui-hero.png"
+BOLD_FONT_CANDIDATES = (
+    "/usr/share/fonts/google-carlito-fonts/Carlito-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/dejavu-sans-fonts/DejaVuSans-Bold.ttf",
+    "/usr/share/fonts/liberation-sans/LiberationSans-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+    "C:/Windows/Fonts/arialbd.ttf",
+)
+MONO_FONT_CANDIDATES = (
+    "/usr/share/fonts/adwaita-mono-fonts/AdwaitaMono-Regular.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf",
+    "/usr/share/fonts/dejavu-sans-mono-fonts/DejaVuSansMono.ttf",
+    "/usr/share/fonts/liberation-mono/LiberationMono-Regular.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
+    "/System/Library/Fonts/Supplemental/Menlo.ttc",
+    "C:/Windows/Fonts/consola.ttf",
+)
 CAP_W, CAP_H, PANEL_W, PANEL_H, HDR_H = 1440, 746, 770, 425, 26
 
 
 class _SilentHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: Any, directory: str, **kwargs: Any) -> None:
         super().__init__(*args, directory=directory, **kwargs)
+
     def log_message(self, format: str, *args: Any) -> None:
         return
 
 
-def _font(path: str, size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    return ImageFont.truetype(path, size) if Path(path).exists() else ImageFont.load_default()
+def _font(candidates: tuple[str, ...], size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+    for path in candidates:
+        if Path(path).exists():
+            return ImageFont.truetype(path, size)
+    return ImageFont.load_default()
 
 
 def _shot(driver: Any) -> Image.Image:
@@ -99,10 +123,10 @@ def _capture_bench(driver: Any, base_url: str) -> Image.Image:
 def _composite(panels: list[tuple[str, str, Image.Image]]) -> Image.Image:
     canvas = Image.new("RGB", (1600, 920), "#0F172A")
     draw = ImageDraw.Draw(canvas)
-    f_title, f_sub, f_tag = _font(FONT_BOLD, 19), _font(FONT_MONO, 12), _font(FONT_BOLD, 13)
+    f_title, f_sub, f_tag = _font(BOLD_FONT_CANDIDATES, 19), _font(MONO_FONT_CANDIDATES, 12), _font(BOLD_FONT_CANDIDATES, 13)
     draw.rectangle([0, 0, 1600, 42], fill="#0B1120")
     draw.line([(0, 42), (1600, 42)], fill="#1E293B", width=1)
-    draw.text((24, 10), "QUIET UI v9.0", fill="#38BDF8", font=f_title)
+    draw.text((24, 10), "QUIET UI v9.1", fill="#38BDF8", font=f_title)
     draw.text((152, 14), "6-Domain Studio (21 Views)  ·  39 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
     rb = "Themes: White  ·  Dark  ·  Paper  ·  Dark-Paper   |   NIST 1-2-5  ·  Zero Truncation"
     draw.text((1576 - draw.textbbox((0, 0), rb, font=f_sub)[2], 15), rb, fill="#94A3B8", font=f_sub)
@@ -116,7 +140,9 @@ def _composite(panels: list[tuple[str, str, Image.Image]]) -> Image.Image:
 
 
 def main() -> int:
-    os.environ["PATH"] = "/usr/local/bin:/usr/bin:/bin"
+    for p_dir in ("/usr/local/bin", "/usr/bin", "/bin"):
+        if p_dir not in os.environ.get("PATH", ""):
+            os.environ["PATH"] = f"{os.environ.get('PATH', '')}:{p_dir}".strip(":")
     srv = ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(_SilentHandler, directory=str(REPO_ROOT)))
     srv.daemon_threads = True
     threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -128,10 +154,12 @@ def main() -> int:
         driver = webdriver.Chrome(options=opts)
         base = f"http://127.0.0.1:{srv.server_address[1]}"
         night_js = "const nb=d&&d.querySelector('#v15-backplate-chips [data-backplate=\"lowlight\"]');if(nb)nb.click();"
-        panels = [("v01 · Clinical ICU Waveform & Vital Scope", "DOMAIN 01 · WHITE", _capture_showcase(driver, base, "01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "white", fit_sel="#v01-hemo")),
-                  ("v15 · Collimated Night Flight HUD Optics", "DOMAIN 05 · DARK", _capture_showcase(driver, base, "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", night_js)),
-                  ("v18 · Home Assistant Energy & Climate", "DOMAIN 06 · PAPER", _capture_showcase(driver, base, "06-smart-home-and-energy", "v18-home-assistant-companion-console", "paper")),
-                  ("Component Library · ECharts Gantt & ATO Enclave", "39 SPECIMENS · DARK-PAPER", _capture_bench(driver, base))]
+        panels = [
+            ("v01 · Clinical ICU Waveform & Vital Scope", "DOMAIN 01 · WHITE", _capture_showcase(driver, base, "01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "white", fit_sel="#v01-hemo")),
+            ("v15 · Collimated Night Flight HUD Optics", "DOMAIN 05 · DARK", _capture_showcase(driver, base, "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", night_js)),
+            ("v18 · Home Assistant Energy & Climate", "DOMAIN 06 · PAPER", _capture_showcase(driver, base, "06-smart-home-and-energy", "v18-home-assistant-companion-console", "paper")),
+            ("Component Library · ECharts Gantt & ATO Enclave", "39 SPECIMENS · DARK-PAPER", _capture_bench(driver, base)),
+        ]
         hero = _composite(panels)
         OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
         meta = PngInfo()
@@ -149,4 +177,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

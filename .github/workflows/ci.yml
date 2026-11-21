@@ -1,0 +1,75 @@
+name: Quiet UI CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  stdlib-tests:
+    name: Zero-Dependency Suite (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Verify generated bundles match canonical sources
+        run: python3 -B scripts/build_all.py --check
+
+      - name: Run zero-dependency unit, compiler, corpus, portability & hygiene tests
+        env:
+          QUIET_SKIP_CDP: "1"
+        run: python3 -B -m unittest discover -s tests -v
+
+      - name: Audit shipped HTML deliverables (static mode)
+        run: |
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html
+
+  visual-cdp-gates:
+    name: Headless Chrome CDP Visual Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Chrome for Headless CDP
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+          install-chromedriver: true
+
+      - name: Install dev dependencies (Selenium + Pillow)
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install ".[dev]"
+
+      - name: Run full 21-view, optics, ECharts & bench CDP test suite
+        env:
+          QUIET_REQUIRE_CDP: "1"
+        run: python3 -B -m unittest discover -s tests -v
+
+      - name: Audit showcase & bench in Headless Chrome CDP mode
+        run: |
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --cdp

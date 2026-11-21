@@ -1,0 +1,42 @@
+name: Feature Request
+description: Propose a new delivery medium pattern, evidence schematic compiler enhancement, or accessibility improvement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Quiet UI prioritizes calibrated typography, concentric geometry, zero runtime dependencies, and deterministic offline builds.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Target Pillar
+      options:
+        - Pillar 1 (quiet-ui)
+        - Pillar 2 (quiet-evidence)
+        - Pillar 3 (quiet-bridge)
+        - Build / Verification / CI
+        - Customizations & Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What engineering communication or metrology gap does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Design
+      description: Describe the proposed schema fields, CSS layers, or CLI behavior (keeping zero runtime dependencies).
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Standards Alignment
+      options:
+        - label: Compatible with offline / zero-CDN HTML exports and `< 11px` floor prevention (`>= 11px` text, `0 !important`)
+        - label: Follows the <= 450-line source module budget

@@ -1,0 +1,50 @@
+name: Bug Report
+description: Report a rendering issue, skill portability bug, compiler drift, or CLI failure in Quiet UI Skills
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue. Please avoid posting private hostnames, internal IPs, or proprietary brand assets.
+  - type: dropdown
+    id: pillar
+    attributes:
+      label: Affected Area
+      description: Which Quiet UI pillar or component is affected?
+      options:
+        - Pillar 1 (quiet-ui / audit_quiet_html.py)
+        - Pillar 2 (quiet-evidence / compile_evidence.py)
+        - Pillar 3 (quiet-bridge / audience lens)
+        - Interactive Studio / Component Library Showcase
+        - Customizations / Tokens
+        - Installer / Build / Documentation
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Release Version or Commit
+      description: "Output of `git rev-parse --short HEAD` or `plugin.json` version"
+      placeholder: "v9.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What Happened?
+      description: Clear description of expected vs. actual behavior, viewport size, and delivery medium (`M1`–`M7`).
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal Reproduction Steps / JSON Spec
+      description: Exact command, minimal HTML/JSON input, or steps to reproduce the issue.
+      render: bash
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, browser/Chrome version (if applicable), and active theme (`white`, `paper`, `dark-paper`, `dark`).
+      placeholder: "Linux x86_64 | Python 3.12 | Chrome 131 | white"

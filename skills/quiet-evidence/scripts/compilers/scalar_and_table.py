@@ -12,6 +12,7 @@ from .tokens_and_scales import (
     ANNUNCIATOR_STATES,
     compute_linear_125_scale,
     esc,
+    finite_float,
     format_math_html,
     format_quantity_header,
     format_tick_numeral,
@@ -23,11 +24,7 @@ _SI_UNIT_WRAP_RE = re.compile(r"\b(mmHg|cmH2O|mmol/L|mEq/L|mg/dL|kPa|hPa|kHz|MHz
 
 
 def _finite_num(val: Any, default: float | None = None) -> float | None:
-    try:
-        n = float(val)
-        return n if math.isfinite(n) else default
-    except (TypeError, ValueError):
-        return default
+    return finite_float(val, default)
 
 
 def _fmt_signed(val: Any) -> str:
@@ -239,12 +236,13 @@ def _render_single_scalar(spec: dict[str, Any], rigor: str, medium: str, chrome:
     lines.append(f'  <div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{esc(val_text)}</span><span class="qe-scalar-calc qe-unit">{calc_html}</span></div>')
     pill_txt = _l1_status_label(disp_key, ann) if rigor == "L1" else disp_info["pill"]
     disp_pill = render_pill_html(pill_txt, variant="status", state=disp_info["state"])
-    margin_html = f'<span class="qe-scalar-margin va-nums">Margin {float(margin):+.1f}%</span>' if (margin is not None and rigor in {"L2", "L3"}) else ""
+    m_val = _finite_num(margin)
+    margin_html = f'<span class="qe-scalar-margin va-nums">Margin {m_val:+.1f}%</span>' if (m_val is not None and rigor in {"L2", "L3"}) else ""
     lines.append(f'  <div class="qe-scalar-disp">{disp_pill}{margin_html}</div>')
     lines.append("</div>")
 
-    if rigor == "L1" and spec.get("sparkline"):
-        pts = [float(v) for v in spec["sparkline"]]
+    pts = [p for p in (_finite_num(v) for v in (spec.get("sparkline") or [])) if p is not None] if rigor == "L1" else []
+    if rigor == "L1" and pts:
         lo, hi = min(pts), max(pts)
         span = hi - lo if hi != lo else 1.0
         coords = " ".join(f"{16 + i * (288.0 / max(len(pts) - 1, 1)):.1f},{28 - ((v - lo) / span) * 20:.1f}" for i, v in enumerate(pts))

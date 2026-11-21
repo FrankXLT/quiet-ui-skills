@@ -154,7 +154,7 @@ def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str], mo
 
 def check_immutability(repo_root: Path) -> list[str]:
     errs: list[str] = []
-    res = subprocess.run(["git", "status", "--porcelain"], cwd=repo_root, capture_output=True, text=True)
+    res = subprocess.run(["git", "status", "--porcelain", "-uall"], cwd=repo_root, capture_output=True, text=True)
     if res.returncode != 0:
         return [f"[GIT_ERROR] Failed to run git status: {res.stderr}"]
 

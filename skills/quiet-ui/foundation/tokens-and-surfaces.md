@@ -70,7 +70,7 @@ $$\text{Radius}_{\text{inner}} = \max(0\text{px}, \text{Radius}_{\text{card}} - 
 | `soft` | `18px` | `4px` | `14px` | `10px` | `2px` | Consumer portals, ambient wall views |
 
 ### 4-Variant `.va-pill` Geometry & Baseline Alignment Lock
-Quiet UI replaces generic pill boxes with a deterministic 4-variant system (`@layer shell` in `src/css/06-b-pills-and-annunciators.css`):
+Quiet UI replaces generic pill boxes with a deterministic 4-variant system (`@layer shell` in `src/css/03-pills-and-annunciators.css`):
 - **Round = Clickable Invariant**: Non-interactive status annunciators and metadata keycaps (`status`, `tag`) use `--radius-xs` (`2px`, or `0px` under `data-corners="sharp"`). Full stadium curvature (`--radius-pill: 999px`) is reserved strictly for interactive `chip` controls (`<button>`, `<a>`, `[role="button"]`).
 - **Zero-Inflation `18px` / `22px` Baseline Lock**: Every `.va-pill[data-variant="status"]` and `.va-pill[data-variant="tag"]` locks `block-size: 1.125rem` (`18px`), `line-height: 1`, `text-box: trim-both cap alphabetic`, `font-family: var(--font-mono)`, `font-variant-numeric: tabular-nums`, and lives inside a `.qe-scalar-top` / `.qe-bit-meta` / `.qe-card-head` flex row with `min-block-size: 1.375rem` (`22px`). Presence or absence of a stale/fault pill never shifts sibling baselines (`<= 1.0px`).
 - **Chromium-Safe Chroma Mixing**: Excursion borders and subtle surface washes mix semantic danger/warn tokens using `color-mix(in oklab, ...)` rather than `in oklch`, avoiding Chromium's neutral hue-interpolation collapse while preserving 4-theme parity.

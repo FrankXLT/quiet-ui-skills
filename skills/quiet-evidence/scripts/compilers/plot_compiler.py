@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import math
+import zlib
 from typing import Any
 
 from .comparison_plots import compile_dumbbell, compile_forest, compile_stacked_bar, compile_waterfall
@@ -274,7 +275,8 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     inset_x = pw * 0.035
     data_x = (x0 + inset_x, pw - 2.0 * inset_x)
     vb_h = 402 if show_res else 306
-    clip_uid = f"qe-clip-{abs(hash((str(spec.get('id', '')), str(x_ax.get('quantity', '')), str(y_ax.get('quantity', ''))))) % 999983}"
+    clip_key = f"{spec.get('id', '')}|{x_ax.get('quantity', '')}|{y_ax.get('quantity', '')}".encode("utf-8")
+    clip_uid = f"qe-clip-{zlib.crc32(clip_key) % 999983}"
     parts: list[str] = [f'<svg class="qe-svg qe-svg-600" viewBox="0 0 600 {vb_h}" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Analytical Plot"))}">']
     parts.append(f'<defs><clipPath id="{clip_uid}"><rect x="{x0}" y="{y0}" width="{pw}" height="{ph}"/></clipPath></defs>')
     parts.extend(_render_graticule(x_sc, y_sc, x_ax, y_ax, (x0, y0, pw, ph), data_x, rigor, medium))

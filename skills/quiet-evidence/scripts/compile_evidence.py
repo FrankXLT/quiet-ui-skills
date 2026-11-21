@@ -50,60 +50,68 @@ def detect_modality(spec: dict[str, Any]) -> str:
     raise ValueError(f"Unsupported or missing offline schema URN: {schema_id!r}")
 
 
-def _load_asset_text(rel_paths: tuple[str, ...]) -> str:
-    """Load canonical repo CSS/JS asset if running in checkout; return empty if absent."""
+def _load_bundle_asset(bundle_name: str, repo_rel_paths: tuple[str, ...]) -> str:
+    """Load portable skill asset bundle first; fall back to repo sources if absent."""
+    bundled = SCRIPT_DIR.parent / "assets" / bundle_name
+    if bundled.is_file():
+        return bundled.read_text(encoding="utf-8")
     repo_root = SCRIPT_DIR.parent.parent.parent
-    chunks: list[str] = []
-    for rp in rel_paths:
-        p = repo_root / rp
-        if p.exists():
-            chunks.append(p.read_text(encoding="utf-8"))
+    chunks = [(repo_root / rp).read_text(encoding="utf-8") for rp in repo_rel_paths if (repo_root / rp).is_file()]
     return "\n".join(chunks)
 
 
 _FALLBACK_TOKENS_CSS = (
     ':root,[data-theme="white"]{--bg-shell:#EEF2F6;--bg-canvas:#FFFFFF;--bg-surface:#FFFFFF;'
     '--bg-card:#FFFFFF;--bg-elevated:#F8FAFC;--bg-header:#F8FAFC;--text-primary:#0F172A;'
-    '--text-secondary:#334155;--text-muted:#475569;--border-hairline:#E2E8F0;--border-strong:#CBD5E1;'
+    '--text-secondary:#334155;--text-muted:#475569;--border-hairline:#E2E8F0;--border-subtle:#E2E8F0;--border-strong:#CBD5E1;'
     '--accent-primary:#1D4ED8;--accent-focal:#1D4ED8;--status-ok:#15803D;--status-ok-bg:#ECFDF5;'
     '--status-warn:#B45309;--status-warn-bg:#FFFBEB;--status-danger:#B91C1C;--status-err:var(--status-danger);--status-err-bg:#FFF1F2;'
     '--tint-indigo-bg:#EEF2FF;--tint-indigo-fg:#3730A3;--tint-emerald-bg:#ECFDF5;--tint-emerald-fg:#065F46;'
     '--tint-amber-bg:#FFFBEB;--tint-amber-fg:#92400E;--tint-rose-bg:#FFF1F2;--tint-rose-fg:#9F1239;'
     '--tint-violet-bg:#F5F3FF;--tint-violet-fg:#5B21B6;--font-sans:system-ui,sans-serif;'
-    '--font-mono:ui-monospace,monospace;--font-serif:Georgia,serif;--ts-xs:11.5px;--ts-sm:12.5px;'
-    '--ts-base:14px;--ts-md:16px;--ts-xl:21px;--radius-card:8px;--radius-inner:4px;}'
+    '--font-mono:ui-monospace,monospace;--font-serif:Georgia,serif;--font-nums:tabular-nums slashed-zero;--ts-xs:11.5px;--ts-sm:12.5px;'
+    '--ts-base:14px;--ts-md:16px;--ts-xl:21px;--radius-card:8px;--radius-sm:6px;--radius-xs:2px;--radius-inner:4px;--radius-pill:999px;}'
     '[data-theme="paper"]{--bg-shell:#EAE5DC;--bg-canvas:#F6F4EF;--bg-surface:#FCFBF8;'
     '--bg-card:#FCFBF8;--bg-elevated:#EFECE5;--bg-header:#EFECE5;--text-primary:#1C1917;'
-    '--text-secondary:#44403C;--text-muted:#57534E;--border-hairline:#E5E0D6;--border-strong:#D6CFC5;'
+    '--text-secondary:#44403C;--text-muted:#57534E;--border-hairline:#E5E0D6;--border-subtle:#E5E0D6;--border-strong:#D6CFC5;'
     '--accent-primary:#1E40AF;--accent-focal:#1E40AF;--status-ok:#15803D;--status-ok-bg:#E8F5EE;'
-    '--status-warn:#92400E;--status-warn-bg:#FDF5E6;--status-danger:#9F1239;--status-err:var(--status-danger);--status-err-bg:#FCEEEF;}'
-    '[data-theme="dark-paper"]{--bg-shell:#121110;--bg-canvas:#1A1816;--bg-surface:#23201D;'
-    '--bg-card:#23201D;--bg-elevated:#2D2925;--bg-header:#2D2925;--text-primary:#F5F5F4;'
-    '--text-secondary:#D6D3D1;--text-muted:#A8A29E;--border-hairline:#332F2B;--border-strong:#44403C;'
-    '--accent-primary:#60A5FA;--accent-focal:#60A5FA;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,.16);'
-    '--status-warn:#FBBF24;--status-warn-bg:rgba(245,158,11,.16);--status-danger:#FB7185;--status-err:var(--status-danger);--status-err-bg:rgba(244,63,94,.16);}'
+    '--status-warn:#92400E;--status-warn-bg:#FDF5E6;--status-danger:#9F1239;--status-err:var(--status-danger);--status-err-bg:#FCEEEF;'
+    '--tint-indigo-bg:#EBF0FA;--tint-indigo-fg:#312E81;--tint-emerald-bg:#E8F5EE;--tint-emerald-fg:#065F46;'
+    '--tint-amber-bg:#FDF5E6;--tint-amber-fg:#92400E;--tint-rose-bg:#FCEEEF;--tint-rose-fg:#9F1239;'
+    '--tint-violet-bg:#F1EEFA;--tint-violet-fg:#5B21B6;}'
+    '[data-theme="dark-paper"]{--bg-shell:#0D0C0B;--bg-canvas:#141312;--bg-surface:#1C1B19;'
+    '--bg-card:#1C1B19;--bg-elevated:#252421;--bg-header:#252421;--text-primary:#F0EDE8;'
+    '--text-secondary:#C7C2BA;--text-muted:#A19B93;--border-hairline:#2E2C29;--border-subtle:#2E2C29;--border-strong:#46433E;'
+    '--accent-primary:#60A5FA;--accent-focal:#60A5FA;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,0.15);'
+    '--status-warn:#FBBF24;--status-warn-bg:rgba(245,158,11,0.15);--status-danger:#F87171;--status-err:var(--status-danger);--status-err-bg:rgba(239,68,68,0.15);'
+    '--tint-indigo-bg:rgba(99,102,241,0.16);--tint-indigo-fg:#C7D2FE;--tint-emerald-bg:rgba(16,185,129,0.16);'
+    '--tint-emerald-fg:#A7F3D0;--tint-amber-bg:rgba(245,158,11,0.16);--tint-amber-fg:#FDE68A;'
+    '--tint-rose-bg:rgba(244,63,94,0.16);--tint-rose-fg:#FECDD3;--tint-violet-bg:rgba(139,92,246,0.16);--tint-violet-fg:#DDD6FE;}'
     '[data-theme="dark"]{--bg-shell:#05070B;--bg-canvas:#090D16;--bg-surface:#0F1624;--bg-card:#0F1624;'
     '--bg-elevated:#172135;--bg-header:#172135;--text-primary:#F1F5F9;--text-secondary:#CBD5E1;'
-    '--text-muted:#94A3B8;--border-hairline:#1E293B;--border-strong:#334155;--accent-primary:#38BDF8;'
-    '--accent-focal:#38BDF8;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,.16);--status-warn:#FBBF24;'
-    '--status-warn-bg:rgba(245,158,11,.16);--status-danger:#F87171;--status-err:var(--status-danger);--status-err-bg:rgba(239,68,68,.16);'
-    '--tint-indigo-bg:rgba(99,102,241,.18);--tint-indigo-fg:#C7D2FE;--tint-emerald-bg:rgba(16,185,129,.18);'
-    '--tint-emerald-fg:#A7F3D0;--tint-amber-bg:rgba(245,158,11,.18);--tint-amber-fg:#FDE68A;'
-    '--tint-rose-bg:rgba(244,63,94,.18);--tint-rose-fg:#FECDD3;--tint-violet-bg:rgba(139,92,246,.18);'
+    '--text-muted:#94A3B8;--border-hairline:#1E293B;--border-subtle:#1E293B;--border-strong:#334155;--accent-primary:#38BDF8;'
+    '--accent-focal:#38BDF8;--status-ok:#4ADE80;--status-ok-bg:rgba(34,197,94,0.16);--status-warn:#FBBF24;'
+    '--status-warn-bg:rgba(245,158,11,0.16);--status-danger:#F87171;--status-err:var(--status-danger);--status-err-bg:rgba(239,68,68,0.16);'
+    '--tint-indigo-bg:rgba(99,102,241,0.18);--tint-indigo-fg:#C7D2FE;--tint-emerald-bg:rgba(16,185,129,0.18);'
+    '--tint-emerald-fg:#A7F3D0;--tint-amber-bg:rgba(245,158,11,0.18);--tint-amber-fg:#FDE68A;'
+    '--tint-rose-bg:rgba(244,63,94,0.18);--tint-rose-fg:#FECDD3;--tint-violet-bg:rgba(139,92,246,0.18);'
     '--tint-violet-fg:#DDD6FE;}body{margin:0;padding:1.5rem;background:var(--bg-shell);color:var(--text-primary);font-family:var(--font-sans);}'
 )
 
 
 def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -> str:
     """Wrap compiled fragment(s) into a portable self-contained HTML5 document."""
-    css = _load_asset_text((
-        "tokens/quiet-ui-tokens.css",
-        "src/css/00-layers-and-reset.css",
-        "src/css/01-stage-and-containers.css",
-        "src/css/06-b-pills-and-annunciators.css",
-        "docs/bench/evidence-bench.css",
-    )) or _FALLBACK_TOKENS_CSS
-    js = _load_asset_text(("src/js/evidence-runtime.js",))
+    css = _load_bundle_asset(
+        "quiet-evidence-bundle.css",
+        (
+            "tokens/quiet-ui-tokens.css",
+            "src/css/00-layers-and-reset.css",
+            "src/css/01-stage-and-containers.css",
+            "src/css/03-pills-and-annunciators.css",
+            "docs/bench/evidence-bench.css",
+        ),
+    ) or _FALLBACK_TOKENS_CSS
+    js = _load_bundle_asset("quiet-evidence-bundle.js", ("src/js/evidence-runtime.js",))
     scheme = "dark" if theme in {"dark", "dark-paper"} else "light"
     return (
         "<!DOCTYPE html>\n"

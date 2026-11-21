@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Threaded local HTTP preview server for the Quiet UI Skills v9.0 Studio & Evidence Library."""
+"""Threaded local HTTP preview server for the Quiet UI Skills v9.1 Studio & Evidence Library."""
 
 from __future__ import annotations
 
@@ -53,13 +53,13 @@ class ReusableThreadingHTTPServer(ThreadingHTTPServer):
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.0 Studio Showcase & 21-Specimen Evidence Library.")
+    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.1 Studio Showcase & 39-Specimen Component Library.")
     parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=8788, help="TCP port (default: 8788)")
     args = parser.parse_args()
 
     with ReusableThreadingHTTPServer((args.host, args.port), QuietUIShowcaseHandler) as httpd:
-        print(f"[OK] Quiet UI Showcase v9.0 listening on http://{args.host}:{args.port}/", flush=True)
+        print(f"[OK] Quiet UI Showcase v9.1 listening on http://{args.host}:{args.port}/", flush=True)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

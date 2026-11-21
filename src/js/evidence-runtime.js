@@ -172,22 +172,29 @@
     document.addEventListener('focusout', function (ev) { const r = resolveScope(ev); if (r) setActiveTerm(r.scope, r.scope.dataset.pinnedTerm || null); });
   }
 
-  function copyWithFallback(txt, btn) {
-    const markCopied = function () {
-      btn.textContent = 'Copied';
-      window.setTimeout(function () { btn.textContent = 'Copy JSON Spec'; }, 1400);
+  function copyWithFallback(txt, btn, defaultLabel, statusEl) {
+    const label = defaultLabel || 'Copy JSON Spec';
+    const markCopied = function (msg) {
+      if (statusEl) {
+        statusEl.textContent = msg;
+        statusEl.classList.add('is-visible');
+        window.setTimeout(function () { statusEl.classList.remove('is-visible'); statusEl.textContent = ''; }, 1800);
+      } else {
+        btn.textContent = msg;
+        window.setTimeout(function () { btn.textContent = label; }, 1400);
+      }
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(txt).then(markCopied).catch(function () {});
+      navigator.clipboard.writeText(txt).then(function () { markCopied('Copied'); }).catch(function () {});
       return;
     }
     const ta = document.createElement('textarea');
     ta.value = txt;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
+    ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;left:-9999px';
     document.body.appendChild(ta);
     ta.select();
-    try { if (document.execCommand('copy')) markCopied(); } catch (_err) {}
+    try { if (document.execCommand('copy')) markCopied('Copied'); } catch (_err) {}
     document.body.removeChild(ta);
   }
 
@@ -200,15 +207,72 @@
       btn.type = 'button';
       btn.className = 'va-pill-btn qe-copy-spec-btn';
       btn.textContent = 'Copy JSON Spec';
-      btn.addEventListener('click', function () { copyWithFallback(pre.textContent || '', btn); });
+      btn.addEventListener('click', function () { copyWithFallback(pre.textContent || '', btn, 'Copy JSON Spec'); });
       pre.parentNode.insertBefore(btn, pre);
     });
+  }
+
+  function activateEcoTabFallback(tabBtn) {
+    const wrap = tabBtn && tabBtn.closest('.qe-eco-drawer');
+    if (!wrap) return;
+    const targetId = tabBtn.getAttribute('aria-controls');
+    wrap.querySelectorAll('.qe-eco-tab[role="tab"]').forEach(function (t) {
+      const on = t === tabBtn;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    wrap.querySelectorAll('.qe-eco-panel[role="tabpanel"]').forEach(function (p) {
+      if (p.id === targetId) p.removeAttribute('hidden');
+      else p.setAttribute('hidden', 'until-found');
+    });
+  }
+
+  function initEcoAndModeFallback() {
+    const hideUnusedModebars = function () {
+      const hasEcharts = typeof window.echarts !== 'undefined' || (window.parent && window.parent !== window && typeof window.parent.echarts !== 'undefined');
+      if (typeof window.QuietEChartsAdapter === 'undefined' && !hasEcharts) {
+        document.querySelectorAll('.qe-plot-modebar').forEach(function (bar) { bar.hidden = true; });
+      }
+    };
+    if (typeof queueMicrotask === 'function') queueMicrotask(hideUnusedModebars);
+    else window.setTimeout(hideUnusedModebars, 0);
+    if (typeof window.QuietEChartsAdapter !== 'undefined' || document.documentElement.dataset.qeEcoFallback === '1') return;
+    document.documentElement.dataset.qeEcoFallback = '1';
+    document.addEventListener('click', function (ev) {
+      if (typeof window.QuietEChartsAdapter !== 'undefined') return;
+      const tab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
+      if (tab) { activateEcoTabFallback(tab); return; }
+      const copyBtn = ev.target && ev.target.closest ? ev.target.closest('.qe-copy-btn') : null;
+      if (copyBtn) {
+        const drw = copyBtn.closest('.qe-eco-drawer');
+        const pre = drw && drw.querySelector('.qe-eco-panel:not([hidden]) pre');
+        if (pre) copyWithFallback(pre.textContent || '', copyBtn, copyBtn.textContent, drw.querySelector('.qe-copy-status'));
+      }
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (typeof window.QuietEChartsAdapter !== 'undefined') return;
+      const tab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
+      if (!tab) return;
+      const list = tab.closest('[role="tablist"]');
+      const tabs = list ? Array.prototype.slice.call(list.querySelectorAll('.qe-eco-tab[role="tab"]')) : [];
+      const idx = tabs.indexOf(tab);
+      if (idx < 0) return;
+      const nxt = ev.key === 'ArrowRight' ? (idx + 1) % tabs.length : (ev.key === 'ArrowLeft' ? (idx - 1 + tabs.length) % tabs.length : (ev.key === 'Home' ? 0 : (ev.key === 'End' ? tabs.length - 1 : -1)));
+      if (nxt >= 0) { ev.preventDefault(); activateEcoTabFallback(tabs[nxt]); tabs[nxt].focus(); }
+    });
+    document.addEventListener('beforematch', function (ev) {
+      if (typeof window.QuietEChartsAdapter !== 'undefined') return;
+      const panel = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-panel[role="tabpanel"]') : null;
+      const tid = panel && panel.getAttribute('aria-labelledby');
+      if (tid) activateEcoTabFallback(document.getElementById(tid));
+    }, true);
   }
 
   function boot() {
     initWaveforms();
     initPedagogicalTerms();
     initSpecDrawers();
+    initEcoAndModeFallback();
   }
 
   if (document.readyState === 'loading') {

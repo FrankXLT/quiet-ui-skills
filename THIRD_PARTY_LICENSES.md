@@ -1,6 +1,6 @@
 # Third-Party Licenses & Provenance Declaration
 
-Quiet UI Skills v9.0 operates with **zero external CDN requests and zero non-Apache/MIT runtime dependencies** across its 3-pillar architecture (`skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`). All shipped HTML deliverables are 100% self-contained and offline-capable.
+Quiet UI Skills v9.1 operates with **zero external CDN requests and zero non-Apache/MIT runtime dependencies** across its 3-pillar architecture (`skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`). All shipped HTML deliverables are 100% self-contained and offline-capable.
 
 ---
 
@@ -15,7 +15,7 @@ All UI layout shells, Studio chrome, inline `<svg>` control glyphs, and determin
 - **Apache ECharts (`v5.6.0`)** — Vendored offline at `docs/assets/vendor/echarts.min.js` (`renderer: 'svg'` default, zero external network fetches).
   - **License**: Apache License, Version 2.0 (`Apache-2.0`)
   - **Copyright**: Copyright 2017–2024 The Apache Software Foundation (includes zrender notice preserved in upstream distribution)
-  - **Scope**: Optional interactive charting layer mounted progressively onto Quiet UI containers in `docs/v9/` and `docs/bench/`, falling back automatically to deterministic first-party Python SVG output for `M1` print/archival exports and `scripts/compile_evidence.py` standalone output.
+  - **Scope**: Optional interactive charting layer mounted progressively onto Quiet UI containers in `docs/index.html` and `docs/bench/`, falling back automatically to deterministic first-party Python SVG output for `M1` print/archival exports and `skills/quiet-evidence/scripts/compile_evidence.py` standalone output.
 
 ---
 
@@ -37,7 +37,7 @@ Browser-based Chrome DevTools Protocol (CDP) contract verification runs locally 
 
 ## 5. Public-Domain & `CC0 1.0` Optical & Ambient Gallery Photographs (`docs/assets/`)
 
-All backplate photographs used in `hud-1`, `v15` (`M6`), `v16` (`M7`), and `v17` (`06-smart-home-and-energy`) are EXIF-free `1600×1000` JPEGs sourced strictly under United States Government Public Domain (`17 U.S.C. § 105`) or `CC0 1.0 Universal` dedication (`AttributionRequired == "false"`), imposing zero attribution obligations on generated deliverables:
+All backplate photographs used in `v15` (`M6`), `v16` (`M7`), and `v17` (`06-smart-home-and-energy`) are EXIF-free `1600×1000` JPEGs sourced strictly under United States Government Public Domain (`17 U.S.C. § 105`) or `CC0 1.0 Universal` dedication (`AttributionRequired == "false"`), imposing zero attribution obligations on generated deliverables:
 
 - `docs/assets/as08-14-2383.jpg` — Apollo 8 Earthrise (`NASA JSC`, `PD-USGov-NASA`)
 - `docs/assets/opt_hud_daylight_rwy.jpg` — `DF-ST-83-04217` Runway Final Approach (`U.S. DoD / DVIC`, `Public domain`)

@@ -1,17 +1,17 @@
-# Quiet UI v9.0 — Master Engineering Workflows & Architecture
+# Quiet UI v9.1 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.0 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.1 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.0 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.1 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.0
+                                      QUIET UI v9.1
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼
@@ -93,7 +93,7 @@ Before declaring the interface complete, the agent runs the Murder Board rubric 
 
 ## 3. Workflow B — Multi-Audience Distillation & Numerical Conservation
 
-A frequent failure mode in technical reporting is creating separate, unlinked documents for executives, engineers, and operators, causing numbers to drift. Quiet UI v9.0 enforces the **Numerical Conservation Law**:
+A frequent failure mode in technical reporting is creating separate, unlinked documents for executives, engineers, and operators, causing numbers to drift. Quiet UI v9.1 enforces the **Numerical Conservation Law**:
 
 > **Numerical Conservation Invariant**: When distilling one primary system or incident into multiple audience views, the underlying physical truth (parameters, sample rates, abort limits, timestamps, and citations) MUST derive from a single canonical JSON dataset. Presentation alters only framing, compression tempo, and coordinate density—never the underlying numbers.
 
@@ -144,34 +144,36 @@ All shell navigation and interactive dock elements are scoped inside `@layer she
   margin: 15mm 15mm 20mm 15mm;
 }
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #0f172a !important;
-  }
-  .va-shell-topbar,
-  .va-shell-rail,
-  .va-shell-bottomdock,
-  #va-studio-bar,
-  .va-interactive-cursor {
-    display: none !important;
-  }
-  .va-prose {
-    max-inline-size: 100% !important;
-  }
-  .va-card,
-  .va-panel-tonal {
-    break-inside: avoid;
-    border: 1px solid #cbd5e1;
-    background: #ffffff !important;
-  }
-  .va-table-wrap {
-    overflow: visible !important;
-  }
-  .va-test-condition-block {
-    display: table !important;
-    inline-size: 100%;
-    margin-block-end: 1rem;
-    border: 1px solid #94a3b8;
+  @layer utilities {
+    body {
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .va-shell-topbar,
+    .va-shell-rail,
+    .va-shell-bottomdock,
+    #va-studio-bar,
+    .va-interactive-cursor {
+      display: none;
+    }
+    .va-prose {
+      max-inline-size: 100%;
+    }
+    .va-card,
+    .va-panel-tonal {
+      break-inside: avoid;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+    }
+    .va-table-wrap {
+      overflow: visible;
+    }
+    .va-test-condition-block {
+      display: table;
+      inline-size: 100%;
+      margin-block-end: 1rem;
+      border: 1px solid #94a3b8;
+    }
   }
 }
 ```
@@ -214,7 +216,7 @@ Quiet UI formalizes the **Review-Room Dual-Layer Pattern**:
 
 ## 6. Workflow E — Clean-Room Open-Standards Schematic & Starter Customization Flows
 
-Quiet UI v9.0 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
+Quiet UI v9.1 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
 
 ### 6.1 Clean-Room Open-Standards Schematic Compilers (`quiet-evidence`)
 Structured topology and systems diagrams route through `skills/quiet-evidence/scripts/compilers/schematic_compiler.py` (`urn:quiet-ui:schema:v9:schematic`), covering:
@@ -230,7 +232,7 @@ The customization workspaces under `customizations/`:
 - `customizations/personal-starter/` (personal portfolio / workspace theme — all 21 domain views)
 - `customizations/brand-starter/` (enterprise brand palette — 17 product/engineering domain views)
 
-**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.0:
+**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.1:
 - Starters compile deterministically using `customizations/scripts/build_showcase.py`.
 - They gain immediate access to all seven delivery mediums (`M1`–`M7`) and six data modalities (`M1`–`M6`) without modifying their `customization.json` schema.
 
@@ -302,6 +304,15 @@ Artifact Inception ──► [Gate 0: Contract Lock] ──► [Gate 1: Schema S
 | **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validation passed against offline URN |
 | **3. Compilation** | `quiet-evidence` | Calibrated SVG Figures | $1\text{--}2\text{--}5$ ticks verified, halos rendered |
 | **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room Composition | BLUF band aligned with physics proof below |
-| **5. Pre-Flight Signoff**| Multi-Agent | 21 Selenium CDP Gates | Zero `!important`, zero PII, zero broken links |
+| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | Zero `!important`, zero drift (`build_all.py --check`), zero broken links |
+
+Run the full verification loop before shipping:
+
+```bash
+python3 -B scripts/build_all.py --check
+QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
+QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
+```
 
 

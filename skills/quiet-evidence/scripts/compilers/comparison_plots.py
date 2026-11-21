@@ -11,6 +11,7 @@ from .tokens_and_scales import (
     SERIES_STYLES,
     compute_linear_125_scale,
     esc,
+    finite_float,
     format_math_svg,
     format_tick_numeral,
     resolve_token,
@@ -29,23 +30,29 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
     y_lbl = spec.get("axes", {}).get("y_axis", {}).get("quantity_calculus", f"Budget / {unit}")
     running, spans, bounds = 0.0, [], [0.0]
     for s in steps:
-        v = float(s["delta"] if "delta" in s else s["value"])
+        raw_v = s.get("delta") if "delta" in s else s.get("value")
+        v = finite_float(raw_v, 0.0)
+        assert v is not None
+        lbl = str(s.get("label") or "")
         kind = s.get("kind", "delta")
         if kind in {"start", "total"}:
             if kind == "total" and ("value" in s or "delta" in s) and abs(v - running) > 1e-4:
-                raise ValueError(f"Waterfall conservation violated at '{s.get('label')}': expected {running:.4f}, got {v:.4f}")
+                raise ValueError(f"Waterfall conservation violated at '{lbl}': expected {running:.4f}, got {v:.4f}")
             lo, hi = min(0.0, v), max(0.0, v)
-            spans.append((lo, hi, v, kind, str(s["label"])))
+            spans.append((lo, hi, v, kind, lbl))
             running = v
         else:
             nxt = running + v
             lo, hi = min(running, nxt), max(running, nxt)
-            spans.append((lo, hi, v, kind, str(s["label"])))
+            spans.append((lo, hi, v, kind, lbl))
             running = nxt
         bounds.extend((lo, hi))
 
     envs = spec.get("envelopes") or [] if rigor in {"L2", "L3"} else []
-    bounds.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
+    for env in envs:
+        tv = finite_float(env.get("threshold_value"))
+        if tv is not None:
+            bounds.append(tv)
     lo_b, hi_b = min(bounds), max(bounds)
     if lo_b == hi_b:
         hi_b = lo_b + 1.0

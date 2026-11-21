@@ -12,6 +12,7 @@ from .tokens_and_scales import (
     SERIES_STYLES,
     compute_linear_125_scale,
     esc,
+    finite_float,
     format_math_svg,
     format_math_unicode,
     format_tick_numeral,
@@ -22,13 +23,7 @@ _SANK_COLS = ("var(--status-ok)", "var(--accent-focal)", "var(--status-warn)", "
 
 
 def _safe_f(val: Any) -> float | None:
-    if val is None or isinstance(val, bool):
-        return None
-    try:
-        out = float(val)
-        return out if math.isfinite(out) else None
-    except (TypeError, ValueError):
-        return None
+    return finite_float(val)
 
 
 def _extract_tok(color: Any, fallback: str = "--accent-focal") -> str:
@@ -198,9 +193,14 @@ def _render_strip_lane(
     y_hi_px, y_lo_px = wave_top + 4.0, ly + lane_h - 4.0
     col = resolve_token(tr.get("color") or tr.get("trace_color"), SERIES_STYLES[idx % len(SERIES_STYLES)]["stroke"])
     pts, cur_v, max_v, min_v, breached = _strip_track_metrics(tr)
-    dom = tr.get("domain") or [min([v for _, v in pts] or [0.0]), max([v for _, v in pts] or [1.0])]
-    y_min, y_max = float(dom[0]), float(dom[1])
-    span_y = (y_max - y_min) or 1.0
+    dom = tr.get("domain") if isinstance(tr.get("domain"), (list, tuple)) and len(tr.get("domain")) >= 2 else [min([v for _, v in pts] or [0.0]), max([v for _, v in pts] or [1.0])]
+    y_min = _safe_f(dom[0])
+    y_max = _safe_f(dom[1])
+    if y_min is None:
+        y_min = 0.0
+    if y_max is None or y_max <= y_min:
+        y_max = y_min + 1.0
+    span_y = y_max - y_min
     proj_y = lambda v: max(y_hi_px, min(y_lo_px, y_lo_px - ((v - y_min) / span_y) * (y_lo_px - y_hi_px)))
     proj_x = lambda t: x0 + ((t - t_min) / t_span) * pw
 
@@ -208,8 +208,10 @@ def _render_strip_lane(
     parts.append(f'<rect data-role="channel-hdr" x="{x0 + 0.5:.1f}" y="{ly + 0.5:.1f}" width="{pw - 1:.1f}" height="{hdr_h - 0.5:.1f}" fill="var(--bg-elevated)"/>')
     parts.append(f'<line x1="{x0}" y1="{wave_top:.1f}" x2="{x0 + pw}" y2="{wave_top:.1f}" stroke="var(--border-hairline)" stroke-width="0.8"/>')
     nom = tr.get("nominal_band")
-    if isinstance(nom, (list, tuple)) and len(nom) == 2:
-        ny_top, ny_bot = proj_y(float(nom[1])), proj_y(float(nom[0]))
+    nom_lo = _safe_f(nom[0]) if isinstance(nom, (list, tuple)) and len(nom) == 2 else None
+    nom_hi = _safe_f(nom[1]) if isinstance(nom, (list, tuple)) and len(nom) == 2 else None
+    if nom_lo is not None and nom_hi is not None:
+        ny_top, ny_bot = proj_y(nom_hi), proj_y(nom_lo)
         if ny_bot > ny_top:
             parts.append(f'<rect x="{x0 + 0.5:.1f}" y="{ny_top:.1f}" width="{pw - 1:.1f}" height="{ny_bot - ny_top:.1f}" fill="var(--status-ok-bg)" opacity="0.65"/>')
     for xm in t_sc["minors"]:
@@ -257,8 +259,8 @@ def _render_strip_lane(
     parts.append(halo_text(gx + 8.0, ly + 17.0, "EXCURSION" if breached else "NOMINAL", anchor="start", size=11.5, weight="700", fill=st_col, halo=False))
     parts.append(halo_text(gx + 8.0, ly + 39.0, f"{_fmt_val(cur_v)}{u_suf}", anchor="start", size=13.5, weight="700", fill="var(--text-primary)", halo=False))
     parts.append(halo_text(gx + 8.0, ly + 58.0, ext_txt, anchor="start", size=11.5, weight="600", fill=st_col if breached else "var(--text-secondary)", halo=False))
-    if isinstance(nom, (list, tuple)) and len(nom) == 2:
-        parts.append(halo_text(gx + 8.0, ly + 75.0, f"Nom {_fmt_nom(float(nom[0]))}–{_fmt_nom(float(nom[1]))}", anchor="start", size=11.5, fill="var(--text-muted)", halo=False))
+    if nom_lo is not None and nom_hi is not None:
+        parts.append(halo_text(gx + 8.0, ly + 75.0, f"Nom {_fmt_nom(nom_lo)}–{_fmt_nom(nom_hi)}", anchor="start", size=11.5, fill="var(--text-muted)", halo=False))
     return {"id": tr.get("id", f"t{idx + 1}"), "name": tr.get("name", ""), "unit": unit_s, "samples": tr.get("samples", [])}
 
 
@@ -267,7 +269,9 @@ def _render_strip_core(spec: dict[str, Any], rigor: str, medium: str) -> tuple[s
     t_unit = str(tb.get("unit") or "s")
     tracks = spec.get("tracks") or spec.get("channels") or []
     vis_tracks = tracks[:2] if rigor == "L1" else tracks
-    t_min, t_span = _safe_f(tb.get("start_time")) or 0.0, _safe_f(tb.get("total_span")) or 60.0
+    raw_min, raw_span = _safe_f(tb.get("start_time")), _safe_f(tb.get("total_span"))
+    t_min = raw_min if raw_min is not None else 0.0
+    t_span = raw_span if (raw_span is not None and raw_span > 0) else 60.0
     t_max, t_sc = t_min + t_span, compute_linear_125_scale(t_min, t_min + t_span, target_ticks=6)
     x0, y0, pw, lane_h, lane_gap = 78.0, 14.0, 496.0, 84.0, 10.0
     tot_h = len(vis_tracks) * lane_h + max(0, len(vis_tracks) - 1) * lane_gap
@@ -308,13 +312,20 @@ def build_strip_chart_echarts_payload(spec: dict[str, Any], rigor: str = "L3", m
     vis_tracks = (spec.get("tracks") or spec.get("channels") or [])[: (2 if rigor == "L1" else None)]
     if not vis_tracks:
         return None
-    t_min, t_span = _safe_f(tb.get("start_time")) or 0.0, _safe_f(tb.get("total_span")) or 60.0
+    raw_min, raw_span = _safe_f(tb.get("start_time")), _safe_f(tb.get("total_span"))
+    t_min = raw_min if raw_min is not None else 0.0
+    t_span = raw_span if (raw_span is not None and raw_span > 0) else 60.0
     t_sc = compute_linear_125_scale(t_min, t_min + t_span, target_ticks=6)
     out_tracks: list[dict[str, Any]] = []
     for idx, tr in enumerate(vis_tracks):
         pts, cur_v, max_v, min_v, breached = _strip_track_metrics(tr)
-        dom = tr.get("domain") or [min_v, max_v]
-        y_lo, y_hi = float(dom[0]), float(dom[1])
+        dom = tr.get("domain") if isinstance(tr.get("domain"), (list, tuple)) and len(tr.get("domain")) >= 2 else [min_v, max_v]
+        y_lo = _safe_f(dom[0])
+        y_hi = _safe_f(dom[1])
+        if y_lo is None:
+            y_lo = min_v
+        if y_hi is None or y_hi <= y_lo:
+            y_hi = y_lo + 1.0
         out_tracks.append({
             "id": str(tr.get("id") or f"t{idx + 1}"), "name": format_math_unicode(tr.get("name") or f"Track {idx + 1}"),
             "calculus": format_math_unicode(tr.get("quantity_calculus") or tr.get("unit") or ""), "unit": str(tr.get("unit") or ""),

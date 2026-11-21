@@ -75,26 +75,26 @@ Chart axes must use calibrated engineering divisions (1, 2, 5, 10, 20, 50, 100) 
 ## 4. Concrete CSS Architecture for Print
 
 ```css
-@layer quiet.print;
+@layer quiet.tokens, quiet.base, quiet.print;
 
 @media print {
   @layer quiet.print {
     :root {
-      --bg-canvas: #FFFFFF !important;
-      --bg-surface: #FFFFFF !important;
-      --bg-card: #FFFFFF !important;
-      --text-primary: #000000 !important;
-      --text-secondary: #333333 !important;
-      --border-hairline: #CCCCCC !important;
-      --border-strong: #000000 !important;
-      font-size: 10pt !important;
+      --bg-canvas: #FFFFFF;
+      --bg-surface: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --border-hairline: #CCCCCC;
+      --border-strong: #000000;
+      font-size: 10pt;
     }
 
     body {
-      background: #FFFFFF !important;
-      color: #000000 !important;
-      margin: 0 !important;
-      padding: 0 !important;
+      background: #FFFFFF;
+      color: #000000;
+      margin: 0;
+      padding: 0;
       text-rendering: geometricPrecision;
     }
 
@@ -105,7 +105,7 @@ Chart axes must use calibrated engineering divisions (1, 2, 5, 10, 20, 50, 100) 
     .va-theme-toggle,
     .va-nav-dock,
     .va-nav-rail {
-      display: none !important;
+      display: none;
     }
 
     /* Prevent awkward card splits */
@@ -113,8 +113,8 @@ Chart axes must use calibrated engineering divisions (1, 2, 5, 10, 20, 50, 100) 
     .va-figure,
     .va-test-condition-block,
     tr {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
 
     /* Unroll interactive elements into plain text */

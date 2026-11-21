@@ -1,9 +1,9 @@
-/* SPDX-License-Identifier: MIT */
+/* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v8.0 — Layer Declarations & Universal CSS Reset
+   Quiet UI v9.1 — Layer Declarations & Universal CSS Reset
    ========================================================================== */
 
-@layer reset, tokens, shell, archetypes, utilities;
+@layer reset, tokens, shell, archetypes, views, evidence, utilities;
 
 @layer reset {
   *,

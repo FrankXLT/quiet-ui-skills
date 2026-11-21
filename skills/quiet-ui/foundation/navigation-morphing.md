@@ -78,14 +78,14 @@ At mobile widths ($< 700\text{px}$ and down to 390px phone screens):
 
 Paper output must represent raw data without software navigation chrome:
 
-> **Print Stripping Invariant**: In `@media print`, all navigation rails, top headers, bottom docks, hamburger buttons, and modal drawers must be completely removed from layout flow (`display: none !important`).
+> **Print Stripping Invariant**: In `@media print`, all navigation rails, top headers, bottom docks, hamburger buttons, and modal drawers must be completely removed from layout flow (`display: none` inside the final cascade layer).
 
 ---
 
 ## 6. Concrete CSS Architecture
 
 ```css
-@layer quiet.navigation, quiet.responsive;
+@layer quiet.navigation, quiet.responsive, quiet.print;
 
 @layer quiet.navigation {
   /* N1 Left Rail */
@@ -139,23 +139,25 @@ Paper output must represent raw data without software navigation chrome:
       display: inline;
     }
   }
+}
 
-  /* Strict Media Print Stripping */
-  @media print {
+/* Strict Media Print Stripping (final @layer beats base navigation rules without !important) */
+@media print {
+  @layer quiet.print {
     .va-nav-rail,
     .va-nav-dock,
     .va-nav-top,
     .va-btn-drawer,
     header[role="banner"],
     nav {
-      display: none !important;
+      display: none;
     }
 
     body {
-      padding: 0 !important;
-      margin: 0 !important;
-      background: #FFFFFF !important;
-      color: #000000 !important;
+      padding: 0;
+      margin: 0;
+      background: #FFFFFF;
+      color: #000000;
     }
   }
 }
@@ -170,5 +172,5 @@ Paper output must represent raw data without software navigation chrome:
 | N4 Bottom Dock on 1440p desktop screen | Stretches 4 icons across 2560px bottom; looks broken and unprofessional. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
 | Uncollapsed 3-row header on 820px foldable | Consumes 40% of the upper screen before any data or chart is visible. | Apply inline eyebrow compaction on viewports $820\text{px} - 1050\text{px}$. |
 | Touch buttons under 44px on mobile | Operator mis-taps adjacent telemetry switches in high-stress field conditions. | Enforce `--res-touch-min: 44px` on coarse pointers and mobile viewports. |
-| Navigation rails visible on printed reports | Wastes paper and inks useless software navigation links on static sheets. | Apply `@media print { nav { display: none !important; } }`. |
+| Navigation rails visible on printed reports | Wastes paper and inks useless software navigation links on static sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |
 | Unclosable drawer overlay on small desktop | Obscures data table columns and prevents simultaneous inspection. | Auto-morph N1 from drawer to persistent rail at $\ge 1100\text{px}$. |

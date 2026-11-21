@@ -1,271 +1,374 @@
-/* SPDX-License-Identifier: MIT */
+/* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v8.0.1 — Universal Responsive Stage Portal Controller
+ * Quiet UI v9.0 — Two-Axis Universal Stage Portal Controller (World × Distilled View)
  */
-(function(window) {
+(function (window, document) {
   'use strict';
 
-  const ATLAS_SECTIONS = [
-    { value: 'all', label: 'All 45' },
-    { value: 'systems', label: '1. Systems' },
-    { value: 'data', label: '2. Data' },
-    { value: 'flows', label: '3. Flows' },
-    { value: 'strategy', label: '4. Product' },
-    { value: 'charts', label: '5. Charts' },
-    { value: 'workbench', label: 'DSL Workbench' }
-  ];
   const state = {
-    view: 'ui', tier: 'doc-1', atlasSec: 'all', vp: 'fill', zoom: 'fit',
-    nav: 'auto', theme: 'white', density: 'd2', corners: 'auto', scale: '100',
-    isMounted: false, renderedTier: ''
+    studioView: 'examples', world: '', view: '', medium: 'auto', theme: 'white',
+    nav: 'auto', vp: 'fill', zoom: 'fit', density: 'd2',
+    corners: 'auto', scale: '100', isMounted: false, renderedView: '',
   };
-  let uiTierOptions = [];
-  let renderedSelectMode = 'ui';
+  let manifest = { worlds: [] };
+
+  function escHtml(val) {
+    if (window.QuietStudioSheetV9 && window.QuietStudioSheetV9.escHtml) return window.QuietStudioSheetV9.escHtml(val);
+    return String(val == null ? '' : val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function loadManifest() {
+    const el = document.getElementById('va-v9-manifest');
+    if (!el) return;
+    try { manifest = JSON.parse(el.textContent || '{"worlds":[]}'); } catch (_e) {}
+  }
+
+  function findWorld(worldId) {
+    const list = manifest.worlds || [];
+    return list.find(function (w) { return w.world_id === worldId; }) || list[0] || null;
+  }
+
+  function findView(worldObj, viewId) {
+    if (!worldObj || !worldObj.views || !worldObj.views.length) return null;
+    return worldObj.views.find(function (v) { return v.view_id === viewId; }) || worldObj.views[0];
+  }
 
   function readUrlParams() {
     const p = new URLSearchParams(window.location.search);
-    ['view', 'tier', 'atlasSec', 'vp', 'zoom', 'nav', 'theme', 'density', 'corners', 'scale'].forEach(function(k) {
-      if (p.has(k)) state[k] = p.get(k);
+    const rules = {
+      medium: ['auto', 'm1'],
+      theme: ['white', 'paper', 'dark-paper', 'dark'],
+      nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
+      zoom: ['fit', '1:1'],
+      density: ['d1', 'd2', 'd3', 'd4'],
+      corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+    };
+    const rawMode = (p.get('mode') || '').toLowerCase();
+    if (rawMode === 'examples' || rawMode === 'worlds') state.studioView = 'examples';
+    else if (rawMode === 'components' || rawMode === 'bench' || rawMode === 'atlas') state.studioView = 'components';
+    ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
+      if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
+    const vp = p.get('vp') || '';
+    if (vp === 'fill' || /^\d{3,4}x\d{3,4}$/.test(vp)) state.vp = vp;
+    const sc = parseInt(p.get('scale') || '', 10);
+    if (!isNaN(sc)) state.scale = String(Math.max(75, Math.min(150, sc)));
+    if (p.has('domain')) state.world = p.get('domain') || '';
+    else if (p.has('world')) state.world = p.get('world') || '';
+    if (p.has('view')) state.view = p.get('view') || '';
+    if (!state.world && state.view) {
+      const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === state.view; }); });
+      if (hitW) state.world = hitW.world_id;
+    }
+    const w = findWorld(state.world);
+    if (w) {
+      state.world = w.world_id;
+      const v = findView(w, state.view);
+      if (v) state.view = v.view_id;
+    }
   }
 
   function syncUrlParams() {
     const p = new URLSearchParams();
-    ['view', 'tier', 'vp', 'zoom', 'nav', 'theme', 'density', 'corners'].forEach(function(k) { p.set(k, state[k]); });
+    if (state.studioView !== 'examples') p.set('mode', state.studioView);
+    p.set('domain', state.world);
+    p.set('view', state.view);
+    p.set('medium', state.medium);
+    p.set('theme', state.theme);
+    p.set('nav', state.nav);
+    p.set('vp', state.vp);
+    if (state.zoom !== 'fit') p.set('zoom', state.zoom);
+    if (state.density !== 'd2') p.set('density', state.density);
+    if (state.corners !== 'auto') p.set('corners', state.corners);
     if (state.scale !== '100') p.set('scale', state.scale);
-    if (state.view === 'diagrams' && state.atlasSec !== 'all') p.set('atlasSec', state.atlasSec);
     window.history.replaceState(null, '', window.location.pathname + '?' + p.toString());
-  }
-
-  function getTierMeta(tier) {
-    const tpl = document.getElementById('tpl-tier-' + tier);
-    const allowedRaw = (tpl && tpl.dataset.allowedNavs) ? tpl.dataset.allowedNavs : 'n0,n1,n2,n3,n4';
-    const allowed = allowedRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-    const defaultNav = (tpl && tpl.dataset.defaultNav) ? tpl.dataset.defaultNav : (allowed[0] || 'n0');
-    const stageLock = (tpl && tpl.dataset.stageLock) ? tpl.dataset.stageLock :
-      ((tier === 'deck-1' || tier === 'hud-1' || tier === 'app-tree') ? '100dvh' : 'scroll');
-    return { tpl: tpl, allowed: allowed, defaultNav: defaultNav, stageLock: stageLock };
-  }
-
-  function computeEffectiveNav(nav, tier, width) {
-    const meta = getTierMeta(tier);
-    if (nav && nav !== 'auto') return meta.allowed.indexOf(nav) !== -1 ? nav : meta.defaultNav;
-    if (width < 760 && meta.allowed.indexOf('n4') !== -1) return 'n4';
-    return meta.defaultNav;
-  }
-
-  function getActiveDimensions() { return window.QuietPortalResize.parseDimensions(state.vp); }
-
-  function updatePortalDimensions() {
-    const mat = document.getElementById('va-portal-mat');
-    const scaler = document.getElementById('va-portal-scaler');
-    const iframe = document.getElementById('va-stage-portal');
-    if (mat && scaler && iframe) {
-      window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
-    }
   }
 
   function resolveDocsAsset(relPath) {
     const path = window.location.pathname || '';
     if (path.indexOf('/customizations/') !== -1) return '../../docs/' + relPath;
-    if (path.endsWith('/quiet-ui-showcase.html')) return './docs/' + relPath;
+    if (path.indexOf('/quiet-ui-showcase') !== -1) return './docs/' + relPath;
     return './' + relPath;
   }
 
-  function buildIframeSrcDoc() {
-    const cssEl = document.getElementById('va-bundled-portal-css');
-    const jsEl = document.getElementById('va-bundled-tier-js');
-    const hasCustom = document.documentElement.dataset.customStyles === 'true';
-    const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const earthriseUrl = resolveDocsAsset('assets/as08-14-2383.jpg');
-    return '<!DOCTYPE html>\n<html lang="en" style="--hud-earthrise-url: url(\'' + earthriseUrl + '\');" data-theme="' + state.theme +
-      '" data-density="' + state.density + '" data-corners="' + state.corners +
-      '" data-tier="' + state.tier + '" data-nav-shell="' + state.nav +
-      '" data-effective-nav="n0" data-form-factor="desktop" data-stage-lock="scroll">\n<head>\n' +
-      '<meta charset="utf-8">\n<base href="' + baseHref + '">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
-      '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">\n' +
-      (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n<link rel="stylesheet" href="./styles/overrides.css">\n' : '') +
-      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n</head>\n<body>\n<div class="va-app-shell">\n' +
-      '  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"><i class="fa-solid fa-book-open"></i> DSOC Monograph</a>' +
-      '<nav class="va-shell-topbar-links" aria-label="Primary Navigation"><a class="va-shell-topbar-link is-active" href="#stage">Abstract</a><a class="va-shell-topbar-link" href="#stage">Optical Stack</a></nav>' +
-      '<button type="button" id="va-drawer-open-btn" class="va-btn-ghost" aria-label="Open Navigation Drawer" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i></button></header>\n' +
-      '  <aside id="va-shell-rail" class="va-shell-rail" aria-label="Workspace Rail"><a class="va-rail-link is-active" href="#stage"><i class="fa-solid fa-compass" aria-hidden="true"></i> Abstract</a>' +
-      '<a class="va-rail-link" href="#stage"><i class="fa-solid fa-wave-square" aria-hidden="true"></i> Optical Stack</a><a class="va-rail-link" href="#stage"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Link Ledger</a></aside>\n' +
-      '  <main id="va-stage-main" class="va-stage"></main>\n' +
-      '  <nav id="va-shell-bottomdock" class="va-shell-bottomdock" aria-label="Mobile Dock"><button type="button" class="is-active"><i class="fa-solid fa-compass" aria-hidden="true"></i>Abstract</button>' +
-      '<button type="button"><i class="fa-solid fa-wave-square" aria-hidden="true"></i>Optical</button><button type="button"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Ledger</button>' +
-      '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button></nav>\n' +
-      '  <dialog id="va-shell-drawer" closedby="any" aria-label="Navigation Drawer"><div class="va-drawer-header"><strong>Mission Navigation</strong><button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>' +
-      '<nav class="va-drawer-nav"><a class="va-drawer-link" href="#stage">Abstract</a><a class="va-drawer-link" href="#stage">Optical Stack</a><a class="va-drawer-link" href="#stage">Link Ledger</a></nav></dialog>\n' +
-      '  <dialog id="va-fig-zoom-dialog" closedby="any" aria-label="Expanded Figure"><div class="va-fig-zoom-content"></div></dialog>\n' +
-      '</div>\n<script>\nwindow.openShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.showModal)d.showModal();};\nwindow.closeShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.close)d.close();};\n' + (jsEl ? jsEl.textContent : '') + '\n<\/script>\n</body>\n</html>';
+  function resolveAbsDocsAsset(relPath) {
+    try { return new URL(resolveDocsAsset(relPath), window.location.href).href; } catch (_e) { return resolveDocsAsset(relPath); }
   }
 
-  const TIER_SHELL_NAV = {
-    'doc-1':    ['fa-book-open', 'DSOC Monograph', ['Abstract', 'Optical Stack', 'Allan Variance', 'Link Ledger']],
-    'doc-2':    ['fa-file-signature', 'NASA KDP-C Board', ['BLUF', 'Impact KPIs', 'Risk Matrix', 'Trade Study']],
-    'doc-3':    ['fa-microchip', 'CCSDS 133.0-B-2', ['Bitfield Header', 'Normative Clauses', 'FOP-1 FSM', 'Schema Diff']],
-    'doc-4b':   ['fa-code', 'DSOC Ground SDK', ['6-Stage Pipeline', 'Decision Router', 'BAR0 MMIO', 'Python API']],
-    'doc-4a':   ['fa-clipboard-check', 'SOP-DSOC-704', ['Laser Interlock', 'Pass Lifelines', 'Procedure Steps', 'CLI Console']],
-    'bridge-1': ['fa-calculator', 'Link Margin Solver', ['Equations', 'Parametric Solver', 'Mission Ledger', 'Gradients']],
-    'deck-1':   ['fa-display', 'FRR Flight Briefing', ['Exec Summary', 'Link Budget', 'SNSPD Array', 'Readiness Poll']],
-    'bridge-2': ['fa-satellite-dish', 'DSN 810-005 Matrix', ['Goldstone', 'Madrid', 'Canberra', 'Phase Skew']],
-    'app-2':    ['fa-wave-square', 'SNSPD HIL Bench', ['Quad Waveforms', 'Phase Residual', 'BAR0 Registers', 'Cryo Channels']],
-    'app-1':    ['fa-triangle-exclamation', 'Psyche Flight Ops', ['Discrepancy Queue', 'Comm / Optical', 'GNC Pointing', 'Incident Audit']],
-    'app-4':    ['fa-calendar-day', 'NRHO Ops Planner', ['Orbit Timeline', 'Flight Tasks', 'Focus Block', 'Staging Inbox']],
-    'app-3':    ['fa-chart-pie', 'DSN Executive', ['Trajectory Gain', 'Science Volume', 'Complex Share', 'Pass Schedule']],
-    'app-5':    ['fa-moon', 'Crew Readiness', ['Circadian Phase', 'Readiness Ring', 'Cabin Biometrics', 'Biomarker Gate']],
-    'app-tree': ['fa-folder-tree', 'Packet Explorer', ['Packet Stream', 'Header Spec', 'ER Lineage', 'JSONB Inspector']],
-    'hud-1':    ['fa-crosshairs', 'Cupola AR HUD', ['Boresight', 'Attitude LOS', 'Astrometry', 'Link Margin']],
-    'ctrl-1':   ['fa-sliders', 'HALO ECLSS Console', ['ECLSS Loop', 'Power Bus', 'Thermal TCS', 'Optical Cryo']]
-  };
-  const NAV_ITEM_ICONS = ['fa-compass', 'fa-wave-square', 'fa-sliders', 'fa-shield-halved'];
+  function computeEffectiveNav(nav, viewMeta, width) {
+    const allowed = (viewMeta && viewMeta.allowed_navs) ? viewMeta.allowed_navs : ['n0', 'n1', 'n2', 'n3', 'n4'];
+    const defNav = (viewMeta && viewMeta.default_nav) ? viewMeta.default_nav : (allowed[0] || 'n0');
+    if (nav && nav !== 'auto') {
+      if (nav === 'n4' && width >= 700) return defNav;
+      return allowed.indexOf(nav) !== -1 ? nav : defNav;
+    }
+    return (width < 700 && allowed.indexOf('n4') !== -1) ? 'n4' : defNav;
+  }
 
-  function syncShellNav(doc, tier) {
-    const cfg = TIER_SHELL_NAV[tier] || TIER_SHELL_NAV['doc-1'];
+  function getActiveDimensions() { return window.QuietPortalResize.parseDimensions(state.vp); }
+
+  function updatePortalDimensions() {
+    const mat = document.getElementById('va-portal-mat'), scaler = document.getElementById('va-portal-scaler'), iframe = document.getElementById('va-stage-portal');
+    if (mat && scaler && iframe) window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
+  }
+
+  function effectiveMedium(viewMeta) {
+    if (state.medium === 'm1') return 'm1';
+    return (viewMeta && viewMeta.default_medium) ? viewMeta.default_medium : 'm2';
+  }
+
+  const NAV_ICONS = {
+    'compass': '<circle cx="8" cy="8" r="6"/><path d="M10.5 5.5 9 9l-3.5 1.5L7 7z" fill="none"/>',
+    'bars': '<path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" fill="none"/>',
+    'close': '<path d="M4 4l8 8M12 4l-8 8" fill="none"/>',
+    'activity': '<path d="M1.5 8h3l1.8-4.5 2.4 9 1.8-4.5h4" fill="none"/>',
+    'layers': '<path d="M8 2 14 5 8 8 2 5zM2 8l6 3 6-3M2 11l6 3 6-3" fill="none"/>',
+    'sliders': '<path d="M3 4h10M3 8h10M3 12h10M6 2.5v3M10 6.5v3M7 10.5v3" fill="none"/>',
+    'bell': '<path d="M4.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5l1.5 1.5H3zM6.5 13.5h3" fill="none"/>',
+    'heart-pulse': '<path d="M8 13.5S2.5 9.8 2.5 5.8a3 3 0 0 1 5.5-1.6 3 3 0 0 1 5.5 1.6c0 4-5.5 7.7-5.5 7.7zM4.5 8h2l1-2 1.2 3.5L10 8h1.5" fill="none"/>',
+    'file-medical': '<path d="M4 2h5.5L13 5.5V14H4zM9.5 2v3.5H13M8 7v4M6 9h4" fill="none"/>',
+    'hand-holding-medical': '<path d="M2 10.5h4l2 1.5h4.5M5 4.5h6M8 1.5v6" fill="none"/>',
+    'alert-triangle': '<path d="M8 2.2 14 13H2zM8 6.5v3M8 11.2v.4" fill="none"/>',
+    'shield-halved': '<path d="M8 2 13.5 4v4c0 3.2-2.2 5.2-5.5 6.2C4.7 13.2 2.5 11.2 2.5 8V4zM8 2v12" fill="none"/>',
+    'code-branch': '<path d="M5 3v10M11 4v2.5c0 1.5-2 2.5-6 2.5" fill="none"/><circle cx="5" cy="3.5" r="1.3"/><circle cx="5" cy="12.5" r="1.3"/><circle cx="11" cy="4" r="1.3"/>',
+    'bolt': '<path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none"/>',
+    'tv': '<rect x="2" y="3" width="12" height="8" rx="1"/><path d="M5.5 13.5h5M8 11v2.5" fill="none"/>',
+    'chart-line': '<path d="M2.5 2.5v11h11M4.5 10.5 7.5 7l2.2 2 3.5-4" fill="none"/>',
+    'landmark': '<path d="M2 6 8 2.5 14 6zM3.5 6v6M6.5 6v6M9.5 6v6M12.5 6v6M2 13.5h12" fill="none"/>',
+    'scale-balanced': '<path d="M8 2.5v11M4.5 13.5h7M3 5l5-1 5 1M2 9.5 3.5 5 5 9.5zM11 9.5 12.5 5 14 9.5z" fill="none"/>',
+    'flask': '<path d="M6 2.5h4M7 2.5V6l-3.5 7.5h9L9 6V2.5M5 10.5h6" fill="none"/>',
+    'gauge-high': '<path d="M3 11.5a5.5 5.5 0 1 1 10 0M8 8.5l2.8-2.8" fill="none"/>',
+    'microchip': '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/><path d="M6.5 2v2.5M9.5 2v2.5M6.5 11.5V14M9.5 11.5V14M2 6.5h2.5M2 9.5h2.5M11.5 6.5H14M11.5 9.5H14" fill="none"/>',
+    'crosshairs': '<circle cx="8" cy="8" r="5"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" fill="none"/>',
+    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>', 'home': '<path d="M2.5 7.5 8 2.5l5.5 5v6H10V9.5H6v4H2.5z" fill="none"/>', 'frame': '<rect x="2" y="3" width="12" height="10" rx="1"/><path d="M4.5 10.5 7 7.5l2 2 1.5-1.5 2 2.5" fill="none"/>',
+    'list-check': '<path d="M2.5 4.5h1.5M6 4.5h7.5M2.5 8h1.5M6 8h7.5M2.5 11.5h1.5M6 11.5h5.5M11.5 11l1.2 1.2 2-2.2" fill="none"/>',
+    'graduation-cap': '<path d="M1.5 6.5 8 3l6.5 3.5L8 10zM4 8v3.5c0 1 1.8 2 4 2s4-1 4-2V8" fill="none"/>',
+    'wrench': '<path d="M10.5 2.5a3.2 3.2 0 0 0-3.8 4.4L2.8 10.8a1.4 1.4 0 0 0 2 2l3.9-3.9a3.2 3.2 0 0 0 4.4-3.8l-1.9 1.9-1.5-1.5z" fill="none"/>',
+  };
+  function svgIcon(name) {
+    const body = NAV_ICONS[name] || NAV_ICONS.compass;
+    return '<svg class="va-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none" aria-hidden="true">' + body + '</svg>';
+  }
+
+  function buildIframeSrcDoc(viewMeta) {
+    const cssEl = document.getElementById('va-bundled-portal-css');
+    const jsEl = document.getElementById('va-bundled-stage-js');
+    const med = effectiveMedium(viewMeta);
+    const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
+    const baseHref = window.location.href.split('?')[0].split('#')[0];
+    const tokStyle = document.getElementById('custom-tokens');
+    const ovrStyle = document.getElementById('custom-overrides');
+    const hasCustom = document.documentElement.dataset.customStyles === 'true';
+    const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
+    const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
+    return '<!DOCTYPE html>\n<html lang="en" data-theme="' + escHtml(state.theme) +
+      '" data-medium="' + escHtml(med) + '" data-chromatic="' + escHtml(chrom) +
+      '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
+      '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
+      '" data-nav-shell="' + escHtml(state.nav) + '" data-effective-nav="n0" data-form-factor="desktop">\n<head>\n' +
+      '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
+      customTok +
+      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
+      '<div class="va-app-shell">\n' +
+      '  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"></a>' +
+      '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav>' +
+      '<div class="va-shell-topbar-status" aria-label="Unit Telemetry Status"></div>' +
+      '<button type="button" id="va-drawer-open-btn" class="va-btn-ghost" aria-label="Open Navigation Drawer" onclick="openShellDrawer()">' +
+      svgIcon('bars') + '</button></header>\n' +
+      '  <aside id="va-shell-rail" class="va-shell-rail" aria-label="Section Spine"></aside>\n' +
+      '  <main id="va-stage-main" class="va-stage" tabindex="-1"></main>\n' +
+      '  <nav id="va-shell-bottomdock" class="va-shell-bottomdock" aria-label="Mobile Dock"></nav>\n' +
+      '  <dialog id="va-shell-drawer" closedby="any" aria-label="Navigation Drawer">' +
+      '<div class="va-drawer-header"><strong>View Navigation</strong>' +
+      '<button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()" autofocus>' + svgIcon('close') + '</button></div>' +
+      '<nav class="va-drawer-nav"></nav></dialog>\n' +
+      '</div>\n<script>\n' +
+      'window.openShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.showModal)d.showModal();};\n' +
+      'window.closeShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.close)d.close();};\n' +
+      (jsEl ? jsEl.textContent : '') + '\n<\/script>\n</body>\n</html>';
+  }
+
+  function syncShellNav(doc, viewMeta) {
+    const icon = (viewMeta && viewMeta.nav_icon) ? viewMeta.nav_icon : 'compass';
+    const brandLbl = (viewMeta && viewMeta.nav_brand) ? viewMeta.nav_brand : 'Quiet UI';
+    const topBrandLbl = (viewMeta && viewMeta.topbar_brand) ? viewMeta.topbar_brand : brandLbl;
+    const railBrandLbl = (viewMeta && viewMeta.rail_brand) ? viewMeta.rail_brand : brandLbl;
+    const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : ['Overview'];
+    const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
+    const icons = ['activity', 'layers', 'sliders', 'bell'];
+    const hrefFor = function (i) { return anchors[i] ? ('#' + escHtml(anchors[i])) : '#stage'; };
+    const mapLinks = function (list, render) { return list.map(function (lbl, i) { return render(lbl, i, hrefFor(i)); }).join(''); };
+
     const brand = doc.querySelector('#va-shell-topbar .va-shell-brand');
-    if (brand) brand.innerHTML = '<i class="fa-solid ' + cfg[0] + '" aria-hidden="true"></i> ' + cfg[1];
+    if (brand) brand.innerHTML = svgIcon(icon) + ' <span>' + escHtml(topBrandLbl) + '</span>';
+
+    const statusEl = doc.querySelector('#va-shell-topbar .va-shell-topbar-status');
+    const topStatus = (viewMeta && Array.isArray(viewMeta.topbar_status)) ? viewMeta.topbar_status : [];
+    if (statusEl) {
+      statusEl.innerHTML = topStatus.map(function (st) {
+        if ((st.variant || '') === 'plain') {
+          return '<span class="va-topbar-metric" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+        }
+        return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
+      }).join('');
+    }
+
+    const effNav = (doc.documentElement && doc.documentElement.dataset.effectiveNav) || 'n1';
+    const hideTopLinks = effNav === 'n3' && topStatus.length > 0;
     const topLinks = doc.querySelector('#va-shell-topbar .va-shell-topbar-links');
     if (topLinks) {
-      topLinks.innerHTML = cfg[2].map(function(lbl, i) {
-        return '<a class="va-shell-topbar-link' + (i === 0 ? ' is-active' : '') + '" href="#stage">' + lbl + '</a>';
-      }).join('');
+      topLinks.innerHTML = hideTopLinks ? '' : mapLinks(items, function (lbl, i, href) {
+        return '<a class="va-shell-topbar-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + escHtml(lbl) + '</a>';
+      });
     }
     const rail = doc.getElementById('va-shell-rail');
     if (rail) {
-      rail.innerHTML = '<div class="va-rail-brand"><i class="fa-solid ' + cfg[0] + '" aria-hidden="true"></i> <span>' + cfg[1] + '</span></div>' +
-        cfg[2].map(function(lbl, i) {
-          return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="#stage"><i class="fa-solid ' + NAV_ITEM_ICONS[i % 4] + '" aria-hidden="true"></i> ' + lbl + '</a>';
-        }).join('');
+      rail.innerHTML = '<div class="va-rail-brand">' + svgIcon(icon) + ' <span>' + escHtml(railBrandLbl) + '</span></div>' +
+        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + svgIcon(icons[i % 4]) + ' <span>' + escHtml(lbl) + '</span></a>'; });
     }
     const dock = doc.getElementById('va-shell-bottomdock');
     if (dock) {
-      dock.innerHTML = cfg[2].slice(0, 3).map(function(lbl, i) {
-        const shortLbl = lbl.split(' ')[0];
-        return '<button type="button"' + (i === 0 ? ' class="is-active"' : '') + '><i class="fa-solid ' + NAV_ITEM_ICONS[i] + '" aria-hidden="true"></i>' + shortLbl + '</button>';
-      }).join('') + '<button type="button" onclick="openShellDrawer()"><i class="fa-solid fa-bars" aria-hidden="true"></i>Menu</button>';
+      dock.innerHTML = mapLinks(items.slice(0, 3), function (lbl, i, href) {
+        return '<a href="' + href + '"' + (i === 0 ? ' class="is-active"' : '') + '>' + svgIcon(icons[i % 4]) + '<span>' + escHtml(lbl.split(' ')[0]) + '</span></a>';
+      }) + '<button type="button" onclick="openShellDrawer()">' + svgIcon('bars') + '<span>Menu</span></button>';
     }
     const drawerNav = doc.querySelector('#va-shell-drawer .va-drawer-nav');
     if (drawerNav) {
-      drawerNav.innerHTML = cfg[2].map(function(lbl, i) {
-        return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="#stage" onclick="closeShellDrawer()">' + lbl + '</a>';
-      }).join('');
+      drawerNav.innerHTML = mapLinks(items, function (lbl, i, href) { return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>'; });
     }
   }
 
   function syncIframeAttributes() {
     const iframe = document.getElementById('va-stage-portal');
-    if (!iframe || !iframe.contentDocument || state.view !== 'ui') return;
+    const worldObj = findWorld(state.world);
+    const viewMeta = findView(worldObj, state.view);
+    if (!iframe || !iframe.contentDocument || !viewMeta) return;
     const docEl = iframe.contentDocument.documentElement;
     if (!docEl) return;
     const dims = getActiveDimensions();
     const stageW = dims ? dims.width : (iframe.clientWidth || window.innerWidth);
-    const meta = getTierMeta(state.tier);
     docEl.dataset.theme = state.theme;
+    docEl.dataset.medium = effectiveMedium(viewMeta);
+    docEl.dataset.chromatic = viewMeta.chromatic_code || 'c4';
     docEl.dataset.density = state.density;
     docEl.dataset.corners = state.corners;
-    docEl.dataset.tier = state.tier;
+    docEl.dataset.world = state.world;
+    docEl.dataset.view = state.view;
     docEl.dataset.navShell = state.nav;
-    docEl.dataset.effectiveNav = computeEffectiveNav(state.nav, state.tier, stageW);
-    docEl.dataset.formFactor = (stageW <= 480) ? 'touch' : 'desktop';
-    docEl.dataset.stageLock = (state.tier === 'app-tree' && stageW < 1100) ? 'scroll' : meta.stageLock;
+    docEl.dataset.effectiveNav = computeEffectiveNav(state.nav, viewMeta, stageW);
+    docEl.dataset.formFactor = stageW <= 480 ? 'touch' : 'desktop';
     if (state.scale && state.scale !== '100') docEl.style.fontSize = state.scale + '%';
     else docEl.style.removeProperty('font-size');
   }
 
   function syncIframeDOM() {
     const iframe = document.getElementById('va-stage-portal');
-    if (!iframe || !iframe.contentDocument) return;
+    const worldObj = findWorld(state.world);
+    const viewMeta = findView(worldObj, state.view);
+    if (!state.isMounted || !iframe || !iframe.contentDocument || !iframe.contentDocument.documentElement || !viewMeta) return;
     syncIframeAttributes();
-    const main = iframe.contentDocument.getElementById('va-stage-main');
-    if (main && state.renderedTier !== state.tier) {
-      const meta = getTierMeta(state.tier);
-      main.innerHTML = meta.tpl ? meta.tpl.innerHTML : '<div style="padding:2rem;">Stage Content Not Found</div>';
-      syncShellNav(iframe.contentDocument, state.tier);
-      state.renderedTier = state.tier;
+    const doc = iframe.contentDocument;
+    const win = iframe.contentWindow;
+    const main = doc.getElementById('va-stage-main');
+    if (main && state.renderedView !== state.view) {
+      if (win && win.QuietEChartsAdapter && win.QuietEChartsAdapter.disposeAll) win.QuietEChartsAdapter.disposeAll(doc);
+      const tpl = document.getElementById('tpl-view-' + state.view);
+      main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
+      doc.querySelectorAll('img[data-asset]').forEach(function (img) {
+        img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
+      });
+      syncShellNav(doc, viewMeta);
+      state.renderedView = state.view;
+      state.renderedNav = doc.documentElement.dataset.effectiveNav;
+      if (win) {
+        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
+        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc); if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc); if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
+        win.scrollTo(0, 0);
+      }
+      main.scrollTop = 0;
+    } else {
+      if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) { syncShellNav(doc, viewMeta); state.renderedNav = doc.documentElement.dataset.effectiveNav; }
+      if (win && win.QuietEChartsAdapter) win.QuietEChartsAdapter.refresh(doc);
     }
-    if (window.QuietStudioSheet) window.QuietStudioSheet.bindPortalScrollTuck(iframe);
-  }
-
-  function syncCenterSelect() {
-    const sel = document.getElementById('va-tier-select');
-    if (!sel) return;
-    const targetMode = (state.view === 'diagrams') ? 'diagrams' : 'ui';
-    if (renderedSelectMode !== targetMode) {
-      const list = (targetMode === 'diagrams') ? ATLAS_SECTIONS : uiTierOptions;
-      sel.innerHTML = list.map(function(o) { return '<option value="' + o.value + '">' + o.label + '</option>'; }).join('');
-      renderedSelectMode = targetMode;
-    }
-    sel.value = (targetMode === 'diagrams') ? state.atlasSec : state.tier;
-    sel.setAttribute('aria-label', targetMode === 'diagrams' ? 'Select Atlas Section' : 'Select Stage Tier');
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.bindPortalScrollTuck(iframe);
   }
 
   function syncBarControls() {
-    document.documentElement.dataset.studioView = state.view;
-    syncCenterSelect();
-    const meta = getTierMeta(state.tier);
-    const vpSel = document.getElementById('va-vp-select');
-    if (vpSel) vpSel.value = state.vp;
-    const navSel = document.getElementById('va-nav-select');
-    if (navSel) {
-      navSel.value = state.nav;
-      Array.from(navSel.options).forEach(function(opt) {
-        if (opt.value === 'auto') return;
-        const ok = meta.allowed.indexOf(opt.value) !== -1;
-        opt.disabled = !ok;
-        opt.title = ok ? '' : ('Disabled for ' + state.tier);
-      });
-    }
-    const stageTools = document.getElementById('va-stage-tools');
-    if (stageTools) stageTools.hidden = (state.vp === 'fill');
-    const zoomBtn = document.getElementById('va-zoom-btn');
-    if (zoomBtn) zoomBtn.textContent = state.zoom.toUpperCase();
-    [['va-view-ui-btn', 'ui'], ['va-view-diag-btn', 'diagrams']].forEach(function(pair) {
-      const btn = document.getElementById(pair[0]);
-      if (btn) {
-        btn.classList.toggle('is-active', state.view === pair[1]);
-        btn.setAttribute('aria-selected', state.view === pair[1] ? 'true' : 'false');
-      }
+    const worldObj = findWorld(state.world);
+    const viewMeta = findView(worldObj, state.view);
+    document.documentElement.dataset.medium = state.medium;
+    document.documentElement.dataset.studioView = state.studioView;
+
+    document.querySelectorAll('[data-studio-tab]').forEach(function (tab) {
+      const active = tab.dataset.studioTab === state.studioView;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
     });
-    if (window.QuietStudioSheet) window.QuietStudioSheet.syncSheetControls(state, meta.allowed);
-  }
 
-  function postAtlasSync(iframe) {
-    if (iframe && iframe.contentWindow) {
-      iframe.contentWindow.postMessage({
-        type: 'quiet-ui-sync', theme: state.theme, density: state.density,
-        corners: state.corners, atlasSection: state.atlasSec
-      }, '*');
+    const dSel = document.getElementById('va-domain-select');
+    if (dSel && dSel.value !== state.world) dSel.value = state.world;
+
+    const vSel = document.getElementById('va-view-select');
+    if (vSel && worldObj) {
+      const optsHtml = worldObj.views.map(function (v) {
+        return '<option value="' + escHtml(v.view_id) + '">' + escHtml(v.option_label) + '</option>';
+      }).join('');
+      if (vSel.dataset.worldLoaded !== worldObj.world_id) {
+        vSel.innerHTML = optsHtml;
+        vSel.dataset.worldLoaded = worldObj.world_id;
+      }
+      vSel.value = state.view;
     }
+
+    const allowed = viewMeta ? viewMeta.allowed_navs : ['n0', 'n1', 'n2', 'n3', 'n4'];
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, allowed);
   }
 
-  function applyState() {
+  function syncExternalMode(iframe) {
+    const base = resolveDocsAsset('bench/evidence-bench.html');
+    const med = state.medium === 'm1' ? 'm1' : 'm2';
+    const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) +
+      '&corners=' + encodeURIComponent(state.corners) + '&medium=' + med;
+    const doSync = function () {
+      const d = getActiveDimensions();
+      if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
+    };
+    if (iframe.dataset.externalMode !== state.studioView) {
+      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+      state.isMounted = false; state.renderedView = '';
+      iframe.removeAttribute('srcdoc'); iframe.dataset.externalMode = state.studioView;
+      iframe.onload = function () { state.isMounted = true; doSync(); };
+      iframe.src = base + q;
+      return;
+    }
+    doSync();
+  }
+
+  function applyState(worldChanged) {
+    const worldObj = findWorld(state.world);
+    if (worldObj && (worldChanged || !findView(worldObj, state.view))) state.view = worldObj.views[0].view_id;
+    const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
+    if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
+    state.lastViewKey = viewKey;
+    const viewMeta = findView(worldObj, state.view);
     const iframe = document.getElementById('va-stage-portal');
     if (!iframe) return;
     updatePortalDimensions();
-    if (state.view === 'diagrams') {
-      const targetSrc = resolveDocsAsset('diagrams.html') + '?embed=1&theme=' + encodeURIComponent(state.theme);
-      state.isMounted = false;
-      state.renderedTier = '';
-      iframe.removeAttribute('srcdoc');
-      if (!iframe.getAttribute('src') || iframe.getAttribute('src').indexOf('diagrams.html') === -1) {
-        iframe.onload = function() {
-          if (window.QuietStudioSheet) window.QuietStudioSheet.bindPortalScrollTuck(iframe);
-          postAtlasSync(iframe);
-        };
-        iframe.src = targetSrc;
-      } else {
-        postAtlasSync(iframe);
-      }
-      syncBarControls();
-      syncUrlParams();
+    if (state.studioView !== 'examples') {
+      syncExternalMode(iframe); syncBarControls(); syncUrlParams();
       return;
     }
+    if (!viewMeta) return;
+    if (iframe.dataset.externalMode) {
+      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+      delete iframe.dataset.externalMode; iframe.removeAttribute('src'); state.isMounted = false;
+    }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
-      state.renderedTier = '';
-      iframe.removeAttribute('src');
-      iframe.onload = function() { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
-      iframe.srcdoc = buildIframeSrcDoc();
+      state.renderedView = '';
+      iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
+      iframe.srcdoc = buildIframeSrcDoc(viewMeta);
     } else {
       syncIframeDOM();
     }
@@ -273,72 +376,70 @@
     syncUrlParams();
   }
 
-  function stepCenterOption(delta) {
-    const list = (state.view === 'diagrams') ? ATLAS_SECTIONS : uiTierOptions;
-    if (!list.length) return;
-    const curVal = (state.view === 'diagrams') ? state.atlasSec : state.tier;
-    let idx = list.findIndex(function(o) { return o.value === curVal; });
+  function openBridgeDialog() {
+    const worldObj = findWorld(state.world);
+    const viewMeta = findView(worldObj, state.view);
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
+  }
+
+  function printActiveStage() {
+    const iframe = document.getElementById('va-stage-portal');
+    if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
+  }
+
+  function stepView(delta) {
+    const worldObj = findWorld(state.world);
+    if (!worldObj || !worldObj.views.length) return;
+    const list = worldObj.views;
+    let idx = list.findIndex(function (v) { return v.view_id === state.view; });
     idx = (idx + delta + list.length) % list.length;
-    if (state.view === 'diagrams') state.atlasSec = list[idx].value;
-    else state.tier = list[idx].value;
-    if (window.QuietStudioSheet) window.QuietStudioSheet.untuckStudioBar();
-    applyState();
+    state.view = list[idx].view_id;
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
+    applyState(false);
   }
 
   function initControls() {
-    const tierSel = document.getElementById('va-tier-select');
-    if (tierSel) {
-      uiTierOptions = Array.from(tierSel.options).map(function(o) { return { value: o.value, label: o.textContent }; });
-      if (uiTierOptions.length && !uiTierOptions.some(function(o) { return o.value === state.tier; })) state.tier = uiTierOptions[0].value;
-      tierSel.addEventListener('change', function(e) {
-        if (state.view === 'diagrams') state.atlasSec = e.target.value;
-        else state.tier = e.target.value;
-        if (window.QuietStudioSheet) window.QuietStudioSheet.untuckStudioBar();
-        applyState();
+    const bind = function (id, fn) { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    const tablist = document.getElementById('va-studio-mode-tablist');
+    if (tablist) {
+      tablist.addEventListener('click', function (ev) {
+        const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
+        if (btn && ['examples', 'components'].indexOf(btn.dataset.studioTab) !== -1) {
+          state.studioView = btn.dataset.studioTab;
+          applyState(false);
+        }
       });
     }
-    ['vp', 'theme', 'density', 'corners', 'nav'].forEach(function(k) {
+    const dSel = document.getElementById('va-domain-select');
+    if (dSel) dSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
+    const vSel = document.getElementById('va-view-select');
+    if (vSel) vSel.addEventListener('change', function (e) { state.view = e.target.value; applyState(false); });
+    ['density', 'corners'].forEach(function (k) {
       const el = document.getElementById('va-' + k + '-select');
-      if (el) el.addEventListener('change', function(e) { state[k] = e.target.value; applyState(); });
+      if (el) el.addEventListener('change', function (e) { state[k] = e.target.value; applyState(false); });
     });
-    const prevBtn = document.getElementById('va-step-prev');
-    const nextBtn = document.getElementById('va-step-next');
-    if (prevBtn) prevBtn.addEventListener('click', function() { stepCenterOption(-1); });
-    if (nextBtn) nextBtn.addEventListener('click', function() { stepCenterOption(1); });
-
-    const onRotate = function() { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; applyState(); } };
-    const onZoomToggle = function() { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
-    const rotBtn = document.getElementById('va-rotate-btn');
-    const zoomBtn = document.getElementById('va-zoom-btn');
-    if (rotBtn) rotBtn.addEventListener('click', onRotate);
-    if (zoomBtn) zoomBtn.addEventListener('click', onZoomToggle);
-
-    [['va-view-ui-btn', 'ui'], ['va-view-diag-btn', 'diagrams']].forEach(function(pair) {
-      const btn = document.getElementById(pair[0]);
-      if (btn) btn.addEventListener('click', function() {
-        state.view = pair[1];
-        if (window.QuietStudioSheet) window.QuietStudioSheet.untuckStudioBar();
-        applyState();
-      });
-    });
-    const custBtn = document.getElementById('va-customize-btn');
-    if (custBtn) custBtn.addEventListener('click', function() {
-      const sheet = document.getElementById('va-customize-sheet');
-      if (sheet && typeof sheet.showModal === 'function') sheet.showModal();
-    });
-    if (window.QuietStudioSheet) window.QuietStudioSheet.initSheetEvents(state, applyState, onRotate, onZoomToggle);
-    window.addEventListener('resize', function() {
-      if (window.innerWidth >= 700 && window.QuietStudioSheet) window.QuietStudioSheet.untuckStudioBar();
+    const onRotate = function () { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; applyState(false); } };
+    const onZoomToggle = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
+    [
+      ['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
+      ['va-bridge-btn', openBridgeDialog],
+      ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }],
+    ].forEach(function (pair) { bind(pair[0], pair[1]); });
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoomToggle, printActiveStage);
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 700 && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
       updatePortalDimensions();
-      syncIframeAttributes();
+      if (state.studioView === 'examples') syncIframeDOM();
     });
     window.QuietPortalResize.initResizeHandles(
       document.getElementById('va-portal-scaler'), document.getElementById('va-stage-portal'), document.getElementById('va-portal-mat'),
-      function(w, h) { state.vp = w + 'x' + h; syncIframeAttributes(); syncUrlParams(); syncBarControls(); }
+      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'examples') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
     );
   }
 
-  window.switchTier = function(slug) { state.view = 'ui'; state.tier = slug; applyState(); };
-  window.addEventListener('DOMContentLoaded', function() { readUrlParams(); initControls(); applyState(); });
-  window.QuietStudioPortal = { state: state, applyState: applyState, syncIframeDOM: syncIframeDOM };
-})(typeof window !== 'undefined' ? window : this);
+  window.addEventListener('DOMContentLoaded', function () {
+    loadManifest(); readUrlParams(); initControls(); applyState(false);
+    if (!window.echarts) { const s = document.createElement('script'); s.id = 'va-echarts-vendor'; s.src = resolveAbsDocsAsset('assets/vendor/echarts.min.js'); s.onload = function () { if (state.studioView === 'examples') syncIframeDOM(); }; document.head.appendChild(s); }
+  });
+  window.QuietStudioPortalV9 = { state: state, applyState: applyState, openBridgeDialog: openBridgeDialog };
+})(window, document);

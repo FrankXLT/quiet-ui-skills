@@ -44,6 +44,25 @@ Load ONLY the specific rigor and modality guides matching your active visualizat
 
 ---
 
-## 3. Integration with Complementary Pillars
+## 3. CLI & Python API Usage
+
+Compile any `urn:quiet-ui:schema:v9:<modality>` JSON spec directly from `~/.agents/skills/quiet-evidence/` (or prefix `skills/quiet-evidence/` from the repo root) with zero third-party dependencies:
+
+```bash
+# Write a portable self-contained HTML5 document (uses bundled CSS & interactive scope runtime)
+python3 -B scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html
+
+# Emit an embeddable HTML/SVG <figure> fragment to stdout
+python3 -B scripts/compile_evidence.py spec.json --rigor L2 --medium m3 --fragment
+```
+
+```python
+from compile_evidence import compile_spec
+html_doc = compile_spec("spec.json", rigor="L3", medium="m2", theme="dark", standalone=True)
+```
+
+---
+
+## 4. Integration with Complementary Pillars
 - **Delivery Mediums & Chromatic Budgets**: Consult [quiet-ui](../quiet-ui/SKILL.md) to wrap compiled visuals in calibrated medium shells.
 - **Audience Translation & Lenses**: Consult [quiet-bridge](../quiet-bridge/SKILL.md) to select the appropriate level of rigor (`L1`, `L2`, or `L3`) for the intended audience.

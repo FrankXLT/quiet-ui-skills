@@ -23,7 +23,7 @@ from typing import Any
 
 from PIL import Image, ImageFilter, ImageOps
 
-USER_AGENT = "quiet-ui-skills-fetcher/9.0 (https://github.com/FrankXLT/quiet-ui-skills)"
+USER_AGENT = "quiet-ui-skills-fetcher/9.1 (https://github.com/FrankXLT/quiet-ui-skills)"
 ALLOWED_LICENSES: frozenset[str] = frozenset(
     {
         "Public domain",

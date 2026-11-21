@@ -73,6 +73,17 @@ SAFE_TOKENS: set[str] = {
 }
 
 
+def finite_float(val: Any, default: float | None = None) -> float | None:
+    """Parse finite float from numeric/string value, rejecting bool/None/NaN/Inf."""
+    if val is None or isinstance(val, bool):
+        return default
+    try:
+        num = float(val)
+    except (TypeError, ValueError):
+        return default
+    return num if math.isfinite(num) else default
+
+
 def esc(text: Any) -> str:
     """Escape text safely for HTML/SVG without introducing raw backticks."""
     return html.escape(str(text), quote=True)

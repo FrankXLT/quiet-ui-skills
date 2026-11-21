@@ -18,7 +18,7 @@ from .plot_helpers import (
     visible_series,
 )
 from .sankey_and_strip import build_sankey_echarts_payload, build_strip_chart_echarts_payload
-from .tokens_and_scales import compute_linear_125_scale
+from .tokens_and_scales import compute_linear_125_scale, finite_float
 
 _MATH_SUBS: tuple[tuple[str, str], ...] = (
     (", B_cap", ""), ("B_cap", "B"), ("L_ratio", "L"), ("eta_bte", "\u03b7"), ("f_obs", "f\u2092\u1d66\u209b"),
@@ -336,22 +336,21 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
     log_x = str(xa.get("scale_type") or "").lower() in {"log", "logarithmic"}
     log_y = str(ya.get("scale_type") or "").lower() in {"log", "logarithmic"}
     x_dom, y_dom = xa.get("domain"), ya.get("domain")
-    x_vals: list[float] = [float(x_dom[0]), float(x_dom[1])] if x_dom else []
-    y_vals: list[float] = [float(y_dom[0]), float(y_dom[1])] if y_dom else []
+    x_vals: list[float] = [v for v in (finite_float(x_dom[0]), finite_float(x_dom[1])) if v is not None] if isinstance(x_dom, (list, tuple)) and len(x_dom) >= 2 else []
+    y_vals: list[float] = [v for v in (finite_float(y_dom[0]), finite_float(y_dom[1])) if v is not None] if isinstance(y_dom, (list, tuple)) and len(y_dom) >= 2 else []
     raw_series = visible_series(spec, rigor)
     show_u = rigor in {"L2", "L3"}
     for s in raw_series:
         if str(s.get("epistemic_type") or "discrete_measurement") != "analytical_model":
             for p in (s.get("data_points") or s.get("points") or []):
-                rx, ry, ru = p.get("x"), p.get("y"), p.get("u_y")
-                if rx is not None and math.isfinite(float(rx)):
-                    x_vals.append(float(rx))
-                if ry is not None and math.isfinite(float(ry)):
-                    yv = float(ry)
-                    y_vals.append(yv)
-                    if show_u and ru is not None and math.isfinite(float(ru)):
-                        uv = abs(float(ru))
-                        y_vals.extend((yv + uv, max(yv - uv, 1e-12) if log_y else (yv - uv)))
+                fx, fy, fu = finite_float(p.get("x")), finite_float(p.get("y")), finite_float(p.get("u_y"))
+                if fx is not None:
+                    x_vals.append(fx)
+                if fy is not None:
+                    y_vals.append(fy)
+                    if show_u and fu is not None:
+                        uv = abs(fu)
+                        y_vals.extend((fy + uv, max(fy - uv, 1e-12) if log_y else (fy - uv)))
     x_sc = axis_scale(xa, x_vals)
     x_min, x_max = float(x_sc["min"]), float(x_sc["max"])
     series_out: list[dict[str, Any]] = []

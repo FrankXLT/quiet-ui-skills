@@ -1,7 +1,7 @@
 {
   "name": "brand-starter",
   "title": "Quiet UI Brand & Product Portal",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "mode": "brand",
   "description": "Read-only blueprint for enterprise software products, design systems, engineering docs, and team productivity portals (17 product views).",
   "palette": {

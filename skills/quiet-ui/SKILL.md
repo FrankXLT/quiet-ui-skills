@@ -3,7 +3,7 @@ name: quiet-ui
 description: Design system and UI architecture skill generating responsive HTML interfaces across 7 delivery mediums with 4-theme tokens, concentric geometry, and human-factors controls grounded in ISA-101, FDA IEC 62366, and NASA-STD-3001.
 ---
 
-# Quiet UI v9.0 — Qualitative Delivery Medium Physics & Shells
+# Quiet UI v9.1 — Qualitative Delivery Medium Physics & Shells
 
 Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, editorial briefs, and optical HUDs alike.
 
@@ -47,20 +47,22 @@ Load ONLY the specific foundation and medium guides matching your active vector:
 - [mediums/m6-collimated-optical-hud.md](mediums/m6-collimated-optical-hud.md): Collimated optical HUD, >=65% central keep-out, peripheral symbology, and monochrome green/cyan.
 - [mediums/m7-transparent-window-overlay.md](mediums/m7-transparent-window-overlay.md): Variable luminance smoked scrims, stroke text halos, and environmental glare rejection.
 
-### Legacy v8.x Reference Stubs (Backward Compatibility)
-For historical v8.x reference paths and migration mappings:
-- [references/00-intake-questionnaire-and-project-lock.md](references/00-intake-questionnaire-and-project-lock.md)
-- [references/01-user-discovery-and-4-theme-tokens.md](references/01-user-discovery-and-4-theme-tokens.md)
-- [references/02-editorial-and-bridge-tiers.md](references/02-editorial-and-bridge-tiers.md)
-- [references/03-briefing-and-telemetry-tiers.md](references/03-briefing-and-telemetry-tiers.md)
-- [references/04-application-workspace-tiers.md](references/04-application-workspace-tiers.md)
-- [references/05-optical-hud-and-tactile-console.md](references/05-optical-hud-and-tactile-console.md)
-- [references/06-meta-chrome-and-nav-morphing.md](references/06-meta-chrome-and-nav-morphing.md)
-- [references/07-nasa-human-factors-and-controls.md](references/07-nasa-human-factors-and-controls.md)
-- [references/08-figure-craftsmanship-and-breakouts.md](references/08-figure-craftsmanship-and-breakouts.md)
+---
+
+## 4. Portable HTML/CSS Auditor (`scripts/audit_quiet_html.py`)
+
+Verify any external HTML/CSS file, directory, or live localhost URL (run inside `~/.agents/skills/quiet-ui/` or prefix `skills/quiet-ui/` from the repo root) against Quiet UI's `!important` ban, `>= 11px` font floor, accessible `<svg>` `viewBox`/label contract, and responsive `<table>` wrapping:
+
+```bash
+# Zero-dependency static audit (runs anywhere via stdlib Python)
+python3 -B scripts/audit_quiet_html.py path/to/page.html
+
+# Live Headless Chrome sweep across 390px, 820px, and 1440px (requires selenium + Chrome)
+python3 -B scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp
+```
 
 ---
 
-## 4. Integration with Complementary Pillars
+## 5. Integration with Complementary Pillars
 - **Quantitative Metrology & Schematics**: Consult [quiet-evidence](../quiet-evidence/SKILL.md) for calibrated plots, bitfields, HIL waveforms, and topologies.
 - **Audience Translation & Murder Board**: Consult [quiet-bridge](../quiet-bridge/SKILL.md) for persona scrub rubrics and review-room dual-layer patterns.

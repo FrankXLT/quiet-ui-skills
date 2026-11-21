@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.0 Phase 2 — Standalone 18-Specimen Evidence Qualification Bench Builder."""
+"""Quiet UI v9.1 — Standalone 39-Specimen 3-Pillar Component Library Builder."""
 
 from __future__ import annotations
 
@@ -65,9 +65,9 @@ def _bundle_bench_css() -> str:
     for rel in (
         "src/css/00-layers-and-reset.css",
         "src/css/01-stage-and-containers.css",
-        "src/css/06-b-pills-and-annunciators.css",
+        "src/css/03-pills-and-annunciators.css",
         "docs/bench/evidence-bench.css",
-        "src/v9/css/08-directional-and-planner.css",
+        "src/css/11-directional-and-planner.css",
     ):
         fpath = REPO_ROOT / rel
         if fpath.exists():
@@ -82,10 +82,10 @@ def _bundle_bench_js() -> str:
         (REPO_ROOT / rel).read_text(encoding="utf-8")
         for rel in (
             "src/js/evidence-runtime.js",
-            "src/v9/js/echarts-layers.js",
-            "src/v9/js/echarts-schedule-heatmap.js",
-            "src/v9/js/echarts-sankey-strip.js",
-            "src/v9/js/echarts-quiet-adapter.js",
+            "src/js/echarts-layers.js",
+            "src/js/echarts-schedule-heatmap.js",
+            "src/js/echarts-sankey-strip.js",
+            "src/js/echarts-quiet-adapter.js",
             "docs/bench/bench.js",
         )
         if (REPO_ROOT / rel).exists()
@@ -103,7 +103,8 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.0 — 3-Pillar Component Library (39 Specimens)</title>
+  <title>Quiet UI v9.1 — 3-Pillar Component Library (39 Specimens)</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 {css_bundle}
   </style>
@@ -113,7 +114,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.0 · 3-PILLAR COMPONENT GALLERY</span>
+        <span class="va-kicker">QUIET UI v9.1 · 3-PILLAR COMPONENT GALLERY</span>
         <h1>Component Library (39 Specimens × 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
@@ -175,12 +176,17 @@ def _render_bench_shell(cards_markup: str) -> str:
 """
 
 
+def render_bench_html() -> str:
+    """Compile all 39 3-pillar component specimens and return the full HTML string."""
+    cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
+    return _render_bench_shell(cards_markup)
+
+
 def build_bench(out_path: Path | None = None) -> Path:
     """Compile all 39 3-pillar component specimens into docs/bench/evidence-bench.html."""
-    cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
     target = out_path or (REPO_ROOT / "docs" / "bench" / "evidence-bench.html")
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(_render_bench_shell(cards_markup), encoding="utf-8")
+    target.write_text(render_bench_html(), encoding="utf-8")
     return target
 
 

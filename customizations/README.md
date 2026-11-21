@@ -1,4 +1,4 @@
-# Quiet UI Customizations Architecture (v8.0)
+# Quiet UI Customizations Architecture (v9.1)
 
 > **Customize in 60 Seconds (Show Inspiration Examples)**  
 > Transform Quiet UI into your own bespoke design system in under a minute by providing 1–3 inspirational examples (screenshots, URLs, brand guides) or brand hexes.
@@ -27,13 +27,13 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 ## 2. Choosing a Starter Blueprint
 
-| Blueprint | Scope | Tiers | Optical Backplates | Best For |
+| Blueprint | Scope | Coverage | Optical Backplates | Best For |
 | :--- | :--- | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial Workspaces | 16 Tiers | Apollo 8 Earthrise (`as08-14-2383`) | Personal research, telemetry consoles, optical viewport HUD, and tactile control decks. |
-| **`brand-starter`** | Team & Product Portal | 13 Tiers | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
+| **`personal-starter`** | Personal & Spatial Workspaces | 21 Views | 8 CC0 / PD Photos | Personal research, clinical/grid consoles, optical HUDs, and smart-home decks. |
+| **`brand-starter`** | Team & Product Portal | 17 Views | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
 
 > [!NOTE]
-> `brand-starter` disables specialized optical HUD and tactile console tiers (`hud-1`, `ctrl-1`) and personal wellness planning (`app-5`), keeping corporate deployments lean and focused.
+> `brand-starter` omits optical HUD overlays and residential smart-home views, keeping enterprise software and engineering deployments focused across 17 views.
 
 ---
 
@@ -43,19 +43,19 @@ Please clone the starter, extract design tokens into customization.json, update 
 customizations/
 ├── README.md                          # This architecture guide
 ├── LICENSE                            # Standalone MIT License (0 NOTICE obligations)
-├── personal-starter/                  # Read-only 16-tier blueprint
-│   ├── customization.json             # Manifest (mode: personal, all 16 tiers)
+├── personal-starter/                  # Read-only 21-view blueprint
+│   ├── customization.json             # Manifest (mode: personal, all 21 views)
 │   ├── intent/                        # Architectural design rationale
 │   │   ├── 00-global-structure.md     # Layout, chrome & 7-step typography
-│   │   ├── 01-docs-and-specs.md       # Editorial & spec tiers (01..06)
-│   │   ├── 02-workspaces-apps.md      # Workspaces & telemetry tiers (07..14)
-│   │   └── 03-spatial-ambient.md      # Optical HUD & tactile console (15..16)
+│   │   ├── 01-docs-and-specs.md       # Editorial & regulatory spec rationale
+│   │   ├── 02-workspaces-apps.md      # Workspaces, SCADA & telemetry rationale
+│   │   └── 03-spatial-ambient.md      # Optical HUD & tactile console rationale
 │   ├── styles/
 │   │   ├── quiet-ui-tokens.css        # MIT base design tokens
 │   │   └── overrides.css              # Custom :root variables & CSS rules
-│   └── showcase.html                  # Pre-compiled 16-tier preview
-├── brand-starter/                     # Read-only 13-tier product blueprint
-│   └── ...                            # Same anatomy with 13 product tiers
+│   └── showcase.html                  # Pre-compiled 21-view preview
+├── brand-starter/                     # Read-only 17-view product blueprint
+│   └── ...                            # Same anatomy with 17 product views
 └── scripts/                           # Build & verification toolchain
     ├── build_showcase.py              # Compiles showcase from customization.json
     └── verify_customization.py        # Validates WCAG contrast & geometric gates
