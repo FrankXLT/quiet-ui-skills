@@ -318,6 +318,24 @@
     };
   }
 
+  function wrapAxisNames(axesOrAxis, maxChars, minGap) {
+    var list = Array.isArray(axesOrAxis) ? axesOrAxis : (axesOrAxis ? [axesOrAxis] : []);
+    var wrapped = false;
+    list.forEach(function (ax) {
+      if (!ax || typeof ax.name !== 'string' || ax.name.indexOf('\n') >= 0 || ax.name.length <= maxChars) return;
+      var mid = Math.floor(ax.name.length * 0.56);
+      var sp = ax.name.lastIndexOf(' ', mid);
+      if (sp < 6) sp = ax.name.indexOf(' ', mid);
+      if (sp > 3 && sp < ax.name.length - 3) {
+        ax.name = ax.name.slice(0, sp) + '\n' + ax.name.slice(sp + 1);
+        ax.nameTextStyle = Object.assign({}, ax.nameTextStyle, { fontSize: 11, lineHeight: 13 });
+        ax.nameGap = Math.max(minGap, (ax.nameGap || minGap) - 6);
+        wrapped = true;
+      }
+    });
+    return wrapped;
+  }
+
   function adaptMobileOpt(opt, payload, w, tokens) {
     if (!opt || !payload) return opt;
     var narrow = (w || 640) < 480;
@@ -336,7 +354,8 @@
       }
     } else if (kind === 'waterfall' && narrow) {
       if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: { color: textSec, fontSize: 11 } });
-      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: 48, right: 12, top: 48, bottom: 70, containLabel: true });
+      var wrappedWfY = wrapAxisNames(opt.yAxis, 16, 36);
+      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 56 : 48, right: 12, top: 52, bottom: 68, containLabel: true });
       if (opt.xAxis && opt.xAxis.axisLabel) opt.xAxis.axisLabel = { color: textSec, fontSize: 11, interval: 0, rotate: 26 };
       if (opt.series && opt.series[0] && opt.series[0].markLine && Array.isArray(opt.series[0].markLine.data)) {
         opt.series[0].markLine.data.forEach(function (d) {
@@ -345,21 +364,9 @@
       }
     } else if (kind === 'cartesian' && narrow) {
       if (opt.legend) opt.legend = Object.assign({}, opt.legend, { top: 2, left: 6, right: 6, itemGap: 6, itemWidth: 12, textStyle: { color: textSec, fontSize: 11 } });
-      var wrappedX = false;
       var maxAxChars = Math.max(18, Math.floor(((w || 320) - 96) / 10.5));
-      var xAxes = Array.isArray(opt.xAxis) ? opt.xAxis : (opt.xAxis ? [opt.xAxis] : []);
-      xAxes.forEach(function (ax) {
-        if (!ax || typeof ax.name !== 'string' || ax.name.indexOf('\n') >= 0 || ax.name.length <= maxAxChars) return;
-        var mid = Math.floor(ax.name.length * 0.56);
-        var sp = ax.name.lastIndexOf(' ', mid);
-        if (sp < 8) sp = ax.name.indexOf(' ', mid);
-        if (sp > 4 && sp < ax.name.length - 3) {
-          ax.name = ax.name.slice(0, sp) + '\n' + ax.name.slice(sp + 1);
-          ax.nameTextStyle = Object.assign({}, ax.nameTextStyle, { fontSize: 11, lineHeight: 13 });
-          ax.nameGap = Math.max(20, (ax.nameGap || 28) - 4);
-          wrappedX = true;
-        }
-      });
+      var wrappedX = wrapAxisNames(opt.xAxis, maxAxChars, 20);
+      wrapAxisNames(opt.yAxis, 22, 42);
       if (Array.isArray(opt.grid)) {
         opt.grid[0] = Object.assign({}, opt.grid[0], { right: 14, top: 58, bottom: wrappedX ? 140 : 132 });
         opt.grid[1] = Object.assign({}, opt.grid[1], { right: 14, bottom: wrappedX ? 54 : 46 });
