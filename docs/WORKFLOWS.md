@@ -1,7 +1,7 @@
-# Quiet UI v9.2.1 — Master Engineering Workflows & Architecture
+# Quiet UI v9.2.2 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.2.1 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.2.2 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
@@ -270,6 +270,18 @@ The `Educator <-> Student / Learner` vector is distinct from both specialist-to-
 
 ---
 
+## 7A. Workflow G — Brownfield Retrofit & Side-by-Side Strangler Migration
+
+When replacing or overhauling a live production console rather than building greenfield from scratch, execute these five migration controls so visual refinement never removes working user functionality:
+
+1. **Declare `Project Mode: Brownfield Retrofit` + Capability Parity Ledger**: Map every existing timeframe preset (including both Calendar-to-Date `MTD`/`QTD`/`YTD` and Rolling `30d`/`90d`/`52w` spans), breakdown table, and export (`CSV`, `PNG`, `ZIP`) as `KEEP`, `CONSOLIDATE` (into `.va-period-stepper` + `.va-preset-popover`), or user-approved `DEPRECATE` before editing code.
+2. **Enforce Deprecation Blocklist**: Never wire UI widgets merely because retired keys remain on shared wire JSON; pass additive suppression flags (e.g. `?include_legacy=0`) and assert DOM absence in tests.
+3. **Decompose Monolith Zooms & Keep Demo Parity Honest**: Split mixed `Overview` / `.va-scope-chip` Entity / `Item Workspace` hierarchies with an auto-closing `.va-side-rail[data-mode="overlay"]` + `.va-tree-row` drawer, and either recompute presets on `?demo=1` fixtures or set `disabled` + explanatory `title`.
+4. **Stage on a Parallel Strangler Route**: Expose the retrofit at `/v2` (or `?ui=quiet`) with `< Classic` / `New ↗` links, namespaced `localStorage` keys, and additive backend query flags so 100% of classic API/UI tests stay green.
+5. **Quarantine Unlayered CSS (`layer(legacy)`) & Harden Overlays**: Wrap legacy sheets via `@import url(...) layer(legacy);` above `@layer reset, tokens, shell, archetypes, evidence, views, utilities;` and never combine transparent `.va-pane` onto floating overlay surfaces (`--bg-surface`).
+
+---
+
 ## 8. Hard Anti-Patterns & Quality Corridors
 
 To guarantee visual calm, metrological integrity, and accessibility, every Quiet UI artifact must avoid the following operational traps:
@@ -288,30 +300,30 @@ To guarantee visual calm, metrological integrity, and accessibility, every Quiet
 | **3. `chip`** | `<button class="va-pill" data-variant="chip">` | `22px` stadium capsule (`--radius-pill: 999px`). **Round = Clickable**. | Interactive filter chips, modal triggers, clickable pedagogical equation terms (`<button>`, `<a>`, `[role="button"]`). |
 | **4. `svg-knockout`** | `svg_knockout_label()` / right-gutter | Borderless canvas/enclave-matched SVG `<rect stroke="none">` + `<text>` or right-gutter `text-anchor="start"`. | Chart envelopes, diagonal slope text (`atan2`), schematic wire labels, shared waveform `DROPOUT` banners. |
 
-   Side-by-side scalar cards MUST lock `.qe-scalar-top` (`min-block-size: 1.375rem`), title height, `.qe-scalar-val-row`, and `<svg class="qe-gauge-svg">` baselines within `<= 1.0px`.
-7. **Made-Up Demo Data & Borrowed Targets**: Never construct views specimen-first, borrow targets across pools (`Target 14.28%` on non-partner pools), omit `Warming up — N samples collected` when `N < 10`, retroactively grade old runs against newly added rules, or embed inline mock JS arrays (`MOCK_`, `demoRows`, etc.).
-8. **Chrome Self-Badges & Raw Agent Storage Prefixes**: Never stamp `v9.x Quiet` / `Quiet UI` badges into external application chrome (`header`, `footer`, `nav`, `[role="banner"]`, `.va-shell-topbar`, `.va-shell-brand`, `.topbar`) or expose `brain:<uuid>` storage paths in visible DOM/templates; kebab-case repo/ticket slugs (`quiet-ui-skills*`) in workspace pills remain valid.
-9. **Axis Spine Registration & Chart Form (`N`)**: Synchronize co-displayed windows on canonical zero-filled buckets (`buildCanonicalTimeGrid`), lock unit-matched `1–2–5` Y bounds (`sharedNiceScale125`), and register column `[x_left, x_right]` / row `[y_top, y_bottom]` `containLabel: false` pixel gutters (`computeGridFrameGutters`, `alignPlotGridFrames`, `alignSharedAxes`, `.va-plot-row` `subgrid`, `[PLOT_AXIS_MISALIGN] <= 2px`) while allowing independent domain spans across disparate `xUnit`/`eventKey`/`yUnit` pairs. Render `N <= 3` as stat strips/micro-bars (`<= 72px`), `N <= 8` comparisons as `.va-inline-bar` bullet tables (`<= 32px`/row), never duplicate total vs. stacked time-series denominators, and route legends via `applySafeLegendLayout`.
-10. **Foldable `>= 780px` (`820px`), Chrome Budget & Coarse-Pointer Discipline**: Use `.va-toolbar-joined` (`26–28px` desktop, `32–34px` on `>= 768px` coarse tablets, `44px` only on `< 700px` handsets) while keeping read-only `.va-pill`/`.va-badge` (`--radius-sm`) pills `20–22px` and extending corner overlays via `::after` (`.va-overlay-control`). Keep sticky headers to 1 row (`<= 56px`, `[STICKY_CHROME_BLOAT] > 64px`), detail headers `<= 96px`, `0`-issue audit tables inside `<details>`, and split/plot grids at `>= 780px`.
-11. **Cascade-Layer `.hidden` Shadowing (`[HIDDEN_LAYER]`)**: Always declare `utilities` last in `@layer` order and define `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities` (`src/css/00-layers-and-reset.css`) so earlier `shell`/`views` flex/grid rules never override hidden state while preserving Find-in-page (`beforematch`) searchability.
-12. **Page-Wide Coherence, Pill Restraint (`[PILL_SPRAWL]`), Hairline Panes & `ResizeObserver` Chart Hosts**: Limit pages to `<= 3` repeating card structures, `<= 1` chart per half-width card, unified `.booktabs` rows, and one `--chart-1..5` ramp. Render dates, versions, counts, and hashes as plain `.va-meta-inline` text, use `.va-tab-strip`/`.va-tab` for switchers, reserve `.va-badge` (`<= 1`/header) for state exceptions, lay out `M3` columns with `.va-workbench-panes`/`.va-pane`/`.va-pane-hdr` (`40px`), and bind ECharts hosts to `observeChartResize(hostEl, chart)` + `min-width: 0; max-width: 100%;`.
+   Side-by-side scalar cards MUST lock `.qe-scalar-top` (`min-block-size: 1.375rem`), title height, `.qe-scalar-val-wrap`, and `<svg class="qe-gauge-svg">` baselines within `<= 1.0px`.
+7. **Made-Up Demo Data, Fake Unbounded Gauges & Orphan Series**: Never construct views specimen-first, render `.va-kpi-gauge-track` on unbounded totals (use trackless `.va-kpi-card` / `.va-kpi-grid` and share one denominator whenever progress tracks pair with target pins, `[FAKE_UNBOUNDED_GAUGE]`), borrow targets across pools, omit visible on-card legends/summary tables on `>= 2`-series charts (`[ORPHAN_SERIES_LEGEND]`), omit `Warming up — N samples collected` when `N < 10`, or ship hardcoded mock JS/JSON fixtures (`[JSON_MOCK_FIXTURE]`).
+8. **Chrome Self-Badges, Plain Copy & Zero Emojis (`[EMOJI_IN_CHROME]`)**: Never stamp `v9.x Quiet` / `Quiet UI` badges into external application chrome (`header`, `footer`, `nav`, `[role="banner"]`, `.topbar`), expose `brain:<uuid>` storage paths, use obscure jargon headings (`"Activity by Hour of Day"`), or place Unicode pictographic emojis (`[EMOJI_IN_CHROME]`) inside interactive buttons/tabs/toolbars—use inline `currentColor` `<svg>` icons instead.
+9. **Time Binning, Mono Gutters, Top Margin & Heatmap Contrast**: Bin dense time series deterministically (`QuietEChartsDefaults.binTimeSeries` -> `1h` `<= 3d`, `1d` `4–92d`, ISO `1w` `> 92d`; `[BAR_HAIRLINE_DENSITY]`), size category gutters with `measureCategoryGutter` (`mono` + `axisLabelMargin`; `grid.top >= 30, nameGap >= 12` for vertical top axis titles; `[AXIS_LABEL_CLIPPED]` `+0.5px` top edge), align spines (`computeGridFrameGutters`, `alignPlotGridFrames`, `alignSharedAxes` engaging `independentXSpan` + distinct `yUnit`; `[PLOT_AXIS_MISALIGN]`), trim trailing future week columns (`trimTrailingFutureWeeks`) with `>= 0.06` past zero-cell contrast, use `.va-inline-bar` for `N <= 8`, and keep `[Chart + Table]` 1-column full-width while reserving 2-up `.va-plot-row` for chart-only cards.
+10. **Topbar Drawer Trigger, Overlay Rail (`data-mode="overlay"`), Stepper & Sticky Budgets**: Anchor a sticky far-left drawer toggle inside `.va-shell-topbar`, keep low-frequency settings (`D1–D4`, theme, strangler `< Classic`) in `.va-rail-footer`, route multi-level hierarchies cleanly via opaque auto-closing `.va-side-rail[data-mode="overlay"]`, `.va-scope-chip`, and split `.va-tree-row` (`100dvw × 100svh` `< 680px`, `50dvw` `680–1199px`, `min(28rem, 42dvw)` `>= 1200px`), and consolidate `> 6` temporal buttons into `.va-period-stepper` + `.va-preset-popover` (`[TOOLBAR_CONTROL_SPRAWL]`). Sticky topbars allow `<= 88px` (2 compact rows) on `< 680px` phones and `<= 64px` single row on `>= 680px` (`[STICKY_CHROME_BLOAT]`).
+11. **Canonical `@layer` Order, Overlay Opacity & `.hidden`**: Declare `@layer legacy, reset, tokens, shell, archetypes, evidence, views, utilities;` (with `legacy` optional for brownfield imports), enforce opaque `var(--bg-surface)` in terminal utility priority on overlays (`[TRANSPARENT_OVERLAY] < 0.92` alpha rejected), and keep `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` last (`[HIDDEN_LAYER]`).
+12. **Page-Wide Coherence, Pill Restraint (`[PILL_SPRAWL]`), Hairline Panes & `ResizeObserver`**: Limit pages to `<= 3` repeating card structures, `<= 1` chart/half-width card, unified `.booktabs` rows, one `--chart-1..5` ramp, plain `.va-meta-inline` metadata, `.va-workbench-panes`/`.va-pane`/`.va-pane-hdr` (`40px`), and `observeChartResize(hostEl, chart)` + `min-width: 0; max-width: 100%;`.
 
 ---
 
 ## 9. Interface Lifecycle Transition & Verification Gates
 
 ```
-Artifact Inception ──► [Gate 0: Contract Lock] ──► [Gate 1: Schema Spec] ──► [Gate 2: Visual Review] ──► Delivery
+Artifact Inception ──► [Gate 0: Contract & Parity Lock] ──► [Gate 1: Schema Spec] ──► [Gate 2: Visual Review] ──► Delivery
 ```
 
 | Lifecycle Phase | Active Pillar | Artifact Produced | Verification Gate Rule |
 | :--- | :--- | :--- | :--- |
-| **0. Intake & Scoping** | `quiet-bridge` + `quiet-ui` | Data Binding Map & Audience Contract | Real payload fields verified; absent slots omitted; `N < 10` warmup marked; chart form matched to `N` |
-| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4` valid, `.va-workbench-panes`, terminal `@layer utilities` `.hidden` (`[HIDDEN_LAYER]`), `>= 780px` split, sticky `<= 56px`, Pill Restraint (`[PILL_SPRAWL]`) |
-| **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validation passed against offline URN; zero hardcoded mock arrays |
-| **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | $1\text{--}2\text{--}5$ ticks verified, `alignPlotGridFrames` (`[PLOT_AXIS_MISALIGN] <= 2px`), `observeChartResize`, `applySafeLegendLayout`, `--chart-1..5`, zero overlap |
-| **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room Composition | BLUF band aligned with physics proof below |
-| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | `390/820/1440px` CDP sweep (`[STICKY_CHROME_BLOAT]`, `[PLOT_AXIS_MISALIGN]`, `[PILL_SPRAWL]`), subpath `--mount-prefix`, zero drift (`build_all.py --check`) |
+| **0. Intake & Scoping** | `quiet-bridge` + `quiet-ui` | Data Binding + Parity Ledger | `Project Mode` (`Greenfield | Brownfield`), `KEEP`/`CONSOLIDATE`/`DEPRECATE` parity, Blocklist, `N < 10` warmup |
+| **1. Shell & Medium** | `quiet-ui` | `@layer` HTML Skeleton | Shell `N0–N4`, opaque `.va-side-rail[data-mode="overlay"]` + `.va-rail-footer`, `.va-period-stepper`, `@layer` quarantine |
+| **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Schema validated; zero mock JS/JSON fixtures (`[JSON_MOCK_FIXTURE]`); `binTimeSeries`; on-card legend (`[ORPHAN_SERIES_LEGEND]`) |
+| **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | `1–2–5` ticks, `measureCategoryGutter`, `grid.top >= 30`, `+0.5px` `[AXIS_LABEL_CLIPPED]`, heatmap week trimming & contrast |
+| **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room / Strangler Check | BLUF aligned with physics proof below; zero chrome emojis (`[EMOJI_IN_CHROME]`); Brownfield Murder Board cleared |
+| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | `390/820/1440px` (`[TRANSPARENT_OVERLAY]`, `[TOOLBAR_CONTROL_SPRAWL]`, `<= 88px`/`64px` sticky, `[NAVBAR_SHIFT]`, `--check`) |
 
 Run the full verification loop before shipping:
 
@@ -321,5 +333,6 @@ QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome
 ```
+
 
 

@@ -155,24 +155,41 @@
     return lines;
   }
 
+  function isMonoLabelSet(list) {
+    if (!list.length) return false;
+    var hits = 0;
+    for (var i = 0; i < list.length; i += 1) {
+      var s = String(list[i] == null ? '' : list[i]).trim();
+      if (/[_/\\:]|[a-z]+-[a-z0-9-]+|^0x[0-9a-f]+$|^\d{2,}h$/i.test(s)) hits += 1;
+    }
+    return hits * 2 >= list.length;
+  }
+
   function measureCategoryGutter(labels, opts) {
     var cfg = opts || {};
     var list = Array.isArray(labels) ? labels : [];
-    var minPx = Number(cfg.minPx != null ? cfg.minPx : 64);
-    var maxPx = Number(cfg.maxPx != null ? cfg.maxPx : 176);
-    var padPx = Number(cfg.padPx != null ? cfg.padPx : 18);
-    var maxChars = Number(cfg.maxChars != null ? cfg.maxChars : 22);
-    var fontSpec = cfg.font || '11px Inter, system-ui, sans-serif';
+    var numOr = function (v, d) { var n = Number(v); return v != null && v !== '' && Number.isFinite(n) ? n : d; };
+    var minPx = Math.max(0, numOr(cfg.minPx, 64)), maxPx = Math.max(minPx, numOr(cfg.maxPx, 220));
+    var axisMargin = Math.max(0, numOr(cfg.axisLabelMargin, 8));
+    var padPx = Math.max(0, numOr(cfg.padPx, 12)) + axisMargin;
+    var maxChars = Math.max(6, numOr(cfg.maxChars, 24));
+    var ff = String(cfg.fontFamily || '').toLowerCase();
+    var isMono = cfg.mono === true || ff === 'mono' || ff.indexOf('mono') >= 0 || (cfg.mono !== false && !cfg.fontFamily && !cfg.font && isMonoLabelSet(list));
+    var fontMatch = (String(cfg.font || '').match(/(\d+(?:\.\d+)?)px/i) || [])[1];
+    var rawFs = numOr(cfg.fontSize, fontMatch ? Number(fontMatch) : NaN);
+    var fSize = rawFs > 0 ? rawFs : (isMono ? 12 : 11);
+    var fontSpec = cfg.font || (fSize + 'px ' + (isMono ? 'JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace' : 'Inter, system-ui, sans-serif'));
     var maxW = 0;
     var wrappedLabels = list.map(function (lbl) {
       var lines = wrapLabelLines(lbl, maxChars, cfg.maxLines || 2);
       lines.forEach(function (ln) {
-        maxW = Math.max(maxW, measureTextPx(ln, fontSpec));
+        var measured = measureTextPx(ln, fontSpec);
+        if (isMono) measured = Math.max(measured, ln.length * fSize * 0.64);
+        maxW = Math.max(maxW, measured);
       });
       return lines.join('\n');
     });
-    var gutterPx = Math.max(minPx, Math.min(maxPx, Math.ceil(maxW + padPx)));
-    return { gutterPx: gutterPx, maxLinePx: Math.ceil(maxW), wrappedLabels: wrappedLabels };
+    return { gutterPx: Math.max(minPx, Math.min(maxPx, Math.ceil(maxW + padPx))), maxLinePx: Math.ceil(maxW), wrappedLabels: wrappedLabels, mono: isMono };
   }
 
   function filterNonOverlappingTicks(ticks, opts) {
@@ -244,31 +261,11 @@
     if (!doc || typeof doc.createElementNS !== 'function') {
       return { x: x, y: y, anchor: anchor, text: text, estWidth: estW };
     }
-    var g = doc.createElementNS(svgNS, 'g');
-    g.setAttribute('data-role', 'ref-label');
+    var setAttrs = function (el, map) { Object.keys(map).forEach(function (k) { el.setAttribute(k, String(map[k])); }); return el; };
+    var g = setAttrs(doc.createElementNS(svgNS, 'g'), { 'data-role': 'ref-label' });
     var rx = anchor === 'start' ? x - 4 : (anchor === 'end' ? x - estW - 4 : x - estW * 0.5 - 4);
-    var bg = doc.createElementNS(svgNS, 'rect');
-    bg.setAttribute('x', rx.toFixed(1));
-    bg.setAttribute('y', (y - 11.5).toFixed(1));
-    bg.setAttribute('width', (estW + 8).toFixed(1));
-    bg.setAttribute('height', '15');
-    bg.setAttribute('rx', '2');
-    bg.setAttribute('fill', haloColor);
-    bg.setAttribute('fill-opacity', '0.94');
-    bg.setAttribute('stroke', 'none');
-    g.appendChild(bg);
-    var txt = doc.createElementNS(svgNS, 'text');
-    txt.setAttribute('x', x.toFixed(1));
-    txt.setAttribute('y', y.toFixed(1));
-    txt.setAttribute('text-anchor', anchor);
-    txt.setAttribute('font-family', cfg.fontFamily || 'var(--font-mono, ui-monospace)');
-    txt.setAttribute('font-size', String(cfg.fontSize || 11));
-    txt.setAttribute('font-weight', String(cfg.fontWeight || 600));
-    txt.setAttribute('fill', fillColor);
-    txt.setAttribute('stroke', haloColor);
-    txt.setAttribute('stroke-width', '3.2');
-    txt.setAttribute('stroke-linejoin', 'round');
-    txt.setAttribute('paint-order', 'stroke fill');
+    g.appendChild(setAttrs(doc.createElementNS(svgNS, 'rect'), { x: rx.toFixed(1), y: (y - 11.5).toFixed(1), width: (estW + 8).toFixed(1), height: 15, rx: 2, fill: haloColor, 'fill-opacity': 0.94, stroke: 'none' }));
+    var txt = setAttrs(doc.createElementNS(svgNS, 'text'), { x: x.toFixed(1), y: y.toFixed(1), 'text-anchor': anchor, 'font-family': cfg.fontFamily || 'var(--font-mono, ui-monospace)', 'font-size': cfg.fontSize || 11, 'font-weight': cfg.fontWeight || 600, fill: fillColor, stroke: haloColor, 'stroke-width': 3.2, 'stroke-linejoin': 'round', 'paint-order': 'stroke fill' });
     txt.textContent = text;
     g.appendChild(txt);
     if (docOrSvg && docOrSvg.nodeType === 1) docOrSvg.appendChild(g);
@@ -352,11 +349,15 @@
 
   function maxLabelWidthPx(labels, fontSpec) {
     var list = Array.isArray(labels) ? labels : [];
+    var isMono = String(fontSpec || '').toLowerCase().indexOf('mono') >= 0 || isMonoLabelSet(list);
+    var fSize = Number(((String(fontSpec || '').match(/(\d+(?:\.\d+)?)px/i) || [])[1]) || (isMono ? 12 : 11));
     var w = 0;
     for (var i = 0; i < list.length; i += 1) {
       var lines = String(list[i] == null ? '' : list[i]).split('\n');
       for (var j = 0; j < lines.length; j += 1) {
-        w = Math.max(w, measureTextPx(lines[j], fontSpec));
+        var measured = measureTextPx(lines[j], fontSpec);
+        if (isMono) measured = Math.max(measured, lines[j].length * fSize * 0.64);
+        w = Math.max(w, measured);
       }
     }
     return Math.ceil(w);
@@ -364,35 +365,27 @@
 
   function measureCellGutters(cell, cfg) {
     var tickFont = cell.tickFont || cfg.tickFont || '11px JetBrains Mono, monospace';
-    var yTicks = cell.yTicks || cell.leftTicks || cell.ticks || [];
-    var rTicks = cell.rightTicks || [];
+    var yTicks = cell.yTicks || cell.leftTicks || cell.ticks || [], rTicks = cell.rightTicks || [];
     var hasRight = !!(cell.hasRightAxis || rTicks.length || cell.rightTitle);
     var leftW = Math.max(cell.minLeft || cfg.minLeft || 44, (yTicks.length ? maxLabelWidthPx(yTicks, tickFont) + 12 : 44) + (cell.yLabel || cell.leftTitle ? 18 : 0));
     var rightW = Math.max(cell.minRight || cfg.minRight || (hasRight ? 48 : 16), hasRight ? maxLabelWidthPx(rTicks, tickFont) + 14 + (cell.rightTitle ? 18 : 0) : 16);
     var topH = Math.max(cell.minTop || cfg.minTop || 20, (cell.titleHeight || 0) + (cell.topLegendHeight || (cell.hasTopLegend ? 28 : 0)) + (cell.hasTopYName ? 26 : 16));
     var botH = Math.max(cell.minBottom || cfg.minBottom || 34, (cell.xTicks && cell.xTicks.length ? 22 : 14) + (cell.xLabel || cell.bottomTitle ? 18 : 0) + (cell.bottomLegendHeight || (cell.hasBottomLegend ? 30 : 0)));
     return {
-      left: Math.min(cfg.maxLeft || 190, leftW),
-      right: Math.min(cfg.maxRight || 160, rightW),
-      top: topH,
-      bottom: botH,
-      padX: Number(cell.containerPadX || 0),
-      stageHeight: Number(cell.stageHeight || 0),
+      left: Math.min(cfg.maxLeft || 224, leftW), right: Math.min(cfg.maxRight || 160, rightW),
+      top: topH, bottom: botH, padX: Number(cell.containerPadX || 0), stageHeight: Number(cell.stageHeight || 0),
     };
   }
 
   function computeGridFrameGutters(plotsMatrix, opts) {
-    var cfg = opts || {};
-    var mat = [];
+    var cfg = opts || {}, mat = [];
     if (Array.isArray(plotsMatrix) && plotsMatrix.length) {
       if (Array.isArray(plotsMatrix[0])) mat = plotsMatrix;
       else if (cfg.orientation === 'row') mat = [plotsMatrix];
       else mat = plotsMatrix.map(function (p) { return [p]; });
     }
-    var rows = mat.length;
-    var cols = mat.reduce(function (m, row) { return Math.max(m, Array.isArray(row) ? row.length : 0); }, 0);
-    var colLeft = [], colRight = [], colPadX = [], rowTop = [], rowBottom = [], rowStageH = [];
-    var r, c, raw = [];
+    var rows = mat.length, cols = mat.reduce(function (m, row) { return Math.max(m, Array.isArray(row) ? row.length : 0); }, 0);
+    var colLeft = [], colRight = [], colPadX = [], rowTop = [], rowBottom = [], rowStageH = [], r, c, raw = [];
     for (c = 0; c < cols; c += 1) { colLeft[c] = 0; colRight[c] = 0; colPadX[c] = 0; }
     for (r = 0; r < rows; r += 1) {
       rowTop[r] = 0; rowBottom[r] = 0; rowStageH[r] = 0; raw[r] = [];
@@ -401,12 +394,8 @@
         if (!row[c]) { raw[r][c] = null; continue; }
         var g = measureCellGutters(row[c], cfg);
         raw[r][c] = g;
-        colLeft[c] = Math.max(colLeft[c], g.left);
-        colRight[c] = Math.max(colRight[c], g.right);
-        colPadX[c] = Math.max(colPadX[c], g.padX);
-        rowTop[r] = Math.max(rowTop[r], g.top);
-        rowBottom[r] = Math.max(rowBottom[r], g.bottom);
-        rowStageH[r] = Math.max(rowStageH[r], g.stageHeight);
+        colLeft[c] = Math.max(colLeft[c], g.left); colRight[c] = Math.max(colRight[c], g.right); colPadX[c] = Math.max(colPadX[c], g.padX);
+        rowTop[r] = Math.max(rowTop[r], g.top); rowBottom[r] = Math.max(rowBottom[r], g.bottom); rowStageH[r] = Math.max(rowStageH[r], g.stageHeight);
       }
     }
     var cells = [];
@@ -414,32 +403,17 @@
       cells[r] = [];
       for (c = 0; c < cols; c += 1) {
         if (!raw[r] || !raw[r][c]) { cells[r][c] = null; continue; }
-        cells[r][c] = {
-          row: r,
-          col: c,
-          left: colLeft[c],
-          right: colRight[c],
-          top: rowTop[r],
-          bottom: rowBottom[r],
-          padX: colPadX[c],
-          stageHeight: rowStageH[r],
-          containLabel: false,
-        };
+        cells[r][c] = { row: r, col: c, left: colLeft[c], right: colRight[c], top: rowTop[r], bottom: rowBottom[r], padX: colPadX[c], stageHeight: rowStageH[r], containLabel: false };
       }
     }
     return { rows: rows, cols: cols, colLeft: colLeft, colRight: colRight, colPadX: colPadX, rowTop: rowTop, rowBottom: rowBottom, rowStageHeight: rowStageH, cells: cells };
   }
 
   var api = {
-    niceScale125: niceScale125,
-    formatTick: formatTick,
-    wrapLabelLines: wrapLabelLines,
-    measureCategoryGutter: measureCategoryGutter,
-    filterNonOverlappingTicks: filterNonOverlappingTicks,
-    placeReferenceLabel: placeReferenceLabel,
-    buildCanonicalTimeGrid: buildCanonicalTimeGrid,
-    sharedNiceScale125: sharedNiceScale125,
-    computeGridFrameGutters: computeGridFrameGutters,
+    niceScale125: niceScale125, formatTick: formatTick, wrapLabelLines: wrapLabelLines,
+    measureCategoryGutter: measureCategoryGutter, filterNonOverlappingTicks: filterNonOverlappingTicks,
+    placeReferenceLabel: placeReferenceLabel, buildCanonicalTimeGrid: buildCanonicalTimeGrid,
+    sharedNiceScale125: sharedNiceScale125, computeGridFrameGutters: computeGridFrameGutters,
   };
   root.QuietSvgLayout = api;
   if (typeof module === 'object' && module.exports) module.exports = api;

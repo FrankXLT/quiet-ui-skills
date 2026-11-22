@@ -48,6 +48,11 @@ UI_BRIDGE_CONTRACTS: dict[str, tuple[str, str, str]] = {
         "active_count, export_href (disable/omit if endpoint unavailable)",
         "Render compact joined buttons with aria-pressed on stateful toggles; expand to 44px on touch.",
     ),
+    "ui-period-stepper-popover": (
+        "period.{preset, start_iso, end_iso, step_delta}, scope.{level, entity, item}",
+        "preset.disabled_reason (disable unsupported offline presets with explanatory title)",
+        "Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.",
+    ),
 }
 
 

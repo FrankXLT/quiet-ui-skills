@@ -3,7 +3,7 @@
 > 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
 - **v9.2 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
-- **3-Pillar Component Library (`41 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + UI/Bridge Controls + Data Contracts)
+- **3-Pillar Component Library (`42 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + UI/Bridge Controls + Data Contracts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
 - **License:** Apache 2.0 (Core 3-Pillar Plugin) + MIT (Customizations, Tokens & 100% of Generated UI/SVG Deliverables)
@@ -47,7 +47,7 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 - `M1` — Paper & Ink Print Sheets (unboxed, `@media print` optimized)
 - `M2` — Editorial Web Monographs, RFCs & Two-Column Proof Layouts (`72ch`)
-- `M3` — Stateful Web Workbenches, `.va-workbench-panes` / `.va-pane` / `.va-pane-hdr` hairline columns, `.va-kpi-gauge-card` 4-up rows, `.va-toolbar-joined` bars (`32–34px` coarse tablet / `44px` handset, `--radius-sm` `20–22px` badges), `.va-tab-strip` / `.va-meta-inline` pill restraint (`[PILL_SPRAWL]`), Page-Wide Coherence (`<= 3` card structures, 1 `--chart-1..5` ramp), unfolded `>= 780px` (`820px`) split readers & `subgrid` plot rows, and `<= 56px` sticky headers
+- `M3` — Stateful Web Workbenches, `.va-workbench-panes` / `.va-pane` / `.va-pane-hdr` hairline columns, sticky topbar trigger + auto-closing opaque `.va-side-rail[data-mode="overlay"]` + `.va-rail-footer` + `.va-drawer-backdrop`, split `.va-tree-row` + `.va-scope-chip`, `.va-period-stepper` + `.va-preset-popover`, `.va-kpi-gauge-card` + trackless `.va-kpi-card`, `.va-toolbar-joined` (`--bg-subtle` track, `flex: 0 0 auto`, no underline leak), `.va-tab-strip` / `.va-meta-inline` pill restraint (`[PILL_SPRAWL]`), Page-Wide Coherence, `[Chart + Table]` 1-column rule, `1480px` stage cap, unfolded `>= 780px` readers, and `<= 88px` phone / `<= 64px` desktop sticky headers
 - `M4` — Walk-Up POI Terminals & Guarded Industrial SCADA Consoles
 - `M5` — 10-Foot Ambient Wall Displays (`>= 32px` KPIs, zero decorative chrome)
 - `M6` — Collimated Optical HUDs (`>= 65%` unobstructed central keep-out zone)
@@ -55,13 +55,13 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 ## 4. Pillar 2 — `quiet-evidence` (6 Deterministic Evidence Modalities)
 
-- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & compact metrics), `tables` (Booktabs & `N <= 8` `.va-inline-bar` bullet rows), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest, `gantt`, `heatmap`; browser SVGs use `QuietSvgLayout` including `buildCanonicalTimeGrid`, `sharedNiceScale125`, and `computeGridFrameGutters`, while ECharts uses `alignPlotGridFrames` / `alignSharedAxes` for `containLabel: false` column/row pixel registration, `applySafeLegendLayout`, and `observeChartResize`), `bitfields`, and `schematics`.
+- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & trackless `.va-kpi-card` metrics), `tables` (Booktabs & `N <= 8` `.va-inline-bar` bullet rows), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest, `gantt`, `heatmap`; browser SVGs use `QuietSvgLayout` + visible on-card legends for `>= 2` series, while ECharts bundles `QuietEChartsDefaults` for `binTimeSeries`, `trimTrailingFutureWeeks` + `>= 0.06` zero-cell contrast, `grid.top >= 30, nameGap >= 12` for vertical top axis titles, `alignPlotGridFrames` / `alignSharedAxes` auto-engaging `independentXSpan`, `applySafeLegendLayout`, `observeChartResize`, and `QuietPeriodStepper`), `bitfields`, and `schematics`.
 
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.2.1).
-- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.2.2).
+- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & review-room contract router.
 - [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows, 4-variant pill grammar, and verification lifecycle.

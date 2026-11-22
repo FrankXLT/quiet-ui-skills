@@ -150,11 +150,12 @@ class TestEvidenceCompilers(unittest.TestCase):
         self.assertIn("EXCURSION", compile_spec(strip, rigor="L3"))
         self.assertEqual(len(build_echarts_payload(strip, "L3", "m2")["tracks"]), 4)
         ui_html = compile_ui_bridge_specimens()
-        self.assertEqual(ui_html.count('<article class="qe-specimen'), 8)
+        self.assertEqual(ui_html.count('<article class="qe-specimen'), 9)
         self.assertIn("ui-coupled-tree-explorer", ui_html)
         self.assertIn("br-review-room-gate-band", ui_html)
         self.assertIn("ui-dense-kpi-gauge-cards", ui_html)
         self.assertIn("ui-joined-workspace-toolbar", ui_html)
+        self.assertIn("ui-period-stepper-popover", ui_html)
         self.assertIn("Data Inputs &amp; Honest Fallback", ui_html)
 
     def test_echarts_conservation_boundaries_and_rationale_scrub(self) -> None:

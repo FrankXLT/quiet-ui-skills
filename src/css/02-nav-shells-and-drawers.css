@@ -260,6 +260,7 @@
     font-weight: 600;
   }
 
+  /* BEGIN_WORKBENCH_PANES */
   /* Unified Hairline M3 Multi-Pane Workbench ([Left | Center | Right]) */
   .va-workbench-panes {
     display: grid;
@@ -319,4 +320,61 @@
       border-inline-start: 1px solid var(--border-subtle);
     }
   }
+
+  /* Collapsible Shared Left Rail (>= 1080px Inline | < 1080px Opaque Slide-Over Drawer) */
+  .va-side-rail {
+    inline-size: clamp(220px, 20vw, 320px);
+    min-inline-size: 200px;
+    max-inline-size: 420px;
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border-inline-end: 1px solid var(--border-subtle);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    flex: 0 0 auto;
+    resize: horizontal;
+  }
+  .va-side-rail[data-collapsed="true"],
+  .va-side-rail.is-collapsed { display: none; }
+  .va-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 59;
+    background: rgba(9, 13, 22, 0.52);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  @media (min-width: 1080px) { .va-drawer-backdrop { display: none; } }
+  @media (max-width: 1079px) {
+    .va-side-rail {
+      position: fixed;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: min(20rem, 84dvw);
+      max-inline-size: calc(100dvw - 24px);
+      min-inline-size: 0;
+      block-size: 100svh;
+      z-index: 60;
+      resize: none;
+      border-inline-end: 1px solid var(--border-strong);
+      box-shadow: 0 12px 32px rgba(9, 13, 22, 0.28);
+      transform: translateX(-105%);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    html[dir="rtl"] .va-side-rail { transform: translateX(105%); }
+    .va-side-rail[data-open="true"],
+    .va-side-rail.is-open { display: flex; transform: translateX(0); visibility: visible; pointer-events: auto; }
+    .va-drawer-backdrop[data-open="true"],
+    .va-drawer-backdrop.is-open { opacity: 1; visibility: visible; pointer-events: auto; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .va-side-rail, .va-drawer-backdrop { transition: transform 0.2s ease, opacity 0.2s ease; }
+  }
+  /* END_WORKBENCH_PANES */
 }

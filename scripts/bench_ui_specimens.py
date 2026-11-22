@@ -288,11 +288,23 @@ def _spec_37_kpi_gauge_cards() -> str:
         '</div>'
         '<div class="va-kpi-gauge-card" data-state="nominal">'
         '<div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div>'
-        '<div class="va-kpi-gauge-val" data-kpi-warmup-val>3 calls</div>'
+        '<div class="va-kpi-gauge-val" data-kpi-warmup-val>3 / 50 calls</div>'
         '<div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100">'
         '<div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div>'
         '</div>'
         '<div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div>'
+        '</div>'
+        '</div>'
+        '<div class="va-kpi-grid">'
+        '<div class="va-kpi-card" data-state="nominal">'
+        '<div class="va-kpi-head"><span class="va-kpi-label">Cumulative Steps</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div>'
+        '<div class="va-kpi-val">14,820 steps</div>'
+        '<div class="va-kpi-stats"><span>Unbounded total</span><span>7d window</span></div>'
+        '</div>'
+        '<div class="va-kpi-card" data-state="nominal">'
+        '<div class="va-kpi-head"><span class="va-kpi-label">Total Tokens</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div>'
+        '<div class="va-kpi-val">1.42M tokens</div>'
+        '<div class="va-kpi-stats"><span>No capacity ceiling</span><span>No fake gauge bar</span></div>'
         '</div>'
         '</div>'
         '</div>'
@@ -302,9 +314,9 @@ def _spec_37_kpi_gauge_cards() -> str:
         "UI",
         "ui-kpi-gauges",
         "M3",
-        "Dense Operational KPI Gauge Row & Omitted Target Pin",
+        "Dense Operational KPI Gauge Row & Trackless Unbounded Cards",
         "PILLAR 1 · M3 COCKPIT PRIMITIVE",
-        "Compact 4-up/2-up gauge cards preserving used/limit tracks while omitting absent target pins and marking thin warmup buffers.",
+        "Compact 4-up/2-up cards combining bounded used/limit gauges (.va-kpi-gauge-card) with trackless scalar cards (.va-kpi-card) for unbounded totals.",
         body,
     )
 
@@ -345,8 +357,50 @@ def _spec_38_joined_toolbar() -> str:
     )
 
 
+def _spec_39_period_stepper() -> str:
+    body = (
+        '<div class="v9-demo-stack" data-stepper-demo>'
+        '<div class="v9-demo-row" style="justify-content:space-between;align-items:center">'
+        '<div class="va-period-stepper" data-period-stepper data-value="mtd">'
+        '<div class="va-period-nav">'
+        '<button type="button" class="va-period-step" data-period-step="-1" aria-label="Previous window">&lsaquo;</button>'
+        '<button type="button" class="va-period-trigger" aria-haspopup="menu" aria-expanded="false">'
+        '<span data-period-label>MTD &middot; Nov 1&ndash;22</span>'
+        '<svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        '</button>'
+        '<button type="button" class="va-period-step" data-period-step="1" aria-label="Next window">&rsaquo;</button>'
+        '</div>'
+        '<button type="button" class="va-period-today" data-period-today hidden>Today</button>'
+        '<div class="va-preset-popover" role="menu" focusgroup="menu nomemory" aria-label="Telemetry time window presets" hidden>'
+        '<div class="va-preset-group"><div class="va-preset-group-label">Calendar-to-Date</div>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="true" data-preset="mtd" data-label="MTD" data-span="Nov 1&ndash;22" data-at-today="true"><span>Month-to-Date (MTD)</span><span class="va-preset-span">Nov 1&ndash;22</span></button>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="qtd" data-label="QTD" data-span="Oct 1&ndash;Nov 22"><span>Quarter-to-Date (QTD)</span><span class="va-preset-span">Oct&ndash;Nov</span></button>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="ytd" data-label="YTD" data-span="Jan 1&ndash;Nov 22"><span>Year-to-Date (YTD)</span><span class="va-preset-span">Jan&ndash;Nov</span></button>'
+        '</div>'
+        '<div class="va-preset-group"><div class="va-preset-group-label">Rolling Windows</div>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r30" data-label="Last 30d" data-span="Oct 24&ndash;Nov 22"><span>Last 30d</span><span class="va-preset-span">1d bins</span></button>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r90" data-label="Last 90d" data-span="Aug 25&ndash;Nov 22"><span>Last 90d</span><span class="va-preset-span">1d bins</span></button>'
+        '<button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r52w" data-label="Last 52w" data-span="52 weeks"><span>Last 52w</span><span class="va-preset-span">1w bins</span></button>'
+        '</div></div></div>'
+        '<div class="va-scope-chip" data-level="entity" data-scope-demo><span class="va-scope-dot" aria-hidden="true"></span><span class="va-scope-label" data-scope-label>Substation B &middot; Transformer 02</span><button type="button" class="va-scope-clear" data-scope-reset aria-label="Clear entity scope">&times;</button></div>'
+        '</div>'
+        '<div class="v9-triage-meta" data-stepper-status aria-live="polite">Active window: MTD &middot; Nov 1&ndash;22 &middot; Adaptive bin: 1d</div>'
+        '</div>'
+    )
+    return _wrap_card(
+        "ui-period-stepper-popover",
+        "UI",
+        "ui-period-stepper",
+        "M3",
+        "Compound Period Stepper, Grouped Popover & Scope Chip",
+        "PILLAR 1 · M3 TEMPORAL & SCOPE PRIMITIVE",
+        "Consolidates Calendar-to-Date (MTD/QTD/YTD) and Rolling (30d/90d/52w) windows into one keyboard-accessible popover plus 3-level entity scope chip.",
+        body,
+    )
+
+
 def compile_ui_bridge_specimens() -> str:
-    """Compile all 8 Pillar 1 (UI) and Pillar 3 (BR) interactive gallery cards."""
+    """Compile all 9 Pillar 1 (UI) and Pillar 3 (BR) interactive gallery cards."""
     return "".join([
         _spec_31_pills(),
         _spec_32_controls(),
@@ -356,4 +410,5 @@ def compile_ui_bridge_specimens() -> str:
         _spec_36_bridge_runbook(),
         _spec_37_kpi_gauge_cards(),
         _spec_38_joined_toolbar(),
+        _spec_39_period_stepper(),
     ])

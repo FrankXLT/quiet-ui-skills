@@ -31,24 +31,41 @@ EVIDENCE_CSS_PARTS: tuple[str, ...] = (
     "src/css/00-layers-and-reset.css",
     "src/css/01-stage-and-containers.css",
     "src/css/03-pills-and-annunciators.css",
+    "src/css/12-period-and-scope.css",
     "docs/bench/evidence-bench.css",
 )
 
 
+def _extract_workbench_shell_css() -> str:
+    raw = (REPO_ROOT / "src/css/02-nav-shells-and-drawers.css").read_text(encoding="utf-8")
+    m = re.search(r"/\*\s*BEGIN_WORKBENCH_PANES\s*\*/(.*?)/\*\s*END_WORKBENCH_PANES\s*\*/", raw, flags=re.S)
+    return f"@layer shell {{\n{m.group(1).strip()}\n}}" if m else ""
+
+
 def _render_evidence_bundle_css() -> str:
-    parts: list[str] = ["@layer reset, tokens, shell, archetypes, views, evidence, utilities;"]
+    parts: list[str] = ["@layer reset, tokens, shell, archetypes, evidence, views, utilities;"]
     tok = (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text(encoding="utf-8")
     parts.append(f"@layer tokens {{\n{tok}\n}}")
     for rel in EVIDENCE_CSS_PARTS:
         raw = (REPO_ROOT / rel).read_text(encoding="utf-8")
         parts.append(re.sub(r"^@layer\s+[a-zA-Z0-9_,\s-]+;\s*", "", raw, flags=re.M))
+    wb = _extract_workbench_shell_css()
+    if wb:
+        parts.append(wb)
     return re.sub(r"</\s*style", r"<\/style", "\n\n".join(parts), flags=re.I)
 
 
 def _render_evidence_bundle_js() -> str:
+    js_files = (
+        "src/js/evidence-runtime.js",
+        "src/js/quiet-svg-chart-layout.js",
+        "src/js/quiet-time-binning.js",
+        "src/js/echarts-layout-defaults.js",
+        "src/js/quiet-period-stepper.js",
+    )
     parts = [
         (REPO_ROOT / rel).read_text(encoding="utf-8")
-        for rel in ("src/js/evidence-runtime.js", "src/js/quiet-svg-chart-layout.js")
+        for rel in js_files
         if (REPO_ROOT / rel).exists()
     ]
     js = "\n\n".join(parts)

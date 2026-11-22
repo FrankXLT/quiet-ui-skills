@@ -3,7 +3,7 @@ name: quiet-bridge
 description: Asymmetric communication skill translating engineering data across 7 audience lenses and 3 decision tempos with pre-build intake, pedagogical scaffolding, and Murder Board audits.
 ---
 
-# Quiet UI Pillar 3 (`v9.2.1`) — Directional Translation & Murder Board
+# Quiet UI Pillar 3 (`v9.2.2`) — Directional Translation & Murder Board
 
 Quiet UI Pillar 3 governs audience-targeted translation, scrub of presenter bias, and adversarial red-teaming across seven audience lenses and three operational decision tempos.
 
@@ -16,7 +16,7 @@ Technical communication is not symmetric. Presenters habitually overload artifac
 $$\vec{V} = \text{Presenter Source} \longrightarrow \text{Audience Lens} \times \text{Decision Tempo}$$
 
 ### The Numerical Conservation Law
-When projecting a system across multiple audience views, the underlying physical, clinical, or statistical truth (parameters, sample size `N`, limits, citations, and timestamps) MUST derive from verified fields mapped in the [Data-to-Widget Binding Map](../quiet-ui/foundation/data-grounding-and-widget-binding.md). Presentation changes framing and jargon density—never fabricated numbers or borrowed cross-pool targets. When `N < 10` samples exist, disclose `Warming up — N samples collected`; omit unbacked targets.
+When projecting a system across multiple audience views, the underlying physical, clinical, or statistical truth (parameters, sample size `N`, limits, citations, and timestamps) MUST derive from verified fields mapped in the [Data-to-Widget Binding Map](../quiet-ui/foundation/data-grounding-and-widget-binding.md). Presentation changes framing and jargon density—never fabricated numbers, fake progress tracks on unbounded totals, or borrowed cross-pool targets. When `N < 10` samples exist, disclose `Warming up — N samples collected`; omit unbacked targets; pair plain everyday titles (`"Activity by Hour of Day"`) with `currentColor` `<svg>` icons instead of chrome emojis.
 
 ### The 4 Universal Audience Evaluation Invariants
 Across **6 Universal Domain Clusters (18 Pairs)** (Clinical & Life Sciences; Cloud/Cyber/AI Ops; Industrial Grid & Manufacturing; Automotive/Hardware/Field Test; Civic Finance & Risk; Earth Science & STEM Education), every distilled view MUST satisfy:

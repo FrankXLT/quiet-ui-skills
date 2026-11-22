@@ -53,7 +53,7 @@ class ReusableThreadingHTTPServer(ThreadingHTTPServer):
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.2 Studio Showcase & 41-Specimen Component Library.")
+    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.2 Studio Showcase & 42-Specimen Component Library.")
     parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=8788, help="TCP port (default: 8788)")
     args = parser.parse_args()

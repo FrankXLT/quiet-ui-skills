@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* Quiet UI v9.0 Phase 2 — Standalone Qualification Bench & Evidence Components (Zero Cascade Overrides) */
 
-@layer reset, tokens, shell, archetypes, views, evidence, utilities;
+@layer reset, tokens, shell, archetypes, evidence, views, utilities;
 
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -318,7 +318,7 @@
 :root[data-medium="m1"][data-theme] {
   color-scheme: only light;
   --bg-shell: #CBD5E1; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
-  --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
+  --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
   --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
   --border-hairline: #E2E8F0; --border-grid: #E2E8F0; --border-strong: #CBD5E1;
   --accent-primary: #1D4ED8; --accent-focal: #1D4ED8;
@@ -338,7 +338,7 @@
   :root, :root[data-theme] {
     color-scheme: only light;
     --bg-shell: #FFFFFF; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
-    --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
+    --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
     --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
     --border-hairline: #E2E8F0; --border-grid: #E2E8F0; --border-strong: #CBD5E1;
     --accent-primary: #1D4ED8; --accent-focal: #1D4ED8;
@@ -365,7 +365,7 @@
 .qe-plot-wrap[data-echarts-active="true"] .qe-legend-series { display: none; }
 .qe-plot-wrap[data-echarts-active="true"] .qe-param-legend:not(:has(.qe-param-strip)) { display: none; }
 .qe-legend-series, .qe-param-strip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.9rem; }
-.qe-echarts-host { inline-size: 100%; overflow: visible; }
+.qe-echarts-host { inline-size: 100%; min-width: 0; max-width: 100%; overflow: visible; }
 :root[data-medium="m1"] .qe-plot-wrap .qe-svg-fallback,
 .qe-plot-wrap[data-medium="m1"] .qe-svg-fallback { display: block; }
 :root[data-medium="m1"] .qe-plot-wrap .qe-echarts-host,

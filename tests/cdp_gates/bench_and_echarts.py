@@ -93,9 +93,20 @@ def _check_bench_page(driver: Any, bench_url: str, errs: list[str]) -> None:
     time.sleep(0.25)
     ec_err = driver.execute_script("""
         const specs = document.querySelectorAll('.qe-specimen');
-        if (specs.length !== 41) return 'expected 41 specimens, found ' + specs.length;
+        if (specs.length !== 42) return 'expected 42 specimens, found ' + specs.length;
         const contracts = document.querySelectorAll('.qe-specimen .qe-data-contract');
-        if (contracts.length !== 41) return 'expected 41 data contracts, found ' + contracts.length;
+        if (contracts.length !== 42) return 'expected 42 data contracts, found ' + contracts.length;
+        const pTrig = document.querySelector('#ui-period-stepper-popover .va-period-trigger');
+        const pPop = document.querySelector('#ui-period-stepper-popover .va-preset-popover');
+        const pStatus = document.querySelector('[data-stepper-status]');
+        if (!pTrig || !pPop || !pStatus) return 'missing period stepper specimen 42';
+        pTrig.click();
+        if (pPop.hasAttribute('hidden') || pTrig.getAttribute('aria-expanded') !== 'true') return 'period popover failed to open';
+        const r52Btn = pPop.querySelector('[data-preset="r52w"]');
+        if (!r52Btn) return 'missing Last 52w rolling preset';
+        r52Btn.click();
+        if (!pStatus.textContent.includes('Last 52w') || !pStatus.textContent.includes('1w')) return 'period stepper failed rolling 52w selection';
+        document.querySelector('#ui-period-stepper-popover [data-preset="mtd"]')?.click();
         const tbBtn = document.querySelector('[data-joined-toolbar] .va-tb-btn[data-tb-val="7d"]');
         const tbStatus = document.querySelector('[data-tb-status]');
         if (!tbBtn || !tbStatus) return 'missing joined toolbar specimen 38';
@@ -154,14 +165,14 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
             if failed_res:
                 errs.append(f"[DOCS_ROOT_404] {path}: {failed_res}")
 
-        # Verify Components tab inside /docs root loads all 41 specimens
+        # Verify Components tab inside /docs root loads all 42 specimens
         driver.get(f"{docs_root_url}/")
         time.sleep(0.25)
         driver.execute_script("document.getElementById('va-tab-components').click();")
         time.sleep(0.5)
         cnt = driver.execute_script("return document.getElementById('va-stage-portal')?.contentDocument?.querySelectorAll('.qe-specimen').length || 0;")
-        if int(cnt) != 41:
-            errs.append(f"[DOCS_COMPONENTS_TAB] expected 41 specimens, got {cnt}")
+        if int(cnt) != 42:
+            errs.append(f"[DOCS_COMPONENTS_TAB] expected 42 specimens, got {cnt}")
 
         # Verify all 8 optical/gallery photos resolve cleanly under docs/ web root
         for wid, vid, expected_n in (
@@ -194,7 +205,7 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
 
 
 def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Verify standalone bench (41 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
+    """Verify standalone bench (42 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
     errs: list[str] = []
     _check_bench_page(driver, f"{root_url}/docs/bench/evidence-bench.html", errs)
 
@@ -204,8 +215,8 @@ def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[
     time.sleep(0.25)
     driver.execute_script("document.getElementById('va-tab-components').click();")
     time.sleep(0.5)
-    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===41;"):
-        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 41 specimens")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===42;"):
+        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 42 specimens")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.25)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples'&&!p.hasAttribute('src');"):

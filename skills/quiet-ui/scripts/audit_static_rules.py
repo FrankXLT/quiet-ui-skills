@@ -344,3 +344,77 @@ def has_responsive_table_stacking(css_text: str) -> bool:
         if re.search(r"\btable\b", block, re.I) and re.search(r"display\s*:\s*(?:block|grid|flex)", block, re.I):
             return True
     return False
+
+
+CHROME_EMOJI_RE = re.compile(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]")
+_NON_APP_FIXTURE_DIRS = frozenset(
+    {"test", "tests", "__tests__", "spec", "bench", "benches", "corpora", "corpus", "examples", "example", "demo_snapshots"}
+)
+_NON_FIXTURE_JSON_RE = re.compile(
+    r"^(?:package(?:-lock)?|tsconfig.*|jsconfig.*|plugin|manifest.*|composer|\.eslintrc.*|\.prettierrc.*|\.visual-lock|settings|config|schema.*)\.json$",
+    re.IGNORECASE,
+)
+_MOCK_JSON_NAME_RE = re.compile(
+    r"(?:^|[^a-z0-9])(?:mock|fake|dummy|stub|fixture)(?:[^a-z0-9]|$)|(?:^|[^a-z0-9])demo(?:[_.-]|$)",
+    re.IGNORECASE,
+)
+_DOC_ARRAY_KEY_RE = re.compile(r"(?:doc(?:ument)?s?|transcripts?|messages?|turns?|sessions?|entries|items|records|rows)", re.IGNORECASE)
+_FAKE_DOC_TEXT_RE = re.compile(r"(?:lorem\s+ipsum|mock\s+doc|fake\s+(?:doc|transcript|session)|sample\s+(?:doc|transcript|session)|demo[_-](?:session|doc|transcript))", re.IGNORECASE)
+
+
+def has_chrome_emoji(text: str) -> str | None:
+    """Return the first pictographic emoji matched in chrome text, or None."""
+    m = CHROME_EMOJI_RE.search(text or "")
+    return m.group(0) if m else None
+
+
+def is_json_mock_candidate(path: Path, *, root: Path | None = None) -> bool:
+    """Return True if path is a bundled JSON asset outside explicit test/bench/manifest paths."""
+    if path.suffix.lower() != ".json" or _NON_FIXTURE_JSON_RE.match(path.name):
+        return False
+    try:
+        rel_parts = path.resolve().relative_to(root.resolve()).parts[:-1] if root else path.parts[:-1]
+    except ValueError:
+        rel_parts = path.parts[:-1]
+    return not any(p.lower() in _NON_APP_FIXTURE_DIRS for p in rel_parts)
+
+
+def audit_json_text(json_text: str, source: str, errs: list[str]) -> None:
+    """Flag static JSON fixtures bundling fabricated document/transcript arrays alongside app code."""
+    import json as _json
+
+    try:
+        data = _json.loads(json_text)
+    except ValueError:
+        return
+
+    found_multi = False
+    has_doc_key = False
+    has_mock_flag = False
+    stack: list[tuple[str, object]] = [("", data)]
+    while stack:
+        key, node = stack.pop()
+        if isinstance(node, dict):
+            for k, v in node.items():
+                kl = str(k).lower()
+                if kl in {"is_mock", "is_demo", "mock", "fake", "dummy", "demo"} and v is True:
+                    has_mock_flag = True
+                if _MOCK_JSON_NAME_RE.search(kl) and isinstance(v, list) and len(v) >= 2:
+                    has_mock_flag = True
+                stack.append((str(k), v))
+        elif isinstance(node, list):
+            if len(node) >= 2 and all(isinstance(el, dict) for el in node):
+                found_multi = True
+                if _DOC_ARRAY_KEY_RE.search(key) or any(_DOC_ARRAY_KEY_RE.search(str(ek)) for el in node[:3] for ek in el):
+                    has_doc_key = True
+            for el in node[:12]:
+                if isinstance(el, (dict, list)):
+                    stack.append((key, el))
+
+    if not found_multi:
+        return
+    fname = Path(urllib.parse.urlsplit(source).path or source).name
+    is_demo_snapshot = fname.lower().startswith("demo_snapshot")
+    if (_MOCK_JSON_NAME_RE.search(fname) and not is_demo_snapshot) or (has_doc_key and (has_mock_flag or _FAKE_DOC_TEXT_RE.search(json_text))):
+        errs.append(f"[JSON_MOCK_FIXTURE] {source}: static JSON fixture bundles fabricated document/transcript array")
+

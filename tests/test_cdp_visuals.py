@@ -31,7 +31,7 @@ def _can_launch_cdp() -> tuple[bool, str]:
 
 
 class TestCDPVisuals(unittest.TestCase):
-    """Run all 21 Studio CDP gates, 41 Component Library specimens, /docs root test, and portable auditor CDP."""
+    """Run all 21 Studio CDP gates, 42 Component Library specimens, /docs root test, and portable auditor CDP."""
 
     def test_full_cdp_visual_contract(self) -> None:
         require_cdp = os.environ.get("QUIET_REQUIRE_CDP") == "1"

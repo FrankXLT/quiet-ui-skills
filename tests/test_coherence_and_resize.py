@@ -17,6 +17,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.py"
 CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
+PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_cdp_probes.py"
 STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
 TOKENS_CSS = REPO_ROOT / "tokens" / "quiet-ui-tokens.css"
 LAYERS_CSS = REPO_ROOT / "src" / "css" / "00-layers-and-reset.css"
@@ -37,7 +38,7 @@ class TestCoherenceAndResize(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.tmp_dir = Path(self._tmp.name)
         self.auditor = self.tmp_dir / "audit_quiet_html.py"
-        for src in (AUDITOR_SRC, CHECKS_SRC, STATIC_RULES_SRC):
+        for src in (AUDITOR_SRC, CHECKS_SRC, PROBES_SRC, STATIC_RULES_SRC):
             shutil.copy2(src, self.tmp_dir / src.name)
 
     def tearDown(self) -> None:

@@ -16,6 +16,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.py"
 CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
+PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_cdp_probes.py"
 STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
 COMPILER_SRC = REPO_ROOT / "skills" / "quiet-evidence" / "scripts" / "compile_evidence.py"
 
@@ -55,6 +56,7 @@ class TestPortableAuditor(unittest.TestCase):
         self.auditor = self.tmp_dir / "audit_quiet_html.py"
         shutil.copy2(AUDITOR_SRC, self.auditor)
         shutil.copy2(CHECKS_SRC, self.tmp_dir / "audit_quiet_checks.py")
+        shutil.copy2(PROBES_SRC, self.tmp_dir / "audit_cdp_probes.py")
         shutil.copy2(STATIC_RULES_SRC, self.tmp_dir / "audit_static_rules.py")
 
     def tearDown(self) -> None:
@@ -228,9 +230,9 @@ class TestPortableAuditor(unittest.TestCase):
             '<svg viewBox="0 0 320 140" width="320" height="140" role="img" aria-label="Haloed specimen">'
             '<line x1="20" y1="60" x2="300" y2="60" stroke="#666" stroke-width="1.5"/>'
             '<text x="80" y="64" font-size="12" paint-order="stroke fill" stroke="#ffffff" stroke-width="4">Avg 1,871</text>'
-            '<text x="40" y="120" font-size="12">11-18</text>'
-            '<text x="160" y="120" font-size="12">11-19</text>'
-            '<text x="240" y="120" font-size="12">Gemini 4 Argon (Pro)</text>'
+            '<text x="30" y="120" font-size="12">11-18</text>'
+            '<text x="105" y="120" font-size="12">11-19</text>'
+            '<text x="175" y="120" font-size="12">Gemini 4 Argon (Pro)</text>'
             "</svg></body></html>",
             encoding="utf-8",
         )

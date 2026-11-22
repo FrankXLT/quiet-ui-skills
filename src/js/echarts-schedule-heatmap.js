@@ -135,22 +135,29 @@
   }
 
   function buildHeatmapOption(_doc, payload, tokens, hostW) {
-    var zMin = payload.min != null ? payload.min : 0;
-    var zMax = payload.max != null ? payload.max : 100;
-    var zSpan = (zMax - zMin) || 1;
-    var leftPad = (hostW || 640) < 480 ? 10 : 16;
-    var data = (payload.cells || []).map(function (c) {
-      return {
-        value: c,
-        label: { color: heatmapCellInk((c[2] - zMin) / zSpan) },
-      };
+    var zMin = payload.min != null ? payload.min : 0, zMax = payload.max != null ? payload.max : 100;
+    var zSpan = (zMax - zMin) || 1, leftPad = (hostW || 640) < 480 ? 10 : 16;
+    var xCats = payload.xCategories || [], rawCells = payload.cells || [];
+    if (payload.trimFutureWeeks && typeof global.QuietTimeBinning !== 'undefined' && global.QuietTimeBinning.trimTrailingFutureWeeks) {
+      var trimmed = global.QuietTimeBinning.trimTrailingFutureWeeks(xCats, rawCells, { today: payload.todayIso });
+      xCats = trimmed.weeks;
+      rawCells = trimmed.cells;
+    }
+    var zeroStyle = (typeof global.QuietTimeBinning !== 'undefined' && global.QuietTimeBinning.heatmapZeroCellStyle)
+      ? global.QuietTimeBinning.heatmapZeroCellStyle(tokens.bgSurface, tokens.borderHairline) : null;
+    var data = rawCells.filter(Array.isArray).map(function (c) {
+      var isZero = c[2] === 0;
+      var lblColor = (isZero && zeroStyle && zeroStyle.labelColor) ? zeroStyle.labelColor : heatmapCellInk((c[2] - zMin) / zSpan);
+      var item = { value: c, label: { color: lblColor } };
+      if (isZero && zeroStyle) item.itemStyle = { color: zeroStyle.fill, borderColor: zeroStyle.borderColor, borderWidth: zeroStyle.borderWidth };
+      return item;
     });
     return {
       animation: false,
       tooltip: Object.assign(baseTooltip(tokens), {
         formatter: function (p) {
           var v = (p && Array.isArray(p.value)) ? p.value : [0, 0, 0];
-          var xc = (payload.xCategories || [])[v[0]] || '';
+          var xc = xCats[v[0]] || '';
           var yc = (payload.yCategories || [])[v[1]] || '';
           return yc + ' · ' + xc + '\n' + v[2] + (payload.unit ? ' ' + payload.unit : '');
         },
@@ -159,7 +166,7 @@
       xAxis: {
         type: 'category',
         position: 'top',
-        data: payload.xCategories || [],
+        data: xCats,
         axisLabel: { color: tokens.textPrimary, fontSize: 11, fontWeight: 600 },
         splitArea: { show: false },
       },
@@ -183,7 +190,7 @@
       series: [{
         type: 'heatmap',
         data: data,
-        itemStyle: { borderColor: tokens.bgSurface, borderWidth: 1.5 },
+        itemStyle: { borderColor: tokens.borderHairline || tokens.bgSurface, borderWidth: 1 },
         label: {
           show: payload.rigor !== 'L1',
           fontSize: 11,

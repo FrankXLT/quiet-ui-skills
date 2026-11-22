@@ -3,7 +3,7 @@
    Quiet UI v9.2 — Layer Declarations & Universal CSS Reset
    ========================================================================== */
 
-@layer reset, tokens, shell, archetypes, views, evidence, utilities;
+@layer reset, tokens, shell, archetypes, evidence, views, utilities;
 
 @layer reset {
   *,

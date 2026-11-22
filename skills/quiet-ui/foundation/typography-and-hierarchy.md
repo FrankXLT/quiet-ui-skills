@@ -189,11 +189,15 @@ Data tables are core scientific instruments. Table truncation or clipped cell va
 
 ---
 
-## 7. Anti-Patterns & Failure Modes
+## 7. Plain Everyday Copy, Chrome Icon Discipline & Anti-Patterns
+
+- **Plain Everyday Headings & Chart Titles**: Write clear, scannable labels matched to user mental models (for example, **`"Activity by Hour of Day"`** instead of opaque jargon like `"Diurnal Rhythm"`, or **`"Daily Cost & Token Mix"`** instead of `"Stochastic Expenditure Manifold"`). Reserve formal physics/metrology nomenclature strictly for analytical proof views (`L2`/`L3`).
+- **Zero Chrome Pictographic Emojis (`[EMOJI_IN_CHROME]`)**: Never place Unicode pictographic emojis (`U+1F300–U+1FAFF`, `U+2600–U+27BF` lock/sparkles/warning/check/cross glyphs) inside `<header>`, `<nav>`, `<button>`, `[role="tab"]`, or `[role="toolbar"]` chrome—render crisp `14–16px` inline `<svg aria-hidden="true">` icons inheriting `stroke="currentColor"` instead.
 
 | Anti-Pattern | Operational Consequence | Architectural Remedy |
 | :--- | :--- | :--- |
 | Prose container spanning 100% of 1920px screen | Lines exceed 150ch; reader loses tracking on every carriage return. | Constrain prose blocks to `max-inline-size: 72ch`. |
+| Obscure jargon or pictographic emojis inside chrome controls | Confuses everyday operators and breaks forced-colors / screen readers (`[EMOJI_IN_CHROME]`). | Use plain everyday titles paired with `currentColor` `<svg>` icons. |
 | Proportional digits in live telemetry readouts | Text characters jump horizontally as numbers increment (1 vs 8). | Declare `font-variant-numeric: tabular-nums slashed-zero`. |
 | Horizontal scrollbars on desktop table displays | Vital telemetry obscured off-screen during mission analysis. | Use responsive grid collapsing and `.va-bleed-wide` breakouts. |
 | Font size reduction below 11px for "compactness" | Unreadable on non-Retina displays; triggers accessibility audit failure. | Enforce minimum floor `max(11px, ...)`. |

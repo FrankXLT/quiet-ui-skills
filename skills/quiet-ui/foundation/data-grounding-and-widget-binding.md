@@ -26,11 +26,12 @@ Agents must never start by browsing `docs/bench/evidence-bench.html`, picking an
 
 Component Library cards demonstrate maximum anatomical density—they are **not** checklists requiring every sub-element to appear in every production instance:
 
-- **Zero Cross-Domain Target Borrowing**: Never copy a policy target from one resource pool onto an unrelated metric card just to match card heights. Example: placing `"Target 14.28% partner/d"` onto an unlimited or Google-pool model gauge misleads operators because that target applies to weekly partner-pool allocation, not per-model throughput.
+- **Zero Cross-Domain Target Borrowing & Unbounded Gauge Integrity (`[FAKE_UNBOUNDED_GAUGE]`)**: Never copy a policy target from one resource pool onto an unrelated metric card just to match card heights. Never render `.va-kpi-gauge-track` progress bars on unbounded cumulative totals (`steps`, `tokens`, `calls`, `events` without a real limit)—use trackless `.va-kpi-card` inside `.va-kpi-grid` instead. Whenever a bounded `.va-kpi-gauge-card` displays both a fill track and a target pin, both MUST share the exact same denominator (`0–100%` or `0–ceiling`).
 - **Omit When Absent**: Inside `.va-kpi-gauge-card`, keep headline metric + horizontal fill gauge when `limit` is known, and omit optional `delta` or `target_pin` DOM nodes when absent rather than inserting `"Target: N/A"` filler lines or placeholder percentages.
-- **Preserve Quantitative Density & Select Form by Category Count (`N`)**:
+- **Composite `[Chart + Table]` 1-Column Rule & Form by Category Count (`N`)**:
+  - **Composite Cards Containing Both Chart & Multi-Column Table**: Render strictly **1-column full-width** across all viewports so stacked `[x_left, x_right]` pixel spines align cleanly and table cells never wrap awkwardly into 3 cramped lines. Reserve side-by-side 2-up `.va-plot-row` pairs exclusively for **compact chart-only cards**.
   - **`N <= 3` Categories -> Stat Strip or Micro-Bar (`<= 72px` tall)**: Never ship a `>= 180px` Cartesian bar chart dominated by blank space for 2–3 categories; use a stat strip or horizontal micro-bar.
-  - **Zero Duplicate Time-Series Denominators**: Never render a standalone total-volume chart next to a stacked breakdown over the same buckets; merge into **one** stacked chart with `Avg` / `P95` total reference lines.
+  - **Zero Duplicate Time-Series Denominators & On-Card Series Legends (`[ORPHAN_SERIES_LEGEND]`)**: Never render a standalone total-volume chart next to a stacked breakdown over the same buckets; merge into **one** stacked chart with `Avg` / `P95` total reference lines, or use separate internal `yUnit` keys if intentionally separating parent vs. breakdown scales. Every multi-series chart (`>= 2` distinct series colors) MUST render a visible **on-card legend or inline `booktabs` summary `<table>`** with matching color swatches—never hide the sole legend inside a closed drawer or hover tooltip.
   - **`N <= 8` Comparison + Exact Figures -> Inline Bullet-Bar Table**: Never stack a 4–8 bar chart above a matching table; embed `.va-inline-bar` / `.va-inline-bar-fill` / `.va-inline-bar-pin` directly inside `.va-row-compact` table rows (`<= 32px`/row).
 - **Reject Engineering Self-Filler & Pill Sprawl**: Do not pad operational user dashboards with internal repository or code-hygiene badges (e.g., `"64/64 <= 500L"`, git commit SHAs, file-count pills) unless the view specifically serves CI/repository auditing. Render dates, versions, counts, subtitles, hashes, and units as plain unboxed muted text (`.va-meta-inline`), use `.va-tab-strip` / `.va-tab` (`4–6px` or underline) for file/mode switchers, and reserve `.va-badge` (`--radius-sm`, max `1` per card header) strictly for semantic state exceptions (`HEALTHY`/`WARN`/`FAULT`).
 
@@ -41,7 +42,7 @@ Component Library cards demonstrate maximum anatomical density—they are **not*
 Statistical clarity requires separating thin live buffers from established historical baselines and annotating rule boundaries honestly:
 
 ### 3.1 Warmup Disclosure (`N < 10` or Post-Restart Buffer)
-- In-memory instrumentation resets on process restart. If a metric buffer currently contains only `"3 calls"` (or fewer than `10` samples over a sub-hour uptime window), **never** style the widget as a settled steady-state trend or long-horizon convergence metric.
+- In-memory instrumentation resets on process restart. If a metric buffer currently contains only `"3 / 50 calls"` (or fewer than `10` samples over a sub-hour uptime window), **never** style the widget as a settled steady-state trend or long-horizon convergence metric.
 - Replace trend verdicts with the explicit disclosure string **`Warming up — N samples collected`** (with observed uptime/window, e.g., `Warming up — 3 samples collected since 10:15 UTC`), and hold alert classification badges neutral (`--text-muted` / `--status-info`) until minimum sample power is reached.
 
 ### 3.2 Zero Retroactive Policy Grading
@@ -57,17 +58,18 @@ Statistical clarity requires separating thin live buffers from established histo
 
 Preview modes exist to inspect real schemas safely—not to invent flattering numbers inside frontend code:
 
-1. **Banned Inline Mock Arrays**: Never hardcode multi-row synthetic JS fixtures (`const MOCK_RUNS = [...]`, `FAKE_METRICS`, `demoRows = [...]`, or literal multi-object arrays returned inside `if (isDemo)` / `demoMode` client view functions).
+1. **Banned Inline Mock Arrays & Static JSON Fixtures (`[INLINE_MOCK_DATA]`, `[JSON_MOCK_FIXTURE]`)**: Never hardcode multi-row synthetic JS fixtures (`const MOCK_RUNS = [...]`, `FAKE_METRICS`, `demoRows = [...]`, or literal multi-object arrays returned inside `if (isDemo)` / `demoMode`) or bundle static `.json` fixture files alongside app assets that fabricate fake document/transcript arrays.
 2. **Approved Snapshot Mechanism**: When `?demo=1` is supported, fetch an explicit server-side or external anonymized runtime snapshot file carrying a top-level metadata banner: `Recorded Snapshot — YYYY-MM-DD (Sanitized)`.
 3. **Honest Empty Fallback**: When no snapshot exists and no live telemetry has arrived yet, render the real empty structural shell paired with **`Warming up — 0 samples collected`** and clear instructions for ingesting live data.
 
 ---
 
-## 5. Chrome Branding & Internal Identifier Hygiene
+## 5. Chrome Branding, Plain Copy & Internal Identifier Hygiene
 
 Interfaces shipped with Quiet UI represent the **host application**, never Quiet UI's internal documentation taxonomy or agent storage layout:
 
 - **Zero Framework Self-Badges**: Remove self-referential header badges (`Quiet UI`, `v9.x Quiet`, `Pillar 1 M3`, `Quiet-Evidence`) from live third-party application headers, nav pills, and footer bars. Label the actual product (`Nexus Ops`, `Fleet Telemetry`, `Ward Monitor`) cleanly. *(Showcase and Component Bench views inside `quiet-ui-skills` opt in explicitly during build verification.)*
+- **Plain Everyday Copy & Zero Chrome Emojis (`[EMOJI_IN_CHROME]`)**: Write direct headings and chart titles (`"Activity by Hour of Day"` over jargon) and use `currentColor` inline `<svg>` icons instead of Unicode pictographs (`U+1F512` lock, sparkles, warning triangles) inside interactive controls.
 - **Strip Internal Storage Prefixes**: Never expose raw agent artifact namespaces (`brain:<uuid>`, `.gemini/antigravity/brain/...`) or local workstation paths in visible tables, headers, detail drawers, or HTML templates. Map artifact references to human-readable titles or sanitized short IDs before rendering.
 
 ---
@@ -77,12 +79,12 @@ Interfaces shipped with Quiet UI represent the **host application**, never Quiet
 Compare how an agent handles partial telemetry without fabricating fields or stripping density:
 
 ### 6.1 Hero Pool Cards (Quota & Compute Monitors)
-- **Wrong**: Copying a partner-pool daily allocation badge (`Target 14.28% partner/d`) onto a Google Carbon/Argon card that has no daily target, converting progress gauges into text-only summary boxes, and padding card footers with repo lint counts (`64/64 <= 500L`).
-- **Right**: Use `.va-kpi-gauge-card` bound strictly to `pool.used_tokens / pool.limit_tokens` and `pool.pct`. Render the target pin *only* on the partner pool card (`pool.daily_target_pct != null`), omit the target pin on Google pools, and keep engineering lint counts solely inside a dedicated CI Audit page.
+- **Wrong**: Copying a partner-pool daily allocation badge (`Target 14.28% partner/d`) onto an unlimited compute card that has no daily target, putting `.va-kpi-gauge-track` bars on cumulative unbounded tokens/steps, and padding card footers with repo lint counts.
+- **Right**: Use `.va-kpi-gauge-card` bound strictly to `pool.used_tokens / pool.limit_tokens` and `pool.pct` (rendering the target pin *only* on cards with matching `pool.daily_target_pct != null`), use trackless `.va-kpi-card` tiles for unbounded cumulative totals, and keep engineering lint counts solely inside a dedicated CI Audit page.
 
 ### 6.2 Post-Restart Execution Telemetry & Historical Runs
 - **Wrong**: Plotting a `3`-call post-restart memory buffer as a steady convergence chart alongside 90-day runs marked as "violations" against yesterday's `120`-step ceiling, plus a hardcoded 6-row `demoRows = [...]` JS fixture for `?demo=1`.
-- **Right**: Show **`Warming up — 3 samples collected`** (`uptime 14m`) for the live buffer, annotate historical runs as `"Pre-policy baseline (120-step ceiling effective 2026-11-20)"` or filter violations to `ts >= policy_effective`, and load `?demo=1` exclusively from a timestamped server/external snapshot JSON (`Recorded Snapshot — YYYY-MM-DD`).
+- **Right**: Show **`Warming up — 3 samples collected`** (`uptime 14m`) for the live buffer, annotate historical runs as `"Pre-policy baseline (120-step ceiling effective 2026-11-20)"` or filter violations to `ts >= policy_effective`, and load `?demo=1` exclusively from a timestamped server snapshot (`Recorded Snapshot — YYYY-MM-DD`).
 
 ### 6.3 Clinical & Building Telemetry (Non-Software Domains)
 - **Clinical SpO2 / Bedside Ward**: Bind numeric gauge to `patient.spo2_pct` (`min: 70`, `max: 100`) and ordered alarm bound `patient.spo2_low_limit`; if arterial pH lab draw is older than `4h` or absent, render `Last lab >4h ago (—)` instead of interpolating a curve or synthesizing a normal value.
@@ -106,7 +108,7 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8765/web
   --cdp --mount-prefix /web=/path/to/web
 ```
 
-The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_LAYER]`), cumulative sticky/fixed header height `<= 64px` (`[STICKY_CHROME_BLOAT]`), `<= 2px` inner plot-box axis alignment (`[PLOT_AXIS_MISALIGN]`), pill restraint (`[PILL_SPRAWL]`), zero chrome `Quiet` badges (exempting kebab-case repo/ticket slugs like `quiet-ui-skills`), zero raw `brain:` IDs, zero inline mock arrays, zero clipped controls, and zero SVG text/line collisions.
+The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_LAYER]`), cumulative sticky/fixed header height (`<= 88px` `< 680px` phones, `<= 64px` `>= 680px` desktop, `[STICKY_CHROME_BLOAT]`), `<= 2px` inner plot-box axis alignment (`[PLOT_AXIS_MISALIGN]`), `[AXIS_LABEL_CLIPPED]` (`+0.5px` top edge), `[BAR_HAIRLINE_DENSITY]`, `[ORPHAN_SERIES_LEGEND]`, `[TOOLBAR_CONTROL_SPRAWL]`, `[TRANSPARENT_OVERLAY]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`, pill restraint (`[PILL_SPRAWL]`), zero chrome `Quiet` badges, zero raw `brain:` IDs, zero inline mock arrays, and zero SVG text/line collisions. (When retrofitting existing apps, also follow [`brownfield-retrofit-and-migration.md`](brownfield-retrofit-and-migration.md).)
 
 ---
 
@@ -114,11 +116,11 @@ The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_L
 
 1. **Field Verification**: Have you inspected exact field names, units, and nullable keys in every endpoint backing this view?
 2. **Traceability**: Does every KPI card, table column, and chart trace point directly to a documented field in your Data-to-Widget Binding Map?
-3. **Sub-Slot Omission**: Are absent targets, baselines, and tolerances cleanly omitted rather than borrowed or hardcoded?
+3. **Sub-Slot & Track Omission**: Are absent targets omitted and unbounded totals placed in trackless `.va-kpi-card` tiles instead of fake gauges?
 4. **Warmup Honesty**: Do thin buffers (`N < 10`) show **`Warming up — N samples collected`** instead of false steady-state claims?
 5. **Policy Scoping**: Are historical runs shielded from retroactive scoring against newly enacted policies?
-6. **Chrome Hygiene**: Is application header chrome 100% free of Quiet UI framework badges and raw internal `brain:` storage IDs?
-7. **Snapshot Purity**: Are preview/demo states loaded from explicit server or external captured snapshots rather than hardcoded inline JS arrays?
+6. **Chrome Hygiene**: Is application chrome 100% free of Quiet UI framework badges, Unicode emojis (`[EMOJI_IN_CHROME]`), and raw `brain:` storage IDs?
+7. **Snapshot Purity**: Are preview/demo states loaded cleanly without inline mock JS arrays or static `.json` fixture files alongside app code (`[JSON_MOCK_FIXTURE]`)?
 8. **Zero Self-Filler**: Have internal CI linter or file-budget counts been excluded from end-user operational widgets?
 
 > [!NOTE]

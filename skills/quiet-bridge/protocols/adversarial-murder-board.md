@@ -123,6 +123,14 @@ The Murder Board evaluates the artifact through four orthogonal, adversarial per
 - **CC-1: Real-Terms Deflation & Coverage (`FRED/SEC`)**: Are multi-year capital projections deflated using cited `FRED` price indices and `SEC` 10-Q/bond covenants with stressed DSCR floors?
 - **CC-2: Appropriated Reserve & Audit Lineage (`GAO`)**: Are unobligated balances, contingency drawdowns, and grant expirations reconciled to `GAO` Green Book hash-verifiable ledgers?
 
+### 2.11 Brownfield Retrofit Regression Gate (`Project Mode: Brownfield Retrofit`)
+*Focus: Zero capability regressions, deprecation blocklist enforcement, CSS quarantine, and classic route safety.*
+
+- **BF-1: Capability Parity Proof (`KEEP | CONSOLIDATE`)**: Did consolidating filter controls (`.va-period-stepper` + `.va-preset-popover`), breakdown tables, and exports (`CSV`/`PNG`/`ZIP`) preserve 100% of Calendar-to-Date, Rolling, and drill-down workflows without silent omissions?
+- **BF-2: Deprecation Blocklist Enforcement**: Are every retired legacy toggle, jargon phrase, and unrequested legacy wire field completely absent from the rendered DOM (`?include_legacy=0`)?
+- **BF-3: Cascade & Overlay Isolation**: Are shared legacy CSS rules wrapped in `@import url(...) layer(legacy);`, and do all open drawers/popovers/dialogs keep `>= 0.92` opaque `--bg-surface` (`[TRANSPARENT_OVERLAY]`) without `.va-pane` bleed-through?
+- **BF-4: Strangler & Legacy Suite Integrity**: Does the classic route (`/`) retain its bidirectional switch and pass 100% of pre-existing backend/UI regression tests untouched?
+
 ---
 
 ## 3. Pass / Block Hard Rejection Triggers
@@ -144,6 +152,7 @@ If an artifact triggers any of the following **Hard Block Triggers**, the Murder
 | **TRG-11** | **AI / Tail Blindspot** | Reporting mean latency instead of `OpenTelemetry` p99 tail bounds, or deploying probabilistic AI without `NIST AI RMF 100-1` drift/fallback gates. |
 | **TRG-12** | **SPC Capability Masking** | Reporting batch yield without `NIST/SEMATECH SPC` $C_{pk}$ and `UCL/CL/LCL` corridor limits. |
 | **TRG-13** | **Fiscal Illusion** | Presenting nominal multi-year civic capital returns without `FRED` inflation adjustment or `GAO`/`SEC` debt-coverage margins. |
+| **TRG-14** | **Brownfield Regression** | Dropping an un-deprecated capability during cleanup, resurrecting a blocklisted wire widget, leaking unlayered CSS, or breaking classic route tests. |
 
 ---
 

@@ -280,16 +280,36 @@
         const fillEl = root ? root.querySelector('[data-kpi-warmup-fill]') : null;
         const barEl = root ? root.querySelector('[data-kpi-warmup-bar]') : null;
         if (warmup) {
-          if (valEl) valEl.textContent = '3 calls';
+          if (valEl) valEl.textContent = '3 / 50 calls';
           if (fillEl) fillEl.style.inlineSize = '6%';
           if (barEl) barEl.setAttribute('aria-valuenow', '6');
           if (note) note.textContent = 'Warming up — 3 samples collected (uptime 12m)';
         } else {
-          if (valEl) valEl.textContent = '48 calls';
+          if (valEl) valEl.textContent = '36 / 50 calls';
           if (fillEl) fillEl.style.inlineSize = '72%';
           if (barEl) barEl.setAttribute('aria-valuenow', '72');
-          if (note) note.textContent = 'Steady window — 48 samples (24h)';
+          if (note) note.textContent = 'Steady window — 36 / 50 samples (24h)';
         }
+      }
+      const scReset = ev.target && ev.target.closest ? ev.target.closest('[data-scope-reset]') : null;
+      if (scReset) {
+        const chip = scReset.closest('.va-scope-chip');
+        const lbl = chip ? chip.querySelector('[data-scope-label]') : null;
+        if (chip && lbl) {
+          const allMode = chip.dataset.level !== 'all';
+          chip.dataset.level = allMode ? 'all' : 'entity';
+          lbl.textContent = allMode ? 'All Substations' : 'Substation B · Transformer 02';
+          scReset.hidden = allMode;
+        }
+      }
+    });
+    document.addEventListener('quiet:period-change', function (ev) {
+      const st = ev.target && ev.target.closest ? ev.target.closest('[data-stepper-demo]') : null;
+      const msg = st ? st.querySelector('[data-stepper-status]') : null;
+      const d = (ev && ev.detail) || {};
+      if (msg && d.preset) {
+        const bin = d.preset === 'r52w' ? '1w' : '1d';
+        msg.textContent = 'Active window: ' + (d.label || d.preset) + (d.span ? ' · ' + d.span : '') + ' · Adaptive bin: ' + bin;
       }
     });
   }

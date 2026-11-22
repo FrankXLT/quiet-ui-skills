@@ -1,4 +1,4 @@
-# AGENTS.md — Quiet UI Skills (`v9.2.1`)
+# AGENTS.md — Quiet UI Skills (`v9.2.2`)
 
 Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Follow the mode boundary, commands, and invariants below verbatim.
 
@@ -39,7 +39,7 @@ python3 -B scripts/build_all.py --check
 # Run zero-dependency unit, corpora, hygiene & portability tests (skips CDP if Chrome absent)
 python3 -B -m unittest discover -s tests -v
 
-# Run full verification including all 21 Studio CDP gates + 41 Bench specimens + /docs root test
+# Run full verification including all 21 Studio CDP gates + 42 Bench specimens + /docs root test
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 
 # Serve local preview (http://127.0.0.1:8788/)
@@ -52,49 +52,42 @@ python3 -B scripts/serve_showcase.py --port 8788
 
 | Path | Purpose |
 | :--- | :--- |
-| `skills/quiet-ui/` | Pillar 1 router (`SKILL.md`), data-grounding contract, 7 delivery mediums (`M1–M7`), `tokens/`, portable `scripts/audit_quiet_html.py`. |
-| `skills/quiet-evidence/` | Pillar 2 router, metrology guides, deterministic compilers, and standalone `assets/quiet-evidence-bundle.{css,js}` (incl. `QuietSvgLayout`). |
-| `skills/quiet-bridge/` | Pillar 3 router, 7 audience lenses, 3 decision tempos, and Murder Board / Dual-Layer protocols. |
-| `tokens/` | Canonical MIT-licensed 4-theme CSS custom properties (`white`, `paper`, `dark-paper`, `dark`). |
+| `skills/quiet-ui/` | Pillar 1 router (`SKILL.md`), data-grounding + `brownfield-retrofit-and-migration.md`, 7 mediums (`M1–M7`), `tokens/`, portable `scripts/audit_quiet_html.py`. |
+| `skills/quiet-evidence/` | Pillar 2 router, metrology guides, deterministic compilers, and standalone `assets/quiet-evidence-bundle.{css,js}` (incl. `QuietSvgLayout` + `QuietEChartsDefaults` + `QuietPeriodStepper`). |
+| `skills/quiet-bridge/` | Pillar 3 router, 7 audience lenses, 3 decision tempos, and Murder Board / Brownfield Gate / Dual-Layer protocols. |
+| `tokens/` | Canonical MIT-licensed 4-theme CSS custom properties (`white`, `paper`, `dark-paper`, `dark`, incl. `--bg-subtle`). |
 | `customizations/` | MIT starter kits (`personal-starter/`, `brand-starter/`) and starter build/verify scripts. |
 | `content/corpora/` | 6 domain corpora (`21` views, `26` JSON specs, `181` conserved metric checks) + attribution docs. |
-| `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..11`), JS runtimes (`js/` incl. `quiet-svg-chart-layout.js`), and domain builders (`views/`). |
+| `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..12`), JS runtimes (`js/` incl. `quiet-svg-chart-layout.js`, `quiet-time-binning.js`, `quiet-period-stepper.js`), and domain builders (`views/`). |
 | `docs/` | GitHub Pages web root (`index.html`, `bench/evidence-bench.html`, `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos). |
 | `scripts/` | Build & preview CLI (`build_all.py`, `build_showcase.py`, `build_evidence_bench.py`, `build_readme_hero.py`, `serve_showcase.py`). |
-| `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`). |
+| `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`, `test_v922_hardening.py`, `test_v922_round2.py`). |
 | `quiet-ui-showcase.html` | Compiled standalone 6-domain, 21-view Studio portal (mirrored byte-for-byte to `docs/index.html`). |
 
 ---
 
 ## 4. Pillar Invocation Contracts & Schema Matrix
 
-### Pillar 1 — `quiet-ui` (7 Delivery Mediums & `N0–N4` Morphing Shells)
-- Draft a **Data-to-Widget Binding Map** first (`skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`): omit absent sub-slots, never borrow targets across cards, show `Warming up — N samples collected` when `N < 10`, and ban inline mock arrays or Quiet self-badges in app chrome.
-- Select one primary medium matching physical viewing distance and chrome weight:
-  - `M1` Paper & Print (`0%` box weight, static SVG fallback, `break-inside: avoid`)
-  - `M2` Editorial Web / Spec / RFC (`15%–25%` hairline rules, prose measure `<= 72ch`)
-  - `M3` Stateful Web App / Workbench (`N1` left spine or `N3` dual nav, `.va-workbench-panes`/`.va-pane`/`.va-pane-hdr` flat `40px` hairline-divided panes, compact `.va-toolbar-joined` `32–34px` on `>= 768px` coarse tablets / `44px` on `< 700px` handsets, `.va-tab-strip`/`.va-tab` rectangular/underline tabs, `.va-meta-inline` unboxed muted metadata, `--radius-sm` `.va-badge`, `.va-kpi-gauge-card`, unfolded foldable split/plot grids at `>= 780px` / `820px` CSS)
-  - `M4` Walk-Up POI Terminal (`N1` zone rail, guarded `ARM -> EXECUTE` effectors, `>= 44px` touch targets)
-  - `M5` Ambient Wall Kiosk (10-foot luminance figure-ground contrast, enlarged telemetry readouts)
-  - `M6` Collimated Optical HUD (`>= 65%` open central sightline, monochrome phosphor peripheral symbology)
-  - `M7` Transparent Window Overlay (smoked-glass `.va-hud-pod` cards, stroke text halos, glare rejection)
-- Enforce **Page-Wide Coherence & Pill Restraint**: `<= 3` repeating card structures, `<= 1` chart/half-width card, unified `.booktabs` rows, 1 cohesive `--chart-1..5` palette, plain `.va-meta-inline` dates/counts/hashes, `<= 1` semantic state `.va-badge`/header (`[PILL_SPRAWL]` bans `> 2` header pills, `>= 6` passive body pills, and stadium tabs beside square toolbars). Never activate `N4` at `>= 700px`, never exceed `56px` sticky topbar (`[STICKY_CHROME_BLOAT] > 64px`), collapse `0`-issue audit tables in `<details>`, and hide subheader utility bars `< 1100px`.
+### Pillar 1 — `quiet-ui` (7 Delivery Mediums, Greenfield/Brownfield & `N0–N4`)
+- Declare **`Project Mode: Greenfield | Brownfield Retrofit`** first (`skills/quiet-ui/SKILL.md` + `foundation/brownfield-retrofit-and-migration.md`), keeping a Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`), Deprecation Blocklist, `layer(legacy)` cascade quarantine, and **Data-to-Widget Binding Map** (`data-grounding-and-widget-binding.md`): omit absent sub-slots, render visible on-card legends for `>= 2` series (`[ORPHAN_SERIES_LEGEND]`), use trackless `.va-kpi-card` on unbounded totals (`[FAKE_UNBOUNDED_GAUGE]`), show `Warming up — N samples collected` when `N < 10`, and ban mock JS/JSON fixtures (`[JSON_MOCK_FIXTURE]`), chrome emojis (`[EMOJI_IN_CHROME]`), or Quiet self-badges.
+- Select one medium (`M1–M7`): `M3` uses `.va-workbench-panes`/`.va-pane-hdr` (`40px`), left-of-brand topbar drawer toggle + closed-by-default opaque `.va-side-rail[data-mode="overlay"]` (`100dvw×100svh` `< 680px`, `50dvw` `680–1199px`, `min(28rem, 42dvw)` `>= 1200px`, `[TRANSPARENT_OVERLAY]`) + `.va-rail-footer`, split `.va-tree-row`, `.va-period-stepper`/`.va-preset-popover` (`[TOOLBAR_CONTROL_SPRAWL]`) + `.va-scope-chip`, `.va-toolbar-joined` (`--bg-subtle` track, raised active state), `.va-tab-strip` underline tabs, composite 1-col `[Chart + Table]`, chart-only `.va-plot-row`, and `1480px` cap `>= 1920px`.
+- Enforce **Page-Wide Coherence & Sticky Budgets**: `<= 3` repeating card structures, unified `.booktabs`, one `--chart-1..5` palette, plain `.va-meta-inline`, `<= 1` `.va-badge`/header (`[PILL_SPRAWL]`), and `<= 88px` (`< 680px`) / `<= 64px` (`>= 680px`) sticky chrome (`[STICKY_CHROME_BLOAT]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`).
 
 ### Pillar 2 — `quiet-evidence` (Metrology & Offline Schemas)
-- Supported canonical `$schema` URNs: `urn:quiet-ui:schema:v9:scalar`, `table`, `bitfield`, `plot` (`plot_kind`: `cartesian`, `waterfall`, `stacked_bar`, `gantt`, `heatmap`, `dumbbell`, `forest`, `sankey`), `waveform` (including `waveform_kind: "strip_chart"`), and `schematic` (`sequence` `ITU-T Z.120`, `n2_matrix` `NASA SP-2016-6105`, `fault_tree` `NRC NUREG-0492`, `pid_loop`, `differential_bus`/`can_fd`/`fieldbus`/`rs485`/`modbus`/`mil1553b`, `enclave_topology`, `er_lineage`).
-- Dynamic browser SVGs use `window.QuietSvgLayout` (`niceScale125`, `sharedNiceScale125`, `buildCanonicalTimeGrid`, `computeGridFrameGutters`, `wrapLabelLines`, `measureCategoryGutter`, `filterNonOverlappingTicks`, `placeReferenceLabel`); multi-plot ECharts grids use `alignPlotGridFrames` / `alignSharedAxes` (`containLabel: false` column/row pixel registration, unit/event-conditional spans, `[PLOT_AXIS_MISALIGN] <= 2px`), single charts use `normalizeOption` (`applySafeLegendLayout`), and chart hosts bind `observeChartResize(hostEl, chart)` + `min-width: 0; max-width: 100%;` so half-screen (`~720px`) snaps never freeze chart widths. Keep `N <= 3` as stat/micro-bars, `N <= 8` as `.va-inline-bar` tables, and never duplicate total vs. stacked time-series denominators.
+- Supported canonical `$schema` URNs: `urn:quiet-ui:schema:v9:scalar`, `table`, `bitfield`, `plot` (`cartesian`, `waterfall`, `stacked_bar`, `gantt`, `heatmap`, `dumbbell`, `forest`, `sankey`), `waveform` (incl. `strip_chart`), and `schematic` (`sequence`, `n2_matrix`, `fault_tree`, `pid_loop`, `differential_bus`, `enclave_topology`, `er_lineage`).
+- Dynamic browser plots use `window.QuietSvgLayout` (`niceScale125`, `sharedNiceScale125`, `buildCanonicalTimeGrid`, `computeGridFrameGutters`, `wrapLabelLines`, `measureCategoryGutter`, `filterNonOverlappingTicks`, `placeReferenceLabel`) and `QuietEChartsDefaults` (`binTimeSeries` `1h`/`1d`/`1w`, `trimTrailingFutureWeeks` + `>= 0.06` past zero-cell contrast, `grid.top >= 30, nameGap >= 12` for vertical top `yAxis.name`, `alignPlotGridFrames`/`alignSharedAxes` engaging `independentXSpan`, `[AXIS_LABEL_CLIPPED]` `+0.5px` top edge). Keep `N <= 3` as stat/micro-bars and `N <= 8` as `.va-inline-bar` tables.
 - Standalone usage outside this repo works cleanly via bundled `skills/quiet-evidence/assets/quiet-evidence-bundle.{css,js}` and `skills/quiet-evidence/scripts/compile_evidence.py`.
 
 ### Pillar 3 — `quiet-bridge` (Audience Lenses & Numerical Conservation)
-- Tailor framing without mutating physical ground truth across `L1` Executive / Board (`BLUF` top card + delta risk), `L2` Peer / Review Engineering (`1–2–5` tolerances + traceability), and `L3` Operator / Patient / Learner (`<= 12` technical jargon terms, plain-English action guidance).
-- Enforce the **Numerical Conservation Law**: quantitative claims across narrative prose, KPI scalars, and compiled figures MUST bind to one canonical JSON dataset, omit unbacked targets, and disclose `Warming up — N samples collected` on thin buffers.
+- Use plain everyday UI copy across headings and chart titles (e.g. `"Activity by Hour of Day"` over jargon) while tailoring framing without mutating physical truth across `L1` Executive (`BLUF` + delta risk), `L2` Peer Engineering (`1–2–5` tolerances + traceability), and `L3` Operator / Patient / Learner (`<= 12` jargon terms).
+- Enforce the **Numerical Conservation Law**: quantitative claims across prose, KPI scalars, and figures MUST bind to one canonical dataset, omit unbacked targets, and disclose `Warming up — N samples collected` on thin buffers.
 
 ---
 
 ## 5. CSS `@layer` Cascade & Status Pill Grammar
 
 - Preserve the canonical cascade order declared in `src/css/00-layers-and-reset.css`:
-  `@layer reset, tokens, shell, archetypes, views, evidence, utilities;` (declare `utilities` last and place `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities`).
+  `@layer reset, tokens, shell, archetypes, evidence, views, utilities;` (declare `evidence` before `views` so app views override component defaults cleanly, declare `utilities` last, and place `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities`).
 - Never write `!important` in stylesheets, inline styles, or templates.
 - All themes bind semantically through `[data-theme]` on `<html>`: `white` (default), `paper`, `dark-paper`, and `dark`.
 - Use the 4-variant `.va-pill` grammar (`data-variant="status|tag|chip"` with `data-state="nominal|warn|fault"`, plus borderless SVG knockout halos) backed strictly by semantic tokens (`--status-ok`, `--status-warn`, `--status-danger`, `--status-err`)—never color nominal telemetry amber or crimson.

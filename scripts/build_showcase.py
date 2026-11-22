@@ -36,7 +36,7 @@ WORLD_BUILDERS: dict[str, Callable[[Path], dict[str, Any]]] = {
 
 def bundle_stage_css(repo_root: Path) -> str:
     """Bundle layered tokens, core shells, pill grammar, evidence styles & view rules."""
-    parts: list[str] = ["@layer reset, tokens, shell, archetypes, views, evidence, utilities;"]
+    parts: list[str] = ["@layer reset, tokens, shell, archetypes, evidence, views, utilities;"]
     tok_f = repo_root / "tokens" / "quiet-ui-tokens.css"
     if tok_f.exists():
         parts.append(f"@layer tokens {{\n{tok_f.read_text(encoding='utf-8')}\n}}")
@@ -46,6 +46,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/02-nav-shells-and-drawers.css",
         "src/css/03-pills-and-annunciators.css",
         "src/css/05-evidence-stage.css",
+        "src/css/12-period-and-scope.css",
         "src/css/06-stage-remediations.css",
         "src/css/07-world-01-views.css",
         "src/css/08-world-02-05-views.css",
@@ -72,7 +73,9 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/echarts-layers.js",
             "src/js/echarts-schedule-heatmap.js",
             "src/js/echarts-sankey-strip.js",
+            "src/js/quiet-time-binning.js",
             "src/js/echarts-layout-defaults.js",
+            "src/js/quiet-period-stepper.js",
             "src/js/echarts-quiet-adapter.js",
             "src/js/world-01-interactions.js",
             "src/js/world-02-05-interactions.js",

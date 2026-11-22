@@ -186,6 +186,15 @@ On narrow viewports ($< 768\ \mathrm{px}$) or mobile technician tablets, traditi
 
 ---
 
+## 4A. Temporal Activity Heatmaps & Past Zero-Cell Contrast
+
+Calendar and temporal activity matrices rendered alongside rolling or to-date series must preserve timeline honesty and cell legibility across themes:
+
+- **Trim Trailing All-Future Week Columns**: Never pad to-date or rolling week matrices with empty future columns past the active evaluation timestamp (`QuietTimeBinning.trimTrailingFutureWeeks` / `QuietEChartsDefaults.trimTrailingFutureWeeks`).
+- **Past Zero-Cell Contrast (`>= 0.06` Luminance Delta or Hairline Border)**: Past empty (`0`-activity) day cells MUST maintain at least `0.06` relative luminance contrast against `--bg-card` (or carry a crisp `1px` hairline `borderColor` from `heatmapZeroCellStyle` / `--border-hairline`) so `0` counts never disappear into pure card background.
+
+---
+
 ## 5. Verification Checklist
 
 Before emitting HTML or PDF tables:

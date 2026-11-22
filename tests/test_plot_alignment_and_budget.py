@@ -15,6 +15,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.py"
 CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
+PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_cdp_probes.py"
 STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
 TOKENS_CSS = REPO_ROOT / "tokens" / "quiet-ui-tokens.css"
 STAGE_CSS = REPO_ROOT / "src" / "css" / "01-stage-and-containers.css"
@@ -32,7 +33,7 @@ class TestPlotAlignmentAndBudget(unittest.TestCase):
         self._tmp = tempfile.TemporaryDirectory()
         self.tmp_dir = Path(self._tmp.name)
         self.auditor = self.tmp_dir / "audit_quiet_html.py"
-        for src in (AUDITOR_SRC, CHECKS_SRC, STATIC_RULES_SRC):
+        for src in (AUDITOR_SRC, CHECKS_SRC, PROBES_SRC, STATIC_RULES_SRC):
             shutil.copy2(src, self.tmp_dir / src.name)
 
     def tearDown(self) -> None:
@@ -158,7 +159,7 @@ class TestPlotAlignmentAndBudget(unittest.TestCase):
             "const m = [\n"
             "  [\n"
             "    { animation: false, xUnit: 't', yUnit: 'req', xAxis: { type: 'category', data: ['10:00','10:15','10:30'] }, yAxis: { type: 'value', axisLabel: { formatter: v => (v>=1e6?(v/1e6)+'M':v) } }, series: [{ type: 'bar', data: [1e6, 6e6, 3e6] }] },\n"
-            "    { animation: false, xUnit: 't', yUnit: 'ms', xAxis: { type: 'category', data: ['10:00','10:15','10:30'] }, yAxis: [{ type: 'value' }, { type: 'value', max: 100 }], legend: { data: ['Lat', 'SLA'] }, series: [{ type: 'line', data: [20, 45, 30] }, { type: 'line', yAxisIndex: 1, data: [80, 95, 90] }] }\n"
+            "    { animation: false, xUnit: 't', yUnit: 'ms', xAxis: { type: 'category', data: ['10:00','10:15','10:30'] }, yAxis: [{ type: 'value' }, { type: 'value', max: 100 }], legend: { data: ['Lat', 'SLA'] }, series: [{ name: 'Lat', type: 'line', data: [20, 45, 30] }, { name: 'SLA', type: 'line', yAxisIndex: 1, data: [80, 95, 90] }] }\n"
             "  ],\n"
             "  [\n"
             "    { animation: false, xUnit: 't', yUnit: 'degC', xAxis: { type: 'category', data: ['10:15'] }, yAxis: { type: 'value' }, series: [{ type: 'line', data: [38] }] },\n"

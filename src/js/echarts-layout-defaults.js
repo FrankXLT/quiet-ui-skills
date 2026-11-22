@@ -10,31 +10,25 @@
   }
 
   function applyNiceLinearAxisBounds(opt, payload) {
-    if (!opt || !payload || !root.QuietSvgLayout) return opt;
-    if (payload.y && (payload.y.log || payload.y.logMapped)) return opt;
+    if (!opt || !payload || !root.QuietSvgLayout || (payload.y && (payload.y.log || payload.y.logMapped))) return opt;
     var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
-    if (yAxes[0] && yAxes[0].type === 'value' && yAxes[0].max === undefined) {
-      var vals = [];
-      (payload.series || []).forEach(function (sr) {
-        (sr.data || []).forEach(function (pt) {
-          var raw = Array.isArray(pt) ? pt[1] : (pt && typeof pt === 'object' ? pt.value : pt);
-          if (raw === null || raw === undefined || raw === '' || typeof raw === 'boolean') return;
-          var v = Number(raw);
-          if (Number.isFinite(v)) vals.push(v);
-        });
+    if (!yAxes[0] || yAxes[0].type !== 'value' || yAxes[0].max !== undefined) return opt;
+    var vals = [];
+    (payload.series || []).forEach(function (sr) {
+      (sr.data || []).forEach(function (pt) {
+        var raw = Array.isArray(pt) ? pt[1] : (pt && typeof pt === 'object' ? pt.value : pt);
+        if (raw !== null && raw !== undefined && raw !== '' && typeof raw !== 'boolean' && Number.isFinite(Number(raw))) vals.push(Number(raw));
       });
-      (payload.envelopes || []).forEach(function (env) {
-        if (typeof env.value === 'number' && Number.isFinite(env.value)) vals.push(env.value);
-      });
-      if (vals.length) {
-        var rawMin = Math.min.apply(null, vals), rawMax = Math.max.apply(null, vals);
-        var lo = yAxes[0].min !== undefined ? Number(yAxes[0].min) : rawMin, span = rawMax - rawMin;
-        var hi = rawMax + (span > 0 ? span * 0.06 : (Math.abs(rawMax) * 0.06 || 1));
-        var sc = root.QuietSvgLayout.niceScale125(lo, hi, { targetTicks: 5, includeZero: lo >= 0 });
-        if (yAxes[0].min === undefined) yAxes[0].min = sc.min;
-        yAxes[0].max = sc.max;
-        if (yAxes[0].interval === undefined) yAxes[0].interval = sc.step;
-      }
+    });
+    (payload.envelopes || []).forEach(function (env) { if (typeof env.value === 'number' && Number.isFinite(env.value)) vals.push(env.value); });
+    if (vals.length) {
+      var rawMin = Math.min.apply(null, vals), rawMax = Math.max.apply(null, vals);
+      var lo = yAxes[0].min !== undefined ? Number(yAxes[0].min) : rawMin, span = rawMax - rawMin;
+      var hi = rawMax + (span > 0 ? span * 0.06 : (Math.abs(rawMax) * 0.06 || 1));
+      var sc = root.QuietSvgLayout.niceScale125(lo, hi, { targetTicks: 5, includeZero: lo >= 0 });
+      if (yAxes[0].min === undefined) yAxes[0].min = sc.min;
+      yAxes[0].max = sc.max;
+      if (yAxes[0].interval === undefined) yAxes[0].interval = sc.step;
     }
     return opt;
   }
@@ -46,10 +40,8 @@
       if (!sr || !sr.markLine || !Array.isArray(sr.markLine.data)) return;
       var parentLbl = sr.markLine.label || {};
       sr.markLine.data = sr.markLine.data.map(function (entry) {
-        if (!entry || typeof entry !== 'object') return entry;
-        if (entry.xAxis !== undefined || (parentLbl.position && !(entry.label && entry.label.position))) return entry;
-        var lbl = Object.assign({}, entry.label || {});
-        var rawTxt = String(lbl.formatter || entry.name || '').toLowerCase();
+        if (!entry || typeof entry !== 'object' || entry.xAxis !== undefined || (parentLbl.position && !(entry.label && entry.label.position))) return entry;
+        var lbl = Object.assign({}, entry.label || {}), rawTxt = String(lbl.formatter || entry.name || '').toLowerCase();
         if (!lbl.position) lbl.position = rawTxt.indexOf('floor') >= 0 ? 'insideStartBottom' : 'insideEndTop';
         if (lbl.distance === undefined) lbl.distance = 4;
         if (!lbl.fontSize || lbl.fontSize < 11) lbl.fontSize = 11;
@@ -67,46 +59,28 @@
     var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
     var baseGridIdx = (yAxes[0] && yAxes[0].gridIndex) || 0;
     var hasRightYAxis = yAxes.length > 1 && yAxes.some(function (ax, idx) {
-      if (!ax) return false;
-      if (ax.position === 'right') return true;
-      return idx > 0 && (ax.gridIndex === undefined || ax.gridIndex === baseGridIdx);
+      return !!ax && (ax.position === 'right' || (idx > 0 && (ax.gridIndex === undefined || ax.gridIndex === baseGridIdx)));
     });
-    var w = Number(containerWidth || 0);
-    var isNarrow = w > 0 && w < 640;
+    var w = Number(containerWidth || 0), isNarrow = w > 0 && w < 640;
     var legends = Array.isArray(opt.legend) ? opt.legend : [opt.legend];
-    var needBottomPad = false;
-    var maxItems = 0;
-
+    var needBottomPad = false, maxItems = 0;
     legends.forEach(function (lg) {
       if (!lg || typeof lg !== 'object' || lg.show === false) return;
-      var nItems = Array.isArray(lg.data) ? lg.data.length : (Array.isArray(opt.series) ? opt.series.length : 0);
-      maxItems = Math.max(maxItems, nItems);
-      var isScroll = lg.type === 'scroll';
-      var optInScroll = !!(lg.quietAllowScroll || lg.allowScroll);
-
+      maxItems = Math.max(maxItems, Array.isArray(lg.data) ? lg.data.length : (Array.isArray(opt.series) ? opt.series.length : 0));
+      var isScroll = lg.type === 'scroll', optInScroll = !!(lg.quietAllowScroll || lg.allowScroll);
       if (isScroll && (isNarrow || !optInScroll)) {
         lg.type = 'plain';
         if (lg.orient === 'vertical') lg.orient = 'horizontal';
-        delete lg.top;
-        lg.bottom = 0;
-        lg.left = 'center';
-        delete lg.right;
+        delete lg.top; lg.bottom = 0; lg.left = 'center'; delete lg.right;
         if (lg.itemGap == null) lg.itemGap = 10;
         needBottomPad = true;
       } else if (hasRightYAxis && lg.bottom == null) {
         if (lg.orient === 'vertical') lg.orient = 'horizontal';
-        delete lg.top;
-        lg.bottom = 0;
-        if (lg.left == null || lg.left === 'right' || typeof lg.left === 'number') {
-          lg.left = 'center';
-          delete lg.right;
-        }
+        delete lg.top; lg.bottom = 0;
+        if (lg.left == null || lg.left === 'right' || typeof lg.left === 'number') { lg.left = 'center'; delete lg.right; }
         needBottomPad = true;
-      } else if (hasRightYAxis && lg.bottom != null) {
-        needBottomPad = true;
-      }
+      } else if (hasRightYAxis && lg.bottom != null) { needBottomPad = true; }
     });
-
     if (needBottomPad) {
       var minBot = (isNarrow && maxItems >= 3) ? 46 : 38;
       if (Array.isArray(opt.grid) && opt.grid.length) {
@@ -126,6 +100,25 @@
     applySafeLegendLayout(opt, containerWidth);
     if (payload && (payload.kind === 'cartesian' || !payload.kind)) applyNiceLinearAxisBounds(opt, payload);
     return opt;
+  }
+
+  function getTimeBinning() {
+    if (root.QuietTimeBinning) return root.QuietTimeBinning;
+    if (typeof require === 'function') { try { return require('./quiet-time-binning.js'); } catch (_err) {} }
+    return null;
+  }
+
+  function parseUtcMs(raw) {
+    var tb = getTimeBinning();
+    if (tb && tb.parseUtcMs) return tb.parseUtcMs(raw);
+    if (typeof raw === 'number') return Number.isFinite(raw) ? raw : NaN;
+    var ts = Date.parse(String(raw || ''));
+    return Number.isFinite(ts) ? ts : NaN;
+  }
+
+  function binTimeSeries(dates, layersObj, opts) {
+    var tb = getTimeBinning();
+    return tb ? tb.binTimeSeries(dates, layersObj, opts) : { dates: dates || [], layers: layersObj || {}, bin: '1h', spanDays: 0 };
   }
 
   function getSvgLayout() {
@@ -150,16 +143,30 @@
     return '__default__';
   }
 
+  function classifyXFormat(arr) {
+    var list = Array.isArray(arr) ? arr.filter(function (v) { return v !== null && v !== undefined && String(v).trim() !== ''; }) : [];
+    if (!list.length) return 'empty';
+    var counts = { iso_date: 0, iso_week: 0, clock_hour: 0, weekday: 0, cat: 0 };
+    list.forEach(function (v) {
+      var s = String(v).trim();
+      if (/^\d{4}-\d{2}-\d{2}(?:[T ]\d{2}:\d{2})?/.test(s)) counts.iso_date += 1;
+      else if (/^\d{4}-W\d{2}$/.test(s)) counts.iso_week += 1;
+      else if (/^(?:\d{1,2}h|\d{1,2}:\d{2})$/i.test(s)) counts.clock_hour += 1;
+      else if (/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$/i.test(s)) counts.weekday += 1;
+      else counts.cat += 1;
+    });
+    var best = 'cat', bestN = 0;
+    Object.keys(counts).forEach(function (k) { if (counts[k] > bestN) { bestN = counts[k]; best = k; } });
+    return best;
+  }
+
   function syncColumnXSpans(mat, opts) {
     var cols = mat.reduce(function (m, r) { return Math.max(m, r.length); }, 0);
-    var fillVal = opts && opts.fillValue !== undefined ? opts.fillValue : 0;
-    var forcedX = (opts && (opts.timeGrid || opts.xBuckets)) || null;
+    var fillVal = opts && opts.fillValue !== undefined ? opts.fillValue : 0, forcedX = (opts && (opts.timeGrid || opts.xBuckets)) || null;
     for (var c = 0; c < cols; c += 1) {
       var groups = {};
       for (var r = 0; r < mat.length; r += 1) {
-        var opt = mat[r] && mat[r][c];
-        if (!opt) continue;
-        var xAx = Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis;
+        var opt = mat[r] && mat[r][c], xAx = opt && (Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis);
         if (!xAx || opt.independentXSpan || xAx.quietIndependentSpan) continue;
         var evKey = opt.eventKey != null ? opt.eventKey : (opts && opts.eventKey != null ? opts.eventKey : '');
         var xKey = inferAxisUnit(opt, xAx, 'xUnit', 'quietUnit') + '|' + String(evKey) + '|' + String(xAx.type || 'category');
@@ -171,19 +178,18 @@
         if (grp.length < 2 && !forcedX) return;
         var xType = grp[0].xAx.type || 'category';
         if (xType === 'category') {
-          var seen = Object.create(null);
-          var union = forcedX ? forcedX.slice() : [];
+          if (!forcedX && grp.length >= 2) {
+            var fmts = Object.create(null);
+            grp.forEach(function (entry) { var fm = classifyXFormat(entry.xAx.data); if (fm !== 'empty') fmts[fm] = true; });
+            if (Object.keys(fmts).length > 1) { grp.forEach(function (entry) { entry.opt.independentXSpan = true; }); return; }
+          }
+          var seen = Object.create(null), union = forcedX ? forcedX.slice() : [];
           if (!forcedX) {
-            grp.forEach(function (entry) {
-              (entry.xAx.data || []).forEach(function (lbl) {
-                var sk = String(lbl);
-                if (!seen[sk]) { seen[sk] = true; union.push(lbl); }
-              });
-            });
-            if (union.length > 1 && union.every(function (v) { return typeof v === 'number' || /^\d{4}-\d{2}-\d{2}|^\d{1,2}:\d{2}/.test(String(v)); })) {
+            grp.forEach(function (e) { (e.xAx.data || []).forEach(function (l) { var sk = String(l); if (!seen[sk]) { seen[sk] = true; union.push(l); } }); });
+            if (union.length > 1 && union.every(function (v) { return typeof v === 'number' || /^\d{4}-\d{2}-\d{2}|^\d{4}-W\d{2}|^\d{1,2}:\d{2}/.test(String(v)); })) {
               union.sort(function (a, b) {
                 if (typeof a === 'number' && typeof b === 'number') return a - b;
-                var ta = Date.parse(String(a)), tb = Date.parse(String(b));
+                var ta = parseUtcMs(String(a)), tb = parseUtcMs(String(b));
                 return (Number.isFinite(ta) && Number.isFinite(tb)) ? ta - tb : String(a).localeCompare(String(b));
               });
             }
@@ -198,32 +204,19 @@
                 else if (idx < oldCats.length) byCat[String(oldCats[idx])] = pt;
               });
               if (oldCats.length || sr.data.every(function (pt) { return Array.isArray(pt); })) {
-                sr.data = union.map(function (b) {
-                  var bk = String(b);
-                  return Object.prototype.hasOwnProperty.call(byCat, bk) ? byCat[bk] : fillVal;
-                });
+                sr.data = union.map(function (b) { var bk = String(b); return Object.prototype.hasOwnProperty.call(byCat, bk) ? byCat[bk] : fillVal; });
               }
             });
             entry.xAx.data = union.slice();
           });
         } else if (xType === 'time' || xType === 'value') {
-          var isT = xType === 'time';
-          var xs = [];
+          var isT = xType === 'time', xs = [];
           var parseX = function (rawV) {
-            if (typeof rawV === 'number') return Number.isFinite(rawV) ? rawV : NaN;
-            if (rawV instanceof Date) return rawV.getTime();
-            if (typeof rawV === 'string' && rawV.trim() !== '') {
-              var s = rawV.trim();
-              if (/^-?\d+(?:\.\d+)?$/.test(s)) return Number(s);
-              if (isT) { var ts = Date.parse(s); return Number.isFinite(ts) ? ts : NaN; }
-              return Number(s);
-            }
-            return NaN;
+            if (rawV === null || rawV === undefined || rawV === '' || typeof rawV === 'boolean') return NaN;
+            return isT ? parseUtcMs(rawV) : Number(rawV);
           };
           grp.forEach(function (entry) {
-            var xm0 = parseX(entry.xAx.min), xm1 = parseX(entry.xAx.max);
-            if (Number.isFinite(xm0)) xs.push(xm0);
-            if (Number.isFinite(xm1)) xs.push(xm1);
+            [entry.xAx.min, entry.xAx.max].forEach(function (v) { var n = parseX(v); if (Number.isFinite(n)) xs.push(n); });
             (entry.opt.series || []).forEach(function (sr) {
               (sr.data || []).forEach(function (pt) {
                 var rawX = Array.isArray(pt) ? pt[0] : (pt && typeof pt === 'object' && Array.isArray(pt.value) ? pt.value[0] : NaN);
@@ -233,9 +226,7 @@
             });
           });
           if (forcedX && forcedX.length) {
-            var fx0 = parseX(forcedX[0]), fx1 = parseX(forcedX[forcedX.length - 1]);
-            if (Number.isFinite(fx0)) xs.push(fx0);
-            if (Number.isFinite(fx1)) xs.push(fx1);
+            [forcedX[0], forcedX[forcedX.length - 1]].forEach(function (v) { var n = parseX(v); if (Number.isFinite(n)) xs.push(n); });
           }
           if (xs.length) {
             var loX = Math.min.apply(null, xs), hiX = Math.max.apply(null, xs);
@@ -247,8 +238,7 @@
   }
 
   function collectAxisYValues(opt, axisIdx) {
-    var vals = [];
-    var stackPos = {}, stackNeg = {};
+    var vals = [], stackPos = {}, stackNeg = {};
     (opt.series || []).forEach(function (sr) {
       if (!sr || Number(sr.yAxisIndex || 0) !== axisIdx) return;
       var sKey = sr.stack ? String(sr.stack) : null;
@@ -260,21 +250,15 @@
         if (!Number.isFinite(v)) return;
         if (sKey) {
           var bk = Array.isArray(pt) ? String(pt[0]) : (pt && typeof pt === 'object' && Array.isArray(pt.value) ? String(pt.value[0]) : String(idx));
-          if (v >= 0) stackPos[sKey][bk] = (stackPos[sKey][bk] || 0) + v;
-          else stackNeg[sKey][bk] = (stackNeg[sKey][bk] || 0) + v;
+          if (v >= 0) stackPos[sKey][bk] = (stackPos[sKey][bk] || 0) + v; else stackNeg[sKey][bk] = (stackNeg[sKey][bk] || 0) + v;
         } else vals.push(v);
       });
       if (sr.markLine && Array.isArray(sr.markLine.data)) {
-        sr.markLine.data.forEach(function (ml) {
-          var mv = ml && ml.yAxis !== undefined ? Number(ml.yAxis) : NaN;
-          if (Number.isFinite(mv)) vals.push(mv);
-        });
+        sr.markLine.data.forEach(function (ml) { var mv = ml && ml.yAxis !== undefined ? Number(ml.yAxis) : NaN; if (Number.isFinite(mv)) vals.push(mv); });
       }
     });
     [stackPos, stackNeg].forEach(function (map) {
-      Object.keys(map).forEach(function (sk) {
-        Object.keys(map[sk]).forEach(function (bk) { vals.push(map[sk][bk]); });
-      });
+      Object.keys(map).forEach(function (sk) { Object.keys(map[sk]).forEach(function (bk) { vals.push(map[sk][bk]); }); });
     });
     return vals;
   }
@@ -285,8 +269,7 @@
     mat.forEach(function (row) {
       row.forEach(function (opt) {
         if (!opt) return;
-        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
-        var y0 = yAxes[0];
+        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []), y0 = yAxes[0];
         if (!y0 || (y0.type && y0.type !== 'value') || opt.independentYSpan || y0.quietZoomedScale || y0.quietIndependentSpan) return;
         var uk = inferAxisUnit(opt, y0, 'yUnit', 'quietUnit');
         if (!groups[uk]) groups[uk] = [];
@@ -294,15 +277,10 @@
       });
     });
     Object.keys(groups).forEach(function (uk) {
-      var grp = groups[uk];
-      var allVals = [];
+      var grp = groups[uk], allVals = [];
       grp.forEach(function (entry) { Array.prototype.push.apply(allVals, collectAxisYValues(entry.opt, 0)); });
       if (!allVals.length) return;
-      var sc = svgLayout.sharedNiceScale125(allVals, {
-        targetTicks: (opts && opts.targetYTicks) || 5,
-        includeZero: opts ? opts.includeZero : undefined,
-        headroomRatio: (opts && opts.headroomRatio != null) ? opts.headroomRatio : 0.06,
-      });
+      var sc = svgLayout.sharedNiceScale125(allVals, { targetTicks: (opts && opts.targetYTicks) || 5, includeZero: opts ? opts.includeZero : undefined, headroomRatio: (opts && opts.headroomRatio != null) ? opts.headroomRatio : 0.06 });
       grp.forEach(function (entry) {
         var hadMax = entry.y0.max !== undefined;
         if (grp.length > 1 || entry.y0.min === undefined) entry.y0.min = sc.min;
@@ -320,12 +298,19 @@
     return sc.ticks.map(function (v) { return fmt ? String(fmt(v)) : (svgLayout ? svgLayout.formatTick(v, sc.step) : String(v)); });
   }
 
+  function measureYAxisDescriptor(ax, fallbackVals, svgLayout) {
+    if (ax && ax.type === 'category' && Array.isArray(ax.data) && ax.data.length && svgLayout && svgLayout.measureCategoryGutter) {
+      var al = ax.axisLabel || {};
+      var mg = svgLayout.measureCategoryGutter(ax.data, { fontFamily: al.fontFamily, fontSize: al.fontSize, axisLabelMargin: al.margin });
+      return { ticks: mg.wrappedLabels, minGutter: mg.gutterPx };
+    }
+    return { ticks: formatAxisTickList(ax, fallbackVals, svgLayout), minGutter: 0 };
+  }
+
   var _baseGridMap = typeof WeakMap === 'function' ? new WeakMap() : null;
 
   function alignPlotGridFrames(matrixOrList, opts) {
-    var cfg = opts || {};
-    var svgLayout = getSvgLayout();
-    var mat = toMatrix(matrixOrList, cfg);
+    var cfg = opts || {}, svgLayout = getSvgLayout(), mat = toMatrix(matrixOrList, cfg);
     if (!mat.length) return matrixOrList;
     mat.forEach(function (row) {
       row.forEach(function (opt) {
@@ -341,45 +326,35 @@
     syncColumnXSpans(spanMat, cfg);
     syncUnitYSpans(mat, cfg, svgLayout);
     if (!svgLayout) return matrixOrList;
-
     var descMat = mat.map(function (row) {
       return row.map(function (opt) {
         if (!opt) return null;
-        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []);
-        var xAx = Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis;
-        var g0 = Array.isArray(opt.grid) ? (opt.grid[0] || {}) : (opt.grid || {});
-        var baseG = (_baseGridMap && _baseGridMap.get(opt)) || g0;
-        var lg = Array.isArray(opt.legend) ? opt.legend[0] : opt.legend;
-        var lgOn = !!(lg && lg.show !== false);
-        var hasBotLg = !!(lgOn && (lg.bottom != null || lg.top === 'bottom'));
-        var hasTopLg = !!(lgOn && !hasBotLg);
+        var yAxes = Array.isArray(opt.yAxis) ? opt.yAxis : (opt.yAxis ? [opt.yAxis] : []), xAx = Array.isArray(opt.xAxis) ? opt.xAxis[0] : opt.xAxis;
+        var g0 = Array.isArray(opt.grid) ? (opt.grid[0] || {}) : (opt.grid || {}), baseG = (_baseGridMap && _baseGridMap.get(opt)) || g0;
+        var lg = Array.isArray(opt.legend) ? opt.legend[0] : opt.legend, lgOn = !!(lg && lg.show !== false);
+        var hasBotLg = !!(lgOn && (lg.bottom != null || lg.top === 'bottom')), hasTopLg = !!(lgOn && !hasBotLg);
         var lgItems = Array.isArray(lg && lg.data) ? lg.data.length : (Array.isArray(opt.series) ? opt.series.length : 0);
-        var lgNarrow = Number(cfg.containerWidth || 0) > 0 && Number(cfg.containerWidth) < 640;
-        var lgBotFloor = hasBotLg ? ((lgNarrow && lgItems >= 3) ? 46 : 38) : 0;
-        var baseBot = typeof baseG.bottom === 'number' ? baseG.bottom : null;
-        var y0 = yAxes[0] || {}, y1 = yAxes.length > 1 ? yAxes[1] : null;
-        var primVals = collectAxisYValues(opt, 0), secVals = y1 ? collectAxisYValues(opt, 1) : [];
-        var xData = xAx && Array.isArray(xAx.data) && xAx.data.length ? xAx.data : ['0', '1'];
+        var lgBotFloor = hasBotLg ? (((Number(cfg.containerWidth || 0) > 0 && Number(cfg.containerWidth) < 640) && lgItems >= 3) ? 46 : 38) : 0;
+        var baseBot = typeof baseG.bottom === 'number' ? baseG.bottom : null, y0 = yAxes[0] || {}, y1 = yAxes.length > 1 ? yAxes[1] : null;
+        var primDesc = measureYAxisDescriptor(y0, collectAxisYValues(opt, 0), svgLayout);
+        var secDesc = y1 ? measureYAxisDescriptor(y1, collectAxisYValues(opt, 1).length ? collectAxisYValues(opt, 1) : [0, 100], svgLayout) : { ticks: [], minGutter: 0 };
         var titleObj = Array.isArray(opt.title) ? opt.title[0] : opt.title;
+        var hasTopYName = !!(y0.name && (!y0.nameLocation || y0.nameLocation === 'end'));
+        if (hasTopYName && (y0.nameGap == null || Number(y0.nameGap) < 12)) y0.nameGap = 12;
         return {
-          yTicks: formatAxisTickList(y0, primVals, svgLayout),
-          rightTicks: y1 ? formatAxisTickList(y1, secVals.length ? secVals : [0, 100], svgLayout) : [],
-          hasRightAxis: !!y1, rightTitle: y1 ? y1.name : '',
-          yLabel: y0.name && y0.nameLocation === 'middle' ? y0.name : '',
-          hasTopYName: !!(y0.name && (!y0.nameLocation || y0.nameLocation === 'end')),
+          yTicks: primDesc.ticks, rightTicks: secDesc.ticks, hasRightAxis: !!y1, rightTitle: y1 ? y1.name : '',
+          yLabel: y0.name && y0.nameLocation === 'middle' ? y0.name : '', hasTopYName: hasTopYName,
           titleHeight: (titleObj && titleObj.show !== false && titleObj.text) ? 28 : 0,
-          xTicks: xData, xLabel: xAx && xAx.name ? xAx.name : '',
-          hasTopLegend: hasTopLg, hasBottomLegend: hasBotLg,
-          topLegendHeight: hasTopLg ? 28 : 0, bottomLegendHeight: lgBotFloor,
-          minLeft: typeof baseG.left === 'number' ? baseG.left : (cfg.minLeft || 44),
-          minRight: typeof baseG.right === 'number' ? baseG.right : (cfg.minRight || (y1 ? 48 : 16)),
-          minTop: typeof baseG.top === 'number' ? baseG.top : (cfg.minTop || 24),
+          xTicks: xAx && Array.isArray(xAx.data) && xAx.data.length ? xAx.data : ['0', '1'], xLabel: xAx && xAx.name ? xAx.name : '',
+          hasTopLegend: hasTopLg, hasBottomLegend: hasBotLg, topLegendHeight: hasTopLg ? 28 : 0, bottomLegendHeight: lgBotFloor,
+          minLeft: Math.max(typeof baseG.left === 'number' ? baseG.left : (cfg.minLeft || 44), primDesc.minGutter),
+          minRight: Math.max(typeof baseG.right === 'number' ? baseG.right : (cfg.minRight || (y1 ? 48 : 16)), secDesc.minGutter),
+          minTop: Math.max(typeof baseG.top === 'number' ? baseG.top : (cfg.minTop || 24), hasTopYName ? 30 : 24),
           minBottom: Math.max(baseBot !== null ? baseBot : (cfg.minBottom || 34), lgBotFloor),
           stageHeight: Number(opt.quietStageHeight || cfg.stageHeight || 0), containerPadX: Number(opt.quietContainerPadX || 0),
         };
       });
     });
-
     var applyCell = function (opt, cell) {
       if (!opt || !cell) return;
       if (Array.isArray(opt.grid) && opt.grid.length) {
@@ -391,7 +366,7 @@
       row.forEach(function (cell, c) { if (cell) { flatIdx.push([r, c, acc.length]); acc.push([cell]); } });
       return acc;
     }, []) : descMat;
-    var gutters = svgLayout.computeGridFrameGutters(gutterInput, cfg);
+    var gutters = svgLayout.computeGridFrameGutters(gutterInput, Object.assign({ maxLeft: 224 }, cfg));
     if (collapseCols) flatIdx.forEach(function (t) { applyCell(mat[t[0]][t[1]], gutters.cells[t[2]] && gutters.cells[t[2]][0]); });
     else mat.forEach(function (row, r) { row.forEach(function (opt, c) { applyCell(opt, gutters.cells[r] && gutters.cells[r][c]); }); });
     return matrixOrList;
@@ -409,8 +384,7 @@
       if (onWin && typeof root.removeEventListener === 'function') { root.removeEventListener('resize', onWin); onWin = null; }
     };
     var trigger = function () {
-      if (dead) return;
-      if (chart.isDisposed && chart.isDisposed()) { cleanup(); return; }
+      if (dead || (chart.isDisposed && chart.isDisposed())) { cleanup(); return; }
       if (rafId) return;
       rafId = raf(function () {
         rafId = 0;
@@ -418,8 +392,7 @@
         var w = Math.round(hostEl.clientWidth || 0);
         if (w <= 0 || w === lastW) return;
         lastW = w;
-        if (opts && typeof opts.onResize === 'function') opts.onResize(w, chart, hostEl);
-        else chart.resize();
+        if (opts && typeof opts.onResize === 'function') opts.onResize(w, chart, hostEl); else chart.resize();
       });
     };
     if (typeof root.ResizeObserver === 'function') {
@@ -435,8 +408,12 @@
     return cleanup;
   }
 
-  function alignSharedAxes(optionsArray, opts) {
-    return alignPlotGridFrames(optionsArray, Object.assign({ orientation: 'column' }, opts || {}));
+  function alignSharedAxes(optionsArray, opts) { return alignPlotGridFrames(optionsArray, Object.assign({ orientation: 'column' }, opts || {})); }
+  function trimTrailingFutureWeeks(weeks, cells, opts) {
+    var tb = getTimeBinning();
+    return (tb && typeof tb.trimTrailingFutureWeeks === 'function')
+      ? tb.trimTrailingFutureWeeks(weeks, cells, opts)
+      : { weeks: Array.isArray(weeks) ? weeks.slice() : [], cells: Array.isArray(cells) ? cells.slice() : [] };
   }
 
   var api = {
@@ -444,6 +421,7 @@
     applySafeMarkLines: applySafeMarkLines, applySafeLegendLayout: applySafeLegendLayout,
     alignPlotGridFrames: alignPlotGridFrames, alignSharedAxes: alignSharedAxes,
     observeChartResize: observeChartResize, normalizeOption: normalizeOption,
+    binTimeSeries: binTimeSeries, trimTrailingFutureWeeks: trimTrailingFutureWeeks,
   };
   root.QuietEChartsDefaults = api;
   if (typeof module === 'object' && module.exports) module.exports = api;

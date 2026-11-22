@@ -285,6 +285,7 @@
   --bg-surface: #FFFFFF;
   --bg-card: #FFFFFF;
   --bg-elevated: #F8FAFC;
+  --bg-subtle: #F1F5F9;
   --bg-header: #F8FAFC;
   --text-primary: #0F172A;
   --text-main: #0F172A;
@@ -375,7 +376,7 @@
   :root[data-theme] {
     color-scheme: only light;
     --bg-shell: #FFFFFF; --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-card: #FFFFFF;
-    --bg-elevated: #F8FAFC; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
+    --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9; --bg-header: #F8FAFC; --text-primary: #0F172A; --text-main: #0F172A;
     --text-secondary: #334155; --text-dim: #334155; --text-muted: #475569;
     --border-hairline: #CBD5E1; --border-grid: #CBD5E1; --border-subtle: #CBD5E1; --border-strong: #64748B;
     --accent-primary: #1D4ED8; --accent-focal: #1D4ED8;

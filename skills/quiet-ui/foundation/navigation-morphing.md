@@ -49,8 +49,7 @@ Dual-screen and unfolded foldable devices (e.g., `780px–1099px` width; Pixel/G
 
 - **Full Desktop Mode ($\ge 1100\text{px}$)**: Eyebrow kicker, H1 title, status chips, and compact joined toolbar rows sit cleanly above content; split drawers open side-by-side.
 - **Unfolded Foldable Mode ($\ge 780\text{px}$ to $1099\text{px}$)**: Lower the split-reader (`.va-split-reader`) and 2-column secondary chart/plot grid (`.va-chart-grid-2`, `.va-plot-row`, `.va-plot-grid`) breakpoint to **`>= 780px`** so side-by-side panes and `subgrid` plot cards stay open concurrently at `820px` instead of triggering modal overlays.
-- **First-Viewport Chrome Budget (`<= 56px` Sticky / `<= 96px` Inspector Header)**: Sticky/fixed top bars MUST fit on **one single `space-between` row (`<= 56px` tall)** (`<= 64px` audited cumulative cap `[STICKY_CHROME_BLOAT]`; hide mode-specific filter strips when viewing other modes, and set `scroll-padding-top` so focused targets clear sticky bars). Detail/inspector headers must stay **`<= 2` compact rows (`<= 96px`)** so primary content starts within the top 30% of the screen, and `0`-issue diagnostic/audit tables should collapse inside `<details>` by default (`ISA-101` quiet nominal principle).
-- **Zero Synthetic In-Page Jump Sidebars**: Never invent a floating or left-rail section jump menu (`6–7` anchor links) for a single vertically scrollable page unless genuine multi-view route state requires navigation.
+- **Sticky Chrome Budget (`<= 64px` `>= 680px` / `<= 88px` `< 680px`)**: Sticky topbars MUST fit on a single row (`<= 56px` target, `<= 64px` `[STICKY_CHROME_BLOAT]` cap) on `>= 680px` foldable & desktop viewports, and allow up to `<= 88px` (2 compact rows: brand/menu + `.va-period-stepper`/`.va-scope-chip`) on `< 680px` portrait handsets. Set `scroll-padding-top` to clear sticky bars, keep detail inspector headers `<= 96px`, collapse `0`-issue audit tables inside `<details>`, and avoid floating section jump rails on continuous scroll pages.
 
 ```
 [Desktop Stack >= 1100px]
@@ -170,13 +169,19 @@ Paper output must represent raw data without software navigation chrome:
 
 ---
 
-## 7. Anti-Patterns & Operational Violations
+## 7. Overlay Filter Rails (`.va-side-rail`), Period Stepper, Scope Chips & Anti-Patterns
+
+- **Sticky Left-of-Brand Trigger, Auto-Closing `.va-side-rail[data-mode="overlay"]` & `.va-rail-footer`**: Keep a permanent panel toggle SVG button at the far left of `.va-shell-topbar` (never conditionally added/removed across tabs, `[NAVBAR_SHIFT]`), keep high-frequency `.va-period-stepper` / `.va-preset-popover` (`role="menu"` grouping Calendar-to-Date vs. Rolling Windows) and `.va-scope-chip` (`All` -> `Entity` -> `Entity / Item`) visible in the topbar, and route low-frequency app settings (`D1–D4`, theme, version, sign-out) into `.va-rail-footer`. Closed by default on all breakpoints (`100dvw × 100svh` `< 680px`, `50dvw` `680–1199px`, `min(28rem, 42dvw)` `>= 1200px` with opaque `var(--bg-surface)`, `[TRANSPARENT_OVERLAY]`), separating inline `.va-tree-caret` expand toggles (keeping rail open) from `.va-tree-dest` navigation pills inside `.va-tree-row` (auto-closing on selection and auto-expanding active parents on reopen).
+- **1-Tap `.va-tab-strip` vs. `<select>` Dropdowns**: When a workbench pane displays `<= 6` sibling documents or sub-views, render direct 1-tap `.va-tab-strip` / `.va-tab` underline tabs rather than hiding siblings inside a `<select>` menu (`[PANE_CONTROL_CLIPPED]` rejects non-scrollable overflow cutting off `.va-pane-hdr` buttons or tab labels).
 
 | Violation | Problem Caused | Architectural Solution |
 | :--- | :--- | :--- |
 | N4 Bottom Dock on `>= 700px` screens | Stretches icons across bottom; breaks tablet/desktop chrome. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
-| Inventing an in-page jump sidebar on one continuous scroll page | Wastes horizontal space and fabricates fake multi-view navigation. | Omit left section-jump rails; use compact top section pills if needed. |
-| Stacked multi-row sticky header `> 64px` (`[STICKY_CHROME_BLOAT]`) | Steals top viewport height on `390px` phones and `820px` foldables. | Fit sticky bars on 1 single row (`<= 56px`), hide unused mode controls, collapse `0`-issue tables in `<details>`. |
+| Conditional header buttons shifting brand/tabs across routes | Shifts global brand/tab strip horizontally across views (`[NAVBAR_SHIFT]`). | Keep persistent left-of-brand drawer trigger & fixed `.va-shell-topbar` slots. |
+| Transparent mobile drawer overlay (`--bg-glass` / `.va-pane` leak) | Underlying dashboard copy bleeds through open rail or popover (`[TRANSPARENT_OVERLAY]`). | Use shipped opaque `.va-side-rail` + `.va-preset-popover` in `@layer utilities` + `.va-drawer-backdrop`. |
+| `> 6` temporal buttons crowding toolbar (`[TOOLBAR_CONTROL_SPRAWL]`) | Compresses filter bars and hides rolling/calendar states on mobile. | Consolidate presets into `.va-period-stepper` + `.va-preset-popover` + `.va-scope-chip`. |
+| Hiding `<= 6` sibling docs behind a `<select>` or clipping `.va-pane-hdr` | Adds extra clicks or cuts off controls (`[PANE_CONTROL_CLIPPED]`). | Render 1-tap `.va-tab-strip` underline `.va-tab` controls (`overflow-x: auto`). |
+| Sticky bar `> 88px` phone (`< 680px`) or `> 64px` desktop (`[STICKY_CHROME_BLOAT]`) | Steals top viewport height on `390px` phones and `820px` foldables. | Fit `<= 64px` single row `>= 680px` (`<= 88px` 2 compact rows `< 680px`) + `<details>` tables. |
 | Full-screen modal viewer at `820px` foldable width | Hides master list because split waited for `860–1200px`. | Lower split-reader & 2-col plot grid threshold to `>= 780px` (`820px` CSS tested). |
 | Coarse-pointer `44px` rule inflating static `.va-badge`/`.va-pill` labels or `44px` filled thumbnail circles | Turns compact metadata chips into button lookalikes and obscures media. | Scope `44px` strictly to interactive controls `< 700px`, use `32–34px` toolbars `>= 768px`, and extend corner overlays via invisible `::after`. |
 | Navigation rails visible on printed reports | Wastes paper and inks interactive navigation links on sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |

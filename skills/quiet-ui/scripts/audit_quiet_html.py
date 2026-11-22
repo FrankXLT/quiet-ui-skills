@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.2.1 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
+"""Quiet UI v9.2.2 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
 
 from __future__ import annotations
 
@@ -28,11 +28,14 @@ from audit_static_rules import (  # noqa: E402
     WRAPPER_CLASS_HINTS,
     audit_css_text,
     audit_js_text,
+    audit_json_text,
     check_hidden_layer_css,
     compute_mount_scopes,
     extract_layer_order,
+    has_chrome_emoji,
     has_responsive_table_stacking,
     is_asset_in_scope,
+    is_json_mock_candidate,
     matches_exclude,
     parse_mount_prefixes,
     resolve_asset_detail,
@@ -221,6 +224,14 @@ class QuietHTMLAuditor(HTMLParser):
             m = BRAIN_TEXT_RE.search(data)
             if m:
                 self.errs.append(f"[INTERNAL_ID] {self.source}:{self.getpos()[0]}: raw internal identifier '{m.group(0)}'")
+            in_chrome = any(
+                t in {"header", "nav", "button"} or ad.get("role", "").lower() in {"tab", "toolbar"}
+                for t, ad in self.tag_stack
+            )
+            if in_chrome and not any(t == "svg" for t, _ in self.tag_stack):
+                em = has_chrome_emoji(data)
+                if em:
+                    self.errs.append(f"[EMOJI_IN_CHROME] {self.source}:{self.getpos()[0]}: chrome contains emoji '{em}'")
 
 
 def audit_html_text(
@@ -337,7 +348,7 @@ def audit_static_target(
         and p.resolve().is_relative_to(path)
         and not (set(p.parts) & SKIP_DIRS)
         and not matches_exclude(p, exclude, root=path)
-        and p.suffix.lower() in {".html", ".htm", ".css", ".js"}
+        and p.suffix.lower() in {".html", ".htm", ".css", ".js", ".json"}
     )
     html_files: list[Path] = []
     eff_root = web_root if web_root is not None else (path if path.is_dir() else None)
@@ -360,6 +371,11 @@ def audit_static_target(
             tmp = []
             audit_js_text(txt, str(f), tmp)
             _add(tmp)
+        elif sfx == ".json":
+            if path.is_file() or is_json_mock_candidate(f, root=path):
+                tmp = []
+                audit_json_text(txt, str(f), tmp)
+                _add(tmp)
         else:
             html_files.append(f)
             _add(
@@ -379,7 +395,7 @@ def audit_static_target(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.2.1 HTML/CSS/JS & CDP Linter.")
+    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.2.2 HTML/CSS/JS & CDP Linter.")
     parser.add_argument("target", help="HTML/CSS/JS file, directory, or http(s):// URL")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome checks across 390, 820, and 1440px")
     parser.add_argument("--web-root", help="Filesystem web root for resolving leading '/' CSS and JS paths")

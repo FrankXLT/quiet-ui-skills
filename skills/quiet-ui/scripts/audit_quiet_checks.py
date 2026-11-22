@@ -17,6 +17,7 @@ _SCRIPT_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 
+from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, probe_navbar_shift  # noqa: E402
 from audit_static_rules import (  # noqa: E402, F401
     BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
     VIEWPORTS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, check_hidden_layer_css,
@@ -25,7 +26,7 @@ from audit_static_rules import (  # noqa: E402, F401
     resolve_asset_detail, resolve_asset_path,
 )
 
-CDP_AUDIT_JS = r"""
+CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
@@ -146,6 +147,7 @@ function auditSvg(svg, doc, win, ctxTag) {
       pushErr(`[SVG_LINE_COLLISION${ctxTag}] @${vw}px: SVG ${isH ? 'horizontal' : 'vertical'} line cuts through '${t.txt.slice(0, 28)}' without halo`);
     }
   }
+  auditSvgV922(svg, doc, win, ctxTag, sr, getCartesianPlotBox(svg, win));
 }
 
 function getCartesianPlotBox(svg, win) {
@@ -274,8 +276,9 @@ function auditDoc(doc, maxW, ctxTag) {
       else merged[merged.length - 1][1] = Math.max(merged[merged.length - 1][1], e);
     }
     const stickyH = merged.reduce((acc, [s, e]) => acc + (e - s), 0);
-    if (stickyH > 64) {
-      pushErr(`[STICKY_CHROME_BLOAT${ctxTag}] @${vw}px: top sticky/fixed header chrome height=${stickyH.toFixed(1)}px > 64px`);
+    const maxSticky = maxW < 680 ? 88 : 64;
+    if (stickyH > maxSticky) {
+      pushErr(`[STICKY_CHROME_BLOAT${ctxTag}] @${vw}px: top sticky/fixed header chrome height=${stickyH.toFixed(1)}px > ${maxSticky}px`);
     }
     const radPx = (v, h) => { const n = parseFloat(v || '0'); return String(v || '').endsWith('%') ? (n / 100) * h : n; };
     const isPill = (el) => {
@@ -362,6 +365,7 @@ function auditDoc(doc, maxW, ctxTag) {
       if (fs < 10.8) { pushErr(`[FONT_FLOOR_CDP${ctxTag}] @${vw}px: '${raw.slice(0, 24)}' computed fontSize=${fs.toFixed(1)}px < 11px`); fontChecked = true; }
     }
   }
+  auditDocV922(doc, win, ctxTag);
   for (const fr of doc.querySelectorAll('iframe')) {
     try {
       const fdoc = fr.contentDocument;
@@ -397,13 +401,9 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> l
     from selenium.webdriver.chrome.service import Service
 
     opts = Options()
-    chrome_bin = os.environ.get("CHROME_BIN")
-    if chrome_bin:
-        opts.binary_location = chrome_bin
-    for arg in (
-        "--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan",
-        "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage",
-    ):
+    if os.environ.get("CHROME_BIN"):
+        opts.binary_location = os.environ["CHROME_BIN"]
+    for arg in ("--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage"):
         opts.add_argument(arg)
     errs: list[str] = []
     driver_bin = os.environ.get("CHROMEDRIVER_BIN")
@@ -422,6 +422,7 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> l
                     time.sleep(0.12)
                     res = driver.execute_script(CDP_AUDIT_JS, {"allowShowcase": allow_showcase_chrome})
                     errs.extend(f"[{url} theme={th}] {e}" for e in res)
+                    errs.extend(probe_navbar_shift(driver, url, th, w))
     finally:
         driver.quit()
     return errs

@@ -181,7 +181,7 @@ Chart axes must use calibrated engineering divisions (1, 2, 5, 10, 20, 50, 100) 
 | Violation | Physical Real-World Consequence | Architectural Solution |
 | :--- | :--- | :--- |
 | Dark background cards printed on paper | Drenches page in ink; causes paper curl, smudging, and unreadable text. | Force `--bg-canvas: #FFFFFF` and `--text-primary: #000000` under `@media print`. |
-| Figures split across page boundaries | Chart title on page 1, plot data on page 2; destroys readability. | Apply `break-inside: avoid` on all `.va-card` and `.va-figure` containers. |
+| Figures split across page boundaries | Chart title on page 1, plot data on page 2; destroys readability. | Apply `break-inside: avoid` on all `.va-card` and `.va-figure-card` containers. |
 | Relying solely on red vs. green lines | Photocopy turns both lines into identical black strokes; renders test invalid. | Use distinct dash arrays (`4,3` vs `solid`) and geometric markers (circle, square). |
 | Hyperlinks printed as blue text without URL | Reader holding paper sheet cannot determine target reference URL. | Inject target URL using CSS `a[href]::after { content: " (" attr(href) ")"; }`. |
 | Fine text below 8pt printed on paper | Legibility destroyed by ink bleeding into fiber matrix. | Enforce minimum printed font floor of `8pt` for metadata and `10pt` for body. |

@@ -140,7 +140,7 @@ The rendering engine adapts the scalar visual across different delivery surfaces
 
 ### Medium M1: Precision Static Print & PDF
 - **Typography**: Uses high-contrast tabular figures (`font-variant-numeric: tabular-nums;`). Units are explicitly attached using non-breaking spaces.
-- **Baseline Alignment Lock & Atomic Separation**: Side-by-side `.qe-scalar-card` blocks lock `.qe-scalar-top` (`min-block-size: 1.375rem`), card title block, `.qe-scalar-val-row`, and `.qe-gauge-svg` baselines within `<= 1.0px` regardless of stale/warn annunciator presence. Quantitative margins (`Margin +18.0%`) live in `.qe-scalar-margin` adjacent to the `.va-pill`, never concatenated inside it.
+- **Baseline Alignment Lock & Atomic Separation**: Side-by-side `.qe-scalar-card` blocks lock `.qe-scalar-top` (`min-block-size: 1.375rem`), card title block, `.qe-scalar-val-wrap`, and `.qe-gauge-svg` baselines within `<= 1.0px` regardless of stale/warn annunciator presence. Quantitative margins (`Margin +18.0%`) live in `.qe-scalar-margin` adjacent to the `.va-pill`, never concatenated inside it.
 - **Quiet-Nominal Matrix Heatmaps**: Nominal `3×8` telemetry matrix cells (`data-role="bitcell" data-state="nominal"`) use calm `--bg-elevated` surfaces so isolated `warn` (`▲`) and `fault` (`◆`) excursions stand out cleanly.
 - **Grayscale Redundancy**: Status annunciator pills must not rely on color alone. Excursions combine distinct alphanumeric text (`CAUTION`, `TRIPWIRE`), shape prefixes (`▲`, `◆`), and `2.5px` start borders; nominal states render quietly in `var(--text-secondary)` with a subtle `6px` dot (`::before`).
 - **Footnotes**: In L3 mode, expanded uncertainty and calibration certificate IDs are printed as compact superscripted annotations directly below the scalar block.
@@ -159,13 +159,16 @@ The rendering engine adapts the scalar visual across different delivery surfaces
 ## 7. Design Guidelines & Anti-Patterns
 
 ### Prohibited Patterns
-- **No Radial "Speedometer" Dials**: Circular analog dials waste display real estate, obscure precise decimal fractions, and fail NASA-STD-3001 glanceability standards. Use linear bar gauges or digital readouts.
+- **No Fake Gauges on Unbounded Totals (`[FAKE_UNBOUNDED_GAUGE]`)**: Never render a proportional fill bar (`.va-kpi-gauge-track`) under unbounded cumulative counts such as total steps, cumulative tokens, or lifetime calls without an explicit denominator or ceiling. Use the trackless `.va-kpi-card` inside `.va-kpi-grid` instead.
+- **Mismatched Gauge & Target Denominators**: When a `.va-kpi-gauge-card` renders both a `.va-kpi-gauge-fill` bar and a `.va-kpi-gauge-target` pin, both MUST share the exact same scale denominator (`0–100%` or `0–ceiling`).
+- **No Radial "Speedometer" Dials**: Circular analog dials waste display real estate, obscure precise decimal fractions, and fail NASA-STD-3001 glanceability standards. Use linear bar gauges or trackless digital readouts.
 - **Color-Only Status Indicators**: Never represent go/no-go states solely with a red or green dot. Colorblind users must have explicit text tokens (`NOMINAL`, `WARN`, `ABORT`).
 - **Unbracketed Uncertainty**: Never print `77.342 ± 0.015 K`. According to NIST SP 811, parentheses are mandatory: `(77.342 ± 0.015) K`.
 
 ### Required Practices
 - Always right-align or decimal-align numerical values in tabular scalar cards.
 - Maintain consistent significant digits matching sensor resolution.
+- Route unbounded totals through `.va-kpi-card` / `.va-kpi-grid` and reserve `.va-kpi-gauge-card` strictly for bounded share/quota quantities.
 
 ---
 

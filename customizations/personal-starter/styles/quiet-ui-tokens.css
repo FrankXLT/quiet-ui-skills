@@ -105,6 +105,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --bg-surface: #FFFFFF;
   --bg-card: var(--bg-surface);
   --bg-elevated: #F8FAFC;
+  --bg-subtle: #F1F5F9;
   --bg-header: var(--bg-elevated);
   --bg-glass: rgba(255, 255, 255, 0.88);
   --text-primary: #0F172A;
@@ -138,6 +139,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --bg-surface: #FCFBF8;
   --bg-card: var(--bg-surface);
   --bg-elevated: #EFECE5;
+  --bg-subtle: #EAE5DC;
   --bg-header: var(--bg-elevated);
   --bg-glass: rgba(252, 251, 248, 0.90);
   --text-primary: #1C1917;
@@ -171,6 +173,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --bg-surface: #1C1B19;
   --bg-card: var(--bg-surface);
   --bg-elevated: #252421;
+  --bg-subtle: #282623;
   --bg-header: var(--bg-elevated);
   --bg-glass: rgba(28, 27, 25, 0.88);
   --text-primary: #F0EDE8;
@@ -204,6 +207,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --bg-surface: #0F1624;
   --bg-card: var(--bg-surface);
   --bg-elevated: #172135;
+  --bg-subtle: #162033;
   --bg-header: var(--bg-elevated);
   --bg-glass: rgba(15, 22, 36, 0.88);
   --text-primary: #F1F5F9;
