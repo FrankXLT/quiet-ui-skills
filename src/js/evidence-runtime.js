@@ -275,11 +275,13 @@
     initEcoAndModeFallback();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
+  if (typeof document !== 'undefined' && document) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
   }
 
   window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
-})(window, document);
+})(window, typeof document !== 'undefined' ? document : null);

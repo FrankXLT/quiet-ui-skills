@@ -3,7 +3,7 @@ name: quiet-ui
 description: Design system and UI architecture skill generating responsive HTML interfaces across 7 delivery mediums with 4-theme tokens, concentric geometry, and human-factors controls grounded in ISA-101, FDA IEC 62366, and NASA-STD-3001.
 ---
 
-# Quiet UI v9.2.2 — Qualitative Delivery Medium Physics & Shells
+# Quiet UI v9.3.0 — Qualitative Delivery Medium Physics & Shells
 
 Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, editorial briefs, and optical HUDs alike.
 
@@ -22,7 +22,7 @@ Before proposing or generating any interface code, verify project scope isolatio
 
 Every interface response MUST inspect real source schemas first and declare the **Pre-Edit Output Contract**:
 - **Project Mode**: Declare **`Greenfield`** (new build) or **`Brownfield Retrofit`** (existing app overhaul). Whenever **`Brownfield Retrofit`** is active, you MUST also declare a **Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`)** mapping every existing filter mode, breakdown table, and export action, plus a **Deprecation Blocklist** of retired controls banned from resurrection despite legacy wire keys.
-- **Data-to-Widget Binding Map**: Source endpoint/fields, units, omitted absent sub-slots, visible on-card legends for `>= 2` series, trackless `.va-kpi-card` for unbounded totals vs. `.va-kpi-gauge-card` for bounded shares, and warmup fallback (`Warming up — N samples collected` if `N < 10`).
+- **Data-to-Widget Binding Map**: Source endpoint/fields, units, omitted absent sub-slots, visible on-card legends for `>= 2` series, trackless `.va-kpi-card` for unbounded totals vs. `.va-kpi-gauge-card` for bounded shares, effective-dated rate epochs, Cyclical Anti-Sum rules, and warmup fallback (`Warming up — N samples collected` if `N < 10`).
 - **Medium**: Selected from `M1` through `M7`.
 - **Chromatic Purpose Budget**: Selected from `Archival Proof`, `Pedagogical Flow`, `Decision Contrast`, or `Quiet Cockpit`.
 - **Navigation Shell**: Selected from `N0` (undecorated stage), `N1` (overlay/rail `.va-side-rail` + `.va-drawer-backdrop`), `N2` (top bar), `N3` (composite), or `N4` (mobile bottom dock `< 700px`).
@@ -35,17 +35,17 @@ Every interface response MUST inspect real source schemas first and declare the 
 Load ONLY the specific foundation and medium guides matching your active vector:
 
 ### Foundation Guides
-- [foundation/data-grounding-and-widget-binding.md](foundation/data-grounding-and-widget-binding.md): Mandatory Data-to-Widget Binding Map, on-card series legends, `.va-kpi-card` unbounded rules, composite `[Chart + Table]` 1-column rule, `N < 10` warmup labels, zero mock JS/JSON fixtures/self-badges/raw `brain:` IDs.
+- [foundation/data-grounding-and-widget-binding.md](foundation/data-grounding-and-widget-binding.md): Data-to-Widget Binding Map, on-card series legends, `.va-kpi-card` unbounded rules, Cyclical Whisker Anti-Sum Rule, effective-dated rate epochs, `SHA-256[:12]` showcase sanitization, `N < 10` warmup labels, zero mock JS/JSON fixtures/self-badges/raw `brain:` IDs.
 - [foundation/brownfield-retrofit-and-migration.md](foundation/brownfield-retrofit-and-migration.md): Greenfield vs. Brownfield Retrofit guardrails, Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`), Deprecation Blocklist & wire-field decoupling, monolith-to-zoom decomposition, side-by-side strangler routes, and `@layer` cascade quarantine (`layer(legacy)`).
 - [foundation/tokens-and-surfaces.md](foundation/tokens-and-surfaces.md): 4-theme OKLCH tokens (incl. `--bg-subtle`), 4-way mirror parity, canonical `@layer reset, tokens, shell, archetypes, evidence, views, utilities;` order, concentric radius math, and border depth rules.
 - [foundation/typography-and-hierarchy.md](foundation/typography-and-hierarchy.md): 3-role font stack, fluid 4K scale, 72ch prose vs. `.va-bleed-wide`, plain everyday copy, and zero chrome emojis (`<svg>` icons).
 - [foundation/chromatic-purpose-budgets.md](foundation/chromatic-purpose-budgets.md): Archival Proof, Pedagogical Flow, Decision Contrast, Quiet Cockpit rations, plus Page-Wide Coherence (`<= 3` card structures, `<= 1` chart/half-width card, 1 `--chart-1..5` palette).
-- [foundation/navigation-morphing.md](foundation/navigation-morphing.md): Polymorphic shells `N0–N4`, left-of-brand topbar trigger + `.va-side-rail[data-mode="overlay"]` + `.va-rail-footer`, `.va-period-stepper`/`.va-preset-popover`, `.va-scope-chip`, `.va-tree-row`, `<= 88px` (`< 680px`) / `<= 64px` (`>= 680px`) sticky budgets, and `@media print`.
+- [foundation/navigation-morphing.md](foundation/navigation-morphing.md): Polymorphic shells `N0–N4`, left-of-brand trigger + single-row `40px` `.va-rail-footer` (`.va-swatch-row` left, 2-stop `Compact | Comfortable` right), flat borderless `.va-tree-row`/`.va-tree-children` (`<= 5` kids + `.va-tree-more`), `.va-split-reader-gallery` (`>= 60%` prose + `< 760px` `<dialog closedby="any">`), `.va-period-stepper`/`.va-preset-popover`, `.va-scope-chip`, sticky budgets, and `@media print`.
 
 ### Delivery Medium Physics
 - [mediums/m1-paper-and-print.md](mediums/m1-paper-and-print.md): Paper & Print sheet physics, `@page` rules, high-contrast ink, and unrolled figures.
 - [mediums/m2-editorial-web.md](mediums/m2-editorial-web.md): Editorial monographs, RFC specifications, research briefs, and multi-column figures.
-- [mediums/m3-stateful-web-app.md](mediums/m3-stateful-web-app.md): Stateful workbenches, `.va-workbench-panes` hairline panes, opaque `.va-side-rail`, `.va-kpi-gauge-card`/`.va-kpi-card`, `.va-toolbar-joined`, `.va-tab-strip`, `.va-plot-row` `subgrid`, 1-col `[Chart + Table]`, `1480px` ultrawide cap, and `observeChartResize` + `min-width: 0` chart hosts.
+- [mediums/m3-stateful-web-app.md](mediums/m3-stateful-web-app.md): Stateful workbenches, `.va-workbench-panes` hairline panes, opaque `.va-side-rail` + single-row `.va-rail-footer`, 2-stop density cap, `.va-split-reader-gallery` (`>= 60%` prose + `dialog.va-modal-sheet[closedby="any"]`), shortcut suppression while `dialog[open]`, `.va-kpi-gauge-card`/`.va-kpi-card`, `.va-toolbar-joined`, `.va-tab-strip`, `.va-plot-row` `subgrid`, `1480px` cap, and `observeChartResize`.
 - [mediums/m4-walkup-poi-terminal.md](mediums/m4-walkup-poi-terminal.md): Point-of-Interest kiosks, guarded touch targets, and high-visibility contrast.
 - [mediums/m5-ambient-wall-kiosk.md](mediums/m5-ambient-wall-kiosk.md): 10-foot ambient wall displays, high-readability telemetry, and status glanceability.
 - [mediums/m6-collimated-optical-hud.md](mediums/m6-collimated-optical-hud.md): Collimated optical HUD, >=65% central keep-out, peripheral symbology, and monochrome green/cyan.
@@ -55,7 +55,7 @@ Load ONLY the specific foundation and medium guides matching your active vector:
 
 ## 4. Portable HTML/CSS Auditor (`scripts/audit_quiet_html.py`)
 
-Verify any external HTML/CSS/JS asset tree or live localhost URL (`~/.agents/skills/quiet-ui/` or `skills/quiet-ui/`) against Quiet UI styling (`[HIDDEN_LAYER]`, `[IMPORTANT]`, `[FONT_FLOOR]`), chrome & layout budgets (`[STICKY_CHROME_BLOAT]` `> 64px`, `[PLOT_AXIS_MISALIGN]` `> 2px`, `[PILL_SPRAWL]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`), data honesty (`[SELF_BADGE]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, raw `brain:` IDs, mock JS arrays), SVG overlaps/hairlines/clipping (`[AXIS_LABEL_CLIPPED]`, `[BAR_HAIRLINE_DENSITY]`), and label truncation. Subdirectory/subpath `--mount-prefix` audits check asset existence (`[MISSING_ASSET]`) while scoping CSS/JS linting unless `--audit-mounted-external` or `--exclude` is passed:
+Verify any external HTML/CSS/JS asset tree or live localhost URL (`~/.agents/skills/quiet-ui/` or `skills/quiet-ui/`) against Quiet UI styling (`[HIDDEN_LAYER]`, `[IMPORTANT]`, `[FONT_FLOOR]`), chrome & layout budgets (`[STICKY_CHROME_BLOAT]`, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`, `[PROSE_PANE_CRAMPED]`, `[TREE_NESTED_CARD_BORDERS]`, `[PLOT_AXIS_MISALIGN]`, `[PILL_SPRAWL]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`), data honesty & copy (`[SELF_BADGE]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[JARGON_TERMINOLOGY]`, raw `brain:` IDs, mock JS arrays), SVG overlaps/hairlines/clipping (`[AXIS_LABEL_CLIPPED]`, `[BAR_HAIRLINE_DENSITY]`), and label truncation. Subdirectory/subpath `--mount-prefix` audits check asset existence (`[MISSING_ASSET]`) while scoping CSS/JS linting unless `--audit-mounted-external` or `--exclude` is passed:
 
 ```bash
 # Zero-dependency static audit across mounted assets (subpath-scoped by default)

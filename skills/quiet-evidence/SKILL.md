@@ -3,7 +3,7 @@ name: quiet-evidence
 description: Quantitative data metrology and structural topology skill compiling NIST 1-2-5 plots, bitfields, HIL waveforms, and MIL-STD schematics from deterministic JSON schemas.
 ---
 
-# Quiet UI Pillar 2 (`v9.2.2`) — Unified Quantitative Evidence & Metrology
+# Quiet UI Pillar 2 (`v9.3.0`) — Unified Quantitative Evidence & Metrology
 
 Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 · Orientation`, `L2 · Governance`, `L3 · Physical, Clinical & Metrological`).
 
@@ -11,7 +11,7 @@ Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and phy
 
 ## 1. The 6-Invariant Pre-Evidence Reasoning Contract
 
-Before compiling or generating any quantitative visual, complete the [Data-to-Widget Binding Map](../quiet-ui/foundation/data-grounding-and-widget-binding.md) (omit absent targets/baselines, use trackless `.va-kpi-card` for unbounded totals, never hardcode inline demo/JSON mock fixtures, and disclose `Warming up — N samples collected` when `N < 10`) and verify all six physical invariants:
+Before compiling or generating any quantitative visual, complete the [Data-to-Widget Binding Map](../quiet-ui/foundation/data-grounding-and-widget-binding.md) (omit absent targets/baselines, use trackless `.va-kpi-card` for unbounded totals, never hardcode inline demo/JSON mock fixtures, evaluate pricing comparisons per `effective_from` epoch, and disclose `Warming up — N samples collected` when `N < 10`) and verify all physical invariants:
 1. **Governing Relationship / Equation**: Declare the physical model, transfer function, or algebraic relation governing the series.
 2. **NIST Quantities & SI Units**: Enforce NIST SP 811 quantity calculus (`Quantity / Unit`). Label all axes and parameters with explicit units.
 3. **Scale Steps & Bounds**: Major ticks must follow $1\text{--}2\text{--}5 \times 10^n$ steps or integer log decades. Minor log ticks ($2\dots 9$) are mandatory on log scales.
@@ -19,7 +19,7 @@ Before compiling or generating any quantitative visual, complete the [Data-to-Wi
 5. **Limit & Abort Envelopes**: Operational ceilings, abort boundaries, and confidence corridors ($\pm 1\sigma$, $95\%\,\text{CI}$) must be explicitly demarcated with haloed labels; never grade prior runs retroactively without an effective-date annotation.
 6. **Grayscale & Dash Redundancy**: Multi-series plots must be distinguishable by stroke dash pattern or marker glyph in pure black-and-white print.
 7. **Cross-Plot Axis, Time Binning & Spine Registration**: Co-displayed plots MUST bin dense series cleanly (`QuietEChartsDefaults.binTimeSeries` -> `1h` `<= 3d`, `1d` `4–92d`, ISO `1w` `> 92d`), use `measureCategoryGutter` (with `mono`/font detection + `axisLabelMargin`), align column `[x_left, x_right]` / row `[y_top, y_bottom]` `containLabel: false` pixel spines (`computeGridFrameGutters` / `alignPlotGridFrames`), and lock shared `1–2–5` Y ceilings per unit (`sharedNiceScale125`) — auto-enabling `independentXSpan` across disparate X formats (`YYYY-MM-DD` vs. `00h..23h`) and letting disparate internal `yUnit` keys (e.g., total vs. breakdown) keep independent scales without breaking pixel registration.
-8. **Chart Form by Category Count (`N`) & Zero Duplicate Denominators**: `N <= 3` categories render as stat strips or micro-bars (`<= 72px`), never `>= 180px` sparse bars; `N <= 8` comparisons with exact values use `.va-inline-bar` bullet tables (`<= 32px`/row); composite `[Chart + Table]` cards stay 1-column full-width; never pair a standalone total-volume chart with a stacked breakdown over the same buckets.
+8. **Chart Form by Category Count (`N`) & Cyclical Anti-Sum Rule**: `N <= 3` categories render as stat strips or micro-bars (`<= 72px`); `N <= 8` comparisons use `.va-inline-bar` bullet tables (`<= 32px`/row); composite `[Chart + Table]` cards stay 1-column full-width. For cyclical hour/weekday/month cadences, never sum raw totals across days—plot active-day `Min–Max` range whiskers + `Active Avg` bar + `Recent` marker via `QuietEChartsDefaults.buildCyclicalWhiskerOption` (`"Activity by Hour of Day"`, never jargon `"diurnal"`, `[JARGON_TERMINOLOGY]`).
 
 > [!IMPORTANT]
 > **Hard Ban on Freehand SVG Guessing**: LLMs MUST NOT guess SVG coordinate numbers freehand. Author `urn:quiet-ui:schema:v9:<modality>` JSON via `compile_evidence.py`, or route dynamic browser plots through bundled `window.QuietSvgLayout` and `QuietEChartsDefaults` (`quiet-evidence-bundle.js`).
@@ -34,7 +34,7 @@ Load ONLY the specific rigor and modality guides matching your active visualizat
 - [rigor/metrology-and-nist-units.md](rigor/metrology-and-nist-units.md): NIST SP 811 unit calculus, SI prefixes, Roman vs. italic symbols, significant figures, and cross-plot unit/event span rules.
 - [rigor/scales-ticks-and-uncertainty.md](rigor/scales-ticks-and-uncertainty.md): NAVAIR FTM-108 $1\text{--}2\text{--}5$ intervals, minor log ticks, $\pm 1\sigma$ corridors, dropout gaps, and interpolation grids.
 - [rigor/conditions-and-envelopes.md](rigor/conditions-and-envelopes.md): Test-condition headers, discrete test markers vs. model curves, limit envelopes, and stroke halos.
-- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): `window.QuietSvgLayout` (`buildCanonicalTimeGrid`, `sharedNiceScale125`, `computeGridFrameGutters`, font-aware `measureCategoryGutter`), `QuietEChartsDefaults` (`binTimeSeries`, `alignPlotGridFrames`, `alignSharedAxes`, separate parent/breakdown `yUnit` spans, `applySafeLegendLayout`), Plotly, Matplotlib, Bokeh, and Mermaid.
+- [rigor/ecosystem-adapters.md](rigor/ecosystem-adapters.md): `window.QuietSvgLayout` (`buildCanonicalTimeGrid`, `sharedNiceScale125`, `computeGridFrameGutters`, font-aware `measureCategoryGutter`), `QuietEChartsDefaults` (`binTimeSeries`, `buildCyclicalWhiskerOption`, `alignPlotGridFrames`, `alignSharedAxes`, separate parent/breakdown `yUnit` spans, `applySafeLegendLayout`), Plotly, Matplotlib, Bokeh, and Mermaid.
 
 ### The 6 Visual Modalities
 - [modalities/scalar-readouts-and-gauges.md](modalities/scalar-readouts-and-gauges.md): Scalar readouts, trackless `.va-kpi-card` unbounded totals vs. `.va-kpi-gauge-card` bounded shares, dynamic gauges, and status pills.

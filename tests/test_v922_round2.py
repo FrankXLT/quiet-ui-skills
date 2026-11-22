@@ -271,7 +271,7 @@ class TestV922Round2(unittest.TestCase):
                 "const c = r ? r.querySelector('.va-tree-caret') : null;"
                 "const rr = r ? r.getBoundingClientRect() : null;"
                 "const cr = c ? c.getBoundingClientRect() : null;"
-                "return !!(rr && cr && Math.abs(rr.left) <= 1 && cr.left >= 0 && cr.right <= window.innerWidth && cr.width >= 16);"
+                "return !!(rr && cr && Math.abs(rr.left) < 0.25 && cr.left >= 0 && cr.right <= window.innerWidth && cr.width >= 16);"
             )
             if settled:
                 return

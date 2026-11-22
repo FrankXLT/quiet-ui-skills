@@ -423,6 +423,6 @@
     observeChartResize: observeChartResize, normalizeOption: normalizeOption,
     binTimeSeries: binTimeSeries, trimTrailingFutureWeeks: trimTrailingFutureWeeks,
   };
-  root.QuietEChartsDefaults = api;
+  root.QuietEChartsDefaults = Object.assign(root.QuietEChartsDefaults || {}, api);
   if (typeof module === 'object' && module.exports) module.exports = api;
 }(typeof window !== 'undefined' ? window : globalThis));

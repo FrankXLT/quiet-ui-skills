@@ -21,7 +21,7 @@ function isNonBarSvg(svg) {
   if (wrap && wrap.dataset.quietEcharts) {
     try {
       const m = JSON.parse(wrap.dataset.quietEcharts);
-      if (m && /^(heatmap|gantt|sankey|gauge|radar|pie|treemap|scatter|line|area|waterfall|dumbbell|forest)$/i.test(String(m.kind || ''))) return true;
+      if (m && /^(heatmap|gantt|sankey|gauge|radar|pie|treemap|scatter|line|area|waterfall|dumbbell|forest|cyclical_whisker)$/i.test(String(m.kind || ''))) return true;
     } catch (_e) {}
   }
   return false;
@@ -256,6 +256,98 @@ function auditDocV922(doc, win, ctxTag) {
         const label = (child.textContent || child.getAttribute('aria-label') || clsStr).trim().slice(0, 24);
         pushErr(`[PANE_CONTROL_CLIPPED${ctxTag}] @${vw}px: control '${label}' clipped outside non-scrollable container`);
       }
+    }
+  }
+
+  const notDisplayNone = (el) => {
+    for (let p = el; p && p.nodeType === 1; p = p.parentElement) {
+      if (p.hasAttribute('hidden') || win.getComputedStyle(p).display === 'none') return false;
+    }
+    return true;
+  };
+  const densityMap = new Map();
+  for (const btn of doc.querySelectorAll('button, [role="button"], [role="radio"], [role="tab"], input[type="radio"]')) {
+    if (!notDisplayNone(btn) || btn.closest('pre, code, template')) continue;
+    const txt = (btn.textContent || btn.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+    const isStopTxt = /^(?:compact|cozy|comfortable|relaxed|dense|spacious)$/i.test(txt);
+    const dBox = btn.closest('.va-density-toggle, [data-density-group], [data-density-toggle], [aria-label*="density" i]');
+    const tbBox = btn.closest('.va-rail-footer, [role="toolbar"], .va-tb-group');
+    const isD = btn.hasAttribute('data-density') || btn.hasAttribute('data-density-stop') || btn.hasAttribute('data-density-mode') || !!dBox || (isStopTxt && !!tbBox);
+    if (!isD) continue;
+    const grp = dBox || tbBox || doc.body;
+    densityMap.set(grp, (densityMap.get(grp) || 0) + 1);
+  }
+  const maxDensityHits = Math.max(0, ...densityMap.values());
+  if (maxDensityHits > 2) {
+    pushErr(`[DENSITY_STOP_SPRAWL${ctxTag}] @${vw}px: ${maxDensityHits} (>2) density buttons in app chrome; cap M3 density stops at 2`);
+  }
+  for (const rf of doc.querySelectorAll('.va-rail-footer')) {
+    if (!notDisplayNone(rf)) continue;
+    const rcs = win.getComputedStyle(rf);
+    const kids = [...rf.children].filter((c) => !/^(SCRIPT|STYLE|TEMPLATE)$/.test(c.tagName) && notDisplayNone(c));
+    let stacked = rcs.flexDirection === 'column' || rcs.flexDirection === 'column-reverse';
+    if (!stacked && kids.length >= 2) {
+      const r0 = kids[0].getBoundingClientRect();
+      for (let i = 1; i < kids.length; i += 1) {
+        const ri = kids[i].getBoundingClientRect();
+        if (r0.height > 2 && ri.height > 2 && (ri.top >= r0.bottom - 2 || r0.top >= ri.bottom - 2)) { stacked = true; break; }
+      }
+    }
+    const bannedCtrl = [...rf.querySelectorAll('button, a, [role="button"]')].find((el) => /^(?:lock|unlock|<?\s*classic)$/i.test((el.textContent || '').trim()));
+    if (stacked || kids.length > 2 || !!bannedCtrl || rf.getBoundingClientRect().height > 72) {
+      pushErr(`[RAIL_FOOTER_CLUTTER${ctxTag}] @${vw}px: .va-rail-footer must stay a single-row 40px strip with <=2 control groups`);
+    }
+  }
+  if (vw >= 760) {
+    const proseSet = new Set();
+    for (const m of doc.querySelectorAll('.va-split-reader-primary, [data-prose-pane], [data-doc-pane], .va-markdown-pane, .va-prose, .markdown-body, [data-markdown]')) {
+      if (m.closest('.va-split-reader-companion')) continue;
+      const p = m.closest('.va-split-reader-primary, [data-prose-pane], [data-doc-pane], .va-markdown-pane, .va-pane') || m;
+      proseSet.add(p);
+    }
+    for (const pane of proseSet) {
+      if (!isVis(pane, win.getComputedStyle(pane))) continue;
+      const splitBox = pane.closest('.va-split-reader-gallery, .va-split-reader, [data-split-reader], .va-workbench-panes') || pane.parentElement;
+      if (!splitBox || !isVis(splitBox, win.getComputedStyle(splitBox))) continue;
+      if (splitBox.matches('.va-workbench-panes') && [...splitBox.children].filter((c) => isVis(c, win.getComputedStyle(c))).length >= 3) continue;
+      const cr = splitBox.getBoundingClientRect(), pr = pane.getBoundingClientRect();
+      if (cr.width < 400 || pr.width < 40) continue;
+      const hasSideSib = [...splitBox.children].some((ch) => {
+        if (ch === pane || ch.contains(pane) || pane.contains(ch) || !isVis(ch, win.getComputedStyle(ch))) return false;
+        const sr = ch.getBoundingClientRect();
+        return sr.width > 40 && (sr.left >= pr.right - 8 || pr.left >= sr.right - 8);
+      });
+      if (hasSideSib && pr.width < cr.width * 0.55 - 1.5) {
+        pushErr(`[PROSE_PANE_CRAMPED${ctxTag}] @${vw}px: primary prose pane width ${pr.width.toFixed(0)}px < 55% of ${cr.width.toFixed(0)}px split container`);
+      }
+    }
+  }
+  for (const rail of doc.querySelectorAll('.va-side-rail')) {
+    if (!notDisplayNone(rail)) continue;
+    for (const box of rail.querySelectorAll('.va-card, .qe-card')) {
+      if (notDisplayNone(box) && (box.querySelector('.va-tree-row, .va-tree-group, .va-tree-children, .va-tree-dest') || box.closest('.va-tree-group, .va-tree-children'))) {
+        pushErr(`[TREE_NESTED_CARD_BORDERS${ctxTag}] @${vw}px: navigation tree inside .va-side-rail wraps items in bordered .va-card boxes`);
+        break;
+      }
+    }
+    for (const node of rail.querySelectorAll('.va-tree-row, .va-tree-group, .va-tree-children')) {
+      if (!notDisplayNone(node)) continue;
+      const ncs = win.getComputedStyle(node);
+      if (parseFloat(ncs.borderTopWidth) >= 0.75 && parseFloat(ncs.borderRightWidth) >= 0.75 && parseFloat(ncs.borderBottomWidth) >= 0.75 && parseAlphaColor(ncs.borderTopColor) >= 0.08) {
+        pushErr(`[TREE_NESTED_CARD_BORDERS${ctxTag}] @${vw}px: tree row/container inside .va-side-rail renders card border box`);
+        break;
+      }
+    }
+  }
+  if (doc.body) {
+    const tw = doc.createTreeWalker(doc.body, 4);
+    let tn;
+    while ((tn = tw.nextNode())) {
+      if (!/\bdiurnal\b/i.test(tn.nodeValue || '')) continue;
+      const pe = tn.parentElement;
+      if (!pe || pe.closest('pre, code, script, style') || !notDisplayNone(pe)) continue;
+      pushErr(`[JARGON_TERMINOLOGY${ctxTag}] @${vw}px: UI copy uses 'diurnal' — rename to 'Activity by Hour of Day'`);
+      break;
     }
   }
 }

@@ -300,6 +300,7 @@
     var tok = readTokens(doc), layers = getLayers(), ext = getGlobal('QuietEChartsExt');
     var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
     var opt = isSS ? (ss ? ss.buildOption(doc, payload, tok, w) : null)
+      : payload.kind === 'cyclical_whisker' ? (defaults && defaults.buildCyclicalWhiskerOption ? defaults.buildCyclicalWhiskerOption(payload.buckets, Object.assign({ tokens: tok, containerWidth: w }, payload.opts || {})) : null)
       : payload.kind === 'waterfall' ? (layers ? layers.buildWaterfallOption(doc, payload, tok, buildEnvelopes(doc, payload, tok)) : null)
       : payload.kind === 'stacked_bar' ? (layers ? layers.buildStackedBarOption(doc, payload, tok, buildEnvelopes(doc, payload, tok), resolveSeriesColor) : null)
       : isExtKind ? (ext ? ext.buildOption(doc, payload, tok, w) : null)

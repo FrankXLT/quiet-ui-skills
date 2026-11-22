@@ -53,6 +53,11 @@ UI_BRIDGE_CONTRACTS: dict[str, tuple[str, str, str]] = {
         "preset.disabled_reason (disable unsupported offline presets with explanatory title)",
         "Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.",
     ),
+    "qe-cyclical-whiskers": (
+        "buckets[].{label (00h..23h|Mon..Sun), min, avg, max, activeDays}",
+        "buckets[].recent (Last 24h | Current Cycle marker; omit if current cycle empty)",
+        "Skip slots with activeDays === 0 rather than zero-filling; never plot multi-day raw sums on cyclical axes.",
+    ),
 }
 
 

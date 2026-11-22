@@ -1,0 +1,118 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.3 — >= 60% Prose-Floor Split Reader & < 760px Native Modal Sheet */
+
+@layer shell {
+  .va-split-reader-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    min-inline-size: 0;
+  }
+  .va-split-reader-primary {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+  .va-split-reader-companion {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+  @media (max-width: 759px) {
+    .va-split-mode-toggle { display: none; }
+    .va-split-reader-companion[data-mobile-promoted="true"] { display: none; }
+  }
+  @media (min-width: 760px) {
+    .va-split-sheet-trigger { display: none; }
+  }
+  @media (min-width: 760px) and (max-width: 1279px) {
+    .va-split-reader-gallery {
+      grid-template-columns: minmax(min(480px, 62%), calc(64% - 0.375rem)) minmax(min(240px, 34%), calc(36% - 0.375rem));
+    }
+    .va-split-reader-companion { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (min-width: 1280px) {
+    .va-split-reader-gallery {
+      grid-template-columns: minmax(0, calc(60% - 0.375rem)) minmax(0, calc(40% - 0.375rem));
+    }
+    .va-split-reader-companion {
+      grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+    }
+  }
+
+  /* Native <dialog class="va-modal-sheet" closedby="any"> ([open] scoped display) */
+  dialog.va-modal-sheet {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-card);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 0;
+    margin: auto;
+    inline-size: min(92vw, 720px);
+    max-inline-size: calc(100dvw - 1.5rem);
+    max-block-size: calc(100dvh - 3rem);
+    box-shadow: 0 24px 56px rgba(9, 13, 22, 0.36);
+    overflow: hidden;
+  }
+  dialog.va-modal-sheet[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  dialog.va-modal-sheet:modal {
+    overscroll-behavior: contain;
+  }
+  html:has(dialog.va-modal-sheet:modal),
+  body:has(dialog.va-modal-sheet:modal) {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+  dialog.va-modal-sheet::backdrop {
+    background: rgba(9, 13, 22, 0.56);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+  .va-modal-sheet-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-block-size: 44px;
+    padding: 0.45rem 0.85rem;
+    border-block-end: 1px solid var(--border-hairline);
+    background: var(--bg-elevated);
+    flex: 0 0 auto;
+  }
+  .va-modal-sheet-body {
+    padding: var(--density-card-pad, 0.9rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-block-size: 0;
+    flex: 1 1 auto;
+  }
+  @media (max-width: 759px) {
+    dialog.va-modal-sheet {
+      margin: auto 0 0 0;
+      inline-size: 100%;
+      max-inline-size: 100%;
+      max-block-size: 86dvh;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      border-inline: 0;
+      border-block-end: 0;
+    }
+  }
+}
+
+@layer utilities {
+  dialog.va-modal-sheet[open] {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+  }
+}
+
+@media print {
+  dialog.va-modal-sheet { display: none; }
+}

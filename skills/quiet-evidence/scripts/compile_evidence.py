@@ -108,10 +108,22 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
             "src/css/00-layers-and-reset.css",
             "src/css/01-stage-and-containers.css",
             "src/css/03-pills-and-annunciators.css",
+            "src/css/12-period-and-scope.css",
+            "src/css/13-split-reader-dialog.css",
             "docs/bench/evidence-bench.css",
         ),
     ) or _FALLBACK_TOKENS_CSS
-    js = _load_bundle_asset("quiet-evidence-bundle.js", ("src/js/evidence-runtime.js", "src/js/quiet-svg-chart-layout.js"))
+    js = _load_bundle_asset(
+        "quiet-evidence-bundle.js",
+        (
+            "src/js/evidence-runtime.js",
+            "src/js/quiet-svg-chart-layout.js",
+            "src/js/quiet-time-binning.js",
+            "src/js/echarts-layout-defaults.js",
+            "src/js/quiet-cyclical-whiskers.js",
+            "src/js/quiet-period-stepper.js",
+        ),
+    )
     scheme = "dark" if theme in {"dark", "dark-paper"} else "light"
     return (
         "<!DOCTYPE html>\n"

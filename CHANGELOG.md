@@ -2,6 +2,18 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.3.0] - 2026-11-22
+
+### Added
+- **Single-Row Swatch-Only + `2`-Stop `.va-rail-footer` (`src/css/12-period-and-scope.css`, `skills/quiet-ui/`)**: Updated `.va-rail-footer` into a single `40px` horizontal `space-between` row pairing circular `.va-swatch-row` / `20px` `.va-swatch-btn` theme swatches (with `44×44px` `::after` coarse-pointer hit area, active ring, `aria-label`, and zero text) on the left with a **2-stop density toggle (`Compact | Comfortable`)** on the right, capping `M3` user density buttons at 2 and banning `Lock` / `< Classic` / version badges inside `.va-rail-footer`.
+- **`>= 60%` Prose-Floor Responsive Split & `< 760px` Native `<dialog closedby="any">` (`src/css/13-split-reader-dialog.css`, `src/js/quiet-period-stepper.js`)**: Extracted `.va-split-reader-gallery` (`60%/40%` 2-col companion at `>= 1280px`, `64%/36%` 1-col companion at `760–1279px`, and `< 760px` full-width prose hiding `.va-split-mode-toggle` + `.va-split-sheet-trigger` opening opaque native `<dialog class="va-modal-sheet" closedby="any">` with `[open]` layout scoping, `:modal`/`::backdrop` scroll lock, and global keyboard shortcut suppression while `dialog[open]`).
+- **Specimen 43 — Cyclical `Min–Avg–Max + Recent` Whiskers & Anti-Sum Rule (`src/js/quiet-cyclical-whiskers.js`, `scripts/bench_cyclical_specimen.py`, `scripts/bench_data_contracts.py`)**: Exported `QuietEChartsDefaults.buildCyclicalWhiskerOption(buckets, opts)` plotting active-day vertical `Min–Max` range stems + `Active Avg` bar + `Recent` marker in uniform physical units, added `#qe-cyclical-whiskers` ("Activity by Hour of Day — Min/Avg/Max Whiskers") bringing Component Library specimens from `42` to `43`, and codified plain hourly naming (`"Activity by Hour of Day"` over `"diurnal"`).
+- **Flat Borderless Rail Trees (`<= 5` Visible Children) & Rate-Epoch / `SHA-256[:12]` Showcase Hygiene (`src/css/12-period-and-scope.css`, `src/js/quiet-period-stepper.js`, `skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`)**: Enforced single-line `36px` `.va-tree-row` navigation with ellipsis truncation, `<= 1` trailing `.va-tree-action`, and `<= 5` visible children ahead of `+ Show N older…` (`.va-tree-more`) inside `.va-tree-children`, plus immutable `effective_from` rate-epoch pricing comparison rules and deterministic `SHA-256[:12]` zero-leak public showcase sanitization.
+- **5 Static & `--cdp` End-State Auditor Gates (`audit_quiet_html.py`, `audit_static_rules.py`, `audit_cdp_probes.py`)**: Added `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`, `[PROSE_PANE_CRAMPED]`, `[TREE_NESTED_CARD_BORDERS]`, and `[JARGON_TERMINOLOGY]`, verified by `tests/test_v930_endstate_lessons.py`.
+
+### Fixed
+- **Coarse-Pointer `.va-tb-btn` Normalization (`src/css/01-stage-and-containers.css`)**: Excluded `.va-swatch-btn` and `.va-tree-action` from mobile `44px` button inflation, normalized `.va-tb-btn` narrow/coarse-pointer horizontal padding (`0 0.55rem`), and replaced bottom-border margin hacks with crisp unified borders inside `.va-tb-group`.
+
 ## [9.2.2] - 2026-11-22
 
 ### Added

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for Quiet UI v9.2.2 Plugin & 3 Skills
+# quiet-ui-skills — 1-Command Installer for Quiet UI v9.3.0 Plugin & 3 Skills
 # Bundles:
 #   1. Antigravity Native Plugin -> ~/.gemini/config/plugins/quiet-ui-skills
 #   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}
@@ -62,7 +62,7 @@ install_plugin_bundle() {
   for sk in "${PILLAR_SKILLS[@]}"; do
     copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${plugin_dest}/skills/${sk}"
   done
-  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.2.2 -> ${plugin_dest}"
+  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.3.0 -> ${plugin_dest}"
 }
 
 if [[ $# -ge 1 ]]; then
@@ -74,7 +74,7 @@ if [[ $# -ge 1 ]]; then
     for sk in "${PILLAR_SKILLS[@]}"; do
       copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${TARGET_ROOT}/${sk}"
     done
-    echo "[OK] Installed 3 pillar skills v9.2.2 -> ${TARGET_ROOT}"
+    echo "[OK] Installed 3 pillar skills v9.3.0 -> ${TARGET_ROOT}"
   fi
 else
   # 1. Purge only repo-owned legacy loose skill directories so they never shadow the plugin

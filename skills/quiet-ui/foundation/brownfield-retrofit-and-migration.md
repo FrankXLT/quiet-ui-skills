@@ -67,7 +67,7 @@ Audit which zoom level an existing screen spans before restyling it, and route h
 ### Guardrail 4 — Side-by-Side Strangler Route, Storage Isolation & Additive API Flags
 Zero-downtime retrofits coexist safely alongside the original interface during verification:
 
-- **Strangler Route Staging**: Serve the new Quiet UI surface on an additive parallel path (`/v2` or `?ui=quiet`) carrying a single unobtrusive `< Classic` link in `.va-rail-footer` (and a matching `New ↗` link in the legacy footer) until full stakeholder sign-off.
+- **Strangler Route Staging**: Serve the new Quiet UI surface on an additive parallel path (`/v2` or `?ui=quiet`) carrying a single unobtrusive `< Classic` link in `.va-shell-topbar`'s trailing utility slot (keeping `.va-rail-footer` strictly 1-row with `.va-swatch-row` + 2-stop density toggle) and a matching `New ↗` link in the legacy footer until full stakeholder sign-off.
 - **Client Storage Namespacing**: Prefix newly persisted UI state keys cleanly (e.g., `qui.v2.density`, `qui.v2.period`) so retrofit preferences never corrupt legacy `localStorage` schemas, while continuing to share existing auth cookies or bearer sessions transparently.
 - **Additive Endpoint Evolution**: Extend backend handlers strictly via optional query flags (`?bin=1d`, `?window=rolling_30d`, `?tz=UTC`) rather than breaking field types expected by legacy routes or existing test suites. Every existing backend and UI test on the classic route must stay 100% green throughout the migration.
 
@@ -105,7 +105,7 @@ fetch('/api/telemetry/summary?window=rolling_30d&bin=1d&include_legacy=0');
 
 ## 4. Brownfield Sign-Off Gate
 
-Verify every box before proposing cutover or removing the `< Classic` strangler switch:
+Verify every box before proposing cutover or removing the topbar `< Classic` strangler switch:
 
 | Gate Criterion | Required Evidence | Failure Action |
 | :--- | :--- | :--- |
@@ -116,6 +116,6 @@ Verify every box before proposing cutover or removing the `< Classic` strangler 
 
 Never declare a brownfield retrofit "done" from visual appearance alone: both the Capability Parity Ledger and the Deprecation Blocklist must prove zero capability regression and zero legacy clutter concurrently.
 
-- **Pre-Cutover Handoff Bundle**: Attach the completed Capability Parity Ledger, the Deprecation Blocklist DOM-absence test output, the classic-route green test log, and side-by-side `390px` / `820px` / `1440px` CDP screenshots (`--cdp`) before removing `?ui=quiet` or `< Classic`.
+- **Pre-Cutover Handoff Bundle**: Attach the completed Capability Parity Ledger, the Deprecation Blocklist DOM-absence test output, the classic-route green test log, and side-by-side `390px` / `820px` / `1440px` CDP screenshots (`--cdp`) before removing `?ui=quiet` or topbar `< Classic`.
 - **Single Source of Truth**: Keep shared API responses backwards-compatible (`?include_legacy=0` opt-out only) so automated monitors, exports, and classic users observe unchanged canonical metrics throughout rollout.
 

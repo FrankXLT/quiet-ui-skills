@@ -243,23 +243,26 @@ const {
   computeGridFrameGutters, wrapLabelLines, measureCategoryGutter,
   filterNonOverlappingTicks, placeReferenceLabel,
 } = window.QuietSvgLayout;
-const { binTimeSeries, trimTrailingFutureWeeks, alignPlotGridFrames } = window.QuietEChartsDefaults;
+const { binTimeSeries, trimTrailingFutureWeeks, alignPlotGridFrames, buildCyclicalWhiskerOption } = window.QuietEChartsDefaults;
 
 // 1. Adaptive UTC time binning (1h <=3d, YYYY-MM-DD 1d for 4-92d, ISO 1w >92d)
 const binned = binTimeSeries(rawDates, { total: totalSeries, err: errSeries });
 const cal = trimTrailingFutureWeeks(rawWeeks, rawHeatmapCells, { today: '2026-11-22' });
 
-// 2. Canonical zero-filled X buckets & shared 1-2-5 Y bounds across peer cohorts
+// 2. Cyclical Min-Avg-Max + Recent Whiskers (active-day denominators, consistent units)
+const hourlyOpt = buildCyclicalWhiskerOption(hourlyBuckets, { title: "Activity by Hour of Day", unit: "calls/h", recentLabel: "Today" });
+
+// 3. Canonical zero-filled X buckets & shared 1-2-5 Y bounds across peer cohorts
 const buckets = buildCanonicalTimeGrid(tMinMs, tMaxMs, stepMs);
 const yShared = sharedNiceScale125([cohortASeries, cohortBSeries], { targetTicks: 5, headroomRatio: 0.06 });
 
-// 3. Font-aware left gutter sizing (mono glyph scaling + axisLabelMargin) & column/row pixel registration
+// 4. Font-aware left gutter sizing (mono glyph scaling + axisLabelMargin) & column/row pixel registration
 const gutter = measureCategoryGutter(rawIds, { fontFamily: 'mono', mono: true, axisLabelMargin: 8 });
 const gutters = computeGridFrameGutters([[topLeftDesc, topRightDesc], [botLeftDesc, botRightDesc]]);
 const cats = wrapLabelLines("Primary Model Cohort (Long Run)", 20, 2);
 const visibleXTicks = filterNonOverlappingTicks(rawTicks, { axis: 'x', minGapPx: 12, keepEnds: true });
 
-// 4. Draw Avg / Ceiling reference labels with opaque background + paint-order stroke halo
+// 5. Draw Avg / Ceiling reference labels with opaque background + paint-order stroke halo
 placeReferenceLabel(svgEl, {
   text: "Ceiling 120",
   x: plotRight - 6,
@@ -272,6 +275,7 @@ placeReferenceLabel(svgEl, {
 
 ### ECharts Guardrails (`QuietEChartsDefaults` & Multi-Plot Spine Registration)
 - **Adaptive Time-Series Binning (`QuietEChartsDefaults.binTimeSeries`) & Future Week Trimming**: Never feed `500+` hourly slots directly into a stacked vertical bar chart (`[BAR_HAIRLINE_DENSITY]`). Pass `(dates, layersObj, opts)` through `binTimeSeries` (`<= 3d` `1h`, `4–92d` `1d`, `> 92d` ISO `1w`), call `trimTrailingFutureWeeks` on to-date calendar heatmaps alongside `>= 0.06` past zero-cell contrast (or hairline border), and pair temporal controls with `QuietPeriodStepper`.
+- **Cyclical Whiskers (`buildCyclicalWhiskerOption`) & Anti-Sum Rule**: Never sum multi-day values directly by hour-of-day (`00..23h`), day-of-week (`Mon..Sun`), or month-of-year. Pass per-slot `{ label, min, avg, max, recent, nActive }` records into `QuietEChartsDefaults.buildCyclicalWhiskerOption(buckets, opts)` to plot `Min–Max` range whiskers + `Active Avg` bar + `Recent Day / Week` marker in uniform physical units, labeling cards plainly (`"Activity by Hour of Day"` over jargon `"diurnal"`, `[JARGON_TERMINOLOGY]`).
 - **Font-Aware Mono Gutters (`measureCategoryGutter`) & Top Y-Title Clearance**: `alignPlotGridFrames` routes `yAxis.type === 'category'` labels through `measureCategoryGutter` (monospace scaling + `8px` `axisLabelMargin`) and enforces `grid.top >= 30, nameGap >= 12` when vertical top `yAxis.name` is non-empty (`[AXIS_LABEL_CLIPPED]` `+0.5px` top edge).
 - **Disparate X-Format Auto-Detection & On-Card Series Legends (`[ORPHAN_SERIES_LEGEND]`)**: `alignPlotGridFrames` / `alignSharedAxes` engages `independentXSpan: true` automatically across mismatched X formats (`YYYY-MM-DD` vs. `00h..23h`), keeps distinct `yUnit` keys for parent vs. breakdown plots, and pairs every `>= 2`-color chart with a visible on-card legend or inline `booktabs` summary `<table>`.
 - **Single Charts, Legends & Chart-Only Pairings**: Route single-chart options through `QuietEChartsDefaults.normalizeOption` (`applySafeLegendLayout`), keep `[Chart + Table]` 1-column full-width, reserve `.va-plot-row` `subgrid` pairs for chart-only cards, bind `observeChartResize(hostEl, chart)` alongside `min-width: 0; max-width: 100%;`, and color series from `--chart-1..5`.

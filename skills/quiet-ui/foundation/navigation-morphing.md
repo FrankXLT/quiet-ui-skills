@@ -126,19 +126,22 @@ Paper output must represent raw data without software navigation chrome:
     justify-content: center;
   }
 
-  /* Unfolded Foldable >= 780px Split Reader + Sticky < 1100px Single-Row Compaction */
-  @media (min-width: 780px) {
-    .va-split-reader {
-      display: grid;
-      grid-template-columns: minmax(15rem, 36%) minmax(0, 1fr);
-      gap: 0.75rem;
-    }
-    .va-chart-grid-2, .va-plot-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
+  /* Unfolded Foldable & Desktop >= 60% Prose Split Reader + < 760px Modal Sheet */
+  .va-split-reader-gallery { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+  .va-split-reader-primary, .va-split-reader-companion { min-inline-size: 0; }
+  @media (min-width: 760px) {
+    .va-split-reader-gallery { grid-template-columns: minmax(0, calc(64% - 0.375rem)) minmax(0, calc(36% - 0.375rem)); }
+    .va-chart-grid-2, .va-plot-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
   }
+  @media (min-width: 1280px) {
+    .va-split-reader-gallery { grid-template-columns: minmax(0, calc(60% - 0.375rem)) minmax(0, calc(40% - 0.375rem)); }
+  }
+  dialog.va-modal-sheet[open] {
+    display: flex; flex-direction: column; max-inline-size: min(44rem, calc(100dvw - 1.5rem));
+    max-block-size: min(86svh, 46rem); background: var(--bg-surface); border: 1px solid var(--border-strong);
+  }
+  dialog.va-modal-sheet:modal { overscroll-behavior: contain; }
+  dialog.va-modal-sheet::backdrop { background: rgba(15, 23, 42, 0.56); overflow: hidden; overscroll-behavior: contain; }
   @media (min-width: 780px) and (max-width: 1099px) {
     .va-header-stack { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
     .va-header-subbar { display: none; }
@@ -152,6 +155,7 @@ Paper output must represent raw data without software navigation chrome:
     .va-nav-dock,
     .va-nav-top,
     .va-btn-drawer,
+    dialog.va-modal-sheet,
     header[role="banner"],
     nav {
       display: none;
@@ -169,19 +173,19 @@ Paper output must represent raw data without software navigation chrome:
 
 ---
 
-## 7. Overlay Filter Rails (`.va-side-rail`), Period Stepper, Scope Chips & Anti-Patterns
+## 7. Overlay Filter Rails (`.va-side-rail`), Single-Row Footer, Split Sheets & Anti-Patterns
 
-- **Sticky Left-of-Brand Trigger, Auto-Closing `.va-side-rail[data-mode="overlay"]` & `.va-rail-footer`**: Keep a permanent panel toggle SVG button at the far left of `.va-shell-topbar` (never conditionally added/removed across tabs, `[NAVBAR_SHIFT]`), keep high-frequency `.va-period-stepper` / `.va-preset-popover` (`role="menu"` grouping Calendar-to-Date vs. Rolling Windows) and `.va-scope-chip` (`All` -> `Entity` -> `Entity / Item`) visible in the topbar, and route low-frequency app settings (`D1–D4`, theme, version, sign-out) into `.va-rail-footer`. Closed by default on all breakpoints (`100dvw × 100svh` `< 680px`, `50dvw` `680–1199px`, `min(28rem, 42dvw)` `>= 1200px` with opaque `var(--bg-surface)`, `[TRANSPARENT_OVERLAY]`), separating inline `.va-tree-caret` expand toggles (keeping rail open) from `.va-tree-dest` navigation pills inside `.va-tree-row` (auto-closing on selection and auto-expanding active parents on reopen).
-- **1-Tap `.va-tab-strip` vs. `<select>` Dropdowns**: When a workbench pane displays `<= 6` sibling documents or sub-views, render direct 1-tap `.va-tab-strip` / `.va-tab` underline tabs rather than hiding siblings inside a `<select>` menu (`[PANE_CONTROL_CLIPPED]` rejects non-scrollable overflow cutting off `.va-pane-hdr` buttons or tab labels).
+- **Single-Row `.va-rail-footer` (`40px`), Swatch Rail & 2-Stop Density Cap**: Keep a permanent drawer trigger at the far left of `.va-shell-topbar` (`[NAVBAR_SHIFT]`), keep `.va-period-stepper` / `.va-preset-popover` and `.va-scope-chip` in the topbar, and consolidate `.va-rail-footer` into a **single horizontal `40px` `space-between` row** pairing `.va-swatch-row` circular swatch triggers (`.va-swatch-btn`, `20px` dot with `44×44px` `::after` coarse hit area, active ring, `aria-label`, zero text) on the left with a **2-stop density toggle (`Compact | Comfortable`)** on the right. Never stack multiple footer rows, `3+` density stops, `Lock`, `< Classic`, or version pills (`[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`).
+- **Flat Borderless Rail Trees (`<= 5` Visible Children + `.va-tree-more`) & `>= 60%` Split Reader / `<dialog closedby="any">`**: Inside `.va-side-rail`, render borderless single-line `36px` `.va-tree-row` links with `.va-tree-label` ellipsis, `<= 1` trailing `.va-tree-action`, and `<= 5` visible children in `.va-tree-children` followed by `.va-tree-more` (`+ Show N older…`), flagging nested `.va-card` boxes (`[TREE_NESTED_CARD_BORDERS]`). Use `.va-split-reader-gallery` (`>= 60%` prose width at `>= 760px`, hiding `.va-split-mode-toggle` `< 760px` behind `.va-split-sheet-trigger` -> `<dialog class="va-modal-sheet" closedby="any">`, suppressing global key shortcuts while `dialog[open]`), and render `<= 6` sibling tabs via `.va-tab-strip` / `.va-tab`.
 
 | Violation | Problem Caused | Architectural Solution |
 | :--- | :--- | :--- |
 | N4 Bottom Dock on `>= 700px` screens | Stretches icons across bottom; breaks tablet/desktop chrome. | Enforce N4 Desktop Ban: switch to N1 or N2 on screens $\ge 700\text{px}$. |
+| Stacked `.va-rail-footer` or `3+` density buttons | Bloats drawer footer with `Lock`/`< Classic`/multi-row pills (`[RAIL_FOOTER_CLUTTER]`, `[DENSITY_STOP_SPRAWL]`). | Single `40px` `space-between` row: `.va-swatch-row` left + `2`-stop `Compact \| Comfortable` right. |
+| Nested bordered cards inside `.va-side-rail` tree | Creates visual clutter and pushes old trees past fold (`[TREE_NESTED_CARD_BORDERS]`). | Flat borderless `36px` `.va-tree-row` (`<= 1` `.va-tree-action`) + `<= 5` child cap + `.va-tree-more`. |
 | Conditional header buttons shifting brand/tabs across routes | Shifts global brand/tab strip horizontally across views (`[NAVBAR_SHIFT]`). | Keep persistent left-of-brand drawer trigger & fixed `.va-shell-topbar` slots. |
-| Transparent mobile drawer overlay (`--bg-glass` / `.va-pane` leak) | Underlying dashboard copy bleeds through open rail or popover (`[TRANSPARENT_OVERLAY]`). | Use shipped opaque `.va-side-rail` + `.va-preset-popover` in `@layer utilities` + `.va-drawer-backdrop`. |
-| `> 6` temporal buttons crowding toolbar (`[TOOLBAR_CONTROL_SPRAWL]`) | Compresses filter bars and hides rolling/calendar states on mobile. | Consolidate presets into `.va-period-stepper` + `.va-preset-popover` + `.va-scope-chip`. |
-| Hiding `<= 6` sibling docs behind a `<select>` or clipping `.va-pane-hdr` | Adds extra clicks or cuts off controls (`[PANE_CONTROL_CLIPPED]`). | Render 1-tap `.va-tab-strip` underline `.va-tab` controls (`overflow-x: auto`). |
-| Sticky bar `> 88px` phone (`< 680px`) or `> 64px` desktop (`[STICKY_CHROME_BLOAT]`) | Steals top viewport height on `390px` phones and `820px` foldables. | Fit `<= 64px` single row `>= 680px` (`<= 88px` 2 compact rows `< 680px`) + `<details>` tables. |
-| Full-screen modal viewer at `820px` foldable width | Hides master list because split waited for `860–1200px`. | Lower split-reader & 2-col plot grid threshold to `>= 780px` (`820px` CSS tested). |
-| Coarse-pointer `44px` rule inflating static `.va-badge`/`.va-pill` labels or `44px` filled thumbnail circles | Turns compact metadata chips into button lookalikes and obscures media. | Scope `44px` strictly to interactive controls `< 700px`, use `32–34px` toolbars `>= 768px`, and extend corner overlays via invisible `::after`. |
+| Transparent drawer overlay or `< 55%` cramped prose split | Copy bleeds through (`[TRANSPARENT_OVERLAY]`) or prose wraps awkwardly (`[PROSE_PANE_CRAMPED]`). | Opaque `.va-side-rail`, `.va-split-reader-gallery` (`>= 60%` prose), `< 760px` `<dialog closedby="any">`. |
+| `> 6` temporal buttons or clipped `.va-pane-hdr` | Compresses filter bars (`[TOOLBAR_CONTROL_SPRAWL]`, `[PANE_CONTROL_CLIPPED]`). | Consolidate presets in `.va-period-stepper` + `.va-preset-popover` and `.va-tab-strip`. |
+| Sticky bar `> 88px` phone or `> 64px` desktop | Steals first viewport height (`[STICKY_CHROME_BLOAT]`). | Fit `<= 64px` single row `>= 680px` (`<= 88px` `< 680px`) + `<details>` tables. |
+| Unscoped `dialog { display: flex }` without `[open]` | Traps backdrop behind normal flow and leaks scroll to underlying page. | Scope `display: flex` to `dialog.va-modal-sheet[open]`; lock `:modal`/`::backdrop` scroll. |
 | Navigation rails visible on printed reports | Wastes paper and inks interactive navigation links on sheets. | Place `@media print { nav { display: none; } }` inside the terminal `@layer`. |

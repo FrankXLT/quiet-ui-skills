@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.2 — Standalone 42-Specimen 3-Pillar Component Library Builder."""
+"""Quiet UI v9.3 — Standalone 43-Specimen 3-Pillar Component Library Builder."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ COMPILER_SCRIPTS = REPO_ROOT / "skills" / "quiet-evidence" / "scripts"
 if str(COMPILER_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(COMPILER_SCRIPTS))
 
+from bench_cyclical_specimen import compile_cyclical_whisker_specimen  # noqa: E402
 from bench_data_contracts import contract_for_evidence_spec  # noqa: E402
 from bench_ui_specimens import compile_ui_bridge_specimens  # noqa: E402
 from compile_evidence import compile_spec, detect_modality  # noqa: E402
@@ -34,7 +35,7 @@ _SPECIMEN_PREFIX_RE = re.compile(r"^(?:M[1-6]-L[1-3]|Specimen\s+\d+)\s*[:—-]\s
 
 
 def _compile_bench_cards(spec_dir: Path) -> str:
-    """Compile all 33 JSON specimens + 9 Pillar 1/3 interactive specimens into grid cards."""
+    """Compile all 33 JSON specimens + 9 Pillar 1/3 interactive specimens + Specimen 43."""
     cards_html: list[str] = []
     for mod_code, fname in SPECIMEN_FILES:
         items = json.loads((spec_dir / fname).read_text(encoding="utf-8"))
@@ -60,6 +61,7 @@ def _compile_bench_cards(spec_dir: Path) -> str:
                 f'data-schema-modality="{esc(modality)}" data-rigor="{esc(rigor)}">{fig_html}{contract_tail}</article>'
             )
     cards_html.append(compile_ui_bridge_specimens())
+    cards_html.append(compile_cyclical_whisker_specimen())
     return "".join(cards_html)
 
 
@@ -76,6 +78,7 @@ def _bundle_bench_css() -> str:
         "docs/bench/evidence-bench.css",
         "src/css/11-directional-and-planner.css",
         "src/css/12-period-and-scope.css",
+        "src/css/13-split-reader-dialog.css",
     ):
         fpath = REPO_ROOT / rel
         if fpath.exists():
@@ -96,6 +99,7 @@ def _bundle_bench_js() -> str:
             "src/js/echarts-sankey-strip.js",
             "src/js/quiet-time-binning.js",
             "src/js/echarts-layout-defaults.js",
+            "src/js/quiet-cyclical-whiskers.js",
             "src/js/quiet-period-stepper.js",
             "src/js/echarts-quiet-adapter.js",
             "docs/bench/bench.js",
@@ -115,7 +119,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.2 — 3-Pillar Component Library (42 Specimens)</title>
+  <title>Quiet UI v9.3 — 3-Pillar Component Library (43 Specimens)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 {css_bundle}
@@ -126,8 +130,8 @@ def _render_bench_shell(cards_markup: str) -> str:
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.2 · 3-PILLAR COMPONENT GALLERY</span>
-        <h1>Component Library (42 Specimens × 4 Themes)</h1>
+        <span class="va-kicker">QUIET UI v9.3 · 3-PILLAR COMPONENT GALLERY</span>
+        <h1>Component Library (43 Specimens × 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -174,10 +178,10 @@ def _render_bench_shell(cards_markup: str) -> str:
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
-      <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, triage rows, ARIA trees, KPI gauges, joined toolbars, period steppers, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges — each with Data Inputs &amp; Honest Fallback disclosures.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">42 of 42 specimens visible</span>
+      <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, triage rows, ARIA trees, KPI gauges, joined toolbars, period steppers, cyclical whiskers, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges — each with Data Inputs &amp; Honest Fallback disclosures.</div>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">43 of 43 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="42 3-Pillar Components">{cards_markup}</section>
+    <section class="qe-bench-grid" aria-label="43 3-Pillar Components">{cards_markup}</section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script id="qe-bench-runtime">
@@ -189,13 +193,13 @@ def _render_bench_shell(cards_markup: str) -> str:
 
 
 def render_bench_html() -> str:
-    """Compile all 42 3-pillar component specimens and return the full HTML string."""
+    """Compile all 43 3-pillar component specimens and return the full HTML string."""
     cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
     return _render_bench_shell(cards_markup)
 
 
 def build_bench(out_path: Path | None = None) -> Path:
-    """Compile all 42 3-pillar component specimens into docs/bench/evidence-bench.html."""
+    """Compile all 43 3-pillar component specimens into docs/bench/evidence-bench.html."""
     target = out_path or (REPO_ROOT / "docs" / "bench" / "evidence-bench.html")
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(render_bench_html(), encoding="utf-8")
@@ -204,4 +208,4 @@ def build_bench(out_path: Path | None = None) -> Path:
 
 if __name__ == "__main__":
     written = build_bench()
-    print(f"[OK] Built 3-Pillar Component Library (42 specimens) -> {written}")
+    print(f"[OK] Built 3-Pillar Component Library (43 specimens) -> {written}")

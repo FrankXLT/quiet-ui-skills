@@ -179,11 +179,13 @@
     bindV02SubgroupChips(d);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { boot(document); });
-  } else {
-    boot(document);
+  if (typeof document !== 'undefined' && document) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { boot(document); });
+    } else {
+      boot(document);
+    }
   }
 
   window.QuietWorld01Runtime = { boot: boot };
-})(window, document);
+})(window, typeof document !== 'undefined' ? document : null);

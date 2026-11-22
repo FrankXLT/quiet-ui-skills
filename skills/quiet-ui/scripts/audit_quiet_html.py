@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.2.2 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
+"""Quiet UI v9.3.0 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
 
 from __future__ import annotations
 
@@ -20,25 +20,10 @@ if _SCRIPT_DIR not in sys.path:
 
 from audit_quiet_checks import CDP_AUDIT_JS, audit_cdp_urls, run_cdp_target  # noqa: E402
 from audit_static_rules import (  # noqa: E402
-    BRAIN_TEXT_RE,
-    COMMENT_RE,
-    OVERFLOW_RULE_RE,
-    SELF_BADGE_RE,
-    SKIP_DIRS,
-    WRAPPER_CLASS_HINTS,
-    audit_css_text,
-    audit_js_text,
-    audit_json_text,
-    check_hidden_layer_css,
-    compute_mount_scopes,
-    extract_layer_order,
-    has_chrome_emoji,
-    has_responsive_table_stacking,
-    is_asset_in_scope,
-    is_json_mock_candidate,
-    matches_exclude,
-    parse_mount_prefixes,
-    resolve_asset_detail,
+    BRAIN_TEXT_RE, COMMENT_RE, DENSITY_WORDS, DIURNAL_RE, FOOTER_BANNED_RE, OVERFLOW_RULE_RE, SELF_BADGE_RE,
+    SKIP_DIRS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, audit_json_text, check_hidden_layer_css,
+    compute_mount_scopes, extract_layer_order, has_chrome_emoji, has_responsive_table_stacking,
+    is_asset_in_scope, is_json_mock_candidate, matches_exclude, parse_mount_prefixes, resolve_asset_detail,
 )
 
 _HTML_VOID_TAGS = frozenset(
@@ -84,6 +69,11 @@ class QuietHTMLAuditor(HTMLParser):
         self._in_svg_title = False
         self._chrome_entry_len: int | None = None
         self._chrome_buf: list[str] = []
+        self._ftr_depth = self._ftr_kids = 0
+        self._density_grps: dict[int, int] = {}
+        self._ftr_bad = self._tree_card_bad = self._jargon_bad = False
+        self._ctrl_cap: list[str] | None = None
+        self._ctrl_meta: tuple[Any, ...] | None = None
 
     def _ancestor_hidden(self) -> bool:
         return any(a.get("aria-hidden", "").lower() == "true" for _, a in self.tag_stack)
@@ -109,6 +99,9 @@ class QuietHTMLAuditor(HTMLParser):
         super().close()
         if self._chrome_entry_len is not None:
             self._flush_chrome_badge()
+        max_d = max(self._density_grps.values(), default=0)
+        if max_d > 2:
+            self.errs.append(f"[DENSITY_STOP_SPRAWL] {self.source}: {max_d} (>2) density buttons in app chrome; cap M3 density stops at 2")
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.handle_starttag(tag, attrs)
@@ -129,6 +122,35 @@ class QuietHTMLAuditor(HTMLParser):
             return
         if ad.get("style"):
             audit_css_text(ad["style"], f"{self.source}:{self.getpos()[0]} style=''", self.errs)
+        cls = set(ad.get("class", "").lower().split())
+        stack_cls = [set(sa.get("class", "").lower().split()) for _, sa in self.tag_stack]
+        in_skip = t == "template" or "hidden" in ad or any(st == "template" or "hidden" in sa for st, sa in self.tag_stack)
+        in_rail = "va-side-rail" in cls or any("va-side-rail" in sc for sc in stack_cls)
+        if not in_skip and not self._tree_card_bad and in_rail:
+            is_c, is_tr = bool(cls & {"va-card", "qe-card"}), bool(cls & {"va-tree-row", "va-tree-group", "va-tree-children", "va-tree-dest"})
+            if (is_c and is_tr) or (is_c and any(sc & {"va-tree-group", "va-tree-children"} for sc in stack_cls)) or (is_tr and any(sc & {"va-card", "qe-card"} for sc in stack_cls)):
+                self._tree_card_bad = True
+                self.errs.append(f"[TREE_NESTED_CARD_BORDERS] {self.source}:{self.getpos()[0]}: tree inside .va-side-rail nested inside .va-card")
+        if self._ftr_depth > 0 and len(self.tag_stack) == self._ftr_depth and t not in {"script", "style", "template"} and "hidden" not in ad:
+            self._ftr_kids += 1
+        if not in_skip and "va-rail-footer" in cls:
+            self._ftr_depth, self._ftr_kids = len(self.tag_stack) + 1, 0
+            if not self._ftr_bad and re.search(r"flex-direction\s*:\s*column", ad.get("style", ""), re.I):
+                self._ftr_bad = True
+                self.errs.append(f"[RAIL_FOOTER_CLUTTER] {self.source}:{self.getpos()[0]}: .va-rail-footer uses stacked flex-direction: column")
+        is_btn = t == "button" or ad.get("role", "").lower() in {"button", "radio", "tab"} or (t == "input" and ad.get("type", "").lower() == "radio")
+        has_da = any(k in ad for k in ("data-density", "data-density-stop", "data-density-mode"))
+        if not in_skip and (is_btn or (self._ftr_depth > 0 and (t == "a" or bool(cls & {"va-badge", "va-pill"})))):
+            is_dc = lambda sc, sa: any(c.startswith("va-density") for c in sc) or "density" in sa.get("aria-label", "").lower() or "data-density-group" in sa or "data-density-toggle" in sa
+            in_d = has_da or is_dc(cls, ad) or any(is_dc(sc, sa) for (_, sa), sc in zip(self.tag_stack, stack_cls))
+            tb_idxs = [idx for idx, ((_, sa), sc) in enumerate(zip(self.tag_stack, stack_cls)) if is_dc(sc, sa) or sa.get("role", "").lower() == "toolbar" or bool(sc & {"va-rail-footer", "va-tb-group", "va-density-toggle"})]
+            grp_key = tb_idxs[-1] if tb_idxs else -1
+            in_tb = self._ftr_depth > 0 or bool(tb_idxs)
+            if t in _HTML_VOID_TAGS:
+                if in_d:
+                    self._density_grps[grp_key] = self._density_grps.get(grp_key, 0) + 1
+            elif self._ctrl_cap is None:
+                self._ctrl_cap, self._ctrl_meta = [], (len(self.tag_stack), in_d, in_tb, self._ftr_depth > 0, cls, grp_key)
         if t == "style":
             self._in_style = True
             self._style_buf = []
@@ -136,12 +158,9 @@ class QuietHTMLAuditor(HTMLParser):
             self.linked_css.append(ad["href"])
         elif t == "svg":
             self.svg_stack.append({
-                "line": self.getpos()[0],
-                "aria_hidden": self._ancestor_hidden() or ad.get("aria-hidden", "").lower() == "true",
-                "viewbox": ad.get("viewbox", ""),
-                "role": ad.get("role", "").lower(),
-                "has_label": bool((ad.get("aria-label") or ad.get("aria-labelledby") or "").strip()),
-                "title": [],
+                "line": self.getpos()[0], "aria_hidden": self._ancestor_hidden() or ad.get("aria-hidden", "").lower() == "true",
+                "viewbox": ad.get("viewbox", ""), "role": ad.get("role", "").lower(),
+                "has_label": bool((ad.get("aria-label") or ad.get("aria-labelledby") or "").strip()), "title": [],
             })
         elif t == "title" and self.svg_stack:
             self._in_svg_title = True
@@ -153,13 +172,8 @@ class QuietHTMLAuditor(HTMLParser):
                 if re.search(r"overflow(?:-x)?\s*:\s*(?:auto|scroll)", aa.get("style", ""), re.I):
                     inline_wrap = True
             self.table_stack.append({
-                "line": self.getpos()[0],
-                "role": ad.get("role", "").lower(),
-                "anc_cls": anc_cls,
-                "tbl_cls": set(ad.get("class", "").split()),
-                "inline_wrap": inline_wrap,
-                "max_cols": 0,
-                "row_cols": 0,
+                "line": self.getpos()[0], "role": ad.get("role", "").lower(), "anc_cls": anc_cls,
+                "tbl_cls": set(ad.get("class", "").split()), "inline_wrap": inline_wrap, "max_cols": 0, "row_cols": 0,
             })
         elif t == "tr" and self.table_stack:
             self.table_stack[-1]["row_cols"] = 0
@@ -168,9 +182,8 @@ class QuietHTMLAuditor(HTMLParser):
                 span = max(1, int(ad.get("colspan") or 1))
             except ValueError:
                 span = 1
-            cur = self.table_stack[-1]
-            cur["row_cols"] += span
-            cur["max_cols"] = max(cur["max_cols"], cur["row_cols"])
+            self.table_stack[-1]["row_cols"] += span
+            self.table_stack[-1]["max_cols"] = max(self.table_stack[-1]["max_cols"], self.table_stack[-1]["row_cols"])
         if t not in _HTML_VOID_TAGS:
             if self._chrome_entry_len is None and self._is_chrome_tag(t, ad):
                 self._chrome_entry_len = len(self.tag_stack)
@@ -204,6 +217,20 @@ class QuietHTMLAuditor(HTMLParser):
             self.recorded_tables.append(self.table_stack.pop())
         for i in range(len(self.tag_stack) - 1, -1, -1):
             if self.tag_stack[i][0] == t:
+                if self._ctrl_meta is not None and i == self._ctrl_meta[0]:
+                    txt = " ".join("".join(self._ctrl_cap or ()).split()).strip()
+                    _, in_d, in_tb, in_ftr, bcls, grp_key = self._ctrl_meta
+                    if in_d or (in_tb and txt.lower() in DENSITY_WORDS):
+                        self._density_grps[grp_key] = self._density_grps.get(grp_key, 0) + 1
+                    if in_ftr and not self._ftr_bad and (FOOTER_BANNED_RE.match(txt) or ((bcls & {"va-badge", "va-pill"}) and re.search(r"lock|classic", txt, re.I))):
+                        self._ftr_bad = True
+                        self.errs.append(f"[RAIL_FOOTER_CLUTTER] {self.source}: .va-rail-footer contains forbidden Lock/Classic control '{txt[:24]}'")
+                    self._ctrl_cap = self._ctrl_meta = None
+                if i + 1 == self._ftr_depth:
+                    if self._ftr_kids > 2 and not self._ftr_bad:
+                        self._ftr_bad = True
+                        self.errs.append(f"[RAIL_FOOTER_CLUTTER] {self.source}: .va-rail-footer has {self._ftr_kids} (>2) child control groups")
+                    self._ftr_depth = 0
                 del self.tag_stack[i:]
                 break
         if self._chrome_entry_len is not None and len(self.tag_stack) <= self._chrome_entry_len:
@@ -220,10 +247,15 @@ class QuietHTMLAuditor(HTMLParser):
             self.svg_stack[-1]["title"].append(data)
         if self._chrome_entry_len is not None:
             self._chrome_buf.append(data)
+        if self._ctrl_cap is not None:
+            self._ctrl_cap.append(data)
         if data.strip() and not any(t in {"pre", "code"} for t, _ in self.tag_stack):
             m = BRAIN_TEXT_RE.search(data)
             if m:
                 self.errs.append(f"[INTERNAL_ID] {self.source}:{self.getpos()[0]}: raw internal identifier '{m.group(0)}'")
+            if not self._jargon_bad and DIURNAL_RE.search(data):
+                self._jargon_bad = True
+                self.errs.append(f"[JARGON_TERMINOLOGY] {self.source}:{self.getpos()[0]}: copy uses 'diurnal' — prefer 'Activity by Hour of Day'")
             in_chrome = any(
                 t in {"header", "nav", "button"} or ad.get("role", "").lower() in {"tab", "toolbar"}
                 for t, ad in self.tag_stack
@@ -235,15 +267,9 @@ class QuietHTMLAuditor(HTMLParser):
 
 
 def audit_html_text(
-    html_text: str,
-    source: str,
-    base_dir: Path | None = None,
-    *,
-    web_root: Path | None = None,
-    mount_prefixes: dict[str, Path] | None = None,
-    mount_scopes: dict[str, Path] | None = None,
-    exclude: tuple[str, ...] | list[str] | None = None,
-    audit_mounted_external: bool = False,
+    html_text: str, source: str, base_dir: Path | None = None, *, web_root: Path | None = None,
+    mount_prefixes: dict[str, Path] | None = None, mount_scopes: dict[str, Path] | None = None,
+    exclude: tuple[str, ...] | list[str] | None = None, audit_mounted_external: bool = False,
     allow_showcase_chrome: bool = False,
 ) -> list[str]:
     """Run zero-dependency static Quiet UI checks on an HTML document and mounted assets."""
@@ -312,12 +338,8 @@ def audit_html_text(
 
 
 def audit_static_target(
-    target: str,
-    *,
-    web_root: Path | None = None,
-    mount_prefixes: dict[str, Path] | None = None,
-    exclude: tuple[str, ...] | list[str] | None = None,
-    audit_mounted_external: bool = False,
+    target: str, *, web_root: Path | None = None, mount_prefixes: dict[str, Path] | None = None,
+    exclude: tuple[str, ...] | list[str] | None = None, audit_mounted_external: bool = False,
     allow_showcase_chrome: bool = False,
 ) -> tuple[list[str], list[Path]]:
     """Audit a file, directory, or HTTP(S) URL statically; return (errors, html_files)."""
@@ -326,29 +348,18 @@ def audit_static_target(
     if target.startswith(("http://", "https://")):
         with urllib.request.urlopen(target, timeout=10) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
-        errs.extend(
-            audit_html_text(
-                html,
-                target,
-                web_root=web_root,
-                mount_prefixes=mount_prefixes,
-                mount_scopes=mount_scopes,
-                exclude=exclude,
-                audit_mounted_external=audit_mounted_external,
-                allow_showcase_chrome=allow_showcase_chrome,
-            )
-        )
+        errs.extend(audit_html_text(
+            html, target, web_root=web_root, mount_prefixes=mount_prefixes, mount_scopes=mount_scopes,
+            exclude=exclude, audit_mounted_external=audit_mounted_external, allow_showcase_chrome=allow_showcase_chrome,
+        ))
         return errs, []
     path = Path(target).resolve()
     if not path.exists():
         return [f"[MISSING_TARGET] Not found: {target}"], []
     files = [path] if path.is_file() else sorted(
         p for p in path.rglob("*")
-        if p.is_file()
-        and p.resolve().is_relative_to(path)
-        and not (set(p.parts) & SKIP_DIRS)
-        and not matches_exclude(p, exclude, root=path)
-        and p.suffix.lower() in {".html", ".htm", ".css", ".js", ".json"}
+        if p.is_file() and p.resolve().is_relative_to(path) and not (set(p.parts) & SKIP_DIRS)
+        and not matches_exclude(p, exclude, root=path) and p.suffix.lower() in {".html", ".htm", ".css", ".js", ".json"}
     )
     html_files: list[Path] = []
     eff_root = web_root if web_root is not None else (path if path.is_dir() else None)
@@ -395,7 +406,7 @@ def audit_static_target(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.2.2 HTML/CSS/JS & CDP Linter.")
+    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.3.0 HTML/CSS/JS & CDP Linter.")
     parser.add_argument("target", help="HTML/CSS/JS file, directory, or http(s):// URL")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome checks across 390, 820, and 1440px")
     parser.add_argument("--web-root", help="Filesystem web root for resolving leading '/' CSS and JS paths")

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.2 — 3-Pillar Component Library (42 Specimens)</title>
+  <title>Quiet UI v9.3 — 3-Pillar Component Library (43 Specimens)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 @layer reset, tokens, shell, archetypes, evidence, views, utilities;
@@ -433,7 +433,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.2 — Stage Container, Primitives & Responsive Figures/Tables
+   Quiet UI v9.3 — Stage Container, Primitives & Responsive Figures/Tables
    ========================================================================== */
 
 @layer shell {
@@ -845,21 +845,23 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .sq-err  { background: var(--status-err); }
 
   /* Responsive Column & Touch Overrides (Zero display-override on non-hidden components) */
-  [data-form-factor="touch"] :is(button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
+  [data-form-factor="touch"] :is(button:where(:not(.va-overlay-control):not(.va-swatch-btn):not(.va-tree-action):not(.va-scope-clear)), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]))) { min-block-size: 44px; }
   @media (max-width: 480px) {
-    button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) { min-block-size: 44px; }
+    button:where(:not(.va-overlay-control):not(.va-swatch-btn):not(.va-tree-action):not(.va-scope-clear)), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
+    input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
   }
   @media (max-width: 960px) { .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-tb-sep { display: none; }
     .va-tb-btn, .va-tab { min-block-size: 44px; }
-    .va-tb-btn { min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    .va-tb-btn { min-inline-size: 44px; padding: 0 0.55rem; border-block-end: 0; margin-block-end: 0; }
+    .va-tb-group > .va-tb-btn { border-inline-end: 1px solid var(--border-hairline); }
+    .va-tb-group > .va-tb-btn:last-child { border-inline-end: 0; }
     :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 44px; min-inline-size: 44px; }
   }
   @media (pointer: coarse) and (min-width: 768px) {
-    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; }
+    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; padding: 0 0.55rem; }
   }
 }
 
@@ -1837,7 +1839,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.2.2 — Overlay Rail Footer, Period Stepper, Scope Chip & Tree Row */
+/* Quiet UI v9.3 — Overlay Rail Footer, Swatches, Period Stepper & Flat Rail Tree */
 
 @layer shell {
   /* Sticky shell topbar hosting left-of-brand rail toggle */
@@ -1908,14 +1910,50 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
   .va-rail-footer {
     margin-block-start: auto;
-    padding-block-start: 0.65rem;
+    padding-block-start: 0.35rem;
     border-block-start: 1px solid var(--border-subtle);
+    min-block-size: 40px;
     display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
     font-size: var(--ts-xs);
     color: var(--text-secondary);
   }
+  .va-swatch-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex: 0 0 auto;
+  }
+  .va-swatch-btn {
+    position: relative;
+    appearance: none;
+    inline-size: 20px;
+    block-size: 20px;
+    min-inline-size: 20px;
+    min-block-size: 20px;
+    padding: 0;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--border-strong);
+    background: var(--swatch-bg, var(--bg-surface));
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .va-swatch-btn::after { content: ""; position: absolute; inset: -12px; }
+  .va-swatch-btn[data-swatch="white"] { background: #FFFFFF; }
+  .va-swatch-btn[data-swatch="paper"] { background: #F6F4EF; }
+  .va-swatch-btn[data-swatch="dark-paper"] { background: #1C1B19; }
+  .va-swatch-btn[data-swatch="dark"] { background: #090D16; }
+  .va-swatch-btn[aria-pressed="true"],
+  .va-swatch-btn[aria-checked="true"],
+  .va-swatch-btn.is-active {
+    border-color: var(--accent-focal);
+    box-shadow: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-focal);
+  }
+  .va-swatch-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 3px; }
 
   /* Compound Period Stepper + Grouped Preset Popover */
   .va-period-stepper {
@@ -2058,6 +2096,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-scope-sep { color: var(--text-muted); }
   .va-scope-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .va-scope-clear {
+    position: relative;
     appearance: none;
     border: 0;
     background: transparent;
@@ -2071,14 +2110,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     justify-content: center;
     cursor: pointer;
   }
+  .va-scope-clear::after { content: ""; position: absolute; inset: -12px; }
   .va-scope-clear:hover { color: var(--text-primary); background: var(--bg-subtle); }
   .va-tree-row {
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr);
+    grid-template-columns: 24px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
+    min-block-size: 36px;
     min-inline-size: 0;
+    border: 0;
+    background: transparent;
   }
+  .va-tree-row > .va-tree-caret { grid-column: 1; }
+  .va-tree-row > .va-tree-dest { grid-column: 2; }
+  .va-tree-row > .va-tree-action { grid-column: 3; }
+  .va-tree-row:not(:has(> .va-tree-caret)) { grid-template-columns: minmax(0, 1fr) auto; }
+  .va-tree-row:not(:has(> .va-tree-caret)) > .va-tree-dest { grid-column: 1; }
+  .va-tree-row:not(:has(> .va-tree-caret)) > .va-tree-action { grid-column: 2; }
   .va-tree-caret {
     appearance: none;
     border: 0;
@@ -2102,8 +2151,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     color: var(--text-primary);
     text-decoration: none;
     border-radius: var(--radius-sm);
-    padding: 0.3rem 0.5rem;
-    min-block-size: 30px;
+    padding: 0.25rem 0.5rem;
+    min-block-size: 36px;
+    block-size: 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2112,23 +2162,81 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     font-size: var(--ts-sm);
     font-weight: 500;
     text-align: start;
+    white-space: nowrap;
     cursor: pointer;
     min-inline-size: 0;
+  }
+  .va-tree-label,
+  .va-tree-dest > span:first-child {
+    min-inline-size: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .va-tree-dest:hover { background: var(--bg-elevated); }
   .va-tree-dest[aria-current="page"],
   .va-tree-dest.is-active { background: var(--bg-subtle); font-weight: 600; }
-  .va-tree-group { padding-inline-start: 0.85rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .va-tree-action {
+    position: relative;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    inline-size: 26px;
+    block-size: 26px;
+    min-inline-size: 26px;
+    min-block-size: 26px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .va-tree-action::after { content: ""; position: absolute; inset: -9px; }
+  .va-tree-action:hover { color: var(--text-primary); background: var(--bg-elevated); }
+  .va-tree-action:focus-visible,
+  .va-tree-more:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 1px; }
+  .va-tree-group,
+  .va-tree-children {
+    padding-inline-start: 0.85rem;
+    margin-inline-start: 0.45rem;
+    border: 0;
+    border-inline-start: 1px solid var(--border-hairline);
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .va-tree-more {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    text-align: start;
+    padding: 0.25rem 0.5rem;
+    min-block-size: 32px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .va-tree-more:hover { color: var(--accent-focal); background: var(--bg-elevated); }
   @media (pointer: coarse) and (max-width: 699px) {
     .va-period-step, .va-period-trigger, .va-period-today { min-block-size: 44px; }
     .va-period-step { min-inline-size: 44px; }
     .va-tree-caret { inline-size: 36px; block-size: 40px; }
-    .va-tree-dest { min-block-size: 44px; }
+    .va-tree-dest { min-block-size: 44px; block-size: auto; }
+    .va-tree-more { min-block-size: 44px; }
   }
 }
 
 @layer utilities {
-  /* Opaque Overlay Surface Hardening: beats @layer shell .va-pane via terminal @layer utilities order */
+  /* Opaque Overlay Surface Hardening & Single-Row Rail Footer Control Geometry */
   .va-side-rail.va-side-rail,
   .va-pane.va-side-rail,
   .va-side-rail[data-open="true"],
@@ -2142,6 +2250,136 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background-color: var(--bg-surface);
     color: var(--text-primary);
   }
+  .va-rail-footer .va-tb-group { overflow: visible; }
+  .va-rail-footer .va-tb-btn {
+    position: relative;
+    min-block-size: 30px;
+    min-inline-size: 32px;
+    padding: 0 0.5rem;
+  }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .va-rail-footer .va-tb-btn::after { content: ""; position: absolute; inset: -7px 0; }
+  }
+}
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.3 — >= 60% Prose-Floor Split Reader & < 760px Native Modal Sheet */
+
+@layer shell {
+  .va-split-reader-gallery {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    min-inline-size: 0;
+  }
+  .va-split-reader-primary {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+  .va-split-reader-companion {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+  @media (max-width: 759px) {
+    .va-split-mode-toggle { display: none; }
+    .va-split-reader-companion[data-mobile-promoted="true"] { display: none; }
+  }
+  @media (min-width: 760px) {
+    .va-split-sheet-trigger { display: none; }
+  }
+  @media (min-width: 760px) and (max-width: 1279px) {
+    .va-split-reader-gallery {
+      grid-template-columns: minmax(min(480px, 62%), calc(64% - 0.375rem)) minmax(min(240px, 34%), calc(36% - 0.375rem));
+    }
+    .va-split-reader-companion { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (min-width: 1280px) {
+    .va-split-reader-gallery {
+      grid-template-columns: minmax(0, calc(60% - 0.375rem)) minmax(0, calc(40% - 0.375rem));
+    }
+    .va-split-reader-companion {
+      grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+    }
+  }
+
+  /* Native <dialog class="va-modal-sheet" closedby="any"> ([open] scoped display) */
+  dialog.va-modal-sheet {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-card);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    padding: 0;
+    margin: auto;
+    inline-size: min(92vw, 720px);
+    max-inline-size: calc(100dvw - 1.5rem);
+    max-block-size: calc(100dvh - 3rem);
+    box-shadow: 0 24px 56px rgba(9, 13, 22, 0.36);
+    overflow: hidden;
+  }
+  dialog.va-modal-sheet[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  dialog.va-modal-sheet:modal {
+    overscroll-behavior: contain;
+  }
+  html:has(dialog.va-modal-sheet:modal),
+  body:has(dialog.va-modal-sheet:modal) {
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+  dialog.va-modal-sheet::backdrop {
+    background: rgba(9, 13, 22, 0.56);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+  .va-modal-sheet-hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    min-block-size: 44px;
+    padding: 0.45rem 0.85rem;
+    border-block-end: 1px solid var(--border-hairline);
+    background: var(--bg-elevated);
+    flex: 0 0 auto;
+  }
+  .va-modal-sheet-body {
+    padding: var(--density-card-pad, 0.9rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    min-block-size: 0;
+    flex: 1 1 auto;
+  }
+  @media (max-width: 759px) {
+    dialog.va-modal-sheet {
+      margin: auto 0 0 0;
+      inline-size: 100%;
+      max-inline-size: 100%;
+      max-block-size: 86dvh;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      border-inline: 0;
+      border-block-end: 0;
+    }
+  }
+}
+
+@layer utilities {
+  dialog.va-modal-sheet[open] {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+  }
+}
+
+@media print {
+  dialog.va-modal-sheet { display: none; }
 }
 
   </style>
@@ -2151,8 +2389,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.2 · 3-PILLAR COMPONENT GALLERY</span>
-        <h1>Component Library (42 Specimens × 4 Themes)</h1>
+        <span class="va-kicker">QUIET UI v9.3 · 3-PILLAR COMPONENT GALLERY</span>
+        <h1>Component Library (43 Specimens × 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -2199,10 +2437,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
-      <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, triage rows, ARIA trees, KPI gauges, joined toolbars, period steppers, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges — each with Data Inputs &amp; Honest Fallback disclosures.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">42 of 42 specimens visible</span>
+      <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, triage rows, ARIA trees, KPI gauges, joined toolbars, period steppers, cyclical whiskers, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges — each with Data Inputs &amp; Honest Fallback disclosures.</div>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">43 of 43 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="42 3-Pillar Components"><article class="qe-specimen" data-modality="M1" data-schema-modality="scalar" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m1-l1-fleet-kpi" data-qe-modality="scalar" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Clinical ICU Arterial Pressure (MAP) Orientation</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCALAR</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-scalar-card">
+    <section class="qe-bench-grid" aria-label="43 3-Pillar Components"><article class="qe-specimen" data-modality="M1" data-schema-modality="scalar" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m1-l1-fleet-kpi" data-qe-modality="scalar" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Clinical ICU Arterial Pressure (MAP) Orientation</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCALAR</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-scalar-card">
 <div class="qe-scalar-zone1 qe-scalar-top"><span></span><span class="qe-scalar-ts va-nums">Checked Today · 9:15 PM</span></div>
 <h3 class="qe-scalar-title">Clinical ICU Arterial Pressure (MAP) Orientation</h3>
 <div class="qe-scalar-zone2 qe-scalar-val-row">
@@ -11022,7 +11260,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       &quot;to&quot;: &quot;cap&quot;
     }
   ]
-}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>schematic_kind (pipeline), nodes[], connections[]</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-grammar" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-pill-and-status-grammar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ATOMIC GRAMMAR</div><h2 class="qe-fig-title">3-Tier Pill &amp; Status Annunciator Grammar</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Separates borderless nominal status dots, sharp 2px taxonomy tags, and 999px interactive action buttons.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Status Badges (Non-Interactive · Nominal Borderless)</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">NOMINAL · 99.8%</span><span class="va-pill" data-variant="status" data-state="warn">CAUTION · THERMAL</span><span class="va-pill" data-variant="status" data-state="fault">TRIP · 2OO3 QUORUM</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Monochrome Keycap Tags (2px Sharp Radius)</div><div class="v9-demo-row"><span class="va-pill" data-variant="tag">NIST SP 811</span><span class="va-pill" data-variant="tag">READ ONLY</span><span class="va-pill" data-variant="tag">ISO-101 CONFORMANT</span></div></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Interactive Action Filter Chips (Button · 999px Pill Radius)</div><div class="v9-demo-row v9-demo-chips" role="group" aria-label="Telemetry stream filter"><button type="button" class="va-pill" data-variant="chip" aria-pressed="true">Critical Only</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Calibrated Sensors</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Scheduled Hold</button><span class="va-nums qe-fig-desc" data-chip-readout aria-live="polite">Active filter: Critical Only</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>telemetry.state (nominal|warn|fault), metadata.flags[]</code></div><div><strong>Optional (omit if null):</strong> <code>excursion.margin_pct, protocol.mode_tag (omit when unbacked)</code></div><div><strong>Warmup / empty fallback:</strong> Render neutral &#x27;Nominal&#x27; dot or &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-controls" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-guarded-and-consumer-controls"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ERGONOMIC ACTUATION</div><h2 class="qe-fig-title">Guarded Industrial Switch &amp; Calm Discrete Controls</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 °C trim steppers.</p><div class="qe-bench-body"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Industrial Two-Step Guarded Interlock</div><div class="v9-guard-pad" data-guard-pad><button type="button" class="v9-guard-btn" data-guard-arm aria-expanded="false">Arm Feeder Transfer</button><button type="button" class="v9-guard-btn v9-guard-confirm" data-guard-confirm hidden>Confirm Execute</button><button type="button" class="v9-guard-btn" data-guard-cancel hidden>Cancel</button><span class="va-pill" data-variant="status" data-state="nominal" data-guard-state aria-live="polite">SAFE · LOCKED</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Calm Consumer Segmented Preset &amp; Trim Stepper</div><div class="v9-demo-row"><div class="v9-seg-group" role="group" aria-label="Comfort mode preset"><button type="button" class="v9-seg-btn" aria-pressed="false">Away</button><button type="button" class="v9-seg-btn" aria-pressed="true">Comfort</button><button type="button" class="v9-seg-btn" aria-pressed="false">Eco Night</button></div><div class="v9-stepper" data-stepper data-min="16.0" data-max="26.0" data-step="0.5" data-val="21.0"><button type="button" class="v9-stepper-btn" data-step-delta="-0.5" aria-label="Decrease setpoint">-</button><span class="v9-stepper-val va-nums" data-step-display aria-live="polite">21.0 °C</span><button type="button" class="v9-stepper-btn" data-step-delta="0.5" aria-label="Increase setpoint">+</button></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>actuator.state, interlock.armed (bool), command_endpoint</code></div><div><strong>Optional (omit if null):</strong> <code>command.ack_latency_ms, operator_note (omit when absent)</code></div><div><strong>Warmup / empty fallback:</strong> Disable EXECUTE when interlock state or ACK timestamp is stale/unknown.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-triage" data-rigor="L1"><div class="va-card qe-bench-card" id="ui-compact-triage-queue"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · WORKSPACE TRIAGE</div><h2 class="qe-fig-title">Dense 38px Issue Triage Queue &amp; State Filters</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L1</span></div></div><p class="qe-fig-desc">Single-scan horizontal triage strips with inline priority tags, state filters, and click-to-inspect owner metadata.</p><div class="qe-bench-body"><div class="v9-triage-wrap" data-triage-root><div class="v9-triage-bar"><div class="v9-demo-row" role="group" aria-label="Filter triage queue"><button type="button" class="va-pill" data-variant="chip" data-triage-filter="all" aria-pressed="true">All (4)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="open" aria-pressed="false">Open (3)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="done" aria-pressed="false">Verified (1)</button></div></div><div class="v9-triage-list" role="listbox" aria-label="Issue triage rows"><button type="button" class="v9-triage-row" role="option" aria-selected="true" tabindex="0" data-triage-state="open" data-triage-detail="Owner: Security Gate · Target +1.0 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">API token rotation grace window blocks canary ingest</span><span class="va-pill" data-variant="status" data-state="fault">BLOCKED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Controls Lab · Target +2.5 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">TSN boundary clock drift spikes under 85 °C thermal ramp</span><span class="va-pill" data-variant="status" data-state="warn">TRIAGED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="done" data-triage-detail="Owner: Release QA · Merged to integration"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Verify zero SVG clipping on 390 px mobile viewport sweep</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Lab Bench · Target +0.5 d"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Publish calibrated RC cooling repeatability summary table</span><span class="va-pill" data-variant="status" data-state="warn">REVIEW</span></button></div><div class="v9-triage-meta" data-triage-detail-box aria-live="polite">Owner: Security Gate · Target +1.0 d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>items[].{id, title, severity, status, owner}</code></div><div><strong>Optional (omit if null):</strong> <code>items[].target_window, filter.bucket_counts (omit if untracked)</code></div><div><strong>Warmup / empty fallback:</strong> Show &#x27;0 matching items&#x27; empty row rather than stubbed triage tasks.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-tree" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-coupled-tree-explorer"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · HIERARCHICAL NAVIGATOR</div><h2 class="qe-fig-title">WAI-ARIA Coupled Tree Explorer &amp; Inspector</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L3</span></div></div><p class="qe-fig-desc">Native keyboard-accessible tree disclosure coupled synchronously with an operational SLA detail inspector.</p><div class="qe-bench-body"><div class="v9-tree-shell" data-tree-root><ul class="v9-tree-nav" role="tree" aria-label="System Subsystem Hierarchy"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-toggle aria-expanded="true" aria-selected="false" tabindex="-1"><span>Core Cluster (Prod)</span><span aria-hidden="true">▾</span></button><ul role="group"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="true" tabindex="0" data-node-title="Edge Ingress Gateway" data-node-state="nominal" data-node-sla="99.94% · 14.2 ms p99" data-node-note="Zero packet drop across dual TLS terminators in last 24h.">Edge Ingress Gateway</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Worker Queue Pool" data-node-state="warn" data-node-sla="97.80% · Depth 412" data-node-note="Elevated backlog from schema migration batch window.">Worker Queue Pool</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Ledger Write Replica" data-node-state="nominal" data-node-sla="100.0% · 0.0 s lag" data-node-note="Synchronous quorum replication verified on 3 zones.">Ledger Write Replica</button></li></ul></li></ul><div class="v9-tree-detail" data-tree-detail aria-live="polite"><div class="v9-demo-row"><strong data-tree-title>Edge Ingress Gateway</strong><span class="va-pill" data-variant="status" data-state="nominal" data-tree-badge>NOMINAL</span></div><div class="va-nums" data-tree-sla>SLO: 99.94% · 14.2 ms p99</div><p class="qe-fig-desc" data-tree-note>Zero packet drop across dual TLS terminators in last 24h.</p></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>tree.nodes[].{id, label, role, children[]}, node.summary</code></div><div><strong>Optional (omit if null):</strong> <code>node.telemetry_note, node.uptime_pct (omit when missing)</code></div><div><strong>Warmup / empty fallback:</strong> Render empty inspector card with node ID only; never fabricate 24h drop counts.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-gate" data-rigor="L2"><div class="va-card qe-bench-card" id="br-review-room-gate-band"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · EXECUTIVE BLUF BRIDGE</div><h2 class="qe-fig-title">Decision Gate Banner &amp; Readiness Checklist</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Lead-with-verdict gate banner tying executive go/hold posture directly to quantitative verification checkboxes.</p><div class="qe-bench-body"><div class="v9-br-banner"><div class="v9-br-head"><strong>Verdict: CONDITIONAL HOLD — Complete Failover Drill Prior to Cutover</strong><span class="va-pill" data-variant="status" data-state="warn">HOLD · 3/4 GATES PASS</span></div><p class="qe-fig-desc">Primary schema backfill and telemetry unit normalization passed verification; final Canary signoff requires green multi-AZ failover latency under 250.0 ms.</p><div class="v9-br-checks"><div class="v9-br-check"><span>1. Type &amp; Build Parity</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>2. Metric Conservation</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>3. Multi-AZ Failover (&lt; 250 ms)</span><span class="va-pill" data-variant="status" data-state="warn">PENDING</span></div><div class="v9-br-check"><span>4. Rollback Snapshot Verified</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>gate.verdict, gate.checklist[].{label, status, state}</code></div><div><strong>Optional (omit if null):</strong> <code>gate.blocker_reason, gate.signoff_ts (omit if not recorded)</code></div><div><strong>Warmup / empty fallback:</strong> Hold verdict neutral (&#x27;Pending Signoff&#x27;) until every gate check reports real status.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-runbook" data-rigor="L2"><div class="va-card qe-bench-card" id="br-split-runbook-and-callout"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · PROCEDURAL BRIDGE</div><h2 class="qe-fig-title">Split Verification Runbook &amp; Escalation Callout</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Asymmetric split pairing ordered diagnostic steps and copy-safe command blocks with fault escalation thresholds.</p><div class="qe-bench-body"><div class="v9-split-runbook"><div class="v9-demo-subcard"><div class="v9-demo-label">Field Diagnostic &amp; Recovery Sequence</div><ol class="v9-runbook-steps"><li>Measure bus termination impedance across CAN_H / CAN_L (expect 60.0 Ω nominal with dual 120 Ω ends).</li><li>Inspect optical/TSN grandmaster lock offset against 0.35 µs dropout ceiling before escalating.</li><li>Capture deterministic trace bundle and attach calibration delta before resetting fault latch.</li></ol><pre class="v9-runbook-cmd" role="region" aria-label="Diagnostic command" tabindex="0"><code>diag-probe --bus tsn0 --check-eol --window 12s</code></pre></div><div class="v9-callout-stack"><div class="v9-callout-box is-warn"><strong>Thermal Derating Watch</strong><br/>Defer load step above 85 °C enclosure ambient until coolant delta recovers below 4 °C.</div><div class="v9-callout-box"><strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 µs) directly to Systems Controls Desk.</div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>steps[].{seq, title, action, outcome}, safety.warning</code></div><div><strong>Optional (omit if null):</strong> <code>telemetry.live_probe, step.elapsed_s (omit when offline)</code></div><div><strong>Warmup / empty fallback:</strong> Display documented static step copy paired with explicit &#x27;Telemetry offline&#x27; note.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-kpi-gauges" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-dense-kpi-gauge-cards"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 COCKPIT PRIMITIVE</div><h2 class="qe-fig-title">Dense Operational KPI Gauge Row &amp; Trackless Unbounded Cards</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Compact 4-up/2-up cards combining bounded used/limit gauges (.va-kpi-gauge-card) with trackless scalar cards (.va-kpi-card) for unbounded totals.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-kpi-demo-wrap><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><span class="v9-demo-label">4-up Desktop / 2-up Tablet KPI Gauges (Absent Sub-Slots Omitted Cleanly)</span><button type="button" class="va-pill" data-variant="chip" data-kpi-toggle-state aria-pressed="true">Simulate Post-Restart Warmup (N=3)</button></div><div class="va-kpi-gauge-grid"><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Partner Quota</span><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span></div><div class="va-kpi-gauge-val">68.4%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Partner Quota Utilization" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:68.4%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:71.4%" title="Daily target 71.4%"></span></div><div class="va-kpi-gauge-stats"><span>6.84M / 10M</span><span>n=482</span><span>Target 71.4%</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Core Compute</span><span class="va-pill" data-variant="tag">NO TARGET PIN</span></div><div class="va-kpi-gauge-val">41.2%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Core Compute Utilization" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:41.2%"></div></div><div class="va-kpi-gauge-stats"><span>82.4M / 200M</span><span>n=1,920</span></div></div><div class="va-kpi-gauge-card" data-state="warn"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Queue Depth</span><span class="va-pill" data-variant="status" data-state="warn">ADVISORY</span></div><div class="va-kpi-gauge-val">84.0%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Queue Depth" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:84%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:80%" title="Queue advisory threshold 80%"></span></div><div class="va-kpi-gauge-stats"><span>42 / 50 slots</span><span>p95 180 ms</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div><div class="va-kpi-gauge-val" data-kpi-warmup-val>3 / 50 calls</div><div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div></div><div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div></div></div><div class="va-kpi-grid"><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Cumulative Steps</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">14,820 steps</div><div class="va-kpi-stats"><span>Unbounded total</span><span>7d window</span></div></div><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Total Tokens</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">1.42M tokens</div><div class="va-kpi-stats"><span>No capacity ceiling</span><span>No fake gauge bar</span></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>cards[].{id, label, used_pct, used_label, limit_label, n_samples}</code></div><div><strong>Optional (omit if null):</strong> <code>cards[].daily_target_pct (omit pin when null), cards[].sub_stats[] (up to 3)</code></div><div><strong>Warmup / empty fallback:</strong> Keep proportional gauge + numerator/limit; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-joined-toolbar" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-joined-workspace-toolbar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TOOLBAR GRAMMAR</div><h2 class="qe-fig-title">Compact Joined Workspace Toolbar (27px Desktop / 44px Touch)</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Single-row ARIA toolbar with hairline-joined filter groups that wrap cleanly on 900px foldables and expand to 44px touch targets on phones.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="va-toolbar-joined" role="toolbar" aria-label="Telemetry filter and export controls" data-joined-toolbar><div class="va-tb-group" role="group" aria-label="Time window"><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="24h" aria-pressed="true">24h</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="7d" aria-pressed="false">7d</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="30d" aria-pressed="false">30d</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Cohort scope"><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="all" aria-pressed="true">All Runs (482)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="excursions" aria-pressed="false">Excursions (19)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="post" aria-pressed="false">Since Ceiling Effective</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Export actions"><button type="button" class="va-tb-btn" data-tb-action="export">Export CSV</button><button type="button" class="va-tb-btn" data-tb-action="reset">Reset</button></div></div><div class="v9-triage-meta" data-tb-status aria-live="polite">Window: 24h · Scope: All Runs (482)</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>filters.{window_opts[], scope_opts[]}, actions[].{id, label}</code></div><div><strong>Optional (omit if null):</strong> <code>active_count, export_href (disable/omit if endpoint unavailable)</code></div><div><strong>Warmup / empty fallback:</strong> Render compact joined buttons with aria-pressed on stateful toggles; expand to 44px on touch.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-period-stepper" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-period-stepper-popover"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TEMPORAL &amp; SCOPE PRIMITIVE</div><h2 class="qe-fig-title">Compound Period Stepper, Grouped Popover &amp; Scope Chip</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Consolidates Calendar-to-Date (MTD/QTD/YTD) and Rolling (30d/90d/52w) windows into one keyboard-accessible popover plus 3-level entity scope chip.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-stepper-demo><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><div class="va-period-stepper" data-period-stepper data-value="mtd"><div class="va-period-nav"><button type="button" class="va-period-step" data-period-step="-1" aria-label="Previous window">&lsaquo;</button><button type="button" class="va-period-trigger" aria-haspopup="menu" aria-expanded="false"><span data-period-label>MTD &middot; Nov 1&ndash;22</span><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="va-period-step" data-period-step="1" aria-label="Next window">&rsaquo;</button></div><button type="button" class="va-period-today" data-period-today hidden>Today</button><div class="va-preset-popover" role="menu" focusgroup="menu nomemory" aria-label="Telemetry time window presets" hidden><div class="va-preset-group"><div class="va-preset-group-label">Calendar-to-Date</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="true" data-preset="mtd" data-label="MTD" data-span="Nov 1&ndash;22" data-at-today="true"><span>Month-to-Date (MTD)</span><span class="va-preset-span">Nov 1&ndash;22</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="qtd" data-label="QTD" data-span="Oct 1&ndash;Nov 22"><span>Quarter-to-Date (QTD)</span><span class="va-preset-span">Oct&ndash;Nov</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="ytd" data-label="YTD" data-span="Jan 1&ndash;Nov 22"><span>Year-to-Date (YTD)</span><span class="va-preset-span">Jan&ndash;Nov</span></button></div><div class="va-preset-group"><div class="va-preset-group-label">Rolling Windows</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r30" data-label="Last 30d" data-span="Oct 24&ndash;Nov 22"><span>Last 30d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r90" data-label="Last 90d" data-span="Aug 25&ndash;Nov 22"><span>Last 90d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r52w" data-label="Last 52w" data-span="52 weeks"><span>Last 52w</span><span class="va-preset-span">1w bins</span></button></div></div></div><div class="va-scope-chip" data-level="entity" data-scope-demo><span class="va-scope-dot" aria-hidden="true"></span><span class="va-scope-label" data-scope-label>Substation B &middot; Transformer 02</span><button type="button" class="va-scope-clear" data-scope-reset aria-label="Clear entity scope">&times;</button></div></div><div class="v9-triage-meta" data-stepper-status aria-live="polite">Active window: MTD &middot; Nov 1&ndash;22 &middot; Adaptive bin: 1d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>period.{preset, start_iso, end_iso, step_delta}, scope.{level, entity, item}</code></div><div><strong>Optional (omit if null):</strong> <code>preset.disabled_reason (disable unsupported offline presets with explanatory title)</code></div><div><strong>Warmup / empty fallback:</strong> Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.</div></div></details></div></article></section>
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>schematic_kind (pipeline), nodes[], connections[]</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-grammar" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-pill-and-status-grammar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ATOMIC GRAMMAR</div><h2 class="qe-fig-title">3-Tier Pill &amp; Status Annunciator Grammar</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Separates borderless nominal status dots, sharp 2px taxonomy tags, and 999px interactive action buttons.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Status Badges (Non-Interactive · Nominal Borderless)</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">NOMINAL · 99.8%</span><span class="va-pill" data-variant="status" data-state="warn">CAUTION · THERMAL</span><span class="va-pill" data-variant="status" data-state="fault">TRIP · 2OO3 QUORUM</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Monochrome Keycap Tags (2px Sharp Radius)</div><div class="v9-demo-row"><span class="va-pill" data-variant="tag">NIST SP 811</span><span class="va-pill" data-variant="tag">READ ONLY</span><span class="va-pill" data-variant="tag">ISO-101 CONFORMANT</span></div></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Interactive Action Filter Chips (Button · 999px Pill Radius)</div><div class="v9-demo-row v9-demo-chips" role="group" aria-label="Telemetry stream filter"><button type="button" class="va-pill" data-variant="chip" aria-pressed="true">Critical Only</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Calibrated Sensors</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Scheduled Hold</button><span class="va-nums qe-fig-desc" data-chip-readout aria-live="polite">Active filter: Critical Only</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>telemetry.state (nominal|warn|fault), metadata.flags[]</code></div><div><strong>Optional (omit if null):</strong> <code>excursion.margin_pct, protocol.mode_tag (omit when unbacked)</code></div><div><strong>Warmup / empty fallback:</strong> Render neutral &#x27;Nominal&#x27; dot or &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-controls" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-guarded-and-consumer-controls"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ERGONOMIC ACTUATION</div><h2 class="qe-fig-title">Guarded Industrial Switch &amp; Calm Discrete Controls</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 °C trim steppers.</p><div class="qe-bench-body"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Industrial Two-Step Guarded Interlock</div><div class="v9-guard-pad" data-guard-pad><button type="button" class="v9-guard-btn" data-guard-arm aria-expanded="false">Arm Feeder Transfer</button><button type="button" class="v9-guard-btn v9-guard-confirm" data-guard-confirm hidden>Confirm Execute</button><button type="button" class="v9-guard-btn" data-guard-cancel hidden>Cancel</button><span class="va-pill" data-variant="status" data-state="nominal" data-guard-state aria-live="polite">SAFE · LOCKED</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Calm Consumer Segmented Preset &amp; Trim Stepper</div><div class="v9-demo-row"><div class="v9-seg-group" role="group" aria-label="Comfort mode preset"><button type="button" class="v9-seg-btn" aria-pressed="false">Away</button><button type="button" class="v9-seg-btn" aria-pressed="true">Comfort</button><button type="button" class="v9-seg-btn" aria-pressed="false">Eco Night</button></div><div class="v9-stepper" data-stepper data-min="16.0" data-max="26.0" data-step="0.5" data-val="21.0"><button type="button" class="v9-stepper-btn" data-step-delta="-0.5" aria-label="Decrease setpoint">-</button><span class="v9-stepper-val va-nums" data-step-display aria-live="polite">21.0 °C</span><button type="button" class="v9-stepper-btn" data-step-delta="0.5" aria-label="Increase setpoint">+</button></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>actuator.state, interlock.armed (bool), command_endpoint</code></div><div><strong>Optional (omit if null):</strong> <code>command.ack_latency_ms, operator_note (omit when absent)</code></div><div><strong>Warmup / empty fallback:</strong> Disable EXECUTE when interlock state or ACK timestamp is stale/unknown.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-triage" data-rigor="L1"><div class="va-card qe-bench-card" id="ui-compact-triage-queue"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · WORKSPACE TRIAGE</div><h2 class="qe-fig-title">Dense 38px Issue Triage Queue &amp; State Filters</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L1</span></div></div><p class="qe-fig-desc">Single-scan horizontal triage strips with inline priority tags, state filters, and click-to-inspect owner metadata.</p><div class="qe-bench-body"><div class="v9-triage-wrap" data-triage-root><div class="v9-triage-bar"><div class="v9-demo-row" role="group" aria-label="Filter triage queue"><button type="button" class="va-pill" data-variant="chip" data-triage-filter="all" aria-pressed="true">All (4)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="open" aria-pressed="false">Open (3)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="done" aria-pressed="false">Verified (1)</button></div></div><div class="v9-triage-list" role="listbox" aria-label="Issue triage rows"><button type="button" class="v9-triage-row" role="option" aria-selected="true" tabindex="0" data-triage-state="open" data-triage-detail="Owner: Security Gate · Target +1.0 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">API token rotation grace window blocks canary ingest</span><span class="va-pill" data-variant="status" data-state="fault">BLOCKED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Controls Lab · Target +2.5 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">TSN boundary clock drift spikes under 85 °C thermal ramp</span><span class="va-pill" data-variant="status" data-state="warn">TRIAGED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="done" data-triage-detail="Owner: Release QA · Merged to integration"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Verify zero SVG clipping on 390 px mobile viewport sweep</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Lab Bench · Target +0.5 d"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Publish calibrated RC cooling repeatability summary table</span><span class="va-pill" data-variant="status" data-state="warn">REVIEW</span></button></div><div class="v9-triage-meta" data-triage-detail-box aria-live="polite">Owner: Security Gate · Target +1.0 d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>items[].{id, title, severity, status, owner}</code></div><div><strong>Optional (omit if null):</strong> <code>items[].target_window, filter.bucket_counts (omit if untracked)</code></div><div><strong>Warmup / empty fallback:</strong> Show &#x27;0 matching items&#x27; empty row rather than stubbed triage tasks.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-tree" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-coupled-tree-explorer"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · HIERARCHICAL NAVIGATOR</div><h2 class="qe-fig-title">WAI-ARIA Coupled Tree Explorer &amp; Inspector</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L3</span></div></div><p class="qe-fig-desc">Native keyboard-accessible tree disclosure coupled synchronously with an operational SLA detail inspector.</p><div class="qe-bench-body"><div class="v9-tree-shell" data-tree-root><ul class="v9-tree-nav" role="tree" aria-label="System Subsystem Hierarchy"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-toggle aria-expanded="true" aria-selected="false" tabindex="-1"><span>Core Cluster (Prod)</span><span aria-hidden="true">▾</span></button><ul role="group"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="true" tabindex="0" data-node-title="Edge Ingress Gateway" data-node-state="nominal" data-node-sla="99.94% · 14.2 ms p99" data-node-note="Zero packet drop across dual TLS terminators in last 24h.">Edge Ingress Gateway</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Worker Queue Pool" data-node-state="warn" data-node-sla="97.80% · Depth 412" data-node-note="Elevated backlog from schema migration batch window.">Worker Queue Pool</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Ledger Write Replica" data-node-state="nominal" data-node-sla="100.0% · 0.0 s lag" data-node-note="Synchronous quorum replication verified on 3 zones.">Ledger Write Replica</button></li></ul></li></ul><div class="v9-tree-detail" data-tree-detail aria-live="polite"><div class="v9-demo-row"><strong data-tree-title>Edge Ingress Gateway</strong><span class="va-pill" data-variant="status" data-state="nominal" data-tree-badge>NOMINAL</span></div><div class="va-nums" data-tree-sla>SLO: 99.94% · 14.2 ms p99</div><p class="qe-fig-desc" data-tree-note>Zero packet drop across dual TLS terminators in last 24h.</p></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>tree.nodes[].{id, label, role, children[]}, node.summary</code></div><div><strong>Optional (omit if null):</strong> <code>node.telemetry_note, node.uptime_pct (omit when missing)</code></div><div><strong>Warmup / empty fallback:</strong> Render empty inspector card with node ID only; never fabricate 24h drop counts.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-gate" data-rigor="L2"><div class="va-card qe-bench-card" id="br-review-room-gate-band"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · EXECUTIVE BLUF BRIDGE</div><h2 class="qe-fig-title">Decision Gate Banner &amp; Readiness Checklist</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Lead-with-verdict gate banner tying executive go/hold posture directly to quantitative verification checkboxes.</p><div class="qe-bench-body"><div class="v9-br-banner"><div class="v9-br-head"><strong>Verdict: CONDITIONAL HOLD — Complete Failover Drill Prior to Cutover</strong><span class="va-pill" data-variant="status" data-state="warn">HOLD · 3/4 GATES PASS</span></div><p class="qe-fig-desc">Primary schema backfill and telemetry unit normalization passed verification; final Canary signoff requires green multi-AZ failover latency under 250.0 ms.</p><div class="v9-br-checks"><div class="v9-br-check"><span>1. Type &amp; Build Parity</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>2. Metric Conservation</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>3. Multi-AZ Failover (&lt; 250 ms)</span><span class="va-pill" data-variant="status" data-state="warn">PENDING</span></div><div class="v9-br-check"><span>4. Rollback Snapshot Verified</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>gate.verdict, gate.checklist[].{label, status, state}</code></div><div><strong>Optional (omit if null):</strong> <code>gate.blocker_reason, gate.signoff_ts (omit if not recorded)</code></div><div><strong>Warmup / empty fallback:</strong> Hold verdict neutral (&#x27;Pending Signoff&#x27;) until every gate check reports real status.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-runbook" data-rigor="L2"><div class="va-card qe-bench-card" id="br-split-runbook-and-callout"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · PROCEDURAL BRIDGE</div><h2 class="qe-fig-title">Split Verification Runbook &amp; Escalation Callout</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Asymmetric split pairing ordered diagnostic steps and copy-safe command blocks with fault escalation thresholds.</p><div class="qe-bench-body"><div class="v9-split-runbook"><div class="v9-demo-subcard"><div class="v9-demo-label">Field Diagnostic &amp; Recovery Sequence</div><ol class="v9-runbook-steps"><li>Measure bus termination impedance across CAN_H / CAN_L (expect 60.0 Ω nominal with dual 120 Ω ends).</li><li>Inspect optical/TSN grandmaster lock offset against 0.35 µs dropout ceiling before escalating.</li><li>Capture deterministic trace bundle and attach calibration delta before resetting fault latch.</li></ol><pre class="v9-runbook-cmd" role="region" aria-label="Diagnostic command" tabindex="0"><code>diag-probe --bus tsn0 --check-eol --window 12s</code></pre></div><div class="v9-callout-stack"><div class="v9-callout-box is-warn"><strong>Thermal Derating Watch</strong><br/>Defer load step above 85 °C enclosure ambient until coolant delta recovers below 4 °C.</div><div class="v9-callout-box"><strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 µs) directly to Systems Controls Desk.</div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>steps[].{seq, title, action, outcome}, safety.warning</code></div><div><strong>Optional (omit if null):</strong> <code>telemetry.live_probe, step.elapsed_s (omit when offline)</code></div><div><strong>Warmup / empty fallback:</strong> Display documented static step copy paired with explicit &#x27;Telemetry offline&#x27; note.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-kpi-gauges" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-dense-kpi-gauge-cards"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 COCKPIT PRIMITIVE</div><h2 class="qe-fig-title">Dense Operational KPI Gauge Row &amp; Trackless Unbounded Cards</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Compact 4-up/2-up cards combining bounded used/limit gauges (.va-kpi-gauge-card) with trackless scalar cards (.va-kpi-card) for unbounded totals.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-kpi-demo-wrap><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><span class="v9-demo-label">4-up Desktop / 2-up Tablet KPI Gauges (Absent Sub-Slots Omitted Cleanly)</span><button type="button" class="va-pill" data-variant="chip" data-kpi-toggle-state aria-pressed="true">Simulate Post-Restart Warmup (N=3)</button></div><div class="va-kpi-gauge-grid"><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Partner Quota</span><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span></div><div class="va-kpi-gauge-val">68.4%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Partner Quota Utilization" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:68.4%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:71.4%" title="Daily target 71.4%"></span></div><div class="va-kpi-gauge-stats"><span>6.84M / 10M</span><span>n=482</span><span>Target 71.4%</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Core Compute</span><span class="va-pill" data-variant="tag">NO TARGET PIN</span></div><div class="va-kpi-gauge-val">41.2%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Core Compute Utilization" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:41.2%"></div></div><div class="va-kpi-gauge-stats"><span>82.4M / 200M</span><span>n=1,920</span></div></div><div class="va-kpi-gauge-card" data-state="warn"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Queue Depth</span><span class="va-pill" data-variant="status" data-state="warn">ADVISORY</span></div><div class="va-kpi-gauge-val">84.0%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Queue Depth" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:84%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:80%" title="Queue advisory threshold 80%"></span></div><div class="va-kpi-gauge-stats"><span>42 / 50 slots</span><span>p95 180 ms</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div><div class="va-kpi-gauge-val" data-kpi-warmup-val>3 / 50 calls</div><div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div></div><div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div></div></div><div class="va-kpi-grid"><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Cumulative Steps</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">14,820 steps</div><div class="va-kpi-stats"><span>Unbounded total</span><span>7d window</span></div></div><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Total Tokens</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">1.42M tokens</div><div class="va-kpi-stats"><span>No capacity ceiling</span><span>No fake gauge bar</span></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>cards[].{id, label, used_pct, used_label, limit_label, n_samples}</code></div><div><strong>Optional (omit if null):</strong> <code>cards[].daily_target_pct (omit pin when null), cards[].sub_stats[] (up to 3)</code></div><div><strong>Warmup / empty fallback:</strong> Keep proportional gauge + numerator/limit; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-joined-toolbar" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-joined-workspace-toolbar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TOOLBAR GRAMMAR</div><h2 class="qe-fig-title">Compact Joined Workspace Toolbar (27px Desktop / 44px Touch)</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Single-row ARIA toolbar with hairline-joined filter groups that wrap cleanly on 900px foldables and expand to 44px touch targets on phones.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="va-toolbar-joined" role="toolbar" aria-label="Telemetry filter and export controls" data-joined-toolbar><div class="va-tb-group" role="group" aria-label="Time window"><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="24h" aria-pressed="true">24h</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="7d" aria-pressed="false">7d</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="30d" aria-pressed="false">30d</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Cohort scope"><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="all" aria-pressed="true">All Runs (482)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="excursions" aria-pressed="false">Excursions (19)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="post" aria-pressed="false">Since Ceiling Effective</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Export actions"><button type="button" class="va-tb-btn" data-tb-action="export">Export CSV</button><button type="button" class="va-tb-btn" data-tb-action="reset">Reset</button></div></div><div class="v9-triage-meta" data-tb-status aria-live="polite">Window: 24h · Scope: All Runs (482)</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>filters.{window_opts[], scope_opts[]}, actions[].{id, label}</code></div><div><strong>Optional (omit if null):</strong> <code>active_count, export_href (disable/omit if endpoint unavailable)</code></div><div><strong>Warmup / empty fallback:</strong> Render compact joined buttons with aria-pressed on stateful toggles; expand to 44px on touch.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-period-stepper" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-period-stepper-popover"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TEMPORAL &amp; SCOPE PRIMITIVE</div><h2 class="qe-fig-title">Compound Period Stepper, Grouped Popover &amp; Scope Chip</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Consolidates Calendar-to-Date (MTD/QTD/YTD) and Rolling (30d/90d/52w) windows into one keyboard-accessible popover plus 3-level entity scope chip.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-stepper-demo><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><div class="va-period-stepper" data-period-stepper data-value="mtd"><div class="va-period-nav"><button type="button" class="va-period-step" data-period-step="-1" aria-label="Previous window">&lsaquo;</button><button type="button" class="va-period-trigger" aria-haspopup="menu" aria-expanded="false"><span data-period-label>MTD &middot; Nov 1&ndash;22</span><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="va-period-step" data-period-step="1" aria-label="Next window">&rsaquo;</button></div><button type="button" class="va-period-today" data-period-today hidden>Today</button><div class="va-preset-popover" role="menu" focusgroup="menu nomemory" aria-label="Telemetry time window presets" hidden><div class="va-preset-group"><div class="va-preset-group-label">Calendar-to-Date</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="true" data-preset="mtd" data-label="MTD" data-span="Nov 1&ndash;22" data-at-today="true"><span>Month-to-Date (MTD)</span><span class="va-preset-span">Nov 1&ndash;22</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="qtd" data-label="QTD" data-span="Oct 1&ndash;Nov 22"><span>Quarter-to-Date (QTD)</span><span class="va-preset-span">Oct&ndash;Nov</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="ytd" data-label="YTD" data-span="Jan 1&ndash;Nov 22"><span>Year-to-Date (YTD)</span><span class="va-preset-span">Jan&ndash;Nov</span></button></div><div class="va-preset-group"><div class="va-preset-group-label">Rolling Windows</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r30" data-label="Last 30d" data-span="Oct 24&ndash;Nov 22"><span>Last 30d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r90" data-label="Last 90d" data-span="Aug 25&ndash;Nov 22"><span>Last 90d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r52w" data-label="Last 52w" data-span="52 weeks"><span>Last 52w</span><span class="va-preset-span">1w bins</span></button></div></div></div><div class="va-scope-chip" data-level="entity" data-scope-demo><span class="va-scope-dot" aria-hidden="true"></span><span class="va-scope-label" data-scope-label>Substation B &middot; Transformer 02</span><button type="button" class="va-scope-clear" data-scope-reset aria-label="Clear entity scope">&times;</button></div></div><div class="v9-triage-meta" data-stepper-status aria-live="polite">Active window: MTD &middot; Nov 1&ndash;22 &middot; Adaptive bin: 1d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>period.{preset, start_iso, end_iso, step_delta}, scope.{level, entity, item}</code></div><div><strong>Optional (omit if null):</strong> <code>preset.disabled_reason (disable unsupported offline presets with explanatory title)</code></div><div><strong>Warmup / empty fallback:</strong> Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="cyclical_whisker" data-rigor="L2"><figure class="va-card qe-bench-card qe-figure" id="qe-cyclical-whiskers"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 2 · M4 CYCLICAL WHISKERS</div><h2 class="qe-fig-title">Activity by Hour of Day — Min/Avg/Max Whiskers</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">M4 · L2</span></div></div><p class="qe-fig-desc">Active-day per-slot Min–Max range stems, Active Avg crossbars, and Last 24h markers across 00h–23h (replaces raw multi-day sums whose bars scale artificially with window length).</p><div class="qe-plot-wrap" data-echarts-mode="echarts" data-quiet-echarts="{&quot;kind&quot;:&quot;cyclical_whisker&quot;,&quot;buckets&quot;:[{&quot;label&quot;:&quot;00h&quot;,&quot;min&quot;:2,&quot;avg&quot;:5.2,&quot;max&quot;:11,&quot;recent&quot;:4,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;01h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.4,&quot;max&quot;:8,&quot;recent&quot;:3,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;02h&quot;,&quot;min&quot;:0,&quot;avg&quot;:2.1,&quot;max&quot;:6,&quot;recent&quot;:1,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;03h&quot;,&quot;min&quot;:0,&quot;avg&quot;:1.8,&quot;max&quot;:5,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;04h&quot;,&quot;min&quot;:1,&quot;avg&quot;:2.4,&quot;max&quot;:7,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;05h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.9,&quot;max&quot;:9,&quot;recent&quot;:5,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;06h&quot;,&quot;min&quot;:3,&quot;avg&quot;:6.8,&quot;max&quot;:13,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;07h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.4,&quot;max&quot;:19,&quot;recent&quot;:12,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;08h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.2,&quot;max&quot;:26,&quot;recent&quot;:18,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;09h&quot;,&quot;min&quot;:10,&quot;avg&quot;:20.8,&quot;max&quot;:31,&quot;recent&quot;:24,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;10h&quot;,&quot;min&quot;:12,&quot;avg&quot;:23.5,&quot;max&quot;:35,&quot;recent&quot;:27,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;11h&quot;,&quot;min&quot;:11,&quot;avg&quot;:22.1,&quot;max&quot;:34,&quot;recent&quot;:21,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;12h&quot;,&quot;min&quot;:9,&quot;avg&quot;:18.7,&quot;max&quot;:29,&quot;recent&quot;:17,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;13h&quot;,&quot;min&quot;:11,&quot;avg&quot;:21.6,&quot;max&quot;:33,&quot;recent&quot;:25,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;14h&quot;,&quot;min&quot;:13,&quot;avg&quot;:24.4,&quot;max&quot;:37,&quot;recent&quot;:29,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;15h&quot;,&quot;min&quot;:12,&quot;avg&quot;:22.9,&quot;max&quot;:35,&quot;recent&quot;:22,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;16h&quot;,&quot;min&quot;:10,&quot;avg&quot;:19.6,&quot;max&quot;:31,&quot;recent&quot;:20,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;17h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.8,&quot;max&quot;:27,&quot;recent&quot;:15,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;18h&quot;,&quot;min&quot;:6,&quot;avg&quot;:13.5,&quot;max&quot;:23,&quot;recent&quot;:14,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;19h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.9,&quot;max&quot;:21,&quot;recent&quot;:13,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;20h&quot;,&quot;min&quot;:4,&quot;avg&quot;:10.6,&quot;max&quot;:19,&quot;recent&quot;:9,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;21h&quot;,&quot;min&quot;:4,&quot;avg&quot;:9.4,&quot;max&quot;:17,&quot;recent&quot;:11,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;22h&quot;,&quot;min&quot;:3,&quot;avg&quot;:7.8,&quot;max&quot;:15,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;23h&quot;,&quot;min&quot;:2,&quot;avg&quot;:6.1,&quot;max&quot;:13,&quot;recent&quot;:5,&quot;activeDays&quot;:14}],&quot;opts&quot;:{&quot;unit&quot;:&quot;calls/day&quot;,&quot;recentLabel&quot;:&quot;Last 24h&quot;,&quot;rangeLabel&quot;:&quot;Min\u2013Max&quot;,&quot;avgLabel&quot;:&quot;Active Avg&quot;}}"><div class="qe-plot-modebar" role="group" aria-label="Plot rendering backend"><span class="qe-modebar-label">Renderer</span><button type="button" class="qe-mode-btn" data-qe-mode="svg" aria-pressed="false">Quiet SVG</button><button type="button" class="qe-mode-btn is-active" data-qe-mode="echarts" aria-pressed="true">Live ECharts</button></div><div class="qe-legend-series" aria-label="Series legend"><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="7" y1="1" x2="7" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="1" x2="10" y2="1" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="11" x2="10" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/></svg><span class="qe-leg-txt">Min–Max</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="2" y1="6" x2="12" y2="6" stroke="var(--text-primary)" stroke-width="2.4"/></svg><span class="qe-leg-txt">Active Avg</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><circle cx="7" cy="6" r="3.5" fill="var(--accent-focal)"/></svg><span class="qe-leg-txt">Last 24h</span></span></div><div class="va-figure-scroll"><div class="qe-echarts-host"></div><svg class="qe-svg-fallback qe-svg-680" viewBox="0 0 680 240" role="img" aria-label="Activity by Hour of Day Min Avg Max Whiskers" preserveAspectRatio="xMidYMid meet"><title>Activity by Hour of Day — Min/Avg/Max Whiskers</title><text x="54" y="18" font-family="var(--font-sans)" font-size="11" font-weight="600" fill="var(--text-secondary)">Activity / (calls/day)</text><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="206.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">0</text><line x1="54.0" y1="158.5" x2="660.0" y2="158.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="162.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">10</text><line x1="54.0" y1="115.0" x2="660.0" y2="115.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="119.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20</text><line x1="54.0" y1="71.5" x2="660.0" y2="71.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="75.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">30</text><line x1="54.0" y1="28.0" x2="660.0" y2="28.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="32.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">40</text><line x1="54.0" y1="28.0" x2="54.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="66.6" y1="193.3" x2="66.6" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="154.2" x2="70.1" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="193.3" x2="70.1" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="59.6" y1="179.4" x2="73.6" y2="179.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="66.6" cy="184.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="66.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">00h</text><line x1="91.9" y1="197.7" x2="91.9" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="167.2" x2="95.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="197.7" x2="95.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="84.9" y1="187.2" x2="98.9" y2="187.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="91.9" cy="188.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="117.1" y1="202.0" x2="117.1" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="175.9" x2="120.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="202.0" x2="120.6" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="110.1" y1="192.9" x2="124.1" y2="192.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="117.1" cy="197.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="142.4" y1="202.0" x2="142.4" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="180.2" x2="145.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="202.0" x2="145.9" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="135.4" y1="194.2" x2="149.4" y2="194.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="142.4" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="167.6" y1="197.7" x2="167.6" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="171.6" x2="171.1" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="197.7" x2="171.1" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="160.6" y1="191.6" x2="174.6" y2="191.6" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="167.6" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="167.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">04h</text><line x1="192.9" y1="197.7" x2="192.9" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="162.8" x2="196.4" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="197.7" x2="196.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="185.9" y1="185.0" x2="199.9" y2="185.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="192.9" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="218.1" y1="188.9" x2="218.1" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="145.4" x2="221.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="188.9" x2="221.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="211.1" y1="172.4" x2="225.1" y2="172.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="218.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="243.4" y1="180.2" x2="243.4" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="119.4" x2="246.9" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="180.2" x2="246.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="236.4" y1="152.4" x2="250.4" y2="152.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="243.4" cy="149.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="268.6" y1="167.2" x2="268.6" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="88.9" x2="272.1" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="167.2" x2="272.1" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="261.6" y1="131.5" x2="275.6" y2="131.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="268.6" cy="123.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="268.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">08h</text><line x1="293.9" y1="158.5" x2="293.9" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="67.2" x2="297.4" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="158.5" x2="297.4" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="286.9" y1="111.5" x2="300.9" y2="111.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="293.9" cy="97.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="319.1" y1="149.8" x2="319.1" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="49.8" x2="322.6" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="149.8" x2="322.6" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="312.1" y1="99.8" x2="326.1" y2="99.8" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="319.1" cy="84.5" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="344.4" y1="154.2" x2="344.4" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="54.1" x2="347.9" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="154.2" x2="347.9" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="337.4" y1="105.9" x2="351.4" y2="105.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="344.4" cy="110.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="369.6" y1="162.8" x2="369.6" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="75.9" x2="373.1" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="162.8" x2="373.1" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="362.6" y1="120.7" x2="376.6" y2="120.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="369.6" cy="128.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="369.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">12h</text><line x1="394.9" y1="154.2" x2="394.9" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="58.5" x2="398.4" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="154.2" x2="398.4" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="387.9" y1="108.0" x2="401.9" y2="108.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="394.9" cy="93.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="420.1" y1="145.4" x2="420.1" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="41.0" x2="423.6" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="145.4" x2="423.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="413.1" y1="95.9" x2="427.1" y2="95.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="420.1" cy="75.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="445.4" y1="149.8" x2="445.4" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="49.8" x2="448.9" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="149.8" x2="448.9" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="438.4" y1="102.4" x2="452.4" y2="102.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="445.4" cy="106.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="470.6" y1="158.5" x2="470.6" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="67.2" x2="474.1" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="158.5" x2="474.1" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="463.6" y1="116.7" x2="477.6" y2="116.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="470.6" cy="115.0" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="470.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">16h</text><line x1="495.9" y1="167.2" x2="495.9" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="84.5" x2="499.4" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="167.2" x2="499.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="488.9" y1="128.9" x2="502.9" y2="128.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="495.9" cy="136.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="521.1" y1="175.9" x2="521.1" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="102.0" x2="524.6" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="175.9" x2="524.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="514.1" y1="143.3" x2="528.1" y2="143.3" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="521.1" cy="141.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="546.4" y1="180.2" x2="546.4" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="110.6" x2="549.9" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="180.2" x2="549.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="539.4" y1="150.2" x2="553.4" y2="150.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="546.4" cy="145.4" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="571.6" y1="184.6" x2="571.6" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="119.4" x2="575.1" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="184.6" x2="575.1" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="564.6" y1="155.9" x2="578.6" y2="155.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="571.6" cy="162.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="571.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20h</text><line x1="596.9" y1="184.6" x2="596.9" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="128.1" x2="600.4" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="184.6" x2="600.4" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="589.9" y1="161.1" x2="603.9" y2="161.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="596.9" cy="154.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="622.1" y1="188.9" x2="622.1" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="136.8" x2="625.6" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="188.9" x2="625.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="615.1" y1="168.1" x2="629.1" y2="168.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="622.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="647.4" y1="193.3" x2="647.4" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="145.4" x2="650.9" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="193.3" x2="650.9" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="640.4" y1="175.5" x2="654.4" y2="175.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="647.4" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="647.4" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">23h</text></svg></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>buckets[].{label (00h..23h|Mon..Sun), min, avg, max, activeDays}</code></div><div><strong>Optional (omit if null):</strong> <code>buckets[].recent (Last 24h | Current Cycle marker; omit if current cycle empty)</code></div><div><strong>Warmup / empty fallback:</strong> Skip slots with activeDays === 0 rather than zero-filling; never plot multi-day raw sums on cyclical axes.</div></div></details></figure></article></section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script id="qe-bench-runtime">
@@ -11303,14 +11541,16 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     initEcoAndModeFallback();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
-  } else {
-    boot();
+  if (typeof document !== 'undefined' && document) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
   }
 
   window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
-})(window, document);
+})(window, typeof document !== 'undefined' ? document : null);
 
 
 // SPDX-License-Identifier: Apache-2.0
@@ -13392,7 +13632,259 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     observeChartResize: observeChartResize, normalizeOption: normalizeOption,
     binTimeSeries: binTimeSeries, trimTrailingFutureWeeks: trimTrailingFutureWeeks,
   };
-  root.QuietEChartsDefaults = api;
+  root.QuietEChartsDefaults = Object.assign(root.QuietEChartsDefaults || {}, api);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+}(typeof window !== 'undefined' ? window : globalThis));
+
+
+// SPDX-License-Identifier: Apache-2.0
+(function (root) {
+  'use strict';
+
+  function readThemeTokens(doc) {
+    var d = doc || (typeof document !== 'undefined' ? document : null);
+    var cs = (d && d.documentElement && typeof getComputedStyle === 'function')
+      ? getComputedStyle(d.documentElement) : null;
+    var pick = function (tok, fb) {
+      try {
+        var v = cs ? cs.getPropertyValue(tok).trim() : '';
+        return v || fb;
+      } catch (_e) {
+        return fb;
+      }
+    };
+    return {
+      textPrimary: pick('--text-primary', '#0F172A'),
+      textSecondary: pick('--text-secondary', '#475569'),
+      borderHairline: pick('--border-hairline', '#E2E8F0'),
+      borderStrong: pick('--border-strong', '#94A3B8'),
+      bgSurface: pick('--bg-surface', '#FFFFFF'),
+      bgElevated: pick('--bg-elevated', '#F8FAFC'),
+      accentFocal: pick('--accent-focal', '#1D4ED8'),
+    };
+  }
+
+  function nice125(lo, hi, targetTicks) {
+    if (root.QuietSvgLayout && typeof root.QuietSvgLayout.niceScale125 === 'function') {
+      return root.QuietSvgLayout.niceScale125(lo, hi, { targetTicks: targetTicks || 5, includeZero: lo >= 0 });
+    }
+    var a = lo >= 0 ? 0 : lo;
+    var span = Math.max(1e-9, hi - a);
+    var raw = span / Math.max(2, (targetTicks || 5) - 1);
+    var p = Math.pow(10, Math.floor(Math.log10(raw)));
+    var f = raw / p;
+    var m = f <= 1 ? 1 : (f <= 2 ? 2 : (f <= 5 ? 5 : 10));
+    var step = m * p;
+    var sMin = Math.floor(a / step) * step;
+    var sMax = Math.ceil(hi / step) * step;
+    return { min: sMin, max: sMax === sMin ? sMin + step : sMax, step: step };
+  }
+
+  function finiteNum(v) {
+    if (v === null || v === undefined || v === '' || typeof v === 'boolean') return null;
+    var n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function normalizeCyclicalBuckets(buckets) {
+    return (Array.isArray(buckets) ? buckets : []).map(function (b, idx) {
+      var item = b && typeof b === 'object' ? b : {};
+      var label = String(item.label != null ? item.label : (item.slot != null ? item.slot : (item.hour != null ? item.hour : (item.day != null ? item.day : idx))));
+      var vals = Array.isArray(item.values) ? item.values.map(finiteNum).filter(function (v) { return v !== null; }) : [];
+      var rawN = [item.activeDays, item.active_days, item.nActive, item.n_active, item.n, item.samples].find(function (v) { return v != null; });
+      var activeDays = finiteNum(rawN);
+      var min = finiteNum(item.min);
+      var max = finiteNum(item.max);
+      var avg = finiteNum(item.avg != null ? item.avg : item.mean);
+      var recent = finiteNum(item.recent != null ? item.recent : (item.last24h != null ? item.last24h : (item.current != null ? item.current : item.today)));
+      if (vals.length) {
+        if (min === null) min = Math.min.apply(null, vals);
+        if (max === null) max = Math.max.apply(null, vals);
+        if (avg === null) avg = vals.reduce(function (s, x) { return s + x; }, 0) / vals.length;
+        if (activeDays === null) activeDays = vals.length;
+      }
+      if (min !== null && max !== null && min > max) {
+        var t = min; min = max; max = t;
+      }
+      if (avg === null && min !== null && max !== null) avg = (min + max) * 0.5;
+      if (min !== null && max === null) max = avg !== null ? Math.max(min, avg) : min;
+      if (max !== null && min === null) min = avg !== null ? Math.min(max, avg) : max;
+      var hasObs = (activeDays === null || activeDays > 0) && min !== null && max !== null;
+      return {
+        idx: idx,
+        label: label,
+        min: hasObs ? min : null,
+        avg: hasObs ? avg : null,
+        max: hasObs ? max : null,
+        recent: recent,
+        activeDays: activeDays !== null ? activeDays : (hasObs ? 1 : 0),
+      };
+    });
+  }
+
+  function buildCyclicalWhiskerOption(buckets, opts) {
+    var cfg = opts || {};
+    var tok = cfg.tokens || readThemeTokens(cfg.document);
+    var rows = normalizeCyclicalBuckets(buckets);
+    var labels = rows.map(function (r) { return r.label; });
+    var yVals = [];
+    rows.forEach(function (r) {
+      [r.min, r.avg, r.max, r.recent].forEach(function (v) { if (v !== null) yVals.push(v); });
+    });
+    var rawLo = yVals.length ? Math.min.apply(null, yVals) : 0;
+    var rawHi = yVals.length ? Math.max.apply(null, yVals) : 10;
+    var span = rawHi - rawLo;
+    var padHi = rawHi + (span > 0 ? span * 0.08 : (Math.abs(rawHi) * 0.08 || 1));
+    var ySc = nice125(rawLo >= 0 ? 0 : rawLo, padHi, 5);
+    var unit = String(cfg.unit || '').trim();
+    var rangeLabel = String(cfg.rangeLabel || 'Min–Max');
+    var avgLabel = String(cfg.avgLabel || 'Active Avg');
+    var recentLabel = String(cfg.recentLabel || 'Last 24h');
+    var showLegend = cfg.showLegend !== false;
+    var cw = Number(cfg.containerWidth || 640);
+    var xInterval = cfg.xInterval !== undefined ? cfg.xInterval : (labels.length > 16 ? (cw < 480 ? 3 : 2) : 0);
+    var yName = String(cfg.yName || (unit ? 'Activity / (' + unit + ')' : 'Per-Day Activity'));
+
+    var stemData = rows.map(function (r) {
+      return r.min === null ? [r.idx, null, null, null, r.recent, r.activeDays] : [r.idx, r.min, r.max, r.avg, r.recent, r.activeDays];
+    });
+    var avgData = rows.map(function (r) { return r.avg === null ? [r.idx, null] : [r.idx, r.avg]; });
+    var recentData = rows.map(function (r) { return r.recent === null ? [r.idx, null] : [r.idx, r.recent]; });
+    var fmtVal = function (v) {
+      if (v === null || v === undefined || !Number.isFinite(Number(v))) return '—';
+      var n = Number(v), absN = Math.abs(n);
+      var s = absN > 0 && absN < 1 ? n.toFixed(2).replace(/0+$/, '').replace(/\.$/, '') : (Math.abs(n - Math.round(n)) < 0.05 ? String(Math.round(n)) : n.toFixed(1));
+      return s + (unit ? ' ' + unit : '');
+    };
+
+    var opt = {
+      animation: false,
+      backgroundColor: 'transparent',
+      textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: tok.textPrimary },
+      tooltip: {
+        trigger: 'axis',
+        renderMode: 'richText',
+        confine: true,
+        backgroundColor: tok.bgElevated,
+        borderColor: tok.borderStrong,
+        borderWidth: 1,
+        textStyle: { color: tok.textPrimary, fontSize: 12 },
+        formatter: function (params) {
+          var first = Array.isArray(params) ? params[0] : params;
+          var idx = first && first.dataIndex != null ? Number(first.dataIndex) : 0;
+          var r = rows[idx];
+          if (!r) return '';
+          var hdr = r.label + (r.activeDays ? ' (n=' + r.activeDays + ' active days)' : ' (0 active days)');
+          if (r.min === null) return hdr + '\nNo observations recorded';
+          return [
+            hdr,
+            rangeLabel + ': ' + fmtVal(r.min) + ' – ' + fmtVal(r.max),
+            avgLabel + ': ' + fmtVal(r.avg),
+            recentLabel + ': ' + fmtVal(r.recent),
+          ].join('\n');
+        },
+      },
+      legend: {
+        show: showLegend,
+        bottom: 0,
+        left: 'center',
+        itemWidth: 14,
+        itemHeight: 8,
+        itemGap: 14,
+        textStyle: { color: tok.textSecondary, fontSize: 11 },
+        data: [rangeLabel, avgLabel, recentLabel],
+      },
+      grid: { left: 48, right: 16, top: 32, bottom: showLegend ? 56 : 36, containLabel: true },
+      xAxis: {
+        type: 'category',
+        name: String(cfg.xName || ''),
+        nameLocation: 'middle',
+        nameGap: 24,
+        data: labels,
+        axisLine: { lineStyle: { color: tok.textSecondary } },
+        axisTick: { alignWithLabel: true },
+        axisLabel: { color: tok.textSecondary, fontSize: 11, interval: xInterval, hideOverlap: true },
+      },
+      yAxis: {
+        type: 'value',
+        name: yName,
+        nameLocation: 'end',
+        nameGap: 12,
+        nameTextStyle: { color: tok.textSecondary, fontSize: 11, fontWeight: 600, align: 'left' },
+        min: ySc.min,
+        max: ySc.max,
+        interval: ySc.step,
+        axisLine: { lineStyle: { color: tok.textSecondary } },
+        axisLabel: { color: tok.textSecondary, fontSize: 11 },
+        splitLine: { lineStyle: { color: tok.borderHairline, type: 'dashed' } },
+      },
+      series: [
+        {
+          id: 'cyclical-range',
+          name: rangeLabel,
+          type: 'custom',
+          z: 2,
+          itemStyle: { color: tok.textSecondary },
+          renderItem: function (params, api) {
+            var xv = api.value(0), lo = api.value(1), hi = api.value(2);
+            if (lo === null || hi === null || !Number.isFinite(lo) || !Number.isFinite(hi)) return null;
+            var pLo = api.coord([xv, lo]), pHi = api.coord([xv, hi]);
+            if (!pLo || !pHi || !Number.isFinite(pLo[0]) || !Number.isFinite(pLo[1]) || !Number.isFinite(pHi[1])) return null;
+            var cs = params && params.coordSys;
+            var catW = (cs && labels.length) ? (cs.width / labels.length) : 16;
+            var cap = Math.min(4.5, Math.max(2.5, catW * 0.22));
+            return {
+              type: 'group',
+              children: [
+                { type: 'line', shape: { x1: pLo[0], y1: pLo[1], x2: pHi[0], y2: pHi[1] }, style: { stroke: tok.textSecondary, lineWidth: 1.5, opacity: 0.72 } },
+                { type: 'line', shape: { x1: pHi[0] - cap, y1: pHi[1], x2: pHi[0] + cap, y2: pHi[1] }, style: { stroke: tok.textSecondary, lineWidth: 1.5, opacity: 0.72 } },
+                { type: 'line', shape: { x1: pLo[0] - cap, y1: pLo[1], x2: pLo[0] + cap, y2: pLo[1] }, style: { stroke: tok.textSecondary, lineWidth: 1.5, opacity: 0.72 } },
+              ],
+            };
+          },
+          data: stemData,
+        },
+        {
+          id: 'cyclical-avg',
+          name: avgLabel,
+          type: 'custom',
+          z: 3,
+          itemStyle: { color: tok.textPrimary },
+          renderItem: function (params, api) {
+            var xv = api.value(0), av = api.value(1);
+            if (av === null || !Number.isFinite(av)) return null;
+            var pt = api.coord([xv, av]);
+            if (!pt || !Number.isFinite(pt[0]) || !Number.isFinite(pt[1])) return null;
+            var cs = params && params.coordSys;
+            var catW = (cs && labels.length) ? (cs.width / labels.length) : 16;
+            var half = Math.min(9, Math.max(4, catW * 0.34));
+            return {
+              type: 'line',
+              shape: { x1: pt[0] - half, y1: pt[1], x2: pt[0] + half, y2: pt[1] },
+              style: { stroke: tok.textPrimary, lineWidth: 2.4 },
+            };
+          },
+          data: avgData,
+        },
+        {
+          id: 'cyclical-recent',
+          name: recentLabel,
+          type: 'scatter',
+          z: 4,
+          symbol: 'circle',
+          symbolSize: 7.5,
+          itemStyle: { color: tok.accentFocal, borderColor: tok.bgSurface, borderWidth: 1.5 },
+          data: recentData,
+        },
+      ],
+    };
+    return opt;
+  }
+
+  root.QuietEChartsDefaults = root.QuietEChartsDefaults || {};
+  root.QuietEChartsDefaults.buildCyclicalWhiskerOption = buildCyclicalWhiskerOption;
+  var api = { buildCyclicalWhiskerOption: buildCyclicalWhiskerOption, normalizeCyclicalBuckets: normalizeCyclicalBuckets };
+  root.QuietCyclicalWhiskers = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
 }(typeof window !== 'undefined' ? window : globalThis));
 
@@ -13559,13 +14051,51 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   function expandActiveBranches(rail) {
     if (!rail) return;
     rail.querySelectorAll('.va-tree-dest[aria-current="page"], .va-tree-dest.is-active').forEach(function (dest) {
-      var grp = dest.closest('.va-tree-group');
+      var grp = dest.closest('.va-tree-group, .va-tree-children');
       while (grp && rail.contains(grp)) {
         grp.hidden = false;
         var parentRow = grp.previousElementSibling;
         var caret = parentRow && parentRow.querySelector ? parentRow.querySelector('.va-tree-caret') : null;
         if (caret) caret.setAttribute('aria-expanded', 'true');
-        grp = grp.parentElement ? grp.parentElement.closest('.va-tree-group') : null;
+        grp = grp.parentElement ? grp.parentElement.closest('.va-tree-group, .va-tree-children') : null;
+      }
+    });
+  }
+
+  function applyTreeChildCaps(rail) {
+    if (!rail || !rail.ownerDocument) return;
+    var doc = rail.ownerDocument;
+    rail.querySelectorAll('.va-tree-children, .va-tree-group').forEach(function (grp) {
+      if (grp.dataset.treeCap === 'false' || grp.querySelector(':scope > .va-tree-more')) return;
+      var parsedMax = parseInt(grp.dataset.maxVisible || '5', 10);
+      var maxVis = Math.max(1, Number.isFinite(parsedMax) ? parsedMax : 5);
+      var kids = [].slice.call(grp.children).filter(function (el) {
+        return !el.classList.contains('va-tree-more') && !el.classList.contains('va-tree-group') && !el.classList.contains('va-tree-children');
+      });
+      if (kids.length <= maxVis) return;
+      var actIdx = kids.findIndex(function (el) {
+        return el.matches('.is-active, [aria-current="page"]') || !!el.querySelector('.is-active, [aria-current="page"]');
+      });
+      var hiddenKids = [];
+      kids.forEach(function (el, idx) {
+        var keep = actIdx >= maxVis ? (idx < maxVis - 1 || idx === actIdx) : (idx < maxVis);
+        if (!keep) {
+          el.hidden = true;
+          el.dataset.treeOverflow = '1';
+          hiddenKids.push(el);
+          var sub = el.nextElementSibling;
+          if (sub && (sub.classList.contains('va-tree-group') || sub.classList.contains('va-tree-children')) && !sub.hidden) {
+            sub.hidden = true;
+            sub.dataset.treeOverflow = '1';
+          }
+        }
+      });
+      if (hiddenKids.length) {
+        var btn = doc.createElement('button');
+        btn.type = 'button';
+        btn.className = 'va-tree-more';
+        btn.textContent = '+ Show ' + hiddenKids.length + ' older…';
+        grp.appendChild(btn);
       }
     });
   }
@@ -13606,17 +14136,37 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   function bindRail(rail) {
     if (!rail || rail.dataset.quietBound === '1') return;
     rail.dataset.quietBound = '1';
+    applyTreeChildCaps(rail);
     var doc = rail.ownerDocument;
     var backdrop = getBackdropFor(rail, doc);
     if (backdrop) backdrop.addEventListener('click', function () { setRailOpen(rail, backdrop, false, true); });
     rail.addEventListener('click', function (ev) {
+      var moreBtn = ev.target && ev.target.closest ? ev.target.closest('.va-tree-more') : null;
+      if (moreBtn) {
+        var grp = moreBtn.closest('.va-tree-children, .va-tree-group');
+        if (grp) {
+          var firstShown = null;
+          [].slice.call(grp.children).forEach(function (el) {
+            if (el.hidden && el.dataset.treeOverflow === '1') {
+              el.hidden = false;
+              delete el.dataset.treeOverflow;
+              if (!firstShown) firstShown = el;
+            }
+          });
+          moreBtn.remove();
+          var focusEl = firstShown && (firstShown.matches('button, a') ? firstShown : firstShown.querySelector('button, a'));
+          if (focusEl && typeof focusEl.focus === 'function') focusEl.focus({ preventScroll: true });
+        }
+        return;
+      }
       var caret = ev.target && ev.target.closest ? ev.target.closest('.va-tree-caret') : null;
       if (caret) {
         ev.stopPropagation();
         var exp = caret.getAttribute('aria-expanded') === 'true';
         caret.setAttribute('aria-expanded', exp ? 'false' : 'true');
         var row = caret.closest('.va-tree-row');
-        var sub = row && row.nextElementSibling && row.nextElementSibling.classList.contains('va-tree-group') ? row.nextElementSibling : null;
+        var next = row ? row.nextElementSibling : null;
+        var sub = (next && (next.classList.contains('va-tree-group') || next.classList.contains('va-tree-children'))) ? next : null;
         if (sub) sub.hidden = exp;
         return;
       }
@@ -13635,16 +14185,50 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     });
   }
 
+  function bindModalSheets(scope) {
+    if (!scope || !scope.querySelectorAll) return;
+    if (typeof HTMLDialogElement !== 'undefined' && !('closedBy' in HTMLDialogElement.prototype)) {
+      scope.querySelectorAll('dialog.va-modal-sheet[closedby="any"]').forEach(function (dlg) {
+        if (dlg.dataset.quietClosedBy === '1') return;
+        dlg.dataset.quietClosedBy = '1';
+        var pressedOut = false;
+        var outside = function (ev) {
+          if (ev.target !== dlg || (ev.button != null && ev.button !== 0)) return false;
+          var r = dlg.getBoundingClientRect();
+          return ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom;
+        };
+        dlg.addEventListener('pointerdown', function (ev) { pressedOut = outside(ev); });
+        dlg.addEventListener('pointercancel', function () { pressedOut = false; });
+        dlg.addEventListener('pointerup', function (ev) { if (pressedOut && outside(ev)) dlg.close(); pressedOut = false; });
+      });
+    }
+  }
+
   var _docBound = false;
   function boot(container) {
     var scope = container && container.querySelectorAll ? container : (root.document || null);
     if (!scope) return;
     scope.querySelectorAll('[data-period-stepper], .va-period-stepper').forEach(bindStepper);
     scope.querySelectorAll('.va-side-rail').forEach(bindRail);
+    bindModalSheets(scope);
     if (!_docBound && root.document) {
       _docBound = true;
       var doc = root.document;
       doc.addEventListener('click', function (ev) {
+        var openDlgBtn = ev.target && ev.target.closest ? ev.target.closest('[data-dialog-open]') : null;
+        if (openDlgBtn) {
+          bindModalSheets(doc);
+          doc.querySelectorAll('.va-period-stepper').forEach(function (st) { closePopover(st, false); });
+          var dlg = doc.getElementById(openDlgBtn.dataset.dialogOpen);
+          if (dlg && typeof dlg.showModal === 'function' && !dlg.open) dlg.showModal();
+          return;
+        }
+        var closeDlgBtn = ev.target && ev.target.closest ? ev.target.closest('[data-dialog-close]') : null;
+        if (closeDlgBtn) {
+          var parentDlg = closeDlgBtn.closest('dialog');
+          if (parentDlg && typeof parentDlg.close === 'function') parentDlg.close();
+          return;
+        }
         var trig = ev.target && ev.target.closest ? ev.target.closest('[data-rail-trigger]') : null;
         if (trig) {
           var targetId = trig.getAttribute('aria-controls') || trig.dataset.railTrigger;
@@ -13656,6 +14240,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
         });
       });
       doc.addEventListener('keydown', function (ev) {
+        if (doc.querySelector('dialog.va-modal-sheet[open], dialog:modal')) return;
         if (ev.key === 'Escape') {
           doc.querySelectorAll('.va-period-stepper').forEach(function (st) { closePopover(st, true); });
           doc.querySelectorAll('.va-side-rail[data-open="true"], .va-side-rail.is-open').forEach(function (r) {
@@ -13687,7 +14272,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   }
 
   var stepperApi = { boot: boot, openPopover: openPopover, closePopover: closePopover, applyPresetChoice: applyPresetChoice, positionPopover: positionPopover };
-  var railApi = { boot: boot, setRailOpen: setRailOpen, expandActiveBranches: expandActiveBranches };
+  var railApi = { boot: boot, setRailOpen: setRailOpen, expandActiveBranches: expandActiveBranches, applyTreeChildCaps: applyTreeChildCaps };
   root.QuietPeriodStepper = stepperApi;
   root.QuietRailTree = railApi;
   if (typeof module === 'object' && module.exports) module.exports = { QuietPeriodStepper: stepperApi, QuietRailTree: railApi };
@@ -13996,6 +14581,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     var tok = readTokens(doc), layers = getLayers(), ext = getGlobal('QuietEChartsExt');
     var isExtKind = payload.kind === 'gantt' || payload.kind === 'heatmap' || payload.kind === 'dumbbell' || payload.kind === 'forest';
     var opt = isSS ? (ss ? ss.buildOption(doc, payload, tok, w) : null)
+      : payload.kind === 'cyclical_whisker' ? (defaults && defaults.buildCyclicalWhiskerOption ? defaults.buildCyclicalWhiskerOption(payload.buckets, Object.assign({ tokens: tok, containerWidth: w }, payload.opts || {})) : null)
       : payload.kind === 'waterfall' ? (layers ? layers.buildWaterfallOption(doc, payload, tok, buildEnvelopes(doc, payload, tok)) : null)
       : payload.kind === 'stacked_bar' ? (layers ? layers.buildStackedBarOption(doc, payload, tok, buildEnvelopes(doc, payload, tok), resolveSeriesColor) : null)
       : isExtKind ? (ext ? ext.buildOption(doc, payload, tok, w) : null)

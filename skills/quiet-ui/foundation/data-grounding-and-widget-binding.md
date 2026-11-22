@@ -45,12 +45,14 @@ Statistical clarity requires separating thin live buffers from established histo
 - In-memory instrumentation resets on process restart. If a metric buffer currently contains only `"3 / 50 calls"` (or fewer than `10` samples over a sub-hour uptime window), **never** style the widget as a settled steady-state trend or long-horizon convergence metric.
 - Replace trend verdicts with the explicit disclosure string **`Warming up — N samples collected`** (with observed uptime/window, e.g., `Warming up — 3 samples collected since 10:15 UTC`), and hold alert classification badges neutral (`--text-muted` / `--status-info`) until minimum sample power is reached.
 
-### 3.2 Zero Retroactive Policy Grading
+### 3.2 Zero Retroactive Policy Grading & Effective-Dated Rate-Epoch Comparisons
 - When a new operational guardrail or ceiling is introduced on date `T` (for example, lowering a subagent step budget to `120` steps), **never** re-score 30–90 day historical runs prior to `T` as `"violations"` against the new rule without explicit disclosure.
-- Either scope violation counts and red threshold overlays to runs with `created_at >= policy.effective_date`, or annotate historical overlays visibly as `"Evaluated against ceiling effective YYYY-MM-DD (historical runs predate rule)"`.
+- **Rate-Epoch & Pricing Schedule Changes (Break-Even Comparison)**: Never compare historical usage/spend across a pricing or quota change (e.g., `ultra-5x` vs `ultra-20x`, billing tier change, or TOU tariff cutover at epoch `T_rate`) using a single constant multiplier across all dates. Store immutable effective-dated schedule epochs (`effective_from`), evaluate baseline spend under its active rate epoch, and compute post-cutover savings vs. break-even thresholds explicitly per epoch (`Recorded Snapshot — YYYY-MM-DD`).
 
-### 3.3 Explicit Denominators & Physical Scope
-- Every derived percentage or rate (`78.4%`, `103 tokens/s`) must carry sample size `N` (`n = 35`) or denominator context nearby so readers can tell a `3/4` post-restart spike apart from a `300/400` sustained average.
+### 3.3 Explicit Denominators, Cyclical Anti-Sum Rule & Zero-Leak Public Showcases
+- **Explicit Denominators (`n = ...`)**: Every derived percentage or rate (`78.4%`, `103 tokens/s`) must carry sample size `N` (`n = 35`) or denominator context nearby so readers can tell a `3/4` post-restart spike apart from a `300/400` sustained average.
+- **Cyclical Pattern Anti-Sum Rule (`QuietEChartsDefaults.buildCyclicalWhiskerOption`)**: Never sum multi-day values directly by hour-of-day (`00..23h`), day-of-week (`Mon..Sun`), or month-of-year (`Jan..Dec`). Cyclical buckets must aggregate across **active days only** (omitting zero-activity idle days from denominators when showing active load cadence) and plot **`Min–Max` range whiskers + `Active Avg` bar + `Recent Day / Week` marker** in **same physical units** (`#/h`, `kW`, `req/min`). Name titles plainly (`"Activity by Hour of Day — Min/Avg/Max Whiskers"`, never jargon `"diurnal"` -> `[JARGON_TERMINOLOGY]`).
+- **Zero-Leak Real-Telemetry Public Showcases (`SHA-256[:12]`)**: Never synthesize placeholder telemetry for public GitHub Pages showcases (`?demo=1` or public build outputs) and never publish raw internal usernames, conversation IDs, local `/home/...` paths, `.lan` hosts, or IP addresses. Alias project/session slugs deterministically with truncated **`SHA-256[:12]`** digests, verify public assets via a **`0`-match privacy grep gate** over the built HTML/JS/JSON tree, and stamp the snapshot header **`Recorded Snapshot — YYYY-MM-DD (Sanitized)`**.
 
 ---
 
@@ -69,8 +71,8 @@ Preview modes exist to inspect real schemas safely—not to invent flattering nu
 Interfaces shipped with Quiet UI represent the **host application**, never Quiet UI's internal documentation taxonomy or agent storage layout:
 
 - **Zero Framework Self-Badges**: Remove self-referential header badges (`Quiet UI`, `v9.x Quiet`, `Pillar 1 M3`, `Quiet-Evidence`) from live third-party application headers, nav pills, and footer bars. Label the actual product (`Nexus Ops`, `Fleet Telemetry`, `Ward Monitor`) cleanly. *(Showcase and Component Bench views inside `quiet-ui-skills` opt in explicitly during build verification.)*
-- **Plain Everyday Copy & Zero Chrome Emojis (`[EMOJI_IN_CHROME]`)**: Write direct headings and chart titles (`"Activity by Hour of Day"` over jargon) and use `currentColor` inline `<svg>` icons instead of Unicode pictographs (`U+1F512` lock, sparkles, warning triangles) inside interactive controls.
-- **Strip Internal Storage Prefixes**: Never expose raw agent artifact namespaces (`brain:<uuid>`, `.gemini/antigravity/brain/...`) or local workstation paths in visible tables, headers, detail drawers, or HTML templates. Map artifact references to human-readable titles or sanitized short IDs before rendering.
+- **Plain Everyday Copy & Zero Chrome Emojis (`[EMOJI_IN_CHROME]`, `[JARGON_TERMINOLOGY]`)**: Write direct headings and chart titles (`"Activity by Hour of Day"` over `"diurnal"`) and use `currentColor` inline `<svg>` icons instead of Unicode pictographs (`U+1F512` lock, sparkles, warning triangles) inside interactive controls.
+- **Strip Internal Storage Prefixes**: Never expose raw agent artifact namespaces (`brain:<uuid>`, `.gemini/antigravity/brain/...`) or local workstation paths in visible tables, headers, detail drawers, or HTML templates. Map artifact references to human-readable titles or `SHA-256[:12]` aliases before rendering.
 
 ---
 
@@ -84,7 +86,7 @@ Compare how an agent handles partial telemetry without fabricating fields or str
 
 ### 6.2 Post-Restart Execution Telemetry & Historical Runs
 - **Wrong**: Plotting a `3`-call post-restart memory buffer as a steady convergence chart alongside 90-day runs marked as "violations" against yesterday's `120`-step ceiling, plus a hardcoded 6-row `demoRows = [...]` JS fixture for `?demo=1`.
-- **Right**: Show **`Warming up — 3 samples collected`** (`uptime 14m`) for the live buffer, annotate historical runs as `"Pre-policy baseline (120-step ceiling effective 2026-11-20)"` or filter violations to `ts >= policy_effective`, and load `?demo=1` exclusively from a timestamped server snapshot (`Recorded Snapshot — YYYY-MM-DD`).
+- **Right**: Show **`Warming up — 3 samples collected`** (`uptime 14m`) for the live buffer, annotate historical runs as `"Pre-policy baseline (120-step ceiling effective 2026-11-20)"` or filter violations to `ts >= policy_effective`, and load `?demo=1` exclusively from a timestamped server snapshot (`Recorded Snapshot — YYYY-MM-DD (Sanitized)`).
 
 ### 6.3 Clinical & Building Telemetry (Non-Software Domains)
 - **Clinical SpO2 / Bedside Ward**: Bind numeric gauge to `patient.spo2_pct` (`min: 70`, `max: 100`) and ordered alarm bound `patient.spo2_low_limit`; if arterial pH lab draw is older than `4h` or absent, render `Last lab >4h ago (—)` instead of interpolating a curve or synthesizing a normal value.
@@ -108,7 +110,7 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8765/web
   --cdp --mount-prefix /web=/path/to/web
 ```
 
-The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_LAYER]`), cumulative sticky/fixed header height (`<= 88px` `< 680px` phones, `<= 64px` `>= 680px` desktop, `[STICKY_CHROME_BLOAT]`), `<= 2px` inner plot-box axis alignment (`[PLOT_AXIS_MISALIGN]`), `[AXIS_LABEL_CLIPPED]` (`+0.5px` top edge), `[BAR_HAIRLINE_DENSITY]`, `[ORPHAN_SERIES_LEGEND]`, `[TOOLBAR_CONTROL_SPRAWL]`, `[TRANSPARENT_OVERLAY]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`, pill restraint (`[PILL_SPRAWL]`), zero chrome `Quiet` badges, zero raw `brain:` IDs, zero inline mock arrays, and zero SVG text/line collisions. (When retrofitting existing apps, also follow [`brownfield-retrofit-and-migration.md`](brownfield-retrofit-and-migration.md).)
+The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_LAYER]`), cumulative sticky/fixed header height (`<= 88px` `< 680px` phones, `<= 64px` `>= 680px` desktop, `[STICKY_CHROME_BLOAT]`), `<= 2px` inner plot-box axis alignment (`[PLOT_AXIS_MISALIGN]`), `[AXIS_LABEL_CLIPPED]` (`+0.5px` top edge), `[BAR_HAIRLINE_DENSITY]`, `[ORPHAN_SERIES_LEGEND]`, `[TOOLBAR_CONTROL_SPRAWL]`, `[TRANSPARENT_OVERLAY]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[JARGON_TERMINOLOGY]`, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`, `[PROSE_PANE_CRAMPED]`, `[TREE_NESTED_CARD_BORDERS]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`, pill restraint (`[PILL_SPRAWL]`), zero chrome `Quiet` badges, zero raw `brain:` IDs, zero inline mock arrays, and zero SVG text/line collisions. (When retrofitting existing apps, also follow [`brownfield-retrofit-and-migration.md`](brownfield-retrofit-and-migration.md).)
 
 ---
 
@@ -118,10 +120,10 @@ The auditor enforces terminal `@layer utilities` `.hidden` placement (`[HIDDEN_L
 2. **Traceability**: Does every KPI card, table column, and chart trace point directly to a documented field in your Data-to-Widget Binding Map?
 3. **Sub-Slot & Track Omission**: Are absent targets omitted and unbounded totals placed in trackless `.va-kpi-card` tiles instead of fake gauges?
 4. **Warmup Honesty**: Do thin buffers (`N < 10`) show **`Warming up — N samples collected`** instead of false steady-state claims?
-5. **Policy Scoping**: Are historical runs shielded from retroactive scoring against newly enacted policies?
-6. **Chrome Hygiene**: Is application chrome 100% free of Quiet UI framework badges, Unicode emojis (`[EMOJI_IN_CHROME]`), and raw `brain:` storage IDs?
-7. **Snapshot Purity**: Are preview/demo states loaded cleanly without inline mock JS arrays or static `.json` fixture files alongside app code (`[JSON_MOCK_FIXTURE]`)?
-8. **Zero Self-Filler**: Have internal CI linter or file-budget counts been excluded from end-user operational widgets?
+5. **Policy & Rate-Epoch Scoping**: Are historical runs shielded from retroactive scoring and pricing comparisons evaluated per `effective_from` epoch?
+6. **Cyclical & Showcase Privacy Hygiene**: Do cyclical charts plot `Min–Max` whiskers + `Active Avg` + `Recent` in consistent units (`buildCyclicalWhiskerOption`), and are public showcases sanitized via `SHA-256[:12]` + a `0`-match grep gate?
+7. **Chrome & Density Purity**: Is application chrome free of `> 2` density stops (`[DENSITY_STOP_SPRAWL]`), footer clutter (`[RAIL_FOOTER_CLUTTER]`), emojis, jargon, `Quiet` badges, and `brain:` IDs?
+8. **Snapshot Purity**: Are preview/demo states loaded cleanly without inline mock JS arrays or static `.json` fixture files alongside app code (`[JSON_MOCK_FIXTURE]`)?
 
 > [!NOTE]
 > **Conservation Over Decoration**: Whenever payload telemetry is incomplete, post-restart, or pre-policy, Quiet UI preserves interface credibility by omitting unbacked annotations, holding warmup bounds neutral, and letting empty state communicate honestly rather than synthesizing plausible-looking numbers.

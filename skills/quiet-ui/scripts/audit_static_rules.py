@@ -44,6 +44,10 @@ _NAMED_MOCK_ARR_RE = re.compile(
 _DEMO_GUARD_RE = re.compile(r"\b(?:isDemo|demoMode|useDemo)\b|\bdemo\s*[!=]==?|(?:get|has)\(\s*['\"]demo['\"]", re.IGNORECASE)
 _DEMO_TERNARY_RE = re.compile(r"\b(?:isDemo|demoMode|useDemo)\b\s*\?\s*\[\s*\{[\s\S]{1,400}?\}\s*,\s*\{", re.IGNORECASE)
 _MULTI_OBJ_ARR_RE = re.compile(r"(?:=|\breturn)\s*\[\s*\{[\s\S]{1,400}?\}\s*,\s*\{", re.IGNORECASE)
+DIURNAL_RE = re.compile(r"\bdiurnal\b", re.IGNORECASE)
+_DENSITY_WORDS = frozenset({"compact", "cozy", "comfortable", "relaxed", "dense", "spacious"})
+_FOOTER_BANNED_RE = re.compile(r"^(?:lock|unlock|<?\s*classic)$", re.IGNORECASE)
+_CSS_FOOTER_COL_RE = re.compile(r"\.va-rail-footer\s*\{[^}]*flex-direction\s*:\s*column\b", re.IGNORECASE | re.DOTALL)
 
 
 def parse_mount_prefixes(raw_items: list[str] | None) -> dict[str, Path]:
@@ -123,13 +127,7 @@ def matches_exclude(candidate: str | Path, patterns: list[str] | tuple[str, ...]
     return False
 
 
-def resolve_asset_detail(
-    ref: str,
-    *,
-    base_dir: Path | None = None,
-    web_root: Path | None = None,
-    mount_prefixes: dict[str, Path] | None = None,
-) -> tuple[Path | None, str | None, bool]:
+def resolve_asset_detail(ref: str, *, base_dir: Path | None = None, web_root: Path | None = None, mount_prefixes: dict[str, Path] | None = None) -> tuple[Path | None, str | None, bool]:
     """Resolve an HTML asset reference; return (path, matched_mount_prefix, missing_in_mount)."""
     if not ref or ref.startswith(("http://", "https://", "//", "data:", "blob:")):
         return None, None, False
@@ -162,24 +160,13 @@ def resolve_asset_detail(
     return None, None, False
 
 
-def resolve_asset_path(
-    ref: str,
-    base_dir: Path | None = None,
-    web_root: Path | None = None,
-    mount_prefixes: dict[str, Path] | None = None,
-) -> Path | None:
+def resolve_asset_path(ref: str, base_dir: Path | None = None, web_root: Path | None = None, mount_prefixes: dict[str, Path] | None = None) -> Path | None:
     """Resolve an HTML stylesheet or script src reference cleanly inside mounted roots."""
     cand, _pfx, missing = resolve_asset_detail(ref, base_dir=base_dir, web_root=web_root, mount_prefixes=mount_prefixes)
     return None if missing else cand
 
 
-def is_asset_in_scope(
-    asset_path: Path,
-    matched_pfx: str | None,
-    mount_scopes: dict[str, Path] | None,
-    *,
-    audit_mounted_external: bool = False,
-) -> bool:
+def is_asset_in_scope(asset_path: Path, matched_pfx: str | None, mount_scopes: dict[str, Path] | None, *, audit_mounted_external: bool = False) -> bool:
     """Return True if a mounted asset resides inside the target's scoped subpath."""
     if audit_mounted_external or not matched_pfx or not mount_scopes:
         return True
@@ -187,15 +174,7 @@ def is_asset_in_scope(
     return True if scope_dir is None else asset_path.resolve().is_relative_to(scope_dir.resolve())
 
 
-def find_closing_delim(
-    text: str,
-    start: int,
-    open_ch: str,
-    close_ch: str,
-    *,
-    line_comments: bool = True,
-    backtick_quotes: bool = True,
-) -> int:
+def find_closing_delim(text: str, start: int, open_ch: str, close_ch: str, *, line_comments: bool = True, backtick_quotes: bool = True) -> int:
     """Scan forward past balanced delimiters while ignoring JS/CSS strings and comments."""
     depth, i, n, quote = 1, start + 1, len(text), ""
     while i < n and depth > 0:
@@ -264,6 +243,8 @@ def audit_css_text(css_text: str, source: str, errs: list[str], *, layer_order: 
     for m in _FONT_PX_RE.finditer(clean_css):
         if float(m.group(1)) < 11.0:
             errs.append(f"[FONT_FLOOR] {source}: hardcoded font-size {m.group(1)}px < 11px")
+    if _CSS_FOOTER_COL_RE.search(clean_css):
+        errs.append(f"[RAIL_FOOTER_CLUTTER] {source}: .va-rail-footer declares stacked flex-direction: column")
     check_hidden_layer_css(clean_css, source, errs, layer_order=layer_order)
 
 
@@ -318,8 +299,11 @@ def has_demo_branch_mock_array(js_text: str) -> bool:
     return False
 
 
+_JS_STR_CMT_RE = re.compile(r"'(?:\\.|[^'\\])*'|\"(?:\\.|[^\"\\])*\"|`(?:\\.|[^`\\])*`|//[^\n]*|/\*[\s\S]*?\*/")
+
+
 def audit_js_text(js_text: str, source: str, errs: list[str]) -> None:
-    """Check JS text for raw agent brain: storage IDs and hardcoded mock arrays."""
+    """Check JS text for raw agent brain: storage IDs, mock arrays, and jargon titles."""
     fname = Path(urllib.parse.urlsplit(source).path or source).name.lower()
     if fname.startswith("demo_snapshot") or fname.endswith(".min.js"):
         return
@@ -328,6 +312,12 @@ def audit_js_text(js_text: str, source: str, errs: list[str]) -> None:
         errs.append(f"[INTERNAL_ID] {source}: exposes raw agent storage identifier '{m_id.group(0)[:40]}'")
     if _NAMED_MOCK_ARR_RE.search(js_text) or has_demo_branch_mock_array(js_text):
         errs.append(f"[INLINE_MOCK_DATA] {source}: contains hardcoded inline demo/mock object array")
+    if "quiet-cyclical" not in fname and "quiet-evidence-bundle" not in fname:
+        for sm in _JS_STR_CMT_RE.finditer(js_text):
+            tok = sm.group(0)
+            if tok[0] in ("'", '"', "`") and DIURNAL_RE.search(tok):
+                errs.append(f"[JARGON_TERMINOLOGY] {source}: UI label uses 'diurnal' — prefer 'Activity by Hour of Day'")
+                break
 
 
 def has_responsive_table_stacking(css_text: str) -> bool:
@@ -347,19 +337,11 @@ def has_responsive_table_stacking(css_text: str) -> bool:
 
 
 CHROME_EMOJI_RE = re.compile(r"[\U0001F300-\U0001FAFF\u2600-\u27BF]")
-_NON_APP_FIXTURE_DIRS = frozenset(
-    {"test", "tests", "__tests__", "spec", "bench", "benches", "corpora", "corpus", "examples", "example", "demo_snapshots"}
-)
-_NON_FIXTURE_JSON_RE = re.compile(
-    r"^(?:package(?:-lock)?|tsconfig.*|jsconfig.*|plugin|manifest.*|composer|\.eslintrc.*|\.prettierrc.*|\.visual-lock|settings|config|schema.*)\.json$",
-    re.IGNORECASE,
-)
-_MOCK_JSON_NAME_RE = re.compile(
-    r"(?:^|[^a-z0-9])(?:mock|fake|dummy|stub|fixture)(?:[^a-z0-9]|$)|(?:^|[^a-z0-9])demo(?:[_.-]|$)",
-    re.IGNORECASE,
-)
-_DOC_ARRAY_KEY_RE = re.compile(r"(?:doc(?:ument)?s?|transcripts?|messages?|turns?|sessions?|entries|items|records|rows)", re.IGNORECASE)
-_FAKE_DOC_TEXT_RE = re.compile(r"(?:lorem\s+ipsum|mock\s+doc|fake\s+(?:doc|transcript|session)|sample\s+(?:doc|transcript|session)|demo[_-](?:session|doc|transcript))", re.IGNORECASE)
+_NON_APP_FIXTURE_DIRS = frozenset({"test", "tests", "__tests__", "spec", "bench", "benches", "corpora", "corpus", "examples", "example", "demo_snapshots"})
+_NON_FIXTURE_JSON_RE = re.compile(r"^(?:package(?:-lock)?|tsconfig.*|jsconfig.*|plugin|manifest.*|composer|\.eslintrc.*|\.prettierrc.*|\.visual-lock|settings|config|schema.*)\.json$", re.I)
+_MOCK_JSON_NAME_RE = re.compile(r"(?:^|[^a-z0-9])(?:mock|fake|dummy|stub|fixture)(?:[^a-z0-9]|$)|(?:^|[^a-z0-9])demo(?:[_.-]|$)", re.I)
+_DOC_ARRAY_KEY_RE = re.compile(r"(?:doc(?:ument)?s?|transcripts?|messages?|turns?|sessions?|entries|items|records|rows)", re.I)
+_FAKE_DOC_TEXT_RE = re.compile(r"(?:lorem\s+ipsum|mock\s+doc|fake\s+(?:doc|transcript|session)|sample\s+(?:doc|transcript|session)|demo[_-](?:session|doc|transcript))", re.I)
 
 
 def has_chrome_emoji(text: str) -> str | None:
@@ -382,15 +364,11 @@ def is_json_mock_candidate(path: Path, *, root: Path | None = None) -> bool:
 def audit_json_text(json_text: str, source: str, errs: list[str]) -> None:
     """Flag static JSON fixtures bundling fabricated document/transcript arrays alongside app code."""
     import json as _json
-
     try:
         data = _json.loads(json_text)
     except ValueError:
         return
-
-    found_multi = False
-    has_doc_key = False
-    has_mock_flag = False
+    found_multi = has_doc_key = has_mock_flag = False
     stack: list[tuple[str, object]] = [("", data)]
     while stack:
         key, node = stack.pop()
@@ -410,11 +388,16 @@ def audit_json_text(json_text: str, source: str, errs: list[str]) -> None:
             for el in node[:12]:
                 if isinstance(el, (dict, list)):
                     stack.append((key, el))
-
     if not found_multi:
         return
     fname = Path(urllib.parse.urlsplit(source).path or source).name
     is_demo_snapshot = fname.lower().startswith("demo_snapshot")
     if (_MOCK_JSON_NAME_RE.search(fname) and not is_demo_snapshot) or (has_doc_key and (has_mock_flag or _FAKE_DOC_TEXT_RE.search(json_text))):
         errs.append(f"[JSON_MOCK_FIXTURE] {source}: static JSON fixture bundles fabricated document/transcript array")
+
+
+DENSITY_WORDS = _DENSITY_WORDS
+FOOTER_BANNED_RE = _FOOTER_BANNED_RE
+
+
 

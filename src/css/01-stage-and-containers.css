@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* ==========================================================================
-   Quiet UI v9.2 — Stage Container, Primitives & Responsive Figures/Tables
+   Quiet UI v9.3 — Stage Container, Primitives & Responsive Figures/Tables
    ========================================================================== */
 
 @layer shell {
@@ -412,20 +412,22 @@
   .sq-err  { background: var(--status-err); }
 
   /* Responsive Column & Touch Overrides (Zero display-override on non-hidden components) */
-  [data-form-factor="touch"] :is(button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
+  [data-form-factor="touch"] :is(button:where(:not(.va-overlay-control):not(.va-swatch-btn):not(.va-tree-action):not(.va-scope-clear)), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select, input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"]))) { min-block-size: 44px; }
   @media (max-width: 480px) {
-    button:not(.va-overlay-control), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
-    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) { min-block-size: 44px; }
+    button:where(:not(.va-overlay-control):not(.va-swatch-btn):not(.va-tree-action):not(.va-scope-clear)), .va-btn-primary, .va-btn-ghost, .va-pill-btn, .ann-ack-btn, select,
+    input:where(:not([type="checkbox"]):not([type="radio"]):not([type="range"])) { min-block-size: 44px; }
   }
   @media (max-width: 960px) { .va-kpi-gauge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .va-kpi-gauge-grid, .va-compare-grid { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-tb-sep { display: none; }
     .va-tb-btn, .va-tab { min-block-size: 44px; }
-    .va-tb-btn { min-inline-size: 44px; padding: 0 0.75rem; border-block-end: 1px solid var(--border-hairline); margin-block-end: -1px; }
+    .va-tb-btn { min-inline-size: 44px; padding: 0 0.55rem; border-block-end: 0; margin-block-end: 0; }
+    .va-tb-group > .va-tb-btn { border-inline-end: 1px solid var(--border-hairline); }
+    .va-tb-group > .va-tb-btn:last-child { border-inline-end: 0; }
     :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 44px; min-inline-size: 44px; }
   }
   @media (pointer: coarse) and (min-width: 768px) {
-    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; }
+    .va-tb-btn, :is(button, a[href], [role="button"], [role="tab"]).va-pill { min-block-size: 32px; min-inline-size: 32px; padding: 0 0.55rem; }
   }
 }
