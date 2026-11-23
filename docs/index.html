@@ -16438,7 +16438,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         '</article>';
     }).join('');
 
-    const installCmd = 'git clone https://github.com/FrankXLT/quiet-ui-skills.git && cd quiet-ui-skills && ./install.sh';
+    const ghHost = (window.location && window.location.hostname) || '';
+    const rawSeg = ((window.location && window.location.pathname) || '').split('/').filter(Boolean)[0] || '';
+    const ghOwner = /\.github\.io$/i.test(ghHost) ? ghHost.replace(/\.github\.io$/i, '').replace(/[^a-zA-Z0-9-]/g, '') : '';
+    const ghRepo = (rawSeg && !/\.html?$/i.test(rawSeg) ? rawSeg : 'quiet-ui-skills').replace(/[^a-zA-Z0-9._-]/g, '') || 'quiet-ui-skills';
+    const installCmd = ghOwner
+      ? ('git clone https://github.com/' + ghOwner + '/' + ghRepo + '.git && cd ' + ghRepo + ' && ./install.sh')
+      : './install.sh';
     root.innerHTML = '<div class="va-landing-wrap">' +
       '<section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
       '<span class="va-landing-kicker">CLEAN INTERFACES &amp; HONEST CHARTS FOR AI CODING TOOLS</span>' +
