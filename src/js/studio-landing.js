@@ -15,11 +15,11 @@
   };
 
   const MORPH_MODES = {
-    screen: { label: '1080p Screen · 1920×1080', note: 'White desk monitor surface (`M3`) with dual-pane signal waveform, KPI tiles, and interactive ceiling.' },
-    paper: { label: 'Archival Paper · 1056×1368', note: 'Warm print sheet (`M1`) using Newsreader typography, high-contrast black ink rules, and zero chrome clutter.' },
-    mobile: { label: 'Mobile Phone · 390×844', note: 'Responsive 390px handset bezel (`N4`) stacking scalar summary tiles above the calibrated signal sweep.' },
+    screen: { label: '1080p Screen · 1920×1080', note: 'White desk monitor surface with dual-pane signal waveform, KPI tiles, and interactive ceiling.' },
+    paper: { label: 'Archival Paper · 1056×1368', note: 'Warm print sheet using Georgia serif typography, high-contrast black ink rules, and zero chrome clutter.' },
+    mobile: { label: 'Mobile Phone · 390×844', note: 'Responsive 390px handset bezel stacking scalar summary tiles and mobile dock controls smoothly.' },
     dark: { label: 'Dark Cockpit · Slate / OLED', note: 'Night-operations polarity preserving crisp gridlines and reserving amber strictly for threshold crossings.' },
-    brief: { label: 'Executive Brief · Summary Lens', note: 'Compression lens leading with the operational margin delta and threshold disposition before detail proof.' },
+    brief: { label: 'Executive Brief · Summary Lens', note: 'Compression lens leading with operational margin delta and threshold disposition before detail proof.' },
   };
 
   function esc(val) {
@@ -168,7 +168,7 @@
       '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Pillars and Quick Install">' +
       '<div class="va-landing-sec-hdr"><h2>Three Orthogonal Pillars &amp; Quick Install</h2><span>Zero-dependency Python 3.10+ stdlib compilers &amp; portable auditor</span></div>' +
       '<div class="va-pillars-grid">' +
-      '<div class="va-pillar-col"><h3>quiet-ui (7 Mediums)</h3><p>Screen, archival print (`M1`), workbenches (`M3`), POI terminals, wall kiosks, and optical HUDs with persistent `.quiet-ui.md` contracts and `audit_quiet_html.py`.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-ui (7 Mediums)</h3><p>Screen, archival print, stateful workbenches, POI terminals, wall kiosks, and optical HUDs with persistent <code>.quiet-ui.md</code> contracts and <code>audit_quiet_html.py</code>.</p></div>' +
       '<div class="va-pillar-col"><h3>quiet-evidence (6 Modalities)</h3><p>Deterministic SVG/ECharts compilers for 1-2-5 plots, waveforms, bitfields, tables, and schematics across 44 interactive Component Library specimens.</p></div>' +
       '<div class="va-pillar-col"><h3>quiet-bridge (7 Audience Lenses)</h3><p>Executive, peer engineering, operator, and learner projection rules enforcing plain-English clarity and end-to-end numerical conservation.</p></div>' +
       '</div>' +
