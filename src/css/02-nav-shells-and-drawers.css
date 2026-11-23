@@ -79,20 +79,27 @@
   .va-rail-brand {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.35rem 0.65rem 0.6rem;
+    justify-content: space-between;
+    gap: 0.45rem;
+    padding: 0.35rem 0.5rem 0.6rem;
     margin-bottom: 0.25rem;
     border-bottom: 1px solid var(--border-hairline);
     font-size: var(--ts-sm);
     font-weight: 700;
     color: var(--text-primary);
   }
+  .va-rail-brand-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
 
   .va-rail-link {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.4rem 0.65rem;
+    gap: 0.55rem;
+    padding: 0.4rem 0.6rem;
     font-size: var(--ts-sm);
     color: var(--text-secondary);
     border-radius: var(--radius-sm);
@@ -105,6 +112,52 @@
     background: var(--bg-canvas);
     font-weight: 600;
   }
+  .va-rail-count {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+  }
+  .va-rail-collapse-btn,
+  .va-rail-reopen-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    min-block-size: 28px;
+    min-inline-size: 28px;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .va-rail-collapse-btn:hover,
+  .va-rail-reopen-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .va-rail-reopen-btn { display: none; align-self: flex-start; margin: 0.55rem 0 0 1.15rem; }
+  .va-rail-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.42rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .va-rail-quick-group { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border-hairline); }
+  html:not([data-effective-nav="n3"]) .va-shell-topbar .va-rail-collapse-btn { display: none; }
+  @media (max-width: 1099px) { .va-shell-topbar .va-rail-collapse-btn { display: none; } }
+  .va-shell-rail .va-rail-footer { gap: 0.35rem; }
+  .va-shell-rail .va-swatch-row { gap: 0.32rem; }
 
   .va-shell-bottomdock {
     position: sticky;
@@ -149,12 +202,15 @@
   /* N1: Left Rail (Desktop >= 1100px) / Drawer (< 1100px) */
   @media (min-width: 1100px) {
     html[data-effective-nav="n1"] .va-app-shell {
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 272px minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr);
     }
     html[data-effective-nav="n1"] .va-shell-topbar,
     html[data-effective-nav="n1"] .va-shell-bottomdock { display: none; }
     html[data-effective-nav="n1"] .va-shell-rail { display: flex; }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-app-shell { grid-template-columns: minmax(0, 1fr); }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-shell-rail { display: none; }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-rail-reopen-btn { display: inline-flex; }
   }
 
   @media (max-width: 1099px) {
@@ -186,13 +242,15 @@
   /* N3: Composite Top Bar + Left Rail */
   @media (min-width: 1100px) {
     html[data-effective-nav="n3"] .va-app-shell {
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 272px minmax(0, 1fr);
       grid-template-rows: auto minmax(0, 1fr);
     }
     html[data-effective-nav="n3"] .va-shell-topbar { grid-column: 1 / -1; display: flex; }
     html[data-effective-nav="n3"] .va-shell-rail { grid-column: 1; display: flex; }
     html[data-effective-nav="n3"] .va-shell-bottomdock,
     html[data-effective-nav="n3"] #va-drawer-open-btn { display: none; }
+    html[data-effective-nav="n3"][data-rail-collapsed="true"] .va-app-shell { grid-template-columns: minmax(0, 1fr); }
+    html[data-effective-nav="n3"][data-rail-collapsed="true"] .va-shell-rail { display: none; }
   }
 
   @media (max-width: 1099px) {

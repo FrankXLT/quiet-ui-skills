@@ -67,7 +67,7 @@ def _capture_showcase(
 ) -> Image.Image:
     cap_w, cap_h = CAP_W, CAP_H
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": cap_w, "height": cap_h, "deviceScaleFactor": 1.0, "mobile": False})
-    driver.get(f"{base_url}/quiet-ui-showcase.html?world={wid}&view={vid}&theme={theme}")
+    driver.get(f"{base_url}/quiet-ui-showcase.html?world={wid}&view={vid}&theme={theme}&vp=fill")
     for _ in range(50):
         ok = driver.execute_script(
             "const f=document.getElementById('va-stage-portal'),d=f&&f.contentDocument,m=d&&d.getElementById('va-stage-main');"
@@ -126,7 +126,7 @@ def _composite(panels: list[tuple[str, str, Image.Image]]) -> Image.Image:
     f_title, f_sub, f_tag = _font(BOLD_FONT_CANDIDATES, 19), _font(MONO_FONT_CANDIDATES, 12), _font(BOLD_FONT_CANDIDATES, 13)
     draw.rectangle([0, 0, 1600, 42], fill="#0B1120")
     draw.line([(0, 42), (1600, 42)], fill="#1E293B", width=1)
-    draw.text((24, 10), "QUIET UI v9.4", fill="#38BDF8", font=f_title)
+    draw.text((24, 10), "QUIET UI v9.5", fill="#38BDF8", font=f_title)
     draw.text((152, 14), "6-Domain Studio (21 Views)  ·  44 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
     rb = "Themes: White  ·  Dark  ·  Paper  ·  Dark-Paper   |   NIST 1-2-5  ·  Zero Truncation"
     draw.text((1576 - draw.textbbox((0, 0), rb, font=f_sub)[2], 15), rb, fill="#94A3B8", font=f_sub)

@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 — Portal Scaler Math, Foldable Hinge Detection & Drag Resizing
+ * Quiet UI v9.5 — Portal Scaler Math, Frame Bezel Classification & Drag Resizing
  */
 (function (window) {
   'use strict';
@@ -14,12 +14,21 @@
     return (w >= 320 && h >= 360) ? { width: w, height: h } : null;
   }
 
+  function classifyFrame(dims, medium) {
+    if (!dims) return 'fill';
+    if (medium === 'm1' || (dims.width === 1056 && dims.height === 1368)) return 'paper';
+    if (dims.width <= 480) return 'mobile';
+    return 'screen';
+  }
+
   function computeScale(width, height, matEl, zoomMode) {
     if (zoomMode === '1:1') {
       return { scale: 1, scalerW: width, scalerH: height };
     }
-    const availW = Math.max(100, matEl.clientWidth - 28);
-    const availH = Math.max(100, matEl.clientHeight - 28);
+    const padX = (window.innerWidth < 700 ? 16 : 48) + 8;
+    const padY = (window.innerWidth < 700 ? 16 : 36) + 8;
+    const availW = Math.max(100, matEl.clientWidth - padX);
+    const availH = Math.max(100, matEl.clientHeight - padY);
     const scale = Math.min(1, availW / width, availH / height);
     return {
       scale: scale,
@@ -35,8 +44,11 @@
     );
   }
 
-  function applyPortalDimensions(scalerEl, portalEl, matEl, dims, zoomMode) {
+  function applyPortalDimensions(scalerEl, portalEl, matEl, dims, zoomMode, medium) {
     if (!scalerEl || !portalEl || !matEl) return;
+    const frame = classifyFrame(dims, medium);
+    scalerEl.dataset.portalFrame = frame;
+    matEl.dataset.portalFrame = frame;
     if (!dims) {
       scalerEl.style.width = '100%';
       scalerEl.style.height = '100%';
@@ -92,7 +104,7 @@
       if (dragDir === 'e') newW = Math.max(320, startW + (e.clientX - startX) * 2);
       else if (dragDir === 'w') newW = Math.max(320, startW - (e.clientX - startX) * 2);
       else if (dragDir === 's') newH = Math.max(480, startH + (e.clientY - startY));
-      applyPortalDimensions(scalerEl, portalEl, matEl, { width: newW, height: newH }, 'fit');
+      applyPortalDimensions(scalerEl, portalEl, matEl, { width: newW, height: newH }, 'fit', document.documentElement.dataset.medium);
     }
 
     function onMouseUp() {
@@ -113,6 +125,7 @@
 
   window.QuietPortalResize = {
     parseDimensions: parseDimensions,
+    classifyFrame: classifyFrame,
     computeScale: computeScale,
     applyPortalDimensions: applyPortalDimensions,
     initResizeHandles: initResizeHandles,

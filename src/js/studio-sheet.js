@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 — Studio Settings Sheet, Dialog Light-Dismiss Fallback & Scroll Auto-Tuck
+ * Quiet UI v9.5 — Studio Settings Sheet, Dialog Light-Dismiss Fallback & Scroll Auto-Tuck
  */
 (function (window) {
   'use strict';
@@ -15,12 +15,11 @@
 
   function hasNonDefaultSettings(state) {
     return (
+      !!state.presetLocked ||
       state.nav !== 'auto' ||
-      state.medium !== 'auto' ||
       state.density !== 'd2' ||
       state.scale !== '100' ||
-      state.corners !== 'auto' ||
-      state.vp !== 'fill'
+      state.corners !== 'auto'
     );
   }
 
@@ -29,7 +28,7 @@
       'Domain: ' + state.world + ' · View: ' + state.view +
       ' · Format: ' + state.medium + ' · Shell: ' + state.nav +
       ' · Theme: ' + state.theme + ' · Density: ' + state.density +
-      ' · Scale: ' + state.scale + '%'
+      ' · VP: ' + state.vp + ' · Scale: ' + state.scale + '%'
     );
   }
 
@@ -89,6 +88,9 @@
 
     const prev = document.getElementById('va-prompt-preview');
     if (prev) prev.textContent = buildContractPrompt(state);
+
+    const autoSheetBtn = document.getElementById('va-sheet-auto-preset-btn');
+    if (autoSheetBtn) autoSheetBtn.hidden = !state.presetLocked;
   }
 
   function untuckStudioBar() {
@@ -134,32 +136,37 @@
     }, { passive: true, capture: true });
   }
 
-  function initSheetEvents(state, applyState, onRotate, onZoomToggle, onPrint) {
+  function initSheetEvents(state, applyState, onRotate, onZoomToggle, onPrint, onAutoReset) {
     bindDialogLightDismissFallback(document.getElementById('va-customize-sheet'));
     bindDialogLightDismissFallback(document.getElementById('va-bridge-dialog'));
 
     document.querySelectorAll('[data-sheet-theme]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.theme = btn.dataset.sheetTheme;
+        state.presetLocked = true;
         applyState();
       });
     });
 
     document.querySelectorAll('[data-sheet-scale]').forEach(function (btn) {
-      btn.addEventListener('click', function () { state.scale = btn.dataset.sheetScale || '100'; applyState(); });
+      btn.addEventListener('click', function () {
+        state.scale = btn.dataset.sheetScale || '100';
+        state.presetLocked = true;
+        applyState();
+      });
     });
 
     const sd = document.getElementById('va-sheet-domain-select');
     if (sd) sd.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
 
     const sm = document.getElementById('va-sheet-medium-select');
-    if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; applyState(); });
+    if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; state.presetLocked = true; applyState(); });
 
     const sn = document.getElementById('va-sheet-nav-select');
-    if (sn) sn.addEventListener('change', function (e) { state.nav = e.target.value; applyState(); });
+    if (sn) sn.addEventListener('change', function (e) { state.nav = e.target.value; state.presetLocked = true; applyState(); });
 
     const sv = document.getElementById('va-sheet-vp-select');
-    if (sv) sv.addEventListener('change', function (e) { state.vp = e.target.value; applyState(); });
+    if (sv) sv.addEventListener('change', function (e) { state.vp = e.target.value; state.presetLocked = true; applyState(); });
 
     const sr = document.getElementById('va-sheet-rotate-btn');
     if (sr) sr.addEventListener('click', onRotate);
@@ -169,6 +176,9 @@
 
     const sp = document.getElementById('va-sheet-print-btn');
     if (sp && typeof onPrint === 'function') sp.addEventListener('click', onPrint);
+
+    const sa = document.getElementById('va-sheet-auto-preset-btn');
+    if (sa && typeof onAutoReset === 'function') sa.addEventListener('click', onAutoReset);
 
     const copyBtn = document.getElementById('va-copy-prompt-btn');
     if (copyBtn) {
@@ -245,6 +255,7 @@
 
   window.QuietStudioSheetV9 = {
     escHtml: escHtml,
+    cycleTheme: cycleTheme,
     postExternalSync: postExternalSync,
     syncSheetControls: syncSheetControls,
     untuckStudioBar: untuckStudioBar,

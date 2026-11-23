@@ -3,7 +3,7 @@ name: quiet-bridge
 description: Asymmetric communication skill translating engineering data across 7 audience lenses and 3 decision tempos with pre-build intake, pedagogical scaffolding, and Murder Board audits.
 ---
 
-# Quiet UI Pillar 3 (`v9.4.0`) — Directional Translation & Murder Board
+# Quiet UI Pillar 3 (`v9.5.0`) — Directional Translation & Murder Board
 
 Quiet UI Pillar 3 governs audience-targeted translation, scrub of presenter bias, and adversarial red-teaming across seven audience lenses and three operational decision tempos.
 

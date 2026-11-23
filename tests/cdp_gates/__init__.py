@@ -89,7 +89,7 @@ def select_view(driver: Any, slug: str) -> None:
                 if (v.view_id === slug || v.view_id.startsWith(slug + '-')) { worldId = w.world_id; viewId = v.view_id; break; }
             }
         }
-        api.state.studioView = 'examples'; api.state.world = worldId; api.state.view = viewId;
+        api.state.studioView = 'examples'; api.state.world = worldId; api.state.view = viewId; api.state.presetLocked = true;
         api.applyState(false);
         """,
         slug,

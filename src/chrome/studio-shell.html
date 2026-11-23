@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="va-studio-root" data-medium="auto" data-studio-view="examples">
+<html lang="en" class="va-studio-root" data-medium="auto" data-studio-view="overview">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Quiet UI v9.4 — Interactive Studio</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <title>Quiet UI v9.5 — Interactive Studio</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%231D4ED8'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%23FFFFFF' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23DBEAFE' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style id="va-studio-chrome-css">
 __CHROME_CSS__
   </style>
@@ -14,13 +14,14 @@ __CHROME_CSS__
     <div class="va-bar-left">
       <div class="va-studio-brand">
         <svg class="va-brand-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5 14 4.8 8 8 2 4.8 8 1.5Z" fill="none"/><path d="M2 8l6 3.2L14 8" fill="none"/><path d="M2 11.2 8 14.5l6-3.3" fill="none"/></svg>
-        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.4</span></span>
+        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.5</span></span>
       </div>
       <div id="va-studio-mode-tablist" class="va-mode-tablist" role="tablist" aria-label="Studio Mode">
-        <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab is-active" data-studio-tab="examples" aria-selected="true">Examples</button>
+        <button type="button" role="tab" id="va-tab-overview" class="va-mode-tab is-active" data-studio-tab="overview" aria-selected="true">Overview</button>
+        <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab" data-studio-tab="examples" aria-selected="false">Examples</button>
         <button type="button" role="tab" id="va-tab-components" class="va-mode-tab" data-studio-tab="components" aria-selected="false">Components</button>
       </div>
-      <label class="va-inline-ctrl va-domain-ctrl va-fold-up" for="va-domain-select">
+      <label class="va-inline-ctrl va-domain-ctrl va-fold-up va-examples-only" for="va-domain-select">
         <span class="va-ctrl-prefix">Domain:</span>
         <select id="va-domain-select" class="va-ctrl-bare-select" aria-label="Select Domain">
 __WORLD_OPTIONS__
@@ -28,16 +29,24 @@ __WORLD_OPTIONS__
       </label>
     </div>
 
-    <div class="va-bar-center">
-      <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous View" title="Previous View"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5" fill="none"/></svg></button>
+    <div class="va-bar-center va-examples-only">
+      <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous View" title="Previous View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5" fill="none"/></svg></button>
       <select id="va-view-select" class="va-studio-select va-tier-select" aria-label="Select Example View">
 __VIEW_OPTIONS__
       </select>
-      <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next View" title="Next View"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg></button>
+      <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next View" title="Next View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg></button>
+      <span id="va-step-pos" class="va-step-pos" aria-live="polite">1 / 21</span>
     </div>
 
     <div class="va-bar-right">
-      <button type="button" id="va-bridge-btn" class="va-studio-btn" aria-label="Design Rationale" title="Design Rationale and Quality Checks">
+      <div id="va-format-pills" class="va-format-pills va-examples-only" role="group" aria-label="Portal Framing">
+        <button type="button" class="va-format-btn is-active" data-format-preset="1080p" aria-pressed="true">1080p</button>
+        <button type="button" class="va-format-btn" data-format-preset="paper" aria-pressed="false">Paper</button>
+        <button type="button" class="va-format-btn" data-format-preset="mobile" aria-pressed="false">Mobile</button>
+        <button type="button" class="va-format-btn" data-format-preset="fill" aria-pressed="false">Fill</button>
+      </div>
+      <button type="button" id="va-preset-auto-btn" class="va-studio-btn va-auto-btn va-examples-only" hidden aria-label="Re-enable automatic per-view framing presets" title="Reset to automatic per-view presets">Auto Preset</button>
+      <button type="button" id="va-bridge-btn" class="va-studio-btn va-examples-only" aria-label="Design Rationale" title="Design Rationale and Quality Checks">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7.5v4" fill="none"/><circle cx="8" cy="4.8" r="0.7" fill="currentColor"/></svg><span>Why?</span>
       </button>
 
@@ -48,13 +57,15 @@ __VIEW_OPTIONS__
     </div>
   </header>
 
-  <main id="va-portal-mat">
-    <div id="va-portal-scaler">
+  <section id="va-studio-landing" class="va-studio-landing" aria-label="Quiet UI Overview"></section>
+
+  <main id="va-portal-mat" data-portal-frame="screen">
+    <div id="va-portal-scaler" data-portal-frame="screen">
       <div class="va-hinge-guide"></div>
       <div class="va-drag-handle va-drag-w"></div>
       <div class="va-drag-handle va-drag-e"></div>
       <div class="va-drag-handle va-drag-s"></div>
-      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.4 Preview Stage"></iframe>
+      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.5 Preview Stage"></iframe>
     </div>
   </main>
 
@@ -153,11 +164,12 @@ __WORLD_OPTIONS__
         <label class="va-customize-label" for="va-sheet-vp-select">DEVICE VIEWPORT</label>
         <div class="va-sheet-stage-row">
           <select id="va-sheet-vp-select" class="va-studio-select">
-            <option value="fill" selected>Fill Screen</option>
+            <option value="1920x1080" selected>Desktop (1080p)</option>
+            <option value="1056x1368">Paper Sheet (1056×1368)</option>
             <option value="390x844">Phone (390×844)</option>
             <option value="840x1050">Foldable (840×1050)</option>
-            <option value="1920x1080">Desktop (1080p)</option>
             <option value="3840x2160">4K UHD</option>
+            <option value="fill">Fill Screen</option>
           </select>
           <button type="button" id="va-sheet-rotate-btn" class="va-studio-btn" aria-label="Rotate Device Viewport" title="Rotate Viewport"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.4-3.5" fill="none"/><path d="M13 2.5v2.8h-2.8" fill="none"/></svg></button>
           <button type="button" id="va-sheet-zoom-btn" class="va-studio-btn" title="Toggle Fit vs 1:1">FIT</button>
@@ -168,6 +180,7 @@ __WORLD_OPTIONS__
         <span class="va-customize-label">SHARE PRESET</span>
         <div class="va-prompt-row">
           <code id="va-prompt-preview" class="va-prompt-preview">Domain: 01 · View: v01</code>
+          <button type="button" id="va-sheet-auto-preset-btn" class="va-studio-btn" hidden>Auto</button>
           <button type="button" id="va-copy-prompt-btn" class="va-studio-btn">Copy</button>
         </div>
       </div>

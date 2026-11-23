@@ -3,7 +3,7 @@ name: quiet-evidence
 description: Quantitative data metrology and structural topology skill compiling NIST 1-2-5 plots, bitfields, HIL waveforms, and MIL-STD schematics from deterministic JSON schemas.
 ---
 
-# Quiet UI Pillar 2 (`v9.4.0`) — Unified Quantitative Evidence & Metrology
+# Quiet UI Pillar 2 (`v9.5.0`) — Unified Quantitative Evidence & Metrology
 
 Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 · Orientation`, `L2 · Governance`, `L3 · Physical, Clinical & Metrological`).
 

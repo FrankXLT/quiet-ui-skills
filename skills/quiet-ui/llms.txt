@@ -1,8 +1,8 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.4
+# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.5
 
 > 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
-- **v9.4 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (GitHub Pages: `docs/index.html`)
+- **v9.5 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (Overview Landing Page, Light Topbar, `1080p` Framed Portal, Interactive `#va-shell-rail`, GitHub Pages: `docs/index.html`)
 - **3-Pillar Component Library (`44 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + Forms/Zero-States/Undo + UI/Bridge Controls + Data Contracts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells · `.quiet-ui.md` Contract) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
@@ -60,7 +60,7 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.4.0).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.5.0).
 - [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [forms-states-and-resilience.md](skills/quiet-ui/foundation/forms-states-and-resilience.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py` + `audit_ux_and_drift.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + CJK-safe `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & `.quiet-ui.md`-aware intake router.

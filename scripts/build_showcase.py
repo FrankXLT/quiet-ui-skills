@@ -103,10 +103,19 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
         worlds_meta.append(built["world_meta"])
         all_templates.update(built["templates"])
 
-    chrome_css = (repo_root / "src" / "css" / "04-studio-portal.css").read_text(encoding="utf-8")
+    chrome_css = "\n\n".join(
+        (repo_root / "src" / "css" / name).read_text(encoding="utf-8")
+        for name in ("04-studio-portal.css", "04b-studio-landing.css")
+    )
     studio_js = "\n\n".join(
         (repo_root / "src" / "js" / name).read_text(encoding="utf-8")
-        for name in ("portal-resize.js", "studio-sheet.js", "studio-portal.js")
+        for name in (
+            "portal-resize.js",
+            "studio-sheet.js",
+            "studio-presets-and-rail.js",
+            "studio-landing.js",
+            "studio-portal.js",
+        )
     )
     esc = lambda s: html_lib.escape(str(s), quote=True)
     world_options = "\n".join(
@@ -140,7 +149,7 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build Quiet UI v9.4 Multi-Domain Showcase")
+    parser = argparse.ArgumentParser(description="Build Quiet UI v9.5 Multi-Domain Showcase")
     parser.add_argument("--worlds", default="all", help="Comma-separated domain IDs or 'all' (default: all)")
     parser.add_argument("--output", default="quiet-ui-showcase.html", help="Output HTML file path")
     args = parser.parse_args()
@@ -152,7 +161,7 @@ def main() -> int:
         out_path = REPO_ROOT / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html_out, encoding="utf-8")
-    print(f"[OK] Built Quiet UI v9.4 showcase ({len(selected)} domain(s)) -> {out_path}")
+    print(f"[OK] Built Quiet UI v9.5 showcase ({len(selected)} domain(s)) -> {out_path}")
     return 0
 
 

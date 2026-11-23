@@ -121,25 +121,31 @@ return errs;
 
 
 def _check_studio_bar_and_viewports(driver: Any, base_url: str, errs: list[str]) -> None:
+    check_bar_js = """
+        const b = document.getElementById('va-studio-bar');
+        if (!b) return 'missing #va-studio-bar';
+        b.classList.remove('is-tucked');
+        if (b.getBoundingClientRect().height > 48.5) return 'height>48.5';
+        if (b.scrollWidth > b.clientWidth + 1 || document.documentElement.scrollWidth > document.documentElement.clientWidth + 1) return 'overflow';
+        const t = document.getElementById('va-studio-mode-tablist'), d = document.getElementById('va-domain-select');
+        if (d && d.getBoundingClientRect().width > 0 && t.getBoundingClientRect().left >= d.getBoundingClientRect().left) return 'tablist order';
+        return '';
+    """
     for vp_w, vp_h in ((390, 844), (840, 1050), (1440, 900), (1920, 1080), (3840, 2160)):
         set_viewport(driver, vp_w, vp_h, 1)
         driver.get(base_url)
         time.sleep(0.2)
-        bar_err = driver.execute_script(
-            """
-            const w = arguments[0], b = document.getElementById('va-studio-bar');
-            if (!b) return 'missing #va-studio-bar';
-            b.classList.remove('is-tucked');
-            if (b.getBoundingClientRect().height > 48.5) return 'height>48.5';
-            if (b.scrollWidth > b.clientWidth + 1 || document.documentElement.scrollWidth > document.documentElement.clientWidth + 1) return 'overflow';
-            const t = document.getElementById('va-studio-mode-tablist'), d = document.getElementById('va-domain-select');
-            if (d && d.getBoundingClientRect().width > 0 && t.getBoundingClientRect().left >= d.getBoundingClientRect().left) return 'tablist order';
-            return '';
-            """,
-            vp_w,
-        )
+        bar_err = driver.execute_script(check_bar_js)
         if bar_err:
-            errs.append(f"[STUDIO_BAR_{vp_w}] {bar_err}")
+            errs.append(f"[STUDIO_BAR_OVERVIEW_{vp_w}] {bar_err}")
+
+        driver.execute_script(
+            "const api=window.QuietStudioPortalV9;if(api){api.state.studioView='examples';api.state.vp='fill';api.state.presetLocked=true;api.applyState(false);}"
+        )
+        time.sleep(0.15)
+        bar_err_ex = driver.execute_script(check_bar_js)
+        if bar_err_ex:
+            errs.append(f"[STUDIO_BAR_{vp_w}] {bar_err_ex}")
 
         exp_fs, tol = ROOT_FONT_SCALE_TARGETS[vp_w]
         for _wid, views in ALL_WORLDS_VIEWS:
@@ -157,7 +163,7 @@ def _check_studio_bar_and_viewports(driver: Any, base_url: str, errs: list[str])
 
 def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_url: str, errs: list[str]) -> None:
     set_viewport(driver, 1440, 900, 1)
-    driver.get(base_url)
+    driver.get(f"{base_url}?mode=examples&theme=white")
     time.sleep(0.2)
 
     bgs: set[str] = set()

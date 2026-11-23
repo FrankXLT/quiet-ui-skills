@@ -2,6 +2,14 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.5.0] - 2026-11-23
+
+### Added
+- **OAW-Style `Overview` Landing Page (`src/js/studio-landing.js`, `src/css/04b-studio-landing.css`, `src/chrome/studio-shell.html`)**: Unparameterized `/` now opens the pure-white `Overview` landing page (`Overview | Examples | Components`) with centered hero, `> slug_` domain-jump chips, a 3-step guide + 5-mode (`Screen | Paper | Mobile | Dark | Brief`) Live Morph Preview card featuring a real-time SVG threshold slider (`55–95 mmHg`), dynamically built 6-domain / `21`-view (`17` in `brand-starter`) cards from `#va-v9-manifest`, and a 3-pillar install footer. Deep links (`?view=...`, `?world=...`, `?domain=...`, `?mode=...`) bypass the landing page seamlessly.
+- **Light Studio Topbar & Architectural Drafting Mat (`src/css/04-studio-portal.css`, `src/js/portal-resize.js`)**: Replaced the dark `#0F172A` studio topbar and `#070B12` void with a crisp `#FFFFFF` topbar (`<= 48px`), `#E2E8F0` dot-grid architectural drafting mat (`#va-portal-mat`), framed device bezels (`Screen` `8px`, `Paper` `2px`, `Mobile` `4px solid #334155`), and light `<dialog>` sheets while keeping tablist shift `<= 1px`.
+- **`1080p` (`1920x1080`) Default Portal, Inline Format Pills & Cross-Domain `<`/`>` Stepping (`src/js/studio-portal.js`, `src/js/studio-presets-and-rail.js`)**: Defaulted `Examples` viewport to `1920x1080` (`zoom: 'fit'`) with inline `#va-format-pills` (`1080p | Paper | Mobile | Fill`), `#va-step-pos` (`1 / 21`), global cross-domain wraparound stepping across all `6` domains and `21` views, curated `VIEW_PRESETS` form-factor rotation (`Screen 1080p`, `Paper 1056x1368`, `Mobile 390x844`, `Dark Paper`, `Dark HUD`), and manual `presetLocked` + `Auto Preset` unlock controls.
+- **Interactive Inner `#va-shell-rail` (`src/js/studio-presets-and-rail.js`, `src/css/02-nav-shells-and-drawers.css`)**: Upgraded previewed app rails (`N1`/`N3`) to interactive workspace controls supporting rail collapse/reopen with live ECharts reflow, single-section focus filtering + item count badges and `Show Full View` reset bar, collapsible `Quick Switch` `.va-tree-row`/`.va-tree-children` links wired to stage chips/tabs, and bidirectional `.va-rail-footer` swatch/`Compact | Comfortable` density syncing with `#va-studio-bar`.
+
 ## [9.4.0] - 2026-11-22
 
 ### Added

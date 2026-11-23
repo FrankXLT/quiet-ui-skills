@@ -1,17 +1,17 @@
-# Quiet UI v9.4.0 — Master Engineering Workflows & Architecture
+# Quiet UI v9.5.0 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.4.0 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.5.0 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.4 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.5 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.4
+                                      QUIET UI v9.5
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼

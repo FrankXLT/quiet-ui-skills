@@ -1,4 +1,4 @@
-# AGENTS.md — Quiet UI Skills (`v9.4.0`)
+# AGENTS.md — Quiet UI Skills (`v9.5.0`)
 
 Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Follow the mode boundary, commands, and invariants below verbatim.
 
@@ -59,10 +59,10 @@ python3 -B scripts/serve_showcase.py --port 8788
 | `tokens/` | Canonical MIT-licensed 4-theme CSS custom properties (`white`, `paper`, `dark-paper`, `dark`, incl. `--bg-subtle`). |
 | `customizations/` | MIT starter kits (`personal-starter/`, `brand-starter/`) and starter build/verify scripts. |
 | `content/corpora/` | 6 domain corpora (`21` views, `26` JSON specs, `181` conserved metric checks) + attribution docs. |
-| `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..14`), JS runtimes (`js/` incl. `quiet-svg-chart-layout.js`, `quiet-time-binning.js`, `quiet-cyclical-whiskers.js`, `quiet-period-stepper.js`), and domain builders (`views/`). |
+| `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..14` incl. `04b-studio-landing.css`), JS runtimes (`js/` incl. `studio-landing.js`, `studio-presets-and-rail.js`, `quiet-svg-chart-layout.js`, `quiet-time-binning.js`, `quiet-cyclical-whiskers.js`, `quiet-period-stepper.js`), and domain builders (`views/`). |
 | `docs/` | GitHub Pages web root (`index.html`, `bench/evidence-bench.html` with `44` specimens, `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos). |
 | `scripts/` | Build & preview CLI (`build_all.py`, `build_showcase.py`, `build_evidence_bench.py`, `bench_forms_specimen.py`, `build_readme_hero.py`, `serve_showcase.py`). |
-| `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`, `test_v922_hardening.py`, `test_v922_round2.py`, `test_v930_endstate_lessons.py`, `test_v940_context_forms_drift.py`). |
+| `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`, `test_v922_hardening.py`, `test_v922_round2.py`, `test_v930_endstate_lessons.py`, `test_v940_context_forms_drift.py`, `test_v950_landing_portal_and_rail.py`). |
 | `quiet-ui-showcase.html` | Compiled standalone 6-domain, 21-view Studio portal (mirrored byte-for-byte to `docs/index.html`). |
 
 ---

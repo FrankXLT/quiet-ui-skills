@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" class="va-studio-root" data-medium="auto" data-studio-view="examples" data-custom-styles="true">
+<html lang="en" class="va-studio-root" data-medium="auto" data-studio-view="overview" data-custom-styles="true">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quiet UI Brand &amp; Product Portal — Quiet UI Showcase</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%231D4ED8'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%23FFFFFF' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23DBEAFE' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style id="va-studio-chrome-css">
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.0 — Studio Portal Bar, Mat, Scaler & Quiet-Bridge Provenance Dialog */
+/* Quiet UI v9.5 — Light Studio Bar, Architectural Drafting Mat, Framed Portal & Dialogs */
 
 html.va-studio-root,
 body.va-studio-body {
@@ -19,11 +19,18 @@ body.va-studio-body {
   flex-direction: column;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #070B12;
-  color: #F8FAFC;
+  background: #FFFFFF;
+  color: #0F172A;
   font-size: 13px;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+}
+html.va-studio-root[data-studio-view="overview"],
+html.va-studio-root[data-studio-view="overview"] body.va-studio-body {
+  block-size: auto;
+  min-block-size: 100dvh;
+  overflow-x: clip;
+  overflow-y: auto;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -32,17 +39,20 @@ summary::-webkit-details-marker { display: none; }
 
 #va-studio-bar,
 .va-studio-bar {
-  block-size: 44px;
-  min-block-size: 44px;
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 46px;
+  min-block-size: 46px;
   max-block-size: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  gap: 0.35rem;
-  padding: 0 0.5rem;
-  background: #0F172A;
-  border-bottom: 1px solid #1E293B;
+  gap: 0.4rem;
+  padding: 0 0.65rem;
+  background: #FFFFFF;
+  color: #0F172A;
+  border-bottom: 1px solid #E2E8F0;
   z-index: 100;
   flex-shrink: 0;
   overflow: hidden;
@@ -50,7 +60,7 @@ summary::-webkit-details-marker { display: none; }
 }
 
 #va-studio-bar.is-tucked {
-  margin-top: -44px;
+  margin-top: -46px;
   transform: translateY(-100%);
 }
 
@@ -58,7 +68,7 @@ summary::-webkit-details-marker { display: none; }
 .va-bar-right {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   flex: 0 0 auto;
   min-inline-size: 0;
 }
@@ -68,172 +78,111 @@ summary::-webkit-details-marker { display: none; }
   align-items: center;
   justify-content: center;
   gap: 0.28rem;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-inline-size: 0;
+  overflow: hidden;
 }
 
 .va-studio-brand {
   font-weight: 700;
-  font-size: 12.5px;
-  color: #F8FAFC;
+  font-size: 13px;
+  color: #0F172A;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.32rem;
   white-space: nowrap;
+  flex-shrink: 0;
 }
-.va-brand-icon { inline-size: 16px; block-size: 16px; color: #38BDF8; flex-shrink: 0; }
-.va-brand-text { display: inline-flex; align-items: center; gap: 0.3rem; }
+.va-brand-icon { inline-size: 16px; block-size: 16px; color: #1D4ED8; flex-shrink: 0; }
+.va-brand-text { display: inline-flex; align-items: center; gap: 0.32rem; }
 .va-studio-badge {
   font-size: 11px;
-  font-weight: 600;
-  background: #1E293B;
-  color: #38BDF8;
-  padding: 1px 5px;
+  font-weight: 700;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  padding: 1px 6px;
   border-radius: 4px;
-  border: 1px solid #334155;
+  border: 1px solid #BFDBFE;
 }
 
 .va-step-btn {
-  min-block-size: 30px;
-  inline-size: 26px;
-  padding: 0;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  background: #1E293B;
-  color: #CBD5E1;
-  font-size: 11px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
+  min-block-size: 30px; inline-size: 26px; padding: 0; border: 1px solid #CBD5E1; border-radius: 6px;
+  background: #FFFFFF; color: #334155; font-size: 11px; cursor: pointer; display: inline-flex;
+  align-items: center; justify-content: center; flex: 0 0 auto;
 }
-.va-step-btn:hover { background: #334155; color: #FFFFFF; }
+.va-step-btn:hover { background: #F8FAFC; border-color: #94A3B8; color: #0F172A; }
+
+.va-step-pos {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums;
+  font-size: 11px; font-weight: 600; color: #475569; white-space: nowrap; padding: 0 0.2rem; flex: 0 0 auto;
+}
 
 .va-studio-select,
 .va-studio-btn {
-  min-block-size: 30px;
-  padding: 0.15rem 0.5rem;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  background: #1E293B;
-  color: #F1F5F9;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  white-space: nowrap;
-  font-family: inherit;
+  min-block-size: 30px; padding: 0.15rem 0.55rem; border: 1px solid #CBD5E1; border-radius: 6px;
+  background: #FFFFFF; color: #0F172A; font-size: 12px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; white-space: nowrap; font-family: inherit;
 }
-.va-tier-select {
-  inline-size: 100%;
-  min-inline-size: 0;
-  max-inline-size: 320px;
-  flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.va-studio-select:hover,
-.va-studio-btn:hover { background: #334155; }
-.va-studio-btn.is-active,
-.va-studio-btn[aria-pressed="true"] {
-  background: #2563EB;
-  border-color: #60A5FA;
-  color: #FFFFFF;
-}
+.va-tier-select { inline-size: 100%; min-inline-size: 0; max-inline-size: 280px; flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; }
+.va-studio-select:hover, .va-studio-btn:hover { background: #F8FAFC; border-color: #94A3B8; }
+.va-studio-btn.is-active, .va-studio-btn[aria-pressed="true"] { background: #1D4ED8; border-color: #1D4ED8; color: #FFFFFF; }
+.va-auto-btn { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; font-size: 11.5px; padding: 0.15rem 0.45rem; }
+.va-auto-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
 
 .va-inline-ctrl {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  min-block-size: 30px;
-  padding: 0 0.42rem;
-  border: 1px solid #334155;
-  border-radius: 6px;
-  background: #1E293B;
-  color: #CBD5E1;
-  font-size: 11.5px;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 0.25rem; min-block-size: 30px; padding: 0 0.45rem;
+  border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; color: #0F172A; font-size: 12px; white-space: nowrap;
 }
-.va-domain-ctrl { max-inline-size: 230px; flex: 0 1 auto; }
-.va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 162px; overflow: hidden; text-overflow: ellipsis; }
-.va-ctrl-prefix { color: #94A3B8; font-weight: 600; font-size: 11px; }
-.va-ctrl-bare-select {
-  border: 0;
-  background: transparent;
-  color: #F8FAFC;
-  font-size: 12px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
-  padding-right: 0.12rem;
-}
-.va-ctrl-bare-select option { background: #0F172A; color: #F8FAFC; }
+.va-domain-ctrl { max-inline-size: 205px; flex: 0 1 auto; }
+.va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 140px; overflow: hidden; text-overflow: ellipsis; }
+.va-ctrl-prefix { color: #475569; font-weight: 600; font-size: 11px; }
+.va-ctrl-bare-select { border: 0; background: transparent; color: #0F172A; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; outline: none; padding-right: 0.12rem; }
+.va-ctrl-bare-select option { background: #FFFFFF; color: #0F172A; }
 
 .va-gear-btn { position: relative; min-inline-size: 30px; padding: 0 0.45rem; }
-.va-settings-dot {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 999px;
-  background: #38BDF8;
-}
-.va-settings-dot[hidden] { display: none; }
+.va-settings-dot { position: absolute; top: 4px; right: 4px; inline-size: 6px; block-size: 6px; border-radius: 999px; background: #1D4ED8; }
 
-@media (max-width: 699px) {
-  .va-studio-brand, .va-fold-up { display: none; }
+.va-mode-tablist, .va-format-pills {
+  display: inline-flex; align-items: center; gap: 2px; padding: 2px; background: #F1F5F9;
+  border: 1px solid #E2E8F0; border-radius: 7px; flex-shrink: 0;
+}
+.va-mode-tab, .va-format-btn {
+  min-block-size: 26px; padding: 0 0.52rem; border: 1px solid transparent; border-radius: 5px;
+  background: transparent; color: #475569; font: 600 11.5px/1 inherit; cursor: pointer; white-space: nowrap;
+}
+.va-format-btn { padding: 0 0.42rem; font-size: 11px; }
+.va-mode-tab:hover, .va-format-btn:hover { color: #0F172A; }
+.va-mode-tab[aria-selected="true"], .va-mode-tab.is-active,
+.va-format-btn[aria-pressed="true"], .va-format-btn.is-active {
+  background: #FFFFFF; color: #0F172A; border-color: #CBD5E1; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 699px) { .va-studio-brand, .va-fold-up { display: none; } }
+@media (max-width: 959px) {
+  #va-step-pos { display: none; }
+}
+@media (max-width: 1219px) {
+  #va-format-pills, #va-preset-auto-btn { display: none; }
 }
 @media (min-width: 700px) and (max-width: 1099px) {
   .va-brand-text { display: none; }
-  .va-domain-ctrl { max-inline-size: 185px; }
-  .va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 122px; }
-  .va-tier-select { min-inline-size: 13rem; }
-}
-
-.va-mode-tablist {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 2px;
-  background: #070B12;
-  border: 1px solid #1E293B;
-  border-radius: 7px;
-}
-.va-mode-tab {
-  min-block-size: 26px;
-  padding: 0 0.55rem;
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: #94A3B8;
-  font: 600 11.5px/1 inherit;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.va-mode-tab:hover { color: #F8FAFC; }
-.va-mode-tab[aria-selected="true"],
-.va-mode-tab.is-active {
-  background: #1E293B;
-  color: #38BDF8;
-}
-html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bridge-btn, .va-examples-only) {
-  display: none;
-}
-@media (max-width: 699px) {
-  .va-mode-tab { padding: 0 0.4rem; font-size: 11px; }
+  .va-domain-ctrl { max-inline-size: 170px; }
+  .va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 108px; }
+  .va-tier-select { min-inline-size: 0; max-inline-size: 220px; }
 }
 @media (max-width: 519px) {
   #va-studio-bar, .va-studio-bar { padding: 0 0.3rem; gap: 0.2rem; }
-  .va-bar-left, .va-bar-right { gap: 0.2rem; }
+  .va-bar-left, .va-bar-right { gap: 0.18rem; }
   .va-mode-tab { padding: 0 0.35rem; font-size: 11px; }
   .va-step-btn { inline-size: 22px; }
-  .va-studio-btn { padding: 0.15rem 0.38rem; }
+  .va-studio-btn { padding: 0.15rem 0.36rem; }
+}
+
+html[data-studio-view="overview"] :is(.va-domain-ctrl, .va-bar-center, #va-bridge-btn, .va-examples-only, #va-portal-mat),
+html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bridge-btn, .va-examples-only, #va-studio-landing),
+html[data-studio-view="examples"] #va-studio-landing,
+[hidden] {
+  display: none;
 }
 
 #va-portal-mat {
@@ -244,20 +193,49 @@ html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bri
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: #070B12;
+  padding: 18px 24px;
+  background-color: #E2E8F0;
+  background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+  background-size: 16px 16px;
   user-select: none;
+}
+#va-portal-mat[data-portal-frame="fill"] {
+  padding: 0;
+  background-image: none;
+}
+@media (max-width: 699px) {
+  #va-portal-mat { padding: 8px; }
 }
 
 #va-portal-scaler {
+  box-sizing: content-box;
   position: relative;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.06);
   transition: width 0.12s ease-out, height 0.12s ease-out;
-  background: #090D16;
+}
+#va-portal-scaler[data-portal-frame="fill"] {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+#va-portal-scaler[data-portal-frame="paper"] {
+  border: 1px solid #94A3B8;
+  border-radius: 2px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+#va-portal-scaler[data-portal-frame="mobile"] {
+  border: 4px solid #334155;
+  border-radius: 20px;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.22);
 }
 
 #va-stage-portal {
   border: none;
-  background: #090D16;
+  background: #FFFFFF;
   display: block;
 }
 
@@ -268,7 +246,7 @@ html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bri
   left: 50%;
   width: 2px;
   transform: translateX(-50%);
-  border-left: 2px dashed rgba(56, 189, 248, 0.65);
+  border-left: 2px dashed rgba(29, 78, 216, 0.55);
   pointer-events: none;
   z-index: 25;
   display: none;
@@ -276,17 +254,17 @@ html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bri
 #va-portal-scaler.has-hinge .va-hinge-guide { display: block; }
 
 .va-drag-handle { position: absolute; z-index: 30; }
-.va-drag-w { left: -6px; top: 0; bottom: 0; width: 12px; cursor: ew-resize; }
-.va-drag-e { right: -6px; top: 0; bottom: 0; width: 12px; cursor: ew-resize; }
-.va-drag-s { bottom: -6px; left: 0; right: 0; height: 12px; cursor: ns-resize; }
+.va-drag-w { left: 0; top: 0; bottom: 0; width: 8px; cursor: ew-resize; }
+.va-drag-e { right: 0; top: 0; bottom: 0; width: 8px; cursor: ew-resize; }
+.va-drag-s { bottom: 0; left: 0; right: 0; height: 8px; cursor: ns-resize; }
 
 dialog#va-customize-sheet,
 dialog#va-bridge-dialog {
-  border: 1px solid #334155;
-  background: #0F172A;
-  color: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #0F172A;
   padding: 0.95rem 1.05rem;
-  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.62);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
   border-radius: 10px;
   overflow-y: auto;
 }
@@ -294,13 +272,13 @@ dialog#va-customize-sheet:modal,
 dialog#va-bridge-dialog:modal { overscroll-behavior: contain; }
 dialog#va-customize-sheet::backdrop,
 dialog#va-bridge-dialog::backdrop {
-  background: rgba(7, 11, 18, 0.62);
-  backdrop-filter: blur(3px);
+  background: rgba(15, 23, 42, 0.36);
+  backdrop-filter: blur(2px);
   overflow: hidden;
   overscroll-behavior: contain;
 }
 dialog#va-customize-sheet {
-  margin: 50px 0.65rem auto auto;
+  margin: 52px 0.65rem auto auto;
   inline-size: 372px;
   max-inline-size: calc(100vw - 1.3rem);
   max-block-size: calc(100dvh - 64px);
@@ -328,16 +306,16 @@ dialog#va-bridge-dialog {
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #1E293B;
+  border-bottom: 1px solid #E2E8F0;
   font-size: 13px;
 }
 .va-bridge-hdr-copy { display: flex; flex-direction: column; gap: 0.15rem; }
-.va-bridge-hdr-copy strong { font-size: 15px; color: #F8FAFC; }
+.va-bridge-hdr-copy strong { font-size: 15px; color: #0F172A; }
 .va-sheet-sections,
 .va-bridge-body { display: flex; flex-direction: column; gap: 0.75rem; }
 .va-customize-field { display: flex; flex-direction: column; gap: 0.3rem; }
 .va-customize-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
-.va-customize-label { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+.va-customize-label { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
 .va-theme-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; }
 @media (max-width: 480px) {
   .va-theme-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -348,19 +326,19 @@ dialog#va-bridge-dialog {
   align-items: stretch;
   gap: 0.28rem;
   padding: 0.35rem;
-  border: 1.5px solid #334155;
+  border: 1.5px solid #CBD5E1;
   border-radius: 7px;
-  background: #111B2E;
-  color: #E2E8F0;
+  background: #F8FAFC;
+  color: #0F172A;
   font: 600 11px/1.2 inherit;
   cursor: pointer;
   text-align: left;
 }
 .va-theme-card:hover { border-color: #64748B; }
 .va-theme-card.is-active {
-  border-color: #38BDF8;
-  box-shadow: 0 0 0 1px #38BDF8;
-  color: #FFFFFF;
+  border-color: #1D4ED8;
+  box-shadow: 0 0 0 1px #1D4ED8;
+  background: #EFF6FF;
 }
 .va-theme-swatch {
   display: flex;
@@ -369,13 +347,13 @@ dialog#va-bridge-dialog {
   block-size: 30px;
   border-radius: 4px;
   padding: 5px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  border: 1px solid rgba(100, 116, 139, 0.35);
 }
 .va-swatch-bar { display: block; inline-size: 62%; block-size: 4px; border-radius: 2px; }
 .va-swatch-accent { display: block; inline-size: 38%; block-size: 4px; border-radius: 2px; }
 .va-theme-card[data-sheet-theme="white"] .va-theme-swatch { background: #FFFFFF; }
 .va-theme-card[data-sheet-theme="white"] .va-swatch-bar { background: #0F172A; }
-.va-theme-card[data-sheet-theme="white"] .va-swatch-accent { background: #2563EB; }
+.va-theme-card[data-sheet-theme="white"] .va-swatch-accent { background: #1D4ED8; }
 .va-theme-card[data-sheet-theme="paper"] .va-theme-swatch { background: #F6F4EF; }
 .va-theme-card[data-sheet-theme="paper"] .va-swatch-bar { background: #2B241E; }
 .va-theme-card[data-sheet-theme="paper"] .va-swatch-accent { background: #B45309; }
@@ -389,25 +367,25 @@ dialog#va-bridge-dialog {
 .va-sheet-seg-btn {
   min-block-size: 32px;
   padding: 0.2rem 0.35rem;
-  border: 1px solid #334155;
+  border: 1px solid #CBD5E1;
   border-radius: 6px;
-  background: #1E293B;
-  color: #CBD5E1;
+  background: #F8FAFC;
+  color: #334155;
   font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
 }
-.va-sheet-seg-btn.is-active { background: #2563EB; border-color: #3B82F6; color: #FFFFFF; }
+.va-sheet-seg-btn.is-active { background: #1D4ED8; border-color: #1D4ED8; color: #FFFFFF; }
 .va-sheet-stage-row,
 .va-prompt-row { display: flex; align-items: center; gap: 0.35rem; }
 .va-sheet-stage-row .va-studio-select { flex: 1 1 auto; }
 .va-prompt-preview {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11px;
-  color: #94A3B8;
-  background: #070B12;
-  border: 1px solid #1E293B;
+  color: #334155;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 5px;
   padding: 0.35rem 0.5rem;
   overflow: hidden;
@@ -417,29 +395,459 @@ dialog#va-bridge-dialog {
 }
 
 .va-bridge-card {
-  background: #0B1220;
-  border: 1px solid #1E293B;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 8px;
-  padding: 0.7rem 0.85rem;
+  padding: 0.75rem 0.9rem;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
 }
-.va-bridge-card h3 { margin: 0; font-size: 12px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.04em; }
-.va-bridge-vector { font-size: 13px; color: #F8FAFC; font-weight: 600; }
+.va-bridge-card h3 { margin: 0; font-size: 12px; font-weight: 700; color: #1D4ED8; text-transform: uppercase; letter-spacing: 0.04em; }
+.va-bridge-vector { font-size: 13px; color: #0F172A; font-weight: 600; }
 .va-bridge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.5rem; }
-.va-bridge-item { background: #111B2E; border: 1px solid #1E293B; border-radius: 6px; padding: 0.5rem 0.6rem; font-size: 12px; color: #CBD5E1; }
-.va-bridge-item strong { display: block; font-size: 11px; color: #94A3B8; margin-bottom: 0.18rem; text-transform: uppercase; }
-.va-bridge-table-wrap { overflow-x: auto; border: 1px solid #1E293B; border-radius: 6px; }
+.va-bridge-item { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 0.5rem 0.65rem; font-size: 12px; color: #334155; }
+.va-bridge-item strong { display: block; font-size: 11px; color: #475569; margin-bottom: 0.18rem; text-transform: uppercase; }
+.va-bridge-table-wrap { overflow-x: auto; border: 1px solid #E2E8F0; border-radius: 6px; background: #FFFFFF; }
 .va-bridge-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
 .va-bridge-table th,
-.va-bridge-table td { padding: 0.38rem 0.55rem; text-align: left; border-bottom: 1px solid #1E293B; color: #CBD5E1; vertical-align: top; }
-.va-bridge-table th { background: #111B2E; color: #94A3B8; font-weight: 700; font-size: 11px; text-transform: uppercase; }
-.va-bridge-pass { color: #CBD5E1; font-family: ui-monospace, monospace; font-weight: 600; }
+.va-bridge-table td { padding: 0.38rem 0.55rem; text-align: left; border-bottom: 1px solid #E2E8F0; color: #334155; vertical-align: top; }
+.va-bridge-table th { background: #F1F5F9; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+.va-bridge-pass { color: #0F172A; font-family: ui-monospace, monospace; font-weight: 600; }
 
-@media print {
-  #va-studio-bar, dialog#va-customize-sheet, dialog#va-bridge-dialog, .va-hinge-guide, .va-drag-handle { display: none; }
+@media (forced-colors: active) {
+  .va-mode-tab[aria-selected="true"],
+  .va-format-btn[aria-pressed="true"] { border: 2px solid Highlight; }
 }
+@media print {
+  #va-studio-bar, #va-studio-landing, dialog#va-customize-sheet, dialog#va-bridge-dialog, .va-hinge-guide, .va-drag-handle { display: none; }
+}
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.5 — OAW-Inspired Overview Landing Page & Live Morph Preview */
+
+.va-studio-landing {
+  background: #FFFFFF;
+  color: #0F172A;
+  padding: 2.25rem 1.25rem 3.5rem;
+}
+.va-landing-wrap {
+  max-inline-size: 1080px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.va-landing-hero {
+  max-inline-size: 980px;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+.va-landing-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1D4ED8;
+}
+.va-landing-h1 {
+  margin: 0;
+  font-family: Georgia, 'Newsreader', 'Charter', serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.65rem);
+  line-height: 1.15;
+  font-weight: 700;
+  color: #0F172A;
+  text-wrap: balance;
+}
+.va-landing-sub {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #475569;
+  max-inline-size: 66ch;
+}
+.va-landing-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+.va-landing-chip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 0.34rem 0.65rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.va-landing-chip:hover {
+  border-color: #93C5FD;
+  background: #EFF6FF;
+  color: #0F172A;
+}
+.va-chip-prompt { color: #1D4ED8; font-weight: 700; }
+
+/* Unified 3-Step + Live Morph Preview Card */
+.va-morph-card {
+  max-inline-size: 980px;
+  inline-size: 100%;
+  margin-inline: auto;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+.va-morph-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid #E2E8F0;
+}
+@media (max-width: 759px) {
+  .va-morph-steps { grid-template-columns: minmax(0, 1fr); }
+}
+.va-morph-step {
+  padding: 1.15rem 1.2rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.va-morph-step + .va-morph-step {
+  border-left: 1px solid #E2E8F0;
+}
+@media (max-width: 759px) {
+  .va-morph-step + .va-morph-step { border-left: 0; border-top: 1px solid #E2E8F0; }
+}
+.va-step-icon-tile {
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: 8px;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.va-morph-step h2 {
+  margin: 0 0 0.25rem;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F172A;
+}
+.va-morph-step p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.va-morph-stage-wrap {
+  padding: 1rem 1.2rem 1.1rem;
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.va-morph-stage-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+.va-morph-stage-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.04em;
+}
+.va-morph-stage-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.va-morph-status-pill {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  border: 1px solid #E2E8F0;
+  background: #FFFFFF;
+  color: #15803D;
+}
+.va-morph-status-pill[data-state="warn"] {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #B45309;
+}
+.va-landing-cta {
+  padding: 0.34rem 0.72rem;
+  border-radius: 6px;
+  border: 1px solid #1D4ED8;
+  background: #1D4ED8;
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.va-landing-cta:hover { background: #1E40AF; border-color: #1E40AF; }
+
+/* Morph Canvas & 5 Form Factors */
+.va-morph-canvas {
+  --morph-bg: #FFFFFF;
+  --morph-elevated: #F8FAFC;
+  --morph-ink: #0F172A;
+  --morph-muted: #475569;
+  --morph-border: #CBD5E1;
+  --morph-accent: #1D4ED8;
+  --morph-warn: #B45309;
+  background: var(--morph-bg);
+  color: var(--morph-ink);
+  border: 1px solid var(--morph-border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: center;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+.va-morph-canvas[data-morph-mode="paper"] {
+  --morph-bg: #FCFBF8;
+  --morph-elevated: #EFECE5;
+  --morph-ink: #1C1917;
+  --morph-muted: #57534E;
+  --morph-border: #94A3B8;
+  --morph-accent: #1E40AF;
+  border-radius: 2px;
+  font-family: Georgia, 'Newsreader', serif;
+}
+.va-morph-canvas[data-morph-mode="mobile"] {
+  max-inline-size: 380px;
+  margin-inline: auto;
+  inline-size: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  border: 4px solid #334155;
+  border-radius: 18px;
+}
+.va-morph-canvas[data-morph-mode="dark"] {
+  --morph-bg: #0F1624;
+  --morph-elevated: #172135;
+  --morph-ink: #F1F5F9;
+  --morph-muted: #94A3B8;
+  --morph-border: #334155;
+  --morph-accent: #38BDF8;
+  --morph-warn: #FBBF24;
+}
+.va-morph-canvas[data-morph-mode="brief"] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+@media (max-width: 759px) {
+  .va-morph-canvas,
+  .va-morph-canvas[data-morph-mode="brief"] { grid-template-columns: minmax(0, 1fr); }
+}
+
+.va-morph-plot-box {
+  background: var(--morph-elevated);
+  border: 1px solid var(--morph-border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  min-inline-size: 0;
+}
+.va-morph-svg { display: block; inline-size: 100%; block-size: auto; }
+.va-morph-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.va-morph-canvas[data-morph-mode="mobile"] .va-morph-kpis {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.va-morph-kpi {
+  background: var(--morph-elevated);
+  border: 1px solid var(--morph-border);
+  border-radius: 6px;
+  padding: 0.45rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-inline-size: 0;
+}
+.va-morph-kpi span { font-size: 11px; font-weight: 700; color: var(--morph-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.va-morph-kpi strong { font-size: 14px; font-variant-numeric: tabular-nums; color: var(--morph-ink); }
+.va-morph-summary {
+  margin: 0.55rem 0 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--morph-muted);
+}
+
+/* Morph Controls & Range Slider */
+.va-morph-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.va-morph-mode-group {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.va-morph-mode-btn {
+  min-block-size: 30px;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: #334155;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.va-morph-mode-btn:hover { border-color: #94A3B8; color: #0F172A; }
+.va-morph-mode-btn[aria-pressed="true"] {
+  background: #1D4ED8;
+  border-color: #1D4ED8;
+  color: #FFFFFF;
+}
+.va-morph-slider-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 12px;
+  color: #334155;
+}
+.va-morph-slider-wrap input[type="range"] {
+  --slider-track-size: 6px;
+  --slider-thumb-size: 16px;
+  --slider-progress: 50%;
+  appearance: none;
+  inline-size: 130px;
+  block-size: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.va-morph-slider-wrap input[type="range"]::-webkit-slider-runnable-track {
+  block-size: var(--slider-track-size);
+  border-radius: 999px;
+  background: linear-gradient(to right, #1D4ED8 var(--slider-progress), #CBD5E1 var(--slider-progress));
+}
+.va-morph-slider-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: var(--slider-thumb-size);
+  block-size: var(--slider-thumb-size);
+  margin-block-start: -5px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  background: #1D4ED8;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.28);
+}
+.va-morph-slider-wrap input[type="range"]::-moz-range-track {
+  block-size: var(--slider-track-size);
+  border-radius: 999px;
+  background: #CBD5E1;
+}
+.va-morph-slider-wrap input[type="range"]::-moz-range-progress {
+  block-size: var(--slider-track-size);
+  border-radius: 999px;
+  background: #1D4ED8;
+}
+.va-morph-slider-wrap input[type="range"]::-moz-range-thumb {
+  inline-size: var(--slider-thumb-size);
+  block-size: var(--slider-thumb-size);
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  background: #1D4ED8;
+}
+.va-morph-slider-wrap input[type="range"]:focus-visible { outline: 2px solid #1D4ED8; outline-offset: 4px; }
+
+/* Domain Grid & Bottom 3-Pillar Card */
+.va-landing-sec-hdr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+.va-landing-sec-hdr h2 { margin: 0; font-size: 20px; font-weight: 700; color: #0F172A; }
+.va-landing-sec-hdr span { font-size: 13px; color: #475569; }
+
+.va-domain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 1020px) { .va-domain-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 659px) { .va-domain-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.va-domain-card {
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 1rem 1.05rem;
+  display: flex; flex-direction: column; gap: 0.65rem;
+}
+.va-domain-card-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.va-domain-slug { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; font-weight: 600; color: #1D4ED8; }
+.va-domain-card h3 { margin: 0; font-size: 16px; font-weight: 700; color: #0F172A; }
+.va-domain-desc { margin: 0; font-size: 13px; line-height: 1.45; color: #475569; }
+.va-domain-view-list { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.15rem; }
+.va-domain-view-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  padding: 0.38rem 0.52rem; border: 1px solid #E2E8F0; border-radius: 6px;
+  background: #F8FAFC; color: #0F172A; font-size: 12px; font-weight: 500; text-align: left; cursor: pointer; font-family: inherit;
+}
+.va-domain-view-btn:hover { background: #EFF6FF; border-color: #93C5FD; }
+.va-view-preset-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: #475569;
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 4px; padding: 1px 5px; white-space: nowrap; flex-shrink: 0;
+}
+.va-domain-launch { margin-top: auto; padding-top: 0.45rem; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; }
+.va-domain-launch-btn { border: 0; background: transparent; color: #1D4ED8; font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 0.25rem 0.1rem; font-family: inherit; }
+.va-domain-launch-btn:hover { text-decoration: underline; }
+
+.va-pillars-card {
+  background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 1.2rem 1.25rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.va-pillars-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
+@media (max-width: 759px) { .va-pillars-grid { grid-template-columns: minmax(0, 1fr); } }
+.va-pillar-col { background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem 0.95rem; }
+.va-pillar-col h3 { margin: 0 0 0.3rem; font-size: 14px; font-weight: 700; color: #0F172A; }
+.va-pillar-col p { margin: 0; font-size: 12.5px; line-height: 1.48; color: #475569; }
+.va-install-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; padding-top: 0.3rem; }
+.va-install-code-row { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; min-inline-size: 0; }
+.va-install-code-row code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px;
+  background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 0.36rem 0.6rem; color: #0F172A; word-break: break-all;
+}
+.va-copy-status { font-size: 12px; color: #15803D; font-weight: 600; }
 
   </style>
   <link rel="stylesheet" href="./styles/quiet-ui-tokens.css" />
@@ -450,13 +858,14 @@ dialog#va-bridge-dialog {
     <div class="va-bar-left">
       <div class="va-studio-brand">
         <svg class="va-brand-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5 14 4.8 8 8 2 4.8 8 1.5Z" fill="none"/><path d="M2 8l6 3.2L14 8" fill="none"/><path d="M2 11.2 8 14.5l6-3.3" fill="none"/></svg>
-        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.4</span></span>
+        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.5</span></span>
       </div>
       <div id="va-studio-mode-tablist" class="va-mode-tablist" role="tablist" aria-label="Studio Mode">
-        <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab is-active" data-studio-tab="examples" aria-selected="true">Examples</button>
+        <button type="button" role="tab" id="va-tab-overview" class="va-mode-tab is-active" data-studio-tab="overview" aria-selected="true">Overview</button>
+        <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab" data-studio-tab="examples" aria-selected="false">Examples</button>
         <button type="button" role="tab" id="va-tab-components" class="va-mode-tab" data-studio-tab="components" aria-selected="false">Components</button>
       </div>
-      <label class="va-inline-ctrl va-domain-ctrl va-fold-up" for="va-domain-select">
+      <label class="va-inline-ctrl va-domain-ctrl va-fold-up va-examples-only" for="va-domain-select">
         <span class="va-ctrl-prefix">Domain:</span>
         <select id="va-domain-select" class="va-ctrl-bare-select" aria-label="Select Domain">
           <option value="01-clinical-icu-and-trials">01 · Clinical &amp; Trials</option>
@@ -468,18 +877,26 @@ dialog#va-bridge-dialog {
       </label>
     </div>
 
-    <div class="va-bar-center">
-      <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous View" title="Previous View"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5" fill="none"/></svg></button>
+    <div class="va-bar-center va-examples-only">
+      <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous View" title="Previous View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5" fill="none"/></svg></button>
       <select id="va-view-select" class="va-studio-select va-tier-select" aria-label="Select Example View">
         <option value="v01-icu-bedside-terminal">v01 · ICU Bedside Terminal</option>
         <option value="v02-trial-regulatory-brief">v02 · Trial Regulatory Brief</option>
         <option value="v03-patient-recovery-companion">v03 · Patient Recovery Guide</option>
       </select>
-      <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next View" title="Next View"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg></button>
+      <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next View" title="Next View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg></button>
+      <span id="va-step-pos" class="va-step-pos" aria-live="polite">1 / 21</span>
     </div>
 
     <div class="va-bar-right">
-      <button type="button" id="va-bridge-btn" class="va-studio-btn" aria-label="Design Rationale" title="Design Rationale and Quality Checks">
+      <div id="va-format-pills" class="va-format-pills va-examples-only" role="group" aria-label="Portal Framing">
+        <button type="button" class="va-format-btn is-active" data-format-preset="1080p" aria-pressed="true">1080p</button>
+        <button type="button" class="va-format-btn" data-format-preset="paper" aria-pressed="false">Paper</button>
+        <button type="button" class="va-format-btn" data-format-preset="mobile" aria-pressed="false">Mobile</button>
+        <button type="button" class="va-format-btn" data-format-preset="fill" aria-pressed="false">Fill</button>
+      </div>
+      <button type="button" id="va-preset-auto-btn" class="va-studio-btn va-auto-btn va-examples-only" hidden aria-label="Re-enable automatic per-view framing presets" title="Reset to automatic per-view presets">Auto Preset</button>
+      <button type="button" id="va-bridge-btn" class="va-studio-btn va-examples-only" aria-label="Design Rationale" title="Design Rationale and Quality Checks">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M8 7.5v4" fill="none"/><circle cx="8" cy="4.8" r="0.7" fill="currentColor"/></svg><span>Why?</span>
       </button>
 
@@ -490,13 +907,15 @@ dialog#va-bridge-dialog {
     </div>
   </header>
 
-  <main id="va-portal-mat">
-    <div id="va-portal-scaler">
+  <section id="va-studio-landing" class="va-studio-landing" aria-label="Quiet UI Overview"></section>
+
+  <main id="va-portal-mat" data-portal-frame="screen">
+    <div id="va-portal-scaler" data-portal-frame="screen">
       <div class="va-hinge-guide"></div>
       <div class="va-drag-handle va-drag-w"></div>
       <div class="va-drag-handle va-drag-e"></div>
       <div class="va-drag-handle va-drag-s"></div>
-      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.4 Preview Stage"></iframe>
+      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.5 Preview Stage"></iframe>
     </div>
   </main>
 
@@ -599,11 +1018,12 @@ dialog#va-bridge-dialog {
         <label class="va-customize-label" for="va-sheet-vp-select">DEVICE VIEWPORT</label>
         <div class="va-sheet-stage-row">
           <select id="va-sheet-vp-select" class="va-studio-select">
-            <option value="fill" selected>Fill Screen</option>
+            <option value="1920x1080" selected>Desktop (1080p)</option>
+            <option value="1056x1368">Paper Sheet (1056×1368)</option>
             <option value="390x844">Phone (390×844)</option>
             <option value="840x1050">Foldable (840×1050)</option>
-            <option value="1920x1080">Desktop (1080p)</option>
             <option value="3840x2160">4K UHD</option>
+            <option value="fill">Fill Screen</option>
           </select>
           <button type="button" id="va-sheet-rotate-btn" class="va-studio-btn" aria-label="Rotate Device Viewport" title="Rotate Viewport"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.4-3.5" fill="none"/><path d="M13 2.5v2.8h-2.8" fill="none"/></svg></button>
           <button type="button" id="va-sheet-zoom-btn" class="va-studio-btn" title="Toggle Fit vs 1:1">FIT</button>
@@ -614,6 +1034,7 @@ dialog#va-bridge-dialog {
         <span class="va-customize-label">SHARE PRESET</span>
         <div class="va-prompt-row">
           <code id="va-prompt-preview" class="va-prompt-preview">Domain: 01 · View: v01</code>
+          <button type="button" id="va-sheet-auto-preset-btn" class="va-studio-btn" hidden>Auto</button>
           <button type="button" id="va-copy-prompt-btn" class="va-studio-btn">Copy</button>
         </div>
       </div>
@@ -1049,8 +1470,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 @layer utilities {
   .hidden,
-  [hidden]:not([hidden="until-found"]) {
+  [hidden]:not([hidden="until-found"]),
+  [data-rail-hidden="true"] {
     display: none;
+  }
+  .va-v9-focus-single,
+  :is(.v9-dual-grid, .v9-editorial-grid, .qe-companions-grid, .v02-book-spread, .v03-charts-grid, .v18-ledger-grid, .v9-split-runbook):has(> [data-rail-hidden="true"]) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1576,20 +2002,27 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-rail-brand {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    padding: 0.35rem 0.65rem 0.6rem;
+    justify-content: space-between;
+    gap: 0.45rem;
+    padding: 0.35rem 0.5rem 0.6rem;
     margin-bottom: 0.25rem;
     border-bottom: 1px solid var(--border-hairline);
     font-size: var(--ts-sm);
     font-weight: 700;
     color: var(--text-primary);
   }
+  .va-rail-brand-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-inline-size: 0;
+  }
 
   .va-rail-link {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.4rem 0.65rem;
+    gap: 0.55rem;
+    padding: 0.4rem 0.6rem;
     font-size: var(--ts-sm);
     color: var(--text-secondary);
     border-radius: var(--radius-sm);
@@ -1602,6 +2035,52 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background: var(--bg-canvas);
     font-weight: 600;
   }
+  .va-rail-count {
+    margin-inline-start: auto;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+  }
+  .va-rail-collapse-btn,
+  .va-rail-reopen-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    min-block-size: 28px;
+    min-inline-size: 28px;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .va-rail-collapse-btn:hover,
+  .va-rail-reopen-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .va-rail-reopen-btn { display: none; align-self: flex-start; margin: 0.55rem 0 0 1.15rem; }
+  .va-rail-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.42rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .va-rail-quick-group { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border-hairline); }
+  html:not([data-effective-nav="n3"]) .va-shell-topbar .va-rail-collapse-btn { display: none; }
+  @media (max-width: 1099px) { .va-shell-topbar .va-rail-collapse-btn { display: none; } }
+  .va-shell-rail .va-rail-footer { gap: 0.35rem; }
+  .va-shell-rail .va-swatch-row { gap: 0.32rem; }
 
   .va-shell-bottomdock {
     position: sticky;
@@ -1646,12 +2125,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   /* N1: Left Rail (Desktop >= 1100px) / Drawer (< 1100px) */
   @media (min-width: 1100px) {
     html[data-effective-nav="n1"] .va-app-shell {
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 272px minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr);
     }
     html[data-effective-nav="n1"] .va-shell-topbar,
     html[data-effective-nav="n1"] .va-shell-bottomdock { display: none; }
     html[data-effective-nav="n1"] .va-shell-rail { display: flex; }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-app-shell { grid-template-columns: minmax(0, 1fr); }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-shell-rail { display: none; }
+    html[data-effective-nav="n1"][data-rail-collapsed="true"] .va-rail-reopen-btn { display: inline-flex; }
   }
 
   @media (max-width: 1099px) {
@@ -1683,13 +2165,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   /* N3: Composite Top Bar + Left Rail */
   @media (min-width: 1100px) {
     html[data-effective-nav="n3"] .va-app-shell {
-      grid-template-columns: 220px minmax(0, 1fr);
+      grid-template-columns: 272px minmax(0, 1fr);
       grid-template-rows: auto minmax(0, 1fr);
     }
     html[data-effective-nav="n3"] .va-shell-topbar { grid-column: 1 / -1; display: flex; }
     html[data-effective-nav="n3"] .va-shell-rail { grid-column: 1; display: flex; }
     html[data-effective-nav="n3"] .va-shell-bottomdock,
     html[data-effective-nav="n3"] #va-drawer-open-btn { display: none; }
+    html[data-effective-nav="n3"][data-rail-collapsed="true"] .va-app-shell { grid-template-columns: minmax(0, 1fr); }
+    html[data-effective-nav="n3"][data-rail-collapsed="true"] .va-shell-rail { display: none; }
   }
 
   @media (max-width: 1099px) {
@@ -13275,7 +13759,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <script>
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 — Portal Scaler Math, Foldable Hinge Detection & Drag Resizing
+ * Quiet UI v9.5 — Portal Scaler Math, Frame Bezel Classification & Drag Resizing
  */
 (function (window) {
   'use strict';
@@ -13289,12 +13773,21 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     return (w >= 320 && h >= 360) ? { width: w, height: h } : null;
   }
 
+  function classifyFrame(dims, medium) {
+    if (!dims) return 'fill';
+    if (medium === 'm1' || (dims.width === 1056 && dims.height === 1368)) return 'paper';
+    if (dims.width <= 480) return 'mobile';
+    return 'screen';
+  }
+
   function computeScale(width, height, matEl, zoomMode) {
     if (zoomMode === '1:1') {
       return { scale: 1, scalerW: width, scalerH: height };
     }
-    const availW = Math.max(100, matEl.clientWidth - 28);
-    const availH = Math.max(100, matEl.clientHeight - 28);
+    const padX = (window.innerWidth < 700 ? 16 : 48) + 8;
+    const padY = (window.innerWidth < 700 ? 16 : 36) + 8;
+    const availW = Math.max(100, matEl.clientWidth - padX);
+    const availH = Math.max(100, matEl.clientHeight - padY);
     const scale = Math.min(1, availW / width, availH / height);
     return {
       scale: scale,
@@ -13310,8 +13803,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     );
   }
 
-  function applyPortalDimensions(scalerEl, portalEl, matEl, dims, zoomMode) {
+  function applyPortalDimensions(scalerEl, portalEl, matEl, dims, zoomMode, medium) {
     if (!scalerEl || !portalEl || !matEl) return;
+    const frame = classifyFrame(dims, medium);
+    scalerEl.dataset.portalFrame = frame;
+    matEl.dataset.portalFrame = frame;
     if (!dims) {
       scalerEl.style.width = '100%';
       scalerEl.style.height = '100%';
@@ -13367,7 +13863,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (dragDir === 'e') newW = Math.max(320, startW + (e.clientX - startX) * 2);
       else if (dragDir === 'w') newW = Math.max(320, startW - (e.clientX - startX) * 2);
       else if (dragDir === 's') newH = Math.max(480, startH + (e.clientY - startY));
-      applyPortalDimensions(scalerEl, portalEl, matEl, { width: newW, height: newH }, 'fit');
+      applyPortalDimensions(scalerEl, portalEl, matEl, { width: newW, height: newH }, 'fit', document.documentElement.dataset.medium);
     }
 
     function onMouseUp() {
@@ -13388,6 +13884,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   window.QuietPortalResize = {
     parseDimensions: parseDimensions,
+    classifyFrame: classifyFrame,
     computeScale: computeScale,
     applyPortalDimensions: applyPortalDimensions,
     initResizeHandles: initResizeHandles,
@@ -13397,7 +13894,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 — Studio Settings Sheet, Dialog Light-Dismiss Fallback & Scroll Auto-Tuck
+ * Quiet UI v9.5 — Studio Settings Sheet, Dialog Light-Dismiss Fallback & Scroll Auto-Tuck
  */
 (function (window) {
   'use strict';
@@ -13412,12 +13909,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function hasNonDefaultSettings(state) {
     return (
+      !!state.presetLocked ||
       state.nav !== 'auto' ||
-      state.medium !== 'auto' ||
       state.density !== 'd2' ||
       state.scale !== '100' ||
-      state.corners !== 'auto' ||
-      state.vp !== 'fill'
+      state.corners !== 'auto'
     );
   }
 
@@ -13426,7 +13922,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       'Domain: ' + state.world + ' · View: ' + state.view +
       ' · Format: ' + state.medium + ' · Shell: ' + state.nav +
       ' · Theme: ' + state.theme + ' · Density: ' + state.density +
-      ' · Scale: ' + state.scale + '%'
+      ' · VP: ' + state.vp + ' · Scale: ' + state.scale + '%'
     );
   }
 
@@ -13486,6 +13982,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
     const prev = document.getElementById('va-prompt-preview');
     if (prev) prev.textContent = buildContractPrompt(state);
+
+    const autoSheetBtn = document.getElementById('va-sheet-auto-preset-btn');
+    if (autoSheetBtn) autoSheetBtn.hidden = !state.presetLocked;
   }
 
   function untuckStudioBar() {
@@ -13531,32 +14030,37 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     }, { passive: true, capture: true });
   }
 
-  function initSheetEvents(state, applyState, onRotate, onZoomToggle, onPrint) {
+  function initSheetEvents(state, applyState, onRotate, onZoomToggle, onPrint, onAutoReset) {
     bindDialogLightDismissFallback(document.getElementById('va-customize-sheet'));
     bindDialogLightDismissFallback(document.getElementById('va-bridge-dialog'));
 
     document.querySelectorAll('[data-sheet-theme]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.theme = btn.dataset.sheetTheme;
+        state.presetLocked = true;
         applyState();
       });
     });
 
     document.querySelectorAll('[data-sheet-scale]').forEach(function (btn) {
-      btn.addEventListener('click', function () { state.scale = btn.dataset.sheetScale || '100'; applyState(); });
+      btn.addEventListener('click', function () {
+        state.scale = btn.dataset.sheetScale || '100';
+        state.presetLocked = true;
+        applyState();
+      });
     });
 
     const sd = document.getElementById('va-sheet-domain-select');
     if (sd) sd.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
 
     const sm = document.getElementById('va-sheet-medium-select');
-    if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; applyState(); });
+    if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; state.presetLocked = true; applyState(); });
 
     const sn = document.getElementById('va-sheet-nav-select');
-    if (sn) sn.addEventListener('change', function (e) { state.nav = e.target.value; applyState(); });
+    if (sn) sn.addEventListener('change', function (e) { state.nav = e.target.value; state.presetLocked = true; applyState(); });
 
     const sv = document.getElementById('va-sheet-vp-select');
-    if (sv) sv.addEventListener('change', function (e) { state.vp = e.target.value; applyState(); });
+    if (sv) sv.addEventListener('change', function (e) { state.vp = e.target.value; state.presetLocked = true; applyState(); });
 
     const sr = document.getElementById('va-sheet-rotate-btn');
     if (sr) sr.addEventListener('click', onRotate);
@@ -13566,6 +14070,9 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
     const sp = document.getElementById('va-sheet-print-btn');
     if (sp && typeof onPrint === 'function') sp.addEventListener('click', onPrint);
+
+    const sa = document.getElementById('va-sheet-auto-preset-btn');
+    if (sa && typeof onAutoReset === 'function') sa.addEventListener('click', onAutoReset);
 
     const copyBtn = document.getElementById('va-copy-prompt-btn');
     if (copyBtn) {
@@ -13642,6 +14149,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   window.QuietStudioSheetV9 = {
     escHtml: escHtml,
+    cycleTheme: cycleTheme,
     postExternalSync: postExternalSync,
     syncSheetControls: syncSheetControls,
     untuckStudioBar: untuckStudioBar,
@@ -13654,15 +14162,667 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.0 — Two-Axis Universal Stage Portal Controller (World × Distilled View)
+ * Quiet UI v9.5 — Curated Form-Factor Presets, Global Stepping & Interactive #va-shell-rail
+ */
+(function (window) {
+  'use strict';
+
+  const VIEW_PRESETS = {
+    'v01-icu-bedside-terminal': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v02-trial-regulatory-brief': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
+    'v03-patient-recovery-companion': { vp: '390x844', medium: 'auto', theme: 'white', preset_label: 'Mobile' },
+    'v04-sre-incident-workbench': { vp: '1920x1080', medium: 'auto', theme: 'dark-paper', preset_label: 'Dark Workbench' },
+    'v05-zero-trust-ato-spec': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
+    'v06-ai-drift-and-lineage-ide': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v07-grid-scada-poi-console': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v08-plant-floor-wall-kiosk': { vp: '1920x1080', medium: 'auto', theme: 'dark', preset_label: 'Wall Kiosk' },
+    'v09-spc-quality-and-modbus-report': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v10-civic-capital-budget-deck': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
+    'v11-treasury-stress-test-solver': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v12-stem-interactive-lab': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v13-propulsion-archival-monograph': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v14-fieldbus-and-scope-debugger': { vp: '1920x1080', medium: 'auto', theme: 'dark-paper', preset_label: 'Dark Workbench' },
+    'v15-collimated-flight-hud': { vp: '1920x1080', medium: 'auto', theme: 'dark', preset_label: 'Optical HUD' },
+    'v16-transparent-window-overlay': { vp: '1920x1080', medium: 'auto', theme: 'dark', preset_label: 'Smart Glass' },
+    'v17-picture-frame-home-kiosk': { vp: '1920x1080', medium: 'auto', theme: 'paper', preset_label: 'Art Frame' },
+    'v18-home-assistant-companion-console': { vp: '390x844', medium: 'auto', theme: 'white', preset_label: 'Mobile' },
+    'v19-product-roadmap-and-triage': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v20-student-capstone-lab-report': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
+    'v21-field-anomaly-escalation-tsn': { vp: '390x844', medium: 'auto', theme: 'white', preset_label: 'Mobile' },
+  };
+
+  function esc(val) {
+    if (window.QuietStudioSheetV9 && window.QuietStudioSheetV9.escHtml) return window.QuietStudioSheetV9.escHtml(val);
+    return String(val == null ? '' : val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function getViewPreset(viewId) {
+    return VIEW_PRESETS[viewId] || { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' };
+  }
+
+  function applyViewPreset(viewId, state) {
+    const p = getViewPreset(viewId);
+    state.vp = p.vp;
+    state.medium = p.medium;
+    state.theme = p.theme;
+    state.zoom = 'fit';
+  }
+
+  function flattenViews(manifest) {
+    const out = [];
+    (manifest.worlds || []).forEach(function (w) {
+      (w.views || []).forEach(function (v) {
+        out.push({ world_id: w.world_id, view_id: v.view_id, meta: v });
+      });
+    });
+    return out;
+  }
+
+  function getGlobalPosition(manifest, state) {
+    const flat = flattenViews(manifest);
+    const idx = flat.findIndex(function (it) { return it.view_id === state.view; });
+    return { index: idx >= 0 ? idx + 1 : 1, total: flat.length || 1 };
+  }
+
+  function stepGlobalView(manifest, state, delta) {
+    const flat = flattenViews(manifest);
+    if (!flat.length) return null;
+    let idx = flat.findIndex(function (it) { return it.view_id === state.view; });
+    if (idx < 0) idx = 0;
+    const next = flat[(idx + delta + flat.length) % flat.length];
+    state.world = next.world_id;
+    state.view = next.view_id;
+    return next;
+  }
+
+  const NAV_ICONS = {
+    'compass': '<circle cx="8" cy="8" r="6"/><path d="M10.5 5.5 9 9l-3.5 1.5L7 7z" fill="none"/>',
+    'bars': '<path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" fill="none"/>',
+    'close': '<path d="M4 4l8 8M12 4l-8 8" fill="none"/>',
+    'activity': '<path d="M1.5 8h3l1.8-4.5 2.4 9 1.8-4.5h4" fill="none"/>',
+    'layers': '<path d="M8 2 14 5 8 8 2 5zM2 8l6 3 6-3M2 11l6 3 6-3" fill="none"/>',
+    'sliders': '<path d="M3 4h10M3 8h10M3 12h10M6 2.5v3M10 6.5v3M7 10.5v3" fill="none"/>',
+    'bell': '<path d="M4.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5l1.5 1.5H3zM6.5 13.5h3" fill="none"/>',
+    'heart-pulse': '<path d="M8 13.5S2.5 9.8 2.5 5.8a3 3 0 0 1 5.5-1.6 3 3 0 0 1 5.5 1.6c0 4-5.5 7.7-5.5 7.7zM4.5 8h2l1-2 1.2 3.5L10 8h1.5" fill="none"/>',
+    'file-medical': '<path d="M4 2h5.5L13 5.5V14H4zM9.5 2v3.5H13M8 7v4M6 9h4" fill="none"/>',
+    'hand-holding-medical': '<path d="M2 10.5h4l2 1.5h4.5M5 4.5h6M8 1.5v6" fill="none"/>',
+    'alert-triangle': '<path d="M8 2.2 14 13H2zM8 6.5v3M8 11.2v.4" fill="none"/>',
+    'shield-halved': '<path d="M8 2 13.5 4v4c0 3.2-2.2 5.2-5.5 6.2C4.7 13.2 2.5 11.2 2.5 8V4zM8 2v12" fill="none"/>',
+    'code-branch': '<path d="M5 3v10M11 4v2.5c0 1.5-2 2.5-6 2.5" fill="none"/><circle cx="5" cy="3.5" r="1.3"/><circle cx="5" cy="12.5" r="1.3"/><circle cx="11" cy="4" r="1.3"/>',
+    'bolt': '<path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none"/>',
+    'tv': '<rect x="2" y="3" width="12" height="8" rx="1"/><path d="M5.5 13.5h5M8 11v2.5" fill="none"/>',
+    'chart-line': '<path d="M2.5 2.5v11h11M4.5 10.5 7.5 7l2.2 2 3.5-4" fill="none"/>',
+    'landmark': '<path d="M2 6 8 2.5 14 6zM3.5 6v6M6.5 6v6M9.5 6v6M12.5 6v6M2 13.5h12" fill="none"/>',
+    'scale-balanced': '<path d="M8 2.5v11M4.5 13.5h7M3 5l5-1 5 1M2 9.5 3.5 5 5 9.5zM11 9.5 12.5 5 14 9.5z" fill="none"/>',
+    'flask': '<path d="M6 2.5h4M7 2.5V6l-3.5 7.5h9L9 6V2.5M5 10.5h6" fill="none"/>',
+    'gauge-high': '<path d="M3 11.5a5.5 5.5 0 1 1 10 0M8 8.5l2.8-2.8" fill="none"/>',
+    'microchip': '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/><path d="M6.5 2v2.5M9.5 2v2.5M6.5 11.5V14M9.5 11.5V14M2 6.5h2.5M2 9.5h2.5M11.5 6.5H14M11.5 9.5H14" fill="none"/>',
+    'crosshairs': '<circle cx="8" cy="8" r="5"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" fill="none"/>',
+    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>',
+    'home': '<path d="M2.5 7.5 8 2.5l5.5 5v6H10V9.5H6v4H2.5z" fill="none"/>',
+    'frame': '<rect x="2" y="3" width="12" height="10" rx="1"/><path d="M4.5 10.5 7 7.5l2 2 1.5-1.5 2 2.5" fill="none"/>',
+    'list-check': '<path d="M2.5 4.5h1.5M6 4.5h7.5M2.5 8h1.5M6 8h7.5M2.5 11.5h1.5M6 11.5h5.5M11.5 11l1.2 1.2 2-2.2" fill="none"/>',
+    'graduation-cap': '<path d="M1.5 6.5 8 3l6.5 3.5L8 10zM4 8v3.5c0 1 1.8 2 4 2s4-1 4-2V8" fill="none"/>',
+    'wrench': '<path d="M10.5 2.5a3.2 3.2 0 0 0-3.8 4.4L2.8 10.8a1.4 1.4 0 0 0 2 2l3.9-3.9a3.2 3.2 0 0 0 4.4-3.8l-1.9 1.9-1.5-1.5z" fill="none"/>',
+  };
+  function svgIcon(name) {
+    const body = NAV_ICONS[name] || NAV_ICONS.compass;
+    return '<svg class="va-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none" aria-hidden="true">' + body + '</svg>';
+  }
+
+  function sidebarSvg(kind) {
+    if (kind === 'collapse') {
+      return '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.5" fill="none"/><path d="M6 2.5v11" fill="none"/></svg>';
+    }
+    if (kind === 'caret') {
+      return '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg>';
+    }
+    return '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="4.5" height="4.5" rx="1" fill="none"/><rect x="9" y="2.5" width="4.5" height="4.5" rx="1" fill="none"/><rect x="2.5" y="9" width="4.5" height="4.5" rx="1" fill="none"/><rect x="9" y="9" width="4.5" height="4.5" rx="1" fill="none"/></svg>';
+  }
+
+  function countForAnchor(doc, anchor) {
+    const el = anchor ? doc.getElementById(anchor) : null;
+    if (!el) return 1;
+    return el.querySelectorAll('.qe-figure, .va-figure-card, .qe-scalar-card, .v9-kpi-tile, .v18-kpi-card, .v18-zone-tile, .v18-access-card, .v9-triage-row, .v01-audit-item, .v9-audit-item, table').length || 1;
+  }
+
+  function refreshStageCharts(doc) {
+    const win = doc && doc.defaultView;
+    if (!win || !win.QuietEChartsAdapter) return;
+    win.QuietEChartsAdapter.refresh(doc);
+    if (typeof win.requestAnimationFrame === 'function') {
+      win.requestAnimationFrame(function () { win.QuietEChartsAdapter.refresh(doc); });
+    }
+  }
+
+  function focusAnchor(doc, anchorId, label) {
+    doc.querySelectorAll('[data-rail-hidden]').forEach(function (el) { el.removeAttribute('data-rail-hidden'); });
+    doc.querySelectorAll('.va-rail-filter-bar').forEach(function (el) { el.remove(); });
+    doc.querySelectorAll('#va-shell-rail .va-rail-link').forEach(function (lnk) {
+      const on = lnk.getAttribute('data-rail-anchor') === anchorId;
+      lnk.classList.toggle('is-active', on);
+      if (on) lnk.setAttribute('aria-current', 'page');
+      else lnk.removeAttribute('aria-current');
+    });
+    const main = doc.getElementById('va-stage-main');
+    if (anchorId === '__all__') {
+      refreshStageCharts(doc);
+      return;
+    }
+    const target = doc.getElementById(anchorId);
+    const inner = doc.querySelector('#va-stage-main .v9-stage-inner');
+    if (!target || !inner) {
+      focusAnchor(doc, '__all__', 'All Sections');
+      return;
+    }
+    let cur = target;
+    while (cur && cur !== inner) {
+      const parent = cur.parentElement;
+      if (!parent) break;
+      Array.prototype.forEach.call(parent.children, function (sib) {
+        if (sib === cur) return;
+        if (sib.classList.contains('v9-masthead') || sib.classList.contains('v9-m1-folio') ||
+            sib.classList.contains('va-rail-reopen-btn') || sib.classList.contains('va-rail-filter-bar')) return;
+        sib.setAttribute('data-rail-hidden', 'true');
+      });
+      cur = parent;
+    }
+    const bar = doc.createElement('div');
+    bar.className = 'va-rail-filter-bar';
+    bar.innerHTML = '<span>Focused Section: <strong>' + esc(label) + '</strong></span>' +
+      '<button type="button" class="va-pill-btn va-rail-show-all-btn" aria-label="Show full view">Show Full View</button>';
+    const hdr = inner.querySelector('.v9-masthead');
+    if (hdr && hdr.nextSibling) inner.insertBefore(bar, hdr.nextSibling);
+    else inner.insertBefore(bar, inner.firstChild);
+    const showBtn = bar.querySelector('.va-rail-show-all-btn');
+    if (showBtn) showBtn.addEventListener('click', function () { focusAnchor(doc, '__all__', 'All Sections'); });
+    if (main) main.scrollTop = 0;
+    refreshStageCharts(doc);
+  }
+
+  function findStageQuickControls(doc) {
+    const sels = [
+      '#v02-subgroup-chips button', '#v05-enclave-chips button', '#v10-fund-chips button',
+      '#v11-shock-chips button', '#v12-role-chips button', '#v12-lab button[data-term]',
+      '#v03-guide button[data-term]', '.v18-filter-bar button[data-v18-filter]',
+      '#v19-filter-chips button', '#v20-rubric-chips button', '#v21-step-chips button',
+      '.va-tab-strip button',
+    ];
+    for (let i = 0; i < sels.length; i += 1) {
+      const hits = Array.prototype.slice.call(doc.querySelectorAll(sels[i]));
+      if (hits.length >= 2) return hits.slice(0, 4);
+    }
+    return [];
+  }
+
+  function syncRailFooter(doc, state) {
+    if (!doc || !state) return;
+    doc.querySelectorAll('#va-shell-rail .va-swatch-btn').forEach(function (b) {
+      const on = b.getAttribute('data-swatch') === state.theme;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    doc.querySelectorAll('#va-shell-rail [data-density]').forEach(function (b) {
+      const mode = b.getAttribute('data-density');
+      const on = (mode === 'compact' && state.density === 'd3') || (mode === 'comfortable' && state.density === 'd2');
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function syncQuickButtons(doc, quickCtrls) {
+    doc.querySelectorAll('#va-shell-rail [data-quick-idx]').forEach(function (mb) {
+      const real = quickCtrls[parseInt(mb.getAttribute('data-quick-idx') || '-1', 10)];
+      if (!real) return;
+      const on = real.classList.contains('is-active') || real.getAttribute('aria-pressed') === 'true';
+      mb.classList.toggle('is-active', on);
+    });
+  }
+
+  function enhanceShellNav(doc, viewMeta, portalApi) {
+    doc.documentElement.dataset.railCollapsed = 'false';
+    const topbar = doc.getElementById('va-shell-topbar');
+    if (topbar && !doc.getElementById('va-topbar-rail-toggle')) {
+      const tBtn = doc.createElement('button');
+      tBtn.type = 'button';
+      tBtn.id = 'va-topbar-rail-toggle';
+      tBtn.className = 'va-rail-collapse-btn';
+      tBtn.setAttribute('aria-label', 'Toggle Navigation Sidebar');
+      tBtn.setAttribute('aria-expanded', 'true');
+      tBtn.innerHTML = sidebarSvg('collapse');
+      topbar.insertBefore(tBtn, topbar.firstChild);
+    }
+    const main = doc.getElementById('va-stage-main');
+    if (main && !doc.getElementById('va-rail-reopen-btn')) {
+      const rBtn = doc.createElement('button');
+      rBtn.type = 'button';
+      rBtn.id = 'va-rail-reopen-btn';
+      rBtn.className = 'va-rail-reopen-btn';
+      rBtn.setAttribute('aria-label', 'Show Navigation Sidebar');
+      rBtn.setAttribute('aria-expanded', 'false');
+      rBtn.innerHTML = sidebarSvg('collapse') + ' <span>Sidebar</span>';
+      main.insertBefore(rBtn, main.firstChild);
+    }
+    doc.querySelectorAll('.va-rail-collapse-btn').forEach(function (b) { b.setAttribute('aria-expanded', 'true'); });
+    const reopenEl = doc.getElementById('va-rail-reopen-btn');
+    if (reopenEl) reopenEl.setAttribute('aria-expanded', 'false');
+
+    const rail = doc.getElementById('va-shell-rail');
+    if (!rail) return;
+    const icon = (viewMeta && viewMeta.nav_icon) ? viewMeta.nav_icon : 'compass';
+    const railBrand = (viewMeta && viewMeta.rail_brand) ? viewMeta.rail_brand : ((viewMeta && viewMeta.nav_brand) || 'Quiet UI');
+    const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : [];
+    const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
+    const icons = ['activity', 'layers', 'sliders', 'bell'];
+
+    const linksHtml = '<a class="va-rail-link is-active" href="#stage" data-rail-anchor="__all__" aria-current="page">' +
+      sidebarSvg('all') + ' <span>All Sections</span><span class="va-rail-count va-nums">' + (items.length || 1) + '</span></a>' +
+      items.map(function (lbl, i) {
+        const anchor = anchors[i] || '';
+        return '<a class="va-rail-link" href="#' + esc(anchor || 'stage') + '" data-rail-anchor="' + esc(anchor) + '">' +
+          svgIcon(icons[i % 4]) + ' <span>' + esc(lbl) + '</span><span class="va-rail-count va-nums">' + countForAnchor(doc, anchor) + '</span></a>';
+      }).join('');
+
+    const quickCtrls = findStageQuickControls(doc);
+    let quickHtml = '';
+    if (quickCtrls.length >= 2) {
+      quickHtml = '<div class="va-rail-quick-group"><div class="va-tree-row">' +
+        '<button type="button" class="va-tree-caret" aria-expanded="true" aria-label="Toggle Quick Switch">' + sidebarSvg('caret') + '</button>' +
+        '<button type="button" class="va-tree-dest" data-quick-toggle="true"><span class="va-tree-label">Quick Switch</span></button>' +
+        '</div><div class="va-tree-children">' +
+        quickCtrls.map(function (b, idx) {
+          const on = b.classList.contains('is-active') || b.getAttribute('aria-pressed') === 'true';
+          return '<div class="va-tree-row"><button type="button" class="va-tree-dest' + (on ? ' is-active' : '') +
+            '" data-quick-idx="' + idx + '"><span class="va-tree-label">' + esc((b.textContent || '').trim()) + '</span></button></div>';
+        }).join('') + '</div></div>';
+    }
+
+    const footerHtml = '<div class="va-rail-footer">' +
+      '<div class="va-swatch-row" role="group" aria-label="Theme">' +
+      '<button type="button" class="va-swatch-btn" data-swatch="white" aria-pressed="false" aria-label="White theme"></button>' +
+      '<button type="button" class="va-swatch-btn" data-swatch="paper" aria-pressed="false" aria-label="Paper theme"></button>' +
+      '<button type="button" class="va-swatch-btn" data-swatch="dark-paper" aria-pressed="false" aria-label="Slate theme"></button>' +
+      '<button type="button" class="va-swatch-btn" data-swatch="dark" aria-pressed="false" aria-label="Dark theme"></button></div>' +
+      '<div class="va-tb-group va-density-toggle" role="group" aria-label="Density">' +
+      '<button type="button" class="va-tb-btn" data-density="compact" aria-pressed="false">Compact</button>' +
+      '<button type="button" class="va-tb-btn" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
+      '</div></div>';
+
+    rail.innerHTML = '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
+      '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>' +
+      '<nav class="va-rail-links" aria-label="Section Focus">' + linksHtml + '</nav>' + quickHtml + footerHtml;
+
+    const toggleCollapse = function () {
+      const next = doc.documentElement.dataset.railCollapsed !== 'true';
+      doc.documentElement.dataset.railCollapsed = next ? 'true' : 'false';
+      doc.querySelectorAll('.va-rail-collapse-btn, #va-rail-reopen-btn').forEach(function (b) {
+        b.setAttribute('aria-expanded', next ? 'false' : 'true');
+      });
+      refreshStageCharts(doc);
+    };
+    doc.querySelectorAll('.va-rail-collapse-btn').forEach(function (b) {
+      if (b.dataset.bound !== '1') { b.dataset.bound = '1'; b.addEventListener('click', toggleCollapse); }
+    });
+    const reopen = doc.getElementById('va-rail-reopen-btn');
+    if (reopen && reopen.dataset.bound !== '1') { reopen.dataset.bound = '1'; reopen.addEventListener('click', toggleCollapse); }
+
+    rail.querySelectorAll('.va-rail-link').forEach(function (lnk) {
+      lnk.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        const aid = lnk.getAttribute('data-rail-anchor') || '__all__';
+        const lbl = (lnk.querySelector('span') || lnk).textContent || 'Section';
+        if (aid !== '__all__' && lnk.classList.contains('is-active')) focusAnchor(doc, '__all__', 'All Sections');
+        else focusAnchor(doc, aid, lbl);
+      });
+    });
+
+    const caret = rail.querySelector('.va-tree-caret');
+    const qHead = rail.querySelector('[data-quick-toggle]');
+    const qKids = rail.querySelector('.va-tree-children');
+    if (caret && qKids) {
+      const toggleTree = function () {
+        const open = caret.getAttribute('aria-expanded') !== 'true';
+        caret.setAttribute('aria-expanded', open ? 'true' : 'false');
+        qKids.hidden = !open;
+      };
+      caret.addEventListener('click', toggleTree);
+      if (qHead) qHead.addEventListener('click', toggleTree);
+    }
+
+    rail.querySelectorAll('[data-quick-idx]').forEach(function (mb) {
+      mb.addEventListener('click', function () {
+        const real = quickCtrls[parseInt(mb.getAttribute('data-quick-idx') || '-1', 10)];
+        if (!real) return;
+        if (real.closest('[data-rail-hidden="true"]')) focusAnchor(doc, '__all__', 'All Sections');
+        real.click();
+        syncQuickButtons(doc, quickCtrls);
+      });
+    });
+
+    rail.querySelectorAll('.va-swatch-btn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!portalApi) return;
+        portalApi.state.theme = b.getAttribute('data-swatch') || 'white';
+        portalApi.state.presetLocked = true;
+        portalApi.applyState(false);
+      });
+    });
+    rail.querySelectorAll('[data-density]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!portalApi) return;
+        portalApi.state.density = b.getAttribute('data-density') === 'compact' ? 'd3' : 'd2';
+        portalApi.state.presetLocked = true;
+        portalApi.applyState(false);
+      });
+    });
+    syncRailFooter(doc, portalApi ? portalApi.state : null);
+  }
+
+  window.QuietStudioPresetsRailV9 = {
+    VIEW_PRESETS: VIEW_PRESETS,
+    svgIcon: svgIcon,
+    getViewPreset: getViewPreset,
+    applyViewPreset: applyViewPreset,
+    flattenViews: flattenViews,
+    getGlobalPosition: getGlobalPosition,
+    stepGlobalView: stepGlobalView,
+    enhanceShellNav: enhanceShellNav,
+    syncRailFooter: syncRailFooter,
+  };
+})(typeof window !== 'undefined' ? window : this);
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/**
+ * Quiet UI v9.5 — OAW-Style Overview Landing Page & Live Medium Morph Preview
+ */
+(function (window, document) {
+  'use strict';
+
+  const DOMAIN_DESCRIPTIONS = {
+    '01-clinical-icu-and-trials': 'Bedside hemodynamic waveform monitors, Phase III CONSORT subgroup briefs, and plain-language patient recovery guides.',
+    '02-cloud-cyber-and-ai-ops': 'Tail-latency SRE workbenches, zero-trust enclave specs, AI calibration lineage, and release critical-path triage.',
+    '03-industrial-grid-and-manufacturing': 'Microgrid POI dispatch SCADA, 10-foot plant wall KPI kiosks, and Shewhart statistical quality reports.',
+    '04-civic-finance-and-stem-learning': 'Municipal reserve waterfalls, Monte Carlo rate-shock solvers, interactive physics labs, and student capstone defenses.',
+    '05-physical-systems-auto-and-aero': 'Propulsion efficiency monographs, CAN-FD reflection scopes, collimated optical HUDs, and smart-glass overlays.',
+    '06-smart-home-and-energy': 'Ambient living-room picture-frame kiosks and Home Assistant solar, climate, and two-step door access consoles.',
+  };
+
+  const MORPH_MODES = {
+    screen: { label: '1080p Screen · 1920×1080', note: 'White desk monitor surface (`M3`) with dual-pane signal waveform, KPI tiles, and interactive ceiling.' },
+    paper: { label: 'Archival Paper · 1056×1368', note: 'Warm print sheet (`M1`) using Newsreader typography, high-contrast black ink rules, and zero chrome clutter.' },
+    mobile: { label: 'Mobile Phone · 390×844', note: 'Responsive 390px handset bezel (`N4`) stacking scalar summary tiles above the calibrated signal sweep.' },
+    dark: { label: 'Dark Cockpit · Slate / OLED', note: 'Night-operations polarity preserving crisp gridlines and reserving amber strictly for threshold crossings.' },
+    brief: { label: 'Executive Brief · Summary Lens', note: 'Compression lens leading with the operational margin delta and threshold disposition before detail proof.' },
+  };
+
+  function esc(val) {
+    if (window.QuietStudioSheetV9 && window.QuietStudioSheetV9.escHtml) return window.QuietStudioSheetV9.escHtml(val);
+    return String(val == null ? '' : val).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function svgTileIcon(kind) {
+    const map = {
+      step: '<path d="M3 8h10M9.5 4.5 13 8l-3.5 3.5" fill="none"/>',
+      proof: '<path d="M2.5 12.5h11M4.5 9.5 7 6.5l2.2 2 3-4" fill="none"/>',
+      rail: '<rect x="2.5" y="2.5" width="11" height="11" rx="1.5" fill="none"/><path d="M6.5 2.5v11" fill="none"/>',
+      clinical: '<path d="M1.5 8h3l1.6-4 2.2 8 1.6-4h4.6" fill="none"/>',
+      cloud: '<path d="M8 2 13 4v4c0 3-2 4.8-5 5.8C5 12.8 3 11 3 8V4z" fill="none"/>',
+      grid: '<path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none"/>',
+      finance: '<path d="M2.5 6.5 8 3l5.5 3.5M4 6.5v5.5M8 6.5v5.5M12 6.5v5.5M2.5 13.5h11" fill="none"/>',
+      aero: '<circle cx="8" cy="8" r="5.5" fill="none"/><path d="M8 4v4l2.5 1.5" fill="none"/>',
+      home: '<path d="M2.5 7.5 8 2.5l5.5 5v6H10V9.5H6v4H2.5z" fill="none"/>',
+    };
+    return '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      (map[kind] || map.proof) + '</svg>';
+  }
+
+  function domainIconKind(worldId) {
+    if (worldId.indexOf('01-') === 0) return 'clinical';
+    if (worldId.indexOf('02-') === 0) return 'cloud';
+    if (worldId.indexOf('03-') === 0) return 'grid';
+    if (worldId.indexOf('04-') === 0) return 'finance';
+    if (worldId.indexOf('05-') === 0) return 'aero';
+    return 'home';
+  }
+
+  function buildWaveformSvgHtml(threshold) {
+    const pts = [88, 94, 72, 62, 68, 91, 74, 63.5, 66, 89, 71, 63.5];
+    const x0 = 46, x1 = 436, yTop = 20, yBot = 120;
+    const yOf = function (v) { return +(yBot - ((v - 40) / 60) * (yBot - yTop)).toFixed(1); };
+    const coords = pts.map(function (v, idx) {
+      const x = +(x0 + idx * ((x1 - x0) / (pts.length - 1))).toFixed(1);
+      return [x, yOf(v)];
+    });
+    const pathD = coords.map(function (p, i) { return (i === 0 ? 'M' : 'L') + p[0] + ' ' + p[1]; }).join(' ');
+    const yT = yOf(threshold);
+    const yText = yT >= 38 ? +(yT - 6).toFixed(1) : +(yT + 14).toFixed(1);
+    const grids = [100, 80, 60, 40].map(function (v) {
+      const gy = yOf(v);
+      return '<line x1="' + x0 + '" y1="' + gy + '" x2="' + x1 + '" y2="' + gy + '" stroke="var(--morph-border)" stroke-width="0.9"/>' +
+        '<text x="40" y="' + (gy + 4) + '" text-anchor="end" font-size="12" fill="var(--morph-muted)">' + v + '</text>';
+    }).join('');
+    const xTicks = [['0 s', x0, 'start'], ['2 s', 176, 'middle'], ['4 s', 306, 'middle'], ['6 s', x1, 'end']].map(function (t) {
+      return '<text x="' + t[1] + '" y="140" text-anchor="' + t[2] + '" font-size="12" fill="var(--morph-muted)">' + t[0] + '</text>';
+    }).join('');
+    const dots = coords.map(function (p) {
+      return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.8" fill="var(--morph-accent)"/>';
+    }).join('');
+    return '<svg class="va-morph-svg" viewBox="0 0 460 150" role="img" aria-label="Live Arterial Pressure Signal Preview">' +
+      grids + xTicks +
+      '<path d="' + pathD + '" fill="none" stroke="var(--morph-accent)" stroke-width="2" stroke-linejoin="round"/>' +
+      dots +
+      '<line id="va-morph-thresh-line" x1="' + x0 + '" y1="' + yT + '" x2="' + x1 + '" y2="' + yT + '" stroke="var(--morph-warn)" stroke-width="1.6" stroke-dasharray="5 3"/>' +
+      '<text id="va-morph-thresh-label" class="va-svg-halo-text" x="' + (x1 - 4) + '" y="' + yText + '" text-anchor="end" font-size="12" font-weight="700" paint-order="stroke" stroke="var(--morph-bg)" stroke-width="3" fill="var(--morph-warn)">Ceiling ' + threshold + ' mmHg</text>' +
+      '</svg>';
+  }
+
+  function renderLanding(manifest, portalApi) {
+    const root = document.getElementById('va-studio-landing');
+    if (!root) return;
+    const worlds = (manifest && manifest.worlds) ? manifest.worlds : [];
+    const totalViews = worlds.reduce(function (acc, w) { return acc + ((w.views && w.views.length) || 0); }, 0);
+    const getPreset = window.QuietStudioPresetsRailV9 ? window.QuietStudioPresetsRailV9.getViewPreset : function () { return { preset_label: '1080p Screen' }; };
+
+    const domainCardsHtml = worlds.map(function (w, idx) {
+      const num = String(idx + 1).padStart(2, '0');
+      const desc = DOMAIN_DESCRIPTIONS[w.world_id] || w.title;
+      const viewsHtml = (w.views || []).map(function (v) {
+        const pre = getPreset(v.view_id);
+        return '<button type="button" class="va-domain-view-btn" data-launch-world="' + esc(w.world_id) + '" data-launch-view="' + esc(v.view_id) + '">' +
+          '<span>' + esc(v.option_label) + '</span>' +
+          '<span class="va-view-preset-tag">' + esc(pre.preset_label) + '</span></button>';
+      }).join('');
+      const firstView = (w.views && w.views[0]) ? w.views[0].view_id : '';
+      return '<article class="va-domain-card">' +
+        '<div class="va-domain-card-top"><span class="va-step-icon-tile">' + svgTileIcon(domainIconKind(w.world_id)) + '</span>' +
+        '<span class="va-domain-slug">&gt; domain_' + num + '_</span></div>' +
+        '<h3>' + esc(w.title) + '</h3>' +
+        '<p class="va-domain-desc">' + esc(desc) + '</p>' +
+        '<div class="va-domain-view-list">' + viewsHtml + '</div>' +
+        '<div class="va-domain-launch"><button type="button" class="va-domain-launch-btn" data-launch-world="' + esc(w.world_id) + '" data-launch-view="' + esc(firstView) + '">Launch Domain ' + num + ' &rarr;</button></div>' +
+        '</article>';
+    }).join('');
+
+    const installCmd = 'git clone https://github.com/FrankXLT/quiet-ui-skills.git && cd quiet-ui-skills && ./install.sh';
+    root.innerHTML = '<div class="va-landing-wrap">' +
+      '<section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
+      '<span class="va-landing-kicker">DETERMINISTIC DESIGN &amp; METROLOGY FOR AI AGENTS</span>' +
+      '<h1 class="va-landing-h1">Interfaces Engineered to Be Read, Not Decorated</h1>' +
+      '<p class="va-landing-sub">One zero-dependency design system and SVG/ECharts compiler suite that adapts engineering telemetry, clinical scopes, and technical briefs across screen, print, and mobile.</p>' +
+      '<div class="va-landing-chips">' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_ui_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_evidence_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_bridge_</span></button>' +
+      '</div>' +
+      '<div class="va-landing-chips">' +
+      '<button type="button" class="va-landing-chip" data-open-examples="1"><span class="va-chip-prompt">&gt;</span><span>' + totalViews + '_live_examples_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-open-components="1"><span class="va-chip-prompt">&gt;</span><span>44_components_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>portable_auditor_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>60s_brand_kits_</span></button>' +
+      '</div></section>' +
+
+      '<section id="va-landing-morph-card" class="va-morph-card" aria-label="How the Showcase Works and Live Preview">' +
+      '<div class="va-morph-steps">' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Step Across Mediums</h2><p>Use &lt; and &gt; in the portal bar to step across domains as views morph between 1080p screen, archival paper, 390px mobile, and dark cockpit.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. Inspect Calibrated Proof</h2><p>Every chart uses 1-2-5 ticks, knockout halos, and conserved corpus numbers. Click Why? on any view to read its plain-English design rationale.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, isolate focused sections, switch themes or density from the rail footer, or drag portal handles.</p></div></div>' +
+      '</div>' +
+      '<div class="va-morph-stage-wrap">' +
+      '<div class="va-morph-stage-hdr">' +
+      '<div class="va-morph-stage-title"><span>LIVE MEDIUM MORPH PREVIEW</span><span>·</span><span id="va-morph-mode-label">1080p Screen · 1920×1080</span></div>' +
+      '<div class="va-morph-stage-actions">' +
+      '<span id="va-morph-status-pill" class="va-morph-status-pill" data-state="warn">CAUTION · MAP &lt; 75 mmHg</span>' +
+      '<button type="button" id="va-morph-open-portal" class="va-landing-cta">Open in 1080p Portal &rarr;</button>' +
+      '</div></div>' +
+      '<div id="va-morph-canvas" class="va-morph-canvas" data-morph-mode="screen">' +
+      '<div id="va-morph-svg-host" class="va-morph-plot-box">' + buildWaveformSvgHtml(75) + '</div>' +
+      '<div><div class="va-morph-kpis">' +
+      '<div class="va-morph-kpi"><span>Mean MAP</span><strong>63.5 mmHg</strong></div>' +
+      '<div class="va-morph-kpi"><span>Peak Systolic</span><strong>94.0 mmHg</strong></div>' +
+      '<div class="va-morph-kpi"><span>Ceiling Margin</span><strong id="va-morph-margin-val">-11.5 mmHg</strong></div>' +
+      '</div><p id="va-morph-mode-note" class="va-morph-summary">' + esc(MORPH_MODES.screen.note) + '</p></div></div>' +
+      '<div class="va-morph-controls">' +
+      '<div class="va-morph-mode-group" role="group" aria-label="Preview Medium">' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="screen" aria-pressed="true">1. 1080p Screen</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="paper" aria-pressed="false">2. Paper Sheet</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="mobile" aria-pressed="false">3. 390px Mobile</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="dark" aria-pressed="false">4. Dark Cockpit</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="brief" aria-pressed="false">5. Executive Brief</button>' +
+      '</div>' +
+      '<div class="va-morph-slider-wrap"><label for="va-morph-threshold">Alert Ceiling: <strong id="va-morph-threshold-val" class="va-nums">75 mmHg</strong></label>' +
+      '<input type="range" id="va-morph-threshold" min="55" max="95" step="1" value="75" aria-valuetext="75 mmHg"></div>' +
+      '</div></div></section>' +
+
+      '<section id="va-landing-domains" aria-label="Explore Domains and Portal Views">' +
+      '<div class="va-landing-sec-hdr"><h2>Explore ' + worlds.length + ' Domains &amp; ' + totalViews + ' Live Views</h2>' +
+      '<span>Click any example to open its curated screen, paper, mobile, or cockpit preset.</span></div>' +
+      '<div class="va-domain-grid">' + domainCardsHtml + '</div></section>' +
+
+      '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Pillars and Quick Install">' +
+      '<div class="va-landing-sec-hdr"><h2>Three Orthogonal Pillars &amp; Quick Install</h2><span>Zero-dependency Python 3.10+ stdlib compilers &amp; portable auditor</span></div>' +
+      '<div class="va-pillars-grid">' +
+      '<div class="va-pillar-col"><h3>quiet-ui (7 Mediums)</h3><p>Screen, archival print (`M1`), workbenches (`M3`), POI terminals, wall kiosks, and optical HUDs with persistent `.quiet-ui.md` contracts and `audit_quiet_html.py`.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-evidence (6 Modalities)</h3><p>Deterministic SVG/ECharts compilers for 1-2-5 plots, waveforms, bitfields, tables, and schematics across 44 interactive Component Library specimens.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-bridge (7 Audience Lenses)</h3><p>Executive, peer engineering, operator, and learner projection rules enforcing plain-English clarity and end-to-end numerical conservation.</p></div>' +
+      '</div>' +
+      '<div class="va-install-bar">' +
+      '<div class="va-install-code-row"><code>' + esc(installCmd) + '</code>' +
+      '<button type="button" id="va-landing-copy-install" class="va-studio-btn">Copy</button>' +
+      '<span id="va-landing-copy-status" class="va-copy-status" role="status"></span></div>' +
+      '<button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 44 Components &rarr;</button>' +
+      '</div></section></div>';
+
+    const canvas = document.getElementById('va-morph-canvas');
+    const modeLbl = document.getElementById('va-morph-mode-label');
+    const modeNote = document.getElementById('va-morph-mode-note');
+    const svgHost = document.getElementById('va-morph-svg-host');
+    const statusPill = document.getElementById('va-morph-status-pill');
+    const marginVal = document.getElementById('va-morph-margin-val');
+    const slider = document.getElementById('va-morph-threshold');
+    const sliderVal = document.getElementById('va-morph-threshold-val');
+
+    function syncMorphSlider() {
+      if (!slider) return;
+      const th = parseInt(slider.value || '75', 10);
+      const pct = ((th - 55) / (95 - 55)) * 100;
+      slider.style.setProperty('--slider-progress', pct.toFixed(1) + '%');
+      slider.setAttribute('aria-valuetext', th + ' mmHg');
+      if (sliderVal) sliderVal.textContent = th + ' mmHg';
+      if (svgHost) svgHost.innerHTML = buildWaveformSvgHtml(th);
+      const margin = 63.5 - th;
+      if (marginVal) marginVal.textContent = (margin >= 0 ? '+' : '') + margin.toFixed(1) + ' mmHg';
+      if (statusPill) {
+        const warn = margin < 0;
+        statusPill.setAttribute('data-state', warn ? 'warn' : 'nominal');
+        statusPill.textContent = warn ? ('CAUTION · MAP < ' + th + ' mmHg') : ('Nominal · MAP >= ' + th + ' mmHg');
+      }
+    }
+    if (slider) {
+      syncMorphSlider();
+      slider.addEventListener('input', syncMorphSlider);
+    }
+
+    root.querySelectorAll('[data-morph-btn]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const mode = btn.getAttribute('data-morph-btn') || 'screen';
+        const cfg = MORPH_MODES[mode] || MORPH_MODES.screen;
+        if (canvas) canvas.setAttribute('data-morph-mode', mode);
+        if (modeLbl) modeLbl.textContent = cfg.label;
+        if (modeNote) modeNote.textContent = cfg.note;
+        root.querySelectorAll('[data-morph-btn]').forEach(function (b) {
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+      });
+    });
+
+    root.querySelectorAll('[data-launch-view]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (portalApi && portalApi.openExamples) {
+          portalApi.openExamples(btn.getAttribute('data-launch-world'), btn.getAttribute('data-launch-view'));
+        }
+      });
+    });
+    root.querySelectorAll('[data-open-examples]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (portalApi && portalApi.openExamples) portalApi.openExamples();
+      });
+    });
+    root.querySelectorAll('[data-open-components]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (portalApi && portalApi.openComponents) portalApi.openComponents();
+      });
+    });
+    const openPortalBtn = document.getElementById('va-morph-open-portal');
+    if (openPortalBtn) {
+      openPortalBtn.addEventListener('click', function () {
+        if (portalApi && portalApi.openExamples) portalApi.openExamples('01-clinical-icu-and-trials', 'v01-icu-bedside-terminal');
+      });
+    }
+    const openCompBtn = document.getElementById('va-landing-open-components');
+    if (openCompBtn) {
+      openCompBtn.addEventListener('click', function () {
+        if (portalApi && portalApi.openComponents) portalApi.openComponents();
+      });
+    }
+    root.querySelectorAll('[data-scroll-target]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const tgt = document.getElementById(btn.getAttribute('data-scroll-target') || '');
+        if (tgt && tgt.scrollIntoView) tgt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+    const copyBtn = document.getElementById('va-landing-copy-install');
+    const copyStatus = document.getElementById('va-landing-copy-status');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(installCmd).then(function () {
+            if (copyStatus) copyStatus.textContent = 'Install command copied';
+          }, function () {
+            if (copyStatus) copyStatus.textContent = 'Copy unavailable';
+          });
+        }
+      });
+    }
+  }
+
+  window.QuietStudioLandingV9 = {
+    renderLanding: renderLanding,
+  };
+})(window, document);
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/**
+ * Quiet UI v9.5 — Universal Stage Portal Controller (Overview | Examples | Components)
  */
 (function (window, document) {
   'use strict';
 
   const state = {
-    studioView: 'examples', world: '', view: '', medium: 'auto', theme: 'white',
-    nav: 'auto', vp: 'fill', zoom: 'fit', density: 'd2',
-    corners: 'auto', scale: '100', isMounted: false, renderedView: '',
+    studioView: 'overview', world: '', view: '', medium: 'auto', theme: 'white',
+    nav: 'auto', vp: '1920x1080', zoom: 'fit', density: 'd2',
+    corners: 'auto', scale: '100', presetLocked: false, isMounted: false, renderedView: '',
   };
   let manifest = { worlds: [] };
 
@@ -13690,16 +14850,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   function readUrlParams() {
     const p = new URLSearchParams(window.location.search);
     const rules = {
-      medium: ['auto', 'm1'],
-      theme: ['white', 'paper', 'dark-paper', 'dark'],
-      nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'],
-      zoom: ['fit', '1:1'],
-      density: ['d1', 'd2', 'd3', 'd4'],
-      corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+      medium: ['auto', 'm1'], theme: ['white', 'paper', 'dark-paper', 'dark'],
+      nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'], zoom: ['fit', '1:1'],
+      density: ['d1', 'd2', 'd3', 'd4'], corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
     };
     const rawMode = (p.get('mode') || '').toLowerCase();
-    if (rawMode === 'examples' || rawMode === 'worlds') state.studioView = 'examples';
-    else if (rawMode === 'components' || rawMode === 'bench' || rawMode === 'atlas') state.studioView = 'components';
+    const hasViewOrWorld = p.has('view') || p.has('world') || p.has('domain');
+    if (rawMode === 'components' || rawMode === 'bench' || rawMode === 'atlas') state.studioView = 'components';
+    else if (hasViewOrWorld || rawMode === 'examples' || rawMode === 'worlds') state.studioView = 'examples';
+    else state.studioView = 'overview';
+
     ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
       if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
@@ -13720,17 +14880,32 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       const v = findView(w, state.view);
       if (v) state.view = v.view_id;
     }
+    if (p.has('vp') || p.has('theme') || p.has('medium') || p.has('nav') || p.has('density') || p.has('corners')) {
+      state.presetLocked = true;
+    }
+    if (hasViewOrWorld && !p.has('vp')) {
+      state.vp = 'fill';
+      state.presetLocked = true;
+    } else if (state.studioView === 'examples' && !state.presetLocked && state.view && window.QuietStudioPresetsRailV9) {
+      window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+    }
   }
 
   function syncUrlParams() {
+    if (state.studioView === 'overview') {
+      if (window.location.search) window.history.replaceState(null, '', window.location.pathname);
+      return;
+    }
     const p = new URLSearchParams();
-    if (state.studioView !== 'examples') p.set('mode', state.studioView);
-    p.set('domain', state.world);
-    p.set('view', state.view);
-    p.set('medium', state.medium);
+    p.set('mode', state.studioView);
+    if (state.studioView === 'examples') {
+      p.set('domain', state.world);
+      p.set('view', state.view);
+      p.set('medium', state.medium);
+      p.set('nav', state.nav);
+      p.set('vp', state.vp);
+    }
     p.set('theme', state.theme);
-    p.set('nav', state.nav);
-    p.set('vp', state.vp);
     if (state.zoom !== 'fit') p.set('zoom', state.zoom);
     if (state.density !== 'd2') p.set('density', state.density);
     if (state.corners !== 'auto') p.set('corners', state.corners);
@@ -13759,11 +14934,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     return (width < 700 && allowed.indexOf('n4') !== -1) ? 'n4' : defNav;
   }
 
-  function getActiveDimensions() { return window.QuietPortalResize.parseDimensions(state.vp); }
+  function getActiveDimensions() {
+    if (state.studioView === 'components') return null;
+    if (window.innerWidth < 760 && !state.presetLocked && state.vp === '1920x1080') return null;
+    return window.QuietPortalResize.parseDimensions(state.vp);
+  }
 
   function updatePortalDimensions() {
     const mat = document.getElementById('va-portal-mat'), scaler = document.getElementById('va-portal-scaler'), iframe = document.getElementById('va-stage-portal');
-    if (mat && scaler && iframe) window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom);
+    if (mat && scaler && iframe) window.QuietPortalResize.applyPortalDimensions(scaler, iframe, mat, getActiveDimensions(), state.zoom, state.medium);
   }
 
   function effectiveMedium(viewMeta) {
@@ -13771,47 +14950,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     return (viewMeta && viewMeta.default_medium) ? viewMeta.default_medium : 'm2';
   }
 
-  const NAV_ICONS = {
-    'compass': '<circle cx="8" cy="8" r="6"/><path d="M10.5 5.5 9 9l-3.5 1.5L7 7z" fill="none"/>',
-    'bars': '<path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" fill="none"/>',
-    'close': '<path d="M4 4l8 8M12 4l-8 8" fill="none"/>',
-    'activity': '<path d="M1.5 8h3l1.8-4.5 2.4 9 1.8-4.5h4" fill="none"/>',
-    'layers': '<path d="M8 2 14 5 8 8 2 5zM2 8l6 3 6-3M2 11l6 3 6-3" fill="none"/>',
-    'sliders': '<path d="M3 4h10M3 8h10M3 12h10M6 2.5v3M10 6.5v3M7 10.5v3" fill="none"/>',
-    'bell': '<path d="M4.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5l1.5 1.5H3zM6.5 13.5h3" fill="none"/>',
-    'heart-pulse': '<path d="M8 13.5S2.5 9.8 2.5 5.8a3 3 0 0 1 5.5-1.6 3 3 0 0 1 5.5 1.6c0 4-5.5 7.7-5.5 7.7zM4.5 8h2l1-2 1.2 3.5L10 8h1.5" fill="none"/>',
-    'file-medical': '<path d="M4 2h5.5L13 5.5V14H4zM9.5 2v3.5H13M8 7v4M6 9h4" fill="none"/>',
-    'hand-holding-medical': '<path d="M2 10.5h4l2 1.5h4.5M5 4.5h6M8 1.5v6" fill="none"/>',
-    'alert-triangle': '<path d="M8 2.2 14 13H2zM8 6.5v3M8 11.2v.4" fill="none"/>',
-    'shield-halved': '<path d="M8 2 13.5 4v4c0 3.2-2.2 5.2-5.5 6.2C4.7 13.2 2.5 11.2 2.5 8V4zM8 2v12" fill="none"/>',
-    'code-branch': '<path d="M5 3v10M11 4v2.5c0 1.5-2 2.5-6 2.5" fill="none"/><circle cx="5" cy="3.5" r="1.3"/><circle cx="5" cy="12.5" r="1.3"/><circle cx="11" cy="4" r="1.3"/>',
-    'bolt': '<path d="M9 1.5 3.5 9H8l-1 5.5L12.5 7H8z" fill="none"/>',
-    'tv': '<rect x="2" y="3" width="12" height="8" rx="1"/><path d="M5.5 13.5h5M8 11v2.5" fill="none"/>',
-    'chart-line': '<path d="M2.5 2.5v11h11M4.5 10.5 7.5 7l2.2 2 3.5-4" fill="none"/>',
-    'landmark': '<path d="M2 6 8 2.5 14 6zM3.5 6v6M6.5 6v6M9.5 6v6M12.5 6v6M2 13.5h12" fill="none"/>',
-    'scale-balanced': '<path d="M8 2.5v11M4.5 13.5h7M3 5l5-1 5 1M2 9.5 3.5 5 5 9.5zM11 9.5 12.5 5 14 9.5z" fill="none"/>',
-    'flask': '<path d="M6 2.5h4M7 2.5V6l-3.5 7.5h9L9 6V2.5M5 10.5h6" fill="none"/>',
-    'gauge-high': '<path d="M3 11.5a5.5 5.5 0 1 1 10 0M8 8.5l2.8-2.8" fill="none"/>',
-    'microchip': '<rect x="4.5" y="4.5" width="7" height="7" rx="1"/><path d="M6.5 2v2.5M9.5 2v2.5M6.5 11.5V14M9.5 11.5V14M2 6.5h2.5M2 9.5h2.5M11.5 6.5H14M11.5 9.5H14" fill="none"/>',
-    'crosshairs': '<circle cx="8" cy="8" r="5"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" fill="none"/>',
-    'glasses': '<circle cx="5" cy="9" r="2.5"/><circle cx="11" cy="9" r="2.5"/><path d="M7.5 9h1M2.5 9 4 4.5M13.5 9 12 4.5" fill="none"/>', 'home': '<path d="M2.5 7.5 8 2.5l5.5 5v6H10V9.5H6v4H2.5z" fill="none"/>', 'frame': '<rect x="2" y="3" width="12" height="10" rx="1"/><path d="M4.5 10.5 7 7.5l2 2 1.5-1.5 2 2.5" fill="none"/>',
-    'list-check': '<path d="M2.5 4.5h1.5M6 4.5h7.5M2.5 8h1.5M6 8h7.5M2.5 11.5h1.5M6 11.5h5.5M11.5 11l1.2 1.2 2-2.2" fill="none"/>',
-    'graduation-cap': '<path d="M1.5 6.5 8 3l6.5 3.5L8 10zM4 8v3.5c0 1 1.8 2 4 2s4-1 4-2V8" fill="none"/>',
-    'wrench': '<path d="M10.5 2.5a3.2 3.2 0 0 0-3.8 4.4L2.8 10.8a1.4 1.4 0 0 0 2 2l3.9-3.9a3.2 3.2 0 0 0 4.4-3.8l-1.9 1.9-1.5-1.5z" fill="none"/>',
-  };
   function svgIcon(name) {
-    const body = NAV_ICONS[name] || NAV_ICONS.compass;
-    return '<svg class="va-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none" aria-hidden="true">' + body + '</svg>';
+    return (window.QuietStudioPresetsRailV9 && window.QuietStudioPresetsRailV9.svgIcon) ? window.QuietStudioPresetsRailV9.svgIcon(name) : '';
   }
 
   function buildIframeSrcDoc(viewMeta) {
-    const cssEl = document.getElementById('va-bundled-portal-css');
-    const jsEl = document.getElementById('va-bundled-stage-js');
-    const med = effectiveMedium(viewMeta);
-    const chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
+    const cssEl = document.getElementById('va-bundled-portal-css'), jsEl = document.getElementById('va-bundled-stage-js');
+    const med = effectiveMedium(viewMeta), chrom = (viewMeta && viewMeta.chromatic_code) ? viewMeta.chromatic_code : 'c4';
     const baseHref = window.location.href.split('?')[0].split('#')[0];
-    const tokStyle = document.getElementById('custom-tokens');
-    const ovrStyle = document.getElementById('custom-overrides');
+    const tokStyle = document.getElementById('custom-tokens'), ovrStyle = document.getElementById('custom-overrides');
     const hasCustom = document.documentElement.dataset.customStyles === 'true';
     const customTok = tokStyle ? '<style>' + tokStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/quiet-ui-tokens.css">\n' : '');
     const customOvr = ovrStyle ? '<style>' + ovrStyle.textContent + '</style>\n' : (hasCustom ? '<link rel="stylesheet" href="./styles/overrides.css">\n' : '');
@@ -13820,25 +14967,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       '" data-density="' + escHtml(state.density) + '" data-corners="' + escHtml(state.corners) +
       '" data-world="' + escHtml(state.world) + '" data-view="' + escHtml(state.view) +
       '" data-nav-shell="' + escHtml(state.nav) + '" data-effective-nav="n0" data-form-factor="desktop">\n<head>\n' +
-      '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
-      customTok +
-      '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
-      '<div class="va-app-shell">\n' +
-      '  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"></a>' +
-      '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav>' +
-      '<div class="va-shell-topbar-status" aria-label="Unit Telemetry Status"></div>' +
-      '<button type="button" id="va-drawer-open-btn" class="va-btn-ghost" aria-label="Open Navigation Drawer" onclick="openShellDrawer()">' +
-      svgIcon('bars') + '</button></header>\n' +
-      '  <aside id="va-shell-rail" class="va-shell-rail" aria-label="Section Spine"></aside>\n' +
-      '  <main id="va-stage-main" class="va-stage" tabindex="-1"></main>\n' +
+      '<meta charset="utf-8">\n<base href="' + escHtml(baseHref) + '">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
+      customTok + '<style id="va-portal-styles">\n' + (cssEl ? cssEl.textContent : '') + '\n</style>\n' + customOvr + '</head>\n<body>\n' +
+      '<div class="va-app-shell">\n  <header id="va-shell-topbar" class="va-shell-topbar"><a class="va-shell-brand" href="#stage"></a>' +
+      '<nav class="va-shell-topbar-links" aria-label="Section Navigation"></nav><div class="va-shell-topbar-status" aria-label="Unit Telemetry Status"></div>' +
+      '<button type="button" id="va-drawer-open-btn" class="va-btn-ghost" aria-label="Open Navigation Drawer" onclick="openShellDrawer()">' + svgIcon('bars') + '</button></header>\n' +
+      '  <aside id="va-shell-rail" class="va-shell-rail" aria-label="Section Spine"></aside>\n  <main id="va-stage-main" class="va-stage" tabindex="-1"></main>\n' +
       '  <nav id="va-shell-bottomdock" class="va-shell-bottomdock" aria-label="Mobile Dock"></nav>\n' +
-      '  <dialog id="va-shell-drawer" closedby="any" aria-label="Navigation Drawer">' +
-      '<div class="va-drawer-header"><strong>View Navigation</strong>' +
-      '<button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()" autofocus>' + svgIcon('close') + '</button></div>' +
-      '<nav class="va-drawer-nav"></nav></dialog>\n' +
-      '</div>\n<script>\n' +
-      'window.openShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.showModal)d.showModal();};\n' +
+      '  <dialog id="va-shell-drawer" closedby="any" aria-label="Navigation Drawer"><div class="va-drawer-header"><strong>View Navigation</strong>' +
+      '<button type="button" class="va-btn-ghost" aria-label="Close Drawer" onclick="closeShellDrawer()" autofocus>' + svgIcon('close') + '</button></div><nav class="va-drawer-nav"></nav></dialog>\n' +
+      '</div>\n<script>\nwindow.openShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.showModal)d.showModal();};\n' +
       'window.closeShellDrawer=function(){var d=document.getElementById("va-shell-drawer");if(d&&d.close)d.close();};\n' +
       (jsEl ? jsEl.textContent : '') + '\n<\/script>\n</body>\n</html>';
   }
@@ -13847,7 +14985,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const icon = (viewMeta && viewMeta.nav_icon) ? viewMeta.nav_icon : 'compass';
     const brandLbl = (viewMeta && viewMeta.nav_brand) ? viewMeta.nav_brand : 'Quiet UI';
     const topBrandLbl = (viewMeta && viewMeta.topbar_brand) ? viewMeta.topbar_brand : brandLbl;
-    const railBrandLbl = (viewMeta && viewMeta.rail_brand) ? viewMeta.rail_brand : brandLbl;
     const items = (viewMeta && viewMeta.nav_items) ? viewMeta.nav_items : ['Overview'];
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
     const icons = ['activity', 'layers', 'sliders', 'bell'];
@@ -13861,13 +14998,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const topStatus = (viewMeta && Array.isArray(viewMeta.topbar_status)) ? viewMeta.topbar_status : [];
     if (statusEl) {
       statusEl.innerHTML = topStatus.map(function (st) {
-        if ((st.variant || '') === 'plain') {
-          return '<span class="va-topbar-metric" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
-        }
+        if ((st.variant || '') === 'plain') return '<span class="va-topbar-metric" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
         return '<span class="va-pill" data-variant="' + escHtml(st.variant || 'status') + '" data-state="' + escHtml(st.state || 'nominal') + '">' + escHtml(st.text || '') + '</span>';
       }).join('');
     }
-
     const effNav = (doc.documentElement && doc.documentElement.dataset.effectiveNav) || 'n1';
     const hideTopLinks = effNav === 'n3' && topStatus.length > 0;
     const topLinks = doc.querySelector('#va-shell-topbar .va-shell-topbar-links');
@@ -13875,11 +15009,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       topLinks.innerHTML = hideTopLinks ? '' : mapLinks(items, function (lbl, i, href) {
         return '<a class="va-shell-topbar-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + escHtml(lbl) + '</a>';
       });
-    }
-    const rail = doc.getElementById('va-shell-rail');
-    if (rail) {
-      rail.innerHTML = '<div class="va-rail-brand">' + svgIcon(icon) + ' <span>' + escHtml(railBrandLbl) + '</span></div>' +
-        mapLinks(items, function (lbl, i, href) { return '<a class="va-rail-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '">' + svgIcon(icons[i % 4]) + ' <span>' + escHtml(lbl) + '</span></a>'; });
     }
     const dock = doc.getElementById('va-shell-bottomdock');
     if (dock) {
@@ -13891,12 +15020,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     if (drawerNav) {
       drawerNav.innerHTML = mapLinks(items, function (lbl, i, href) { return '<a class="va-drawer-link' + (i === 0 ? ' is-active' : '') + '" href="' + href + '" onclick="closeShellDrawer()">' + escHtml(lbl) + '</a>'; });
     }
+    if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.enhanceShellNav(doc, viewMeta, window.QuietStudioPortalV9);
   }
 
   function syncIframeAttributes() {
     const iframe = document.getElementById('va-stage-portal');
-    const worldObj = findWorld(state.world);
-    const viewMeta = findView(worldObj, state.view);
+    const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     if (!iframe || !iframe.contentDocument || !viewMeta) return;
     const docEl = iframe.contentDocument.documentElement;
     if (!docEl) return;
@@ -13918,13 +15047,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
   function syncIframeDOM() {
     const iframe = document.getElementById('va-stage-portal');
-    const worldObj = findWorld(state.world);
-    const viewMeta = findView(worldObj, state.view);
+    const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     if (!state.isMounted || !iframe || !iframe.contentDocument || !iframe.contentDocument.documentElement || !viewMeta) return;
     syncIframeAttributes();
-    const doc = iframe.contentDocument;
-    const win = iframe.contentWindow;
-    const main = doc.getElementById('va-stage-main');
+    const doc = iframe.contentDocument, win = iframe.contentWindow, main = doc.getElementById('va-stage-main');
     if (main && state.renderedView !== state.view) {
       if (win && win.QuietEChartsAdapter && win.QuietEChartsAdapter.disposeAll) win.QuietEChartsAdapter.disposeAll(doc);
       const tpl = document.getElementById('tpl-view-' + state.view);
@@ -13944,58 +15070,62 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       main.scrollTop = 0;
     } else {
       if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) { syncShellNav(doc, viewMeta); state.renderedNav = doc.documentElement.dataset.effectiveNav; }
+      else if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.syncRailFooter(doc, state);
       if (win && win.QuietEChartsAdapter) win.QuietEChartsAdapter.refresh(doc);
     }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.bindPortalScrollTuck(iframe);
   }
 
+  function disposePortalCharts(iframe) {
+    try { const w = iframe.contentWindow; if (w && w.QuietEChartsAdapter && w.QuietEChartsAdapter.disposeAll) w.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+  }
+
   function syncBarControls() {
-    const worldObj = findWorld(state.world);
-    const viewMeta = findView(worldObj, state.view);
+    const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     document.documentElement.dataset.medium = state.medium;
     document.documentElement.dataset.studioView = state.studioView;
-
     document.querySelectorAll('[data-studio-tab]').forEach(function (tab) {
-      const active = tab.dataset.studioTab === state.studioView;
-      tab.classList.toggle('is-active', active);
-      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      const on = tab.dataset.studioTab === state.studioView;
+      tab.classList.toggle('is-active', on); tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-
-    const dSel = document.getElementById('va-domain-select');
+    const dSel = document.getElementById('va-domain-select'), vSel = document.getElementById('va-view-select');
     if (dSel && dSel.value !== state.world) dSel.value = state.world;
-
-    const vSel = document.getElementById('va-view-select');
     if (vSel && worldObj) {
-      const optsHtml = worldObj.views.map(function (v) {
-        return '<option value="' + escHtml(v.view_id) + '">' + escHtml(v.option_label) + '</option>';
-      }).join('');
       if (vSel.dataset.worldLoaded !== worldObj.world_id) {
-        vSel.innerHTML = optsHtml;
+        vSel.innerHTML = worldObj.views.map(function (v) { return '<option value="' + escHtml(v.view_id) + '">' + escHtml(v.option_label) + '</option>'; }).join('');
         vSel.dataset.worldLoaded = worldObj.world_id;
       }
       vSel.value = state.view;
     }
-
-    const allowed = viewMeta ? viewMeta.allowed_navs : ['n0', 'n1', 'n2', 'n3', 'n4'];
-    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, allowed);
+    const posEl = document.getElementById('va-step-pos');
+    if (posEl && window.QuietStudioPresetsRailV9) {
+      const pos = window.QuietStudioPresetsRailV9.getGlobalPosition(manifest, state);
+      posEl.textContent = pos.index + ' / ' + pos.total;
+    }
+    const activeFmt = (state.medium === 'm1' || state.vp === '1056x1368') ? 'paper'
+      : (state.vp === '390x844' ? 'mobile' : (state.vp === 'fill' ? 'fill' : (state.vp === '1920x1080' ? '1080p' : '')));
+    document.querySelectorAll('[data-format-preset]').forEach(function (b) {
+      const on = b.dataset.formatPreset === activeFmt;
+      b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const autoBtn = document.getElementById('va-preset-auto-btn');
+    if (autoBtn) autoBtn.hidden = !state.presetLocked;
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.syncSheetControls(state, viewMeta ? viewMeta.allowed_navs : ['n0', 'n1', 'n2', 'n3', 'n4']);
   }
 
   function syncExternalMode(iframe) {
     const base = resolveDocsAsset('bench/evidence-bench.html');
-    const med = state.medium === 'm1' ? 'm1' : 'm2';
     const q = '?embed=1&theme=' + encodeURIComponent(state.theme) + '&density=' + encodeURIComponent(state.density) +
-      '&corners=' + encodeURIComponent(state.corners) + '&medium=' + med;
+      '&corners=' + encodeURIComponent(state.corners) + '&medium=' + (state.medium === 'm1' ? 'm1' : 'm2');
     const doSync = function () {
       const d = getActiveDimensions();
       if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.postExternalSync(iframe, state, d ? d.width : (iframe.clientWidth || window.innerWidth));
     };
     if (iframe.dataset.externalMode !== state.studioView) {
-      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
-      state.isMounted = false; state.renderedView = '';
+      disposePortalCharts(iframe); state.isMounted = false; state.renderedView = '';
       iframe.removeAttribute('srcdoc'); iframe.dataset.externalMode = state.studioView;
       iframe.onload = function () { state.isMounted = true; doSync(); };
-      iframe.src = base + q;
-      return;
+      iframe.src = base + q; return;
     }
     doSync();
   }
@@ -14003,99 +15133,119 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   function applyState(worldChanged) {
     const worldObj = findWorld(state.world);
     if (worldObj && (worldChanged || !findView(worldObj, state.view))) state.view = worldObj.views[0].view_id;
+    if (worldChanged && !state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
     const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
     if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
     state.lastViewKey = viewKey;
-    const viewMeta = findView(worldObj, state.view);
-    const iframe = document.getElementById('va-stage-portal');
+    if (state.studioView === 'overview') { syncBarControls(); syncUrlParams(); return; }
+    const viewMeta = findView(worldObj, state.view), iframe = document.getElementById('va-stage-portal');
     if (!iframe) return;
     updatePortalDimensions();
-    if (state.studioView !== 'examples') {
-      syncExternalMode(iframe); syncBarControls(); syncUrlParams();
-      return;
-    }
+    if (state.studioView === 'components') { syncExternalMode(iframe); syncBarControls(); syncUrlParams(); return; }
     if (!viewMeta) return;
-    if (iframe.dataset.externalMode) {
-      try { if (iframe.contentWindow && iframe.contentWindow.QuietEChartsAdapter && iframe.contentWindow.QuietEChartsAdapter.disposeAll) iframe.contentWindow.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
-      delete iframe.dataset.externalMode; iframe.removeAttribute('src'); state.isMounted = false;
-    }
+    if (iframe.dataset.externalMode) { disposePortalCharts(iframe); delete iframe.dataset.externalMode; iframe.removeAttribute('src'); state.isMounted = false; }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
       state.renderedView = '';
       iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
       iframe.srcdoc = buildIframeSrcDoc(viewMeta);
-    } else {
-      syncIframeDOM();
-    }
-    syncBarControls();
-    syncUrlParams();
+    } else syncIframeDOM();
+    syncBarControls(); syncUrlParams();
   }
 
+  function openExamples(worldId, viewId) {
+    state.studioView = 'examples';
+    if (worldId) state.world = worldId;
+    if (viewId) state.view = viewId;
+    const w = findWorld(state.world);
+    if (w) { state.world = w.world_id; const v = findView(w, state.view); if (v) state.view = v.view_id; }
+    state.presetLocked = false;
+    if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+    applyState(false);
+  }
+
+  function openComponents() { state.studioView = 'components'; applyState(false); }
   function openBridgeDialog() {
-    const worldObj = findWorld(state.world);
-    const viewMeta = findView(worldObj, state.view);
+    const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
   }
-
   function printActiveStage() {
     const iframe = document.getElementById('va-stage-portal');
     if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
   }
-
   function stepView(delta) {
-    const worldObj = findWorld(state.world);
-    if (!worldObj || !worldObj.views.length) return;
-    const list = worldObj.views;
-    let idx = list.findIndex(function (v) { return v.view_id === state.view; });
-    idx = (idx + delta + list.length) % list.length;
-    state.view = list[idx].view_id;
+    if (window.QuietStudioPresetsRailV9) {
+      window.QuietStudioPresetsRailV9.stepGlobalView(manifest, state, delta);
+      if (!state.presetLocked) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+    }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
     applyState(false);
   }
+  function resetAutoPreset() {
+    state.presetLocked = false;
+    if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+    applyState(false);
+  }
+
+  const FORMAT_PRESETS = {
+    '1080p': { vp: '1920x1080', medium: 'auto', zoom: 'fit' },
+    'paper': { vp: '1056x1368', medium: 'm1', theme: 'paper', zoom: 'fit' },
+    'mobile': { vp: '390x844', medium: 'auto', zoom: 'fit' },
+    'fill': { vp: 'fill', medium: 'auto' },
+  };
 
   function initControls() {
-    const bind = function (id, fn) { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+    const bind = function (id, ev, fn) { const el = document.getElementById(id); if (el) el.addEventListener(ev, fn); };
     const tablist = document.getElementById('va-studio-mode-tablist');
-    if (tablist) {
-      tablist.addEventListener('click', function (ev) {
-        const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
-        if (btn && ['examples', 'components'].indexOf(btn.dataset.studioTab) !== -1) {
-          state.studioView = btn.dataset.studioTab;
-          applyState(false);
-        }
-      });
-    }
-    const dSel = document.getElementById('va-domain-select');
-    if (dSel) dSel.addEventListener('change', function (e) { state.world = e.target.value; applyState(true); });
-    const vSel = document.getElementById('va-view-select');
-    if (vSel) vSel.addEventListener('change', function (e) { state.view = e.target.value; applyState(false); });
-    ['density', 'corners'].forEach(function (k) {
-      const el = document.getElementById('va-' + k + '-select');
-      if (el) el.addEventListener('change', function (e) { state[k] = e.target.value; applyState(false); });
+    if (tablist) tablist.addEventListener('click', function (ev) {
+      const btn = ev.target && ev.target.closest ? ev.target.closest('[data-studio-tab]') : null;
+      if (!btn) return;
+      const m = btn.dataset.studioTab;
+      if (m === 'components') return openComponents();
+      state.studioView = (m === 'examples') ? 'examples' : 'overview';
+      if (m === 'examples' && !state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+      applyState(false);
     });
-    const onRotate = function () { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; applyState(false); } };
-    const onZoomToggle = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
-    [
-      ['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
-      ['va-bridge-btn', openBridgeDialog],
-      ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }],
-    ].forEach(function (pair) { bind(pair[0], pair[1]); });
-    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoomToggle, printActiveStage);
+    document.querySelectorAll('[data-format-preset]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const cfg = FORMAT_PRESETS[btn.dataset.formatPreset];
+        if (!cfg) return;
+        state.presetLocked = true; Object.assign(state, cfg); applyState(false);
+      });
+    });
+    bind('va-domain-select', 'change', function (e) { state.world = e.target.value; applyState(true); });
+    bind('va-view-select', 'change', function (e) {
+      state.view = e.target.value;
+      if (!state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+      applyState(false);
+    });
+    ['density', 'corners'].forEach(function (k) { bind('va-' + k + '-select', 'change', function (e) { state[k] = e.target.value; state.presetLocked = true; applyState(false); }); });
+    const onRotate = function () { const d = getActiveDimensions(); if (d) { state.vp = d.height + 'x' + d.width; state.presetLocked = true; applyState(false); } };
+    const onZoom = function () { state.zoom = (state.zoom === 'fit') ? '1:1' : 'fit'; updatePortalDimensions(); syncBarControls(); syncUrlParams(); };
+    [['va-step-prev', function () { stepView(-1); }], ['va-step-next', function () { stepView(1); }],
+     ['va-preset-auto-btn', resetAutoPreset], ['va-bridge-btn', openBridgeDialog],
+     ['va-customize-btn', function () { const s = document.getElementById('va-customize-sheet'); if (s && s.showModal) s.showModal(); }]
+    ].forEach(function (p) { bind(p[0], 'click', p[1]); });
+    if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.initSheetEvents(state, applyState, onRotate, onZoom, printActiveStage, resetAutoPreset);
     window.addEventListener('resize', function () {
       if (window.innerWidth >= 700 && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
-      updatePortalDimensions();
-      if (state.studioView === 'examples') syncIframeDOM();
+      if (state.studioView !== 'overview') { updatePortalDimensions(); if (state.studioView === 'examples') syncIframeDOM(); }
     });
     window.QuietPortalResize.initResizeHandles(
       document.getElementById('va-portal-scaler'), document.getElementById('va-stage-portal'), document.getElementById('va-portal-mat'),
-      function (w, h) { state.vp = w + 'x' + h; if (state.studioView === 'examples') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
+      function (w, h) { state.vp = w + 'x' + h; state.presetLocked = true; if (state.studioView === 'examples') syncIframeDOM(); syncUrlParams(); syncBarControls(); }
     );
   }
 
+  window.QuietStudioPortalV9 = {
+    state: state, applyState: applyState, openBridgeDialog: openBridgeDialog,
+    openExamples: openExamples, openComponents: openComponents, stepView: stepView, resetAutoPreset: resetAutoPreset,
+  };
   window.addEventListener('DOMContentLoaded', function () {
-    loadManifest(); readUrlParams(); initControls(); applyState(false);
+    loadManifest(); readUrlParams();
+    if (window.QuietStudioLandingV9) window.QuietStudioLandingV9.renderLanding(manifest, window.QuietStudioPortalV9);
+    initControls(); applyState(false);
     if (!window.echarts) { const s = document.createElement('script'); s.id = 'va-echarts-vendor'; s.src = resolveAbsDocsAsset('assets/vendor/echarts.min.js'); s.onload = function () { if (state.studioView === 'examples') syncIframeDOM(); }; document.head.appendChild(s); }
   });
-  window.QuietStudioPortalV9 = { state: state, applyState: applyState, openBridgeDialog: openBridgeDialog };
 })(window, document);
 
   </script>
