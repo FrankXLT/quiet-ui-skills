@@ -80,15 +80,18 @@ def _check_v15_and_v16_optics(driver: Any, base_url: str, errs: list[str]) -> No
             }
             if (lumMode === 'night') {
                 const db = document.getElementById('v16-derate-btn'), ab = document.getElementById('v16-ais-btn');
-                if (!db || !ab) return 'missing derate/ais btns';
+                const vp = document.getElementById('v16-glass-viewport');
+                if (!db || !ab || !vp) return 'missing derate/ais btns';
+                if (ab.getAttribute('aria-pressed') !== 'true' || vp.getAttribute('data-ais') !== 'true') return 'ais default-on missing';
                 db.click(); ab.click();
                 if (document.querySelectorAll('#v16-luminance-chips .is-active').length !== 1) return 'luminance chip desync';
-                if (db.getAttribute('aria-pressed') !== 'true' || ab.getAttribute('aria-pressed') !== 'true') return 'bridge aria desync';
+                if (db.getAttribute('aria-pressed') !== 'true' || ab.getAttribute('aria-pressed') !== 'false') return 'bridge aria desync';
                 if (document.getElementById('v16-speed-val').textContent.trim() !== '17.6') return 'derate speed update failed';
                 if (document.getElementById('v16-warn-pill').getAttribute('data-state') !== 'nominal') return 'derate state failed';
-                if (document.getElementById('v16-glass-viewport').getAttribute('data-ais') !== 'true') return 'ais toggle failed';
+                if (vp.getAttribute('data-ais') !== 'false') return 'ais toggle-off failed';
                 db.click(); ab.click();
-                if (db.getAttribute('aria-pressed') !== 'false' || document.querySelectorAll('#v16-luminance-chips .is-active').length !== 1) return 'untoggle aria desync';
+                if (db.getAttribute('aria-pressed') !== 'false' || ab.getAttribute('aria-pressed') !== 'true' || vp.getAttribute('data-ais') !== 'true') return 'untoggle aria desync';
+                if (document.querySelectorAll('#v16-luminance-chips .is-active').length !== 1) return 'luminance chip desync after untoggle';
             }
             return '';
         """)

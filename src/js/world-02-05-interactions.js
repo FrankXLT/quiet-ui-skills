@@ -366,6 +366,51 @@
       v21Send.addEventListener('click', function () { resetV21(true); });
       if (v21Can) v21Can.addEventListener('click', function () { resetV21(false); });
     }
+
+    var v08View = doc.querySelector('.v9-stage-inner.v9-view-v08');
+    var v08Ro = doc.getElementById('v08-ch-readout');
+    if (v08View && v08Ro && v08View.dataset.v08Bound !== '1') {
+      v08View.dataset.v08Bound = '1';
+      var V08_CH = {
+        dispatch: { lbl: 'CH1 · Active Dispatch', '15m': 'Min 23.3 MW · Avg 23.6 MW · Max 23.9 MW · Ripple ±0.3 MW (15m)', '1h': 'Min 23.1 MW · Avg 23.6 MW · Max 24.1 MW · Ripple ±0.4 MW (1h)', shift: 'Min 22.4 MW · Avg 23.6 MW · Max 24.4 MW · Ripple ±0.6 MW (Shift)' },
+        freq: { lbl: 'CH2 · Grid Frequency', '15m': 'Min 59.981 Hz · Avg 59.985 Hz · Max 59.992 Hz · Ripple ±0.004 Hz (15m)', '1h': 'Min 59.978 Hz · Avg 59.985 Hz · Max 60.004 Hz · Ripple ±0.005 Hz (1h)', shift: 'Min 59.972 Hz · Avg 59.985 Hz · Max 60.012 Hz · Ripple ±0.008 Hz (Shift)' },
+        bess: { lbl: 'CH3 · Battery SoC', '15m': 'Min 78.1% · Avg 78.4% · Max 78.9% · Ripple ±0.2% (15m)', '1h': 'Min 77.2% · Avg 78.4% · Max 79.8% · Ripple ±0.5% (1h)', shift: 'Min 74.6% · Avg 78.4% · Max 82.0% · Ripple ±0.9% (Shift)' },
+        oee: { lbl: 'CH4 · Cell-03 OEE', '15m': 'Min 93.8% · Avg 94.2% · Max 94.6% · Ripple ±0.3% (15m)', '1h': 'Min 93.4% · Avg 94.2% · Max 95.1% · Ripple ±0.4% (1h)', shift: 'Min 92.6% · Avg 94.2% · Max 95.4% · Ripple ±0.6% (Shift)' },
+      };
+      var v08Cards = Array.from(v08View.querySelectorAll('.v08-kpi-card[data-v08-ch]'));
+      var v08Wins = Array.from(v08View.querySelectorAll('button[data-v08-win]'));
+      var v08Hold = doc.getElementById('v08-hold-btn');
+      var curCh = 'dispatch', curWin = '1h', held = false;
+      var syncV08 = function () {
+        var cfg = V08_CH[curCh] || V08_CH.dispatch;
+        v08Ro.textContent = (held ? 'HOLD · ' : '') + cfg.lbl + ' — ' + (cfg[curWin] || cfg['1h']);
+      };
+      v08Cards.forEach(function (card) {
+        var pickCard = function () {
+          curCh = card.getAttribute('data-v08-ch') || 'dispatch';
+          v08Cards.forEach(function (c) { var on = c === card; c.classList.toggle('is-v08-selected', on); c.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+          syncV08();
+        };
+        card.addEventListener('click', pickCard);
+        card.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); pickCard(); } });
+      });
+      v08Wins.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          curWin = btn.getAttribute('data-v08-win') || '1h';
+          v08Wins.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+          syncV08();
+        });
+      });
+      if (v08Hold) {
+        v08Hold.addEventListener('click', function () {
+          held = !held;
+          v08View.setAttribute('data-v08-hold', held ? 'true' : 'false');
+          v08Hold.setAttribute('aria-pressed', held ? 'true' : 'false');
+          v08Hold.textContent = held ? 'HOLDING' : 'Hold Display';
+          syncV08();
+        });
+      }
+    }
   }
 
   global.QuietWorlds02To05Runtime = { boot: wireWorlds02To05 };

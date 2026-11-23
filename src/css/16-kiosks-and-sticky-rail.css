@@ -1,0 +1,299 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.5.0 R4 — Viewport-Pinned Sticky Rail, v08 Tablet HMI & Full-Bleed Kiosks */
+
+@layer shell {
+  :root { --va-topbar-sticky-h: 0px; }
+
+  @media screen and (min-width: 700px) {
+    html:is([data-effective-nav="n2"], [data-effective-nav="n3"]):not([data-medium="m1"]) .va-shell-topbar {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 40;
+    }
+  }
+
+  @media screen and (min-width: 1100px) {
+    html[data-effective-nav="n3"]:not([data-medium="m1"]) { --va-topbar-sticky-h: 40px; }
+    html[data-effective-nav="n3"]:not([data-medium="m1"]) .va-shell-topbar {
+      block-size: 40px;
+      min-block-size: 40px;
+    }
+    :root:not([data-medium="m1"]):is([data-effective-nav="n1"], [data-effective-nav="n3"]):not([data-rail-collapsed="true"]) .va-shell-rail {
+      position: sticky;
+      inset-block-start: var(--va-topbar-sticky-h, 0px);
+      align-self: start;
+      block-size: calc(100dvh - var(--va-topbar-sticky-h, 0px));
+      max-block-size: calc(100dvh - var(--va-topbar-sticky-h, 0px));
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+  }
+
+  .va-rail-brand { flex: 0 0 auto; }
+
+  .va-rail-scroll {
+    flex: 1 1 auto;
+    min-block-size: 0;
+    min-inline-size: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-block-end: 0.35rem;
+    overscroll-behavior: contain;
+  }
+
+  .va-rail-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-inline-size: 0;
+  }
+
+  .va-shell-rail > .va-rail-footer {
+    flex: 0 0 auto;
+    margin-block-start: auto;
+    border-block-start: 1px solid var(--border-hairline);
+    padding-block-start: 0.42rem;
+    background: var(--bg-elevated);
+  }
+}
+
+@layer views {
+  /* Full-bleed edge-to-edge optical & frame views (v15, v16, v17) */
+  html:is([data-view="v15-collimated-flight-hud"], [data-view="v16-transparent-window-overlay"], [data-view="v17-picture-frame-home-kiosk"]):not([data-medium="m1"]) {
+    scrollbar-gutter: auto;
+    overflow: hidden;
+  }
+  html:is([data-view="v15-collimated-flight-hud"], [data-view="v16-transparent-window-overlay"], [data-view="v17-picture-frame-home-kiosk"]):not([data-medium="m1"]) .va-app-shell {
+    block-size: 100dvh;
+    max-block-size: 100dvh;
+    overflow: hidden;
+  }
+  html:is([data-view="v15-collimated-flight-hud"], [data-view="v16-transparent-window-overlay"], [data-view="v17-picture-frame-home-kiosk"]):not([data-medium="m1"]) .va-stage,
+  html:is([data-view="v15-collimated-flight-hud"], [data-view="v16-transparent-window-overlay"], [data-view="v17-picture-frame-home-kiosk"]):not([data-medium="m1"]) .v9-stage-inner {
+    padding: 0;
+    margin: 0;
+    max-inline-size: 100%;
+    inline-size: 100%;
+    block-size: 100dvh;
+    min-block-size: 100dvh;
+    gap: 0;
+  }
+  html:not([data-medium="m1"]) .v15-hud-stage,
+  html:not([data-medium="m1"]) .v16-glass-viewport {
+    inline-size: 100%;
+    block-size: 100dvh;
+    min-block-size: 100dvh;
+    max-block-size: 100dvh;
+    border-radius: 0;
+    border: 0;
+  }
+
+  /* v08 Full-Bleed Plant Test & HMI Display (1280x800 Tablet + 1080p) */
+  html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) .va-stage {
+    padding: 0;
+    margin: 0;
+    max-inline-size: 100%;
+  }
+  html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) .v9-stage-inner.v9-view-v08 {
+    max-inline-size: 100%;
+    inline-size: 100%;
+    min-block-size: 100dvh;
+    padding: 0.78rem 1.1rem;
+    gap: 0.55rem;
+    background: var(--bg-canvas);
+  }
+  @media (min-width: 760px) {
+    html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) {
+      scrollbar-gutter: auto;
+      overflow: hidden;
+    }
+    html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) .va-app-shell,
+    html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) .va-stage,
+    html[data-view="v08-plant-floor-wall-kiosk"]:not([data-medium="m1"]) .v9-stage-inner.v9-view-v08 {
+      block-size: 100dvh;
+      max-block-size: 100dvh;
+      overflow: hidden;
+    }
+  }
+
+  .v08-inst-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.9rem;
+    padding: 0.42rem 0.78rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-card);
+  }
+  .v08-inst-readout {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(0.82rem, 0.78rem + 0.16cqi, 0.98rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    min-inline-size: 0;
+  }
+  .v08-inst-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-inline-start: auto;
+  }
+  .v08-inst-label {
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .v08-hold-btn {
+    min-block-size: 28px;
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .v08-hold-btn:hover { border-color: var(--accent-focal); }
+  .v08-hold-btn[aria-pressed="true"] {
+    border-color: var(--status-warn);
+    color: var(--status-warn);
+    background: var(--status-warn-bg);
+  }
+
+  .v08-kpi-card[role="button"] {
+    cursor: pointer;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+  }
+  .v08-kpi-card[role="button"]:hover { border-color: var(--border-strong); background: var(--bg-elevated); }
+  .v08-kpi-card[role="button"]:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .v08-kpi-card.is-v08-selected {
+    border-color: var(--accent-focal);
+    background: var(--bg-elevated);
+    box-shadow: 0 0 0 1px var(--accent-focal), 0 8px 20px rgba(56, 189, 248, 0.14);
+  }
+  .v9-view-v08[data-v08-hold="true"] .v08-kpi-card.is-v08-selected {
+    border-color: var(--status-warn);
+    box-shadow: 0 0 0 1px var(--status-warn), 0 8px 20px rgba(245, 158, 11, 0.14);
+  }
+
+  /* v16 Unified Marine Smart-Glass Visor & Peripheral AR Channel Markers */
+  .v16-glass-viewport::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 0;
+    block-size: 30%;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(6, 12, 24, 0.54) 0%, rgba(6, 12, 24, 0.18) 58%, transparent 100%);
+  }
+
+  @media (min-width: 640px) {
+    .v16-glass-pod { top: 0.85rem; }
+    .v16-compass-tape { top: 0.85rem; max-inline-size: min(390px, 34vw); }
+    .v16-ctrl-chips { max-inline-size: calc(100% - 2rem); justify-content: flex-end; }
+  }
+  @media (min-width: 1160px) {
+    .v16-pod-left { left: 1rem; max-inline-size: min(352px, calc(40vw - 1.5rem)); }
+    .v16-pod-right { right: 1rem; max-inline-size: min(336px, calc(38vw - 1.5rem)); }
+  }
+  @media (min-width: 640px) and (max-width: 1159px) {
+    .v16-compass-tape { top: 8.4rem; max-inline-size: min(390px, calc(100vw - 2rem)); }
+  }
+
+  .v16-ais-svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+  }
+  .v16-ais-svg text {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    paint-order: stroke fill;
+    stroke: rgba(2, 6, 23, 0.92);
+    stroke-width: 3.2px;
+    stroke-linejoin: round;
+  }
+  .v16-ais-marker { top: auto; bottom: 4.6rem; max-inline-size: 196px; }
+  @media (max-width: 1023px) { .v16-ais-marker { display: none; } }
+
+  /* v17 Full-Bleed Museum Frame, Single-Row Comfort & Warm-Ivory Glass */
+  html:not([data-medium="m1"]) #v17-kiosk.v17-frame-viewport {
+    inline-size: 100%;
+    block-size: 100dvh;
+    min-block-size: 100dvh;
+    max-block-size: 100dvh;
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: 14px solid #3B2F25;
+    padding: 18px;
+  }
+  #v17-kiosk.v17-frame-viewport[data-v17-mat="linen"] {
+    background: linear-gradient(160deg, #F3F0E8 0%, #EAE4D7 100%);
+    border-color: #3B2F25;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7), inset 0 0 0 10px #EFEAE0, inset 0 0 0 11px rgba(59, 47, 37, 0.24);
+  }
+  #v17-kiosk.v17-frame-viewport[data-v17-mat="obsidian"] {
+    background: linear-gradient(160deg, #2C2824 0%, #1F1D1A 100%);
+    border-color: #2C2824;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 0 0 10px #23201D, inset 0 0 0 11px rgba(255, 255, 255, 0.08);
+  }
+  .v17-glass-pod,
+  .v17-scene-bar {
+    background-color: rgba(18, 22, 28, 0.68);
+    backdrop-filter: blur(22px) saturate(1.3);
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 24px rgba(2, 6, 23, 0.26);
+  }
+  .v17-clock-pod { max-inline-size: min(468px, calc(56vw - 1.5rem)); }
+  .v17-comfort-row { flex-wrap: nowrap; white-space: nowrap; gap: 0.32rem; }
+  .v17-setpoint-ctl { gap: 0.28rem; margin-inline-start: 0.22rem; flex-shrink: 0; }
+  .v17-nudge-btn {
+    inline-size: 24px;
+    block-size: 24px;
+    min-inline-size: 24px;
+    min-block-size: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    background: rgba(255, 255, 255, 0.14);
+    color: #F8FAFC;
+  }
+  .v17-nudge-btn:hover { background: rgba(248, 245, 238, 0.26); border-color: rgba(248, 245, 238, 0.72); }
+  .v17-nudge-btn:focus-visible,
+  .v17-scene-btn:focus-visible { outline: 2px solid #F8F5EE; outline-offset: 2px; }
+  .v17-scene-btn.is-active {
+    background: rgba(248, 245, 238, 0.94);
+    color: #1C1917;
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .v17-nudge-btn { inline-size: 44px; block-size: 44px; min-inline-size: 44px; min-block-size: 44px; }
+  }
+  @media (max-width: 699px) {
+    html:not([data-medium="m1"]) #v17-kiosk.v17-frame-viewport {
+      border-width: 6px;
+      padding: 8px;
+      block-size: 100dvh;
+      min-block-size: 100dvh;
+      max-block-size: 100dvh;
+    }
+    .v17-clock-pod { max-inline-size: none; }
+    .v17-comfort-row { flex-wrap: wrap; white-space: normal; }
+  }
+}

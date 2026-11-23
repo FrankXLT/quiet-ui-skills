@@ -13,7 +13,7 @@
     'v05-zero-trust-ato-spec': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
     'v06-ai-drift-and-lineage-ide': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
     'v07-grid-scada-poi-console': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
-    'v08-plant-floor-wall-kiosk': { vp: '1920x1080', medium: 'auto', theme: 'dark', preset_label: 'Wall Kiosk' },
+    'v08-plant-floor-wall-kiosk': { vp: '1280x800', medium: 'auto', theme: 'dark', preset_label: 'Tablet HMI' },
     'v09-spc-quality-and-modbus-report': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
     'v10-civic-capital-budget-deck': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
     'v11-treasury-stress-test-solver': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
@@ -159,8 +159,13 @@
       if (!target.hasAttribute('tabindex') && !target.matches('a,button,input,select,textarea')) {
         target.setAttribute('tabindex', '-1');
       }
-      if (typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const win = doc.defaultView;
+      if (win) {
+        const tb = doc.getElementById('va-shell-topbar');
+        const tbH = (tb && win.getComputedStyle(tb).display !== 'none') ? tb.getBoundingClientRect().height : 0;
+        const destY = Math.max(0, (win.scrollY || 0) + target.getBoundingClientRect().top - tbH - 14);
+        win.scrollTo({ top: destY, behavior: 'smooth' });
+      }
       const done = function () {
         if (opId !== scrollOpId || !target.isConnected) return;
         target.classList.add('is-rail-spotlight');
@@ -340,7 +345,7 @@
       : '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
         '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>';
 
-    rail.innerHTML = brandHtml + '<nav class="va-rail-links" aria-label="Section Navigation">' + linksHtml + '</nav>' + quickHtml + footerHtml;
+    rail.innerHTML = brandHtml + '<div class="va-rail-scroll"><nav class="va-rail-links" aria-label="Section Navigation">' + linksHtml + '</nav>' + quickHtml + '</div>' + footerHtml;
 
     const toggleCollapse = function () {
       const next = doc.documentElement.dataset.railCollapsed !== 'true';
@@ -359,6 +364,7 @@
     rail.querySelectorAll('.va-rail-link').forEach(function (lnk) {
       lnk.addEventListener('click', function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
         spotlightAnchor(doc, lnk.getAttribute('data-rail-anchor') || '', true);
       });
     });

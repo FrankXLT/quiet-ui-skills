@@ -18,15 +18,21 @@
     if (!dims) return 'fill';
     if (medium === 'm1' || (dims.width === 1056 && dims.height === 1368)) return 'paper';
     if (dims.width <= 480) return 'mobile';
+    if (
+      (dims.width === 1280 && dims.height === 800) ||
+      (dims.width === 800 && dims.height === 1280) ||
+      (dims.width >= 760 && dims.width <= 1366 && medium !== 'm1')
+    ) return 'tablet';
     return 'screen';
   }
 
-  function computeScale(width, height, matEl, zoomMode) {
+  function computeScale(width, height, matEl, zoomMode, bezelPx) {
     if (zoomMode === '1:1') {
       return { scale: 1, scalerW: width, scalerH: height };
     }
-    const padX = (window.innerWidth < 700 ? 16 : 48) + 8;
-    const padY = (window.innerWidth < 700 ? 16 : 36) + 8;
+    const bezel = typeof bezelPx === 'number' ? bezelPx : 12;
+    const padX = (window.innerWidth < 700 ? 16 : 48) + bezel;
+    const padY = (window.innerWidth < 700 ? 16 : 36) + bezel;
     const availW = Math.max(100, matEl.clientWidth - padX);
     const availH = Math.max(100, matEl.clientHeight - padY);
     const scale = Math.min(1, availW / width, availH / height);
@@ -58,7 +64,7 @@
       portalEl.style.transform = 'none';
       return;
     }
-    const fit = computeScale(dims.width, dims.height, matEl, zoomMode);
+    const fit = computeScale(dims.width, dims.height, matEl, zoomMode, frame === 'tablet' ? 12 : 8);
     scalerEl.scrollLeft = 0;
     scalerEl.scrollTop = 0;
     scalerEl.classList.toggle('has-hinge', isFoldableSize(dims.width, dims.height));

@@ -252,7 +252,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         paper_v02 = next(v for v in visited if v["view"] == "v02-trial-regulatory-brief")
         self.assertEqual((paper_v02["vp"], paper_v02["medium"], paper_v02["theme"]), ("1056x1368", "m1", "paper"))
 
-        # Test manual override lock + Auto Preset reset
+        # Test manual override lock + Auto Preset reset & stepView preset-carryover reset
         driver.execute_script("document.querySelector('[data-format-preset=\"fill\"]').click();")
         time.sleep(0.08)
         locked = driver.execute_script(
@@ -262,10 +262,6 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         self.assertFalse(locked["btnHidden"])
         self.assertEqual(locked["vp"], "fill")
 
-        driver.execute_script("document.getElementById('va-step-next').click();")
-        time.sleep(0.08)
-        self.assertEqual(driver.execute_script("return window.QuietStudioPortalV9.state.vp;"), "fill")
-
         driver.execute_script("document.getElementById('va-preset-auto-btn').click();")
         time.sleep(0.08)
         unlocked = driver.execute_script(
@@ -273,7 +269,19 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         )
         self.assertFalse(unlocked["locked"])
         self.assertTrue(unlocked["btnHidden"])
-        self.assertEqual(unlocked["vp"], "1056x1368")
+        self.assertEqual(unlocked["vp"], "1920x1080")
+
+        driver.execute_script("document.querySelector('[data-format-preset=\"paper\"]').click();")
+        time.sleep(0.08)
+        driver.execute_script("document.getElementById('va-step-next').click();")
+        time.sleep(0.08)
+        driver.execute_script("document.getElementById('va-step-next').click();")
+        time.sleep(0.08)
+        after_step = driver.execute_script(
+            "const s=window.QuietStudioPortalV9.state;return {locked: s.presetLocked, view: s.view, vp: s.vp, theme: s.theme};"
+        )
+        self.assertFalse(after_step["locked"])
+        self.assertEqual((after_step["view"], after_step["vp"], after_step["theme"]), ("v03-patient-recovery-companion", "390x844", "white"))
 
         # Verify legacy deep links keep vp='fill' unless specified
         driver.get(f"{base_url}?world=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal&theme=white")

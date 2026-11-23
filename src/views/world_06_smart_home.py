@@ -55,10 +55,8 @@ def _build_v17_html(corpus: dict[str, Any]) -> str:
             <span id="v17-clock-meta" class="v17-clock-meta">Wed, Nov 18 · Clear <span class="v17-temp-num" data-temp-c="14 °C" data-temp-f="57 °F">14 °C</span></span>
           </div>
           <div class="v17-comfort-row va-nums">
-            <span>Living Room <span class="v17-temp-num" data-temp-c="{temp_c:.1f} °C" data-temp-f="{temp_f:.0f} °F">{temp_c:.1f} °C</span></span>
-            <span>·</span>
-            <span>{rh_pct:.0f}%</span>
-            <span>·</span>
+            <span>Living Room <span class="v17-temp-num" data-temp-c="{temp_c:.1f} °C" data-temp-f="{temp_f:.0f} °F">{temp_c:.1f} °C</span> · {rh_pct:.0f}%</span>
+            <span aria-hidden="true">|</span>
             <span>Target <span id="v17-sp-val" data-setpoint-c="21.0" data-setpoint-f="70">21.0 °C</span></span>
             <span class="v17-setpoint-ctl">
               <button type="button" id="v17-sp-down" class="v17-nudge-btn" aria-label="Decrease target temperature">&minus;</button>

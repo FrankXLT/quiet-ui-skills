@@ -298,7 +298,7 @@
       posEl.textContent = pos.index + ' / ' + pos.total;
     }
     const activeFmt = (state.medium === 'm1' || state.vp === '1056x1368') ? 'paper'
-      : (state.vp === '390x844' ? 'mobile' : (state.vp === 'fill' ? 'fill' : (state.vp === '1920x1080' ? '1080p' : '')));
+      : (state.vp === '1280x800' ? 'tablet' : (state.vp === '390x844' ? 'mobile' : (state.vp === 'fill' ? 'fill' : (state.vp === '1920x1080' ? '1080p' : ''))));
     document.querySelectorAll('[data-format-preset]').forEach(function (b) {
       const on = b.dataset.formatPreset === activeFmt;
       b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -363,14 +363,12 @@
     const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
   }
-  function printActiveStage() {
-    const iframe = document.getElementById('va-stage-portal');
-    if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
-  }
+  function printActiveStage() { const iframe = document.getElementById('va-stage-portal'); if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); } }
   function stepView(delta) {
+    state.presetLocked = false;
     if (window.QuietStudioPresetsRailV9) {
       window.QuietStudioPresetsRailV9.stepGlobalView(manifest, state, delta);
-      if (!state.presetLocked) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+      window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
     }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
     applyState(false);
@@ -383,6 +381,7 @@
 
   const FORMAT_PRESETS = {
     '1080p': { vp: '1920x1080', medium: 'auto', zoom: 'fit' },
+    'tablet': { vp: '1280x800', medium: 'auto', zoom: 'fit' },
     'paper': { vp: '1056x1368', medium: 'm1', theme: 'paper', zoom: 'fit' },
     'mobile': { vp: '390x844', medium: 'auto', zoom: 'fit' },
     'fill': { vp: 'fill', medium: 'auto' },
@@ -409,12 +408,10 @@
     });
     bind('va-view-select', 'change', function (e) {
       const vid = e.target.value;
-      const hitW = (manifest.worlds || []).find(function (w) {
-        return (w.views || []).some(function (v) { return v.view_id === vid; });
-      });
+      const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === vid; }); });
       if (hitW) state.world = hitW.world_id;
-      state.view = vid;
-      if (!state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
+      state.view = vid; state.presetLocked = false;
+      if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
       applyState(false);
     });
     ['density', 'corners'].forEach(function (k) { bind('va-' + k + '-select', 'change', function (e) { state[k] = e.target.value; state.presetLocked = true; applyState(false); }); });
@@ -435,10 +432,7 @@
     );
   }
 
-  window.QuietStudioPortalV9 = {
-    state: state, applyState: applyState, openBridgeDialog: openBridgeDialog,
-    openExamples: openExamples, openComponents: openComponents, stepView: stepView, resetAutoPreset: resetAutoPreset,
-  };
+  window.QuietStudioPortalV9 = { state: state, applyState: applyState, openBridgeDialog: openBridgeDialog, openExamples: openExamples, openComponents: openComponents, stepView: stepView, resetAutoPreset: resetAutoPreset };
   window.addEventListener('DOMContentLoaded', function () {
     loadManifest(); readUrlParams();
     if (window.QuietStudioLandingV9) window.QuietStudioLandingV9.renderLanding(manifest, window.QuietStudioPortalV9);

@@ -37,7 +37,7 @@ _VIEW_SLUG_PLAIN: dict[str, str] = {
     "v05-zero-trust-ato-spec": "v05 · Cloud Security Checklist",
     "v06-ai-drift-and-lineage-ide": "v06 · AI Accuracy Tracker",
     "v07-grid-scada-poi-console": "v07 · Solar & Battery Microgrid",
-    "v08-plant-floor-wall-kiosk": "v08 · Factory Wall Status Board",
+    "v08-plant-floor-wall-kiosk": "v08 · Plant Test & HMI Display",
     "v09-spc-quality-and-modbus-report": "v09 · Factory Quality Report",
     "v10-civic-capital-budget-deck": "v10 · City Budget Breakdown",
     "v11-treasury-stress-test-solver": "v11 · Interest-Rate Stress Test",

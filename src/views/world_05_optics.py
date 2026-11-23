@@ -134,19 +134,19 @@ def build_v16_glass_html(corpus: dict[str, Any]) -> str:
     cm = corpus["canonical_metrics"]
     bte = float(cm_val(cm, "peak_bte_pct"))
     return f"""<div class="v9-stage-inner v9-view-v16">
-  <div id="v16-glass-viewport" class="v16-glass-viewport" data-luminance="daylight" data-contrast="10.8:1">
+  <div id="v16-glass-viewport" class="v16-glass-viewport" data-luminance="daylight" data-contrast="10.8:1" data-ais="true">
     <img class="v9-opt-photo v16-photo" data-photo-mode="daylight" data-asset="assets/opt_glass_day_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="high" decoding="async"/>
     <img class="v9-opt-photo v16-photo" data-photo-mode="dusk" data-asset="assets/opt_glass_dusk_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
     <img class="v9-opt-photo v16-photo" data-photo-mode="night" data-asset="assets/opt_glass_night_hwy.jpg" alt="" aria-hidden="true" width="1600" height="1000" fetchpriority="low" decoding="async"/>
     <div class="v16-visor-bar">
-      <section class="v16-glass-pod v16-pod-left" aria-label="Vessel Speed, Channel Range and Propulsion Efficiency">
+      <section class="v16-glass-pod v16-pod-left" aria-label="Vessel Speed, Pier Range and Propulsion Efficiency">
         <div class="v16-speed-row">
           <span id="v16-speed-val" class="v16-speed-val va-nums">18.4</span>
           <span class="v16-speed-unit">kt SOG</span>
           <span id="v16-speed-cap" class="v16-speed-cap va-nums">HOLD &lt;= 18 kt</span>
         </div>
-        <div class="v16-route-line">Channel Range Marker · 1.2 nm to Berth</div>
-        <div class="v16-eff-line va-nums">Propulsion Efficiency: <strong>{bte:.1f}% BTE</strong><br/>HDG 084°T · Depth 14.2 m</div>
+        <div class="v16-route-line va-nums"><strong>Pier 4</strong> · 1.20 nm · ETA <span id="v16-eta-val">03m 54s</span></div>
+        <div class="v16-eff-line va-nums">Propulsion {bte:.1f}% BTE · UKC 8.4 m · Depth 14.2 m</div>
       </section>
       <div class="v16-glass-pod v16-compass-tape" aria-label="Heading and Cross-Track Tape">
         <span class="v16-compass-heading va-nums">075° &middot; [ 084°T BERTH APPROACH ] &middot; 095°</span>
@@ -157,12 +157,24 @@ def build_v16_glass_html(corpus: dict[str, Any]) -> str:
         <div id="v16-warn-title" class="v16-warn-title">MCU Thermal Limit (85 °C)</div>
         <div id="v16-warn-action" class="v16-warn-action">Hold &lt;= 18 kt · Inspect Aft J1939 Drop at Berth</div>
       </section>
-      <section class="v16-glass-pod v16-pod-dock" aria-label="Berth Range and Under-Keel Clearance">
-        <div class="v16-route-line va-nums"><strong>Pier 4</strong> · 1.20 nm · ETA <span id="v16-eta-val">03m 54s</span></div>
-        <div class="v16-eff-line va-nums">UKC 8.4 m · Depth 14.2 m (Tide +0.6 m)</div>
-      </section>
     </div>
     <div class="v16-ais-layer" aria-hidden="true">
+      <svg class="v16-ais-svg" viewBox="0 0 1200 720" preserveAspectRatio="xMidYMid meet">
+        <polygon points="96,406 108,420 96,434 84,420" fill="rgba(56,189,248,0.22)" stroke="#38BDF8" stroke-width="2.2"/>
+        <line x1="96" y1="434" x2="96" y2="464" stroke="#38BDF8" stroke-width="1.6"/>
+        <text x="116" y="424" text-anchor="start" font-size="12" fill="#E0F2FE">PORT 4G · 0.42 nm</text>
+        <polygon points="1104,406 1116,420 1104,434 1092,420" fill="rgba(52,211,153,0.22)" stroke="#34D399" stroke-width="2.2"/>
+        <line x1="1104" y1="434" x2="1104" y2="464" stroke="#34D399" stroke-width="1.6"/>
+        <text x="1084" y="424" text-anchor="end" font-size="12" fill="#D1FAE5">STBD 4R · 0.80 nm</text>
+        <path d="M 190 692 L 390 532" fill="none" stroke="#38BDF8" stroke-width="1.8" stroke-dasharray="10 7" opacity="0.88"/>
+        <path d="M 1010 692 L 810 532" fill="none" stroke="#34D399" stroke-width="1.8" stroke-dasharray="10 7" opacity="0.88"/>
+        <path d="M 350 538 A 360 90 0 0 1 850 538" fill="none" stroke="#BAE6FD" stroke-width="1.2" stroke-dasharray="5 6" opacity="0.72"/>
+        <path d="M 275 590 A 440 110 0 0 1 925 590" fill="none" stroke="#BAE6FD" stroke-width="1.2" stroke-dasharray="5 6" opacity="0.72"/>
+        <path d="M 205 645 A 520 130 0 0 1 995 645" fill="none" stroke="#BAE6FD" stroke-width="1.2" opacity="0.75"/>
+        <text x="600" y="530" text-anchor="middle" font-size="11.5" fill="#E0F2FE">1.2 nm PIER 4</text>
+        <text x="600" y="582" text-anchor="middle" font-size="11.5" fill="#E0F2FE">0.8 nm</text>
+        <text x="600" y="638" text-anchor="middle" font-size="11.5" fill="#E0F2FE">0.4 nm</text>
+      </svg>
       <div class="v16-ais-marker v16-ais-left va-nums">CH-BUOY 4G · 0.42 nm · BRG 261°</div>
       <div class="v16-ais-marker v16-ais-right va-nums">BERTH 4 GATE · 1.20 nm · CPA CLEAR</div>
     </div>
@@ -174,7 +186,7 @@ def build_v16_glass_html(corpus: dict[str, Any]) -> str:
       </div>
       <div id="v16-bridge-toggles" class="v16-lum-group" role="group" aria-label="Bridge System Toggles">
         <button type="button" id="v16-derate-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Limit Speed (&lt;= 18 kt)</button>
-        <button type="button" id="v16-ais-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Show Channel Markers</button>
+        <button type="button" id="v16-ais-btn" class="va-pill v16-lum-chip is-active" data-variant="chip" aria-pressed="true">Show Channel Markers</button>
       </div>
     </div>
   </div>

@@ -144,6 +144,7 @@
     if (doc.__quietShellSupportBound) return;
     doc.__quietShellSupportBound = true;
     doc.addEventListener('click', function (ev) {
+      if (ev.defaultPrevented) return;
       const link = ev.target && ev.target.closest ? ev.target.closest('a[href^="#"]') : null;
       if (!link) return;
       ev.preventDefault();

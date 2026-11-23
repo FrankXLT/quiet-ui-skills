@@ -127,11 +127,11 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     sp3 = _v08_tile_svg((0.48, 0.54, 0.60, 0.65, 0.70, 0.74, 0.77, 0.784), soc / 100.0, 0.80, "var(--accent-focal)")
     sp4 = _v08_tile_svg((0.86, 0.88, 0.90, 0.91, 0.92, 0.93, 0.94, 0.942), oee / 100.0, 0.95, "var(--status-ok)")
 
-    return f"""<div class="v9-stage-inner v9-view-v08">
+    return f"""<div class="v9-stage-inner v9-view-v08" data-v08-hold="false">
   <header class="v08-wall-header">
     <div>
-      <span class="v08-wall-kicker">PLANT FLOOR CELL-03 &amp; MICROGRID POI</span>
-      <h1 class="v08-wall-title">Live Microgrid &amp; Production Yield Overview</h1>
+      <span class="v08-wall-kicker">CELL-03 BENCHTOP HMI &amp; MICROGRID POI</span>
+      <h1 class="v08-wall-title">Plant Test &amp; Live Microgrid HMI Display</h1>
     </div>
     <div class="v08-wall-status">
       <span class="va-pill" data-variant="status" data-state="nominal">ALL SYSTEMS NOMINAL</span>
@@ -139,8 +139,21 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     </div>
   </header>
 
+  <div class="v08-inst-bar" role="toolbar" aria-label="Benchtop Instrument Controls">
+    <div id="v08-ch-readout" class="v08-inst-readout va-nums" aria-live="polite">CH1 · Active Dispatch — Min 23.1 MW · Avg {p_act:.1f} MW · Max 24.1 MW · Ripple ±0.4 MW (1h)</div>
+    <div class="v08-inst-actions">
+      <span class="v08-inst-label">Window</span>
+      <div class="va-tb-group" role="group" aria-label="Measurement Window">
+        <button type="button" class="va-tb-btn" data-v08-win="15m" aria-pressed="false">15m</button>
+        <button type="button" class="va-tb-btn" data-v08-win="1h" aria-pressed="true">1h</button>
+        <button type="button" class="va-tb-btn" data-v08-win="shift" aria-pressed="false">Shift</button>
+      </div>
+      <button type="button" id="v08-hold-btn" class="v08-hold-btn" aria-pressed="false" aria-label="Hold Display">Hold Display</button>
+    </div>
+  </div>
+
   <div class="v08-kpi-grid" aria-label="Primary Plant Floor Telemetry">
-    <article class="v08-kpi-card">
+    <article class="v08-kpi-card is-v08-selected" role="button" tabindex="0" aria-pressed="true" data-v08-ch="dispatch">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Microgrid Active Dispatch</span><span class="va-pill" data-variant="status" data-state="nominal">POI SYNCED</span></div>
       {sp1}
       <div class="v08-kpi-hero">
@@ -148,7 +161,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
         <span class="v08-kpi-target va-nums">Target {p_cmd:.1f} MW · Nominal</span>
       </div>
     </article>
-    <article class="v08-kpi-card">
+    <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="freq">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Grid Synchrophasor Frequency</span><span class="va-pill" data-variant="status" data-state="nominal">LOCK ±0.02 Hz</span></div>
       {sp2}
       <div class="v08-kpi-hero">
@@ -156,7 +169,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
         <span class="v08-kpi-target va-nums">Reference {freq_cmd:.3f} Hz</span>
       </div>
     </article>
-    <article class="v08-kpi-card">
+    <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="bess">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Battery Storage Charge (BESS)</span><span class="va-pill" data-variant="status" data-state="nominal">DISCHARGE READY</span></div>
       {sp3}
       <div class="v08-kpi-hero">
@@ -164,7 +177,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
         <span class="v08-kpi-target va-nums">Target 80.0% · Ready</span>
       </div>
     </article>
-    <article class="v08-kpi-card" data-accent="emerald">
+    <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="oee" data-accent="emerald">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Cell-03 Plant OEE Yield</span><span class="va-pill" data-variant="status" data-state="nominal">SHIFT A</span></div>
       {sp4}
       <div class="v08-kpi-hero">
@@ -296,7 +309,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Hold POI Breaker 52-M closed at {p_act:.1f} MW / {freq:.3f} Hz; require LOTO bit [10]=0 before islanding transfer.",
         },
         "v08-plant-floor-wall-kiosk": {
-            "option_label": "v08 · Factory Wall Status Board", "default_medium": "m5",
+            "option_label": "v08 · Plant Test & HMI Display", "default_medium": "m5",
             "chromatic_code": "c3", "default_nav": "n0", "allowed_navs": ["n0"],
             "nav_icon": "tv", "nav_brand": "Plant Wall Display",
             "topbar_brand": "Plant Wall Display", "rail_brand": "Plant Wall Display",
