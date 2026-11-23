@@ -3146,8 +3146,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
   .va-undo-msg { flex: 1 1 12rem; min-inline-size: 0; }
   .va-undo-actions { display: inline-flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
+  @media (min-width: 780px) {
+    .va-workbench-panes[data-s44-root] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-input, .va-select, .va-textarea { min-block-size: 44px; font-size: max(1rem, var(--ts-base)); }
+    .va-workbench-panes[data-s44-root] .va-pane-hdr { min-block-size: 40px; height: auto; flex-wrap: wrap; padding-block: 0.42rem; }
+    .va-tab-strip[data-s44-tabs] { flex-wrap: wrap; overflow-x: visible; }
   }
 }
 

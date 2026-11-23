@@ -87,6 +87,10 @@ def _bundle_bench_css() -> str:
         if fpath.exists():
             txt = re.sub(r"^@layer\s+[a-zA-Z0-9_,\s-]+;\s*", "", fpath.read_text(encoding="utf-8"), flags=re.M)
             parts.append(txt)
+    wb_raw = (REPO_ROOT / "src/css/02-nav-shells-and-drawers.css").read_text(encoding="utf-8")
+    wb_m = re.search(r"/\*\s*BEGIN_WORKBENCH_PANES\s*\*/(.*?)/\*\s*END_WORKBENCH_PANES\s*\*/", wb_raw, flags=re.S)
+    if wb_m:
+        parts.append(f"@layer shell {{\n{wb_m.group(1).strip()}\n}}")
     return re.sub(r"</\s*style", r"<\/style", "\n\n".join(parts), flags=re.I)
 
 
