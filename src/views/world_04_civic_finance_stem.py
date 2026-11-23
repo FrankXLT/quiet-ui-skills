@@ -229,7 +229,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
     }
     view_cfg = {
         "v10-civic-capital-budget-deck": {
-            "option_label": "v10 · Civic Capital Budget", "default_medium": "m2",
+            "option_label": "v10 · City Budget Breakdown", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "landmark", "nav_brand": "Civic Budget FY27",
             "topbar_brand": "Civic Capital Budget FY2027", "rail_brand": "Budget Sections",
@@ -241,7 +241,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "Six-step cash waterfall (48.0 → 26.9 M USD) with explicit Water Main Review flag.",
         },
         "v11-treasury-stress-test-solver": {
-            "option_label": "v11 · Treasury Stress Solver", "default_medium": "m3",
+            "option_label": "v11 · Interest-Rate Stress Test", "default_medium": "m3",
             "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
             "nav_icon": "scale-balanced", "nav_brand": "Treasury Risk",
             "topbar_brand": "Treasury +250 bps Rate-Shock Solver", "rail_brand": "Solver Controls",
@@ -253,7 +253,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "n=10,000 Monte Carlo medians (±u_y) paired with deterministic corridor and 20.0% minimum floor.",
         },
         "v12-stem-interactive-lab": {
-            "option_label": "v12 · STEM RC Discharge Lab", "default_medium": "m2",
+            "option_label": "v12 · Interactive Physics Lab", "default_medium": "m2",
             "chromatic_code": "c2", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "flask", "nav_brand": "RC Physics Lab",
             "topbar_brand": "RC Discharge Lab · τ = 2.40 s", "rail_brand": "Lab Sections",
@@ -265,7 +265,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "Term-bound V₀ and exp(−t/τ) pills coupled to discrete ±u_y oscilloscope samples + residuals.",
         },
         "v20-student-capstone-lab-report": {
-            "option_label": "v20 · Student Capstone Lab Report", "default_medium": "m2",
+            "option_label": "v20 · Student Lab Report", "default_medium": "m2",
             "chromatic_code": "c2", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "graduation-cap", "nav_brand": "Capstone Lab",
             "topbar_brand": "Capstone Lab Report · τ = 2.40 s", "rail_brand": "Report Sections",
@@ -283,4 +283,4 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "Lead-with-claim capstone defense pairing repeatability dumbbell with error bounds and self-critique.",
         },
     }
-    return assemble_world_bundle(corpus, bp, "04 · Finance & STEM Lab", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "04 · Budgets, Finance & Labs", view_cfg, html_map)

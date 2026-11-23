@@ -17,9 +17,9 @@ _MEDIUM_PLAIN: dict[str, str] = {
 }
 
 _RIGOR_PLAIN: dict[str, str] = {
-    "L1": "Executive Summary",
-    "L2": "Operational Spec",
-    "L3": "Detailed Metrology",
+    "L1": "Quick Summary",
+    "L2": "Standard Detail",
+    "L3": "Full Technical Detail",
 }
 
 _TEMPO_PLAIN: dict[str, str] = {
@@ -30,27 +30,27 @@ _TEMPO_PLAIN: dict[str, str] = {
 }
 
 _VIEW_SLUG_PLAIN: dict[str, str] = {
-    "v01-icu-bedside-terminal": "v01 · ICU Bedside Terminal",
-    "v02-trial-regulatory-brief": "v02 · Trial Regulatory Brief",
+    "v01-icu-bedside-terminal": "v01 · Hospital Bedside Monitor",
+    "v02-trial-regulatory-brief": "v02 · Clinical Trial Results",
     "v03-patient-recovery-companion": "v03 · Patient Recovery Guide",
-    "v04-sre-incident-workbench": "v04 · SRE Incident Workbench",
-    "v05-zero-trust-ato-spec": "v05 · Zero-Trust Security Spec",
-    "v06-ai-drift-and-lineage-ide": "v06 · AI Calibration & Lineage",
-    "v07-grid-scada-poi-console": "v07 · Grid SCADA POI Console",
-    "v08-plant-floor-wall-kiosk": "v08 · Plant-Floor Wall Display",
-    "v09-spc-quality-and-modbus-report": "v09 · SPC Quality & Modbus Audit",
-    "v10-civic-capital-budget-deck": "v10 · Civic Capital Budget",
-    "v11-treasury-stress-test-solver": "v11 · Treasury Stress Solver",
-    "v12-stem-interactive-lab": "v12 · STEM RC Discharge Lab",
-    "v13-propulsion-archival-monograph": "v13 · Propulsion Monograph",
-    "v14-fieldbus-and-scope-debugger": "v14 · CAN-FD Fieldbus Debugger",
-    "v15-collimated-flight-hud": "v15 · Collimated Flight HUD",
-    "v16-transparent-window-overlay": "v16 · Smart-Glass Overlay Pod",
-    "v17-picture-frame-home-kiosk": "v17 · Picture-Frame Home Kiosk",
-    "v18-home-assistant-companion-console": "v18 · Home Assistant Companion Console",
-    "v19-product-roadmap-and-triage": "v19 · Product Release Roadmap & Triage",
-    "v20-student-capstone-lab-report": "v20 · Student Capstone Lab Report",
-    "v21-field-anomaly-escalation-tsn": "v21 · Field Anomaly Escalation Note",
+    "v04-sre-incident-workbench": "v04 · Server Outage Console",
+    "v05-zero-trust-ato-spec": "v05 · Cloud Security Checklist",
+    "v06-ai-drift-and-lineage-ide": "v06 · AI Accuracy Tracker",
+    "v07-grid-scada-poi-console": "v07 · Solar & Battery Microgrid",
+    "v08-plant-floor-wall-kiosk": "v08 · Factory Wall Status Board",
+    "v09-spc-quality-and-modbus-report": "v09 · Factory Quality Report",
+    "v10-civic-capital-budget-deck": "v10 · City Budget Breakdown",
+    "v11-treasury-stress-test-solver": "v11 · Interest-Rate Stress Test",
+    "v12-stem-interactive-lab": "v12 · Interactive Physics Lab",
+    "v13-propulsion-archival-monograph": "v13 · Engine Efficiency Study",
+    "v14-fieldbus-and-scope-debugger": "v14 · Vehicle Wiring & Scope",
+    "v15-collimated-flight-hud": "v15 · Aircraft Head-Up Display",
+    "v16-transparent-window-overlay": "v16 · Boat Windshield Smart Glass",
+    "v17-picture-frame-home-kiosk": "v17 · Living-Room Art Frame",
+    "v18-home-assistant-companion-console": "v18 · Home Solar & Room Controls",
+    "v19-product-roadmap-and-triage": "v19 · Product Release Roadmap",
+    "v20-student-capstone-lab-report": "v20 · Student Lab Report",
+    "v21-field-anomaly-escalation-tsn": "v21 · Test Bay Repair Plan",
 }
 
 _NAV_PLAIN: dict[str, str] = {

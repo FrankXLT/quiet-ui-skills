@@ -1,25 +1,25 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.5 — OAW-Style Overview Landing Page & Live Medium Morph Preview
+ * Quiet UI v9.5 — Everyday Plain-English Overview Landing Page & Live Layout Preview
  */
 (function (window, document) {
   'use strict';
 
-  const DOMAIN_DESCRIPTIONS = {
-    '01-clinical-icu-and-trials': 'Bedside hemodynamic waveform monitors, Phase III CONSORT subgroup briefs, and plain-language patient recovery guides.',
-    '02-cloud-cyber-and-ai-ops': 'Tail-latency SRE workbenches, zero-trust enclave specs, AI calibration lineage, and release critical-path triage.',
-    '03-industrial-grid-and-manufacturing': 'Microgrid POI dispatch SCADA, 10-foot plant wall KPI kiosks, and Shewhart statistical quality reports.',
-    '04-civic-finance-and-stem-learning': 'Municipal reserve waterfalls, Monte Carlo rate-shock solvers, interactive physics labs, and student capstone defenses.',
-    '05-physical-systems-auto-and-aero': 'Propulsion efficiency monographs, CAN-FD reflection scopes, collimated optical HUDs, and smart-glass overlays.',
-    '06-smart-home-and-energy': 'Ambient living-room picture-frame kiosks and Home Assistant solar, climate, and two-step door access consoles.',
+  const DOMAIN_META = {
+    '01-clinical-icu-and-trials': { title: 'Healthcare & Patient Care', desc: 'Hospital bedside monitors, clinical study results, and clear at-home recovery guides patients can read on their phone.', cta: 'Launch Healthcare Examples' },
+    '02-cloud-cyber-and-ai-ops': { title: 'Cloud Software & AI', desc: 'Live server outage consoles, security review checklists, AI accuracy tracking, and software release timelines.', cta: 'Launch Cloud Examples' },
+    '03-industrial-grid-and-manufacturing': { title: 'Power Grid & Factory', desc: 'Solar and battery microgrid controls, across-the-room factory status boards, and production quality reports.', cta: 'Launch Grid Examples' },
+    '04-civic-finance-and-stem-learning': { title: 'Budgets, Finance & Classrooms', desc: 'City budget breakdowns, interest-rate stress calculators, hands-on physics labs, and student lab reports.', cta: 'Launch Finance Examples' },
+    '05-physical-systems-auto-and-aero': { title: 'Vehicles, Flight & Smart Glass', desc: 'Engine efficiency studies, vehicle wiring scopes, aircraft head-up displays, and boat windshield overlays.', cta: 'Launch Vehicle Examples' },
+    '06-smart-home-and-energy': { title: 'Smart Home & Energy', desc: 'Framed living-room art displays with subtle weather and solar status, plus a mobile home-control app.', cta: 'Launch Home Examples' },
   };
 
   const MORPH_MODES = {
-    screen: { label: '1080p Screen · 1920×1080', note: 'White desk monitor surface with dual-pane signal waveform, KPI tiles, and interactive ceiling.' },
-    paper: { label: 'Archival Paper · 1056×1368', note: 'Warm print sheet using Georgia serif typography, high-contrast black ink rules, and zero chrome clutter.' },
-    mobile: { label: 'Mobile Phone · 390×844', note: 'Responsive 390px handset bezel stacking scalar summary tiles and mobile dock controls smoothly.' },
-    dark: { label: 'Dark Cockpit · Slate / OLED', note: 'Night-operations polarity preserving crisp gridlines and reserving amber strictly for threshold crossings.' },
-    brief: { label: 'Executive Brief · Summary Lens', note: 'Compression lens leading with operational margin delta and threshold disposition before detail proof.' },
+    screen: { label: 'Desktop (1080p) · 1920×1080', note: 'Standard 1080p desktop view: live graph on the left, key numbers on the right, and plenty of room to scan.' },
+    paper: { label: 'Printed Page · 1056×1368', note: 'Print-ready page: warm paper background, book-style serif text, and zero app menus so it exports cleanly to PDF.' },
+    mobile: { label: 'Phone · 390×844', note: 'Phone screen (390px): stacks key numbers into one thumb-friendly column with comfortable tap targets.' },
+    dark: { label: 'Dark Mode · Low-Glare', note: 'Low-glare dark theme: keeps backgrounds calm and saves bright yellow or red strictly for real warnings.' },
+    brief: { label: 'Quick Summary · Key Points First', note: 'Busy-reader summary: puts the bottom-line status and safety margin first before the detailed graph.' },
   };
 
   function esc(val) {
@@ -74,12 +74,12 @@
     const dots = coords.map(function (p) {
       return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.8" fill="var(--morph-accent)"/>';
     }).join('');
-    return '<svg class="va-morph-svg" viewBox="0 0 460 150" role="img" aria-label="Live Arterial Pressure Signal Preview">' +
+    return '<svg class="va-morph-svg" viewBox="0 0 460 150" role="img" aria-label="Live Pressure Chart Preview">' +
       grids + xTicks +
       '<path d="' + pathD + '" fill="none" stroke="var(--morph-accent)" stroke-width="2" stroke-linejoin="round"/>' +
       dots +
       '<line id="va-morph-thresh-line" x1="' + x0 + '" y1="' + yT + '" x2="' + x1 + '" y2="' + yT + '" stroke="var(--morph-warn)" stroke-width="1.6" stroke-dasharray="5 3"/>' +
-      '<text id="va-morph-thresh-label" class="va-svg-halo-text" x="' + (x1 - 4) + '" y="' + yText + '" text-anchor="end" font-size="12" font-weight="700" paint-order="stroke" stroke="var(--morph-bg)" stroke-width="3" fill="var(--morph-warn)">Ceiling ' + threshold + ' mmHg</text>' +
+      '<text id="va-morph-thresh-label" class="va-svg-halo-text" x="' + (x1 - 4) + '" y="' + yText + '" text-anchor="end" font-size="12" font-weight="700" paint-order="stroke" stroke="var(--morph-bg)" stroke-width="3" fill="var(--morph-warn)">Limit ' + threshold + ' mmHg</text>' +
       '</svg>';
   }
 
@@ -92,7 +92,10 @@
 
     const domainCardsHtml = worlds.map(function (w, idx) {
       const num = String(idx + 1).padStart(2, '0');
-      const desc = DOMAIN_DESCRIPTIONS[w.world_id] || w.title;
+      const meta = DOMAIN_META[w.world_id] || {};
+      const title = meta.title || w.title;
+      const desc = meta.desc || w.title;
+      const cta = meta.cta || ('Launch Domain ' + num);
       const viewsHtml = (w.views || []).map(function (v) {
         const pre = getPreset(v.view_id);
         return '<button type="button" class="va-domain-view-btn" data-launch-world="' + esc(w.world_id) + '" data-launch-view="' + esc(v.view_id) + '">' +
@@ -103,91 +106,87 @@
       return '<article class="va-domain-card">' +
         '<div class="va-domain-card-top"><span class="va-step-icon-tile">' + svgTileIcon(domainIconKind(w.world_id)) + '</span>' +
         '<span class="va-domain-slug">&gt; domain_' + num + '_</span></div>' +
-        '<h3>' + esc(w.title) + '</h3>' +
+        '<h3>' + esc(title) + '</h3>' +
         '<p class="va-domain-desc">' + esc(desc) + '</p>' +
         '<div class="va-domain-view-list">' + viewsHtml + '</div>' +
-        '<div class="va-domain-launch"><button type="button" class="va-domain-launch-btn" data-launch-world="' + esc(w.world_id) + '" data-launch-view="' + esc(firstView) + '">Launch Domain ' + num + ' &rarr;</button></div>' +
+        '<div class="va-domain-launch"><button type="button" class="va-domain-launch-btn" data-launch-world="' + esc(w.world_id) + '" data-launch-view="' + esc(firstView) + '">' + esc(cta) + ' &rarr;</button></div>' +
         '</article>';
     }).join('');
 
     const installCmd = 'git clone https://github.com/FrankXLT/quiet-ui-skills.git && cd quiet-ui-skills && ./install.sh';
     root.innerHTML = '<div class="va-landing-wrap">' +
       '<section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
-      '<span class="va-landing-kicker">DETERMINISTIC DESIGN &amp; METROLOGY FOR AI AGENTS</span>' +
-      '<h1 class="va-landing-h1">Interfaces Engineered to Be Read, Not Decorated</h1>' +
-      '<p class="va-landing-sub">A deterministic design system and SVG/ECharts compiler suite grounded in NIST, ISA-101, FDA IEC 62366, and NASA human-factors standards — adapting clinical telemetry, plant consoles, and technical briefs across screen, print, and mobile.</p>' +
+      '<span class="va-landing-kicker">CLEAN INTERFACES &amp; HONEST CHARTS FOR AI CODING TOOLS</span>' +
+      '<h1 class="va-landing-h1">Screens &amp; Reports Built to Be Read, Not Decorated</h1>' +
+      '<p class="va-landing-sub">Most AI tools default to cluttered, neon dashboards that tire your eyes. Quiet UI gives AI coding agents calm layouts, readable charts, and automatic quality checks for desktop screens, printed pages, and phones.</p>' +
       '<div class="va-landing-chips">' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_ui_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_evidence_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_bridge_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>nist_standards_</span></button>' +
-      '</div>' +
-      '<div class="va-landing-chips">' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-morph-card"><span class="va-chip-prompt">&gt;</span><span>how_it_works_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>real_world_rules_</span></button>' +
       '<button type="button" class="va-landing-chip" data-open-examples="1"><span class="va-chip-prompt">&gt;</span><span>' + totalViews + '_live_examples_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-open-components="1"><span class="va-chip-prompt">&gt;</span><span>44_components_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>portable_auditor_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>60s_brand_kits_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-open-components="1"><span class="va-chip-prompt">&gt;</span><span>44_building_blocks_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>three_skills_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>one_minute_install_</span></button>' +
       '</div></section>' +
 
       '<section id="va-landing-morph-card" class="va-morph-card" aria-label="How the Showcase Works and Live Preview">' +
       '<div class="va-morph-steps">' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Step Across Mediums</h2><p>Use &lt; and &gt; in the portal bar to step across domains as views morph between 1080p screen, archival paper, 390px mobile, and dark cockpit.</p></div></div>' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. Inspect Calibrated Proof</h2><p>Every chart uses 1-2-5 ticks, knockout halos, and conserved corpus numbers. Click Why? on any view to read its plain-English design rationale.</p></div></div>' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, spotlight focused sections, inspect waveform cursors or table records, and switch themes from the rail footer.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Flip Through Real Screens</h2><p>Use &lt; and &gt; in the top bar to step through ' + totalViews + ' examples across desktop monitors, printable pages, phones, and dark mode.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. See Why Every Choice Matters</h2><p>Labels never collide with chart lines, numbers match from summary to detail, and clicking <strong>Why?</strong> explains each layout in plain English.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Try the Live Controls</h2><p>Open or close the sidebar, jump along live signal graphs, click table rows to inspect details, or drag the window edges to resize.</p></div></div>' +
       '</div>' +
       '<div class="va-morph-stage-wrap">' +
       '<div class="va-morph-stage-hdr">' +
-      '<div class="va-morph-stage-title"><span>LIVE MEDIUM MORPH PREVIEW</span><span>·</span><span id="va-morph-mode-label">1080p Screen · 1920×1080</span></div>' +
+      '<div class="va-morph-stage-title"><span>LIVE LAYOUT PREVIEW</span><span>·</span><span id="va-morph-mode-label">Desktop (1080p) · 1920×1080</span></div>' +
       '<div class="va-morph-stage-actions">' +
-      '<span id="va-morph-status-pill" class="va-morph-status-pill" data-state="warn">CAUTION · MAP &lt; 75 mmHg</span>' +
-      '<button type="button" id="va-morph-open-portal" class="va-landing-cta">Open in 1080p Portal &rarr;</button>' +
+      '<span id="va-morph-status-pill" class="va-morph-status-pill" data-state="warn">Caution · Avg &lt; 75 mmHg</span>' +
+      '<button type="button" id="va-morph-open-portal" class="va-landing-cta">Open Live Example &rarr;</button>' +
       '</div></div>' +
       '<div id="va-morph-canvas" class="va-morph-canvas" data-morph-mode="screen">' +
       '<div id="va-morph-svg-host" class="va-morph-plot-box">' + buildWaveformSvgHtml(75) + '</div>' +
       '<div><div class="va-morph-kpis">' +
-      '<div class="va-morph-kpi"><span>Mean MAP</span><strong>63.5 mmHg</strong></div>' +
-      '<div class="va-morph-kpi"><span>Peak Systolic</span><strong>94.0 mmHg</strong></div>' +
-      '<div class="va-morph-kpi"><span>Ceiling Margin</span><strong id="va-morph-margin-val">-11.5 mmHg</strong></div>' +
+      '<div class="va-morph-kpi"><span>Average Pressure</span><strong>63.5 mmHg</strong></div>' +
+      '<div class="va-morph-kpi"><span>Peak Reading</span><strong>94.0 mmHg</strong></div>' +
+      '<div class="va-morph-kpi"><span>Safety Margin</span><strong id="va-morph-margin-val">-11.5 mmHg</strong></div>' +
       '</div><p id="va-morph-mode-note" class="va-morph-summary">' + esc(MORPH_MODES.screen.note) + '</p></div></div>' +
       '<div class="va-morph-controls">' +
-      '<div class="va-morph-mode-group" role="group" aria-label="Preview Medium">' +
-      '<button type="button" class="va-morph-mode-btn" data-morph-btn="screen" aria-pressed="true">1. 1080p Screen</button>' +
-      '<button type="button" class="va-morph-mode-btn" data-morph-btn="paper" aria-pressed="false">2. Paper Sheet</button>' +
-      '<button type="button" class="va-morph-mode-btn" data-morph-btn="mobile" aria-pressed="false">3. 390px Mobile</button>' +
-      '<button type="button" class="va-morph-mode-btn" data-morph-btn="dark" aria-pressed="false">4. Dark Cockpit</button>' +
-      '<button type="button" class="va-morph-mode-btn" data-morph-btn="brief" aria-pressed="false">5. Executive Brief</button>' +
+      '<div class="va-morph-mode-group" role="group" aria-label="Preview Layout">' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="screen" aria-pressed="true">1. Desktop (1080p)</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="paper" aria-pressed="false">2. Printed Page</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="mobile" aria-pressed="false">3. Phone (390px)</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="dark" aria-pressed="false">4. Dark Mode</button>' +
+      '<button type="button" class="va-morph-mode-btn" data-morph-btn="brief" aria-pressed="false">5. Quick Summary</button>' +
       '</div>' +
-      '<div class="va-morph-slider-wrap"><label for="va-morph-threshold">Alert Ceiling: <strong id="va-morph-threshold-val" class="va-nums">75 mmHg</strong></label>' +
+      '<div class="va-morph-slider-wrap"><label for="va-morph-threshold">Warning Limit: <strong id="va-morph-threshold-val" class="va-nums">75 mmHg</strong></label>' +
       '<input type="range" id="va-morph-threshold" min="55" max="95" step="1" value="75" aria-valuetext="75 mmHg"></div>' +
       '</div></div></section>' +
 
-      '<section id="va-landing-standards" aria-label="Standards Grounded in Engineering Metrology and Human Factors">' +
-      '<div class="va-landing-sec-hdr"><h2>Grounded in NIST, ISA-101, FDA &amp; NASA Standards</h2>' +
-      '<span>Every token, tick ladder, alarm budget, and optical scrim maps to published engineering authorities.</span></div>' +
+      '<section id="va-landing-standards" aria-label="Standards Grounded in Practical Real-World Rules">' +
+      '<div class="va-landing-sec-hdr"><h2>Grounded in Practical Real-World Standards</h2>' +
+      '<span>Instead of guessing what looks good, Quiet UI borrows proven everyday rules from science labs, hospitals, aviation, and power-grid control rooms.</span></div>' +
       '<div class="va-standards-grid">' +
-      '<article class="va-standard-card"><h3>1. Quantitative Metrology &amp; SI Calculus</h3><p>Axis ticks lock strictly to clean 1-2-5 intervals, SI quantity ratios (value / unit), Shewhart UCL/CL/LCL control bands, and discrete empirical markers separated from analytical fits.</p><div class="va-std-tags"><span class="va-std-tag">NIST SP 811</span><span class="va-std-tag">ISO 80000</span><span class="va-std-tag">Shewhart SPC</span></div></article>' +
-      '<article class="va-standard-card"><h3>2. High-Performance HMI &amp; Safe Interlocks</h3><p>Nominal telemetry stays monochrome so active anomalies stand out immediately, paired with two-step Arm -&gt; Execute breakers and structured Fault Tree root-cause paths.</p><div class="va-std-tags"><span class="va-std-tag">ISA-101</span><span class="va-std-tag">NRC NUREG-0700</span><span class="va-std-tag">NUREG-0492</span></div></article>' +
-      '<article class="va-standard-card"><h3>3. Medical Human Factors &amp; Optical HUDs</h3><p>Clinical scopes protect critical alarm floors above the fold, touch controls enforce 44 px targets on mobile, and smart-glass pods maintain &gt;= 7:1 contrast outside the windshield corridor.</p><div class="va-std-tags"><span class="va-std-tag">FDA IEC 62366</span><span class="va-std-tag">NASA-STD-3001</span><span class="va-std-tag">MIL-STD-1787B</span></div></article>' +
-      '<article class="va-standard-card"><h3>4. Embedded Buses, Coupling &amp; AI Risk</h3><p>Hardware views bind CAN-FD register bitfields, timing diagrams, and <em>N</em><sup>2</sup> interface matrices to uncertainty intervals and explicit model governance trails.</p><div class="va-std-tags"><span class="va-std-tag">SAE J1939</span><span class="va-std-tag">ITU-T Z.120</span><span class="va-std-tag">NASA SP-2016-6105</span><span class="va-std-tag">NIST AI RMF 100-1</span></div></article>' +
+      '<article class="va-standard-card"><h3>1. Numbers &amp; Charts That Never Mislead</h3><p>Chart axes count by clean 1, 2, or 5 steps instead of awkward decimals, every number shows its unit clearly, and missing sensor data leaves an honest gap instead of faking a smooth line.</p><div class="va-std-tags"><span class="va-std-tag">NIST SP 811</span><span class="va-std-tag">ISO 80000</span><span class="va-std-tag">Quality Charts</span></div></article>' +
+      '<article class="va-standard-card"><h3>2. Calm Screens So Real Warnings Stand Out</h3><p>Borrowed from power-plant control rooms: normal readings stay quiet gray and blue instead of rainbow widgets—saving bright amber and red strictly for problems that need action.</p><div class="va-std-tags"><span class="va-std-tag">ISA-101</span><span class="va-std-tag">NRC NUREG-0700</span><span class="va-std-tag">Safety Trees</span></div></article>' +
+      '<article class="va-standard-card"><h3>3. Readable Text &amp; Mistake-Proof Buttons</h3><p>Borrowed from hospital monitors and flight decks: text never shrinks below 11px, phone buttons fit real thumbs (44px), and critical switches take two steps (Arm, then Run) to prevent slips.</p><div class="va-std-tags"><span class="va-std-tag">FDA IEC 62366</span><span class="va-std-tag">NASA-STD-3001</span><span class="va-std-tag">Optical HUDs</span></div></article>' +
+      '<article class="va-standard-card"><h3>4. Clear Forms, Diagrams &amp; Honest AI</h3><p>Forms explain how to fix an input instead of locking buttons silently, empty searches always offer a one-click reset, and summary numbers trace straight back to real source data.</p><div class="va-std-tags"><span class="va-std-tag">NIST AI RMF</span><span class="va-std-tag">SAE J1939</span><span class="va-std-tag">US Web Design</span></div></article>' +
       '</div></section>' +
 
-      '<section id="va-landing-domains" aria-label="Explore Domains and Portal Views">' +
-      '<div class="va-landing-sec-hdr"><h2>Explore ' + worlds.length + ' Domains &amp; ' + totalViews + ' Live Views</h2>' +
-      '<span>Click any example to open its curated screen, paper, mobile, or cockpit preset.</span></div>' +
+      '<section id="va-landing-domains" aria-label="Explore Domains and Live Examples">' +
+      '<div class="va-landing-sec-hdr"><h2>Explore ' + worlds.length + ' Real-World Domains &amp; ' + totalViews + ' Live Examples</h2>' +
+      '<span>Click any example below to open it in a desktop window, printable page, or phone frame.</span></div>' +
       '<div class="va-domain-grid">' + domainCardsHtml + '</div></section>' +
 
-      '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Pillars and Quick Install">' +
-      '<div class="va-landing-sec-hdr"><h2>Three Orthogonal Pillars &amp; Quick Install</h2><span>Zero-dependency Python 3.10+ stdlib compilers &amp; portable auditor</span></div>' +
+      '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Focused Skills and One-Minute Install">' +
+      '<div class="va-landing-sec-hdr"><h2>Three Focused Skills &amp; One-Minute Install</h2><span>Works locally with Antigravity, Claude Code, Cursor, Codex, and Windsurf — zero extra packages required.</span></div>' +
       '<div class="va-pillars-grid">' +
-      '<div class="va-pillar-col"><h3>quiet-ui (7 Mediums)</h3><p>Screen, archival print, stateful workbenches, POI terminals, wall kiosks, and optical HUDs with persistent <code>.quiet-ui.md</code> contracts and <code>audit_quiet_html.py</code>.</p></div>' +
-      '<div class="va-pillar-col"><h3>quiet-evidence (6 Modalities)</h3><p>Deterministic SVG/ECharts compilers for 1-2-5 plots, waveforms, bitfields, tables, and schematics across 44 interactive Component Library specimens.</p></div>' +
-      '<div class="va-pillar-col"><h3>quiet-bridge (7 Audience Lenses)</h3><p>Executive, peer engineering, operator, and learner projection rules enforcing plain-English clarity and end-to-end numerical conservation.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-ui (Clean Layouts)</h3><p>Chooses sensible spacing, fonts, and menus for desktop apps, printed reports, wall boards, and phones — plus <code>audit_quiet_html.py</code> to catch layout bugs automatically.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-evidence (Honest Charts)</h3><p>Builds 44 ready-to-use charts, timelines, tables, signal traces, and diagrams where labels stay readable across light and dark themes.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-bridge (Plain Language)</h3><p>Tailors complex data for executives, engineers, operators, or students in clear everyday language without altering a single number.</p></div>' +
       '</div>' +
       '<div class="va-install-bar">' +
       '<div class="va-install-code-row"><code>' + esc(installCmd) + '</code>' +
       '<button type="button" id="va-landing-copy-install" class="va-studio-btn">Copy</button>' +
       '<span id="va-landing-copy-status" class="va-copy-status" role="status"></span></div>' +
-      '<button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 44 Components &rarr;</button>' +
+      '<button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 44 Building Blocks &rarr;</button>' +
       '</div></section></div>';
 
     const canvas = document.getElementById('va-morph-canvas');
@@ -212,7 +211,7 @@
       if (statusPill) {
         const warn = margin < 0;
         statusPill.setAttribute('data-state', warn ? 'warn' : 'nominal');
-        statusPill.textContent = warn ? ('CAUTION · MAP < ' + th + ' mmHg') : ('Nominal · MAP >= ' + th + ' mmHg');
+        statusPill.textContent = warn ? ('Caution · Avg < ' + th + ' mmHg') : ('Normal · Avg >= ' + th + ' mmHg');
       }
     }
     if (slider) {

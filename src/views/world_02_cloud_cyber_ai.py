@@ -292,7 +292,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v04-sre-incident-workbench": {
-            "option_label": "v04 · SRE Incident Workbench", "default_medium": "m3",
+            "option_label": "v04 · Server Outage Console", "default_medium": "m3",
             "chromatic_code": "c4", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
             "nav_icon": "alert-triangle", "nav_brand": "SRE Incident",
             "topbar_brand": "SRE Incident · API-EDGE-W2", "rail_brand": "SRE Console",
@@ -302,7 +302,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Mean latency and smoothed gaps mask 420.0 ms p99 tail breaches and the 12.0 s OTel blindspot.",
         },
         "v05-zero-trust-ato-spec": {
-            "option_label": "v05 · Zero-Trust Security Spec", "default_medium": "m2",
+            "option_label": "v05 · Cloud Security Checklist", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "shield-halved", "nav_brand": "Zero-Trust Spec",
             "topbar_brand": "Zero-Trust Security Spec", "rail_brand": "Security Sections",
@@ -312,7 +312,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Topological marketing diagrams and latency telemetry obscure boundary accreditation and FIPS latches.",
         },
         "v06-ai-drift-and-lineage-ide": {
-            "option_label": "v06 · AI Calibration & Lineage", "default_medium": "m3",
+            "option_label": "v06 · AI Accuracy Tracker", "default_medium": "m3",
             "chromatic_code": "c3", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
             "nav_icon": "code-branch", "nav_brand": "AI Drift IDE",
             "topbar_brand": "CLS-ROUTER-V4 · Calibration & Lineage", "rail_brand": "Model Telemetry",
@@ -322,7 +322,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Aggregate accuracy scores mask severe high-confidence overconfidence (0.73 observed vs 0.85 predicted).",
         },
         "v19-product-roadmap-and-triage": {
-            "option_label": "v19 · Product Roadmap & Triage", "default_medium": "m3",
+            "option_label": "v19 · Product Release Roadmap", "default_medium": "m3",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "list-check", "nav_brand": "Release Roadmap",
             "topbar_brand": "Release Roadmap · 4 Launch Blockers", "rail_brand": "Roadmap Views",
@@ -340,4 +340,4 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "Critical-path Gantt timelines coupled directly to 38px blocker triage rows and +3.0 d parallel float counters.",
         },
     }
-    return assemble_world_bundle(corpus, bp, "02 · Cloud, Security & AI", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "02 · Cloud Software & AI", view_cfg, html_map)

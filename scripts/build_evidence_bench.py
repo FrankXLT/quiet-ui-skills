@@ -127,19 +127,19 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.5 — 3-Pillar Component Library (44 Specimens)</title>
+  <title>Quiet UI v9.5 — Component Library (44 Building Blocks)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 {css_bundle}
   </style>
 </head>
 <body>
-  <a href="#bench-main" class="qe-skip-link">Skip to component specimens</a>
+  <a href="#bench-main" class="qe-skip-link">Skip to building blocks</a>
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.5 · 3-PILLAR COMPONENT GALLERY</span>
-        <h1>Component Library (44 Specimens × 4 Themes)</h1>
+        <span class="va-kicker">QUIET UI v9.5 · READY-TO-USE BUILDING BLOCKS</span>
+        <h1>Component Library (44 Building Blocks · 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -159,26 +159,26 @@ def _render_bench_shell(cards_markup: str) -> str:
           </select>
         </div>
         <div class="qe-ctrl-group">
-          <label class="qe-ctrl-label" for="bench-modality-filter">Component</label>
+          <label class="qe-ctrl-label" for="bench-modality-filter">Category</label>
           <select id="bench-modality-filter" class="qe-select">
-            <option value="all">All Types</option>
-            <option value="M1">Scalars &amp; Gauges</option>
-            <option value="M2">Tables &amp; Matrices</option>
-            <option value="M3">Bitfields &amp; Registers</option>
-            <option value="M4">Analytical, Gantt &amp; Heatmaps</option>
-            <option value="M5">Waveforms &amp; Timing</option>
-            <option value="M6">Schematics &amp; Pipelines</option>
-            <option value="UI">UI Controls, Triage &amp; Trees</option>
-            <option value="BR">Decision Bridges &amp; Runbooks</option>
+            <option value="all">All Categories</option>
+            <option value="M1">Key Numbers &amp; Gauges</option>
+            <option value="M2">Tables &amp; Comparisons</option>
+            <option value="M3">Hardware Registers</option>
+            <option value="M4">Charts, Timelines &amp; Heatmaps</option>
+            <option value="M5">Live Signals &amp; Waveforms</option>
+            <option value="M6">System Diagrams</option>
+            <option value="UI">Forms, Menus &amp; Controls</option>
+            <option value="BR">Summaries &amp; Checklists</option>
           </select>
         </div>
         <div class="qe-ctrl-group">
           <label class="qe-ctrl-label" for="bench-rigor-filter">Detail</label>
           <select id="bench-rigor-filter" class="qe-select">
-            <option value="all">All Levels</option>
-            <option value="L1">Executive Summary</option>
-            <option value="L2">Operational Spec</option>
-            <option value="L3">Detailed Metrology</option>
+            <option value="all">All Detail Levels</option>
+            <option value="L1">Quick Summary</option>
+            <option value="L2">Standard Detail</option>
+            <option value="L3">Full Technical Detail</option>
           </select>
         </div>
       </nav>
@@ -186,10 +186,10 @@ def _render_bench_shell(cards_markup: str) -> str:
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
-      <div><strong>Zero-Dependency 3-Pillar Library</strong> · UI controls, validated forms &amp; 4-way zero-states, undo toasts, triage rows, ARIA trees, KPI gauges, joined toolbars, period steppers, cyclical whiskers, 1–2–5 analytical/Gantt/heatmap plots, systems schematics (ITU-T Z.120, NASA SP-2016-6105, NRC NUREG-0492), and decision bridges — each with Data Inputs &amp; Honest Fallback disclosures.</div>
+      <div><strong>44 Ready-to-Use Building Blocks</strong> · Clean forms, helpful empty-state messages, undo notifications, menus, summary cards, date pickers, readable charts, timelines, signal graphs, and system diagrams — each tested across all 4 light, paper, and dark themes.</div>
       <span id="bench-visible-count" class="qe-visible-count va-nums">44 of 44 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="44 3-Pillar Components">{cards_markup}</section>
+    <section class="qe-bench-grid" aria-label="44 Building Blocks">{cards_markup}</section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script id="qe-bench-runtime">

@@ -164,7 +164,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v13-propulsion-archival-monograph": {
-            "option_label": "v13 · Propulsion Monograph", "default_medium": "m2",
+            "option_label": "v13 · Engine Efficiency Study", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n0"],
             "nav_icon": "gauge-high", "nav_brand": "Argonne D³ Monograph",
             "topbar_brand": "Argonne D³ Propulsion Efficiency", "rail_brand": "Monograph",
@@ -176,7 +176,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Peak BTE {bte:.1f}% at 14.0 bar IMEP; restrict continuous operation within [35.0%, 46.0%] envelope.",
         },
         "v14-fieldbus-and-scope-debugger": {
-            "option_label": "v14 · CAN-FD Fieldbus Debugger", "default_medium": "m3",
+            "option_label": "v14 · Vehicle Wiring & Scope", "default_medium": "m3",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
             "nav_icon": "microchip", "nav_brand": "CAN-FD Bench",
             "topbar_brand": f"SAE J1939 CAN-FD · {cm_val(cm, 'canfd_arb_frame_hex')}", "rail_brand": "Bench Tools",
@@ -188,7 +188,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Inspect 0.35 µs stub reflection gap (0.90–1.25 µs) and verify 120 Ω EOL before clearing SOF_ARB_ERR [31].",
         },
         "v15-collimated-flight-hud": {
-            "option_label": "v15 · Collimated Flight HUD", "default_medium": "m6",
+            "option_label": "v15 · Aircraft Head-Up Display", "default_medium": "m6",
             "chromatic_code": "c4", "default_nav": "n0", "allowed_navs": ["n0"],
             "nav_icon": "crosshairs", "nav_brand": "Flight Optical HUD",
             "topbar_brand": "Collimated Optical HUD", "rail_brand": "Flight HUD",
@@ -199,7 +199,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Hold >= 65% central boresight clear; display {bte:.1f}% BTE & 14.0 bar peripheral telemetry over stroke phosphor.",
         },
         "v16-transparent-window-overlay": {
-            "option_label": "v16 · Smart-Glass Overlay Pod", "default_medium": "m7",
+            "option_label": "v16 · Boat Windshield Smart Glass", "default_medium": "m7",
             "chromatic_code": "c4", "default_nav": "n0", "allowed_navs": ["n0"],
             "nav_icon": "glasses", "nav_brand": "Wheelhouse Smart Glass",
             "topbar_brand": "Maritime Bridge Combiner", "rail_brand": "Wheelhouse Pod",
@@ -210,7 +210,7 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Display conformal channel range cues with MCU 85 °C propulsion derate (<= 18 kt) on high-contrast corner smoked glass (>= 7.0:1).",
         },
         "v21-field-anomaly-escalation-tsn": {
-            "option_label": "v21 · Field Escalation TSN", "default_medium": "m3",
+            "option_label": "v21 · Test Bay Repair Plan", "default_medium": "m3",
             "chromatic_code": "c4", "default_nav": "n2", "allowed_navs": ["n2", "n1", "n0"],
             "nav_icon": "wrench", "nav_brand": "Bay 04 Escalation",
             "topbar_brand": "Field TSN · Bay 04 CAN-FD Recovery", "rail_brand": "Escalation Steps",
@@ -230,4 +230,4 @@ def build_world_05(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Contain 0.35 µs reflection (>0.3 m stub, 120 Ω EOL) and 85 °C MCU excursion before {bte:.1f}% BTE dyno retest within 8.0 h.",
         },
     }
-    return assemble_world_bundle(corpus, bp, "05 · Auto & Aerospace", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "05 · Vehicles, Flight & HUDs", view_cfg, html_map)

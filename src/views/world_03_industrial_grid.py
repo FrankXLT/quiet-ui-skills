@@ -285,7 +285,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v07-grid-scada-poi-console": {
-            "option_label": "v07 · Grid SCADA POI Console", "default_medium": "m4",
+            "option_label": "v07 · Solar & Battery Microgrid", "default_medium": "m4",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
             "nav_icon": "bolt", "nav_brand": "Microgrid POI-03",
             "topbar_brand": "Microgrid POI-03 · IEEE 1547 · TIA-485", "rail_brand": "SCADA Views",
@@ -296,7 +296,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": f"Hold POI Breaker 52-M closed at {p_act:.1f} MW / {freq:.3f} Hz; require LOTO bit [10]=0 before islanding transfer.",
         },
         "v08-plant-floor-wall-kiosk": {
-            "option_label": "v08 · Plant-Floor Wall Display", "default_medium": "m5",
+            "option_label": "v08 · Factory Wall Status Board", "default_medium": "m5",
             "chromatic_code": "c3", "default_nav": "n0", "allowed_navs": ["n0"],
             "nav_icon": "tv", "nav_brand": "Plant Wall Display",
             "topbar_brand": "Plant Wall Display", "rail_brand": "Plant Wall Display",
@@ -306,7 +306,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Ambient 10-ft display: confirm 94.2% OEE and 78.4% BESS SoC across shift change.",
         },
         "v09-spc-quality-and-modbus-report": {
-            "option_label": "v09 · SPC Quality & Modbus Audit", "default_medium": "m2",
+            "option_label": "v09 · Factory Quality Report", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "chart-line", "nav_brand": "SPC & Modbus Audit",
             "topbar_brand": "SPC & Modbus Audit", "rail_brand": "Audit Sections",
@@ -317,4 +317,4 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "actionable_disposition": "Authorize release of 12 bearing bore lots (C_pk = 1.64 >= 1.33, 0 USL/LSL breaches).",
         },
     }
-    return assemble_world_bundle(corpus, bp, "03 · Grid & Manufacturing", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "03 · Power Grid & Factory", view_cfg, html_map)

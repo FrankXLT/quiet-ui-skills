@@ -378,7 +378,7 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v01-icu-bedside-terminal": {
-            "option_label": "v01 · ICU Bedside Terminal", "default_medium": "m4",
+            "option_label": "v01 · Hospital Bedside Monitor", "default_medium": "m4",
             "chromatic_code": "c4", "default_nav": "n3", "allowed_navs": ["n3", "n0", "n2"],
             "nav_icon": "heart-pulse", "nav_brand": "Bed ICU-04",
             "topbar_brand": "BED ICU-04 · PT-0482 · Sepsis Protocol", "rail_brand": "Monitor Subsystems",
@@ -387,7 +387,7 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
             "inv_col": "v01-icu-bedside-terminal (L3)", "short_tag": "v01",
         },
         "v02-trial-regulatory-brief": {
-            "option_label": "v02 · Trial Regulatory Brief", "default_medium": "m2",
+            "option_label": "v02 · Clinical Trial Results", "default_medium": "m2",
             "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
             "nav_icon": "file-medical", "nav_brand": "CONSORT Brief",
             "topbar_brand": "CONSORT Brief", "rail_brand": "CONSORT Brief",
@@ -405,4 +405,4 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
             "inv_col": "v03-patient-recovery-companion (L1)", "short_tag": "v03",
         },
     }
-    return assemble_world_bundle(corpus, bp, "01 · Clinical & Trials", view_cfg, html_map)
+    return assemble_world_bundle(corpus, bp, "01 · Healthcare & Trials", view_cfg, html_map)

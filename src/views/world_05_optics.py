@@ -173,8 +173,8 @@ def build_v16_glass_html(corpus: dict[str, Any]) -> str:
         <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" aria-pressed="false">Night Transit</button>
       </div>
       <div id="v16-bridge-toggles" class="v16-lum-group" role="group" aria-label="Bridge System Toggles">
-        <button type="button" id="v16-derate-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Throttle Limiter (&lt;=18 kt)</button>
-        <button type="button" id="v16-ais-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Conformal AIS Vectors</button>
+        <button type="button" id="v16-derate-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Limit Speed (&lt;= 18 kt)</button>
+        <button type="button" id="v16-ais-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Show Channel Markers</button>
       </div>
     </div>
   </div>

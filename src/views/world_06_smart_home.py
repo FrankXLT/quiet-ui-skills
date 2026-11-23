@@ -277,7 +277,7 @@ def build_world_06(corpora_dir: Path) -> dict[str, Any]:
     ]
     view_cfg = {
         "v17-picture-frame-home-kiosk": {
-            "option_label": "v17 · Picture-Frame Home Kiosk",
+            "option_label": "v17 · Living-Room Art Frame",
             "default_medium": "m7",
             "chromatic_code": "c4",
             "default_nav": "n0",
@@ -294,7 +294,7 @@ def build_world_06(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Smart-home wall displays plaster switches and industrial device IDs over artwork.",
         },
         "v18-home-assistant-companion-console": {
-            "option_label": "v18 · Home Assistant Companion Console",
+            "option_label": "v18 · Home Solar & Room Controls",
             "default_medium": "m3",
             "chromatic_code": "c4",
             "default_nav": "n2",
