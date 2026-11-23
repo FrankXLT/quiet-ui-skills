@@ -249,6 +249,45 @@
       if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
       if (vp && btn.dataset.contrast) vp.setAttribute('data-contrast', btn.dataset.contrast);
     });
+    const derateBtn = doc.getElementById('v16-derate-btn');
+    if (derateBtn && derateBtn.dataset.v16Bound !== '1') {
+      derateBtn.dataset.v16Bound = '1';
+      derateBtn.addEventListener('click', function () {
+        const vp = doc.getElementById('v16-glass-viewport');
+        if (!vp) return;
+        const on = vp.getAttribute('data-derate') !== 'true';
+        vp.setAttribute('data-derate', on ? 'true' : 'false');
+        derateBtn.classList.toggle('is-active', on);
+        derateBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        const spd = doc.getElementById('v16-speed-val');
+        const cap = doc.getElementById('v16-speed-cap');
+        const eta = doc.getElementById('v16-eta-val');
+        const pill = doc.getElementById('v16-warn-pill');
+        const title = doc.getElementById('v16-warn-title');
+        const act = doc.getElementById('v16-warn-action');
+        if (spd) spd.textContent = on ? '17.6' : '18.4';
+        if (cap) cap.textContent = on ? 'GOVERNED <= 18 kt' : 'HOLD <= 18 kt';
+        if (eta) eta.textContent = on ? '04m 05s' : '03m 54s';
+        if (pill) {
+          pill.setAttribute('data-state', on ? 'nominal' : 'warn');
+          pill.textContent = on ? 'GOVERNOR ACTIVE · 17.6 kt' : 'STBD DRIVE DERATE';
+        }
+        if (title) title.textContent = on ? 'MCU Stabilized (79 °C)' : 'MCU Thermal Limit (85 °C)';
+        if (act) act.textContent = on ? 'Governor Holding <= 18 kt · Thermal Margin +6 °C' : 'Hold <= 18 kt · Inspect Aft J1939 Drop at Berth';
+      });
+    }
+    const aisBtn = doc.getElementById('v16-ais-btn');
+    if (aisBtn && aisBtn.dataset.v16Bound !== '1') {
+      aisBtn.dataset.v16Bound = '1';
+      aisBtn.addEventListener('click', function () {
+        const vp = doc.getElementById('v16-glass-viewport');
+        if (!vp) return;
+        const on = vp.getAttribute('data-ais') !== 'true';
+        vp.setAttribute('data-ais', on ? 'true' : 'false');
+        aisBtn.classList.toggle('is-active', on);
+        aisBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
 
     function selectV19Row(target, shouldFocus) {
       doc.querySelectorAll('#v19-triage .v9-triage-row').forEach(function (r) {

@@ -141,23 +141,41 @@ def build_v16_glass_html(corpus: dict[str, Any]) -> str:
     <div class="v16-visor-bar">
       <section class="v16-glass-pod v16-pod-left" aria-label="Vessel Speed, Channel Range and Propulsion Efficiency">
         <div class="v16-speed-row">
-          <span class="v16-speed-val va-nums">18.4</span>
+          <span id="v16-speed-val" class="v16-speed-val va-nums">18.4</span>
           <span class="v16-speed-unit">kt SOG</span>
-          <span class="v16-speed-cap va-nums">HOLD &lt;= 18 kt</span>
+          <span id="v16-speed-cap" class="v16-speed-cap va-nums">HOLD &lt;= 18 kt</span>
         </div>
         <div class="v16-route-line">Channel Range Marker · 1.2 nm to Berth</div>
         <div class="v16-eff-line va-nums">Propulsion Efficiency: <strong>{bte:.1f}% BTE</strong><br/>HDG 084°T · Depth 14.2 m</div>
       </section>
+      <div class="v16-glass-pod v16-compass-tape" aria-label="Heading and Cross-Track Tape">
+        <span class="v16-compass-heading va-nums">075° &middot; [ 084°T BERTH APPROACH ] &middot; 095°</span>
+        <span class="v16-compass-sub va-nums">XTE 0.02 nm STBD &middot; Wind 14 kt NE</span>
+      </div>
       <section class="v16-glass-pod v16-pod-right v16-pod-warn" aria-label="Propulsion Advisory">
-        <span class="va-pill" data-variant="status" data-state="warn">STBD DRIVE DERATE</span>
-        <div class="v16-warn-title">MCU Thermal Limit (85 °C)</div>
-        <div class="v16-warn-action">Hold &lt;= 18 kt · Inspect Aft J1939 Drop at Berth</div>
+        <span id="v16-warn-pill" class="va-pill" data-variant="status" data-state="warn">STBD DRIVE DERATE</span>
+        <div id="v16-warn-title" class="v16-warn-title">MCU Thermal Limit (85 °C)</div>
+        <div id="v16-warn-action" class="v16-warn-action">Hold &lt;= 18 kt · Inspect Aft J1939 Drop at Berth</div>
+      </section>
+      <section class="v16-glass-pod v16-pod-dock" aria-label="Berth Range and Under-Keel Clearance">
+        <div class="v16-route-line va-nums"><strong>Pier 4</strong> · 1.20 nm · ETA <span id="v16-eta-val">03m 54s</span></div>
+        <div class="v16-eff-line va-nums">UKC 8.4 m · Depth 14.2 m (Tide +0.6 m)</div>
       </section>
     </div>
-    <div id="v16-luminance-chips" class="v16-ctrl-chips" role="group" aria-label="Ambient Glare Mode">
-      <button type="button" class="va-pill v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.8:1" aria-pressed="true">Daylight Glare</button>
-      <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.9:1" aria-pressed="false">Sunset Watch</button>
-      <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" aria-pressed="false">Night Transit</button>
+    <div class="v16-ais-layer" aria-hidden="true">
+      <div class="v16-ais-marker v16-ais-left va-nums">CH-BUOY 4G · 0.42 nm · BRG 261°</div>
+      <div class="v16-ais-marker v16-ais-right va-nums">BERTH 4 GATE · 1.20 nm · CPA CLEAR</div>
+    </div>
+    <div class="v16-ctrl-chips" role="toolbar" aria-label="Ambient Glare and Bridge Controls">
+      <div id="v16-luminance-chips" class="v16-lum-group" role="group" aria-label="Ambient Glare Mode">
+        <button type="button" class="va-pill v16-lum-chip is-active" data-variant="chip" data-luminance="daylight" data-contrast="10.8:1" aria-pressed="true">Daylight Glare</button>
+        <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="dusk" data-contrast="11.9:1" aria-pressed="false">Sunset Watch</button>
+        <button type="button" class="va-pill v16-lum-chip" data-variant="chip" data-luminance="night" data-contrast="13.4:1" aria-pressed="false">Night Transit</button>
+      </div>
+      <div id="v16-bridge-toggles" class="v16-lum-group" role="group" aria-label="Bridge System Toggles">
+        <button type="button" id="v16-derate-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Throttle Limiter (&lt;=18 kt)</button>
+        <button type="button" id="v16-ais-btn" class="va-pill v16-lum-chip" data-variant="chip" aria-pressed="false">Conformal AIS Vectors</button>
+      </div>
     </div>
   </div>
 </div>"""

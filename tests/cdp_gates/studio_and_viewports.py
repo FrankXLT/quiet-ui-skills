@@ -127,8 +127,10 @@ def _check_studio_bar_and_viewports(driver: Any, base_url: str, errs: list[str])
         b.classList.remove('is-tucked');
         if (b.getBoundingClientRect().height > 48.5) return 'height>48.5';
         if (b.scrollWidth > b.clientWidth + 1 || document.documentElement.scrollWidth > document.documentElement.clientWidth + 1) return 'overflow';
-        const t = document.getElementById('va-studio-mode-tablist'), d = document.getElementById('va-domain-select');
-        if (d && d.getBoundingClientRect().width > 0 && t.getBoundingClientRect().left >= d.getBoundingClientRect().left) return 'tablist order';
+        if (document.getElementById('va-domain-select')) return 'obsolete #va-domain-select present';
+        const t = document.getElementById('va-studio-mode-tablist'), v = document.getElementById('va-view-select');
+        if (!v || v.querySelectorAll('optgroup').length < 6) return 'missing grouped #va-view-select';
+        if (v.getBoundingClientRect().width > 0 && t.getBoundingClientRect().left >= v.getBoundingClientRect().left) return 'tablist order';
         return '';
     """
     for vp_w, vp_h in ((390, 844), (840, 1050), (1440, 900), (1920, 1080), (3840, 2160)):

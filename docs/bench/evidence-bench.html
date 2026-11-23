@@ -424,13 +424,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 @layer utilities {
   .hidden,
-  [hidden]:not([hidden="until-found"]),
-  [data-rail-hidden="true"] {
+  [hidden]:not([hidden="until-found"]) {
     display: none;
-  }
-  .va-v9-focus-single,
-  :is(.v9-dual-grid, .v9-editorial-grid, .qe-companions-grid, .v02-book-spread, .v03-charts-grid, .v18-ledger-grid, .v9-split-runbook):has(> [data-rail-hidden="true"]) {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -2312,12 +2307,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background-color: var(--bg-surface);
     color: var(--text-primary);
   }
-  .va-rail-footer .va-tb-group { overflow: visible; }
+  .va-rail-footer .va-tb-group { overflow: visible; flex: 0 0 auto; }
   .va-rail-footer .va-tb-btn {
     position: relative;
     min-block-size: 30px;
-    min-inline-size: 32px;
-    padding: 0 0.5rem;
+    min-inline-size: 0;
+    padding: 0 0.4rem;
+    font-size: 11px;
   }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-rail-footer .va-tb-btn::after { content: ""; position: absolute; inset: -7px 0; }
@@ -11885,7 +11881,12 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     }
   }
 
-  window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
+  window.QuietEvidenceRuntime = {
+    boot: boot,
+    setActiveTerm: setActiveTerm,
+    renderScopeAtTime: renderScopeAtTime,
+    clearScopeCursor: clearScopeCursor
+  };
 })(window, typeof document !== 'undefined' ? document : null);
 
 

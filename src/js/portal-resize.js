@@ -59,6 +59,8 @@
       return;
     }
     const fit = computeScale(dims.width, dims.height, matEl, zoomMode);
+    scalerEl.scrollLeft = 0;
+    scalerEl.scrollTop = 0;
     scalerEl.classList.toggle('has-hinge', isFoldableSize(dims.width, dims.height));
     scalerEl.style.width = fit.scalerW + 'px';
     scalerEl.style.height = fit.scalerH + 'px';

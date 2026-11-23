@@ -78,6 +78,18 @@ def _check_v15_and_v16_optics(driver: Any, base_url: str, errs: list[str]) -> No
                     if (cr < 7.0) return `scrim contrast ${cr.toFixed(2)} < 7.0 (${lumMode})`;
                 }
             }
+            if (lumMode === 'night') {
+                const db = document.getElementById('v16-derate-btn'), ab = document.getElementById('v16-ais-btn');
+                if (!db || !ab) return 'missing derate/ais btns';
+                db.click(); ab.click();
+                if (document.querySelectorAll('#v16-luminance-chips .is-active').length !== 1) return 'luminance chip desync';
+                if (db.getAttribute('aria-pressed') !== 'true' || ab.getAttribute('aria-pressed') !== 'true') return 'bridge aria desync';
+                if (document.getElementById('v16-speed-val').textContent.trim() !== '17.6') return 'derate speed update failed';
+                if (document.getElementById('v16-warn-pill').getAttribute('data-state') !== 'nominal') return 'derate state failed';
+                if (document.getElementById('v16-glass-viewport').getAttribute('data-ais') !== 'true') return 'ais toggle failed';
+                db.click(); ab.click();
+                if (db.getAttribute('aria-pressed') !== 'false' || document.querySelectorAll('#v16-luminance-chips .is-active').length !== 1) return 'untoggle aria desync';
+            }
             return '';
         """)
         driver.switch_to.default_content()
@@ -105,8 +117,15 @@ def _check_v17_and_v18_smart_home(driver: Any, base_url: str, errs: list[str]) -
         if ((1 - occ / Math.max(1, vr.width * vr.height)) < 0.76) return 'unobstructed canvas < 76%';
         doc.querySelector('button[data-v17-backdrop="landscape"]').click();
         doc.querySelector('button[data-v17-scene="goodnight"]').click();
+        if (!doc.getElementById('v17-clock-time').textContent.includes('10:45')) return 'scene telemetry failed';
+        doc.getElementById('v17-sp-up').click();
+        if (!doc.getElementById('v17-sp-val').textContent.includes('21.5')) return 'setpoint nudge failed';
+        doc.getElementById('v17-mat-btn').click();
+        if (vp.getAttribute('data-v17-mat') !== 'obsidian') return 'mat toggle failed';
         doc.getElementById('v17-unit-btn').click();
-        return vp.innerText.includes('71 °F') ? 'ok' : 'unit toggle failed';
+        if (!vp.innerText.includes('71 °F')) return 'unit toggle failed';
+        doc.getElementById('v17-sp-up').click();
+        return doc.getElementById('v17-sp-val').textContent.trim() === '72 °F' ? 'ok' : 'F setpoint step failed';
     """)
     time.sleep(0.3)
     if v17_res != "ok":

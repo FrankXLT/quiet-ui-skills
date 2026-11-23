@@ -338,5 +338,15 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context path/to/app/.quiet-ui.md --strict-drift
 ```
 
+---
+
+## 10. Studio Portal Navigation & Stage Interaction Contract (`v9.5.0`)
+
+1. **Unified `<optgroup>` Domain + View Picker (`#va-view-select`)**: The Studio topbar consolidates domain and example selection inside a single `<optgroup>` selector paired with seamless cross-domain `<` and `>` stepping (`1 / 21`..`21 / 21`), eliminating duplicate dropdown chrome.
+2. **Single-Owner Collapse & Zero Horizontal Overflow**: `N3` composite shells keep `.va-rail-collapse-btn` exclusively in `#va-shell-topbar`, rendering `.va-rail-brand` as a non-redundant section kicker while tightening `.va-rail-footer` (`overflow-x: hidden`, `scrollWidth <= clientWidth`).
+3. **Non-Blanking Spotlight Rail & On-Stage Inspectors**: Clicking rail anchors keeps 100% of views mounted, smooth-scrolls targets (`scrollIntoView` + `.is-rail-spotlight`), tracks location via `IntersectionObserver` scroll-spy, and pairs `Interactive Controls` with `.qe-scope-preset-bar` waveform inspectors, keyboard/click `.qe-table` row inspectors, and `v07` node selection.
+4. **Overview Standards Ledger (`#va-landing-standards`)**: The Studio `Overview` landing documents the 4 foundational authorities (`NIST SP 811` / `ISO 80000`, `ISA-101` / `NUREG-0700`, `FDA IEC 62366` / `NASA-STD-3001`, and `SAE J1939` / `ITU-T Z.120` / `NIST AI RMF 100-1`).
+
+
 
 

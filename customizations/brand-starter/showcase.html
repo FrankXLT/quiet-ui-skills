@@ -123,21 +123,13 @@ summary::-webkit-details-marker { display: none; }
   background: #FFFFFF; color: #0F172A; font-size: 12px; font-weight: 600; cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center; gap: 0.3rem; white-space: nowrap; font-family: inherit;
 }
-.va-tier-select { inline-size: 100%; min-inline-size: 0; max-inline-size: 280px; flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; }
+.va-tier-select { inline-size: 100%; min-inline-size: 0; max-inline-size: 380px; flex: 1 1 0; overflow: hidden; text-overflow: ellipsis; }
+.va-tier-select optgroup { background: #F8FAFC; color: #475569; font-weight: 700; font-style: normal; }
+.va-tier-select option { background: #FFFFFF; color: #0F172A; font-weight: 500; }
 .va-studio-select:hover, .va-studio-btn:hover { background: #F8FAFC; border-color: #94A3B8; }
 .va-studio-btn.is-active, .va-studio-btn[aria-pressed="true"] { background: #1D4ED8; border-color: #1D4ED8; color: #FFFFFF; }
 .va-auto-btn { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; font-size: 11.5px; padding: 0.15rem 0.45rem; }
 .va-auto-btn:hover { background: #DBEAFE; border-color: #93C5FD; }
-
-.va-inline-ctrl {
-  display: inline-flex; align-items: center; gap: 0.25rem; min-block-size: 30px; padding: 0 0.45rem;
-  border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; color: #0F172A; font-size: 12px; white-space: nowrap;
-}
-.va-domain-ctrl { max-inline-size: 205px; flex: 0 1 auto; }
-.va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 140px; overflow: hidden; text-overflow: ellipsis; }
-.va-ctrl-prefix { color: #475569; font-weight: 600; font-size: 11px; }
-.va-ctrl-bare-select { border: 0; background: transparent; color: #0F172A; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; outline: none; padding-right: 0.12rem; }
-.va-ctrl-bare-select option { background: #FFFFFF; color: #0F172A; }
 
 .va-gear-btn { position: relative; min-inline-size: 30px; padding: 0 0.45rem; }
 .va-settings-dot { position: absolute; top: 4px; right: 4px; inline-size: 6px; block-size: 6px; border-radius: 999px; background: #1D4ED8; }
@@ -166,9 +158,7 @@ summary::-webkit-details-marker { display: none; }
 }
 @media (min-width: 700px) and (max-width: 1099px) {
   .va-brand-text { display: none; }
-  .va-domain-ctrl { max-inline-size: 170px; }
-  .va-domain-ctrl .va-ctrl-bare-select { max-inline-size: 108px; }
-  .va-tier-select { min-inline-size: 0; max-inline-size: 220px; }
+  .va-tier-select { min-inline-size: 0; max-inline-size: 290px; }
 }
 @media (max-width: 519px) {
   #va-studio-bar, .va-studio-bar { padding: 0 0.3rem; gap: 0.2rem; }
@@ -178,8 +168,8 @@ summary::-webkit-details-marker { display: none; }
   .va-studio-btn { padding: 0.15rem 0.36rem; }
 }
 
-html[data-studio-view="overview"] :is(.va-domain-ctrl, .va-bar-center, #va-bridge-btn, .va-examples-only, #va-portal-mat),
-html[data-studio-view="components"] :is(.va-domain-ctrl, .va-bar-center, #va-bridge-btn, .va-examples-only, #va-studio-landing),
+html[data-studio-view="overview"] :is(.va-bar-center, #va-bridge-btn, .va-examples-only, #va-portal-mat),
+html[data-studio-view="components"] :is(.va-bar-center, #va-bridge-btn, .va-examples-only, #va-studio-landing),
 html[data-studio-view="examples"] #va-studio-landing,
 [hidden] {
   display: none;
@@ -210,7 +200,7 @@ html[data-studio-view="examples"] #va-studio-landing,
 #va-portal-scaler {
   box-sizing: content-box;
   position: relative;
-  overflow: hidden;
+  overflow: clip;
   background: #FFFFFF;
   border: 1px solid #CBD5E1;
   border-radius: 8px;
@@ -234,6 +224,9 @@ html[data-studio-view="examples"] #va-studio-landing,
 }
 
 #va-stage-portal {
+  position: absolute;
+  top: 0;
+  left: 0;
   border: none;
   background: #FFFFFF;
   display: block;
@@ -848,6 +841,20 @@ dialog#va-bridge-dialog {
   background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 0.36rem 0.6rem; color: #0F172A; word-break: break-all;
 }
 .va-copy-status { font-size: 12px; color: #15803D; font-weight: 600; }
+.va-standards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+@media (max-width: 759px) { .va-standards-grid { grid-template-columns: minmax(0, 1fr); } }
+.va-standard-card {
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.95rem 1.05rem;
+  display: flex; flex-direction: column; gap: 0.42rem;
+}
+.va-standard-card h3 { margin: 0; font-size: 14.5px; font-weight: 700; color: #0F172A; }
+.va-standard-card p { margin: 0; font-size: 13px; line-height: 1.48; color: #475569; }
+.va-std-tags { display: flex; flex-wrap: wrap; gap: 0.32rem; margin-top: 0.15rem; }
+.va-std-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; font-weight: 600;
+  color: #1D4ED8; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 999px; padding: 1px 7px;
+}
+
 
   </style>
   <link rel="stylesheet" href="./styles/quiet-ui-tokens.css" />
@@ -865,24 +872,38 @@ dialog#va-bridge-dialog {
         <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab" data-studio-tab="examples" aria-selected="false">Examples</button>
         <button type="button" role="tab" id="va-tab-components" class="va-mode-tab" data-studio-tab="components" aria-selected="false">Components</button>
       </div>
-      <label class="va-inline-ctrl va-domain-ctrl va-fold-up va-examples-only" for="va-domain-select">
-        <span class="va-ctrl-prefix">Domain:</span>
-        <select id="va-domain-select" class="va-ctrl-bare-select" aria-label="Select Domain">
-          <option value="01-clinical-icu-and-trials">01 · Clinical &amp; Trials</option>
-          <option value="02-cloud-cyber-and-ai-ops">02 · Cloud, Security &amp; AI</option>
-          <option value="03-industrial-grid-and-manufacturing">03 · Grid &amp; Manufacturing</option>
-          <option value="04-civic-finance-and-stem-learning">04 · Finance &amp; STEM Lab</option>
-          <option value="05-physical-systems-auto-and-aero">05 · Auto &amp; Aerospace</option>
-        </select>
-      </label>
     </div>
 
     <div class="va-bar-center va-examples-only">
       <button type="button" id="va-step-prev" class="va-step-btn" aria-label="Previous View" title="Previous View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8 10 12.5" fill="none"/></svg></button>
       <select id="va-view-select" class="va-studio-select va-tier-select" aria-label="Select Example View">
-        <option value="v01-icu-bedside-terminal">v01 · ICU Bedside Terminal</option>
-        <option value="v02-trial-regulatory-brief">v02 · Trial Regulatory Brief</option>
-        <option value="v03-patient-recovery-companion">v03 · Patient Recovery Guide</option>
+        <optgroup label="01 · Clinical &amp; Trials">
+          <option value="v01-icu-bedside-terminal">01 · v01 — ICU Bedside Terminal</option>
+          <option value="v02-trial-regulatory-brief">01 · v02 — Trial Regulatory Brief</option>
+          <option value="v03-patient-recovery-companion">01 · v03 — Patient Recovery Guide</option>
+        </optgroup>
+        <optgroup label="02 · Cloud, Security &amp; AI">
+          <option value="v04-sre-incident-workbench">02 · v04 — SRE Incident Workbench</option>
+          <option value="v05-zero-trust-ato-spec">02 · v05 — Zero-Trust Security Spec</option>
+          <option value="v06-ai-drift-and-lineage-ide">02 · v06 — AI Calibration &amp; Lineage</option>
+          <option value="v19-product-roadmap-and-triage">02 · v19 — Product Roadmap &amp; Triage</option>
+        </optgroup>
+        <optgroup label="03 · Grid &amp; Manufacturing">
+          <option value="v07-grid-scada-poi-console">03 · v07 — Grid SCADA POI Console</option>
+          <option value="v08-plant-floor-wall-kiosk">03 · v08 — Plant-Floor Wall Display</option>
+          <option value="v09-spc-quality-and-modbus-report">03 · v09 — SPC Quality &amp; Modbus Audit</option>
+        </optgroup>
+        <optgroup label="04 · Finance &amp; STEM Lab">
+          <option value="v10-civic-capital-budget-deck">04 · v10 — Civic Capital Budget</option>
+          <option value="v11-treasury-stress-test-solver">04 · v11 — Treasury Stress Solver</option>
+          <option value="v12-stem-interactive-lab">04 · v12 — STEM RC Discharge Lab</option>
+          <option value="v20-student-capstone-lab-report">04 · v20 — Student Capstone Lab Report</option>
+        </optgroup>
+        <optgroup label="05 · Auto &amp; Aerospace">
+          <option value="v13-propulsion-archival-monograph">05 · v13 — Propulsion Monograph</option>
+          <option value="v14-fieldbus-and-scope-debugger">05 · v14 — CAN-FD Fieldbus Debugger</option>
+          <option value="v21-field-anomaly-escalation-tsn">05 · v21 — Field Escalation TSN</option>
+        </optgroup>
       </select>
       <button type="button" id="va-step-next" class="va-step-btn" aria-label="Next View" title="Next View Across Domains"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none"/></svg></button>
       <span id="va-step-pos" class="va-step-pos" aria-live="polite">1 / 21</span>
@@ -1470,13 +1491,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 @layer utilities {
   .hidden,
-  [hidden]:not([hidden="until-found"]),
-  [data-rail-hidden="true"] {
+  [hidden]:not([hidden="until-found"]) {
     display: none;
-  }
-  .va-v9-focus-single,
-  :is(.v9-dual-grid, .v9-editorial-grid, .qe-companions-grid, .v02-book-spread, .v03-charts-grid, .v18-ledger-grid, .v9-split-runbook):has(> [data-rail-hidden="true"]) {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -1992,10 +2008,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-shell-rail {
     background: var(--bg-elevated);
     border-right: 1px solid var(--border-hairline);
-    padding: 0.75rem;
+    padding: 0.72rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    overflow-x: hidden;
     overflow-y: auto;
   }
 
@@ -2004,12 +2021,24 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     align-items: center;
     justify-content: space-between;
     gap: 0.45rem;
-    padding: 0.35rem 0.5rem 0.6rem;
-    margin-bottom: 0.25rem;
+    padding: 0.32rem 0.45rem 0.52rem;
+    margin-bottom: 0.2rem;
     border-bottom: 1px solid var(--border-hairline);
     font-size: var(--ts-sm);
     font-weight: 700;
     color: var(--text-primary);
+  }
+  .va-rail-brand.is-kicker-only { padding: 0.15rem 0.45rem 0.42rem; }
+  .va-rail-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .va-rail-brand-title {
     display: inline-flex;
@@ -2028,6 +2057,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     border-radius: var(--radius-sm);
     text-decoration: none;
     min-block-size: 34px;
+    min-inline-size: 0;
+    overflow: hidden;
   }
   .va-rail-link:hover,
   .va-rail-link.is-active {
@@ -2064,23 +2095,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-rail-collapse-btn:hover,
   .va-rail-reopen-btn:hover { background: var(--bg-subtle); color: var(--text-primary); }
   .va-rail-reopen-btn { display: none; align-self: flex-start; margin: 0.55rem 0 0 1.15rem; }
-  .va-rail-filter-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.6rem;
-    padding: 0.42rem 0.75rem;
-    background: var(--bg-elevated);
-    border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-sm);
-    font-size: var(--ts-xs);
-    color: var(--text-secondary);
-  }
   .va-rail-quick-group { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--border-hairline); }
   html:not([data-effective-nav="n3"]) .va-shell-topbar .va-rail-collapse-btn { display: none; }
   @media (max-width: 1099px) { .va-shell-topbar .va-rail-collapse-btn { display: none; } }
-  .va-shell-rail .va-rail-footer { gap: 0.35rem; }
-  .va-shell-rail .va-swatch-row { gap: 0.32rem; }
+  .va-shell-rail .va-rail-footer { gap: 0.28rem; padding-inline: 0; }
+  .va-shell-rail .va-swatch-row { gap: 0.28rem; }
 
   .va-shell-bottomdock {
     position: sticky;
@@ -2125,7 +2144,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   /* N1: Left Rail (Desktop >= 1100px) / Drawer (< 1100px) */
   @media (min-width: 1100px) {
     html[data-effective-nav="n1"] .va-app-shell {
-      grid-template-columns: 272px minmax(0, 1fr);
+      grid-template-columns: 280px minmax(0, 1fr);
       grid-template-rows: minmax(0, 1fr);
     }
     html[data-effective-nav="n1"] .va-shell-topbar,
@@ -2165,7 +2184,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   /* N3: Composite Top Bar + Left Rail */
   @media (min-width: 1100px) {
     html[data-effective-nav="n3"] .va-app-shell {
-      grid-template-columns: 272px minmax(0, 1fr);
+      grid-template-columns: 280px minmax(0, 1fr);
       grid-template-rows: auto minmax(0, 1fr);
     }
     html[data-effective-nav="n3"] .va-shell-topbar { grid-column: 1 / -1; display: flex; }
@@ -3418,12 +3437,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background-color: var(--bg-surface);
     color: var(--text-primary);
   }
-  .va-rail-footer .va-tb-group { overflow: visible; }
+  .va-rail-footer .va-tb-group { overflow: visible; flex: 0 0 auto; }
   .va-rail-footer .va-tb-btn {
     position: relative;
     min-block-size: 30px;
-    min-inline-size: 32px;
-    padding: 0 0.5rem;
+    min-inline-size: 0;
+    padding: 0 0.4rem;
+    font-size: 11px;
   }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-rail-footer .va-tb-btn::after { content: ""; position: absolute; inset: -7px 0; }
@@ -5722,6 +5742,325 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 }
 }
 
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.5.0 R2 — Non-Blanking Rail Spotlight, Stage Inspectors & Optical v16/v17 Upgrade */
+
+@layer shell {
+  .is-rail-spotlight {
+    border-radius: var(--radius-inner);
+    box-shadow: inset 3px 0 0 var(--accent-focal), 0 0 0 2px color-mix(in oklch, var(--accent-focal) 28%, transparent);
+    transition: box-shadow 0.28s ease;
+  }
+  .is-rail-spotlight-fade {
+    box-shadow: inset 3px 0 0 transparent, 0 0 0 2px transparent;
+  }
+}
+
+@layer evidence {
+  .qe-scope-preset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem 0.6rem;
+    margin-top: 0.42rem;
+    padding-top: 0.42rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+  .qe-scope-preset-group,
+  .qe-scope-ch-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.28rem;
+  }
+  .qe-scope-group-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-inline-end: 0.15rem;
+  }
+  .qe-scope-preset-btn {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    min-block-size: 26px;
+    padding: 0.22rem 0.56rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .qe-scope-preset-btn:hover { background: var(--bg-subtle); border-color: var(--accent-focal); }
+  .qe-scope-preset-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .qe-scope-preset-btn[aria-pressed="true"] {
+    background: var(--accent-focal);
+    border-color: var(--accent-focal);
+    color: #FFFFFF;
+  }
+  .qe-waveform-svg .qe-ch-dim { opacity: 0.22; transition: opacity 0.16s ease; }
+  .qe-waveform-svg rect[data-role="channel"].qe-ch-focus {
+    stroke: var(--accent-focal);
+    stroke-width: 1.8;
+  }
+
+  .qe-table tbody tr[tabindex] { cursor: pointer; transition: background-color 0.14s ease; }
+  .qe-table tbody tr[tabindex]:hover {
+    background-color: color-mix(in oklch, var(--accent-focal) 7%, transparent);
+  }
+  .qe-table tbody tr[tabindex]:focus-visible {
+    outline: 2px solid var(--accent-focal);
+    outline-offset: -2px;
+  }
+  .qe-table tbody tr.is-selected-row {
+    background-color: color-mix(in oklch, var(--accent-focal) 12%, transparent);
+    box-shadow: inset 3px 0 0 var(--accent-focal);
+  }
+  .qe-row-inspector {
+    margin-top: 0.45rem;
+    padding: 0.48rem 0.72rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-subtle);
+    border-inline-start: 3px solid var(--accent-focal);
+    background: var(--bg-elevated);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-primary);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
+  }
+  .qe-row-inspector-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-focal);
+  }
+  .qe-sr-live {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .qe-scalar-card.is-node-highlight,
+  .qe-subpanel.is-node-highlight,
+  .v9-kpi-tile.is-selected-tile {
+    outline: 2px solid var(--accent-focal);
+    outline-offset: 2px;
+    box-shadow: 0 4px 16px color-mix(in oklch, var(--accent-focal) 16%, transparent);
+  }
+
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .qe-scope-preset-btn,
+    .v07-node-chip { min-block-size: 44px; min-inline-size: 44px; padding-inline: 0.65rem; }
+  }
+}
+
+@layer views {
+  .v07-node-bar {
+    margin: 0.65rem 0 0.75rem;
+    padding: 0.6rem 0.78rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.48rem;
+  }
+  .v07-node-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.38rem; }
+  .v07-node-chip {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    min-block-size: 28px;
+    padding: 0.24rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .v07-node-chip:hover { border-color: var(--accent-focal); }
+  .v07-node-chip.is-active,
+  .v07-node-chip[aria-pressed="true"] {
+    background: var(--accent-focal);
+    border-color: var(--accent-focal);
+    color: #FFFFFF;
+  }
+  .v07-node-diag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+  }
+
+  /* v16 Maritime Smart-Glass Refractive Layer & Peripheral Conformal Overlays */
+  .v16-glass-viewport .v16-glass-pod {
+    background-color: rgba(8, 15, 28, var(--m7-scrim-alpha));
+    background-image: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 48%, rgba(2, 6, 23, 0.20) 100%);
+    backdrop-filter: blur(26px) saturate(1.55);
+    -webkit-backdrop-filter: blur(26px) saturate(1.55);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -1px 0 rgba(2, 6, 23, 0.42), 0 14px 36px rgba(2, 6, 23, 0.44);
+  }
+  .v16-glass-viewport .v16-pod-warn {
+    border-left: 3px solid #F59E0B;
+  }
+  .v16-glass-viewport[data-derate="true"] .v16-pod-warn {
+    border-left: 3px solid #34D399;
+  }
+  .v16-glass-viewport .v16-pod-warn .va-pill[data-variant="status"][data-state="nominal"] {
+    background: transparent;
+    border-width: 0;
+    padding-inline: 0;
+    color: #A7F3D0;
+  }
+  .v16-lum-group { display: contents; }
+  .v16-compass-tape {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1rem;
+    max-inline-size: min(410px, calc(100vw - 2rem));
+    padding: 0.42rem 0.85rem;
+    text-align: center;
+    gap: 0.12rem;
+  }
+  .v16-compass-heading {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
+    white-space: nowrap;
+  }
+  .v16-compass-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #E0F2FE;
+    white-space: nowrap;
+  }
+  .v16-pod-dock {
+    top: auto;
+    bottom: 0.85rem;
+    left: 1rem;
+    padding: 0.56rem 0.86rem;
+  }
+  .v16-ais-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .v16-glass-viewport[data-ais="true"] .v16-ais-layer { opacity: 1; }
+  .v16-ais-marker {
+    position: absolute;
+    top: 46%;
+    max-inline-size: 188px;
+    padding: 0.34rem 0.58rem;
+    border-radius: 8px;
+    background-color: rgba(8, 15, 28, 0.84);
+    border: 1px solid rgba(56, 189, 248, 0.65);
+    box-shadow: 0 4px 16px rgba(2, 6, 23, 0.38);
+    color: #F0F9FF;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  .v16-ais-left { left: 1rem; border-left: 3px solid #38BDF8; }
+  .v16-ais-right { right: 1rem; border-right: 3px solid #34D399; text-align: end; }
+  @media (min-width: 640px) {
+    .v16-pod-dock { max-inline-size: min(280px, calc(38vw - 1.5rem)); }
+    .v16-ctrl-chips { max-inline-size: calc(100% - 20.5rem); justify-content: flex-end; }
+  }
+  @media (min-width: 640px) and (max-width: 1159px) {
+    .v16-compass-tape { top: 8.1rem; }
+  }
+  @media (max-width: 639px) {
+    .v16-compass-tape,
+    .v16-pod-dock {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      transform: none;
+      max-inline-size: 100%;
+    }
+    .v16-compass-tape { display: flex; text-align: start; order: 2; }
+    .v16-ais-layer { display: none; }
+  }
+
+  /* v17 Architectural Frame Double-Bevel Gallery Mat & Specular Telemetry Glass */
+  .v17-frame-viewport[data-v17-mat="linen"] {
+    background: linear-gradient(160deg, #F3F0E8 0%, #E7E2D6 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 0 0 9px #F1EDE4, inset 0 0 0 10px rgba(59, 47, 37, 0.22), 0 14px 34px rgba(15, 23, 42, 0.26);
+  }
+  .v17-frame-viewport[data-v17-mat="obsidian"] {
+    background: linear-gradient(160deg, #1E1D1B 0%, #141312 100%);
+    border-color: #2E2A26;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 0 0 9px #1B1A18, inset 0 0 0 10px rgba(255, 255, 255, 0.08), 0 16px 38px rgba(0, 0, 0, 0.52);
+  }
+  .v17-mat-window {
+    box-shadow: inset 0 2px 8px rgba(15, 23, 42, 0.38), 0 0 0 1px rgba(120, 100, 80, 0.35);
+  }
+  .v17-glass-pod,
+  .v17-scene-bar {
+    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(2, 6, 23, 0.12) 100%);
+    backdrop-filter: blur(22px) saturate(1.42);
+    -webkit-backdrop-filter: blur(22px) saturate(1.42);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 24px rgba(2, 6, 23, 0.30);
+  }
+  .v17-pod-hdr { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .v17-pod-icon { inline-size: 13px; block-size: 13px; flex-shrink: 0; opacity: 0.92; }
+  .v17-setpoint-ctl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    margin-inline-start: 0.18rem;
+  }
+  .v17-nudge-btn {
+    inline-size: 22px;
+    block-size: 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    background: rgba(255, 255, 255, 0.14);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .v17-nudge-btn:hover { background: rgba(253, 230, 138, 0.28); border-color: #FDE68A; }
+  .v17-nudge-btn:focus-visible { outline: 2px solid #FDE68A; outline-offset: 1px; }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .v17-setpoint-ctl { gap: 0.45rem; }
+    .v17-nudge-btn { inline-size: 44px; block-size: 44px; min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  @media print {
+    .qe-scope-preset-bar,
+    .qe-row-inspector,
+    .v07-node-bar,
+    .v07-node-diag { display: none; }
+  }
+}
+
   </script>
   <script type="text/plain" id="va-bundled-stage-js">
 /* SPDX-License-Identifier: Apache-2.0 */
@@ -6009,7 +6348,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     }
   }
 
-  window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
+  window.QuietEvidenceRuntime = {
+    boot: boot,
+    setActiveTerm: setActiveTerm,
+    renderScopeAtTime: renderScopeAtTime,
+    clearScopeCursor: clearScopeCursor
+  };
 })(window, typeof document !== 'undefined' ? document : null);
 
 
@@ -9959,6 +10303,45 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (vp && btn.dataset.luminance) vp.setAttribute('data-luminance', btn.dataset.luminance);
       if (vp && btn.dataset.contrast) vp.setAttribute('data-contrast', btn.dataset.contrast);
     });
+    const derateBtn = doc.getElementById('v16-derate-btn');
+    if (derateBtn && derateBtn.dataset.v16Bound !== '1') {
+      derateBtn.dataset.v16Bound = '1';
+      derateBtn.addEventListener('click', function () {
+        const vp = doc.getElementById('v16-glass-viewport');
+        if (!vp) return;
+        const on = vp.getAttribute('data-derate') !== 'true';
+        vp.setAttribute('data-derate', on ? 'true' : 'false');
+        derateBtn.classList.toggle('is-active', on);
+        derateBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        const spd = doc.getElementById('v16-speed-val');
+        const cap = doc.getElementById('v16-speed-cap');
+        const eta = doc.getElementById('v16-eta-val');
+        const pill = doc.getElementById('v16-warn-pill');
+        const title = doc.getElementById('v16-warn-title');
+        const act = doc.getElementById('v16-warn-action');
+        if (spd) spd.textContent = on ? '17.6' : '18.4';
+        if (cap) cap.textContent = on ? 'GOVERNED <= 18 kt' : 'HOLD <= 18 kt';
+        if (eta) eta.textContent = on ? '04m 05s' : '03m 54s';
+        if (pill) {
+          pill.setAttribute('data-state', on ? 'nominal' : 'warn');
+          pill.textContent = on ? 'GOVERNOR ACTIVE · 17.6 kt' : 'STBD DRIVE DERATE';
+        }
+        if (title) title.textContent = on ? 'MCU Stabilized (79 °C)' : 'MCU Thermal Limit (85 °C)';
+        if (act) act.textContent = on ? 'Governor Holding <= 18 kt · Thermal Margin +6 °C' : 'Hold <= 18 kt · Inspect Aft J1939 Drop at Berth';
+      });
+    }
+    const aisBtn = doc.getElementById('v16-ais-btn');
+    if (aisBtn && aisBtn.dataset.v16Bound !== '1') {
+      aisBtn.dataset.v16Bound = '1';
+      aisBtn.addEventListener('click', function () {
+        const vp = doc.getElementById('v16-glass-viewport');
+        if (!vp) return;
+        const on = vp.getAttribute('data-ais') !== 'true';
+        vp.setAttribute('data-ais', on ? 'true' : 'false');
+        aisBtn.classList.toggle('is-active', on);
+        aisBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    }
 
     function selectV19Row(target, shouldFocus) {
       doc.querySelectorAll('#v19-triage .v9-triage-row').forEach(function (r) {
@@ -10048,6 +10431,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 (function (global) {
   'use strict';
 
+  var V17_SCENES = {
+    morning: { time: '7:15 AM', meta: 'Morning Routine · Clear ', c: '12 °C', f: '54 °F', energy: 'Solar 5.8 kW · Battery 91%', sub: 'Shades Open 85% · All 6 Leak Sensors Dry' },
+    evening: { time: '7:42 PM', meta: 'Wed, Nov 18 · Clear ', c: '14 °C', f: '57 °F', energy: 'Solar 4.8 kW · Battery 84%', sub: 'Evening Scene · All 6 Leak Sensors Dry' },
+    movie: { time: '8:30 PM', meta: 'Cinema Lights 15% · Clear ', c: '13 °C', f: '55 °F', energy: 'Media Load 0.4 kW · Battery 82%', sub: 'Theater Dimmed · All 6 Leak Sensors Dry' },
+    goodnight: { time: '10:45 PM', meta: 'Doors Armed · Clear ', c: '11 °C', f: '52 °F', energy: 'Grid Standby · Battery 80%', sub: 'Night Setback · All 6 Leak Sensors Dry' }
+  };
+
   function applyTempUnit(root, unit) {
     if (!root) return;
     var u = unit === 'f' ? 'f' : 'c';
@@ -10055,6 +10445,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     root.querySelectorAll('[data-temp-c][data-temp-f]').forEach(function (el) {
       el.textContent = u === 'f' ? el.getAttribute('data-temp-f') : el.getAttribute('data-temp-c');
     });
+    var spEl = root.querySelector('#v17-sp-val');
+    if (spEl) {
+      var c = parseFloat(spEl.getAttribute('data-setpoint-c') || '21.0');
+      var fAttr = spEl.getAttribute('data-setpoint-f');
+      var fVal = fAttr ? parseInt(fAttr, 10) : Math.round(c * 9 / 5 + 32);
+      spEl.textContent = u === 'f' ? (fVal + ' °F') : (c.toFixed(1) + ' °C');
+    }
   }
 
   function bootV17(doc) {
@@ -10086,8 +10483,64 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           b.classList.toggle('is-active', active);
           b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
+        var sc = V17_SCENES[scene];
+        if (sc) {
+          var clk = vp.querySelector('#v17-clock-time');
+          var meta = vp.querySelector('#v17-clock-meta');
+          var eng = vp.querySelector('#v17-energy-main');
+          var sub = vp.querySelector('#v17-energy-sub');
+          if (clk) clk.textContent = sc.time;
+          if (eng) eng.textContent = sc.energy;
+          if (sub) sub.textContent = sc.sub;
+          if (meta) {
+            meta.innerHTML = '';
+            meta.appendChild(doc.createTextNode(sc.meta));
+            var tSpan = doc.createElement('span');
+            tSpan.className = 'v17-temp-num';
+            tSpan.setAttribute('data-temp-c', sc.c);
+            tSpan.setAttribute('data-temp-f', sc.f);
+            tSpan.textContent = sc.c;
+            meta.appendChild(tSpan);
+          }
+          applyTempUnit(vp, vp.getAttribute('data-temp-unit') || 'c');
+        }
       });
     });
+
+    function nudgeSetpoint(step) {
+      var spEl = vp.querySelector('#v17-sp-val');
+      if (!spEl) return;
+      var unit = vp.getAttribute('data-temp-unit') || 'c';
+      if (unit === 'f') {
+        var curF = parseInt(spEl.getAttribute('data-setpoint-f') || '70', 10);
+        var nextF = Math.max(63, Math.min(77, curF + (step > 0 ? 1 : -1)));
+        var nextC = Math.round(((nextF - 32) * 5 / 9) * 2) / 2;
+        spEl.setAttribute('data-setpoint-f', String(nextF));
+        spEl.setAttribute('data-setpoint-c', nextC.toFixed(1));
+      } else {
+        var curC = parseFloat(spEl.getAttribute('data-setpoint-c') || '21.0');
+        var adjC = Math.max(17.0, Math.min(25.0, Math.round((curC + (step > 0 ? 0.5 : -0.5)) * 2) / 2));
+        spEl.setAttribute('data-setpoint-c', adjC.toFixed(1));
+        spEl.setAttribute('data-setpoint-f', String(Math.round(adjC * 9 / 5 + 32)));
+      }
+      applyTempUnit(vp, unit);
+    }
+    var spDown = doc.getElementById('v17-sp-down');
+    var spUp = doc.getElementById('v17-sp-up');
+    if (spDown) spDown.addEventListener('click', function () { nudgeSetpoint(-0.5); });
+    if (spUp) spUp.addEventListener('click', function () { nudgeSetpoint(0.5); });
+
+    var matBtn = doc.getElementById('v17-mat-btn');
+    if (matBtn) {
+      matBtn.addEventListener('click', function () {
+        var next = (vp.getAttribute('data-v17-mat') || 'linen') === 'linen' ? 'obsidian' : 'linen';
+        vp.setAttribute('data-v17-mat', next);
+        var dark = next === 'obsidian';
+        matBtn.classList.toggle('is-active', dark);
+        matBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        matBtn.textContent = dark ? 'Linen Mat' : 'Dark Mat';
+      });
+    }
 
     var unitBtn = doc.getElementById('v17-unit-btn');
     if (unitBtn) {
@@ -10203,6 +10656,403 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     },
   };
 }(window));
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.5.0 R2 — Waveform Presets, Table Row Inspector & Microgrid Node Selector */
+(function (global) {
+  'use strict';
+
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function fmtTime(val, unit) {
+    const n = Number(val);
+    if (!Number.isFinite(n)) return '';
+    const s = Math.abs(n) >= 10 ? n.toFixed(1) : (Math.abs(n) >= 1 ? n.toFixed(2).replace(/0$/, '') : n.toFixed(2));
+    return unit ? (s + '\u00a0' + unit) : s;
+  }
+
+  function computeScopePresets(meta) {
+    const channels = Array.isArray(meta.channels) ? meta.channels : [];
+    const maxGap = Number(meta.max_gap);
+    const tMin = Number(meta.t_min) || 0;
+    const tSpan = Number(meta.t_span) || 1;
+    let dropT = null;
+    let recT = null;
+    let peakT = null;
+    let peakMag = -Infinity;
+
+    for (let c = 0; c < channels.length; c++) {
+      const samples = Array.isArray(channels[c].samples) ? channels[c].samples : [];
+      for (let i = 0; i < samples.length; i++) {
+        const s = samples[i];
+        if (!Array.isArray(s) || s.length < 2) continue;
+        const t = Number(s[0]);
+        const v = s[1];
+        if ((v === null || v === undefined) && dropT === null) {
+          dropT = t;
+          for (let j = i + 1; j < samples.length; j++) {
+            if (Array.isArray(samples[j]) && samples[j][1] !== null && samples[j][1] !== undefined) {
+              recT = Number(samples[j][0]);
+              break;
+            }
+          }
+        }
+        if (i + 1 < samples.length && Number.isFinite(maxGap) && maxGap > 0) {
+          const nt = Number(samples[i + 1][0]);
+          if (nt - t > maxGap && dropT === null) {
+            dropT = t + (nt - t) * 0.5;
+            recT = nt;
+          }
+        }
+        if (c === 0 && v !== null && v !== undefined && Number.isFinite(Number(v))) {
+          const mag = Math.abs(Number(v));
+          if (mag > peakMag) {
+            peakMag = mag;
+            peakT = t;
+          }
+        }
+      }
+    }
+    if (dropT === null) dropT = tMin + tSpan * 0.35;
+    if (recT === null) recT = tMin + tSpan * 0.55;
+    if (peakT === null) peakT = tMin + tSpan * 0.25;
+    return [
+      { key: 'dropout', label: 'Inspect Dropout (' + fmtTime(dropT, meta.t_unit) + ')', t: dropT },
+      { key: 'recovery', label: 'Recovery (' + fmtTime(recT, meta.t_unit) + ')', t: recT },
+      { key: 'peak', label: 'Peak Excursion (' + fmtTime(peakT, meta.t_unit) + ')', t: peakT }
+    ];
+  }
+
+  function elementYBand(el) {
+    if (typeof el.getBBox === 'function') {
+      try {
+        const b = el.getBBox();
+        if (b && b.height >= 0) return [b.y, b.y + b.height];
+      } catch (_e) {}
+    }
+    if (el.hasAttribute('y')) {
+      const y = parseFloat(el.getAttribute('y') || '0');
+      const h = parseFloat(el.getAttribute('height') || '0');
+      return [y, y + h];
+    }
+    if (el.hasAttribute('y1') && el.hasAttribute('y2')) {
+      const y1 = parseFloat(el.getAttribute('y1')), y2 = parseFloat(el.getAttribute('y2'));
+      return [Math.min(y1, y2), Math.max(y1, y2)];
+    }
+    const pts = el.getAttribute('points') || '';
+    if (pts) {
+      const m = pts.match(/[\d.-]+[\s,]+([\d.-]+)/);
+      if (m) { const py = parseFloat(m[1]); return [py, py]; }
+    }
+    if (el.tagName && el.tagName.toLowerCase() === 'path') {
+      const m = (el.getAttribute('d') || '').match(/^[ML]\s*[\d.-]+[\s,]+([\d.-]+)/i);
+      if (m) { const py = parseFloat(m[1]); return [py, py]; }
+    }
+    return null;
+  }
+
+  function applyChannelFocus(svg, focusIdx) {
+    const rects = Array.from(svg.querySelectorAll('rect[data-role="channel"]'));
+    if (!rects.length) return;
+    const bands = rects.map(function (r) {
+      const y = parseFloat(r.getAttribute('y') || '0');
+      const h = parseFloat(r.getAttribute('height') || '0');
+      return { y0: y - 1, y1: y + h + 1, h: h };
+    });
+    svg.querySelectorAll('rect, path, line, text, polyline').forEach(function (el) {
+      if (el.classList.contains('qe-scope-cursor') || el.classList.contains('qe-live-cursor') ||
+          el.closest('.qe-scope-cursor, .qe-live-cursor')) return;
+      el.classList.remove('qe-ch-dim', 'qe-ch-focus');
+      if (focusIdx < 0) return;
+      const span = elementYBand(el);
+      if (!span || !Number.isFinite(span[0]) || !Number.isFinite(span[1])) return;
+      const cy = (span[0] + span[1]) * 0.5;
+      let lane = -1;
+      for (let i = 0; i < bands.length; i++) {
+        if (cy >= bands[i].y0 && cy <= bands[i].y1) { lane = i; break; }
+      }
+      if (lane < 0 || (span[1] - span[0]) > bands[lane].h * 1.15) return;
+      if (lane === focusIdx) el.classList.add('qe-ch-focus');
+      else el.classList.add('qe-ch-dim');
+    });
+  }
+
+  function initScopeInspectors(doc) {
+    const rt = (doc.defaultView && doc.defaultView.QuietEvidenceRuntime) || global.QuietEvidenceRuntime;
+    if (!rt || typeof rt.renderScopeAtTime !== 'function') return;
+    const win = doc.defaultView || global;
+
+    doc.querySelectorAll('svg[data-qe-scope="true"]').forEach(function (svg) {
+      const wrap = svg.closest('.qe-waveform-wrap');
+      if (!wrap || wrap.dataset.richScopeBound === '1') return;
+      const dataEl = wrap.querySelector('.qe-scope-data');
+      if (!dataEl) return;
+      let meta = null;
+      try { meta = JSON.parse(dataEl.textContent || '{}'); } catch (_e) { return; }
+      wrap.dataset.richScopeBound = '1';
+
+      const presets = computeScopePresets(meta);
+      const bar = doc.createElement('div');
+      bar.className = 'qe-scope-preset-bar';
+      bar.setAttribute('role', 'toolbar');
+      bar.setAttribute('aria-label', 'Waveform Cursor Presets and Channels');
+
+      const leftGrp = doc.createElement('div');
+      leftGrp.className = 'qe-scope-preset-group';
+      const lbl = doc.createElement('span');
+      lbl.className = 'qe-scope-group-lbl';
+      lbl.textContent = 'Inspector:';
+      leftGrp.appendChild(lbl);
+
+      let sweepId = 0;
+      const presetBtns = [];
+      let sweepBtn = null;
+      function stopSweep() {
+        if (sweepId) { win.clearInterval(sweepId); sweepId = 0; }
+        if (sweepBtn) sweepBtn.setAttribute('aria-pressed', 'false');
+      }
+
+      presets.forEach(function (p) {
+        const btn = doc.createElement('button');
+        btn.type = 'button';
+        btn.className = 'qe-scope-preset-btn';
+        btn.setAttribute('data-scope-preset', p.key);
+        btn.setAttribute('aria-pressed', 'false');
+        btn.textContent = p.label;
+        btn.addEventListener('click', function () {
+          stopSweep();
+          const already = btn.getAttribute('aria-pressed') === 'true';
+          presetBtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+          if (already && typeof rt.clearScopeCursor === 'function') {
+            rt.clearScopeCursor(svg);
+          } else {
+            btn.setAttribute('aria-pressed', 'true');
+            rt.renderScopeAtTime(svg, meta, p.t);
+          }
+        });
+        presetBtns.push(btn);
+        leftGrp.appendChild(btn);
+      });
+
+      sweepBtn = doc.createElement('button');
+      sweepBtn.type = 'button';
+      sweepBtn.className = 'qe-scope-preset-btn';
+      sweepBtn.setAttribute('data-scope-preset', 'sweep');
+      sweepBtn.setAttribute('aria-pressed', 'false');
+      sweepBtn.textContent = 'Sweep Scan';
+      sweepBtn.addEventListener('click', function () {
+        if (sweepId) { stopSweep(); return; }
+        presetBtns.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+        sweepBtn.setAttribute('aria-pressed', 'true');
+        const t0 = Number(meta.t_min) || 0;
+        const span = Number(meta.t_span) || 1;
+        let stepIdx = 0;
+        sweepId = win.setInterval(function () {
+          if (doc.hidden || !doc.body || !doc.body.contains(svg) || svg.getClientRects().length === 0) {
+            stopSweep();
+            return;
+          }
+          const t = t0 + ((stepIdx % 20) / 19) * span;
+          stepIdx += 1;
+          rt.renderScopeAtTime(svg, meta, t);
+        }, 160);
+      });
+      svg.addEventListener('pointerdown', stopSweep);
+      svg.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' || ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') stopSweep();
+      });
+      doc.addEventListener('visibilitychange', function () { if (doc.hidden) stopSweep(); });
+      if (typeof win.addEventListener === 'function') win.addEventListener('pagehide', stopSweep);
+      leftGrp.appendChild(sweepBtn);
+      bar.appendChild(leftGrp);
+
+      const channels = Array.isArray(meta.channels) ? meta.channels : [];
+      if (channels.length > 1) {
+        const chGrp = doc.createElement('div');
+        chGrp.className = 'qe-scope-ch-group';
+        const chBtns = [];
+        channels.forEach(function (ch, idx) {
+          const cb = doc.createElement('button');
+          cb.type = 'button';
+          cb.className = 'qe-scope-preset-btn';
+          cb.setAttribute('data-scope-channel', String(idx));
+          cb.setAttribute('aria-pressed', 'false');
+          cb.textContent = String(ch.id || ('CH' + (idx + 1))).toUpperCase();
+          cb.addEventListener('click', function () {
+            const on = cb.getAttribute('aria-pressed') !== 'true';
+            chBtns.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+            cb.setAttribute('aria-pressed', on ? 'true' : 'false');
+            applyChannelFocus(svg, on ? idx : -1);
+          });
+          chBtns.push(cb);
+          chGrp.appendChild(cb);
+        });
+        bar.appendChild(chGrp);
+      }
+
+      const readout = wrap.querySelector('.qe-scope-readout');
+      if (readout && readout.parentNode) readout.parentNode.insertBefore(bar, readout.nextSibling);
+      else wrap.appendChild(bar);
+    });
+  }
+
+  function nextVisibleRow(rows, startIdx, dir) {
+    for (let i = startIdx + dir; i >= 0 && i < rows.length; i += dir) {
+      const r = rows[i];
+      if (!r.hidden && !r.classList.contains('v10-row-hidden') && r.getClientRects().length > 0) return r;
+    }
+    return null;
+  }
+
+  function initTableRowInspectors(doc) {
+    doc.querySelectorAll('table.qe-table').forEach(function (tbl) {
+      if (tbl.dataset.richRowsBound === '1') return;
+      const tbody = tbl.querySelector('tbody');
+      const anchor = tbl.closest('.qe-table-wrap') || tbl;
+      if (!tbody || !anchor || !anchor.parentNode) return;
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      if (!rows.length) return;
+      tbl.dataset.richRowsBound = '1';
+      if (!tbl.hasAttribute('role')) tbl.setAttribute('role', 'grid');
+
+      const headers = Array.from(tbl.querySelectorAll('thead th')).map(function (th) {
+        return th.textContent.replace(/\s+/g, ' ').trim();
+      });
+      const srLive = doc.createElement('span');
+      srLive.className = 'qe-sr-live';
+      srLive.setAttribute('role', 'status');
+      srLive.setAttribute('aria-live', 'polite');
+      const inspector = doc.createElement('div');
+      inspector.className = 'qe-row-inspector';
+      inspector.setAttribute('hidden', '');
+      anchor.parentNode.insertBefore(srLive, anchor.nextSibling);
+      anchor.parentNode.insertBefore(inspector, srLive.nextSibling);
+
+      function selectRow(row) {
+        const wasSel = row.classList.contains('is-selected-row');
+        rows.forEach(function (r) {
+          r.classList.remove('is-selected-row');
+          r.setAttribute('aria-selected', 'false');
+        });
+        if (wasSel) {
+          inspector.setAttribute('hidden', '');
+          srLive.textContent = 'Record selection cleared';
+          return;
+        }
+        row.classList.add('is-selected-row');
+        row.setAttribute('aria-selected', 'true');
+        const cells = Array.from(row.children).map(function (td) {
+          return td.textContent.replace(/\s+/g, ' ').trim();
+        });
+        const pairs = cells.slice(1, 5).map(function (val, i) {
+          const h = headers[i + 1] || ('Col ' + (i + 2));
+          return '<span><strong>' + escHtml(h) + ':</strong> ' + escHtml(val) + '</span>';
+        }).join('');
+        inspector.innerHTML = '<span class="qe-row-inspector-lbl">Selected Record</span>' +
+          '<strong>' + escHtml(cells[0] || '') + '</strong>' + pairs;
+        inspector.removeAttribute('hidden');
+        srLive.textContent = 'Selected record: ' + (cells[0] || '');
+      }
+
+      const guardSel = 'a,button,input,select,textarea,summary,[role="button"]';
+      rows.forEach(function (row, idx) {
+        if (!row.hasAttribute('tabindex')) row.setAttribute('tabindex', '0');
+        row.setAttribute('aria-selected', 'false');
+        row.addEventListener('click', function (ev) {
+          if (ev.target && ev.target.closest(guardSel) && ev.target.closest('tr') === row) return;
+          selectRow(row);
+        });
+        row.addEventListener('keydown', function (ev) {
+          if (ev.target && ev.target !== row && ev.target.closest(guardSel)) return;
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectRow(row); }
+          else if (ev.key === 'ArrowDown') { const nxt = nextVisibleRow(rows, idx, 1); if (nxt) { ev.preventDefault(); nxt.focus(); } }
+          else if (ev.key === 'ArrowUp') { const prv = nextVisibleRow(rows, idx, -1); if (prv) { ev.preventDefault(); prv.focus(); } }
+        });
+      });
+    });
+
+    doc.querySelectorAll('.v9-kpi-tile').forEach(function (tile) {
+      if (tile.dataset.richTileBound === '1') return;
+      tile.dataset.richTileBound = '1';
+      if (!tile.hasAttribute('role')) tile.setAttribute('role', 'button');
+      if (!tile.hasAttribute('tabindex')) tile.setAttribute('tabindex', '0');
+      if (!tile.hasAttribute('aria-pressed')) tile.setAttribute('aria-pressed', 'false');
+      function toggleTile() {
+        const parent = tile.parentNode;
+        if (parent) {
+          parent.querySelectorAll('.v9-kpi-tile').forEach(function (t) {
+            if (t !== tile) { t.classList.remove('is-selected-tile'); t.setAttribute('aria-pressed', 'false'); }
+          });
+        }
+        const active = tile.classList.toggle('is-selected-tile');
+        tile.setAttribute('aria-pressed', active ? 'true' : 'false');
+      }
+      tile.addEventListener('click', toggleTile);
+      tile.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggleTile(); }
+      });
+    });
+  }
+
+  function initV07NodeSelector(doc) {
+    const bar = doc.getElementById('v07-node-chips');
+    const diag = doc.getElementById('v07-node-diag');
+    if (!bar || bar.dataset.richV07Bound === '1') return;
+    bar.dataset.richV07Bound = '1';
+    const buttons = Array.from(bar.querySelectorAll('button[data-v07-node]'));
+    const scalars = Array.from(doc.querySelectorAll('#v07-scalars .qe-scalar-card'));
+    const panels = Array.from(doc.querySelectorAll('#v07-topology .qe-subpanel'));
+    const defaultDiag = diag ? diag.textContent : '';
+    const map = {
+      poi: { sc: [0, 1], pn: [0] },
+      gt: { sc: [3], pn: [0] },
+      bess: { sc: [2], pn: [0] },
+      rs485: { sc: [0], pn: [1] }
+    };
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const key = btn.getAttribute('data-v07-node') || '';
+        const activate = btn.getAttribute('aria-pressed') !== 'true';
+        buttons.forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        scalars.forEach(function (c) { c.classList.remove('is-node-highlight'); });
+        panels.forEach(function (p) { p.classList.remove('is-node-highlight'); });
+        if (!activate) {
+          if (diag) diag.textContent = defaultDiag;
+          return;
+        }
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+        const rule = map[key] || { sc: [], pn: [] };
+        rule.sc.forEach(function (i) { if (scalars[i]) scalars[i].classList.add('is-node-highlight'); });
+        rule.pn.forEach(function (i) { if (panels[i]) panels[i].classList.add('is-node-highlight'); });
+        if (diag && btn.getAttribute('data-v07-diag')) diag.textContent = btn.getAttribute('data-v07-diag');
+      });
+    });
+  }
+
+  function boot(doc) {
+    const d = doc || (typeof document !== 'undefined' ? document : null);
+    if (!d) return;
+    initScopeInspectors(d);
+    initTableRowInspectors(d);
+    initV07NodeSelector(d);
+  }
+
+  global.QuietStageRichV9 = { boot: boot };
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { boot(document); });
+    else boot(document);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
 
   </script>
   <script type="application/json" id="va-v9-manifest">{"worlds":[{"world_id":"01-clinical-icu-and-trials","world_label":"01 \u00b7 Clinical & Trials","title":"Clinical ICU Bedside Telemetry & Phase III Trial Regulatory Proof","views":[{"view_id":"v01-icu-bedside-terminal","title":"ICU Bed-04 Tactical Hemodynamic & Ventilator Console","option_label":"v01 \u00b7 ICU Bedside Terminal","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"heart-pulse","nav_brand":"Bed ICU-04","topbar_brand":"BED ICU-04 \u00b7 PT-0482 \u00b7 Sepsis Protocol","rail_brand":"Monitor Subsystems","topbar_status":[{"text":"\u25b2 1 CAUTION","variant":"status","state":"warn"},{"text":"MAP 63.5 mmHg","variant":"plain","state":"warn"},{"text":"NTP Synced","variant":"status","state":"nominal"}],"nav_items":["Hemodynamics","Ventilator","Infusions","Event Log"],"nav_anchors":["v01-hemo","v01-vent","v01-infusions","v01-alarms"],"vector_summary":"ICU Informaticist to Bedside Nurse & Intensivist \u00b7 Immediate Glance (5\u201315 s) \u00b7 Operator Console \u00b7 Detailed Metrology","actionable_disposition":"Verify arterial transducer zeroing after 2.4 s motion-artifact dropout; hold norepinephrine titration until repeat MAP confirms sustained excursion below 65 mmHg.","bias_removed":"Raw HL7/ADC hex frames, rainbow-colored nominal vital tiles, and spline-interpolated flatline fills during motion artifact","bias_risk":"Alarm fatigue under Immediate Glance (5\u201315 s) triage; clinicians mistake interpolated waveform for true perfusion","bias_replacement":"Quiet Cockpit monochrome nominal tiles; amber [ CAUTION ] reserved for MAP = 63.5 mmHg \u003c 65.0 mmHg; explicit 2.4 s null gap with T_A/T_B cursors","invariants":{"baseline":"MAP anchored to 75.0 mmHg target, 65.0 mmHg caution floor, 55.0 mmHg abort floor; PEEP anchored to 10.0 cmH2O CMD vs 10.2 cmH2O ACT","provenance":"k=2 95.45% expanded uncertainty (\u00b1 1.5 mmHg, \u00b1 0.2 cmH2O, \u00b1 0.8%), sensor/cal IDs, and un-interpolated 2.4 s dropout break","margin":"Explicit -2.3% margin excursion on MAP, +95.0% margin on PEEP, and +55.0% margin on SpO2 computed without mental math","disposition":"Verify arterial transducer zeroing post-dropout before titrating vasopressors"},"murder_board":[{"rubric":"Clinical Safety","finding":"cmH2O, mmHg, % isolated in .qe-unit headers; only MAP (63.5 \u003c= 65.0) triggers [ CAUTION ]","verdict":"PASS"},{"rubric":"Chief Engineer","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"},{"rubric":"Field Operator","finding":"PEEP renders CMD 10.0 vs ACT 10.2 cmH2O on linear horizontal gauge without radial dial clutter","verdict":"PASS"}]},{"view_id":"v02-trial-regulatory-brief","title":"CONSORT Phase III Sepsis Trial Regulatory & CMO Gate Brief","option_label":"v02 \u00b7 Trial Regulatory Brief","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"file-medical","nav_brand":"CONSORT Brief","topbar_brand":"CONSORT Brief","rail_brand":"CONSORT Brief","topbar_status":[],"nav_items":["Disposition","Cohort & Methods","Subgroup Forest","KDIGO Safety","SAP Appendix"],"nav_anchors":["v02-disposition","v02-methods","v02-forest","v02-safety","v02-sap"],"vector_summary":"Clinical Biostatistician to FDA Reviewer & Hospital CMO \u00b7 Dual-Speed Brief & Deep Analysis \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"Approve protocol adoption for SOFA \u003e= 8 and Lactate \u003e 2 mmol/L strata (HR 0.68 and 0.71) with mandatory KDIGO renal surveillance and hypotension watch log.","bias_removed":"Cherry-picked p-value claims (p \u003c 0.01) divorced from subgroup variance, missing control-arm incidence, and unbracketed adverse events","bias_risk":"FDA reviewer / CMO cannot verify clinical net benefit or renal safety margins","bias_replacement":"Full CONSORT subgroup forest plot (HR + 95% CI vs 1.0 null) paired with aligned ledger safety ledger (\u00b1 binomial uncertainty and DSMB status pills)","invariants":{"baseline":"Forest plot anchored to HR = 1.0 vertical null line; adverse event rows pair Protocol Arm against Control Arm (11.4% vs 14.8% AKI)","provenance":"SAP-v2.4-ITT (n=1,240) test-condition strip, exact 95% CI whiskers, and \u00b1 incidence uncertainties in aligned ledger columns","margin":"Subgroups crossing null (Age \u003e= 65 CI [0.62, 1.01]) rendered in muted secondary ink vs statistically decisive SOFA \u003e= 8 ([0.52, 0.89])","disposition":"Authorize protocol for SOFA \u003e= 8 / Lactate \u003e 2 mmol/L with mandatory KDIGO renal monitoring"},"murder_board":[{"rubric":"Clinical Safety","finding":"All 4 subgroups state exact n (1,240, 612, 486, 704) and 95% CI whiskers against HR = 1.0","verdict":"PASS"},{"rubric":"Chief Engineer","finding":"v01 scope breaks SVG \u003cpath\u003e cleanly with M across 6.4 s to 8.8 s (2.4 s); all 3 scalars cite CAL-* IDs","verdict":"PASS"}]},{"view_id":"v03-patient-recovery-companion","title":"Post-ICU Discharge Recovery & Vital Trend Companion","option_label":"v03 \u00b7 Patient Recovery Guide","default_medium":"m3","chromatic_code":"c2","default_nav":"n2","allowed_navs":["n2","n4","n0"],"nav_icon":"hand-holding-medical","nav_brand":"Recovery Guide","topbar_brand":"Recovery Guide","rail_brand":"Recovery Guide","topbar_status":[],"nav_items":["Today","Vitals Log","Care Guide","Care Team"],"nav_anchors":["v03-today","v03-vitals","v03-guide","v03-care-team"],"vector_summary":"Clinical Care Team to Discharged Patient & Family \u00b7 Deep Analysis (10\u201345 min) \u00b7 Interactive App \u00b7 Executive Summary","actionable_disposition":"Continue home pulse-oximetry log targeting \u003e= 92%; contact clinic triage line if resting blood pressure drops below 65 mmHg MAP equivalent or SpO2 falls below 92%.","bias_removed":"Unexplained ICU acronyms (PEEP, k=2, ADC counts, KDIGO) and dense calibration certificates on primary screen","bias_risk":"Patient/family anxiety and misinterpretation of discharge recovery targets","bias_replacement":"Executive Summary progressive disclosure showing 10-point trend sparklines, plain-language home targets (SpO2 \u003e= 92%), and calm status pills without Detailed Metrology probe noise","invariants":{"baseline":"SpO2 (94.2%) and MAP (63.5 mmHg) anchored to home-monitoring lower bounds with clear sparkline trajectory","provenance":"Discrete 10-sample trend sparkline derived identically from V01 ICU Ventilator Scalars spec without synthetic smoothing","margin":"Explicit recovery gap framing showing how close oxygen saturation remains above the 92% clinic-call threshold","disposition":"Continue home pulse-oximetry log; call triage nurse if SpO2 \u003c 92% or systolic/MAP drops persistently"},"murder_board":[{"rubric":"First-Time Learner","finding":"Executive Summary compilation hides Raw Adc Counts, k=2, and Calibration Id while retaining conserved scalar truth","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"MAP (mmHg)","canonical_value":"63.5 (\u00b1 1.5, target 75.0, lower 65.0)","unit":"mmHg","views":"v01, v03"},{"metric_id":"Peep Cmd Cmh2o","canonical_value":"10.0","unit":"cmH2O","views":"v01, v03"},{"metric_id":"Peep Act Cmh2o","canonical_value":"10.2 (\u00b1 0.2)","unit":"cmH2O","views":"v01, v03"},{"metric_id":"SPO2 (%)","canonical_value":"94.2 (\u00b1 0.8, lower 92.0)","unit":"%","views":"v01, v03"},{"metric_id":"Dropout Duration (s)","canonical_value":"2.4 (T_A=6.4 s, T_B=8.8 s)","unit":"s","views":"v01"},{"metric_id":"Overall (hr)","canonical_value":"0.74 ([0.61, 0.90])","unit":"1","views":"v02"},{"metric_id":"Age Ge65 (hr)","canonical_value":"0.79 ([0.62, 1.01])","unit":"1","views":"v02"},{"metric_id":"Sofa Ge8 (hr)","canonical_value":"0.68 ([0.52, 0.89])","unit":"1","views":"v02"},{"metric_id":"Lactate Gt2 (hr)","canonical_value":"0.71 ([0.54, 0.93])","unit":"1","views":"v02"},{"metric_id":"Aki Rate (%)","canonical_value":"11.4 (\u00b1 1.8, control 14.8)","unit":"%","views":"v02"}]},{"world_id":"02-cloud-cyber-and-ai-ops","world_label":"02 \u00b7 Cloud, Security & AI","title":"Cloud, Cyber & AI Ops","views":[{"view_id":"v04-sre-incident-workbench","title":"SRE Incident Command & Tail-Latency Workbench","option_label":"v04 \u00b7 SRE Incident Workbench","default_medium":"m3","chromatic_code":"c4","default_nav":"n2","allowed_navs":["n2","n1","n0"],"nav_icon":"alert-triangle","nav_brand":"SRE Incident","topbar_brand":"SRE Incident \u00b7 API-EDGE-W2","rail_brand":"SRE Console","topbar_status":[],"nav_items":["SLO Summary","Latency Scope","Canary Gate","Event Log"],"nav_anchors":["v04-incident","v04-scope","v04-interlock","v04-log"],"vector_summary":"Site Reliability Engineer to On-Call & VP Engineering \u00b7 Immediate Glance (5\u201315 s) \u00b7 Interactive App \u00b7 Detailed Metrology","actionable_disposition":"Canary Traffic Gate tripped to 0 at t = 36.0 s after 420.0 ms p99 breach; hold canary isolated until 12.0 s OTel scrape dropout clears and burn rate settles below 14.4 %/h.","bias_removed":"Raw kernel eBPF ring-buffer offsets, TLS cipher bitmasks, and mean/median request averages that hide p99 tail spikes (420.0 ms).","bias_risk":"Mean latency and smoothed gaps mask 420.0 ms p99 tail breaches and the 12.0 s OTel blindspot.","bias_replacement":"Single-glance 250.0 ms abort redline, 14.4 %/h burn-rate threshold, binary CANARY_GATE state, and unbroken visual discontinuity across the 12.0 s scrape dropout.","invariants":{"baseline":"CH1 anchors latency against 250.0 ms SLO ceiling; CH2 anchors burn rate against 14.4 %/h multi-window threshold.","provenance":"Explicitly breaks \u003cpath\u003e traces with M across the 44.0 s .. 56.0 s (12.0 s) OTel null scrape dropout (interpolate: false) rather than interpolating synthetic telemetry.","margin":"Peak 420.0 ms exceeds 250.0 ms by +170.0 ms (+68.0%); burn rate 16.8 %/h exceeds 14.4 %/h by +2.4 %/h.","disposition":"CANARY_GATE drops 1 \u2192 0 at 36.0 s; operator holds canary isolated across 12.0 s telemetry gap until t = 68.0 s recovery confirmation."},"murder_board":[{"rubric":"AI/Tail Blindspot","finding":"Rejects mean latency; requires p99 scope with explicit sampling rate (0.25 Hz) and uninterpolated gap","verdict":"PASS"},{"rubric":"Human Factors","finding":"Quiet Cockpit monochrome nominal state; high-chroma danger reserved for \u003e250 ms breach and canary gate interlock","verdict":"PASS"}]},{"view_id":"v05-zero-trust-ato-spec","title":"Zero-Trust Enclave ATO Boundary & mTLS Policy Spec","option_label":"v05 \u00b7 Zero-Trust Security Spec","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"shield-halved","nav_brand":"Zero-Trust Spec","topbar_brand":"Zero-Trust Security Spec","rail_brand":"Security Sections","topbar_status":[],"nav_items":["Disposition","Rationale","Enclave Map","Policy Reg"],"nav_anchors":["v05-disposition","v05-rationale","v05-topology","v05-bitfield"],"vector_summary":"Security Architect to Authorizing Official (AO) & CISO \u00b7 Deep Analysis (10\u201345 min) \u00b7 Print Sheet & Article / Document \u00b7 Operational Spec","actionable_disposition":"Approve ATO boundary across 3 enclaves and 4 PPSM edges with CSR_MTLS_POLICY = 0x8003B104 (FIPS_STRICT bit [31] = 1, LEGACY_TLS_ALLOW bit [30] = 0).","bias_removed":"Vendor marketing topology icons, unrouted diagonal network lines, and transient SRE latency spikes unrelated to cryptographic boundary accreditation.","bias_risk":"Topological marketing diagrams and latency telemetry obscure boundary accreditation and FIPS latches.","bias_replacement":"Non-contaminating FIPS/SP 800-207 enclave perimeters (ENCLAVE-INGRESS, ENCLAVE-COMPUTE, ENCLAVE-HSM-AUDIT), orthogonal PPSM edge labels, and exact 0x8003B104 bitfield interlocks (FIPS_STRICT bit [31]).","invariants":{"baseline":"CSR_MTLS_POLICY anchors live 0x8003B104 against 0x00000000 reset baseline and strict FIPS bit [31] = 1.","provenance":"Separates hardware-attested RO bits (MTLS_PEER_ATTEST) from configurable RW and W1C interlock latches (HSM_TAMPER_LATCH).","margin":"Enforces zero-margin fail-closed interlocks (LEGACY_TLS_ALLOW = 0, CRL_FAIL_OPEN = 0, REPLAY_WIN_LOG2 = 0).","disposition":"AO/CISO signs boundary authorization with CSR_MTLS_POLICY = 0x8003B104 and 4 enumerated PPSM cross-enclave rules."},"murder_board":[{"rubric":"Boundary","finding":"Non-overlapping 3-enclave perimeters, orthogonal PPSM edges, FIPS 140-3 Detailed Metrology key custody, zero implicit subnet trust","verdict":"PASS"},{"rubric":"Audience Mismatch","finding":"Bitfield pairs visual 16-bit/row strip with operational decode ledger highlighting FIPS_STRICT [31] interlock","verdict":"PASS"}]},{"view_id":"v06-ai-drift-and-lineage-ide","title":"AI Calibration Drift & Telemetry Lineage IDE","option_label":"v06 \u00b7 AI Calibration & Lineage","default_medium":"m3","chromatic_code":"c3","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"code-branch","nav_brand":"AI Drift IDE","topbar_brand":"CLS-ROUTER-V4 \u00b7 Calibration & Lineage","rail_brand":"Model Telemetry","topbar_status":[{"text":"1 DRIFT ALERT","variant":"status","state":"warn"},{"text":"ECE 0.050 (\u003e0.040)","variant":"plain","state":"warn"},{"text":"p99 420 ms / 16.8%","variant":"plain","state":"nominal"}],"nav_items":["Fallback Gate","Reliability","ER Lineage"],"nav_anchors":["v06-drift","v06-cal","v06-lineage"],"vector_summary":"ML / Data Platform Engineer to Application Engineer \u00b7 Deep Analysis (10\u201345 min) \u00b7 Interactive App \u00b7 Detailed Metrology","actionable_disposition":"ECE = 0.050 exceeds 0.040 drift ceiling across N = 1200 validation samples (overconfidence -0.120 at p\u0302 = 0.85); route p\u0302 \u003e= 0.75 predictions to deterministic fallback.","bias_removed":"Uncalibrated softmax confidence histograms, smooth spline fits hiding sparse validation bins, and aggregate accuracy scores masking high-confidence OOD overconfidence.","bias_risk":"Aggregate accuracy scores mask severe high-confidence overconfidence (0.73 observed vs 0.85 predicted).","bias_replacement":"Discrete 120/bin (N = 1200) markers with binomial \u00b1u\u1d67 error whiskers, y = x analytical diagonal, x - 0.08 overconfidence gate, normalized residual strip, and end-to-end Crow's-Foot schema lineage.","invariants":{"baseline":"Plots observed frequency (f\u2092) against ideal observed frequency (f\u2092) = p\u0302 (equation: \"x\") with \u00b10.04 corridor and x - 0.08 overconfidence warning envelope.","provenance":"Uses discrete circle markers with binomial \u00b1u\u1d67 whiskers for validation bins (N = 1200) and dashed curves for the analytical y = x model (zero Bezier splines).","margin":"ECE = 0.050 exceeds 0.040 gate by +0.010; p\u0302 = 0.85 bin (observed frequency (f\u2092) = 0.73) breaches -0.080 envelope by -0.040 (-0.120 total gap).","disposition":"Application Engineer routes predictions with p\u0302 \u003e= 0.75 to deterministic fallback and logs alert in DRIFT_ALERTS."},"murder_board":[{"rubric":"AI Fallback Gate","finding":"Reports OOD ECE drift bound and enforces deterministic fallback gate for overconfident bins","verdict":"PASS"},{"rubric":"Physical Metrology","finding":"Discrete markers + \u00b1u\u1d67 whiskers + normalized residual strip (0 Bezier curves) + Crow's-Foot lineage","verdict":"PASS"}]},{"view_id":"v19-product-roadmap-and-triage","title":"Platform Hardening Release Roadmap & Blocker Triage","option_label":"v19 \u00b7 Product Roadmap & Triage","default_medium":"m3","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"list-check","nav_brand":"Release Roadmap","topbar_brand":"Release Roadmap \u00b7 4 Launch Blockers","rail_brand":"Roadmap Views","topbar_status":[],"nav_items":["Gate Summary","Critical-Path Gantt","Blocker Queue"],"nav_anchors":["v19-disposition","v19-gantt","v19-triage"],"vector_summary":"Engineering Lead to Product Manager & Design Lead \u00b7 Decision Brief (1\u20133 min) \u00b7 Interactive App \u00b7 Operational Spec","actionable_disposition":"Hold GA cutover until 4 tracked launch blockers clear: patch 12.0 s OTel gap, restore p99 \u003c= 250.0 ms, enforce 0x8003B104 policy, preserving +3.0 d security float.","bias_removed":"Flat unprioritized backlog cards that mask critical-path launch blockers behind non-critical polish tasks.","bias_risk":"Flat Kanban cards hide critical-path dependencies and mask zero-float blockers behind parallel UI polish.","bias_replacement":"Ordered critical-path dependencies (12.0 s OTel fix \u2192 \u003c= 250.0 ms p99 recovery \u2192 GA cutover), +3.0 d parallel 0x8003B104 float buffer, and compact 38px 4-blocker triage strips.","invariants":{"baseline":"Gates GA cutover against \u003c= 250.0 ms p99 latency, 12.0 s OTel scrape continuity, and 0x8003B104 FIPS validation.","provenance":"Ties each Gantt span and triage workstream directly to canonical telemetry (v04), policy (v05), and fallback (v06) gate milestones.","margin":"Shows 0.0 d float on critical-path items vs. +3.0 d parallel security buffer so schedule slack is explicit without guesswork.","disposition":"Product Lead holds launch cutover under CONDITIONAL HOLD while tracking all 4 launch blockers to soak signoff."},"murder_board":[{"rubric":"1\u20133 min","finding":"Critical-path release Gantt + 38px triage queue conserving p99 ceiling, OTel gap Patch, and policy latch","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"P99 Threshold (ms)","canonical_value":"250.0","unit":"ms","views":"v04 \u00b7 SRE Incident Workbench, v19 \u00b7 Product Release Roadmap & Triage"},{"metric_id":"P99 Peak (ms)","canonical_value":"420.0","unit":"ms","views":"v04 \u00b7 SRE Incident Workbench"},{"metric_id":"Scrape Dropout (s)","canonical_value":"12.0","unit":"s","views":"v04 \u00b7 SRE Incident Workbench, v19 \u00b7 Product Release Roadmap & Triage"},{"metric_id":"Error Budget Burn Pct (hr)","canonical_value":"16.8","unit":"%/h","views":"v04 \u00b7 SRE Incident Workbench"},{"metric_id":"Error Budget Burn Limit Pct (hr)","canonical_value":"14.4","unit":"%/h","views":"v04 \u00b7 SRE Incident Workbench"},{"metric_id":"Cursor A S / cursor B (s)","canonical_value":"32.0 / 60.0","unit":"s","views":"v04 \u00b7 SRE Incident Workbench"},{"metric_id":"Enclave Count","canonical_value":"3","unit":"1","views":"v05 \u00b7 Zero-Trust Security Spec"},{"metric_id":"Ppsm Cross Enclave Edges","canonical_value":"4","unit":"1","views":"v05 \u00b7 Zero-Trust Security Spec"},{"metric_id":"Er Entity Count","canonical_value":"4","unit":"1","views":"v06 \u00b7 AI Calibration & Lineage"},{"metric_id":"Fips Policy (Hex)","canonical_value":"0x8003B104","unit":"hex","views":"v05 \u00b7 Zero-Trust Security Spec, v19 \u00b7 Product Release Roadmap & Triage"},{"metric_id":"Fips Policy Reset (Hex)","canonical_value":"0x00000000","unit":"hex","views":"v05 \u00b7 Zero-Trust Security Spec"},{"metric_id":"Fips Policy Offset (Hex)","canonical_value":"0x0010","unit":"hex","views":"v05 \u00b7 Zero-Trust Security Spec"},{"metric_id":"Fips Strict Bit Index","canonical_value":"31","unit":"bit","views":"v05 \u00b7 Zero-Trust Security Spec"},{"metric_id":"ECE Drift Score","canonical_value":"0.050","unit":"1","views":"v06 \u00b7 AI Calibration & Lineage"},{"metric_id":"ECE Drift Threshold","canonical_value":"0.040","unit":"1","views":"v06 \u00b7 AI Calibration & Lineage"},{"metric_id":"Overconfidence Gate Offset","canonical_value":"-0.08","unit":"1","views":"v06 \u00b7 AI Calibration & Lineage"},{"metric_id":"Sample Count","canonical_value":"1200","unit":"1","views":"v06 \u00b7 AI Calibration & Lineage"},{"metric_id":"Roadmap Float Days","canonical_value":"3.0","unit":"d","views":"v19 \u00b7 Product Release Roadmap & Triage"},{"metric_id":"Tracked Blockers","canonical_value":"4","unit":"1","views":"v19 \u00b7 Product Release Roadmap & Triage"}]},{"world_id":"03-industrial-grid-and-manufacturing","world_label":"03 \u00b7 Grid & Manufacturing","title":"Industrial Grid SCADA & Manufacturing Quality","views":[{"view_id":"v07-grid-scada-poi-console","title":"Microgrid POI Dispatch, ISA-5.1 P&ID Loop & RS-485 Fieldbus Console","option_label":"v07 \u00b7 Grid SCADA POI Console","default_medium":"m4","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"bolt","nav_brand":"Microgrid POI-03","topbar_brand":"Microgrid POI-03 \u00b7 IEEE 1547 \u00b7 TIA-485","rail_brand":"SCADA Views","topbar_status":[{"text":"POI 23.6 MW","variant":"plain","state":"nominal"},{"text":"59.985 Hz","variant":"plain","state":"nominal"},{"text":"NOMINAL","variant":"status","state":"nominal"}],"nav_items":["PMU Scalars","P&ID & Fieldbus","52-M Interlock","Event Log"],"nav_anchors":["v07-scalars","v07-topology","v07-interlock","v07-log"],"vector_summary":"Grid Controls Engineer to Control Room Operator \u00b7 Immediate Glance (5\u201315 s) \u00b7 Operator Console \u00b7 Detailed Metrology","actionable_disposition":"Hold POI Breaker 52-M closed at 23.6 MW / 59.985 Hz; require LOTO bit [10]=0 before islanding transfer.","bias_removed":"Decorative 3D turbine animations, rainbow status badges on nominal equipment, uncalibrated percentages without SI units, and single-click unguarded breaker trips.","bias_risk":"Decorative animations, rainbow nominal badges, and single-click trip controls risk alarm fatigue and unsafe breaker switching.","bias_replacement":"ISA-101 / NRC NUREG-0700 monochrome nominal Quiet Cockpit surface, ISA-5.1 P&ID tags (FCV-101, FT-101, TT-102, PT-204, XI-301), 120 \u03a9 RS-485/Modbus RTU trunk wiring, and CMD vs ACT linear gauges.","invariants":{"baseline":"Every readout and series is anchored to calibrated operating envelopes\u2014grid frequency 60.000 Hz (\u00b10.05 Hz warn / \u00b10.10 Hz abort), BESS dispatch 24.0 MW, and Shewhart X\u0304 bounds (USL = 10.070 mm, UCL = 10.042 mm, CL = 10.000 mm, LCL = 9.958 mm, LSL = 9.930 mm).","provenance":"Discrete SPC subgroup points carry explicit \u00b1u\u1d67 uncertainty whiskers and circle markers while CL = 10.000 mm uses a dashed Analytical Model line; Detailed Metrology scalars expose k = 2.0 (95.45% CI), sensor IDs, and calibration IDs.","margin":"Headroom is visible without mental arithmetic via CMD vs ACT pins (24.0 MW vs 23.6 MW; 60.000 Hz vs 59.985 Hz), Margin: +84.0%, and Cpk = 1.64.","disposition":"Non-color-only [ NOMINAL ] pills and explicit INTERLOCK tags (ISLAND_ARMED = 1, LOTO_LOCKOUT_ACTIVE = 0, SYNC_CHECK_OK = 1) bind live plant state to guarded operator and line-lead actions."},"murder_board":[{"rubric":"ISA-101 Quiet Cockpit","finding":"PASS: Both v07 and v08 bind Quiet Cockpit; nominal states use calm monochrome surfaces and non-color-only [ NOMINAL ] pills.","verdict":"PASS"},{"rubric":"LOTO & Modbus Interlock","finding":"PASS: V09 Modbus Plc Bitfield spec decodes 0x0104 = 0x0A15 with Safety Critical: true on ISLAND_ARMED, LOTO_LOCKOUT_ACTIVE, ESTOP_TRIP_LATCH, and BREAKER_TRIP_CMD.","verdict":"PASS"},{"rubric":"Conservation & Calibration","finding":"PASS: All 16 canonical metrics match identically across corpus spec, supporting data specs, and this ledger; all Detailed Metrology specs carry explicit calibration IDs.","verdict":"PASS"}]},{"view_id":"v08-plant-floor-wall-kiosk","title":"Plant Floor & Microgrid Ambient Operations Kiosk","option_label":"v08 \u00b7 Plant-Floor Wall Display","default_medium":"m5","chromatic_code":"c3","default_nav":"n0","allowed_navs":["n0"],"nav_icon":"tv","nav_brand":"Plant Wall Display","topbar_brand":"Plant Wall Display","rail_brand":"Plant Wall Display","topbar_status":[],"nav_items":[],"nav_anchors":[],"vector_summary":"Plant Operations to Line Crew & Facility Visitors \u00b7 Immediate Glance (5\u201315 s) \u00b7 Wall Display \u00b7 Executive Summary","actionable_disposition":"Ambient 10-ft display: confirm 94.2% OEE and 78.4% BESS SoC across shift change.","bias_removed":"Raw hexadecimal Modbus register dumps (0x0104), Cpk statistical calculus, and dense P&ID loop numbers unreadable at 10 feet.","bias_risk":"Raw hexadecimal Modbus registers and capability ratios cannot be scanned across a 10-foot factory floor.","bias_replacement":"Executive Summary Orientation scalar tiles (23.6 MW, 59.985 Hz, 78.4 %, 94.2 %) with calm [ NOMINAL ] non-color-only pills and micro-trend sparklines on an undecorated immersive full-canvas view Wall Display wall stage.","invariants":{"baseline":"Every readout and series is anchored to calibrated operating envelopes\u2014grid frequency 60.000 Hz (\u00b10.05 Hz warn / \u00b10.10 Hz abort), BESS dispatch 24.0 MW, and Shewhart X\u0304 bounds (USL = 10.070 mm, UCL = 10.042 mm, CL = 10.000 mm, LCL = 9.958 mm, LSL = 9.930 mm).","provenance":"Discrete SPC subgroup points carry explicit \u00b1u\u1d67 uncertainty whiskers and circle markers while CL = 10.000 mm uses a dashed Analytical Model line; Detailed Metrology scalars expose k = 2.0 (95.45% CI), sensor IDs, and calibration IDs.","margin":"Headroom is visible without mental arithmetic via CMD vs ACT pins (24.0 MW vs 23.6 MW; 60.000 Hz vs 59.985 Hz), Margin: +84.0%, and Cpk = 1.64.","disposition":"Non-color-only [ NOMINAL ] pills and explicit INTERLOCK tags (ISLAND_ARMED = 1, LOTO_LOCKOUT_ACTIVE = 0, SYNC_CHECK_OK = 1) bind live plant state to guarded operator and line-lead actions."},"murder_board":[{"rubric":"ISA-101 Quiet Cockpit","finding":"PASS: Both v07 and v08 bind Quiet Cockpit; nominal states use calm monochrome surfaces and non-color-only [ NOMINAL ] pills.","verdict":"PASS"},{"rubric":"Audience Mismatch","finding":"PASS: v08 projects at Executive Summary (immersive full-canvas view / Wall Display) with plain scalars and sparklines; v09 projects at Detailed Metrology (Print Sheet / Article / Document) with NIST SP 811 units and bit-level decode tables.","verdict":"PASS"},{"rubric":"Conservation & Calibration","finding":"PASS: All 16 canonical metrics match identically across corpus spec, supporting data specs, and this ledger; all Detailed Metrology specs carry explicit calibration IDs.","verdict":"PASS"}]},{"view_id":"v09-spc-quality-and-modbus-report","title":"Bearing Bore Shewhart X\u0304 SPC & Modbus Breaker Interlock Audit","option_label":"v09 \u00b7 SPC Quality & Modbus Audit","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"chart-line","nav_brand":"SPC & Modbus Audit","topbar_brand":"SPC & Modbus Audit","rail_brand":"Audit Sections","topbar_status":[],"nav_items":["Capability Gate","Analysis","Shewhart SPC","Modbus Reg"],"nav_anchors":["v09-capability","v09-methods","v09-spc","v09-modbus"],"vector_summary":"Quality Engineer to Line Lead & Plant Manager \u00b7 Dual-Speed Brief & Deep Analysis \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"Authorize release of 12 bearing bore lots (Cpk = 1.64 \u003e= 1.33, 0 USL/LSL breaches).","bias_removed":"Bare pass/fail batch percentages that mask process centering drift, Bezier-smoothed curves lacking discrete subgroup points, and unverified interlock assumptions.","bias_risk":"Bare yield percentages and smoothed spline fits conceal centering drift and interlock status.","bias_replacement":"Full NIST/SEMATECH SPC Shewhart X\u0304 control chart (Cpk = 1.64, n = 5, \u00b1u\u1d67 whiskers, residual strip) paired with the exact 16-bit PLC_BREAKER_INTERLOCK_WORD (0x0104 = 0x0A15) decode ledger.","invariants":{"baseline":"Every readout and series is anchored to calibrated operating envelopes\u2014grid frequency 60.000 Hz (\u00b10.05 Hz warn / \u00b10.10 Hz abort), BESS dispatch 24.0 MW, and Shewhart X\u0304 bounds (USL = 10.070 mm, UCL = 10.042 mm, CL = 10.000 mm, LCL = 9.958 mm, LSL = 9.930 mm).","provenance":"Discrete SPC subgroup points carry explicit \u00b1u\u1d67 uncertainty whiskers and circle markers while CL = 10.000 mm uses a dashed Analytical Model line; Detailed Metrology scalars expose k = 2.0 (95.45% CI), sensor IDs, and calibration IDs.","margin":"Headroom is visible without mental arithmetic via CMD vs ACT pins (24.0 MW vs 23.6 MW; 60.000 Hz vs 59.985 Hz), Margin: +84.0%, and Cpk = 1.64.","disposition":"Non-color-only [ NOMINAL ] pills and explicit INTERLOCK tags (ISLAND_ARMED = 1, LOTO_LOCKOUT_ACTIVE = 0, SYNC_CHECK_OK = 1) bind live plant state to guarded operator and line-lead actions."},"murder_board":[{"rubric":"SPC Capability Masking","finding":"PASS: V09 SPC Control Plot spec exposes Cpk = 1.64, n = 5, UCL 10.042 mm, CL 10.000 mm, LCL 9.958 mm, USL 10.070 mm, LSL 9.930 mm, and normalized residuals.","verdict":"PASS"},{"rubric":"Discrete vs. Spline Fit","finding":"PASS: Epistemic Type: Discrete Measurement renders circle markers with \u00b1u\u1d67 error whiskers and piecewise straight chords only.","verdict":"PASS"},{"rubric":"LOTO & Modbus Interlock","finding":"PASS: V09 Modbus Plc Bitfield spec decodes 0x0104 = 0x0A15 with Safety Critical: true on ISLAND_ARMED, LOTO_LOCKOUT_ACTIVE, ESTOP_TRIP_LATCH, and BREAKER_TRIP_CMD.","verdict":"PASS"},{"rubric":"Audience Mismatch","finding":"PASS: v08 projects at Executive Summary (immersive full-canvas view / Wall Display) with plain scalars and sparklines; v09 projects at Detailed Metrology (Print Sheet / Article / Document) with NIST SP 811 units and bit-level decode tables.","verdict":"PASS"},{"rubric":"Conservation & Calibration","finding":"PASS: All 16 canonical metrics match identically across corpus spec, supporting data specs, and this ledger; all Detailed Metrology specs carry explicit calibration IDs.","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"BESS Power Cmd (MW)","canonical_value":"24.0","unit":"MW","views":"V07 Grid Scada Pid And Bus spec, V07 Synchrophasor Scalars spec"},{"metric_id":"BESS Power Act (MW)","canonical_value":"23.6","unit":"MW","views":"V07 Grid Scada Pid And Bus spec, V07 Synchrophasor Scalars spec"},{"metric_id":"Grid Freq Cmd (Hz)","canonical_value":"60.000","unit":"Hz","views":"V07 Synchrophasor Scalars spec"},{"metric_id":"Grid Freq (Hz)","canonical_value":"59.985","unit":"Hz","views":"V07 Grid Scada Pid And Bus spec, V07 Synchrophasor Scalars spec"},{"metric_id":"BESS Soc (%)","canonical_value":"78.4","unit":"%","views":"V07 Grid Scada Pid And Bus spec, V07 Synchrophasor Scalars spec"},{"metric_id":"OEE Yield (%)","canonical_value":"94.2","unit":"%","views":"V07 Synchrophasor Scalars spec"},{"metric_id":"Bus Impedance (\u03a9)","canonical_value":"120","unit":"\u03a9","views":"V07 Grid Scada Pid And Bus spec"},{"metric_id":"SPC Cl Mm","canonical_value":"10.000","unit":"mm","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Ucl Mm","canonical_value":"10.042","unit":"mm","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Lcl Mm","canonical_value":"9.958","unit":"mm","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Usl Mm","canonical_value":"10.070","unit":"mm","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Lsl Mm","canonical_value":"9.930","unit":"mm","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Cpk","canonical_value":"1.64","unit":"1","views":"V09 SPC Control Plot spec"},{"metric_id":"SPC Subgroup Size","canonical_value":"5","unit":"1","views":"V09 SPC Control Plot spec"},{"metric_id":"Modbus Reg Addr","canonical_value":"0x0104","unit":"hex","views":"V07 Grid Scada Pid And Bus spec, V09 Modbus Plc Bitfield spec"},{"metric_id":"Modbus Reg Value","canonical_value":"0x0A15","unit":"hex","views":"V09 Modbus Plc Bitfield spec"}]},{"world_id":"04-civic-finance-and-stem-learning","world_label":"04 \u00b7 Finance & STEM Lab","title":"World 04: Civic Finance, Treasury Stress Testing & STEM Experimental Learning","views":[{"view_id":"v10-civic-capital-budget-deck","title":"FY2027 Civic Capital Budget & Reserve Policy Deck","option_label":"v10 \u00b7 Civic Capital Budget","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"landmark","nav_brand":"Civic Budget FY27","topbar_brand":"Civic Capital Budget FY2027","rail_brand":"Budget Sections","topbar_status":[],"nav_items":["Trade Gate","Cash Waterfall","Reserve Table"],"nav_anchors":["v10-gate","v10-waterfall","v10-budget-table"],"vector_summary":"Civic Policy Analyst to City/School Board & Citizens \u00b7 Decision Brief (1\u20133 min) \u00b7 Article / Document \u00b7 Operational Spec","actionable_disposition":"REVIEW: +11.9 M USD above 15.0 M USD policy reserve floor (179.3% coverage) \u2014 Approve 28.4 M USD School HVAC GMP; hold Water Main (31.2 M USD) Option B split vote pending ductile-iron quote lock.","bias_removed":"Opaque Municipal Fund Jargon & Fiscal Illusion: Burying capital outlays inside multi-hundred-page bond prospectuses, hiding the 15.0 M USD reserve floor, or omitting inflation escalation on the 31.2 M USD Water Main package.","bias_risk":"Masks declining net contingency behind gross bond receipts.","bias_replacement":"Project a single 6-step cash waterfall from 48.0 M USD opening reserve to 26.9 M USD closing contingency paired with an unmasked GAO/USWDS trade table flagging REVIEW (status: Review Needed) on Water Main (179.3% coverage).","invariants":{"baseline":"15.0 M USD lower Policy Reserve Floor envelope rendered across waterfall and referenced in every table row.","provenance":"Distinguishes starting base (48.0 M USD), restricted/debt inflows (+16.5, +22.0), outlays (-28.4, -31.2), and net closing total (26.9 M USD).","margin":"Exposes +11.9 M USD (179.3% coverage) remaining above 15.0 M USD floor without mental arithmetic.","disposition":"NOMINAL on School HVAC (28.4 M USD); REVIEW on Water Main (31.2 M USD) triggers Option B split vote."},"murder_board":[{"rubric":"Conservation & GAO Lineage","finding":"48.0 + 16.5 + 22.0 - 28.4 - 31.2 = 26.9 M USD (179.3% of 15.0 M USD floor).","verdict":"PASS"},{"rubric":"Trade Space & Fiscal Illusion","finding":"Water Main (31.2 M USD) flagged REVIEW with Option B split; +250 bps shock modeled with FRED-CPIU-2026Q4.","verdict":"PASS"},{"rubric":"Audience Match","finding":"v10 uses plain GAO/USWDS table + waterfall; v11/v12/v20 use 1-2-5 NIST scales and repeatability comparisons.","verdict":"PASS"}]},{"view_id":"v11-treasury-stress-test-solver","title":"Treasury +250 bps Rate-Shock Liquidity Drawdown Solver","option_label":"v11 \u00b7 Treasury Stress Solver","default_medium":"m3","chromatic_code":"c3","default_nav":"n2","allowed_navs":["n2","n1","n0"],"nav_icon":"scale-balanced","nav_brand":"Treasury Risk","topbar_brand":"Treasury +250 bps Rate-Shock Solver","rail_brand":"Solver Controls","topbar_status":[],"nav_items":["Shock Solver","Drawdown Curve"],"nav_anchors":["v11-solver","v11-plot"],"vector_summary":"Quantitative Risk Analyst to Treasury & Investment Committee \u00b7 Decision Brief (1\u20133 min) \u00b7 Interactive App \u00b7 Detailed Metrology","actionable_disposition":"NOMINAL: +5.1% liquidity headroom above 20.0% regulatory floor at Q8 (25.1% \u00b1 1.8% MC median) \u2014 Maintain short-duration Treasury ladder; authorize Q3-Q4 coupon reinvestment schedule without emergency liquidation.","bias_removed":"Deterministic Point-Forecast Masking: Showing only a smooth average liquidity line under a +250 bps rate shock while concealing Monte Carlo tail dispersion (\u00b1u\u1d67) and regulatory 20.0% breach proximity.","bias_risk":"Hides Monte Carlo lower-tail liquidity dispersion.","bias_replacement":"Plot discrete n = 10,000 Monte Carlo medians with explicit \u00b1u\u1d67 error whiskers against the dashed deterministic duration model (Corridor Rel: 0.04), anchored to the 20.0% lower abort envelope and bottom residual strip.","invariants":{"baseline":"20.0% lower Regulatory Liquidity Floor abort envelope (direction: \"lower\") rendered beneath Q1-Q8 drawdown.","provenance":"Separates analytical duration model (dashed line + band) from discrete n = 10,000 Monte Carlo medians (circle + \u00b1u\u1d67 whiskers) + residual strip.","margin":"Exposes +8.4% Q4 headroom and +5.1% Q8 floor headroom (25.1% \u00b1 1.8% vs. 20.0% floor) via direct pill callouts.","disposition":"NOMINAL liquidity runway authorizes Q3-Q4 coupon reinvestment schedule without forced asset sales."},"murder_board":[{"rubric":"Trade Space & Fiscal Illusion","finding":"Water Main (31.2 M USD) flagged REVIEW with Option B split; +250 bps shock modeled with FRED-CPIU-2026Q4.","verdict":"PASS"},{"rubric":"No Bezier Splines","finding":"Compile Evidence.py emits \u003ccircle\u003e + u\u1d67 whiskers and zero cubic Bezier C paths.","verdict":"PASS"},{"rubric":"Calibration & Provenance","finding":"v11 emits TREASURY-POOL-04, GAO / SEC-10Q +250 bps, N Sub = 10000; v12 emits RC-BENCH-RIG-04, 22.4 \u00b1 0.2 \u00b0C, 1.00 kHz, NIST-RC-LAB-2026.","verdict":"PASS"},{"rubric":"Audience Match","finding":"v10 uses plain GAO/USWDS table + waterfall; v11/v12/v20 use 1-2-5 NIST scales and repeatability comparisons.","verdict":"PASS"}]},{"view_id":"v12-stem-interactive-lab","title":"First-Order RC Discharge & Experimental Residual Lab","option_label":"v12 \u00b7 STEM RC Discharge Lab","default_medium":"m2","chromatic_code":"c2","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"flask","nav_brand":"RC Physics Lab","topbar_brand":"RC Discharge Lab \u00b7 \u03c4 = 2.40 s","rail_brand":"Lab Sections","topbar_status":[],"nav_items":["Lens Guide","Experiment Plot"],"nav_anchors":["v12-role-chips","v12-lab"],"vector_summary":"STEM Educator to Student & Lab Peer \u00b7 Deep Analysis (10\u201345 min) \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"NOMINAL: All 9 student oscilloscope samples within \u00b10.8 sigma of V_0 * exp(-t / tau) [V_0 = 5.00 V, tau = 2.40 s] \u2014 Verify 1*tau = 2.40 s crossing at 1.84 V on bench oscilloscope and submit normalized residual check before Lab Section 2.","bias_removed":"Notation-First Overload & Dot-Connecting: Dumping unanchored differential equations before physical intuition, drawing Bezier curves through noisy bench captures, or hiding units and test temperature.","bias_risk":"Learners mistake smoothed splines for physical oscilloscope data.","bias_replacement":"Bind V_0 (5.00 V) (tx) and exp(-t / tau) (tau = 2.40 s) (Path Loss) via matching Pedagogical Flow tokens on \u003e= 90% neutral surface, display discrete circle markers with \u00b1u\u1d67 whiskers, and include va-test-condition-block (T_amb = 22.4 \u00b1 0.2 \u00b0C, F (s) = 1.00 kHz).","invariants":{"baseline":"V(t) = 5.0 * exp(-x / 2.4) analytical corridor (Corridor Rel: 0.04) and 1-2-5 NIST axes (0..10 s, 0..5 V).","provenance":"Separates continuous RC model (dashed Path Loss curve) from discrete student oscilloscope samples (tx circles + \u00b1u\u1d67 whiskers) + Detailed Metrology condition strip.","margin":"Exposes 1*tau = 2.40 s (1.84 V) physical checkpoint and normalized residuals within \u00b10.8 sigma ([-2sigma, +2sigma] band).","disposition":"NOMINAL experimental agreement clears student team to proceed from RC calibration to Section 2 frequency sweep."},"murder_board":[{"rubric":"No Bezier Splines","finding":"Compile Evidence.py emits \u003ccircle\u003e + u\u1d67 whiskers and zero cubic Bezier C paths.","verdict":"PASS"},{"rubric":"Calibration & Provenance","finding":"v11 emits TREASURY-POOL-04, GAO / SEC-10Q +250 bps, N Sub = 10000; v12 emits RC-BENCH-RIG-04, 22.4 \u00b1 0.2 \u00b0C, 1.00 kHz, NIST-RC-LAB-2026.","verdict":"PASS"},{"rubric":"Cognitive Speed & Term Binding","finding":"tx binds V_0 (5.00 V) to scatter points; Path Loss binds exp(-t / tau) to dashed model curve.","verdict":"PASS"},{"rubric":"Error Bars & Residuals","finding":"All 9 samples include u\u1d67 (0.03\u20130.06 V) and Residual Strip.enabled = true.","verdict":"PASS"},{"rubric":"Audience Match","finding":"v10 uses plain GAO/USWDS table + waterfall; v11/v12/v20 use 1-2-5 NIST scales and repeatability comparisons.","verdict":"PASS"}]},{"view_id":"v20-student-capstone-lab-report","title":"Student RC Decay Capstone Lab Report & Error Analysis","option_label":"v20 \u00b7 Student Capstone Lab Report","default_medium":"m2","chromatic_code":"c2","default_nav":"n1","allowed_navs":["n1","n2","n0"],"nav_icon":"graduation-cap","nav_brand":"Capstone Lab","topbar_brand":"Capstone Lab Report \u00b7 \u03c4 = 2.40 s","rail_brand":"Report Sections","topbar_status":[],"nav_items":["Headline Claim","Bench Repeatability","Self-Critique"],"nav_anchors":["v20-claim","v20-evidence","v20-critique"],"vector_summary":"Student Researcher to Educator & Capstone Judge \u00b7 Dual-Speed Brief & Deep Analysis \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"NOMINAL: 5-station calibrated mean 1.82 V vs 1.84 V theory at tau = 2.40 s from V_0 = 5.00 V (\u00b10.05 V repeatability, \u003c= 0.8 sigma) \u2014 Request Lab Section 2 signoff: all 5 bench stations reproduce first-order RC decay within combined +/-0.05 V calibration uncertainty.","bias_removed":"Chronological Lab-Notebook Narration: Burying quantitative repeatability results behind pages of equipment lists and hiding station-to-station drift.","bias_risk":"Forces judges to hunt through chronology for whether error bounds actually hold across rigs.","bias_replacement":"Open with Headline Claim (1.82 V observed vs 1.84 V predicted within \u00b10.05 V), show 5-station before/after dumbbell against raw trace, and audit every bound via judge self-critique checklist.","invariants":{"baseline":"V_0 = 5.00 V exponential benchmark predicting 1.84 V at tau = 2.40 s within \u00b10.05 V repeatability corridor.","provenance":"Pairs raw oscilloscope capture with zero-adjusted 5-bench repeatability dumbbell shifts (Stn 1..Stn 5).","margin":"Confirms 1.82 V station mean lies inside \u00b10.05 V calibration bound and all residuals remain \u003c= 0.8 sigma.","disposition":"Cleared 4-point self-critique checklist authorizes capstone judge and instructor grading signoff."},"murder_board":[{"rubric":"Student Upward Lab Presentation","finding":"Conserves 5.00 V, 2.40 s, 1.84 V, 1.82 V trial mean, \u00b10.05 V, \u003c= 0.8 sigma.","verdict":"PASS"},{"rubric":"Audience Match","finding":"v10 uses plain GAO/USWDS table + waterfall; v11/v12/v20 use 1-2-5 NIST scales and repeatability comparisons.","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"Opening Reserve Musd","canonical_value":"48.0","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"State Grant Musd","canonical_value":"16.5","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"Utility Bond Musd","canonical_value":"22.0","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"School Hvac Musd","canonical_value":"28.4","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"Water Main Musd","canonical_value":"31.2","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"Closing Contingency Musd","canonical_value":"26.9","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"Reserve Floor Musd","canonical_value":"15.0","unit":"M USD","views":"V10 Civic Capital Waterfall spec, V10 Civic Budget Table spec"},{"metric_id":"Reserve Coverage (%)","canonical_value":"179.3","unit":"%","views":"V10 Civic Budget Table spec"},{"metric_id":"Rate Shock (bps)","canonical_value":"250","unit":"bps","views":"V11 Treasury Drawdown Plot spec"},{"metric_id":"Liquidity Floor (%)","canonical_value":"20.0","unit":"%","views":"V11 Treasury Drawdown Plot spec"},{"metric_id":"Q1 Mc Median Liquidity (%)","canonical_value":"36.4","unit":"%","views":"V11 Treasury Drawdown Plot spec"},{"metric_id":"Q8 Mc Median Liquidity (%)","canonical_value":"25.1","unit":"%","views":"V11 Treasury Drawdown Plot spec"},{"metric_id":"RC V0 (V)","canonical_value":"5.0","unit":"V","views":"V12 Stem RC Cooling Lab spec"},{"metric_id":"RC Tau (s)","canonical_value":"2.4","unit":"s","views":"V12 Stem RC Cooling Lab spec"},{"metric_id":"RC Vtau (V)","canonical_value":"1.84","unit":"V","views":"V20 Student Repeatability Dumbbell spec"},{"metric_id":"RC Mean Trial (V)","canonical_value":"1.82","unit":"V","views":"V20 Student Repeatability Dumbbell spec"},{"metric_id":"RC Uncertainty (V)","canonical_value":"0.05","unit":"V","views":"V20 Student Repeatability Dumbbell spec"},{"metric_id":"RC Sigma Bound","canonical_value":"0.8","unit":"sigma","views":"V20 Student Repeatability Dumbbell spec"}]},{"world_id":"05-physical-systems-auto-and-aero","world_label":"05 \u00b7 Auto & Aerospace","title":"Physical Systems: Automotive Propulsion, CAN-FD Fieldbus & Aerospace Crew Displays","views":[{"view_id":"v13-propulsion-archival-monograph","title":"Argonne D^3 Propulsion Efficiency Archival Monograph","option_label":"v13 \u00b7 Propulsion Monograph","default_medium":"m2","chromatic_code":"c3","default_nav":"n1","allowed_navs":["n1","n0"],"nav_icon":"gauge-high","nav_brand":"Argonne D\u00b3 Monograph","topbar_brand":"Argonne D\u00b3 Propulsion Efficiency","rail_brand":"Monograph","topbar_status":[],"nav_items":["Efficiency Prose","D\u00b3 Curve & Residuals"],"nav_anchors":["v13-prose","v13-plot"],"vector_summary":"Propulsion / Systems Researcher to Peer Discipline Engineer \u00b7 Deep Analysis (10\u201345 min) \u00b7 Print Sheet & Article / Document \u00b7 Detailed Metrology","actionable_disposition":"Peak BTE 42.8% at 14.0 bar IMEP; restrict continuous operation within [35.0%, 46.0%] envelope.","bias_removed":"Spline-smoothed engine efficiency maps without uncertainty bars or residuals.","bias_risk":"Spline-smoothed torque curves without error bars obscure variance between measured operating points and knock ceilings.","bias_replacement":"Separate Analytical Model cubic curve from discrete Argonne D^3 points with +/-u\u1d67 whiskers, 46.0 % knock ceiling, 35.0 % cruise floor, and bottom normalized residual strip.","invariants":{"baseline":"Anchors Eta BTE / % (15..50 %) against 35.0 % cruise warning floor and 46.0 % thermal/knock abort ceiling across 2..20 bar IMEP.","provenance":"Strictly splits Discrete Measurement circles (+/-u\u1d67 from 0.4 to 0.8 %) from Analytical Model dashed polynomial (+/-0.7 % corridor) and cites ANL-D3-2.0L-CRDI (NIST-TRQ-2026-05).","margin":"Exposes +3.2 % margin below the 46.0 % thermal ceiling at 42.8 % peak BTE and +7.8 % headroom above the 35.0 % cruise floor.","disposition":"Hold cruise fueling schedule inside 10..18 bar IMEP to stay above 35.0 % floor and below 46.0 % knock envelope."},"murder_board":[{"rubric":"1. Physical Conservation & Metrology","finding":"v13 separates discrete Argonne D^3 points (+/-u\u1d67) from cubic model with residual strip; v14 scope leaves 0.35 \u00b5s null gap uninterpolated.","verdict":"PASS"},{"rubric":"2. Bus Topology & Bitfield ICDs","finding":"120 \u03a9 dual termination and Stub \u003c= 0.3 m trace directly to SAE J1939 PGN 0xFEF1 (0x18FEF100) across ECM (0x00), BMS (0xF3), MCU (0xEF), OBD-II Tap.","verdict":"PASS"},{"rubric":"3. Operator Safety & LOTO Interlocks","finding":"SOF_ARB_ERR ([31], W1C, Safety Critical: true) guards bus reset; MCU (0xEF) warn status pairs with +2.5 V / 400 mV scope redlines and zero flashing UI.","verdict":"PASS"},{"rubric":"v21 \u00b7 Field Anomaly Escalation Note","finding":"Bottom-up troubleshooting note conserves 120 \u03a9 EOL, 0.3 m stub, 0.35 \u00b5s dropout, 85.0 \u00b0C MCU derate, and 42.8% BTE dyno target over an 8.0 h Gantt recovery plan.","verdict":"PASS"}]},{"view_id":"v14-fieldbus-and-scope-debugger","title":"SAE J1939 CAN-FD Bus Topology, Arbitration Header & Reflection Scope Debugger","option_label":"v14 \u00b7 CAN-FD Fieldbus Debugger","default_medium":"m3","chromatic_code":"c4","default_nav":"n3","allowed_navs":["n3","n0","n2"],"nav_icon":"microchip","nav_brand":"CAN-FD Bench","topbar_brand":"SAE J1939 CAN-FD \u00b7 0x18FEF100","rail_brand":"Bench Tools","topbar_status":[{"text":"1 BUS WARN","variant":"status","state":"warn"},{"text":"120 \u03a9 \u00b7 2 Mbps","variant":"plain","state":"nominal"},{"text":"0x18FEF100","variant":"plain","state":"nominal"}],"nav_items":["Bus Topology","29-Bit Header","Reflection Scope","W1C Interlock"],"nav_anchors":["v14-topology","v14-header","v14-scope","v14-interlock"],"vector_summary":"Embedded Systems Engineer to Bench / Field Technician \u00b7 Immediate Glance (5\u201315 s) \u00b7 Interactive App \u00b7 Detailed Metrology","actionable_disposition":"Inspect 0.35 \u00b5s stub reflection gap (0.90\u20131.25 \u00b5s) and verify 120 \u03a9 EOL before clearing SOF_ARB_ERR [31].","bias_removed":"Unlinked raw hex frame dumps (0x18FEF100) and interpolated oscilloscope gaps.","bias_risk":"Unlinked hex dumps and bridged scope gaps hide termination reflection spikes before W1C latch clear.","bias_replacement":"Pair 32-bit aligned J1939 header decode (SOF_ARB_ERR interlock) with 120 \u03a9 / Stub \u003c= 0.3 m topology and uninterpolated 0.35 \u00b5s null dropout bounded by T_A/T_B.","invariants":{"baseline":"Anchors CH1 V_diff (+2.5 V / -0.5 V), CH2 common-mode noise (+400 mV ceiling), 120 \u03a9 EOL termination, and Stub \u003c= 0.3 m physical envelope.","provenance":"Marks 0.90 \u00b5s to 1.25 \u00b5s (0.35 \u00b5s duration) with explicit null samples (interpolate: false) and unbroken path gap rendering.","margin":"Exposes 425 mV common-mode excursion (+25 mV breach over 400 mV limit) prior to the 0.35 \u00b5s dropout, tied to MCU (0xEF) Derate 85 \u00b0C (warn) and SOF_ARB_ERR latch.","disposition":"De-energize bus per LOTO, verify 120 \u03a9 termination and Stub \u003c= 0.3 m on MCU (0xEF) drop, then write-1-to-clear SOF_ARB_ERR ([31])."},"murder_board":[{"rubric":"1. Physical Conservation & Metrology","finding":"v13 separates discrete Argonne D^3 points (+/-u\u1d67) from cubic model with residual strip; v14 scope leaves 0.35 \u00b5s null gap uninterpolated.","verdict":"PASS"},{"rubric":"2. Bus Topology & Bitfield ICDs","finding":"120 \u03a9 dual termination and Stub \u003c= 0.3 m trace directly to SAE J1939 PGN 0xFEF1 (0x18FEF100) across ECM (0x00), BMS (0xF3), MCU (0xEF), OBD-II Tap.","verdict":"PASS"},{"rubric":"3. Operator Safety & LOTO Interlocks","finding":"SOF_ARB_ERR ([31], W1C, Safety Critical: true) guards bus reset; MCU (0xEF) warn status pairs with +2.5 V / 400 mV scope redlines and zero flashing UI.","verdict":"PASS"},{"rubric":"v21 \u00b7 Field Anomaly Escalation Note","finding":"Bottom-up troubleshooting note conserves 120 \u03a9 EOL, 0.3 m stub, 0.35 \u00b5s dropout, 85.0 \u00b0C MCU derate, and 42.8% BTE dyno target over an 8.0 h Gantt recovery plan.","verdict":"PASS"}]},{"view_id":"v21-field-anomaly-escalation-tsn","title":"Test-Bay CAN-FD Reflection & Thermal Recovery Escalation Note","option_label":"v21 \u00b7 Field Escalation TSN","default_medium":"m3","chromatic_code":"c4","default_nav":"n2","allowed_navs":["n2","n1","n0"],"nav_icon":"wrench","nav_brand":"Bay 04 Escalation","topbar_brand":"Field TSN \u00b7 Bay 04 CAN-FD Recovery","rail_brand":"Escalation Steps","topbar_status":[],"nav_items":["Fault Summary","Isolation & Bus","8.0 h Recovery"],"nav_anchors":["v21-symptom","v21-diagnostics","v21-recovery"],"vector_summary":"Field / Test Technician to Systems & Controls Lead Engineer \u00b7 Decision Brief (1\u20133 min) \u00b7 Interactive App \u00b7 Operational Spec","actionable_disposition":"Contain 0.35 \u00b5s reflection (\u003e0.3 m stub, 120 \u03a9 EOL) and 85 \u00b0C MCU excursion before 42.8% BTE dyno retest within 8.0 h.","bias_removed":"Ad-hoc technician chat messages missing cable stub bounds, termination readings, or bay recovery slack.","bias_risk":"Unstructured bench chat notes separate electrical stub symptoms from cooling recovery schedule and dyno release gates.","bias_replacement":"Collapse fault isolation into 3-step physical checklist (Dual 120 \u03a9 EOL, \u003c= 0.3 m stub, 0.35 \u00b5s dropout, 85.0 \u00b0C MCU derate) coupled to 8.0 h Gantt recovery plan (42.8% BTE retest) and guarded Systems handoff.","invariants":{"baseline":"Anchors bay recovery to dual 120 \u03a9 EOL, \u003c= 0.3 m stub cap, 85.0 \u00b0C thermal derate limit, and 42.8% BTE dyno target across 8.0 h.","provenance":"Binds every step card, guarded handoff status, and recovery task span directly to calibrated harness, scope, and Argonne D^3 targets.","margin":"Makes +1.0 h thermal purge float explicit alongside the critical Stub \u2192 EOL \u2192 Scope \u2192 Dyno \u2192 Signoff (8.0 h) chain.","disposition":"Complete 3-step bay isolation and execute guarded two-step ARM \u2192 CONFIRM Systems handoff to track the 8.0 h dyno recovery."},"murder_board":[{"rubric":"2. Bus Topology & Bitfield ICDs","finding":"120 \u03a9 dual termination and Stub \u003c= 0.3 m trace directly to SAE J1939 PGN 0xFEF1 (0x18FEF100) across ECM (0x00), BMS (0xF3), MCU (0xEF), OBD-II Tap.","verdict":"PASS"},{"rubric":"3. Operator Safety & LOTO Interlocks","finding":"SOF_ARB_ERR ([31], W1C, Safety Critical: true) guards bus reset; MCU (0xEF) warn status pairs with +2.5 V / 400 mV scope redlines and zero flashing UI.","verdict":"PASS"},{"rubric":"v21 \u00b7 Field Anomaly Escalation Note","finding":"Bottom-up troubleshooting note conserves 120 \u03a9 EOL, 0.3 m stub, 0.35 \u00b5s dropout, 85.0 \u00b0C MCU derate, and 42.8% BTE dyno target over an 8.0 h Gantt recovery plan.","verdict":"PASS"}]}],"conservation_ledger":[{"metric_id":"Peak BTE (%)","canonical_value":"42.8","unit":"%","views":"v13, v15, v21"},{"metric_id":"CANFD Termination (\u03a9)","canonical_value":"120","unit":"\u03a9","views":"v14, v16, v21"},{"metric_id":"CANFD Stub Max (m)","canonical_value":"0.3","unit":"m","views":"v14, v16, v21"},{"metric_id":"Scope Dropout (\u00b5s)","canonical_value":"0.35","unit":"\u00b5s","views":"v14, v21"},{"metric_id":"CANFD Arb Frame (Hex)","canonical_value":"0x18FEF100","unit":"hex","views":"v14"},{"metric_id":"Hud Sightline Keepout (%)","canonical_value":"65.0","unit":"%","views":"v15"},{"metric_id":"Window Scrim Min Contrast","canonical_value":"7.0","unit":"1","views":"v16"},{"metric_id":"Mcu Thermal Derate C","canonical_value":"85.0","unit":"\u00b0C","views":"v16, v21"},{"metric_id":"Bay Recovery Window H","canonical_value":"8.0","unit":"h","views":"v21"}]}]}</script>
@@ -11650,6 +12500,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 </svg></div>
 <details class="qe-cal-footer"><summary class="qe-cal-summary va-nums">Calibration &amp; Sensor Provenance (k=2 · NIST)</summary><div class="qe-scalar-meta va-nums">Expanded Uncertainty: (94.20 ± 0.40)% | k=2.0 | 95.45% CI</div><div class="qe-scalar-prov va-nums">Sensor: MES-LINE-03-AGG | Cal: CAL-OEE-AUDIT-2026-03 | Raw ADC: 9420 cts</div></details>
 </div></div><figcaption class="va-figure-caption">Conserved telemetry array pairing CMD-vs-ACT NIST uncertainty gauges for control-room dispatch with wall-kiosk readiness sparklines.</figcaption></figure></section>
+  <section id="v07-node-bar" class="v07-node-bar" aria-label="Microgrid Node Telemetry Selector">
+    <div id="v07-node-chips" class="v07-node-chips" role="group" aria-label="Inspect Microgrid Node">
+      <button type="button" class="v07-node-chip" data-v07-node="poi" aria-pressed="false" data-v07-diag="POI Breaker 52-M Closed · Active Dispatch 23.6 MW (CMD 24.0 MW) · Synchrophasor 59.985 Hz (±0.005 Hz)">POI 52-M · 23.6 MW</button>
+      <button type="button" class="v07-node-chip" data-v07-node="gt" aria-pressed="false" data-v07-diag="Gas Turbine Skid (FT-101 / FCV-101) · 14.2 MW Dispatch Share · 13.8 kV Bus Sync · OEE Yield 94.2%">Gas Turbine · 14.2 MW</button>
+      <button type="button" class="v07-node-chip" data-v07-node="bess" aria-pressed="false" data-v07-diag="24.0 MW / DC 1500 V Grid-Forming BESS · State of Charge 78.4% (Target 80.0%) · 88% Corridor Margin">BESS · 78.4% SoC</button>
+      <button type="button" class="v07-node-chip" data-v07-node="rs485" aria-pressed="false" data-v07-diag="120 Ω RS-485 / Modbus RTU Bus · PLC-01 Master -> RTU-02 GT / BMS-03 BESS / PMU-04 POI · Nominal Link">RS-485 Bus · 120 Ω</button>
+    </div>
+    <div id="v07-node-diag" class="v07-node-diag va-nums" role="status">Select a node above to spotlight its scalar telemetry and schematic panel.</div>
+  </section>
   <section id="v07-topology" aria-label="ISA-5.1 P&amp;ID Loop and 120 Ohm Fieldbus"><figure class="va-figure-card qe-figure" id="v07-grid-scada-pid-and-bus" data-qe-modality="schematic" data-qe-rigor="L3" data-qe-medium="m4" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Microgrid POI ISA-5.1 P&amp;ID Loop &amp; 120 Ω RS-485/Modbus PLC Fieldbus</h2></div><div class="qe-schematic-wrap" data-rigor="L3" data-medium="m4"><div class="qe-schematic-hdr"><div class="va-test-condition-block qe-cond-strip" role="note" aria-label="Test Conditions"><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">DUT</span><span class="qe-cond-val va-nums">POI-MGRID-03</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">FW</span><span class="qe-cond-val va-nums">SCADA-v9.3.1</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Std</span><span class="qe-cond-val va-nums">ISA-5.1 / ISA-101 / TIA-485</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">T<sub>amb</sub></span><span class="qe-cond-val va-nums">(24.5 ± 0.5) °C</span></div><div class="qe-cond-item"><span class="qe-cond-lbl qe-unit">Cal Cert</span><span class="qe-cond-val va-nums">CAL-PMU-2026-031</span></div></div><span class="qe-dwg-num va-nums">DWG: DWG-SCADA-POI-0307-R2</span></div><div class="qe-subpanel"><div class="qe-subpanel-title">Panel A: ISA-5.1 Gas Turbine &amp; 24.0 MW BESS Microgrid POI Loop</div><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Panel A: ISA-5.1 Gas Turbine &amp; 24.0 MW BESS Microgrid POI Loop"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 348" role="img" aria-label="Topology">
 <defs><marker id="qe-topo-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--text-primary)"/></marker><marker id="qe-topo-focal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--accent-focal)"/></marker></defs>
 <rect data-role="enclave" x="18.0" y="38.0" width="184.0" height="246.0" rx="8" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1.4" stroke-dasharray="6,3,2,3"/>
@@ -13818,6 +14677,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       return;
     }
     const fit = computeScale(dims.width, dims.height, matEl, zoomMode);
+    scalerEl.scrollLeft = 0;
+    scalerEl.scrollTop = 0;
     scalerEl.classList.toggle('has-hinge', isFoldableSize(dims.width, dims.height));
     scalerEl.style.width = fit.scalerW + 'px';
     scalerEl.style.height = fit.scalerH + 'px';
@@ -14295,53 +15156,99 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     }
   }
 
-  function focusAnchor(doc, anchorId, label) {
-    doc.querySelectorAll('[data-rail-hidden]').forEach(function (el) { el.removeAttribute('data-rail-hidden'); });
-    doc.querySelectorAll('.va-rail-filter-bar').forEach(function (el) { el.remove(); });
+  let scrollOpId = 0;
+
+  function setRailActiveLink(doc, anchorId) {
     doc.querySelectorAll('#va-shell-rail .va-rail-link').forEach(function (lnk) {
       const on = lnk.getAttribute('data-rail-anchor') === anchorId;
       lnk.classList.toggle('is-active', on);
-      if (on) lnk.setAttribute('aria-current', 'page');
+      if (on) lnk.setAttribute('aria-current', 'location');
       else lnk.removeAttribute('aria-current');
     });
-    const main = doc.getElementById('va-stage-main');
-    if (anchorId === '__all__') {
+  }
+
+  function spotlightAnchor(doc, anchorId, shouldScroll) {
+    doc.querySelectorAll('.is-rail-spotlight').forEach(function (el) { el.classList.remove('is-rail-spotlight'); });
+    setRailActiveLink(doc, anchorId);
+    const target = anchorId ? doc.getElementById(anchorId) : null;
+    if (!target) {
       refreshStageCharts(doc);
       return;
     }
-    const target = doc.getElementById(anchorId);
-    const inner = doc.querySelector('#va-stage-main .v9-stage-inner');
-    if (!target || !inner) {
-      focusAnchor(doc, '__all__', 'All Sections');
-      return;
+    target.classList.add('is-rail-spotlight');
+    if (shouldScroll) {
+      const opId = ++scrollOpId;
+      doc.__quietManualNavUntil = Date.now() + 750;
+      if (!target.hasAttribute('tabindex') && !target.matches('a,button,input,select,textarea')) {
+        target.setAttribute('tabindex', '-1');
+      }
+      if (typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const win = doc.defaultView;
+      const done = function () {
+        if (opId !== scrollOpId || !target.isConnected) return;
+        target.classList.add('is-rail-spotlight');
+        refreshStageCharts(doc);
+      };
+      if (win && 'onscrollend' in win) {
+        win.addEventListener('scrollend', done, { once: true });
+      }
+      (win || globalThis).setTimeout(done, 460);
+    } else {
+      refreshStageCharts(doc);
     }
-    let cur = target;
-    while (cur && cur !== inner) {
-      const parent = cur.parentElement;
-      if (!parent) break;
-      Array.prototype.forEach.call(parent.children, function (sib) {
-        if (sib === cur) return;
-        if (sib.classList.contains('v9-masthead') || sib.classList.contains('v9-m1-folio') ||
-            sib.classList.contains('va-rail-reopen-btn') || sib.classList.contains('va-rail-filter-bar')) return;
-        sib.setAttribute('data-rail-hidden', 'true');
+  }
+
+  function initScrollSpy(doc, anchors) {
+    if (doc.__quietRailSpy && typeof doc.__quietRailSpy.disconnect === 'function') {
+      doc.__quietRailSpy.disconnect();
+      doc.__quietRailSpy = null;
+    }
+    const win = doc.defaultView;
+    if (doc.__quietRailScrollFn && win) {
+      win.removeEventListener('scroll', doc.__quietRailScrollFn);
+      doc.__quietRailScrollFn = null;
+    }
+    if (!win || typeof win.IntersectionObserver !== 'function') return;
+    const targets = [];
+    (anchors || []).forEach(function (aid) {
+      const el = aid ? doc.getElementById(aid) : null;
+      if (el && targets.indexOf(el) === -1) targets.push(el);
+    });
+    if (targets.length < 2) return;
+    const visible = new Set();
+    function syncActive() {
+      if (Date.now() < (doc.__quietManualNavUntil || 0)) return;
+      const sy = win.scrollY || 0;
+      if (sy <= 6) { setRailActiveLink(doc, targets[0].id); return; }
+      const de = doc.documentElement;
+      if (de && (sy + win.innerHeight) >= (de.scrollHeight - 4)) {
+        setRailActiveLink(doc, targets[targets.length - 1].id);
+        return;
+      }
+      for (let i = 0; i < targets.length; i += 1) {
+        if (visible.has(targets[i].id)) { setRailActiveLink(doc, targets[i].id); return; }
+      }
+    }
+    const spy = new win.IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) visible.add(e.target.id);
+        else visible.delete(e.target.id);
       });
-      cur = parent;
-    }
-    const bar = doc.createElement('div');
-    bar.className = 'va-rail-filter-bar';
-    bar.innerHTML = '<span>Focused Section: <strong>' + esc(label) + '</strong></span>' +
-      '<button type="button" class="va-pill-btn va-rail-show-all-btn" aria-label="Show full view">Show Full View</button>';
-    const hdr = inner.querySelector('.v9-masthead');
-    if (hdr && hdr.nextSibling) inner.insertBefore(bar, hdr.nextSibling);
-    else inner.insertBefore(bar, inner.firstChild);
-    const showBtn = bar.querySelector('.va-rail-show-all-btn');
-    if (showBtn) showBtn.addEventListener('click', function () { focusAnchor(doc, '__all__', 'All Sections'); });
-    if (main) main.scrollTop = 0;
-    refreshStageCharts(doc);
+      syncActive();
+    }, { root: null, rootMargin: '-18% 0px -55% 0px', threshold: 0 });
+    targets.forEach(function (el) { spy.observe(el); });
+    doc.__quietRailSpy = spy;
+    let raf = 0;
+    doc.__quietRailScrollFn = function () {
+      if (raf) return;
+      raf = win.requestAnimationFrame(function () { raf = 0; syncActive(); });
+    };
+    win.addEventListener('scroll', doc.__quietRailScrollFn, { passive: true });
   }
 
   function findStageQuickControls(doc) {
     const sels = [
+      '.qe-scope-preset-bar button[data-scope-preset]', '#v07-node-chips button',
       '#v02-subgroup-chips button', '#v05-enclave-chips button', '#v10-fund-chips button',
       '#v11-shock-chips button', '#v12-role-chips button', '#v12-lab button[data-term]',
       '#v03-guide button[data-term]', '.v18-filter-bar button[data-v18-filter]',
@@ -14376,11 +15283,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       if (!real) return;
       const on = real.classList.contains('is-active') || real.getAttribute('aria-pressed') === 'true';
       mb.classList.toggle('is-active', on);
+      mb.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
 
   function enhanceShellNav(doc, viewMeta, portalApi) {
     doc.documentElement.dataset.railCollapsed = 'false';
+    const effNav = (doc.documentElement && doc.documentElement.dataset.effectiveNav) || 'n1';
     const topbar = doc.getElementById('va-shell-topbar');
     if (topbar && !doc.getElementById('va-topbar-rail-toggle')) {
       const tBtn = doc.createElement('button');
@@ -14415,25 +15324,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
     const icons = ['activity', 'layers', 'sliders', 'bell'];
 
-    const linksHtml = '<a class="va-rail-link is-active" href="#stage" data-rail-anchor="__all__" aria-current="page">' +
-      sidebarSvg('all') + ' <span>All Sections</span><span class="va-rail-count va-nums">' + (items.length || 1) + '</span></a>' +
-      items.map(function (lbl, i) {
-        const anchor = anchors[i] || '';
-        return '<a class="va-rail-link" href="#' + esc(anchor || 'stage') + '" data-rail-anchor="' + esc(anchor) + '">' +
-          svgIcon(icons[i % 4]) + ' <span>' + esc(lbl) + '</span><span class="va-rail-count va-nums">' + countForAnchor(doc, anchor) + '</span></a>';
-      }).join('');
+    const linksHtml = items.map(function (lbl, i) {
+      const anchor = anchors[i] || '';
+      const activeCls = i === 0 ? ' is-active' : '';
+      const ariaCur = i === 0 ? ' aria-current="location"' : '';
+      return '<a class="va-rail-link' + activeCls + '" href="#' + esc(anchor || 'stage') + '" data-rail-anchor="' + esc(anchor) + '"' + ariaCur + '>' +
+        svgIcon(icons[i % 4]) + ' <span>' + esc(lbl) + '</span><span class="va-rail-count va-nums">' + countForAnchor(doc, anchor) + '</span></a>';
+    }).join('');
 
     const quickCtrls = findStageQuickControls(doc);
+    doc.__quietQuickCtrls = quickCtrls;
     let quickHtml = '';
     if (quickCtrls.length >= 2) {
       quickHtml = '<div class="va-rail-quick-group"><div class="va-tree-row">' +
-        '<button type="button" class="va-tree-caret" aria-expanded="true" aria-label="Toggle Quick Switch">' + sidebarSvg('caret') + '</button>' +
-        '<button type="button" class="va-tree-dest" data-quick-toggle="true"><span class="va-tree-label">Quick Switch</span></button>' +
+        '<button type="button" class="va-tree-caret" aria-expanded="true" aria-label="Toggle Interactive Controls">' + sidebarSvg('caret') + '</button>' +
+        '<button type="button" class="va-tree-dest" data-quick-toggle="true"><span class="va-tree-label">Interactive Controls</span></button>' +
         '</div><div class="va-tree-children">' +
         quickCtrls.map(function (b, idx) {
           const on = b.classList.contains('is-active') || b.getAttribute('aria-pressed') === 'true';
           return '<div class="va-tree-row"><button type="button" class="va-tree-dest' + (on ? ' is-active' : '') +
-            '" data-quick-idx="' + idx + '"><span class="va-tree-label">' + esc((b.textContent || '').trim()) + '</span></button></div>';
+            '" data-quick-idx="' + idx + '" aria-pressed="' + (on ? 'true' : 'false') + '"><span class="va-tree-label">' + esc((b.textContent || '').trim()) + '</span></button></div>';
         }).join('') + '</div></div>';
     }
 
@@ -14448,9 +15358,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       '<button type="button" class="va-tb-btn" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
       '</div></div>';
 
-    rail.innerHTML = '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
-      '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>' +
-      '<nav class="va-rail-links" aria-label="Section Focus">' + linksHtml + '</nav>' + quickHtml + footerHtml;
+    const brandHtml = effNav === 'n3'
+      ? '<div class="va-rail-brand is-kicker-only"><span class="va-rail-kicker">' + esc(railBrand) + '</span></div>'
+      : '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
+        '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>';
+
+    rail.innerHTML = brandHtml + '<nav class="va-rail-links" aria-label="Section Navigation">' + linksHtml + '</nav>' + quickHtml + footerHtml;
 
     const toggleCollapse = function () {
       const next = doc.documentElement.dataset.railCollapsed !== 'true';
@@ -14469,12 +15382,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     rail.querySelectorAll('.va-rail-link').forEach(function (lnk) {
       lnk.addEventListener('click', function (ev) {
         ev.preventDefault();
-        const aid = lnk.getAttribute('data-rail-anchor') || '__all__';
-        const lbl = (lnk.querySelector('span') || lnk).textContent || 'Section';
-        if (aid !== '__all__' && lnk.classList.contains('is-active')) focusAnchor(doc, '__all__', 'All Sections');
-        else focusAnchor(doc, aid, lbl);
+        spotlightAnchor(doc, lnk.getAttribute('data-rail-anchor') || '', true);
       });
     });
+    initScrollSpy(doc, anchors);
 
     const caret = rail.querySelector('.va-tree-caret');
     const qHead = rail.querySelector('[data-quick-toggle]');
@@ -14493,11 +15404,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       mb.addEventListener('click', function () {
         const real = quickCtrls[parseInt(mb.getAttribute('data-quick-idx') || '-1', 10)];
         if (!real) return;
-        if (real.closest('[data-rail-hidden="true"]')) focusAnchor(doc, '__all__', 'All Sections');
         real.click();
         syncQuickButtons(doc, quickCtrls);
       });
     });
+    if (main && main.dataset.railQuickSync !== '1') {
+      main.dataset.railQuickSync = '1';
+      main.addEventListener('click', function () {
+        if (doc.__quietQuickCtrls) window.setTimeout(function () { syncQuickButtons(doc, doc.__quietQuickCtrls); }, 0);
+      });
+    }
 
     rail.querySelectorAll('.va-swatch-btn').forEach(function (b) {
       b.addEventListener('click', function () {
@@ -14649,11 +15565,12 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       '<section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
       '<span class="va-landing-kicker">DETERMINISTIC DESIGN &amp; METROLOGY FOR AI AGENTS</span>' +
       '<h1 class="va-landing-h1">Interfaces Engineered to Be Read, Not Decorated</h1>' +
-      '<p class="va-landing-sub">One zero-dependency design system and SVG/ECharts compiler suite that adapts engineering telemetry, clinical scopes, and technical briefs across screen, print, and mobile.</p>' +
+      '<p class="va-landing-sub">A deterministic design system and SVG/ECharts compiler suite grounded in NIST, ISA-101, FDA IEC 62366, and NASA human-factors standards — adapting clinical telemetry, plant consoles, and technical briefs across screen, print, and mobile.</p>' +
       '<div class="va-landing-chips">' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_ui_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_evidence_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_bridge_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>nist_standards_</span></button>' +
       '</div>' +
       '<div class="va-landing-chips">' +
       '<button type="button" class="va-landing-chip" data-open-examples="1"><span class="va-chip-prompt">&gt;</span><span>' + totalViews + '_live_examples_</span></button>' +
@@ -14666,7 +15583,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       '<div class="va-morph-steps">' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Step Across Mediums</h2><p>Use &lt; and &gt; in the portal bar to step across domains as views morph between 1080p screen, archival paper, 390px mobile, and dark cockpit.</p></div></div>' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. Inspect Calibrated Proof</h2><p>Every chart uses 1-2-5 ticks, knockout halos, and conserved corpus numbers. Click Why? on any view to read its plain-English design rationale.</p></div></div>' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, isolate focused sections, switch themes or density from the rail footer, or drag portal handles.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, spotlight focused sections, inspect waveform cursors or table records, and switch themes from the rail footer.</p></div></div>' +
       '</div>' +
       '<div class="va-morph-stage-wrap">' +
       '<div class="va-morph-stage-hdr">' +
@@ -14693,6 +15610,16 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       '<div class="va-morph-slider-wrap"><label for="va-morph-threshold">Alert Ceiling: <strong id="va-morph-threshold-val" class="va-nums">75 mmHg</strong></label>' +
       '<input type="range" id="va-morph-threshold" min="55" max="95" step="1" value="75" aria-valuetext="75 mmHg"></div>' +
       '</div></div></section>' +
+
+      '<section id="va-landing-standards" aria-label="Standards Grounded in Engineering Metrology and Human Factors">' +
+      '<div class="va-landing-sec-hdr"><h2>Grounded in NIST, ISA-101, FDA &amp; NASA Standards</h2>' +
+      '<span>Every token, tick ladder, alarm budget, and optical scrim maps to published engineering authorities.</span></div>' +
+      '<div class="va-standards-grid">' +
+      '<article class="va-standard-card"><h3>1. Quantitative Metrology &amp; SI Calculus</h3><p>Axis ticks lock strictly to clean 1-2-5 intervals, SI quantity ratios (value / unit), Shewhart UCL/CL/LCL control bands, and discrete empirical markers separated from analytical fits.</p><div class="va-std-tags"><span class="va-std-tag">NIST SP 811</span><span class="va-std-tag">ISO 80000</span><span class="va-std-tag">Shewhart SPC</span></div></article>' +
+      '<article class="va-standard-card"><h3>2. High-Performance HMI &amp; Safe Interlocks</h3><p>Nominal telemetry stays monochrome so active anomalies stand out immediately, paired with two-step Arm -&gt; Execute breakers and structured Fault Tree root-cause paths.</p><div class="va-std-tags"><span class="va-std-tag">ISA-101</span><span class="va-std-tag">NRC NUREG-0700</span><span class="va-std-tag">NUREG-0492</span></div></article>' +
+      '<article class="va-standard-card"><h3>3. Medical Human Factors &amp; Optical HUDs</h3><p>Clinical scopes protect critical alarm floors above the fold, touch controls enforce 44 px targets on mobile, and smart-glass pods maintain &gt;= 7:1 contrast outside the windshield corridor.</p><div class="va-std-tags"><span class="va-std-tag">FDA IEC 62366</span><span class="va-std-tag">NASA-STD-3001</span><span class="va-std-tag">MIL-STD-1787B</span></div></article>' +
+      '<article class="va-standard-card"><h3>4. Embedded Buses, Coupling &amp; AI Risk</h3><p>Hardware views bind CAN-FD register bitfields, timing diagrams, and <em>N</em><sup>2</sup> interface matrices to uncertainty intervals and explicit model governance trails.</p><div class="va-std-tags"><span class="va-std-tag">SAE J1939</span><span class="va-std-tag">ITU-T Z.120</span><span class="va-std-tag">NASA SP-2016-6105</span><span class="va-std-tag">NIST AI RMF 100-1</span></div></article>' +
+      '</div></section>' +
 
       '<section id="va-landing-domains" aria-label="Explore Domains and Portal Views">' +
       '<div class="va-landing-sec-hdr"><h2>Explore ' + worlds.length + ' Domains &amp; ' + totalViews + ' Live Views</h2>' +
@@ -15058,13 +15985,18 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       doc.querySelectorAll('img[data-asset]').forEach(function (img) {
         img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
       });
+      if (win) {
+        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
+        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc);
+        if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc);
+        if (win.QuietStageRichV9) win.QuietStageRichV9.boot(doc);
+      }
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;
       if (win) {
-        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
-        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc); if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
-        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc); if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
+        if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
         win.scrollTo(0, 0);
       }
       main.scrollTop = 0;
@@ -15088,15 +16020,19 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       const on = tab.dataset.studioTab === state.studioView;
       tab.classList.toggle('is-active', on); tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    const dSel = document.getElementById('va-domain-select'), vSel = document.getElementById('va-view-select');
-    if (dSel && dSel.value !== state.world) dSel.value = state.world;
-    if (vSel && worldObj) {
-      if (vSel.dataset.worldLoaded !== worldObj.world_id) {
-        vSel.innerHTML = worldObj.views.map(function (v) { return '<option value="' + escHtml(v.view_id) + '">' + escHtml(v.option_label) + '</option>'; }).join('');
-        vSel.dataset.worldLoaded = worldObj.world_id;
-      }
-      vSel.value = state.view;
+    const vSel = document.getElementById('va-view-select');
+    if (vSel && vSel.dataset.allLoaded !== '1') {
+      vSel.innerHTML = (manifest.worlds || []).map(function (w) {
+        const num = String(w.world_id || '').slice(0, 2);
+        const opts = (w.views || []).map(function (v) {
+          const lbl = String(v.option_label || v.title || v.view_id).replace(' · ', ' — ');
+          return '<option value="' + escHtml(v.view_id) + '">' + escHtml((num ? num + ' · ' : '') + lbl) + '</option>';
+        }).join('');
+        return '<optgroup label="' + escHtml(w.world_label || w.world_id) + '">' + opts + '</optgroup>';
+      }).join('');
+      vSel.dataset.allLoaded = '1';
     }
+    if (vSel && state.view && vSel.value !== state.view) vSel.value = state.view;
     const posEl = document.getElementById('va-step-pos');
     if (posEl && window.QuietStudioPresetsRailV9) {
       const pos = window.QuietStudioPresetsRailV9.getGlobalPosition(manifest, state);
@@ -15212,9 +16148,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
         state.presetLocked = true; Object.assign(state, cfg); applyState(false);
       });
     });
-    bind('va-domain-select', 'change', function (e) { state.world = e.target.value; applyState(true); });
     bind('va-view-select', 'change', function (e) {
-      state.view = e.target.value;
+      const vid = e.target.value;
+      const hitW = (manifest.worlds || []).find(function (w) {
+        return (w.views || []).some(function (v) { return v.view_id === vid; });
+      });
+      if (hitW) state.world = hitW.world_id;
+      state.view = vid;
       if (!state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
       applyState(false);
     });

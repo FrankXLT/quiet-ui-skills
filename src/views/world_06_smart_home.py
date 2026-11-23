@@ -42,7 +42,7 @@ def _build_v17_html(corpus: dict[str, Any]) -> str:
     temp_f = round(temp_c * 9.0 / 5.0 + 32.0)
 
     return f"""<div class="v9-stage-inner v9-view-v17">
-  <section id="v17-kiosk" class="v17-frame-viewport" data-v17-scene="evening" data-v17-backdrop="art" data-temp-unit="c" aria-label="Framed Smart Home Wall Kiosk">
+  <section id="v17-kiosk" class="v17-frame-viewport" data-v17-scene="evening" data-v17-backdrop="art" data-v17-mat="linen" data-temp-unit="c" aria-label="Framed Smart Home Wall Kiosk">
     <div class="v17-mat-window">
       <img id="v17-photo-art" class="v17-art-photo is-active" data-backdrop="art" data-asset="assets/opt_frame_art.jpg" fetchpriority="high" alt="Albert Bierstadt Mount Corcoran fine art mountain landscape painting" />
       <img id="v17-photo-landscape" class="v17-art-photo" data-backdrop="landscape" data-asset="assets/opt_frame_landscape.jpg" fetchpriority="low" alt="Calm mountain lake twilight reflection photograph" />
@@ -51,29 +51,33 @@ def _build_v17_html(corpus: dict[str, Any]) -> str:
       <div class="v17-visor-bar">
         <div class="v17-glass-pod v17-clock-pod" aria-label="Time, Weather and Living Room Comfort">
           <div class="v17-clock-row">
-            <span class="v17-clock-time va-nums">7:42 PM</span>
-            <span class="v17-clock-meta">Wed, Nov 18 · Clear <span class="v17-temp-num" data-temp-c="14 °C" data-temp-f="57 °F">14 °C</span></span>
+            <span class="v17-pod-hdr"><svg class="v17-pod-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none"/><path d="M8 5v3l2.2 1.2" fill="none" stroke-linecap="round"/></svg><span id="v17-clock-time" class="v17-clock-time va-nums">7:42 PM</span></span>
+            <span id="v17-clock-meta" class="v17-clock-meta">Wed, Nov 18 · Clear <span class="v17-temp-num" data-temp-c="14 °C" data-temp-f="57 °F">14 °C</span></span>
           </div>
           <div class="v17-comfort-row va-nums">
             <span>Living Room <span class="v17-temp-num" data-temp-c="{temp_c:.1f} °C" data-temp-f="{temp_f:.0f} °F">{temp_c:.1f} °C</span></span>
             <span>·</span>
             <span>{rh_pct:.0f}%</span>
+            <span>·</span>
+            <span>Target <span id="v17-sp-val" data-setpoint-c="21.0" data-setpoint-f="70">21.0 °C</span></span>
+            <span class="v17-setpoint-ctl">
+              <button type="button" id="v17-sp-down" class="v17-nudge-btn" aria-label="Decrease target temperature">&minus;</button>
+              <button type="button" id="v17-sp-up" class="v17-nudge-btn" aria-label="Increase target temperature">+</button>
+            </span>
           </div>
         </div>
 
         <div class="v17-glass-pod v17-energy-pod" aria-label="Home Solar, Battery and Leak Status">
           <div class="v17-energy-line va-nums">
-            <span>Solar {pv_kw:.1f} kW</span>
-            <span>·</span>
-            <span>Battery {soc:.0f}%</span>
+            <span class="v17-pod-hdr"><svg class="v17-pod-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M9 1.5L3.8 9h4.1L7 14.5 12.2 7H8.1L9 1.5z" fill="none" stroke-linejoin="round"/></svg><span id="v17-energy-main">Solar {pv_kw:.1f} kW · Battery {soc:.0f}%</span></span>
           </div>
           <div class="v17-energy-sub va-nums">
-            <span>All {dry_cnt} Leak Sensors Dry</span>
+            <span id="v17-energy-sub">Evening Scene · All {dry_cnt} Leak Sensors Dry</span>
           </div>
         </div>
       </div>
 
-      <div class="v17-scene-bar" role="toolbar" aria-label="Lighting Scene, Artwork and Units">
+      <div class="v17-scene-bar" role="toolbar" aria-label="Lighting Scene, Artwork, Mat and Units">
         <div class="v17-btn-group" role="group" aria-label="Lighting Scene">
           <button type="button" class="v17-scene-btn" data-v17-scene="morning" aria-pressed="false">Morning</button>
           <button type="button" class="v17-scene-btn is-active" data-v17-scene="evening" aria-pressed="true">Evening</button>
@@ -86,6 +90,7 @@ def _build_v17_html(corpus: dict[str, Any]) -> str:
           <button type="button" class="v17-scene-btn" data-v17-backdrop="landscape" aria-pressed="false">Photo</button>
         </div>
         <span class="v17-dock-sep" aria-hidden="true"></span>
+        <button type="button" id="v17-mat-btn" class="v17-scene-btn" data-v17-mat-toggle="1" aria-pressed="false" aria-label="Toggle Gallery Mat Frame">Dark Mat</button>
         <button type="button" id="v17-unit-btn" class="v17-scene-btn v17-unit-toggle" data-v17-unit="c" aria-pressed="false" aria-label="Toggle Fahrenheit or Celsius">°F | °C</button>
       </div>
     </div>

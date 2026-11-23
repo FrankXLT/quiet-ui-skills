@@ -133,53 +133,99 @@
     }
   }
 
-  function focusAnchor(doc, anchorId, label) {
-    doc.querySelectorAll('[data-rail-hidden]').forEach(function (el) { el.removeAttribute('data-rail-hidden'); });
-    doc.querySelectorAll('.va-rail-filter-bar').forEach(function (el) { el.remove(); });
+  let scrollOpId = 0;
+
+  function setRailActiveLink(doc, anchorId) {
     doc.querySelectorAll('#va-shell-rail .va-rail-link').forEach(function (lnk) {
       const on = lnk.getAttribute('data-rail-anchor') === anchorId;
       lnk.classList.toggle('is-active', on);
-      if (on) lnk.setAttribute('aria-current', 'page');
+      if (on) lnk.setAttribute('aria-current', 'location');
       else lnk.removeAttribute('aria-current');
     });
-    const main = doc.getElementById('va-stage-main');
-    if (anchorId === '__all__') {
+  }
+
+  function spotlightAnchor(doc, anchorId, shouldScroll) {
+    doc.querySelectorAll('.is-rail-spotlight').forEach(function (el) { el.classList.remove('is-rail-spotlight'); });
+    setRailActiveLink(doc, anchorId);
+    const target = anchorId ? doc.getElementById(anchorId) : null;
+    if (!target) {
       refreshStageCharts(doc);
       return;
     }
-    const target = doc.getElementById(anchorId);
-    const inner = doc.querySelector('#va-stage-main .v9-stage-inner');
-    if (!target || !inner) {
-      focusAnchor(doc, '__all__', 'All Sections');
-      return;
+    target.classList.add('is-rail-spotlight');
+    if (shouldScroll) {
+      const opId = ++scrollOpId;
+      doc.__quietManualNavUntil = Date.now() + 750;
+      if (!target.hasAttribute('tabindex') && !target.matches('a,button,input,select,textarea')) {
+        target.setAttribute('tabindex', '-1');
+      }
+      if (typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const win = doc.defaultView;
+      const done = function () {
+        if (opId !== scrollOpId || !target.isConnected) return;
+        target.classList.add('is-rail-spotlight');
+        refreshStageCharts(doc);
+      };
+      if (win && 'onscrollend' in win) {
+        win.addEventListener('scrollend', done, { once: true });
+      }
+      (win || globalThis).setTimeout(done, 460);
+    } else {
+      refreshStageCharts(doc);
     }
-    let cur = target;
-    while (cur && cur !== inner) {
-      const parent = cur.parentElement;
-      if (!parent) break;
-      Array.prototype.forEach.call(parent.children, function (sib) {
-        if (sib === cur) return;
-        if (sib.classList.contains('v9-masthead') || sib.classList.contains('v9-m1-folio') ||
-            sib.classList.contains('va-rail-reopen-btn') || sib.classList.contains('va-rail-filter-bar')) return;
-        sib.setAttribute('data-rail-hidden', 'true');
+  }
+
+  function initScrollSpy(doc, anchors) {
+    if (doc.__quietRailSpy && typeof doc.__quietRailSpy.disconnect === 'function') {
+      doc.__quietRailSpy.disconnect();
+      doc.__quietRailSpy = null;
+    }
+    const win = doc.defaultView;
+    if (doc.__quietRailScrollFn && win) {
+      win.removeEventListener('scroll', doc.__quietRailScrollFn);
+      doc.__quietRailScrollFn = null;
+    }
+    if (!win || typeof win.IntersectionObserver !== 'function') return;
+    const targets = [];
+    (anchors || []).forEach(function (aid) {
+      const el = aid ? doc.getElementById(aid) : null;
+      if (el && targets.indexOf(el) === -1) targets.push(el);
+    });
+    if (targets.length < 2) return;
+    const visible = new Set();
+    function syncActive() {
+      if (Date.now() < (doc.__quietManualNavUntil || 0)) return;
+      const sy = win.scrollY || 0;
+      if (sy <= 6) { setRailActiveLink(doc, targets[0].id); return; }
+      const de = doc.documentElement;
+      if (de && (sy + win.innerHeight) >= (de.scrollHeight - 4)) {
+        setRailActiveLink(doc, targets[targets.length - 1].id);
+        return;
+      }
+      for (let i = 0; i < targets.length; i += 1) {
+        if (visible.has(targets[i].id)) { setRailActiveLink(doc, targets[i].id); return; }
+      }
+    }
+    const spy = new win.IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) visible.add(e.target.id);
+        else visible.delete(e.target.id);
       });
-      cur = parent;
-    }
-    const bar = doc.createElement('div');
-    bar.className = 'va-rail-filter-bar';
-    bar.innerHTML = '<span>Focused Section: <strong>' + esc(label) + '</strong></span>' +
-      '<button type="button" class="va-pill-btn va-rail-show-all-btn" aria-label="Show full view">Show Full View</button>';
-    const hdr = inner.querySelector('.v9-masthead');
-    if (hdr && hdr.nextSibling) inner.insertBefore(bar, hdr.nextSibling);
-    else inner.insertBefore(bar, inner.firstChild);
-    const showBtn = bar.querySelector('.va-rail-show-all-btn');
-    if (showBtn) showBtn.addEventListener('click', function () { focusAnchor(doc, '__all__', 'All Sections'); });
-    if (main) main.scrollTop = 0;
-    refreshStageCharts(doc);
+      syncActive();
+    }, { root: null, rootMargin: '-18% 0px -55% 0px', threshold: 0 });
+    targets.forEach(function (el) { spy.observe(el); });
+    doc.__quietRailSpy = spy;
+    let raf = 0;
+    doc.__quietRailScrollFn = function () {
+      if (raf) return;
+      raf = win.requestAnimationFrame(function () { raf = 0; syncActive(); });
+    };
+    win.addEventListener('scroll', doc.__quietRailScrollFn, { passive: true });
   }
 
   function findStageQuickControls(doc) {
     const sels = [
+      '.qe-scope-preset-bar button[data-scope-preset]', '#v07-node-chips button',
       '#v02-subgroup-chips button', '#v05-enclave-chips button', '#v10-fund-chips button',
       '#v11-shock-chips button', '#v12-role-chips button', '#v12-lab button[data-term]',
       '#v03-guide button[data-term]', '.v18-filter-bar button[data-v18-filter]',
@@ -214,11 +260,13 @@
       if (!real) return;
       const on = real.classList.contains('is-active') || real.getAttribute('aria-pressed') === 'true';
       mb.classList.toggle('is-active', on);
+      mb.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
 
   function enhanceShellNav(doc, viewMeta, portalApi) {
     doc.documentElement.dataset.railCollapsed = 'false';
+    const effNav = (doc.documentElement && doc.documentElement.dataset.effectiveNav) || 'n1';
     const topbar = doc.getElementById('va-shell-topbar');
     if (topbar && !doc.getElementById('va-topbar-rail-toggle')) {
       const tBtn = doc.createElement('button');
@@ -253,25 +301,26 @@
     const anchors = (viewMeta && viewMeta.nav_anchors) ? viewMeta.nav_anchors : [];
     const icons = ['activity', 'layers', 'sliders', 'bell'];
 
-    const linksHtml = '<a class="va-rail-link is-active" href="#stage" data-rail-anchor="__all__" aria-current="page">' +
-      sidebarSvg('all') + ' <span>All Sections</span><span class="va-rail-count va-nums">' + (items.length || 1) + '</span></a>' +
-      items.map(function (lbl, i) {
-        const anchor = anchors[i] || '';
-        return '<a class="va-rail-link" href="#' + esc(anchor || 'stage') + '" data-rail-anchor="' + esc(anchor) + '">' +
-          svgIcon(icons[i % 4]) + ' <span>' + esc(lbl) + '</span><span class="va-rail-count va-nums">' + countForAnchor(doc, anchor) + '</span></a>';
-      }).join('');
+    const linksHtml = items.map(function (lbl, i) {
+      const anchor = anchors[i] || '';
+      const activeCls = i === 0 ? ' is-active' : '';
+      const ariaCur = i === 0 ? ' aria-current="location"' : '';
+      return '<a class="va-rail-link' + activeCls + '" href="#' + esc(anchor || 'stage') + '" data-rail-anchor="' + esc(anchor) + '"' + ariaCur + '>' +
+        svgIcon(icons[i % 4]) + ' <span>' + esc(lbl) + '</span><span class="va-rail-count va-nums">' + countForAnchor(doc, anchor) + '</span></a>';
+    }).join('');
 
     const quickCtrls = findStageQuickControls(doc);
+    doc.__quietQuickCtrls = quickCtrls;
     let quickHtml = '';
     if (quickCtrls.length >= 2) {
       quickHtml = '<div class="va-rail-quick-group"><div class="va-tree-row">' +
-        '<button type="button" class="va-tree-caret" aria-expanded="true" aria-label="Toggle Quick Switch">' + sidebarSvg('caret') + '</button>' +
-        '<button type="button" class="va-tree-dest" data-quick-toggle="true"><span class="va-tree-label">Quick Switch</span></button>' +
+        '<button type="button" class="va-tree-caret" aria-expanded="true" aria-label="Toggle Interactive Controls">' + sidebarSvg('caret') + '</button>' +
+        '<button type="button" class="va-tree-dest" data-quick-toggle="true"><span class="va-tree-label">Interactive Controls</span></button>' +
         '</div><div class="va-tree-children">' +
         quickCtrls.map(function (b, idx) {
           const on = b.classList.contains('is-active') || b.getAttribute('aria-pressed') === 'true';
           return '<div class="va-tree-row"><button type="button" class="va-tree-dest' + (on ? ' is-active' : '') +
-            '" data-quick-idx="' + idx + '"><span class="va-tree-label">' + esc((b.textContent || '').trim()) + '</span></button></div>';
+            '" data-quick-idx="' + idx + '" aria-pressed="' + (on ? 'true' : 'false') + '"><span class="va-tree-label">' + esc((b.textContent || '').trim()) + '</span></button></div>';
         }).join('') + '</div></div>';
     }
 
@@ -286,9 +335,12 @@
       '<button type="button" class="va-tb-btn" data-density="comfortable" aria-pressed="true">Comfortable</button>' +
       '</div></div>';
 
-    rail.innerHTML = '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
-      '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>' +
-      '<nav class="va-rail-links" aria-label="Section Focus">' + linksHtml + '</nav>' + quickHtml + footerHtml;
+    const brandHtml = effNav === 'n3'
+      ? '<div class="va-rail-brand is-kicker-only"><span class="va-rail-kicker">' + esc(railBrand) + '</span></div>'
+      : '<div class="va-rail-brand"><span class="va-rail-brand-title">' + svgIcon(icon) + ' <span>' + esc(railBrand) + '</span></span>' +
+        '<button type="button" class="va-rail-collapse-btn" aria-label="Toggle Navigation Sidebar" aria-expanded="true">' + sidebarSvg('collapse') + '</button></div>';
+
+    rail.innerHTML = brandHtml + '<nav class="va-rail-links" aria-label="Section Navigation">' + linksHtml + '</nav>' + quickHtml + footerHtml;
 
     const toggleCollapse = function () {
       const next = doc.documentElement.dataset.railCollapsed !== 'true';
@@ -307,12 +359,10 @@
     rail.querySelectorAll('.va-rail-link').forEach(function (lnk) {
       lnk.addEventListener('click', function (ev) {
         ev.preventDefault();
-        const aid = lnk.getAttribute('data-rail-anchor') || '__all__';
-        const lbl = (lnk.querySelector('span') || lnk).textContent || 'Section';
-        if (aid !== '__all__' && lnk.classList.contains('is-active')) focusAnchor(doc, '__all__', 'All Sections');
-        else focusAnchor(doc, aid, lbl);
+        spotlightAnchor(doc, lnk.getAttribute('data-rail-anchor') || '', true);
       });
     });
+    initScrollSpy(doc, anchors);
 
     const caret = rail.querySelector('.va-tree-caret');
     const qHead = rail.querySelector('[data-quick-toggle]');
@@ -331,11 +381,16 @@
       mb.addEventListener('click', function () {
         const real = quickCtrls[parseInt(mb.getAttribute('data-quick-idx') || '-1', 10)];
         if (!real) return;
-        if (real.closest('[data-rail-hidden="true"]')) focusAnchor(doc, '__all__', 'All Sections');
         real.click();
         syncQuickButtons(doc, quickCtrls);
       });
     });
+    if (main && main.dataset.railQuickSync !== '1') {
+      main.dataset.railQuickSync = '1';
+      main.addEventListener('click', function () {
+        if (doc.__quietQuickCtrls) window.setTimeout(function () { syncQuickButtons(doc, doc.__quietQuickCtrls); }, 0);
+      });
+    }
 
     rail.querySelectorAll('.va-swatch-btn').forEach(function (b) {
       b.addEventListener('click', function () {

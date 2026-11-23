@@ -1,0 +1,317 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.5.0 R2 — Non-Blanking Rail Spotlight, Stage Inspectors & Optical v16/v17 Upgrade */
+
+@layer shell {
+  .is-rail-spotlight {
+    border-radius: var(--radius-inner);
+    box-shadow: inset 3px 0 0 var(--accent-focal), 0 0 0 2px color-mix(in oklch, var(--accent-focal) 28%, transparent);
+    transition: box-shadow 0.28s ease;
+  }
+  .is-rail-spotlight-fade {
+    box-shadow: inset 3px 0 0 transparent, 0 0 0 2px transparent;
+  }
+}
+
+@layer evidence {
+  .qe-scope-preset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem 0.6rem;
+    margin-top: 0.42rem;
+    padding-top: 0.42rem;
+    border-top: 1px solid var(--border-hairline);
+  }
+  .qe-scope-preset-group,
+  .qe-scope-ch-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.28rem;
+  }
+  .qe-scope-group-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-inline-end: 0.15rem;
+  }
+  .qe-scope-preset-btn {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+    min-block-size: 26px;
+    padding: 0.22rem 0.56rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .qe-scope-preset-btn:hover { background: var(--bg-subtle); border-color: var(--accent-focal); }
+  .qe-scope-preset-btn:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .qe-scope-preset-btn[aria-pressed="true"] {
+    background: var(--accent-focal);
+    border-color: var(--accent-focal);
+    color: #FFFFFF;
+  }
+  .qe-waveform-svg .qe-ch-dim { opacity: 0.22; transition: opacity 0.16s ease; }
+  .qe-waveform-svg rect[data-role="channel"].qe-ch-focus {
+    stroke: var(--accent-focal);
+    stroke-width: 1.8;
+  }
+
+  .qe-table tbody tr[tabindex] { cursor: pointer; transition: background-color 0.14s ease; }
+  .qe-table tbody tr[tabindex]:hover {
+    background-color: color-mix(in oklch, var(--accent-focal) 7%, transparent);
+  }
+  .qe-table tbody tr[tabindex]:focus-visible {
+    outline: 2px solid var(--accent-focal);
+    outline-offset: -2px;
+  }
+  .qe-table tbody tr.is-selected-row {
+    background-color: color-mix(in oklch, var(--accent-focal) 12%, transparent);
+    box-shadow: inset 3px 0 0 var(--accent-focal);
+  }
+  .qe-row-inspector {
+    margin-top: 0.45rem;
+    padding: 0.48rem 0.72rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-subtle);
+    border-inline-start: 3px solid var(--accent-focal);
+    background: var(--bg-elevated);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-primary);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.75rem;
+  }
+  .qe-row-inspector-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-focal);
+  }
+  .qe-sr-live {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .qe-scalar-card.is-node-highlight,
+  .qe-subpanel.is-node-highlight,
+  .v9-kpi-tile.is-selected-tile {
+    outline: 2px solid var(--accent-focal);
+    outline-offset: 2px;
+    box-shadow: 0 4px 16px color-mix(in oklch, var(--accent-focal) 16%, transparent);
+  }
+
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .qe-scope-preset-btn,
+    .v07-node-chip { min-block-size: 44px; min-inline-size: 44px; padding-inline: 0.65rem; }
+  }
+}
+
+@layer views {
+  .v07-node-bar {
+    margin: 0.65rem 0 0.75rem;
+    padding: 0.6rem 0.78rem;
+    border-radius: var(--radius-inner);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+    display: flex;
+    flex-direction: column;
+    gap: 0.48rem;
+  }
+  .v07-node-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.38rem; }
+  .v07-node-chip {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 600;
+    min-block-size: 28px;
+    padding: 0.24rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+  .v07-node-chip:hover { border-color: var(--accent-focal); }
+  .v07-node-chip.is-active,
+  .v07-node-chip[aria-pressed="true"] {
+    background: var(--accent-focal);
+    border-color: var(--accent-focal);
+    color: #FFFFFF;
+  }
+  .v07-node-diag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+  }
+
+  /* v16 Maritime Smart-Glass Refractive Layer & Peripheral Conformal Overlays */
+  .v16-glass-viewport .v16-glass-pod {
+    background-color: rgba(8, 15, 28, var(--m7-scrim-alpha));
+    background-image: linear-gradient(155deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 48%, rgba(2, 6, 23, 0.20) 100%);
+    backdrop-filter: blur(26px) saturate(1.55);
+    -webkit-backdrop-filter: blur(26px) saturate(1.55);
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -1px 0 rgba(2, 6, 23, 0.42), 0 14px 36px rgba(2, 6, 23, 0.44);
+  }
+  .v16-glass-viewport .v16-pod-warn {
+    border-left: 3px solid #F59E0B;
+  }
+  .v16-glass-viewport[data-derate="true"] .v16-pod-warn {
+    border-left: 3px solid #34D399;
+  }
+  .v16-glass-viewport .v16-pod-warn .va-pill[data-variant="status"][data-state="nominal"] {
+    background: transparent;
+    border-width: 0;
+    padding-inline: 0;
+    color: #A7F3D0;
+  }
+  .v16-lum-group { display: contents; }
+  .v16-compass-tape {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1rem;
+    max-inline-size: min(410px, calc(100vw - 2rem));
+    padding: 0.42rem 0.85rem;
+    text-align: center;
+    gap: 0.12rem;
+  }
+  .v16-compass-heading {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
+    white-space: nowrap;
+  }
+  .v16-compass-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #E0F2FE;
+    white-space: nowrap;
+  }
+  .v16-pod-dock {
+    top: auto;
+    bottom: 0.85rem;
+    left: 1rem;
+    padding: 0.56rem 0.86rem;
+  }
+  .v16-ais-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .v16-glass-viewport[data-ais="true"] .v16-ais-layer { opacity: 1; }
+  .v16-ais-marker {
+    position: absolute;
+    top: 46%;
+    max-inline-size: 188px;
+    padding: 0.34rem 0.58rem;
+    border-radius: 8px;
+    background-color: rgba(8, 15, 28, 0.84);
+    border: 1px solid rgba(56, 189, 248, 0.65);
+    box-shadow: 0 4px 16px rgba(2, 6, 23, 0.38);
+    color: #F0F9FF;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  .v16-ais-left { left: 1rem; border-left: 3px solid #38BDF8; }
+  .v16-ais-right { right: 1rem; border-right: 3px solid #34D399; text-align: end; }
+  @media (min-width: 640px) {
+    .v16-pod-dock { max-inline-size: min(280px, calc(38vw - 1.5rem)); }
+    .v16-ctrl-chips { max-inline-size: calc(100% - 20.5rem); justify-content: flex-end; }
+  }
+  @media (min-width: 640px) and (max-width: 1159px) {
+    .v16-compass-tape { top: 8.1rem; }
+  }
+  @media (max-width: 639px) {
+    .v16-compass-tape,
+    .v16-pod-dock {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      transform: none;
+      max-inline-size: 100%;
+    }
+    .v16-compass-tape { display: flex; text-align: start; order: 2; }
+    .v16-ais-layer { display: none; }
+  }
+
+  /* v17 Architectural Frame Double-Bevel Gallery Mat & Specular Telemetry Glass */
+  .v17-frame-viewport[data-v17-mat="linen"] {
+    background: linear-gradient(160deg, #F3F0E8 0%, #E7E2D6 100%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65), inset 0 0 0 9px #F1EDE4, inset 0 0 0 10px rgba(59, 47, 37, 0.22), 0 14px 34px rgba(15, 23, 42, 0.26);
+  }
+  .v17-frame-viewport[data-v17-mat="obsidian"] {
+    background: linear-gradient(160deg, #1E1D1B 0%, #141312 100%);
+    border-color: #2E2A26;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 0 0 9px #1B1A18, inset 0 0 0 10px rgba(255, 255, 255, 0.08), 0 16px 38px rgba(0, 0, 0, 0.52);
+  }
+  .v17-mat-window {
+    box-shadow: inset 0 2px 8px rgba(15, 23, 42, 0.38), 0 0 0 1px rgba(120, 100, 80, 0.35);
+  }
+  .v17-glass-pod,
+  .v17-scene-bar {
+    background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(2, 6, 23, 0.12) 100%);
+    backdrop-filter: blur(22px) saturate(1.42);
+    -webkit-backdrop-filter: blur(22px) saturate(1.42);
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 8px 24px rgba(2, 6, 23, 0.30);
+  }
+  .v17-pod-hdr { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .v17-pod-icon { inline-size: 13px; block-size: 13px; flex-shrink: 0; opacity: 0.92; }
+  .v17-setpoint-ctl {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+    margin-inline-start: 0.18rem;
+  }
+  .v17-nudge-btn {
+    inline-size: 22px;
+    block-size: 22px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    background: rgba(255, 255, 255, 0.14);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .v17-nudge-btn:hover { background: rgba(253, 230, 138, 0.28); border-color: #FDE68A; }
+  .v17-nudge-btn:focus-visible { outline: 2px solid #FDE68A; outline-offset: 1px; }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .v17-setpoint-ctl { gap: 0.45rem; }
+    .v17-nudge-btn { inline-size: 44px; block-size: 44px; min-inline-size: 44px; min-block-size: 44px; }
+  }
+
+  @media print {
+    .qe-scope-preset-bar,
+    .qe-row-inspector,
+    .v07-node-bar,
+    .v07-node-diag { display: none; }
+  }
+}

@@ -95,13 +95,8 @@
 
 @layer utilities {
   .hidden,
-  [hidden]:not([hidden="until-found"]),
-  [data-rail-hidden="true"] {
+  [hidden]:not([hidden="until-found"]) {
     display: none;
-  }
-  .va-v9-focus-single,
-  :is(.v9-dual-grid, .v9-editorial-grid, .qe-companions-grid, .v02-book-spread, .v03-charts-grid, .v18-ledger-grid, .v9-split-runbook):has(> [data-rail-hidden="true"]) {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 

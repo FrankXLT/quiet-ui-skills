@@ -422,3 +422,17 @@
   background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 6px; padding: 0.36rem 0.6rem; color: #0F172A; word-break: break-all;
 }
 .va-copy-status { font-size: 12px; color: #15803D; font-weight: 600; }
+.va-standards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+@media (max-width: 759px) { .va-standards-grid { grid-template-columns: minmax(0, 1fr); } }
+.va-standard-card {
+  background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; padding: 0.95rem 1.05rem;
+  display: flex; flex-direction: column; gap: 0.42rem;
+}
+.va-standard-card h3 { margin: 0; font-size: 14.5px; font-weight: 700; color: #0F172A; }
+.va-standard-card p { margin: 0; font-size: 13px; line-height: 1.48; color: #475569; }
+.va-std-tags { display: flex; flex-wrap: wrap; gap: 0.32rem; margin-top: 0.15rem; }
+.va-std-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; font-weight: 600;
+  color: #1D4ED8; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 999px; padding: 1px 7px;
+}
+

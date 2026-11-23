@@ -244,13 +244,18 @@
       doc.querySelectorAll('img[data-asset]').forEach(function (img) {
         img.onerror = function () { img.style.display = 'none'; }; img.src = resolveAbsDocsAsset(img.dataset.asset);
       });
+      if (win) {
+        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
+        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc);
+        if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
+        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc);
+        if (win.QuietStageRichV9) win.QuietStageRichV9.boot(doc);
+      }
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;
       if (win) {
-        if (win.QuietEvidenceRuntime) win.QuietEvidenceRuntime.boot();
-        if (win.QuietWorld01Runtime) win.QuietWorld01Runtime.boot(doc); if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
-        if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc); if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
+        if (win.QuietEChartsAdapter) win.QuietEChartsAdapter.boot(doc);
         win.scrollTo(0, 0);
       }
       main.scrollTop = 0;
@@ -274,15 +279,19 @@
       const on = tab.dataset.studioTab === state.studioView;
       tab.classList.toggle('is-active', on); tab.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    const dSel = document.getElementById('va-domain-select'), vSel = document.getElementById('va-view-select');
-    if (dSel && dSel.value !== state.world) dSel.value = state.world;
-    if (vSel && worldObj) {
-      if (vSel.dataset.worldLoaded !== worldObj.world_id) {
-        vSel.innerHTML = worldObj.views.map(function (v) { return '<option value="' + escHtml(v.view_id) + '">' + escHtml(v.option_label) + '</option>'; }).join('');
-        vSel.dataset.worldLoaded = worldObj.world_id;
-      }
-      vSel.value = state.view;
+    const vSel = document.getElementById('va-view-select');
+    if (vSel && vSel.dataset.allLoaded !== '1') {
+      vSel.innerHTML = (manifest.worlds || []).map(function (w) {
+        const num = String(w.world_id || '').slice(0, 2);
+        const opts = (w.views || []).map(function (v) {
+          const lbl = String(v.option_label || v.title || v.view_id).replace(' · ', ' — ');
+          return '<option value="' + escHtml(v.view_id) + '">' + escHtml((num ? num + ' · ' : '') + lbl) + '</option>';
+        }).join('');
+        return '<optgroup label="' + escHtml(w.world_label || w.world_id) + '">' + opts + '</optgroup>';
+      }).join('');
+      vSel.dataset.allLoaded = '1';
     }
+    if (vSel && state.view && vSel.value !== state.view) vSel.value = state.view;
     const posEl = document.getElementById('va-step-pos');
     if (posEl && window.QuietStudioPresetsRailV9) {
       const pos = window.QuietStudioPresetsRailV9.getGlobalPosition(manifest, state);
@@ -398,9 +407,13 @@
         state.presetLocked = true; Object.assign(state, cfg); applyState(false);
       });
     });
-    bind('va-domain-select', 'change', function (e) { state.world = e.target.value; applyState(true); });
     bind('va-view-select', 'change', function (e) {
-      state.view = e.target.value;
+      const vid = e.target.value;
+      const hitW = (manifest.worlds || []).find(function (w) {
+        return (w.views || []).some(function (v) { return v.view_id === vid; });
+      });
+      if (hitW) state.world = hitW.world_id;
+      state.view = vid;
       if (!state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
       applyState(false);
     });

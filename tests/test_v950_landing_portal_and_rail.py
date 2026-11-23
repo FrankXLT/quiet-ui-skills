@@ -98,6 +98,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
               matDisplay: mat ? getComputedStyle(mat).display : '',
               barBg: bar ? getComputedStyle(bar).backgroundColor : '',
               domainCount: cards.length,
+              stdCount: document.querySelectorAll('#va-landing-standards .va-standard-card').length,
               viewBtnCount: pills.length,
               overflowX: root.scrollWidth > root.clientWidth + 1,
             };
@@ -108,6 +109,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         self.assertEqual(state_info["matDisplay"], "none")
         self.assertEqual(state_info["barBg"], "rgb(255, 255, 255)")
         self.assertEqual(state_info["domainCount"], 6)
+        self.assertEqual(state_info["stdCount"], 4)
         self.assertEqual(state_info["viewBtnCount"], 21)
         self.assertFalse(state_info["overflowX"], "landing page horizontal overflow at 1440px")
 
@@ -221,7 +223,9 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
                 const api = window.QuietStudioPortalV9;
                 return {
                   pos: document.getElementById('va-step-pos').textContent.trim(),
-                  domain: document.getElementById('va-domain-select').value,
+                  domain: api.state.world,
+                  hasDomainSel: !!document.getElementById('va-domain-select'),
+                  optgroups: document.querySelectorAll('#va-view-select optgroup').length,
                   view: api.state.view,
                   vp: api.state.vp,
                   medium: api.state.medium,
@@ -231,6 +235,8 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
                 """
             )
             self.assertEqual(snap["pos"], f"{step_idx + 1} / 21")
+            self.assertFalse(snap["hasDomainSel"])
+            self.assertEqual(snap["optgroups"], 6)
             visited.append(snap)
             driver.execute_script("document.getElementById('va-step-next').click();")
             time.sleep(0.08)
@@ -290,19 +296,18 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
             driver.execute_script("document.getElementById('va-topbar-rail-toggle').click();")
             self.assertEqual(driver.execute_script("return document.documentElement.dataset.railCollapsed;"), "false")
 
-            driver.execute_script(
-                "const links=[...document.querySelectorAll('#va-shell-rail .va-rail-link')].filter(l=>l.getAttribute('data-rail-anchor')!=='__all__');if(links[1])links[1].click();"
+            rail_diag = driver.execute_script(
+                "const r=document.getElementById('va-shell-rail'),links=[...document.querySelectorAll('#va-shell-rail .va-rail-link')];"
+                "if(links[1])links[1].click();const dBtn=document.querySelector('.qe-scope-preset-bar [data-scope-preset=\"dropout\"]');if(dBtn)dBtn.click();"
+                "const visCol=[document.getElementById('va-topbar-rail-toggle'),...document.querySelectorAll('.va-rail-brand .va-rail-collapse-btn')].filter(el=>el&&el.getBoundingClientRect().width>0);"
+                "return {sw: r.scrollWidth, cw: r.clientWidth, brandBtn: document.querySelectorAll('.va-rail-brand .va-rail-collapse-btn').length, visCol: visCol.length, hidden: document.querySelectorAll('[data-rail-hidden]').length, spot: document.querySelectorAll('.is-rail-spotlight').length, ro: (document.querySelector('.qe-scope-readout')||{}).textContent||''};"
             )
-            time.sleep(0.1)
-            focus_res = driver.execute_script(
-                "return {bar: document.querySelectorAll('.va-rail-filter-bar').length, hidden: document.querySelectorAll('[data-rail-hidden=\"true\"]').length};"
-            )
-            self.assertEqual(focus_res["bar"], 1)
-            self.assertGreater(focus_res["hidden"], 0)
-            driver.execute_script("document.querySelector('.va-rail-show-all-btn').click();")
-            time.sleep(0.1)
-            self.assertEqual(driver.execute_script("return document.querySelectorAll('[data-rail-hidden]').length;"), 0)
-
+            self.assertLessEqual(rail_diag["sw"], rail_diag["cw"] + 1)
+            self.assertEqual(rail_diag["brandBtn"], 0)
+            self.assertEqual(rail_diag["visCol"], 1)
+            self.assertEqual(rail_diag["hidden"], 0)
+            self.assertGreaterEqual(rail_diag["spot"], 1)
+            self.assertIn("6.50", rail_diag["ro"])
             footer_h = float(driver.execute_script("return document.querySelector('#va-shell-rail .va-rail-footer').getBoundingClientRect().height;"))
             self.assertLessEqual(footer_h, 48.0)
             driver.execute_script("document.querySelector('#va-shell-rail .va-swatch-btn[data-swatch=\"dark-paper\"]').click();")
@@ -312,9 +317,10 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
             driver.switch_to.default_content()
 
         synced = driver.execute_script(
-            "const s=window.QuietStudioPortalV9.state;return {theme: s.theme, density: s.density, locked: s.presetLocked};"
+            "const s=window.QuietStudioPortalV9.state,sc=document.getElementById('va-portal-scaler');"
+            "return {theme: s.theme, density: s.density, locked: s.presetLocked, sl: sc.scrollLeft, st: sc.scrollTop};"
         )
-        self.assertEqual(synced, {"theme": "dark-paper", "density": "d3", "locked": True})
+        self.assertEqual(synced, {"theme": "dark-paper", "density": "d3", "locked": True, "sl": 0, "st": 0})
 
         # 2. N1 view (v19 Roadmap & Triage) -> rail collapse + reopen button + Quick Switch tree
         driver.execute_script("window.QuietStudioPortalV9.openExamples('02-cloud-cyber-and-ai-ops', 'v19-product-roadmap-and-triage');")
@@ -372,12 +378,44 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
                 "const lnk=document.querySelector('#va-shell-rail .va-rail-link[data-rail-anchor=\"v06-cal\"]');if(lnk)lnk.click();"
             )
             time.sleep(0.12)
-            col_tracks = driver.execute_script(
-                "const g=document.querySelector('.v9-dual-grid');return g ? getComputedStyle(g).gridTemplateColumns.trim().split(/\\s+/).length : 0;"
+            v06_diag = driver.execute_script(
+                "const cal=document.getElementById('v06-cal'),lin=document.getElementById('v06-lineage');"
+                "return {spot: !!cal && cal.classList.contains('is-rail-spotlight'), linVis: !!lin && lin.getBoundingClientRect().height > 10, hidden: document.querySelectorAll('[data-rail-hidden]').length};"
             )
-            self.assertEqual(col_tracks, 1, f".v9-dual-grid stayed multi-column on focus ({col_tracks} tracks)")
+            self.assertTrue(v06_diag["spot"])
+            self.assertTrue(v06_diag["linVis"])
+            self.assertEqual(v06_diag["hidden"], 0)
         finally:
             driver.switch_to.default_content()
+
+        driver.execute_script("window.QuietStudioPortalV9.openExamples('01-clinical-icu-and-trials', 'v02-trial-regulatory-brief');")
+        self._wait_iframe_view(driver, "v02-trial-regulatory-brief")
+        driver.switch_to.frame("va-stage-portal")
+        try:
+            r_res = driver.execute_script(
+                "const row=document.querySelector('.qe-table tbody tr');if(row)row.click();"
+                "const ins=document.querySelector('.qe-row-inspector');"
+                "return {sel: !!row && row.classList.contains('is-selected-row'), vis: !!ins && !ins.hasAttribute('hidden'), txt: ins ? ins.textContent : ''};"
+            )
+            self.assertTrue(r_res["sel"])
+            self.assertTrue(r_res["vis"])
+            self.assertIn("Selected Record", r_res["txt"])
+        finally:
+            driver.switch_to.default_content()
+
+        driver.execute_script("window.QuietStudioPortalV9.openExamples('03-industrial-grid-and-manufacturing', 'v07-grid-scada-poi-console');")
+        self._wait_iframe_view(driver, "v07-grid-scada-poi-console")
+        driver.switch_to.frame("va-stage-portal")
+        try:
+            n_res = driver.execute_script(
+                "const btn=document.querySelector('#v07-node-chips [data-v07-node=\"bess\"]');if(btn)btn.click();"
+                "return {hi: document.querySelectorAll('.qe-scalar-card.is-node-highlight').length, diag: (document.getElementById('v07-node-diag')||{}).textContent||''};"
+            )
+            self.assertGreaterEqual(n_res["hi"], 1)
+            self.assertIn("78.4%", n_res["diag"])
+        finally:
+            driver.switch_to.default_content()
+
 
 
 if __name__ == "__main__":

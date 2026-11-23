@@ -55,6 +55,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/09-m5-m6-m7-physics.css",
         "src/css/10-world-06-smart-home.css",
         "src/css/11-directional-and-planner.css",
+        "src/css/15-glass-and-stage-interactions.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():
@@ -84,6 +85,7 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/world-01-interactions.js",
             "src/js/world-02-05-interactions.js",
             "src/js/world-06-interactions.js",
+            "src/js/stage-rich-interactions.js",
         )
         if (repo_root / rel).exists()
     )
@@ -122,10 +124,14 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
         f'          <option value="{esc(w["world_id"])}">{esc(w["world_label"])}</option>'
         for w in worlds_meta
     )
-    first_views = worlds_meta[0]["views"] if worlds_meta else []
     view_options = "\n".join(
-        f'        <option value="{esc(v["view_id"])}">{esc(v["option_label"])}</option>'
-        for v in first_views
+        f'        <optgroup label="{esc(w["world_label"])}">\n'
+        + "\n".join(
+            f'          <option value="{esc(v["view_id"])}">{esc(w["world_id"][:2] + " · " + str(v["option_label"]).replace(" · ", " — ", 1))}</option>'
+            for v in w["views"]
+        )
+        + "\n        </optgroup>"
+        for w in worlds_meta
     )
     view_templates = "\n".join(
         f'  <template id="tpl-view-{esc(vid)}">\n{html}\n  </template>'

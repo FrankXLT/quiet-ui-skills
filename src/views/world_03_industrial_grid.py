@@ -53,6 +53,15 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
   </header>
 
   <section id="v07-scalars" aria-label="Synchrophasor and BESS Telemetry">{scalars_html}</section>
+  <section id="v07-node-bar" class="v07-node-bar" aria-label="Microgrid Node Telemetry Selector">
+    <div id="v07-node-chips" class="v07-node-chips" role="group" aria-label="Inspect Microgrid Node">
+      <button type="button" class="v07-node-chip" data-v07-node="poi" aria-pressed="false" data-v07-diag="POI Breaker 52-M Closed · Active Dispatch {p_act:.1f} MW (CMD {p_cmd:.1f} MW) · Synchrophasor {freq:.3f} Hz (±0.005 Hz)">POI 52-M · {p_act:.1f} MW</button>
+      <button type="button" class="v07-node-chip" data-v07-node="gt" aria-pressed="false" data-v07-diag="Gas Turbine Skid (FT-101 / FCV-101) · 14.2 MW Dispatch Share · 13.8 kV Bus Sync · OEE Yield 94.2%">Gas Turbine · 14.2 MW</button>
+      <button type="button" class="v07-node-chip" data-v07-node="bess" aria-pressed="false" data-v07-diag="24.0 MW / DC 1500 V Grid-Forming BESS · State of Charge {soc:.1f}% (Target 80.0%) · 88% Corridor Margin">BESS · {soc:.1f}% SoC</button>
+      <button type="button" class="v07-node-chip" data-v07-node="rs485" aria-pressed="false" data-v07-diag="120 Ω RS-485 / Modbus RTU Bus · PLC-01 Master -> RTU-02 GT / BMS-03 BESS / PMU-04 POI · Nominal Link">RS-485 Bus · 120 Ω</button>
+    </div>
+    <div id="v07-node-diag" class="v07-node-diag va-nums" role="status">Select a node above to spotlight its scalar telemetry and schematic panel.</div>
+  </section>
   <section id="v07-topology" aria-label="ISA-5.1 P&amp;ID Loop and 120 Ohm Fieldbus">{pid_bus_html}</section>
 
   <section id="v07-interlock" aria-label="POI Breaker 52-M Islanding Interlock">

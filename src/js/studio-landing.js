@@ -115,11 +115,12 @@
       '<section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
       '<span class="va-landing-kicker">DETERMINISTIC DESIGN &amp; METROLOGY FOR AI AGENTS</span>' +
       '<h1 class="va-landing-h1">Interfaces Engineered to Be Read, Not Decorated</h1>' +
-      '<p class="va-landing-sub">One zero-dependency design system and SVG/ECharts compiler suite that adapts engineering telemetry, clinical scopes, and technical briefs across screen, print, and mobile.</p>' +
+      '<p class="va-landing-sub">A deterministic design system and SVG/ECharts compiler suite grounded in NIST, ISA-101, FDA IEC 62366, and NASA human-factors standards — adapting clinical telemetry, plant consoles, and technical briefs across screen, print, and mobile.</p>' +
       '<div class="va-landing-chips">' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_ui_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_evidence_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>quiet_bridge_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>nist_standards_</span></button>' +
       '</div>' +
       '<div class="va-landing-chips">' +
       '<button type="button" class="va-landing-chip" data-open-examples="1"><span class="va-chip-prompt">&gt;</span><span>' + totalViews + '_live_examples_</span></button>' +
@@ -132,7 +133,7 @@
       '<div class="va-morph-steps">' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Step Across Mediums</h2><p>Use &lt; and &gt; in the portal bar to step across domains as views morph between 1080p screen, archival paper, 390px mobile, and dark cockpit.</p></div></div>' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. Inspect Calibrated Proof</h2><p>Every chart uses 1-2-5 ticks, knockout halos, and conserved corpus numbers. Click Why? on any view to read its plain-English design rationale.</p></div></div>' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, isolate focused sections, switch themes or density from the rail footer, or drag portal handles.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Test Live Shell Controls</h2><p>Collapse the inner app sidebar, spotlight focused sections, inspect waveform cursors or table records, and switch themes from the rail footer.</p></div></div>' +
       '</div>' +
       '<div class="va-morph-stage-wrap">' +
       '<div class="va-morph-stage-hdr">' +
@@ -159,6 +160,16 @@
       '<div class="va-morph-slider-wrap"><label for="va-morph-threshold">Alert Ceiling: <strong id="va-morph-threshold-val" class="va-nums">75 mmHg</strong></label>' +
       '<input type="range" id="va-morph-threshold" min="55" max="95" step="1" value="75" aria-valuetext="75 mmHg"></div>' +
       '</div></div></section>' +
+
+      '<section id="va-landing-standards" aria-label="Standards Grounded in Engineering Metrology and Human Factors">' +
+      '<div class="va-landing-sec-hdr"><h2>Grounded in NIST, ISA-101, FDA &amp; NASA Standards</h2>' +
+      '<span>Every token, tick ladder, alarm budget, and optical scrim maps to published engineering authorities.</span></div>' +
+      '<div class="va-standards-grid">' +
+      '<article class="va-standard-card"><h3>1. Quantitative Metrology &amp; SI Calculus</h3><p>Axis ticks lock strictly to clean 1-2-5 intervals, SI quantity ratios (value / unit), Shewhart UCL/CL/LCL control bands, and discrete empirical markers separated from analytical fits.</p><div class="va-std-tags"><span class="va-std-tag">NIST SP 811</span><span class="va-std-tag">ISO 80000</span><span class="va-std-tag">Shewhart SPC</span></div></article>' +
+      '<article class="va-standard-card"><h3>2. High-Performance HMI &amp; Safe Interlocks</h3><p>Nominal telemetry stays monochrome so active anomalies stand out immediately, paired with two-step Arm -&gt; Execute breakers and structured Fault Tree root-cause paths.</p><div class="va-std-tags"><span class="va-std-tag">ISA-101</span><span class="va-std-tag">NRC NUREG-0700</span><span class="va-std-tag">NUREG-0492</span></div></article>' +
+      '<article class="va-standard-card"><h3>3. Medical Human Factors &amp; Optical HUDs</h3><p>Clinical scopes protect critical alarm floors above the fold, touch controls enforce 44 px targets on mobile, and smart-glass pods maintain &gt;= 7:1 contrast outside the windshield corridor.</p><div class="va-std-tags"><span class="va-std-tag">FDA IEC 62366</span><span class="va-std-tag">NASA-STD-3001</span><span class="va-std-tag">MIL-STD-1787B</span></div></article>' +
+      '<article class="va-standard-card"><h3>4. Embedded Buses, Coupling &amp; AI Risk</h3><p>Hardware views bind CAN-FD register bitfields, timing diagrams, and <em>N</em><sup>2</sup> interface matrices to uncertainty intervals and explicit model governance trails.</p><div class="va-std-tags"><span class="va-std-tag">SAE J1939</span><span class="va-std-tag">ITU-T Z.120</span><span class="va-std-tag">NASA SP-2016-6105</span><span class="va-std-tag">NIST AI RMF 100-1</span></div></article>' +
+      '</div></section>' +
 
       '<section id="va-landing-domains" aria-label="Explore Domains and Portal Views">' +
       '<div class="va-landing-sec-hdr"><h2>Explore ' + worlds.length + ' Domains &amp; ' + totalViews + ' Live Views</h2>' +

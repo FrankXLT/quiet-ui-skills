@@ -3,6 +3,13 @@
 (function (global) {
   'use strict';
 
+  var V17_SCENES = {
+    morning: { time: '7:15 AM', meta: 'Morning Routine · Clear ', c: '12 °C', f: '54 °F', energy: 'Solar 5.8 kW · Battery 91%', sub: 'Shades Open 85% · All 6 Leak Sensors Dry' },
+    evening: { time: '7:42 PM', meta: 'Wed, Nov 18 · Clear ', c: '14 °C', f: '57 °F', energy: 'Solar 4.8 kW · Battery 84%', sub: 'Evening Scene · All 6 Leak Sensors Dry' },
+    movie: { time: '8:30 PM', meta: 'Cinema Lights 15% · Clear ', c: '13 °C', f: '55 °F', energy: 'Media Load 0.4 kW · Battery 82%', sub: 'Theater Dimmed · All 6 Leak Sensors Dry' },
+    goodnight: { time: '10:45 PM', meta: 'Doors Armed · Clear ', c: '11 °C', f: '52 °F', energy: 'Grid Standby · Battery 80%', sub: 'Night Setback · All 6 Leak Sensors Dry' }
+  };
+
   function applyTempUnit(root, unit) {
     if (!root) return;
     var u = unit === 'f' ? 'f' : 'c';
@@ -10,6 +17,13 @@
     root.querySelectorAll('[data-temp-c][data-temp-f]').forEach(function (el) {
       el.textContent = u === 'f' ? el.getAttribute('data-temp-f') : el.getAttribute('data-temp-c');
     });
+    var spEl = root.querySelector('#v17-sp-val');
+    if (spEl) {
+      var c = parseFloat(spEl.getAttribute('data-setpoint-c') || '21.0');
+      var fAttr = spEl.getAttribute('data-setpoint-f');
+      var fVal = fAttr ? parseInt(fAttr, 10) : Math.round(c * 9 / 5 + 32);
+      spEl.textContent = u === 'f' ? (fVal + ' °F') : (c.toFixed(1) + ' °C');
+    }
   }
 
   function bootV17(doc) {
@@ -41,8 +55,64 @@
           b.classList.toggle('is-active', active);
           b.setAttribute('aria-pressed', active ? 'true' : 'false');
         });
+        var sc = V17_SCENES[scene];
+        if (sc) {
+          var clk = vp.querySelector('#v17-clock-time');
+          var meta = vp.querySelector('#v17-clock-meta');
+          var eng = vp.querySelector('#v17-energy-main');
+          var sub = vp.querySelector('#v17-energy-sub');
+          if (clk) clk.textContent = sc.time;
+          if (eng) eng.textContent = sc.energy;
+          if (sub) sub.textContent = sc.sub;
+          if (meta) {
+            meta.innerHTML = '';
+            meta.appendChild(doc.createTextNode(sc.meta));
+            var tSpan = doc.createElement('span');
+            tSpan.className = 'v17-temp-num';
+            tSpan.setAttribute('data-temp-c', sc.c);
+            tSpan.setAttribute('data-temp-f', sc.f);
+            tSpan.textContent = sc.c;
+            meta.appendChild(tSpan);
+          }
+          applyTempUnit(vp, vp.getAttribute('data-temp-unit') || 'c');
+        }
       });
     });
+
+    function nudgeSetpoint(step) {
+      var spEl = vp.querySelector('#v17-sp-val');
+      if (!spEl) return;
+      var unit = vp.getAttribute('data-temp-unit') || 'c';
+      if (unit === 'f') {
+        var curF = parseInt(spEl.getAttribute('data-setpoint-f') || '70', 10);
+        var nextF = Math.max(63, Math.min(77, curF + (step > 0 ? 1 : -1)));
+        var nextC = Math.round(((nextF - 32) * 5 / 9) * 2) / 2;
+        spEl.setAttribute('data-setpoint-f', String(nextF));
+        spEl.setAttribute('data-setpoint-c', nextC.toFixed(1));
+      } else {
+        var curC = parseFloat(spEl.getAttribute('data-setpoint-c') || '21.0');
+        var adjC = Math.max(17.0, Math.min(25.0, Math.round((curC + (step > 0 ? 0.5 : -0.5)) * 2) / 2));
+        spEl.setAttribute('data-setpoint-c', adjC.toFixed(1));
+        spEl.setAttribute('data-setpoint-f', String(Math.round(adjC * 9 / 5 + 32)));
+      }
+      applyTempUnit(vp, unit);
+    }
+    var spDown = doc.getElementById('v17-sp-down');
+    var spUp = doc.getElementById('v17-sp-up');
+    if (spDown) spDown.addEventListener('click', function () { nudgeSetpoint(-0.5); });
+    if (spUp) spUp.addEventListener('click', function () { nudgeSetpoint(0.5); });
+
+    var matBtn = doc.getElementById('v17-mat-btn');
+    if (matBtn) {
+      matBtn.addEventListener('click', function () {
+        var next = (vp.getAttribute('data-v17-mat') || 'linen') === 'linen' ? 'obsidian' : 'linen';
+        vp.setAttribute('data-v17-mat', next);
+        var dark = next === 'obsidian';
+        matBtn.classList.toggle('is-active', dark);
+        matBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        matBtn.textContent = dark ? 'Linen Mat' : 'Dark Mat';
+      });
+    }
 
     var unitBtn = doc.getElementById('v17-unit-btn');
     if (unitBtn) {

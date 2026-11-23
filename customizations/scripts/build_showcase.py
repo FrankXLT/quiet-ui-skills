@@ -87,18 +87,21 @@ def _filter_v9_showcase(html: str, manifest: dict, disabled_tiers: list[str], mo
         f'          <option value="{_html.escape(str(w["world_id"]), quote=True)}">{_html.escape(str(w["world_label"]))}</option>'
         for w in kept_worlds
     )
-    first_views = kept_worlds[0]["views"] if kept_worlds else []
     v_opts = "\n".join(
-        f'        <option value="{_html.escape(str(vw["view_id"]), quote=True)}">{_html.escape(str(vw["option_label"]))}</option>'
-        for vw in first_views
-    )
-    for sid in ("va-domain-select", "va-sheet-domain-select"):
-        html = re.sub(
-            rf'(<select\s+id="{sid}"[^>]*>)(.*?)(</select>)',
-            lambda match: f"{match.group(1)}\n{w_opts}\n        {match.group(3)}",
-            html,
-            flags=re.S,
+        f'        <optgroup label="{_html.escape(str(w["world_label"]), quote=True)}">\n'
+        + "\n".join(
+            f'          <option value="{_html.escape(str(vw["view_id"]), quote=True)}">{_html.escape(str(w["world_id"][:2] + " · " + str(vw["option_label"]).replace(" · ", " — ", 1)))}</option>'
+            for vw in w.get("views", [])
         )
+        + "\n        </optgroup>"
+        for w in kept_worlds
+    )
+    html = re.sub(
+        r'(<select\s+id="va-sheet-domain-select"[^>]*>)(.*?)(</select>)',
+        lambda match: f"{match.group(1)}\n{w_opts}\n        {match.group(3)}",
+        html,
+        flags=re.S,
+    )
     html = re.sub(
         r'(<select\s+id="va-view-select"[^>]*>)(.*?)(</select>)',
         lambda match: f"{match.group(1)}\n{v_opts}\n      {match.group(3)}",

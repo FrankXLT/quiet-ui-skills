@@ -414,12 +414,13 @@
     background-color: var(--bg-surface);
     color: var(--text-primary);
   }
-  .va-rail-footer .va-tb-group { overflow: visible; }
+  .va-rail-footer .va-tb-group { overflow: visible; flex: 0 0 auto; }
   .va-rail-footer .va-tb-btn {
     position: relative;
     min-block-size: 30px;
-    min-inline-size: 32px;
-    padding: 0 0.5rem;
+    min-inline-size: 0;
+    padding: 0 0.4rem;
+    font-size: 11px;
   }
   @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
     .va-rail-footer .va-tb-btn::after { content: ""; position: absolute; inset: -7px 0; }

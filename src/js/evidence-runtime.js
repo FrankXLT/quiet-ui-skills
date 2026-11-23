@@ -283,5 +283,10 @@
     }
   }
 
-  window.QuietEvidenceRuntime = { boot: boot, setActiveTerm: setActiveTerm };
+  window.QuietEvidenceRuntime = {
+    boot: boot,
+    setActiveTerm: setActiveTerm,
+    renderScopeAtTime: renderScopeAtTime,
+    clearScopeCursor: clearScopeCursor
+  };
 })(window, typeof document !== 'undefined' ? document : null);

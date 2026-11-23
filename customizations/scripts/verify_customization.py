@@ -115,9 +115,13 @@ def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str], mo
                 for vid in view_ids:
                     if f'id="tpl-view-{vid}"' not in content:
                         errs.append(f"[V9_TEMPLATE_MISSING] Missing <template id=\"tpl-view-{vid}\">")
-                for sid in ("va-domain-select", "va-view-select"):
+                for sid in ("va-view-select",):
                     if f'id="{sid}"' not in content:
                         errs.append(f"[V9_SELECT_MISSING] Missing selector #{sid}")
+                if 'id="va-domain-select"' in content:
+                    errs.append("[V9_SELECT_DUPLICATE] Obsolete #va-domain-select still present")
+                if "<optgroup " not in content:
+                    errs.append("[V9_OPTGROUP_MISSING] Unified #va-view-select missing <optgroup> domains")
                 if mode == "brand":
                     for excluded in ("v15-collimated-flight-hud", "v16-transparent-window-overlay", "v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console"):
                         if excluded in view_ids or f'id="tpl-view-{excluded}"' in content:
