@@ -17,7 +17,7 @@ _SCRIPT_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 
-from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, probe_navbar_shift  # noqa: E402
+from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, CDP_WORKBENCH_PROBES_JS, probe_navbar_shift, probe_workbench_1920  # noqa: E402
 from audit_ux_and_drift import CDP_UX_DRIFT_JS  # noqa: E402
 from audit_static_rules import (  # noqa: E402, F401
     BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
@@ -27,7 +27,7 @@ from audit_static_rules import (  # noqa: E402, F401
     resolve_asset_detail, resolve_asset_path,
 )
 
-CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + CDP_UX_DRIFT_JS + "\n" + r"""
+CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + CDP_UX_DRIFT_JS + "\n" + CDP_WORKBENCH_PROBES_JS + "\n" + r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
@@ -63,10 +63,11 @@ function getRotDeg(el, cs) {
 function isTransparentPaint(c) { return !c || c === 'none' || c === 'transparent' || /^rgba\([^)]*,\s*0(?:\.0+)?\s*\)$/.test(c); }
 function hasTextHalo(doc, txtEl, win) {
   if (txtEl.classList && txtEl.classList.contains('va-svg-halo-text')) return true;
+  if (txtEl.dataset && txtEl.dataset.halo === 'true') return true;
   const cs = win.getComputedStyle(txtEl), po = String(txtEl.getAttribute('paint-order') || cs.paintOrder || '').toLowerCase();
   const st = String(txtEl.getAttribute('stroke') || cs.stroke || 'none').toLowerCase();
   const sw = parseFloat(txtEl.getAttribute('stroke-width') || cs.strokeWidth || '0');
-  if (po.includes('stroke') && !isTransparentPaint(st) && sw >= 2) return true;
+  if (po.includes('stroke') && !isTransparentPaint(st) && sw >= 1.25) return true;
   const prev = txtEl.previousElementSibling;
   if (prev && (prev.tagName || '').toLowerCase() === 'rect' && !isTransparentPaint(String(prev.getAttribute('fill') || win.getComputedStyle(prev).fill || 'none').toLowerCase())) {
     const pr = prev.getBoundingClientRect(), tr = txtEl.getBoundingClientRect();
@@ -367,7 +368,7 @@ function auditDoc(doc, maxW, ctxTag) {
     }
   }
   auditDocV922(doc, win, ctxTag);
-  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts);
+  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts); if (typeof auditDocV940Workbench === 'function') auditDocV940Workbench(doc, win, ctxTag, opts);
   for (const fr of doc.querySelectorAll('iframe')) {
     try {
       const fdoc = fr.contentDocument;
@@ -421,6 +422,7 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False, cont
                     time.sleep(0.12)
                     errs.extend(f"[{url} theme={th}] {e}" for e in driver.execute_script(CDP_AUDIT_JS, payload))
                     errs.extend(probe_navbar_shift(driver, url, th, w))
+                errs.extend(probe_workbench_1920(driver, url, th, payload, CDP_AUDIT_JS))
     finally:
         driver.quit()
     return errs

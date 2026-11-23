@@ -65,6 +65,7 @@ def _render_evidence_bundle_js() -> str:
         "src/js/echarts-layout-defaults.js",
         "src/js/quiet-cyclical-whiskers.js",
         "src/js/quiet-period-stepper.js",
+        "src/js/quiet-sankey-layout.js",
     )
     parts = [
         (REPO_ROOT / rel).read_text(encoding="utf-8")

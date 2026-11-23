@@ -79,6 +79,7 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/echarts-layout-defaults.js",
             "src/js/quiet-cyclical-whiskers.js",
             "src/js/quiet-period-stepper.js",
+            "src/js/quiet-sankey-layout.js",
             "src/js/echarts-quiet-adapter.js",
             "src/js/world-01-interactions.js",
             "src/js/world-02-05-interactions.js",

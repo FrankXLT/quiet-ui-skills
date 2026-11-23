@@ -23,6 +23,7 @@ from audit_ux_and_drift import (  # noqa: E402
     audit_css_drift, audit_html_ux_drift, audit_js_blocklist, find_context_file,
     init_context_file, merge_context_options, parse_context_file,
 )
+from audit_workbench_probes import audit_workbench_static  # noqa: E402
 from audit_static_rules import (  # noqa: E402
     BRAIN_TEXT_RE, COMMENT_RE, DENSITY_WORDS, DIURNAL_RE, FOOTER_BANNED_RE, OVERFLOW_RULE_RE, SELF_BADGE_RE,
     SKIP_DIRS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, audit_json_text, check_hidden_layer_css,
@@ -277,6 +278,7 @@ def audit_html_text(
     auditor.feed(html_text)
     auditor.close()
     audit_html_ux_drift(html_text, source, auditor.errs, strict_drift=strict_drift, context=context)
+    audit_workbench_static(html_text, source, auditor.errs)
     for line_no, js_body in auditor.inline_js:
         audit_js_text(js_body, f"{source}:{line_no} <script>", auditor.errs)
         audit_js_blocklist(js_body, f"{source}:{line_no} <script>", context, auditor.errs)

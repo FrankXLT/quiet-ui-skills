@@ -5,8 +5,10 @@
 
 @layer shell {
   .va-stage { container-type: inline-size; container-name: stage; inline-size: 100%; min-inline-size: 0; }
+  .va-stage[data-width="reading"] { max-inline-size: 72rem; margin-inline: auto; }
+  .va-stage[data-width="workbench"] { max-inline-size: min(96vw, 112rem); margin-inline: auto; }
   @media (min-width: 1920px) {
-    html:not([data-medium="m4"]):not([data-medium="m5"]):not([data-medium="m6"]):not([data-medium="m7"]) .va-stage { max-inline-size: 1480px; margin-inline: auto; }
+    html:not([data-medium="m4"]):not([data-medium="m5"]):not([data-medium="m6"]):not([data-medium="m7"]) .va-stage:not([data-width="workbench"]):not([data-width="reading"]) { max-inline-size: 1480px; margin-inline: auto; }
   }
 
   /* Surface Primitives (Nested border depth <= 2) */
@@ -348,7 +350,9 @@
   table.va-data-table td { white-space: nowrap; }
   table.booktabs td { white-space: normal; }
   table.booktabs td strong,
-  table.booktabs td code { white-space: nowrap; }
+  table.booktabs td code,
+  .booktabs td[data-nowrap],
+  .booktabs th[data-nowrap] { white-space: nowrap; }
 
   /* Inline Bullet-Bar Table (N <= 8) & Multi-Plot Subgrid Alignment (>= 780px) */
   tr.va-row-compact td, tr.va-row-compact th { padding-block: 0.28rem; block-size: 2rem; }

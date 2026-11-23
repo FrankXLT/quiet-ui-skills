@@ -93,6 +93,7 @@
     gap: 0.85rem;
     min-inline-size: 0;
   }
+  .va-stage[data-width="workbench"] .v9-stage-inner { max-inline-size: 100%; }
 
   .v9-masthead {
     display: flex;

@@ -272,14 +272,15 @@ The `Educator <-> Student / Learner` vector is distinct from both specialist-to-
 
 ## 7A. Workflow G — Brownfield Retrofit, Persistent `.quiet-ui.md` & Drift Normalization
 
-When replacing or overhauling a live production console rather than building greenfield from scratch, execute these six migration controls so visual refinement never removes working features or drifts back into ad-hoc CSS:
+When replacing or overhauling a live production console rather than building greenfield from scratch, execute these seven migration controls so visual refinement never removes working features or drifts back into ad-hoc CSS:
 
 1. **Load/Persist `.quiet-ui.md` + Capability Parity Ledger**: Check the target repo root for `.quiet-ui.md` before re-asking scoping questions (`audit_quiet_html.py --init-context`), and map every timeframe preset (`MTD`/`QTD`/`YTD` + Rolling `30d`/`90d`/`52w`), table, and export (`CSV`, `PNG`, `ZIP`) as `KEEP`, `CONSOLIDATE`, or `DEPRECATE`.
 2. **Enforce Deprecation Blocklist**: Never render retired widgets merely because legacy keys remain on wire JSON; list retired selectors/copy under `## Deprecation Blocklist` in `.quiet-ui.md` (`[BLOCKLIST_RESURRECTION]`), pass `?include_legacy=0`, and assert DOM absence.
-3. **Decompose Monolith Zooms & Keep Demo Parity Honest**: Split mixed `Overview` / `.va-scope-chip` Entity / `Item Workspace` hierarchies with an auto-closing `.va-side-rail[data-mode="overlay"]` + `.va-tree-row` drawer, and either recompute presets on `?demo=1` fixtures or set `disabled` + explanatory `title`.
+3. **Decompose Monolith Zooms & Keep Demo Parity Honest**: Split mixed `Overview` / `.va-scope-chip` Entity / `Item Workspace` hierarchies with an auto-closing `.va-side-rail[data-mode="overlay"]` + `.va-tree-row` drawer and stage archetypes (`.va-stage[data-stage="canvas|workbench|ops"]`), and either recompute presets on `?demo=1` fixtures or set `disabled` + explanatory `title`.
 4. **Stage on a Parallel Strangler Route**: Expose the retrofit at `/v2` (or `?ui=quiet`) with `< Classic` / `New ↗` links, namespaced `localStorage` keys, and additive backend query flags so 100% of classic API/UI tests stay green.
 5. **Quarantine Unlayered CSS (`layer(legacy)`) & Harden Overlays**: Wrap legacy sheets via `@import url(...) layer(legacy);` above `@layer reset, tokens, shell, archetypes, evidence, views, utilities;` and keep explicit opaque `var(--bg-surface)` on floating overlays.
 6. **Guardrail 6 — Day-30 Post-Migration Drift Normalization (`Extract & Normalize`)**: Run `--context .quiet-ui.md --strict-drift` after launch stabilization to sweep `[TOKEN_BYPASS_HEX]` literals and `[INLINE_STYLE_SPRAWL]` hacks into shared `@layer shell` / view classes, retire lingering `layer(legacy)` rules, and flip `Strict Drift: true`.
+7. **Guardrail 7 — Mass-Conservation Parity & Zero-Downtime Cutover**: Extract shared enums, cursors, and pluralization to the backend, assert `KPI == Sum(Sankey Col_k) == Sum(Heatmap Cells) == List total_matching` under live interactive toggles in headless CDP, adopt `QuietSankeyLayout` + bounded `QuietPeriodStepper` (`minDate`/`maxDate`, `Cal-to-Date` vs `Rolling`), and execute `/` -> `302 /v2` -> `/v1` Settings fallback -> legacy route retirement.
 
 ---
 
@@ -325,7 +326,7 @@ Artifact Inception ──► [Gate 0: .quiet-ui.md & Parity] ──► [Gate 1: 
 | **2. Evidence Modeling**| `quiet-evidence` | Structured JSON Spec | Cyclical Whiskers (`buildCyclicalWhiskerOption`), `binTimeSeries`, on-card legend (`[ORPHAN_SERIES_LEGEND]`), `SHA-256[:12]` snapshot |
 | **3. Compilation** | `quiet-evidence` | Calibrated SVG / ECharts Figures | `1–2–5` ticks, CJK-safe `measureCategoryGutter`, `grid.top >= 30`, `+0.5px` `[AXIS_LABEL_CLIPPED]`, zero `"diurnal"` jargon |
 | **4. Dual-Layer Audit** | `quiet-bridge` | Review-Room / Extract & Normalize | BLUF aligned with physics proof; `--strict-drift` zero `[TOKEN_BYPASS_HEX]` / `[INLINE_STYLE_SPRAWL]`; `[BLOCKLIST_RESURRECTION]` clear |
-| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | `390/820/1440px` (`[UNLABELED_FORM_CONTROL]`, `[DEAD_END_ZERO_STATE]`, `[DENSITY_STOP_SPRAWL]`, `--check`) |
+| **5. Pre-Flight Signoff**| `audit_quiet_html.py` + `tests/` | Unified Stdlib + CDP Gates | `390/820/1440/1920px` (`[CHROME_HEIGHT_BUDGET]`, `[WORKBENCH_STAGE_TUNNEL]`, `[DUPLICATE_PRIMARY_NAV]`, `[VISIBLE_HITBOX_OUTLINE]`, `[TREE_INDENT_INVERSION]`, `[RAW_SLUG_OR_GRAMMAR_LEAK]`, `--check`) |
 
 Run the full verification loop before shipping:
 

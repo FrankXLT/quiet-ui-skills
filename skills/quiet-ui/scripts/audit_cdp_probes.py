@@ -6,6 +6,8 @@ from __future__ import annotations
 import time
 from typing import Any
 
+from audit_workbench_probes import CDP_WORKBENCH_PROBES_JS, probe_workbench_1920  # noqa: F401
+
 CDP_SVG_PROBES_JS = r"""
 function isRectPathD(d) {
   const s = String(d || '').trim();

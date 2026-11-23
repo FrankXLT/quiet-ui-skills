@@ -134,11 +134,17 @@
 
   .va-svg-halo-text, [data-halo="true"] {
     paint-order: stroke fill;
-    stroke: var(--bg-surface);
-    stroke-width: 3.4px;
+    stroke: color-mix(in oklab, var(--bg-surface) 82%, transparent);
+    stroke-width: 1.5px;
     stroke-linejoin: round;
     stroke-linecap: round;
   }
+  :root { --sankey-ribbon-active-opacity: 0.40; }
+  :root:is([data-theme="dark"], [data-theme="dark-paper"]) { --sankey-ribbon-active-opacity: 0.50; }
+  .va-hit-target, .is-selected .va-hit-target, .va-hit-target.is-selected { fill: transparent; stroke: none; outline: none; }
+  .va-sankey-active-slice { pointer-events: none; fill: var(--accent-primary); stroke: var(--bg-surface); stroke-width: 1px; }
+  .va-sankey-ribbon { fill-opacity: 0.16; stroke-opacity: 0.24; transition: fill-opacity 0.14s ease; }
+  .va-sankey-ribbon.is-active, .va-sankey-ribbon[data-active="true"] { fill-opacity: var(--sankey-ribbon-active-opacity, 0.40); stroke-opacity: var(--sankey-ribbon-active-opacity, 0.40); }
 
   /* Modality 1: Scalar & Gauges (Zero-Inflation Baseline Lock) */
   .qe-scalar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.85rem; }

@@ -24,7 +24,7 @@ for sk in "${PILLAR_SKILLS[@]}"; do
   fi
 done
 
-if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_checks.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_cdp_probes.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_static_rules.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_ux_and_drift.py" ]]; then
+if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_checks.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_cdp_probes.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_static_rules.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_ux_and_drift.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_workbench_probes.py" ]]; then
   echo "[ERROR] Missing portable skill assets or auditor modules; run python3 -B scripts/build_all.py first." >&2
   exit 1
 fi

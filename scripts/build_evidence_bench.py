@@ -108,6 +108,7 @@ def _bundle_bench_js() -> str:
             "src/js/echarts-layout-defaults.js",
             "src/js/quiet-cyclical-whiskers.js",
             "src/js/quiet-period-stepper.js",
+            "src/js/quiet-sankey-layout.js",
             "src/js/echarts-quiet-adapter.js",
             "docs/bench/bench.js",
         )

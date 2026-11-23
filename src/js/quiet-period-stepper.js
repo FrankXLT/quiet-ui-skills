@@ -79,28 +79,66 @@
     }
   }
 
+  function getBinning() { return root.QuietTimeBinning || (typeof require === 'function' ? (function () { try { return require('./quiet-time-binning.js'); } catch (_e) { return null; } }()) : null); }
+  function resolveWindowBounds(opts) { var tb = getBinning(); return tb && tb.resolvePeriodBounds ? tb.resolvePeriodBounds(opts) : null; }
+  function formatPresetLabel(preset, mode) { var tb = getBinning(); return tb && tb.formatPresetLabel ? tb.formatPresetLabel(preset, mode) : String(preset || ''); }
+  function hasCorpusConfig(st) { return !!(st && (st.dataset.minDate || st.dataset.maxDate || st.dataset.anchorDate || st.dataset.mode)); }
+
+  function syncBoundedState(st, stepDelta, toToday, opts) {
+    if (!st) return null;
+    var cfg = opts || {};
+    var anchor = toToday ? (st.dataset.maxDate || cfg.today || st.dataset.today || '') : (cfg.anchorDate || st.dataset.anchorDate || '');
+    var b = resolveWindowBounds({ mode: st.dataset.mode || '', preset: st.dataset.value || (st.dataset.mode === 'cal' ? 'mtd' : '30d'), anchorDate: anchor, minDate: st.dataset.minDate || '', maxDate: st.dataset.maxDate || '', today: cfg.today || st.dataset.today || '', stepDelta: stepDelta || 0 });
+    if (!b) return null;
+    st.dataset.mode = b.mode; st.dataset.value = b.preset; st.dataset.anchorDate = b.endDate;
+    st.dataset.startDate = b.startDate; st.dataset.endDate = b.endDate;
+    st.querySelectorAll('.va-preset-item').forEach(function (it) { it.setAttribute('aria-checked', it.dataset.preset === b.preset ? 'true' : 'false'); });
+    var lblEl = st.querySelector('[data-period-label]');
+    if (lblEl) lblEl.textContent = b.label + ' · ' + b.startDate + '–' + b.endDate;
+    var pBtn = st.querySelector('[data-period-step="-1"]'), nBtn = st.querySelector('[data-period-step="1"]'), tBtn = st.querySelector('[data-period-today]');
+    if (pBtn) pBtn.disabled = !b.canStepPrev;
+    if (nBtn) nBtn.disabled = !b.canStepNext;
+    if (tBtn) { tBtn.textContent = b.anchorLabel; tBtn.hidden = b.atLatest; }
+    return b;
+  }
+
+  function setPeriodMode(st, mode, opts) {
+    if (!st) return null;
+    st.dataset.mode = mode;
+    var b = syncBoundedState(st, 0, false, opts);
+    if (b && typeof root.CustomEvent === 'function') st.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: b }));
+    return b;
+  }
+
   function applyPresetChoice(stepper, item) {
     if (!stepper || !item || item.disabled) return;
     var val = item.dataset.preset || item.textContent.trim();
     var lbl = item.dataset.label || item.textContent.trim();
     var spanTxt = item.dataset.span || '';
     stepper.dataset.value = val;
+    if (item.dataset.mode) stepper.dataset.mode = item.dataset.mode;
+    else delete stepper.dataset.mode;
     stepper.querySelectorAll('.va-preset-item').forEach(function (b) {
       b.setAttribute('aria-checked', b === item ? 'true' : 'false');
     });
-    var lblEl = stepper.querySelector('[data-period-label]');
-    if (lblEl) lblEl.textContent = spanTxt ? (lbl + ' · ' + spanTxt) : lbl;
-    var todayBtn = stepper.querySelector('[data-period-today]');
-    if (todayBtn) todayBtn.hidden = item.dataset.atToday === 'true';
+    var bounds = hasCorpusConfig(stepper) ? syncBoundedState(stepper, 0, false) : null;
+    if (!bounds) {
+      var lblEl = stepper.querySelector('[data-period-label]');
+      if (lblEl) lblEl.textContent = spanTxt ? (lbl + ' · ' + spanTxt) : lbl;
+      var todayBtn = stepper.querySelector('[data-period-today]');
+      if (todayBtn) todayBtn.hidden = item.dataset.atToday === 'true';
+    }
     closePopover(stepper, true);
     if (typeof root.CustomEvent === 'function') {
-      stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { preset: val, label: lbl, span: spanTxt } }));
+      var detail = bounds ? Object.assign({}, bounds, { span: spanTxt }) : { preset: val, label: lbl, span: spanTxt };
+      stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: detail }));
     }
   }
 
   function bindStepper(stepper) {
     if (!stepper || stepper.dataset.quietBound === '1') return;
     stepper.dataset.quietBound = '1';
+    if (hasCorpusConfig(stepper)) syncBoundedState(stepper, 0, false);
     var doc = stepper.ownerDocument;
     var trigger = stepper.querySelector('.va-period-trigger');
     var pop = stepper.querySelector('.va-preset-popover');
@@ -144,14 +182,19 @@
     }
     stepper.addEventListener('click', function (ev) {
       var stepBtn = ev.target && ev.target.closest ? ev.target.closest('[data-period-step]') : null;
-      if (stepBtn && typeof root.CustomEvent === 'function') {
-        stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { step: Number(stepBtn.dataset.periodStep || 0), preset: stepper.dataset.value || '' } }));
+      if (stepBtn && !stepBtn.disabled && typeof root.CustomEvent === 'function') {
+        var delta = Number(stepBtn.dataset.periodStep || 0);
+        var bStep = hasCorpusConfig(stepper) ? syncBoundedState(stepper, delta, false) : null;
+        var sDet = bStep ? Object.assign({ step: delta }, bStep) : { step: delta, preset: stepper.dataset.value || '' };
+        stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: sDet }));
       }
       var todayBtn = ev.target && ev.target.closest ? ev.target.closest('[data-period-today]') : null;
       if (todayBtn && !todayBtn.hidden) {
+        var bToday = hasCorpusConfig(stepper) ? syncBoundedState(stepper, 0, true) : null;
         todayBtn.hidden = true;
         if (typeof root.CustomEvent === 'function') {
-          stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { today: true, preset: stepper.dataset.value || '' } }));
+          var tDet = bToday ? Object.assign({ today: true }, bToday) : { today: true, preset: stepper.dataset.value || '' };
+          stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: tDet }));
         }
       }
     });
@@ -380,7 +423,11 @@
     else boot(root.document);
   }
 
-  var stepperApi = { boot: boot, openPopover: openPopover, closePopover: closePopover, applyPresetChoice: applyPresetChoice, positionPopover: positionPopover };
+  var stepperApi = {
+    boot: boot, openPopover: openPopover, closePopover: closePopover, applyPresetChoice: applyPresetChoice,
+    positionPopover: positionPopover, resolveWindowBounds: resolveWindowBounds, formatPresetLabel: formatPresetLabel,
+    setPeriodMode: setPeriodMode, syncBoundedState: syncBoundedState,
+  };
   var railApi = { boot: boot, setRailOpen: setRailOpen, expandActiveBranches: expandActiveBranches, applyTreeChildCaps: applyTreeChildCaps };
   root.QuietPeriodStepper = stepperApi;
   root.QuietRailTree = railApi;

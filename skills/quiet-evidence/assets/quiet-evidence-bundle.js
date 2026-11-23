@@ -802,7 +802,7 @@
     parsed.forEach(function (pt) {
       var info = utcBucketInfo(pt.ms, bin, cfg);
       if (!buckets[info.key]) {
-        var initVals = {};
+        var initVals = Object.create(null);
         names.forEach(function (nm) { initVals[nm] = 0; });
         buckets[info.key] = { key: info.key, sortMs: info.sortMs, vals: initVals };
       }
@@ -813,13 +813,33 @@
       });
     });
     var ordered = Object.keys(buckets).map(function (k) { return buckets[k]; }).sort(function (a, b) { return a.sortMs - b.sortMs; });
-    var outDates = ordered.map(function (b) { return b.key; }), outLayers = {};
+    var outDates = ordered.map(function (b) { return b.key; }), outLayers = Object.create(null);
     names.forEach(function (nm) { outLayers[nm] = ordered.map(function (b) { return Math.round(b.vals[nm] * 1e9) / 1e9; }); });
     return { dates: outDates, layers: outLayers, bin: bin, spanDays: Math.round(spanDays * 100) / 100 };
   }
 
-  function parseCssRgb(str) {
-    var s = String(str || '').trim();
+  function resolveCssColor(raw, doc) {
+    var s = String(raw || '').trim();
+    var targetDoc = doc || root.document || null;
+    for (var depth = 0; depth < 4 && /^var\(/i.test(s); depth += 1) {
+      var inner = s.slice(4, -1), comma = inner.indexOf(',');
+      var tok = (comma >= 0 ? inner.slice(0, comma) : inner).trim();
+      var fb = comma >= 0 ? inner.slice(comma + 1).trim() : '';
+      var val = '';
+      var csHost = (targetDoc && targetDoc.defaultView && typeof targetDoc.defaultView.getComputedStyle === 'function')
+        ? targetDoc.defaultView
+        : (typeof root.getComputedStyle === 'function' ? root : null);
+      if (targetDoc && targetDoc.documentElement && csHost) {
+        try { val = csHost.getComputedStyle(targetDoc.documentElement).getPropertyValue(tok).trim(); } catch (_err) {}
+      }
+      s = val || fb;
+      if (!s) break;
+    }
+    return s;
+  }
+
+  function parseCssRgb(str, doc) {
+    var s = resolveCssColor(str, doc);
     var m3 = s.match(/^#([0-9a-f]{3})$/i);
     if (m3) {
       var h3 = m3[1];
@@ -827,8 +847,15 @@
     }
     var m = s.match(/^#([0-9a-f]{6})$/i);
     if (m) return [parseInt(m[1].slice(0, 2), 16), parseInt(m[1].slice(2, 4), 16), parseInt(m[1].slice(4, 6), 16)];
-    var r = s.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-    return r ? [Number(r[1]), Number(r[2]), Number(r[3])] : null;
+    var r = s.match(/^rgba?\(\s*(\d+)\s*[,\s]+(\d+)\s*[,\s]+(\d+)/i);
+    if (r) return [Number(r[1]), Number(r[2]), Number(r[3])];
+    var ok = s.match(/^okl(?:ch|ab)\(\s*([0-9.]+)(%?)/i);
+    if (ok) {
+      var lRaw = parseFloat(ok[1]), lNorm = ok[2] === '%' ? (lRaw / 100) : lRaw;
+      var g = Math.max(0, Math.min(255, Math.round(Math.pow(Math.max(0, Math.min(1, lNorm)), 1.5) * 255)));
+      return [g, g, g];
+    }
+    return null;
   }
 
   function relLum(rgb) {
@@ -864,11 +891,14 @@
     };
   }
 
-  function heatmapZeroCellStyle(cardBg, borderHairline) {
-    var lum = relLum(parseCssRgb(cardBg) || [255, 255, 255]);
+  function heatmapZeroCellStyle(cardBg, borderHairline, docOrOpts) {
+    var doc = docOrOpts && docOrOpts.documentElement ? docOrOpts : (docOrOpts && docOrOpts.document ? docOrOpts.document : root.document);
+    var bgResolved = resolveCssColor(cardBg, doc);
+    var lum = relLum(parseCssRgb(bgResolved, doc) || [255, 255, 255]);
     var isDark = lum < 0.2;
     var fill = isDark ? '#435266' : '#E2E8F0';
-    var bd = borderHairline && String(borderHairline).trim().toLowerCase() !== fill.toLowerCase() ? borderHairline : (isDark ? '#64748B' : '#CBD5E1');
+    var bdRaw = resolveCssColor(borderHairline, doc);
+    var bd = bdRaw && bdRaw.toLowerCase() !== fill.toLowerCase() ? bdRaw : (isDark ? '#64748B' : '#CBD5E1');
     if (isDark && bd.toLowerCase() === '#1e293b') bd = '#64748B';
     return {
       fill: fill,
@@ -879,11 +909,109 @@
     };
   }
 
+  var DAY_MS = 86400000;
+  var ROLLING_SPECS = Object.assign(Object.create(null), { '7d': ['7 days', 7], r7: ['7 days', 7], r7d: ['7 days', 7], '14d': ['14 days', 14], r14: ['14 days', 14], r14d: ['14 days', 14], '30d': ['30 days', 30], r30: ['30 days', 30], r30d: ['30 days', 30], '90d': ['90 days', 90], r90: ['90 days', 90], r90d: ['90 days', 90], '52w': ['52 weeks', 364], r52w: ['52 weeks', 364] });
+  var CAL_LABELS = Object.assign(Object.create(null), { wtd: 'WTD', '2w-cal': '2W-Cal', '2w_cal': '2W-Cal', mtd: 'MTD', qtd: 'QTD', ytd: 'YTD', all: 'All Scanned', all_scanned: 'All Scanned' });
+  var ROLL_TO_CAL = Object.assign(Object.create(null), { '7d': 'wtd', r7: 'wtd', r7d: 'wtd', '14d': '2w-cal', r14: '2w-cal', r14d: '2w-cal', '30d': 'mtd', r30: 'mtd', r30d: 'mtd', '90d': 'qtd', r90: 'qtd', r90d: 'qtd', '52w': 'ytd', r52w: 'ytd' });
+  var CAL_TO_ROLL = Object.assign(Object.create(null), { wtd: '7d', '2w-cal': '14d', '2w_cal': '14d', mtd: '30d', qtd: '90d', ytd: '52w', all: '52w', all_scanned: '52w' });
+
+  function toUtcDayMs(raw) {
+    var ms = parseUtcMs(raw);
+    if (!Number.isFinite(ms)) return NaN;
+    var d = new Date(ms);
+    return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  }
+
+  function fmtUtcDay(ms) {
+    var d = new Date(ms);
+    return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+  }
+
+  function normMode(mode, preset) {
+    var m = String(mode || '').toLowerCase();
+    if (m === 'cal' || m === 'calendar' || m === 'cal-to-date') return 'cal';
+    if (m === 'rolling') return 'rolling';
+    return CAL_LABELS[String(preset || '').toLowerCase()] ? 'cal' : 'rolling';
+  }
+
+  function mapPresetForMode(preset, mode) {
+    var p = String(preset || '30d').toLowerCase(), md = normMode(mode, p);
+    if (md === 'cal') return CAL_LABELS[p] ? p : (ROLL_TO_CAL[p] || 'mtd');
+    return ROLLING_SPECS[p] ? p : (CAL_TO_ROLL[p] || '30d');
+  }
+
+  function formatPresetLabel(preset, mode) {
+    var p = mapPresetForMode(preset, mode), md = normMode(mode, p);
+    return md === 'cal' ? (CAL_LABELS[p] || 'MTD') : (ROLLING_SPECS[p] ? ROLLING_SPECS[p][0] : '30 days');
+  }
+
+  function calStartMs(endMs, preset) {
+    var d = new Date(endMs), y = d.getUTCFullYear(), mo = d.getUTCMonth();
+    if (preset === 'wtd' || preset === '2w-cal' || preset === '2w_cal') {
+      var monMs = endMs - ((d.getUTCDay() || 7) - 1) * DAY_MS;
+      return preset === 'wtd' ? monMs : (monMs - 7 * DAY_MS);
+    }
+    if (preset === 'mtd') return Date.UTC(y, mo, 1);
+    if (preset === 'qtd') return Date.UTC(y, Math.floor(mo / 3) * 3, 1);
+    return Date.UTC(y, 0, 1);
+  }
+
+  /** Clamp lookback start & anchor end to {minDate, maxDate} and switch Rolling/Cal-to-Date labels cleanly. */
+  function resolvePeriodBounds(opts) {
+    var cfg = opts || {}, mode = normMode(cfg.mode, cfg.preset), preset = mapPresetForMode(cfg.preset || (mode === 'cal' ? 'mtd' : '30d'), mode);
+    var todayMs = toUtcDayMs(cfg.today);
+    if (!Number.isFinite(todayMs)) todayMs = toUtcDayMs(Date.now());
+    var minMs = toUtcDayMs(cfg.minDate), maxMs = toUtcDayMs(cfg.maxDate);
+    if (Number.isFinite(minMs) && Number.isFinite(maxMs) && minMs > maxMs) { var sw = minMs; minMs = maxMs; maxMs = sw; }
+    var rawAnchor = toUtcDayMs(cfg.anchorDate);
+    var endMs = Number.isFinite(rawAnchor) ? rawAnchor : (Number.isFinite(maxMs) ? maxMs : todayMs);
+    var step = Number(cfg.stepDelta || 0);
+    var stepSpan = mode === 'rolling' ? (ROLLING_SPECS[preset] ? ROLLING_SPECS[preset][1] : 30) : (preset === 'wtd' ? 7 : 14);
+    if (step && preset !== 'all' && preset !== 'all_scanned') {
+      var curStart = mode === 'rolling' ? (endMs - (stepSpan - 1) * DAY_MS) : calStartMs(endMs, preset);
+      if (!(step < 0 && Number.isFinite(minMs) && curStart <= minMs)) {
+        if (mode === 'cal' && preset === 'mtd') {
+          var edm = new Date(endMs);
+          endMs = Date.UTC(edm.getUTCFullYear(), edm.getUTCMonth() + step + 1, 0);
+        } else if (mode === 'cal' && preset === 'qtd') {
+          var edq = new Date(endMs);
+          endMs = Date.UTC(edq.getUTCFullYear(), (Math.floor(edq.getUTCMonth() / 3) + step + 1) * 3, 0);
+        } else if (mode === 'cal' && preset === 'ytd') {
+          var edy = new Date(endMs);
+          endMs = Date.UTC(edy.getUTCFullYear() + step, 11, 31);
+        } else if (mode === 'cal' && step < 0) {
+          endMs = curStart + (step + 1) * stepSpan * DAY_MS - DAY_MS;
+        } else {
+          endMs += step * stepSpan * DAY_MS;
+        }
+      }
+    }
+    if (Number.isFinite(maxMs) && endMs > maxMs) endMs = maxMs;
+    if (Number.isFinite(minMs) && endMs < minMs) endMs = minMs;
+    var rawStart = (preset === 'all' || preset === 'all_scanned') ? (Number.isFinite(minMs) ? minMs : endMs)
+      : (mode === 'rolling' ? (endMs - (ROLLING_SPECS[preset][1] - 1) * DAY_MS) : calStartMs(endMs, preset));
+    var startMs = (Number.isFinite(minMs) && rawStart < minMs) ? minMs : rawStart;
+    if (startMs > endMs) startMs = endMs;
+    var isCapped = Number.isFinite(maxMs) && Number.isFinite(todayMs) && maxMs < todayMs;
+    var effMax = Number.isFinite(maxMs) ? maxMs : todayMs;
+    return {
+      mode: mode, preset: preset, label: formatPresetLabel(preset, mode),
+      startDate: fmtUtcDay(startMs), endDate: fmtUtcDay(endMs),
+      spanDays: Math.max(1, Math.round((endMs - startMs) / DAY_MS) + 1),
+      anchorLabel: isCapped ? 'Latest Scanned' : 'Today', isCorpusCapped: isCapped,
+      atLatest: endMs >= effMax, canStepPrev: !Number.isFinite(minMs) || startMs > minMs, canStepNext: endMs < effMax,
+    };
+  }
+
   var api = {
     parseUtcMs: parseUtcMs,
     binTimeSeries: binTimeSeries,
     trimTrailingFutureWeeks: trimTrailingFutureWeeks,
+    resolveCssColor: resolveCssColor,
     heatmapZeroCellStyle: heatmapZeroCellStyle,
+    mapPresetForMode: mapPresetForMode,
+    formatPresetLabel: formatPresetLabel,
+    resolvePeriodBounds: resolvePeriodBounds,
   };
   root.QuietTimeBinning = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
@@ -1653,28 +1781,66 @@
     }
   }
 
+  function getBinning() { return root.QuietTimeBinning || (typeof require === 'function' ? (function () { try { return require('./quiet-time-binning.js'); } catch (_e) { return null; } }()) : null); }
+  function resolveWindowBounds(opts) { var tb = getBinning(); return tb && tb.resolvePeriodBounds ? tb.resolvePeriodBounds(opts) : null; }
+  function formatPresetLabel(preset, mode) { var tb = getBinning(); return tb && tb.formatPresetLabel ? tb.formatPresetLabel(preset, mode) : String(preset || ''); }
+  function hasCorpusConfig(st) { return !!(st && (st.dataset.minDate || st.dataset.maxDate || st.dataset.anchorDate || st.dataset.mode)); }
+
+  function syncBoundedState(st, stepDelta, toToday, opts) {
+    if (!st) return null;
+    var cfg = opts || {};
+    var anchor = toToday ? (st.dataset.maxDate || cfg.today || st.dataset.today || '') : (cfg.anchorDate || st.dataset.anchorDate || '');
+    var b = resolveWindowBounds({ mode: st.dataset.mode || '', preset: st.dataset.value || (st.dataset.mode === 'cal' ? 'mtd' : '30d'), anchorDate: anchor, minDate: st.dataset.minDate || '', maxDate: st.dataset.maxDate || '', today: cfg.today || st.dataset.today || '', stepDelta: stepDelta || 0 });
+    if (!b) return null;
+    st.dataset.mode = b.mode; st.dataset.value = b.preset; st.dataset.anchorDate = b.endDate;
+    st.dataset.startDate = b.startDate; st.dataset.endDate = b.endDate;
+    st.querySelectorAll('.va-preset-item').forEach(function (it) { it.setAttribute('aria-checked', it.dataset.preset === b.preset ? 'true' : 'false'); });
+    var lblEl = st.querySelector('[data-period-label]');
+    if (lblEl) lblEl.textContent = b.label + ' · ' + b.startDate + '–' + b.endDate;
+    var pBtn = st.querySelector('[data-period-step="-1"]'), nBtn = st.querySelector('[data-period-step="1"]'), tBtn = st.querySelector('[data-period-today]');
+    if (pBtn) pBtn.disabled = !b.canStepPrev;
+    if (nBtn) nBtn.disabled = !b.canStepNext;
+    if (tBtn) { tBtn.textContent = b.anchorLabel; tBtn.hidden = b.atLatest; }
+    return b;
+  }
+
+  function setPeriodMode(st, mode, opts) {
+    if (!st) return null;
+    st.dataset.mode = mode;
+    var b = syncBoundedState(st, 0, false, opts);
+    if (b && typeof root.CustomEvent === 'function') st.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: b }));
+    return b;
+  }
+
   function applyPresetChoice(stepper, item) {
     if (!stepper || !item || item.disabled) return;
     var val = item.dataset.preset || item.textContent.trim();
     var lbl = item.dataset.label || item.textContent.trim();
     var spanTxt = item.dataset.span || '';
     stepper.dataset.value = val;
+    if (item.dataset.mode) stepper.dataset.mode = item.dataset.mode;
+    else delete stepper.dataset.mode;
     stepper.querySelectorAll('.va-preset-item').forEach(function (b) {
       b.setAttribute('aria-checked', b === item ? 'true' : 'false');
     });
-    var lblEl = stepper.querySelector('[data-period-label]');
-    if (lblEl) lblEl.textContent = spanTxt ? (lbl + ' · ' + spanTxt) : lbl;
-    var todayBtn = stepper.querySelector('[data-period-today]');
-    if (todayBtn) todayBtn.hidden = item.dataset.atToday === 'true';
+    var bounds = hasCorpusConfig(stepper) ? syncBoundedState(stepper, 0, false) : null;
+    if (!bounds) {
+      var lblEl = stepper.querySelector('[data-period-label]');
+      if (lblEl) lblEl.textContent = spanTxt ? (lbl + ' · ' + spanTxt) : lbl;
+      var todayBtn = stepper.querySelector('[data-period-today]');
+      if (todayBtn) todayBtn.hidden = item.dataset.atToday === 'true';
+    }
     closePopover(stepper, true);
     if (typeof root.CustomEvent === 'function') {
-      stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { preset: val, label: lbl, span: spanTxt } }));
+      var detail = bounds ? Object.assign({}, bounds, { span: spanTxt }) : { preset: val, label: lbl, span: spanTxt };
+      stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: detail }));
     }
   }
 
   function bindStepper(stepper) {
     if (!stepper || stepper.dataset.quietBound === '1') return;
     stepper.dataset.quietBound = '1';
+    if (hasCorpusConfig(stepper)) syncBoundedState(stepper, 0, false);
     var doc = stepper.ownerDocument;
     var trigger = stepper.querySelector('.va-period-trigger');
     var pop = stepper.querySelector('.va-preset-popover');
@@ -1718,14 +1884,19 @@
     }
     stepper.addEventListener('click', function (ev) {
       var stepBtn = ev.target && ev.target.closest ? ev.target.closest('[data-period-step]') : null;
-      if (stepBtn && typeof root.CustomEvent === 'function') {
-        stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { step: Number(stepBtn.dataset.periodStep || 0), preset: stepper.dataset.value || '' } }));
+      if (stepBtn && !stepBtn.disabled && typeof root.CustomEvent === 'function') {
+        var delta = Number(stepBtn.dataset.periodStep || 0);
+        var bStep = hasCorpusConfig(stepper) ? syncBoundedState(stepper, delta, false) : null;
+        var sDet = bStep ? Object.assign({ step: delta }, bStep) : { step: delta, preset: stepper.dataset.value || '' };
+        stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: sDet }));
       }
       var todayBtn = ev.target && ev.target.closest ? ev.target.closest('[data-period-today]') : null;
       if (todayBtn && !todayBtn.hidden) {
+        var bToday = hasCorpusConfig(stepper) ? syncBoundedState(stepper, 0, true) : null;
         todayBtn.hidden = true;
         if (typeof root.CustomEvent === 'function') {
-          stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: { today: true, preset: stepper.dataset.value || '' } }));
+          var tDet = bToday ? Object.assign({ today: true }, bToday) : { today: true, preset: stepper.dataset.value || '' };
+          stepper.dispatchEvent(new root.CustomEvent('quiet:period-change', { bubbles: true, detail: tDet }));
         }
       }
     });
@@ -1954,9 +2125,143 @@
     else boot(root.document);
   }
 
-  var stepperApi = { boot: boot, openPopover: openPopover, closePopover: closePopover, applyPresetChoice: applyPresetChoice, positionPopover: positionPopover };
+  var stepperApi = {
+    boot: boot, openPopover: openPopover, closePopover: closePopover, applyPresetChoice: applyPresetChoice,
+    positionPopover: positionPopover, resolveWindowBounds: resolveWindowBounds, formatPresetLabel: formatPresetLabel,
+    setPeriodMode: setPeriodMode, syncBoundedState: syncBoundedState,
+  };
   var railApi = { boot: boot, setRailOpen: setRailOpen, expandActiveBranches: expandActiveBranches, applyTreeChildCaps: applyTreeChildCaps };
   root.QuietPeriodStepper = stepperApi;
   root.QuietRailTree = railApi;
   if (typeof module === 'object' && module.exports) module.exports = { QuietPeriodStepper: stepperApi, QuietRailTree: railApi };
+}(typeof window !== 'undefined' ? window : globalThis));
+
+
+// SPDX-License-Identifier: Apache-2.0
+(function (root) {
+  'use strict';
+
+  function nodeIdOf(n, fallbackIdx) {
+    if (!n || typeof n !== 'object') return String(fallbackIdx);
+    if (n.id != null) return String(n.id);
+    if (n.name != null) return String(n.name);
+    return String(fallbackIdx);
+  }
+
+  function nodeColOf(n) {
+    var raw = n && (n.col != null ? n.col : (n.column != null ? n.column : (n.stage != null ? n.stage : n.depth)));
+    var num = Number(raw);
+    return Number.isFinite(num) ? num : 0;
+  }
+
+  function nodeCountOf(n) {
+    var raw = n && (n.count != null ? n.count : (n.value != null ? n.value : 0));
+    var num = Number(raw);
+    return Number.isFinite(num) ? num : 0;
+  }
+
+  /**
+   * Order multi-column Sankey intermediate columns by (primaryTargetRank, -count)
+   * right-to-left to minimize diagonal ribbon crossings over labels.
+   */
+  function sortColumnsTopologically(nodes, edges, opts) {
+    var srcNodes = Array.isArray(nodes) ? nodes : [], srcEdges = Array.isArray(edges) ? edges : [], cfg = opts || {};
+    var byCol = Object.create(null), nodeMeta = Object.create(null), outEdges = Object.create(null);
+    srcNodes.forEach(function (n, idx) {
+      var id = nodeIdOf(n, idx), col = nodeColOf(n), cnt = nodeCountOf(n);
+      var entry = { raw: n, id: id, col: col, count: cnt, origIdx: idx };
+      nodeMeta[id] = entry;
+      if (!byCol[col]) byCol[col] = [];
+      byCol[col].push(entry);
+    });
+    srcEdges.forEach(function (e) {
+      if (!e || e.source == null || e.target == null) return;
+      var s = String(e.source), t = String(e.target), w = Number(e.count != null ? e.count : (e.value != null ? e.value : 0));
+      if (!outEdges[s]) outEdges[s] = [];
+      outEdges[s].push({ target: t, weight: Number.isFinite(w) ? w : 0 });
+    });
+
+    var colKeys = Object.keys(byCol).map(Number).sort(function (a, b) { return a - b; });
+    var rankById = Object.create(null), orderedCols = Object.create(null);
+    if (!colKeys.length) return { nodes: [], columns: orderedCols, rankById: rankById };
+
+    var lastCol = colKeys[colKeys.length - 1];
+    var termList = byCol[lastCol].slice();
+    if (cfg.preserveTerminalOrder !== true) {
+      termList.sort(function (a, b) {
+        var ra = a.raw && a.raw.rank != null && a.raw.rank !== '' && Number.isFinite(Number(a.raw.rank)) ? Number(a.raw.rank) : Infinity;
+        var rb = b.raw && b.raw.rank != null && b.raw.rank !== '' && Number.isFinite(Number(b.raw.rank)) ? Number(b.raw.rank) : Infinity;
+        if (ra !== rb) return ra - rb;
+        if (b.count !== a.count) return b.count - a.count;
+        return a.origIdx - b.origIdx;
+      });
+    }
+    orderedCols[lastCol] = termList.map(function (e, i) { rankById[e.id] = i; return e.raw; });
+
+    var startColIdx = cfg.sortSource ? 0 : 1;
+    if (colKeys.length > 1 && startColIdx === 1) {
+      orderedCols[colKeys[0]] = byCol[colKeys[0]].map(function (e, i) { rankById[e.id] = i; return e.raw; });
+    }
+    for (var ci = colKeys.length - 2; ci >= startColIdx; ci -= 1) {
+      var ck = colKeys[ci], list = byCol[ck].slice();
+      list.forEach(function (entry) {
+        var outs = outEdges[entry.id] || [], bestRank = Infinity, bestWeight = -1;
+        outs.forEach(function (edge) {
+          var tr = Object.prototype.hasOwnProperty.call(rankById, edge.target) ? rankById[edge.target] : Infinity;
+          if (!Number.isFinite(tr)) return;
+          if (edge.weight > bestWeight || (edge.weight === bestWeight && tr < bestRank)) {
+            bestWeight = edge.weight;
+            bestRank = tr;
+          }
+        });
+        entry.primaryTargetRank = bestRank;
+      });
+      list.sort(function (a, b) {
+        if (a.primaryTargetRank !== b.primaryTargetRank) return a.primaryTargetRank - b.primaryTargetRank;
+        if (b.count !== a.count) return b.count - a.count;
+        return a.origIdx - b.origIdx;
+      });
+      orderedCols[ck] = list.map(function (e, i) { rankById[e.id] = i; return e.raw; });
+    }
+
+    var orderedNodes = [];
+    colKeys.forEach(function (ck) { Array.prototype.push.apply(orderedNodes, orderedCols[ck]); });
+    return { nodes: orderedNodes, columns: orderedCols, rankById: rankById };
+  }
+
+  /** Compute proportional vertical highlight bounds for a partially matched Sankey node bar. */
+  function computeActiveSlice(nodeY, nodeH, nodeCount, matchedCount, ribbonOffsetY) {
+    var y = Number(nodeY) || 0, h = Number(nodeH) || 0, tot = Number(nodeCount) || 0, m = Number(matchedCount) || 0;
+    if (!Number.isFinite(h) || h <= 0 || !Number.isFinite(tot) || tot <= 0 || !Number.isFinite(m) || m <= 0) {
+      return { isFullBar: false, sliceY: y, sliceH: 0 };
+    }
+    var ratio = Math.min(1, Math.max(0, m / tot));
+    if (ratio >= 0.9999) return { isFullBar: true, sliceY: y, sliceH: h };
+    var sliceH = Math.min(h, Math.max(1.5, h * ratio));
+    var off = Number.isFinite(Number(ribbonOffsetY)) ? Math.max(0, Number(ribbonOffsetY)) : 0;
+    var sliceY = y + Math.min(off, Math.max(0, h - sliceH));
+    return { isFullBar: false, sliceY: Math.round(sliceY * 100) / 100, sliceH: Math.round(sliceH * 100) / 100 };
+  }
+
+  /** Deduplicate redundant 'brand · brand@' stems into clean single addresses. */
+  function dedupeStemEmail(stem, localPart) {
+    var s = String(stem || '').trim(), lp = String(localPart || '').trim();
+    if (!s) return lp;
+    if (!lp) return s;
+    var lpHead = lp.split('@')[0].trim();
+    var norm = function (v) { return String(v || '').toLowerCase().replace(/[^a-z0-9]/g, ''); };
+    var ns = norm(s), nh = norm(lpHead);
+    if (s.toLowerCase() === lp.toLowerCase() || s.toLowerCase() === lpHead.toLowerCase() || (ns.length >= 2 && ns === nh)) {
+      return lp.indexOf('@') >= 0 ? lp : s;
+    }
+    return s + ' · ' + lp;
+  }
+
+  var api = {
+    sortColumnsTopologically: sortColumnsTopologically,
+    computeActiveSlice: computeActiveSlice,
+    dedupeStemEmail: dedupeStemEmail,
+  };
+  root.QuietSankeyLayout = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
 }(typeof window !== 'undefined' ? window : globalThis));

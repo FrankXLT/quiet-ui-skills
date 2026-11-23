@@ -46,7 +46,7 @@ Initialize a starter contract with `python3 -B scripts/audit_quiet_html.py --ini
 
 ---
 
-## 2. Six Mandatory Brownfield Guardrails
+## 2. Seven Mandatory Brownfield Guardrails
 
 ### Guardrail 1 — Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`)
 Every brownfield overhaul fails when visual "cleanup" silently deletes inline breakdown tables, rolling vs. calendar-to-date presets, or batch exports (`CSV`, `PNG`, `ZIP`). Before removing or merging **any** existing widget:
@@ -120,6 +120,12 @@ Initial brownfield stabilization fixes bugs fast; without a scheduled Day-30 cle
    - **PR 3 (Sunset `layer(legacy)` Rules)**: Prune orphaned selectors from legacy stylesheets, delete dead compatibility shims listed in the Deprecation Blocklist, and lock `Strict Drift: true` in `.quiet-ui.md` for ongoing CI enforcement.
 
 ---
+
+### Guardrail 7 — Mass-Conservation Parity & Zero-Downtime Primary Cutover
+1. **Backend-First Canonical Logic**: Extract shared enum maps, pagination cursors, singular/plural formatters, and slug sanitization (`[RAW_SLUG_OR_GRAMMAR_LEAK]`, e.g., never `"1 messages"` or `"foo · foo@"`) into backend APIs before wiring UI views.
+2. **Numerical Mass-Conservation Parity Across Interactive Filters**: In default view and after toggling interactive controls (e.g., `Hide Promos`, date stepping, category selection), verify headless CDP invariance across every linked pane: `KPI Window == Sum(Sankey Col_0) == Sum(Sankey Col_k) == Sum(Heatmap Cells) == List total_matching`. Never allow client-only visual filters on one pane while sibling charts stay unfiltered.
+3. **Interactive Hitbox Cleanliness**: Route SVG click/hover geometry through explicit `.va-hit-target` (`fill: transparent`) and track `.is-selected` highlights via sliced ribbons (`.va-sankey-active-slice`), never rendering hollow focus outlines on invisible `<rect>`s (`[VISIBLE_HITBOX_OUTLINE]`).
+4. **Zero-Downtime 4-Step Primary Cutover**: (1) Verify `/v2` against CDP + parity tests, (2) cut `/` -> `302 /v2`, (3) retain `/v1` behind Settings fallback only for one release cycle, and (4) retire the `/v2` beta route cleanly.
 
 ## 3. Concrete Brownfield Integration Snippet
 

@@ -115,6 +115,7 @@
     border-top: 1px solid var(--border-hairline);
     background: var(--bg-elevated);
     padding: 0.25rem 0.5rem;
+    padding-block-end: max(0.5rem, env(safe-area-inset-bottom, 0px));
   }
 
   .va-shell-bottomdock button,
@@ -207,6 +208,7 @@
 
   /* N4: Mobile Bottom Dock */
   html[data-effective-nav="n4"] .va-shell-topbar,
+  html[data-effective-nav="n4"] .va-shell-topbar .va-tab-strip,
   html[data-effective-nav="n4"] .va-shell-rail { display: none; }
   html[data-effective-nav="n4"] .va-app-shell { grid-template-rows: minmax(0, 1fr) auto; }
   html[data-effective-nav="n4"] .va-shell-bottomdock { display: grid; }
@@ -338,6 +340,7 @@
     flex: 0 0 auto;
     resize: horizontal;
   }
+  .va-side-rail[data-mode="overlay"] { padding-block-end: max(0.5rem, env(safe-area-inset-bottom, 0px)); }
   .va-side-rail[data-collapsed="true"],
   .va-side-rail.is-collapsed { display: none; }
   .va-drawer-backdrop {
@@ -363,6 +366,7 @@
       resize: none;
       border-inline-end: 1px solid var(--border-strong);
       box-shadow: 0 12px 32px rgba(9, 13, 22, 0.28);
+      padding-block-end: max(0.5rem, env(safe-area-inset-bottom, 0px));
       transform: translateX(-105%);
       visibility: hidden;
       pointer-events: none;
@@ -376,5 +380,6 @@
   @media (prefers-reduced-motion: no-preference) {
     .va-side-rail, .va-drawer-backdrop { transition: transform 0.2s ease, opacity 0.2s ease; }
   }
+  html[data-effective-nav="n4"] .va-shell-topbar .va-tab-strip { display: none; }
   /* END_WORKBENCH_PANES */
 }
