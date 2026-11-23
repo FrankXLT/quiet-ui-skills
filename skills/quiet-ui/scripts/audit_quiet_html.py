@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.3.0 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
+"""Quiet UI v9.4.0 Portable Auditor: Static CSS/HTML/JS & Live Chrome CDP SVG/Overflow Checker."""
 
 from __future__ import annotations
 
@@ -19,6 +19,10 @@ if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 
 from audit_quiet_checks import CDP_AUDIT_JS, audit_cdp_urls, run_cdp_target  # noqa: E402
+from audit_ux_and_drift import (  # noqa: E402
+    audit_css_drift, audit_html_ux_drift, audit_js_blocklist, find_context_file,
+    init_context_file, merge_context_options, parse_context_file,
+)
 from audit_static_rules import (  # noqa: E402
     BRAIN_TEXT_RE, COMMENT_RE, DENSITY_WORDS, DIURNAL_RE, FOOTER_BANNED_RE, OVERFLOW_RULE_RE, SELF_BADGE_RE,
     SKIP_DIRS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, audit_json_text, check_hidden_layer_css,
@@ -26,12 +30,8 @@ from audit_static_rules import (  # noqa: E402
     is_asset_in_scope, is_json_mock_candidate, matches_exclude, parse_mount_prefixes, resolve_asset_detail,
 )
 
-_HTML_VOID_TAGS = frozenset(
-    {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
-)
-_CHROME_CLASSES = frozenset(
-    {"va-shell-topbar", "va-shell-brand", "va-topbar", "v9-topbar", "va-brand", "v9-brand", "topbar"}
-)
+_HTML_VOID_TAGS = frozenset({"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"})
+_CHROME_CLASSES = frozenset({"va-shell-topbar", "va-shell-brand", "va-topbar", "v9-topbar", "va-brand", "v9-brand", "topbar"})
 
 
 def _valid_viewbox(val: str) -> bool:
@@ -270,18 +270,18 @@ def audit_html_text(
     html_text: str, source: str, base_dir: Path | None = None, *, web_root: Path | None = None,
     mount_prefixes: dict[str, Path] | None = None, mount_scopes: dict[str, Path] | None = None,
     exclude: tuple[str, ...] | list[str] | None = None, audit_mounted_external: bool = False,
-    allow_showcase_chrome: bool = False,
+    allow_showcase_chrome: bool = False, strict_drift: bool = False, context: dict[str, Any] | None = None,
 ) -> list[str]:
     """Run zero-dependency static Quiet UI checks on an HTML document and mounted assets."""
     auditor = QuietHTMLAuditor(source, allow_showcase_chrome=allow_showcase_chrome)
     auditor.feed(html_text)
     auditor.close()
+    audit_html_ux_drift(html_text, source, auditor.errs, strict_drift=strict_drift, context=context)
     for line_no, js_body in auditor.inline_js:
         audit_js_text(js_body, f"{source}:{line_no} <script>", auditor.errs)
+        audit_js_blocklist(js_body, f"{source}:{line_no} <script>", context, auditor.errs)
 
-    css_parts = list(auditor.css_blocks)
-    in_scope_css: list[tuple[str, str]] = []
-    seen_css: set[Path] = set()
+    css_parts, in_scope_css, seen_css = list(auditor.css_blocks), [], set()
     for href in auditor.linked_css:
         if matches_exclude(href, exclude):
             continue
@@ -301,11 +301,14 @@ def audit_html_text(
     combined_order = extract_layer_order(all_css)
     for css_src, css_txt in in_scope_css:
         audit_css_text(css_txt, css_src, auditor.errs, layer_order=combined_order)
-    if combined_order:
-        for css_txt in auditor.css_blocks:
-            clean_blk = COMMENT_RE.sub("", css_txt)
-            if not extract_layer_order(clean_blk):
-                check_hidden_layer_css(clean_blk, f"{source} <style>", auditor.errs, layer_order=combined_order)
+        if strict_drift:
+            audit_css_drift(css_txt, css_src, auditor.errs)
+    for css_txt in auditor.css_blocks:
+        if strict_drift:
+            audit_css_drift(css_txt, f"{source} <style>", auditor.errs)
+        clean_blk = COMMENT_RE.sub("", css_txt)
+        if combined_order and not extract_layer_order(clean_blk):
+            check_hidden_layer_css(clean_blk, f"{source} <style>", auditor.errs, layer_order=combined_order)
 
     seen_js: set[Path] = set()
     for src in auditor.linked_js:
@@ -319,38 +322,34 @@ def audit_html_text(
             continue
         seen_js.add(js_p)
         if is_asset_in_scope(js_p, pfx, mount_scopes, audit_mounted_external=audit_mounted_external):
-            audit_js_text(js_p.read_text(encoding="utf-8", errors="ignore"), str(js_p), auditor.errs)
+            js_txt = js_p.read_text(encoding="utf-8", errors="ignore")
+            audit_js_text(js_txt, str(js_p), auditor.errs)
+            audit_js_blocklist(js_txt, str(js_p), context, auditor.errs)
 
-    has_stacking = has_responsive_table_stacking(all_css)
-    scroll_classes = set(WRAPPER_CLASS_HINTS)
+    has_stacking, scroll_classes = has_responsive_table_stacking(all_css), set(WRAPPER_CLASS_HINTS)
     for m in OVERFLOW_RULE_RE.finditer(all_css):
         for sel in m.group(1).split(","):
-            term = re.split(r"[\s>+~]+", sel.strip())[-1]
-            scroll_classes.update(re.findall(r"\.([A-Za-z0-9_-]+)", term))
+            scroll_classes.update(re.findall(r"\.([A-Za-z0-9_-]+)", re.split(r"[\s>+~]+", sel.strip())[-1]))
     for tbl in auditor.recorded_tables:
-        if tbl["role"] in ("presentation", "none") or tbl["max_cols"] < 4:
-            continue
-        if not (tbl["inline_wrap"] or has_stacking or (tbl["anc_cls"] & scroll_classes)):
-            auditor.errs.append(
-                f"[TABLE_WRAP] {source}:{tbl['line']}: {tbl['max_cols']}-col <table> needs scroll wrapper or responsive stacking"
-            )
+        if tbl["role"] not in ("presentation", "none") and tbl["max_cols"] >= 4 and not (tbl["inline_wrap"] or has_stacking or (tbl["anc_cls"] & scroll_classes)):
+            auditor.errs.append(f"[TABLE_WRAP] {source}:{tbl['line']}: {tbl['max_cols']}-col <table> needs scroll wrapper or responsive stacking")
     return list(dict.fromkeys(auditor.errs))
 
 
 def audit_static_target(
     target: str, *, web_root: Path | None = None, mount_prefixes: dict[str, Path] | None = None,
     exclude: tuple[str, ...] | list[str] | None = None, audit_mounted_external: bool = False,
-    allow_showcase_chrome: bool = False,
+    allow_showcase_chrome: bool = False, strict_drift: bool = False, context: dict[str, Any] | None = None,
 ) -> tuple[list[str], list[Path]]:
     """Audit a file, directory, or HTTP(S) URL statically; return (errors, html_files)."""
-    errs: list[str] = []
-    mount_scopes = compute_mount_scopes(target, mount_prefixes)
+    errs, mount_scopes = [], compute_mount_scopes(target, mount_prefixes)
     if target.startswith(("http://", "https://")):
         with urllib.request.urlopen(target, timeout=10) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
         errs.extend(audit_html_text(
             html, target, web_root=web_root, mount_prefixes=mount_prefixes, mount_scopes=mount_scopes,
-            exclude=exclude, audit_mounted_external=audit_mounted_external, allow_showcase_chrome=allow_showcase_chrome,
+            exclude=exclude, audit_mounted_external=audit_mounted_external,
+            allow_showcase_chrome=allow_showcase_chrome, strict_drift=strict_drift, context=context,
         ))
         return errs, []
     path = Path(target).resolve()
@@ -361,9 +360,7 @@ def audit_static_target(
         if p.is_file() and p.resolve().is_relative_to(path) and not (set(p.parts) & SKIP_DIRS)
         and not matches_exclude(p, exclude, root=path) and p.suffix.lower() in {".html", ".htm", ".css", ".js", ".json"}
     )
-    html_files: list[Path] = []
-    eff_root = web_root if web_root is not None else (path if path.is_dir() else None)
-    seen_msgs: set[str] = set()
+    html_files, eff_root, seen_msgs = [], web_root if web_root is not None else (path if path.is_dir() else None), set()
 
     def _add(msgs: list[str]) -> None:
         for msg in msgs:
@@ -372,63 +369,65 @@ def audit_static_target(
                 errs.append(msg)
 
     for f in files:
-        txt = f.read_text(encoding="utf-8", errors="ignore")
-        sfx = f.suffix.lower()
+        txt, sfx, tmp = f.read_text(encoding="utf-8", errors="ignore"), f.suffix.lower(), []
         if sfx == ".css":
-            tmp: list[str] = []
             audit_css_text(txt, str(f), tmp)
-            _add(tmp)
+            if strict_drift:
+                audit_css_drift(txt, str(f), tmp)
         elif sfx == ".js":
-            tmp = []
             audit_js_text(txt, str(f), tmp)
-            _add(tmp)
+            audit_js_blocklist(txt, str(f), context, tmp)
         elif sfx == ".json":
             if path.is_file() or is_json_mock_candidate(f, root=path):
-                tmp = []
                 audit_json_text(txt, str(f), tmp)
-                _add(tmp)
         else:
             html_files.append(f)
-            _add(
-                audit_html_text(
-                    txt,
-                    str(f),
-                    base_dir=f.parent,
-                    web_root=eff_root,
-                    mount_prefixes=mount_prefixes,
-                    mount_scopes=mount_scopes,
-                    exclude=exclude,
-                    audit_mounted_external=audit_mounted_external,
-                    allow_showcase_chrome=allow_showcase_chrome,
-                )
+            tmp = audit_html_text(
+                txt, str(f), base_dir=f.parent, web_root=eff_root, mount_prefixes=mount_prefixes,
+                mount_scopes=mount_scopes, exclude=exclude, audit_mounted_external=audit_mounted_external,
+                allow_showcase_chrome=allow_showcase_chrome, strict_drift=strict_drift, context=context,
             )
+        _add(tmp)
     return errs, html_files
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.3.0 HTML/CSS/JS & CDP Linter.")
-    parser.add_argument("target", help="HTML/CSS/JS file, directory, or http(s):// URL")
+    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.4.0 HTML/CSS/JS & CDP Linter.")
+    parser.add_argument("target", nargs="?", help="HTML/CSS/JS file, directory, or http(s):// URL")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome checks across 390, 820, and 1440px")
     parser.add_argument("--web-root", help="Filesystem web root for resolving leading '/' CSS and JS paths")
     parser.add_argument("--mount-prefix", action="append", default=[], help="Mount mapping PREFIX=DIR for resolving rooted assets (repeatable)")
     parser.add_argument("--exclude", action="append", default=[], help="Exclude filename, path suffix, or glob pattern (repeatable)")
     parser.add_argument("--audit-mounted-external", action="store_true", help="Lint resolved --mount-prefix assets outside the target subpath")
     parser.add_argument("--allow-showcase-chrome", action="store_true", help="Allow Quiet UI framework badges in showcase/bench headers")
+    parser.add_argument("--context", help="Explicit path to persistent .quiet-ui.md project contract")
+    parser.add_argument("--init-context", help="Create starter .quiet-ui.md contract at PATH if missing")
+    parser.add_argument("--strict-drift", action="store_true", help="Fail raw hex/rgb/hsl colors in app CSS and inline presentation styles")
     parser.add_argument("--json", action="store_true", help="Emit JSON output")
     args = parser.parse_args(argv)
 
+    if args.init_context:
+        ctx_p, created = init_context_file(args.init_context)
+        if not args.target:
+            print(json.dumps({"ok": True, "context": str(ctx_p), "created": created}) if args.json else f"[{'INIT' if created else 'EXISTS'}] {ctx_p}")
+            return 0
+    if not args.target:
+        parser.error("target is required unless --init-context is provided")
+
     wr = Path(args.web_root).expanduser().resolve() if args.web_root else None
-    mounts = parse_mount_prefixes(args.mount_prefix)
-    errs, html_files = audit_static_target(
-        args.target,
-        web_root=wr,
-        mount_prefixes=mounts,
-        exclude=args.exclude,
-        audit_mounted_external=args.audit_mounted_external,
-        allow_showcase_chrome=args.allow_showcase_chrome,
-    )
-    if args.cdp:
-        errs.extend(run_cdp_target(args.target, html_files, allow_showcase_chrome=args.allow_showcase_chrome))
+    ctx_path, ctx_errs = find_context_file(args.target, args.context)
+    ctx = parse_context_file(ctx_path) if ctx_path else None
+    mounts, excludes, strict_drift = merge_context_options(ctx, parse_mount_prefixes(args.mount_prefix), args.exclude, args.strict_drift)
+    errs: list[str] = list(ctx_errs)
+    if not ctx_errs:
+        st_errs, html_files = audit_static_target(
+            args.target, web_root=wr, mount_prefixes=mounts, exclude=excludes,
+            audit_mounted_external=args.audit_mounted_external, allow_showcase_chrome=args.allow_showcase_chrome,
+            strict_drift=strict_drift, context=ctx,
+        )
+        errs.extend(st_errs)
+        if args.cdp:
+            errs.extend(run_cdp_target(args.target, html_files, allow_showcase_chrome=args.allow_showcase_chrome, context=ctx))
 
     if args.json:
         print(json.dumps({"ok": not errs, "errors": errs}, indent=2))

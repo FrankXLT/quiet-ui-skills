@@ -93,9 +93,33 @@ def _check_bench_page(driver: Any, bench_url: str, errs: list[str]) -> None:
     time.sleep(0.25)
     ec_err = driver.execute_script("""
         const specs = document.querySelectorAll('.qe-specimen');
-        if (specs.length !== 43) return 'expected 43 specimens, found ' + specs.length;
+        if (specs.length !== 44) return 'expected 44 specimens, found ' + specs.length;
         const contracts = document.querySelectorAll('.qe-specimen .qe-data-contract');
-        if (contracts.length !== 43) return 'expected 43 data contracts, found ' + contracts.length;
+        if (contracts.length !== 44) return 'expected 44 data contracts, found ' + contracts.length;
+        const s44 = document.getElementById('qe-forms-zero-states');
+        if (!s44) return 'missing Specimen 44 #qe-forms-zero-states';
+        const s44Inp = s44.querySelector('#s44-threshold-input'), s44Err = s44.querySelector('#s44-threshold-err');
+        if (!s44Inp || !s44Err || s44Inp.getAttribute('aria-invalid') !== 'false') return 'Specimen 44 missing validated threshold input';
+        s44Inp.value = '2';
+        s44Inp.dispatchEvent(new Event('blur', { bubbles: true }));
+        if (s44Inp.getAttribute('aria-invalid') !== 'true' || s44Err.hidden) return 'Specimen 44 blur failed to mark invalid';
+        s44Inp.value = '300';
+        s44Inp.dispatchEvent(new Event('input', { bubbles: true }));
+        if (s44Inp.getAttribute('aria-invalid') !== 'false' || !s44Err.hidden) return 'Specimen 44 input failed to clear error';
+        s44.querySelector('[data-s44-archive]')?.click();
+        s44.querySelector('[data-s44-archive]')?.click();
+        if (s44.querySelector('[data-s44-toast]')?.hidden !== false) return 'Specimen 44 undo toast did not reveal';
+        s44.querySelector('[data-s44-undo]')?.click();
+        if (s44.querySelector('[data-s44-toast]')?.hidden !== true || !s44.querySelector('[data-s44-rule-pill]')?.textContent.includes('Active')) return 'Specimen 44 Undo failed';
+        s44.querySelector('[data-s44-archive]')?.click();
+        s44.querySelector('[data-s44-save]')?.click();
+        if (s44.querySelector('[data-s44-toast]')?.hidden !== true || !s44.querySelector('[data-s44-rule-pill]')?.textContent.includes('Active')) return 'Specimen 44 Save failed to dismiss toast';
+        s44.querySelector('[data-s44-clear-filters]')?.click();
+        if (!s44.querySelector('[data-s44-filtered-title]')?.textContent.includes('Filters cleared')) return 'Specimen 44 Clear filters failed';
+        s44.querySelector('[data-s44-reapply-filters]')?.click();
+        s44.querySelector('#s44-tab-stale')?.click();
+        if (s44.querySelector('#s44-panel-stale')?.hidden !== false) return 'Specimen 44 Stale tab switch failed';
+        s44.querySelector('#s44-tab-filtered')?.click();
         const cyc = document.querySelector('#qe-cyclical-whiskers .qe-plot-wrap[data-quiet-echarts]');
         if (!cyc || cyc.dataset.echartsActive !== 'true' || !cyc.querySelector('.qe-echarts-host svg')) {
             return 'Specimen 43 #qe-cyclical-whiskers failed to default to Live ECharts';
@@ -172,14 +196,14 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
             if failed_res:
                 errs.append(f"[DOCS_ROOT_404] {path}: {failed_res}")
 
-        # Verify Components tab inside /docs root loads all 43 specimens
+        # Verify Components tab inside /docs root loads all 44 specimens
         driver.get(f"{docs_root_url}/")
         time.sleep(0.25)
         driver.execute_script("document.getElementById('va-tab-components').click();")
         time.sleep(0.5)
         cnt = driver.execute_script("return document.getElementById('va-stage-portal')?.contentDocument?.querySelectorAll('.qe-specimen').length || 0;")
-        if int(cnt) != 43:
-            errs.append(f"[DOCS_COMPONENTS_TAB] expected 43 specimens, got {cnt}")
+        if int(cnt) != 44:
+            errs.append(f"[DOCS_COMPONENTS_TAB] expected 44 specimens, got {cnt}")
 
         # Verify all 8 optical/gallery photos resolve cleanly under docs/ web root
         for wid, vid, expected_n in (
@@ -212,7 +236,7 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
 
 
 def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Verify standalone bench (43 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
+    """Verify standalone bench (44 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
     errs: list[str] = []
     _check_bench_page(driver, f"{root_url}/docs/bench/evidence-bench.html", errs)
 
@@ -222,8 +246,8 @@ def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[
     time.sleep(0.25)
     driver.execute_script("document.getElementById('va-tab-components').click();")
     time.sleep(0.5)
-    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===43;"):
-        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 43 specimens")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===44;"):
+        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 44 specimens")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.25)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples'&&!p.hasAttribute('src');"):

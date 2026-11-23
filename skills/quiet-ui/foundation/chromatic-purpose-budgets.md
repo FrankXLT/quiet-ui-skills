@@ -63,7 +63,7 @@ In a power grid control room, ICU bedside monitor, or mission operations center,
 
 ## 2B. Page-Wide Visual Coherence Budget (`<= 3` Card Structures & `1` Palette)
 
-Every multi-panel dashboard or monograph MUST read as one unified system rather than a sampler buffet across the 43 Component Library specimens:
+Every multi-panel dashboard or monograph MUST read as one unified system rather than a sampler buffet across the 44 Component Library specimens:
 - **`<= 3` Repeating Card Structures Per Page**: Every analytical card on a page must share **one header layout** (`Title` left + plain unboxed muted `.va-meta-inline` stat right, at most `1` semantic state `.va-badge`), **at most `1` chart per half-width card** (never stuffing 2 separate mini-charts side-by-side inside a half-width card), and **one unified `.booktabs` hairline row style** across all structured lists and directories (never mixing `.booktabs` tables with nested pill-box clouds).
 - **One Cohesive Chart Palette Page-Wide**: Every chart on a page must draw from one consistent `--chart-1`..`--chart-5` token ramp (`--accent-primary`, `--tint-indigo-fg`, `--tint-emerald-fg`, `--tint-amber-fg`, `--text-muted`). Single-metric plots use `1` primary accent (`--chart-1`) plus neutral ink; categorical breakdowns reuse the same ordered `--chart-1..5` palette across rows rather than switching to uncoordinated blue/green/brown combos mid-page.
 

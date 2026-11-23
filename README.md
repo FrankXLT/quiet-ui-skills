@@ -1,4 +1,4 @@
-# Quiet UI Skills (`v9.3.0`)
+# Quiet UI Skills (`v9.4.0`)
 
 [![Quiet UI CI](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/Plugin%20%26%203--Pillar%20Engine-Apache%202.0-blue.svg)](LICENSE)
@@ -7,18 +7,18 @@
 
 **Quiet UI Skills** is a 100% first-party, zero-dependency design system and deterministic engineering UI/SVG compiler suite for AI coding agents (Google Antigravity, Claude Code, Cursor, Codex, and Windsurf). It unifies **7 physical delivery mediums (`M1–M7`)**, **6 quantitative evidence modalities (`M1–M6`)**, and **audience communication vectors (`L1–L3`)** under one 4-theme design token contract (`11px` hard floor) and a 60-second brand customization workflow:
 
-1. **`quiet-ui` (7 Delivery Mediums, Data-First Grounding & 21 Domain Views):** Adapts typography, container spacing, and chrome physics across `M1`–`M7`, enforces data-first schema binding via `foundation/data-grounding-and-widget-binding.md`, and ships the portable zero-dependency linter (`skills/quiet-ui/scripts/audit_quiet_html.py`) catching mock data, self-badges, exposed `brain:` IDs, density/footer clutter, cramped prose splits, and CDP SVG/truncation collisions across `390px`, `820px`, and `1440px`.
-2. **`quiet-evidence` (Metrology, Clean-Room SVG Compilers & `QuietSvgLayout`):** Deterministically compiles calibrated waveforms, analytical & calibration plots, cyclical Min–Avg–Max whiskers (`buildCyclicalWhiskerOption`), waterfalls, 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics from structured JSON—plus bundled `window.QuietSvgLayout` and `QuietEChartsDefaults` runtime helpers.
-3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation and explicit `Warming up — N samples collected` disclosures on thin buffers.
+1. **`quiet-ui` (7 Delivery Mediums, `.quiet-ui.md` Contract & Forms/Zero-States):** Adapts typography, container spacing, and chrome physics across `M1`–`M7`, persists project scope in `.quiet-ui.md`, codifies accessible forms, 4-way zero-states, and `>= 7s` undo toasts (`foundation/forms-states-and-resilience.md`), and ships the portable zero-dependency linter (`audit_quiet_html.py` + `audit_ux_and_drift.py`) enforcing `--strict-drift`, deprecation blocklists, unlabeled controls, and CDP SVG/truncation bounds across `390px`, `820px`, and `1440px`.
+2. **`quiet-evidence` (Metrology, Clean-Room SVG Compilers & CJK-Safe `QuietSvgLayout`):** Deterministically compiles calibrated waveforms, analytical & calibration plots, cyclical Min–Avg–Max whiskers (`buildCyclicalWhiskerOption`), waterfalls, 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics—with East-Asian wide (`1.75x`) & combining-mark gutter math (`visual_char_units` / `QuietSvgLayout.visualUnits`) across SVG and ECharts.
+3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation, persistent `.quiet-ui.md` intake memory, and explicit `Warming up — N samples collected` disclosures on thin buffers.
 
-![Quiet UI v9.3 — 6-Domain Studio & 43-Component Suite](docs/assets/quiet-ui-hero.png)
+![Quiet UI v9.4 — 6-Domain Studio & 44-Component Suite](docs/assets/quiet-ui-hero.png)
 
 ---
 
 ## Quick Start & Installation
 
-- **Live v9.3 Interactive Studio (`6 Domains · 21 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
-- **3-Pillar Component Library (`43 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, joined toolbars, period steppers, split readers, `<dialog closedby="any">` sheets, ARIA trees, `gantt`/`heatmap`/cyclical whisker plots (`Quiet SVG | Live ECharts`), systems schematics, and decision bridges—each carrying `Data Inputs & Honest Fallback` disclosures.
+- **Live v9.4 Interactive Studio (`6 Domains · 21 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
+- **3-Pillar Component Library (`44 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, validated forms & 4-way zero-states + undo toast, joined toolbars, period steppers, split readers, `<dialog closedby="any">` sheets, ARIA trees, `gantt`/`heatmap`/cyclical whisker plots (`Quiet SVG | Live ECharts`), systems schematics, and decision bridges.
 - **Agent Onboarding (`AGENTS.md` / `CLAUDE.md`):** Read [`AGENTS.md`](AGENTS.md) for single-command rebuilds (`scripts/build_all.py`), portable auditor usage (`audit_quiet_html.py`), and repository invariants.
 - **Deep-Link Any State:** Append `?mode=examples&domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
 
@@ -66,7 +66,7 @@ Please clone the starter, extract design tokens into customization.json, update 
 | **Long-form monographs, RFCs, runbooks, fleet grids, planners, walls, or HUDs** | `quiet-ui` | Unboxed `72ch` sheets (`M1`), responsive editorial grids (`M2`), stateful apps (`M3`), POI terminals (`M4`), `>= 32px` wall displays (`M5`), `>= 65%` keep-out HUDs (`M6`), smoked-glass overlays (`M7`) |
 | **Waveforms, spectral/calibration plots, waterfalls, HA energy bars, or tables** | `quiet-evidence` | JSON-compiled `plot_compiler.py` (`1–2–5` ticks, residual strips), `echarts_adapter.py`, `waveform_compiler.py`, `comparison_plots.py`, `scalar_and_table.py`, and `bitfield_compiler.py` |
 | **Sequence flows, $N^2$ matrices, fault trees, P&IDs, buses, or ER schemas** | `quiet-evidence` | Clean-room open-standards SVG compilers: `sequence` (`ITU-T Z.120`), `n2_matrix` (`NASA SP-2016-6105`), `fault_tree` (`NRC NUREG-0492`), `pid`, `bus`, `pipeline`, `interlock`, `er_lineage` |
-| **Executive memos, lab reports, clinical handoffs, or multi-level explanations** | `quiet-bridge` | Audience vector selection (`L1` / `L2` / `L3`), dual-layer briefing + proof stage, and cross-artifact numerical conservation checks |
+| **Executive memos, lab reports, clinical handoffs, or multi-level explanations** | `quiet-bridge` | Audience vector selection (`L1` / `L2` / `L3`), dual-layer briefing + proof stage, `.quiet-ui.md` contract persistence, and cross-artifact numerical conservation checks |
 
 ---
 
@@ -109,30 +109,31 @@ QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 
 # 4. Run the portable Quiet UI HTML/CSS & CDP linter on any deliverable
-python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context path/to/app/.quiet-ui.md --strict-drift
 ```
 
 ```text
 quiet-ui-skills/
 ├── AGENTS.md / CLAUDE.md                          # Agent-native build, test & invariant contracts
-├── plugin.json                                      # Native Antigravity plugin manifest (v9.3.0)
+├── plugin.json                                      # Native Antigravity plugin manifest (v9.4.0)
 ├── pyproject.toml                                   # PEP 621 zero-runtime-dep metadata & [dev] extras
-├── quiet-ui-showcase.html                           # Unified 6-domain 21-view Quiet UI v9.3 Studio
+├── quiet-ui-showcase.html                           # Unified 6-domain 21-view Quiet UI v9.4 Studio
 ├── assets/logo.svg                                  # High-contrast square plugin icon
 ├── LICENSE / NOTICE / TRADEMARKS.md                 # Apache 2.0 Core 3-Pillar + MIT Customizations & Output
 ├── THIRD_PARTY_LICENSES.md                          # Clean-room zero third-party runtime & Apache ECharts license notice
 ├── install.sh                                       # 1-command plugin & 3-pillar cross-agent installer
 ├── tokens/quiet-ui-tokens.css                       # Standalone 4-theme CSS design tokens (MIT)
-├── src/                                             # Flattened CSS (00–13), JS runtime & 21-view generators
+├── src/                                             # Flattened CSS (00–14), JS runtime & 21-view generators
 ├── scripts/                                         # Canonical builders (build_all.py, build_showcase.py, serve_showcase.py)
 ├── tests/                                           # Unified stdlib & Chrome CDP visual regression suite
 ├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
-├── docs/bench/evidence-bench.html                   # 43-specimen deterministic 3-Pillar Component Library
+├── docs/bench/evidence-bench.html                   # 44-specimen deterministic 3-Pillar Component Library
 ├── customizations/                                  # Personal (21-view) & Brand (17-view) starter kits (MIT)
 └── skills/
-    ├── quiet-ui/                                    # Pillar 1: 7 mediums, data grounding, N0–N4 shells & audit_quiet_html.py
-    ├── quiet-evidence/                              # Pillar 2: Calibrated compilers, portable assets & QuietSvgLayout
-    └── quiet-bridge/                                # Pillar 3: Audience translation & plain-English rationale
+    ├── quiet-ui/                                    # Pillar 1: 7 mediums, forms/zero-states, .quiet-ui.md & audit_quiet_html.py
+    ├── quiet-evidence/                              # Pillar 2: Calibrated compilers, portable assets & CJK-safe QuietSvgLayout
+    └── quiet-bridge/                                # Pillar 3: Audience translation & persistent intake protocol
 ```
 
 ---
@@ -140,5 +141,5 @@ quiet-ui-skills/
 ## Licensing & Provenance
 
 - **100% First-Party Core Engine (`Apache-2.0`):** Covers `plugin.json`, `skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`, deterministic compilers, verifiers, and showcases (`LICENSE`, `NOTICE`, `TRADEMARKS.md`).
-- **Zero Third-Party Code Dependencies:** Every SVG schematic, plot, icon glyph, and CSS token in v9.3 is clean-room first-party code implementing open engineering standards (`THIRD_PARTY_LICENSES.md`).
+- **Zero Third-Party Code Dependencies:** Every SVG schematic, plot, icon glyph, and CSS token in v9.4 is clean-room first-party code implementing open engineering standards (`THIRD_PARTY_LICENSES.md`).
 - **Customizations, Tokens & 100% Commercial Output Exemption (`MIT`):** All files in `customizations/`, `tokens/quiet-ui-tokens.css`, and 100% of HTML, CSS, JS, SVG, and PNG deliverables generated with Quiet UI Skills belong to you under pure MIT with **zero `NOTICE` or attribution obligations** on shipped websites, apps, or decks.

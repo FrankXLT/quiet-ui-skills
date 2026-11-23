@@ -58,6 +58,11 @@ UI_BRIDGE_CONTRACTS: dict[str, tuple[str, str, str]] = {
         "buckets[].recent (Last 24h | Current Cycle marker; omit if current cycle empty)",
         "Skip slots with activeDays === 0 rather than zero-filling; never plot multi-day raw sums on cyclical axes.",
     ),
+    "qe-forms-zero-states": (
+        "threshold_ms (10..5000), sync.{status, last_sync_utc}, filter_query",
+        "gate_reason (when blocked), cached_last_good.{p95_ms, error_pct}",
+        "Retain last valid values with STALE badge on timeout; expose Clear filters on filtered zero-results.",
+    ),
 }
 
 

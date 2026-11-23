@@ -8,11 +8,11 @@ This protocol establishes the mandatory pre-build interrogation sequence execute
 
 Engineers and designers habitually commit the **Projection Fallacy**: they assume that what matters to them (internal architectural beauty, micro-optimizations, raw terminal output) is what the audience requires to make a decision.
 
-The "Grill Me" Audience Intake protocol eliminates this failure mode through a structured, mandatory 5-question interrogation anchored to the **4 Universal Audience Evaluation Invariants** ((1) **Baseline & Corridor**, (2) **Epistemic Provenance**, (3) **Margin & Consequence**, (4) **Actionable Disposition**). Before generating any HTML, CSS, SVG, or documentation artifact, the author must explicitly execute this intake and freeze the resulting contract.
+The "Grill Me" Audience Intake protocol eliminates this failure mode through a structured, mandatory 5-question interrogation anchored to the **4 Universal Audience Evaluation Invariants** ((1) **Baseline & Corridor**, (2) **Epistemic Provenance**, (3) **Margin & Consequence**, (4) **Actionable Disposition**). **Before asking intake questions on an existing workspace, always inspect the target root (or parent workspace) for `.quiet-ui.md`**—honor locked values (`Project Mode`, `Primary Medium`, `Chromatic Budget`, `Navigation Shell`, `Capability Parity Ledger`, `Deprecation Blocklist`) rather than re-interrogating settled decisions, and persist newly agreed answers back into `.quiet-ui.md` (`--init-context`) before building.
 
 ```
-[USER / STAKEHOLDER REQUEST]
-             |
+[TARGET REPO .quiet-ui.md FOUND?] --(yes)--> [LOAD & VERIFY LOCKED CONTRACT]
+             | (no)
              v
 [GRILL-ME AUDIENCE INTAKE (5 QUESTIONS + 4 INVARIANTS)]
 - Question 1: Who is the Primary Decision Authority?
@@ -22,7 +22,7 @@ The "Grill Me" Audience Intake protocol eliminates this failure mode through a s
 - Question 5: What is the Hard Abort / Rejection Redline?
              |
              v
-[FROZEN INTAKE OUTPUT CONTRACT]
+[FROZEN INTAKE CONTRACT -> PERSIST .quiet-ui.md]
              |
              v
 [ARCHITECTURE & CODE IMPLEMENTATION]

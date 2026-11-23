@@ -312,6 +312,65 @@
         msg.textContent = 'Active window: ' + (d.label || d.preset) + (d.span ? ' · ' + d.span : '') + ' · Adaptive bin: ' + bin;
       }
     });
+    const s44 = document.querySelector('[data-s44-root]');
+    if (s44) {
+      const form = s44.querySelector('[data-s44-form]'), inp = s44.querySelector('#s44-threshold-input');
+      const errEl = s44.querySelector('#s44-threshold-err'), gateEl = s44.querySelector('[data-s44-gate-reason]');
+      const pill = s44.querySelector('[data-s44-rule-pill]'), toast = s44.querySelector('[data-s44-toast]');
+      let prev = { text: 'Active · 250 ms', state: 'nominal' }, timer = null;
+      const syncInp = function (showErr) {
+        const val = Number(inp.value), ok = inp.value.trim() !== '' && Number.isFinite(val) && val >= 10 && val <= 5000;
+        if (!ok && !showErr) return false;
+        inp.setAttribute('aria-invalid', ok ? 'false' : 'true');
+        inp.setAttribute('aria-describedby', ok ? 's44-threshold-hint' : 's44-threshold-hint s44-threshold-err');
+        if (errEl) errEl.hidden = ok;
+        if (gateEl) {
+          gateEl.dataset.state = ok ? 'nominal' : 'fault';
+          gateEl.textContent = ok ? ('Ready: active threshold ' + Math.round(val) + ' ms can be saved or archived safely.') : 'Blocked: enter 10–5000 ms to enable saving.';
+        }
+        return ok;
+      };
+      const armTimer = function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () { if (toast && !toast.matches(':hover, :focus-within')) toast.hidden = true; else if (toast && !toast.hidden) armTimer(); }, 7000);
+      };
+      if (inp) {
+        inp.addEventListener('blur', function () { syncInp(true); });
+        inp.addEventListener('input', function () { if (inp.getAttribute('aria-invalid') === 'true') syncInp(false); });
+      }
+      if (form) form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        if (!syncInp(true)) { inp.focus(); return; }
+        clearTimeout(timer); if (toast) toast.hidden = true;
+        if (pill) { pill.dataset.state = 'nominal'; pill.textContent = 'Active · ' + Math.round(Number(inp.value)) + ' ms'; }
+        if (gateEl) { gateEl.dataset.state = 'nominal'; gateEl.textContent = 'Saved: ' + Math.round(Number(inp.value)) + ' ms threshold active.'; }
+      });
+      s44.addEventListener('click', function (ev) {
+        const t = ev.target && ev.target.closest ? ev.target : null;
+        if (!t) return;
+        if (t.closest('[data-s44-archive]') && pill && toast) {
+          if (pill.dataset.state !== 'warn') prev = { text: pill.textContent, state: pill.dataset.state || 'nominal' };
+          pill.dataset.state = 'warn'; pill.textContent = 'Archived · Pending'; toast.hidden = false; armTimer();
+          if (gateEl) { gateEl.dataset.state = 'warn'; gateEl.textContent = 'Archived rule paused — use Undo within 7 s to restore.'; }
+        } else if (t.closest('[data-s44-undo]') && pill && toast) {
+          clearTimeout(timer); toast.hidden = true; pill.dataset.state = prev.state; pill.textContent = prev.text;
+          if (gateEl) { gateEl.dataset.state = 'nominal'; gateEl.textContent = 'Restored: ' + prev.text + ' active.'; }
+        } else if (t.closest('[data-s44-toast-dismiss]') && toast) {
+          clearTimeout(timer); toast.hidden = true;
+        } else if (t.closest('[data-s44-tabs] .va-tab')) {
+          const tab = t.closest('[data-s44-tabs] .va-tab'), kind = tab.dataset.s44Kind;
+          s44.querySelectorAll('[data-s44-tabs] .va-tab').forEach(function (b) { b.setAttribute('aria-selected', b === tab ? 'true' : 'false'); });
+          s44.querySelectorAll('[data-s44-panel]').forEach(function (p) { p.hidden = p.dataset.s44Panel !== kind; });
+        } else if (t.closest('[data-s44-clear-filters]') || t.closest('[data-s44-reapply-filters]')) {
+          const clr = !!t.closest('[data-s44-clear-filters]');
+          s44.querySelector('[data-s44-filtered-title]').textContent = clr ? 'Filters cleared — 48 runs restored' : '0 runs match "region:ap-east · status:fault"';
+          s44.querySelector('[data-s44-filtered-copy]').textContent = clr ? 'All 48 recorded spans in the active window are now visible.' : 'Two active filters exclude all 48 recorded spans in this window.';
+          s44.querySelector('[data-s44-clear-filters]').hidden = clr;
+          s44.querySelector('[data-s44-reapply-filters]').hidden = !clr;
+        } else if (t.closest('[data-s44-connect]')) t.closest('[data-s44-connect]').textContent = 'Collector probe queued';
+        else if (t.closest('[data-s44-retry]')) t.closest('[data-s44-retry]').textContent = 'Sync retried (still offline)';
+      });
+    }
   }
 
   function bootBench() {
@@ -341,13 +400,9 @@
     });
 
     const themeSel = document.getElementById('bench-theme-select');
-    if (themeSel) {
-      themeSel.addEventListener('change', function () { applyTheme(themeSel.value); });
-    }
+    if (themeSel) themeSel.addEventListener('change', function () { applyTheme(themeSel.value); });
     const medSel = document.getElementById('bench-medium-select');
-    if (medSel) {
-      medSel.addEventListener('change', function () { applyMedium(medSel.value); });
-    }
+    if (medSel) medSel.addEventListener('change', function () { applyMedium(medSel.value); });
     const modSel = document.getElementById('bench-modality-filter');
     if (modSel) modSel.addEventListener('change', applyFilters);
     const rigSel = document.getElementById('bench-rigor-filter');

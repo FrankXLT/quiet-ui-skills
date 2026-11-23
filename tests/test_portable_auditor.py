@@ -18,6 +18,7 @@ AUDITOR_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_html.
 CHECKS_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_quiet_checks.py"
 PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_cdp_probes.py"
 STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
+UX_DRIFT_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_ux_and_drift.py"
 COMPILER_SRC = REPO_ROOT / "skills" / "quiet-evidence" / "scripts" / "compile_evidence.py"
 
 VALID_HTML = """<!DOCTYPE html>
@@ -58,6 +59,7 @@ class TestPortableAuditor(unittest.TestCase):
         shutil.copy2(CHECKS_SRC, self.tmp_dir / "audit_quiet_checks.py")
         shutil.copy2(PROBES_SRC, self.tmp_dir / "audit_cdp_probes.py")
         shutil.copy2(STATIC_RULES_SRC, self.tmp_dir / "audit_static_rules.py")
+        shutil.copy2(UX_DRIFT_SRC, self.tmp_dir / "audit_ux_and_drift.py")
 
     def tearDown(self) -> None:
         self._tmp.cleanup()

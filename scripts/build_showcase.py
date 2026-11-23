@@ -48,6 +48,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/05-evidence-stage.css",
         "src/css/12-period-and-scope.css",
         "src/css/13-split-reader-dialog.css",
+        "src/css/14-forms-and-states.css",
         "src/css/06-stage-remediations.css",
         "src/css/07-world-01-views.css",
         "src/css/08-world-02-05-views.css",
@@ -138,7 +139,7 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build Quiet UI v9.3 Multi-Domain Showcase")
+    parser = argparse.ArgumentParser(description="Build Quiet UI v9.4 Multi-Domain Showcase")
     parser.add_argument("--worlds", default="all", help="Comma-separated domain IDs or 'all' (default: all)")
     parser.add_argument("--output", default="quiet-ui-showcase.html", help="Output HTML file path")
     args = parser.parse_args()
@@ -150,7 +151,7 @@ def main() -> int:
         out_path = REPO_ROOT / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html_out, encoding="utf-8")
-    print(f"[OK] Built Quiet UI v9.3 showcase ({len(selected)} domain(s)) -> {out_path}")
+    print(f"[OK] Built Quiet UI v9.4 showcase ({len(selected)} domain(s)) -> {out_path}")
     return 0
 
 

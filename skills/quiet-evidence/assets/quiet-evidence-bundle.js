@@ -292,10 +292,26 @@
   'use strict';
 
   var _measureCtx = null;
+  var _COMB_RE = /^[\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF\u200B-\u200F\u20D0-\u20FF\uFE20-\uFE2F\uFEFF]$/;
+  var _WIDE_RE = /[\u1100-\u115F\u2E80-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\uFE30-\uFE6F\uFF01-\uFF60\u{20000}-\u{2FA1F}]/u;
+
+  function charUnit(ch, cp) {
+    return _COMB_RE.test(ch) ? 0 : (_WIDE_RE.test(ch) ? 1.75 : 1.0);
+  }
+
+  function visualUnits(text) {
+    var s = String(text == null ? '' : text), u = 0;
+    for (var i = 0; i < s.length; i += 1) {
+      var cp = s.codePointAt(i), ch = String.fromCodePoint(cp);
+      if (cp > 0xFFFF) i += 1;
+      u += charUnit(ch, cp);
+    }
+    return u;
+  }
 
   function getMeasureCtx() {
     if (_measureCtx) return _measureCtx;
-    if (typeof document !== 'undefined' && document.createElement) {
+    if (typeof document !== 'undefined' && document && document.createElement) {
       var canvas = document.createElement('canvas');
       if (canvas && canvas.getContext) _measureCtx = canvas.getContext('2d');
     }
@@ -303,13 +319,14 @@
   }
 
   function measureTextPx(text, fontSpec) {
-    var s = String(text == null ? '' : text);
+    var s = String(text == null ? '' : text), fb = visualUnits(s) * 6.8;
     var ctx = getMeasureCtx();
     if (ctx) {
       ctx.font = fontSpec || '11px Inter, system-ui, sans-serif';
-      return ctx.measureText(s).width;
+      var w = ctx.measureText(s).width;
+      return (w > 0 || !s) ? w : fb;
     }
-    return s.length * 6.8;
+    return fb;
   }
 
   function roundClean(v) {
@@ -399,41 +416,50 @@
     return out;
   }
 
+  function sliceUnits(str, cap) {
+    var u = 0, cut = 0, s = String(str || '');
+    for (var i = 0; i < s.length; i += 1) {
+      var cp = s.codePointAt(i), ch = String.fromCodePoint(cp), step = cp > 0xFFFF ? 2 : 1, w = charUnit(ch, cp);
+      if (cut > 0 && w > 0 && u + w > cap) break;
+      u += w; cut = i + step;
+      if (cp > 0xFFFF) i += 1;
+    }
+    return s.slice(0, Math.max(1, cut));
+  }
+
   function truncateTokenSafe(str, limit) {
-    var cut = Math.max(2, limit - 1);
-    var head = balanceDelimiters(str.slice(0, cut).replace(/\s+\S*$/, '') || str.slice(0, cut));
-    return (head || str.replace(/[(\[]/g, '').slice(0, cut)) + '\u2026';
+    var cap = Math.max(2, limit - 1), s = String(str || ''), sub = sliceUnits(s, cap);
+    if (/\s/.test(sub)) sub = sub.replace(/\s+\S*$/, '') || sub;
+    var head = balanceDelimiters(sub);
+    return (head || sliceUnits(s.replace(/[(\[]/g, ''), cap)) + '\u2026';
+  }
+
+  function pushWideChunks(tok, limit, out) {
+    if (!_WIDE_RE.test(tok) || visualUnits(tok) <= limit) { out.push(tok); return; }
+    var cur = '', u = 0;
+    for (var i = 0; i < tok.length; i += 1) {
+      var cp = tok.codePointAt(i), ch = String.fromCodePoint(cp), w = charUnit(ch, cp);
+      if (cp > 0xFFFF) i += 1;
+      if (cur && w > 0 && u + w > limit) { out.push(cur); cur = ch; u = w; } else { cur += ch; u += w; }
+    }
+    if (cur) out.push(cur);
   }
 
   function wrapLabelLines(text, maxChars, maxLines) {
     var raw = String(text == null ? '' : text).trim().replace(/\s+/g, ' ');
-    var limit = Math.max(6, Number(maxChars || 18));
-    var capLines = Math.max(1, Number(maxLines || 2));
-    if (!raw || raw.length <= limit) return raw ? [balanceDelimiters(raw) || raw] : [''];
-    var words = raw.split(' ');
-    var lines = [];
-    var cur = '';
+    var limit = Math.max(6, Number(maxChars || 18)), capLines = Math.max(1, Number(maxLines || 2));
+    if (!raw || visualUnits(raw) <= limit) return raw ? [balanceDelimiters(raw) || raw] : [''];
+    var words = [], lines = [], cur = '', overflowed = false;
+    raw.split(' ').forEach(function (w) { pushWideChunks(w, limit, words); });
     for (var i = 0; i < words.length; i += 1) {
-      var w = words[i];
-      if (!cur) {
-        cur = w;
-      } else if ((cur.length + 1 + w.length) <= limit) {
-        cur += ' ' + w;
-      } else {
-        lines.push(cur);
-        if (lines.length >= capLines) {
-          cur = '';
-          break;
-        }
-        cur = w;
-      }
+      var w = words[i], next = cur ? (cur + (_WIDE_RE.test(Array.from(cur).pop()) && _WIDE_RE.test(Array.from(w)[0] || '') ? '' : ' ') + w) : w;
+      if (!cur || visualUnits(next) <= limit) { cur = next; continue; }
+      lines.push(cur);
+      if (lines.length >= capLines) { cur = ''; overflowed = true; break; }
+      cur = w;
     }
     if (cur && lines.length < capLines) lines.push(cur);
-    if (lines.length === 1 && lines[0].length > limit) {
-      return [truncateTokenSafe(lines[0], limit)];
-    }
-    var consumedWords = lines.join(' ').split(' ').length;
-    if (consumedWords < words.length || (lines.length === capLines && lines.join(' ').length < raw.length)) {
+    if (lines.length && (overflowed || visualUnits(lines[lines.length - 1]) > limit)) {
       lines[lines.length - 1] = truncateTokenSafe(lines[lines.length - 1], limit);
     }
     for (var li = 0; li < lines.length - 1; li += 1) {
@@ -473,7 +499,7 @@
       var lines = wrapLabelLines(lbl, maxChars, cfg.maxLines || 2);
       lines.forEach(function (ln) {
         var measured = measureTextPx(ln, fontSpec);
-        if (isMono) measured = Math.max(measured, ln.length * fSize * 0.64);
+        if (isMono || _WIDE_RE.test(ln)) measured = Math.max(measured, visualUnits(ln) * fSize * 0.64);
         maxW = Math.max(maxW, measured);
       });
       return lines.join('\n');
@@ -519,14 +545,10 @@
   }
 
   function placeReferenceLabel(docOrSvg, opts) {
-    var cfg = opts || {};
+    var cfg = opts || {}, svgNS = 'http://www.w3.org/2000/svg', text = String(cfg.text || '');
     var doc = (docOrSvg && docOrSvg.ownerDocument) ? docOrSvg.ownerDocument : (typeof document !== 'undefined' ? document : null);
-    var svgNS = 'http://www.w3.org/2000/svg';
-    var text = String(cfg.text || '');
-    var plotX0 = Number(cfg.plotX0 != null ? cfg.plotX0 : 0);
-    var plotX1 = Number(cfg.plotX1 != null ? cfg.plotX1 : 600);
-    var plotY0 = Number(cfg.plotY0 != null ? cfg.plotY0 : 0);
-    var plotY1 = Number(cfg.plotY1 != null ? cfg.plotY1 : 260);
+    var plotX0 = Number(cfg.plotX0 != null ? cfg.plotX0 : 0), plotX1 = Number(cfg.plotX1 != null ? cfg.plotX1 : 600);
+    var plotY0 = Number(cfg.plotY0 != null ? cfg.plotY0 : 0), plotY1 = Number(cfg.plotY1 != null ? cfg.plotY1 : 260);
     var fontSpec = cfg.font || '600 11px JetBrains Mono, monospace';
     var estW = Math.ceil(measureTextPx(text, fontSpec));
     var x = Number(cfg.x != null ? cfg.x : (plotX1 - 8));
@@ -645,7 +667,7 @@
       var lines = String(list[i] == null ? '' : list[i]).split('\n');
       for (var j = 0; j < lines.length; j += 1) {
         var measured = measureTextPx(lines[j], fontSpec);
-        if (isMono) measured = Math.max(measured, lines[j].length * fSize * 0.64);
+        if (isMono || _WIDE_RE.test(lines[j])) measured = Math.max(measured, visualUnits(lines[j]) * fSize * 0.64);
         w = Math.max(w, measured);
       }
     }
@@ -699,7 +721,7 @@
   }
 
   var api = {
-    niceScale125: niceScale125, formatTick: formatTick, wrapLabelLines: wrapLabelLines,
+    visualUnits: visualUnits, niceScale125: niceScale125, formatTick: formatTick, wrapLabelLines: wrapLabelLines,
     measureCategoryGutter: measureCategoryGutter, filterNonOverlappingTicks: filterNonOverlappingTicks,
     placeReferenceLabel: placeReferenceLabel, buildCanonicalTimeGrid: buildCanonicalTimeGrid,
     sharedNiceScale125: sharedNiceScale125, computeGridFrameGutters: computeGridFrameGutters,

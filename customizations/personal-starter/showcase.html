@@ -450,7 +450,7 @@ dialog#va-bridge-dialog {
     <div class="va-bar-left">
       <div class="va-studio-brand">
         <svg class="va-brand-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5 14 4.8 8 8 2 4.8 8 1.5Z" fill="none"/><path d="M2 8l6 3.2L14 8" fill="none"/><path d="M2 11.2 8 14.5l6-3.3" fill="none"/></svg>
-        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.3</span></span>
+        <span class="va-brand-text">Quiet UI <span class="va-studio-badge">v9.4</span></span>
       </div>
       <div id="va-studio-mode-tablist" class="va-mode-tablist" role="tablist" aria-label="Studio Mode">
         <button type="button" role="tab" id="va-tab-examples" class="va-mode-tab is-active" data-studio-tab="examples" aria-selected="true">Examples</button>
@@ -497,7 +497,7 @@ dialog#va-bridge-dialog {
       <div class="va-drag-handle va-drag-w"></div>
       <div class="va-drag-handle va-drag-e"></div>
       <div class="va-drag-handle va-drag-s"></div>
-      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.3 Preview Stage"></iframe>
+      <iframe id="va-stage-portal" name="va-stage-portal" title="Quiet UI v9.4 Preview Stage"></iframe>
     </div>
   </main>
 
@@ -3007,6 +3007,154 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.4 — Accessible Form Controls, 4-Way Zero-States & Undo Toast */
+
+@layer shell {
+  .va-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: 0.75rem;
+    align-items: start;
+    min-inline-size: 0;
+  }
+  .va-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.28rem;
+    min-inline-size: 0;
+  }
+  .va-field-label {
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.35;
+  }
+  .va-input,
+  .va-select,
+  .va-textarea {
+    inline-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 36px;
+    padding: 0.42rem 0.65rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-sm);
+    line-height: 1.4;
+    box-sizing: border-box;
+  }
+  .va-textarea { min-block-size: 84px; resize: vertical; }
+  :is(.va-input, .va-select, .va-textarea):focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+  :is(.va-input, .va-select, .va-textarea):is([aria-invalid="true"], :user-invalid) {
+    border-color: var(--status-danger);
+    background: var(--status-err-bg);
+  }
+  .va-field-hint {
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .va-field-error {
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    color: var(--status-danger);
+    line-height: 1.4;
+  }
+  .va-gate-reason {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.42rem 0.65rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-hairline);
+    border-inline-start: 3px solid var(--border-strong);
+    background: var(--bg-elevated);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .va-gate-reason[data-state="warn"] { border-inline-start-color: var(--status-warn); background: var(--status-warn-bg); }
+  .va-gate-reason[data-state="fault"] { border-inline-start-color: var(--status-danger); background: var(--status-err-bg); color: var(--status-danger); }
+  .va-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.95rem 1rem;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-inner);
+    background: var(--bg-elevated);
+    min-inline-size: 0;
+  }
+  .va-empty-state[data-kind="warmup"] { border-style: solid; border-color: var(--border-hairline); }
+  .va-empty-state[data-kind="stale"] { border-style: solid; border-color: var(--border-hairline); border-inline-start: 3px solid var(--status-warn); }
+  .va-empty-title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--ts-base);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .va-empty-copy {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  .va-empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin-block-start: 0.2rem; }
+  .va-stale-retained {
+    inline-size: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.45rem;
+    padding: 0.45rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    opacity: 0.84;
+    font-family: var(--font-mono);
+    font-variant-numeric: var(--font-nums);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .va-undo-toast {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    line-height: 1.4;
+  }
+  .va-undo-msg { flex: 1 1 12rem; min-inline-size: 0; }
+  .va-undo-actions { display: inline-flex; align-items: center; gap: 0.35rem; flex: 0 0 auto; }
+  @media (max-width: 699px), (pointer: coarse) and (max-width: 767px) {
+    .va-input, .va-select, .va-textarea { min-block-size: 44px; font-size: max(1rem, var(--ts-base)); }
+  }
+}
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
 /* Quiet UI v9.0 — Stage Responsive Remediations & M1 Print Dual-Physics (Zero Override Flags) */
 
 @layer shell {
@@ -5319,10 +5467,26 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   'use strict';
 
   var _measureCtx = null;
+  var _COMB_RE = /^[\u0300-\u036F\u1AB0-\u1AFF\u1DC0-\u1DFF\u200B-\u200F\u20D0-\u20FF\uFE20-\uFE2F\uFEFF]$/;
+  var _WIDE_RE = /[\u1100-\u115F\u2E80-\u9FFF\uAC00-\uD7AF\uF900-\uFAFF\uFE30-\uFE6F\uFF01-\uFF60\u{20000}-\u{2FA1F}]/u;
+
+  function charUnit(ch, cp) {
+    return _COMB_RE.test(ch) ? 0 : (_WIDE_RE.test(ch) ? 1.75 : 1.0);
+  }
+
+  function visualUnits(text) {
+    var s = String(text == null ? '' : text), u = 0;
+    for (var i = 0; i < s.length; i += 1) {
+      var cp = s.codePointAt(i), ch = String.fromCodePoint(cp);
+      if (cp > 0xFFFF) i += 1;
+      u += charUnit(ch, cp);
+    }
+    return u;
+  }
 
   function getMeasureCtx() {
     if (_measureCtx) return _measureCtx;
-    if (typeof document !== 'undefined' && document.createElement) {
+    if (typeof document !== 'undefined' && document && document.createElement) {
       var canvas = document.createElement('canvas');
       if (canvas && canvas.getContext) _measureCtx = canvas.getContext('2d');
     }
@@ -5330,13 +5494,14 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   function measureTextPx(text, fontSpec) {
-    var s = String(text == null ? '' : text);
+    var s = String(text == null ? '' : text), fb = visualUnits(s) * 6.8;
     var ctx = getMeasureCtx();
     if (ctx) {
       ctx.font = fontSpec || '11px Inter, system-ui, sans-serif';
-      return ctx.measureText(s).width;
+      var w = ctx.measureText(s).width;
+      return (w > 0 || !s) ? w : fb;
     }
-    return s.length * 6.8;
+    return fb;
   }
 
   function roundClean(v) {
@@ -5426,41 +5591,50 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     return out;
   }
 
+  function sliceUnits(str, cap) {
+    var u = 0, cut = 0, s = String(str || '');
+    for (var i = 0; i < s.length; i += 1) {
+      var cp = s.codePointAt(i), ch = String.fromCodePoint(cp), step = cp > 0xFFFF ? 2 : 1, w = charUnit(ch, cp);
+      if (cut > 0 && w > 0 && u + w > cap) break;
+      u += w; cut = i + step;
+      if (cp > 0xFFFF) i += 1;
+    }
+    return s.slice(0, Math.max(1, cut));
+  }
+
   function truncateTokenSafe(str, limit) {
-    var cut = Math.max(2, limit - 1);
-    var head = balanceDelimiters(str.slice(0, cut).replace(/\s+\S*$/, '') || str.slice(0, cut));
-    return (head || str.replace(/[(\[]/g, '').slice(0, cut)) + '\u2026';
+    var cap = Math.max(2, limit - 1), s = String(str || ''), sub = sliceUnits(s, cap);
+    if (/\s/.test(sub)) sub = sub.replace(/\s+\S*$/, '') || sub;
+    var head = balanceDelimiters(sub);
+    return (head || sliceUnits(s.replace(/[(\[]/g, ''), cap)) + '\u2026';
+  }
+
+  function pushWideChunks(tok, limit, out) {
+    if (!_WIDE_RE.test(tok) || visualUnits(tok) <= limit) { out.push(tok); return; }
+    var cur = '', u = 0;
+    for (var i = 0; i < tok.length; i += 1) {
+      var cp = tok.codePointAt(i), ch = String.fromCodePoint(cp), w = charUnit(ch, cp);
+      if (cp > 0xFFFF) i += 1;
+      if (cur && w > 0 && u + w > limit) { out.push(cur); cur = ch; u = w; } else { cur += ch; u += w; }
+    }
+    if (cur) out.push(cur);
   }
 
   function wrapLabelLines(text, maxChars, maxLines) {
     var raw = String(text == null ? '' : text).trim().replace(/\s+/g, ' ');
-    var limit = Math.max(6, Number(maxChars || 18));
-    var capLines = Math.max(1, Number(maxLines || 2));
-    if (!raw || raw.length <= limit) return raw ? [balanceDelimiters(raw) || raw] : [''];
-    var words = raw.split(' ');
-    var lines = [];
-    var cur = '';
+    var limit = Math.max(6, Number(maxChars || 18)), capLines = Math.max(1, Number(maxLines || 2));
+    if (!raw || visualUnits(raw) <= limit) return raw ? [balanceDelimiters(raw) || raw] : [''];
+    var words = [], lines = [], cur = '', overflowed = false;
+    raw.split(' ').forEach(function (w) { pushWideChunks(w, limit, words); });
     for (var i = 0; i < words.length; i += 1) {
-      var w = words[i];
-      if (!cur) {
-        cur = w;
-      } else if ((cur.length + 1 + w.length) <= limit) {
-        cur += ' ' + w;
-      } else {
-        lines.push(cur);
-        if (lines.length >= capLines) {
-          cur = '';
-          break;
-        }
-        cur = w;
-      }
+      var w = words[i], next = cur ? (cur + (_WIDE_RE.test(Array.from(cur).pop()) && _WIDE_RE.test(Array.from(w)[0] || '') ? '' : ' ') + w) : w;
+      if (!cur || visualUnits(next) <= limit) { cur = next; continue; }
+      lines.push(cur);
+      if (lines.length >= capLines) { cur = ''; overflowed = true; break; }
+      cur = w;
     }
     if (cur && lines.length < capLines) lines.push(cur);
-    if (lines.length === 1 && lines[0].length > limit) {
-      return [truncateTokenSafe(lines[0], limit)];
-    }
-    var consumedWords = lines.join(' ').split(' ').length;
-    if (consumedWords < words.length || (lines.length === capLines && lines.join(' ').length < raw.length)) {
+    if (lines.length && (overflowed || visualUnits(lines[lines.length - 1]) > limit)) {
       lines[lines.length - 1] = truncateTokenSafe(lines[lines.length - 1], limit);
     }
     for (var li = 0; li < lines.length - 1; li += 1) {
@@ -5500,7 +5674,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       var lines = wrapLabelLines(lbl, maxChars, cfg.maxLines || 2);
       lines.forEach(function (ln) {
         var measured = measureTextPx(ln, fontSpec);
-        if (isMono) measured = Math.max(measured, ln.length * fSize * 0.64);
+        if (isMono || _WIDE_RE.test(ln)) measured = Math.max(measured, visualUnits(ln) * fSize * 0.64);
         maxW = Math.max(maxW, measured);
       });
       return lines.join('\n');
@@ -5546,14 +5720,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   function placeReferenceLabel(docOrSvg, opts) {
-    var cfg = opts || {};
+    var cfg = opts || {}, svgNS = 'http://www.w3.org/2000/svg', text = String(cfg.text || '');
     var doc = (docOrSvg && docOrSvg.ownerDocument) ? docOrSvg.ownerDocument : (typeof document !== 'undefined' ? document : null);
-    var svgNS = 'http://www.w3.org/2000/svg';
-    var text = String(cfg.text || '');
-    var plotX0 = Number(cfg.plotX0 != null ? cfg.plotX0 : 0);
-    var plotX1 = Number(cfg.plotX1 != null ? cfg.plotX1 : 600);
-    var plotY0 = Number(cfg.plotY0 != null ? cfg.plotY0 : 0);
-    var plotY1 = Number(cfg.plotY1 != null ? cfg.plotY1 : 260);
+    var plotX0 = Number(cfg.plotX0 != null ? cfg.plotX0 : 0), plotX1 = Number(cfg.plotX1 != null ? cfg.plotX1 : 600);
+    var plotY0 = Number(cfg.plotY0 != null ? cfg.plotY0 : 0), plotY1 = Number(cfg.plotY1 != null ? cfg.plotY1 : 260);
     var fontSpec = cfg.font || '600 11px JetBrains Mono, monospace';
     var estW = Math.ceil(measureTextPx(text, fontSpec));
     var x = Number(cfg.x != null ? cfg.x : (plotX1 - 8));
@@ -5672,7 +5842,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
       var lines = String(list[i] == null ? '' : list[i]).split('\n');
       for (var j = 0; j < lines.length; j += 1) {
         var measured = measureTextPx(lines[j], fontSpec);
-        if (isMono) measured = Math.max(measured, lines[j].length * fSize * 0.64);
+        if (isMono || _WIDE_RE.test(lines[j])) measured = Math.max(measured, visualUnits(lines[j]) * fSize * 0.64);
         w = Math.max(w, measured);
       }
     }
@@ -5726,7 +5896,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   }
 
   var api = {
-    niceScale125: niceScale125, formatTick: formatTick, wrapLabelLines: wrapLabelLines,
+    visualUnits: visualUnits, niceScale125: niceScale125, formatTick: formatTick, wrapLabelLines: wrapLabelLines,
     measureCategoryGutter: measureCategoryGutter, filterNonOverlappingTicks: filterNonOverlappingTicks,
     placeReferenceLabel: placeReferenceLabel, buildCanonicalTimeGrid: buildCanonicalTimeGrid,
     sharedNiceScale125: sharedNiceScale125, computeGridFrameGutters: computeGridFrameGutters,

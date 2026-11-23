@@ -3,9 +3,20 @@
 
 from __future__ import annotations
 
+import unicodedata
 from typing import Any
 
 from .tokens_and_scales import _SUB_TOKEN_RE, esc, format_math_svg, format_math_unicode
+
+
+def visual_char_units(text: str) -> float:
+    """Measure visual glyph units: 0 for combining marks, 1.75 for wide CJK, 1.0 otherwise."""
+    units = 0.0
+    for ch in str(text or ""):
+        if unicodedata.combining(ch) or unicodedata.category(ch) in {"Mn", "Me", "Cf"}:
+            continue
+        units += 1.75 if unicodedata.east_asian_width(ch) in {"W", "F"} else 1.0
+    return units
 
 
 def render_pill_html(
@@ -79,7 +90,7 @@ def svg_knockout_label(
     """Emit borderless unstroked canvas-matched knock-out mask behind SVG <text>."""
     plain = format_math_unicode(text) if math else str(text)
     vis = _SUB_TOKEN_RE.sub(r"\1\2", plain) if math else plain
-    w = max(28.0, len(vis) * (size * 0.63) + 10.0)
+    w = max(28.0, visual_char_units(vis) * (size * 0.63) + 10.0)
     rx0 = x - w if anchor == "end" else (x - w / 2.0 if anchor == "middle" else x)
     rx0 = max(x_bounds[0], min(x_bounds[1] - w, rx0))
     tx = rx0 + w / 2.0
@@ -117,7 +128,7 @@ def avoid_label_overlaps(
     out: list[dict[str, Any]] = []
     for item in items:
         x, y = float(item["x"]), float(item["y"])
-        w = float(item.get("w", max(44.0, len(format_math_unicode(item.get("text", ""))) * 7.5 + 14.0)))
+        w = float(item.get("w", max(44.0, visual_char_units(format_math_unicode(item.get("text", ""))) * 7.5 + 14.0)))
         h = float(item.get("h", 17.0))
         anchor = item.get("anchor", "start")
         x0 = x - w if anchor == "end" else (x - w / 2.0 if anchor == "middle" else x)

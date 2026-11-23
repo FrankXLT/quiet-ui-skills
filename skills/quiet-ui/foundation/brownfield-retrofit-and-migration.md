@@ -18,7 +18,35 @@ Declare **`Project Mode: Greenfield | Brownfield Retrofit`** at the top of the P
 
 ---
 
-## 2. Five Mandatory Brownfield Guardrails
+## 1A. Persistent Project Contract (`.quiet-ui.md`)
+
+Multi-session upgrades fail when agents forget previously agreed mediums, mount prefixes, parity rules, or banned legacy selectors between turns. Before re-running intake questions, check the target repository root (auto-discovered up to 3 ancestor directories, or explicit `--context PATH`):
+
+```markdown
+# .quiet-ui.md — Persistent Quiet UI Project Contract
+- **Project Mode**: Brownfield Retrofit
+- **Primary Medium**: M3
+- **Chromatic Budget**: Quiet Cockpit
+- **Navigation Shell**: N1
+- **Strict Drift**: false
+- **Mount Prefixes**: `/web=./web`, `/assets=./dist/assets`
+- **Excludes**: `*.min.js`, `vendor/**`
+
+## Capability Parity Ledger
+| Existing Capability | Disposition | Target Pattern |
+| :--- | :--- | :--- |
+| Calendar + Rolling Windows | CONSOLIDATE | `.va-period-stepper` + `.va-preset-popover` |
+
+## Deprecation Blocklist
+- selector: `#legacy-quota-gauge`
+- copy: `diurnal`
+```
+
+Initialize a starter contract with `python3 -B scripts/audit_quiet_html.py --init-context path/to/repo/.quiet-ui.md`. During audits, CLI `--mount-prefix`, `--exclude`, and `--strict-drift` flags merge additively on top of `.quiet-ui.md` (with explicit CLI prefixes taking precedence on conflicts), while every `selector:` and `copy:` entry triggers `[BLOCKLIST_RESURRECTION]` across static HTML, non-comment JS strings, and live `--cdp` DOM/text checks.
+
+---
+
+## 2. Six Mandatory Brownfield Guardrails
 
 ### Guardrail 1 — Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`)
 Every brownfield overhaul fails when visual "cleanup" silently deletes inline breakdown tables, rolling vs. calendar-to-date presets, or batch exports (`CSV`, `PNG`, `ZIP`). Before removing or merging **any** existing widget:
@@ -82,6 +110,17 @@ Under CSS Cascade Level 5, **unlayered styles beat every `@layer` rule regardles
 
 ---
 
+### Guardrail 6 — Post-Migration Drift Normalization (`Extract & Normalize`)
+Initial brownfield stabilization fixes bugs fast; without a scheduled Day-30 cleanup pass, ad-hoc inline `style="..."` patches, raw `#hex`/`rgb()` colors, duplicated view-local card layouts, and lingering `layer(legacy)` rules quietly recreate a second monolith:
+
+1. **Detect Entropy (`--strict-drift`)**: Run `python3 -B scripts/audit_quiet_html.py <web_root> --context .quiet-ui.md --strict-drift` (or enable `Strict Drift: true` inside `.quiet-ui.md`) to inventory every `[TOKEN_BYPASS_HEX]` literal in application stylesheets (exempting `@layer tokens`, `@layer legacy`, `[data-theme]`, `@media print`, `forced-colors`, `var(--tok, #fallback)`, and explicit `/* token-exempt */` lines) and every `[INLINE_STYLE_SPRAWL]` attribute override.
+2. **Extract & Consolidate (Multi-PR Sequence)**:
+   - **PR 1 (Tokens & Inline Attributes)**: Hoist inline style color/padding/margin hacks into semantic view classes bound to `--bg-*`, `--border-*`, and `--text-*` tokens.
+   - **PR 2 (Shared Shell Patterns & Micro-States)**: Consolidate duplicate forms, empty views, and undo alerts onto `@layer shell` `.va-form-grid`, `.va-empty-state`, and `.va-undo-toast` rules ([forms-states-and-resilience.md](forms-states-and-resilience.md)).
+   - **PR 3 (Sunset `layer(legacy)` Rules)**: Prune orphaned selectors from legacy stylesheets, delete dead compatibility shims listed in the Deprecation Blocklist, and lock `Strict Drift: true` in `.quiet-ui.md` for ongoing CI enforcement.
+
+---
+
 ## 3. Concrete Brownfield Integration Snippet
 
 ```html
@@ -110,12 +149,12 @@ Verify every box before proposing cutover or removing the topbar `< Classic` str
 | Gate Criterion | Required Evidence | Failure Action |
 | :--- | :--- | :--- |
 | **100% Capability Parity** | Every `KEEP` and `CONSOLIDATE` item verified at `390px`, `820px`, and `1440px` (Calendar-to-Date + Rolling presets, tables, and exports). | Block cutover; restore missing control before proceeding. |
-| **Deprecation Absence** | Zero blocklisted legacy selectors, endpoints, or deprecated copy phrases exist in rendered DOM. | Reject PR under `BF-1` / `BF-2`; strip legacy leakage. |
+| **Deprecation Absence** | Zero blocklisted `.quiet-ui.md` selectors, copy phrases (`[BLOCKLIST_RESURRECTION]`), or legacy endpoints render in static/JS/CDP probes. | Reject PR under `BF-1` / `BF-2`; strip legacy leakage. |
 | **Classic Suite Green** | 100% of original classic route API and UI tests pass alongside retrofit tests (`QUIET_REQUIRE_CDP=1`). | Revert shared endpoint breakage; restore additive flag. |
-| **Live `--cdp` Clean** | Zero `[TRANSPARENT_OVERLAY]`, `[ORPHAN_SERIES_LEGEND]`, `[TOOLBAR_CONTROL_SPRAWL]`, `[STICKY_CHROME_BLOAT]`, or `[AXIS_LABEL_CLIPPED]` errors. | Fix CSS layer order, stepper grouping, or frame margins. |
+| **Live `--cdp` & Strict Drift Clean** | Zero `[TRANSPARENT_OVERLAY]`, `[ORPHAN_SERIES_LEGEND]`, `[TOOLBAR_CONTROL_SPRAWL]`, `[STICKY_CHROME_BLOAT]`, `[UNLABELED_FORM_CONTROL]`, `[DEAD_END_ZERO_STATE]`, or `--strict-drift` findings. | Fix CSS layer order, stepper grouping, form labels, or token bypasses. |
 
-Never declare a brownfield retrofit "done" from visual appearance alone: both the Capability Parity Ledger and the Deprecation Blocklist must prove zero capability regression and zero legacy clutter concurrently.
+Never declare a brownfield retrofit "done" from visual appearance alone: `.quiet-ui.md`, the Capability Parity Ledger, and the Day-30 Extract & Normalize `--strict-drift` sweep must verify zero capability regression and zero legacy clutter concurrently.
 
-- **Pre-Cutover Handoff Bundle**: Attach the completed Capability Parity Ledger, the Deprecation Blocklist DOM-absence test output, the classic-route green test log, and side-by-side `390px` / `820px` / `1440px` CDP screenshots (`--cdp`) before removing `?ui=quiet` or topbar `< Classic`.
+- **Pre-Cutover Handoff Bundle**: Attach `.quiet-ui.md` (with `Strict Drift: true`), completed Capability Parity Ledger, Deprecation Blocklist absence output, classic-route green test log, and side-by-side `390px` / `820px` / `1440px` CDP screenshots before removing `?ui=quiet` or topbar `< Classic`.
 - **Single Source of Truth**: Keep shared API responses backwards-compatible (`?include_legacy=0` opt-out only) so automated monitors, exports, and classic users observe unchanged canonical metrics throughout rollout.
 

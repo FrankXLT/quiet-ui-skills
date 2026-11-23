@@ -18,6 +18,7 @@ if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
 
 from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, probe_navbar_shift  # noqa: E402
+from audit_ux_and_drift import CDP_UX_DRIFT_JS  # noqa: E402
 from audit_static_rules import (  # noqa: E402, F401
     BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
     VIEWPORTS, WRAPPER_CLASS_HINTS, audit_css_text, audit_js_text, check_hidden_layer_css,
@@ -26,7 +27,7 @@ from audit_static_rules import (  # noqa: E402, F401
     resolve_asset_detail, resolve_asset_path,
 )
 
-CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + r"""
+CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + CDP_UX_DRIFT_JS + "\n" + r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
@@ -366,6 +367,7 @@ function auditDoc(doc, maxW, ctxTag) {
     }
   }
   auditDocV922(doc, win, ctxTag);
+  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts);
   for (const fr of doc.querySelectorAll('iframe')) {
     try {
       const fdoc = fr.contentDocument;
@@ -384,17 +386,14 @@ return errs;
 class _SafeHTTPHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: Any, directory: str, **kwargs: Any) -> None:
         super().__init__(*args, directory=directory, **kwargs)
-
     def translate_path(self, path: str) -> str:
-        out = Path(super().translate_path(path)).resolve()
-        root = Path(self.directory).resolve()
+        out, root = Path(super().translate_path(path)).resolve(), Path(self.directory).resolve()
         return str(out) if out.is_relative_to(root) else str(root / "__forbidden__")
-
     def log_message(self, format: str, *args: Any) -> None:
         return
 
 
-def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> list[str]:
+def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False, context: dict[str, Any] | None = None) -> list[str]:
     """Audit URLs in Headless Chrome across 390, 820, and 1440 viewports."""
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
@@ -405,6 +404,7 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> l
         opts.binary_location = os.environ["CHROME_BIN"]
     for arg in ("--headless=new", "--ozone-platform=headless", "--disable-gpu", "--disable-vulkan", "--use-gl=angle", "--use-angle=swiftshader-webgl", "--no-sandbox", "--disable-dev-shm-usage"):
         opts.add_argument(arg)
+    payload = {"allowShowcase": allow_showcase_chrome, "blocklistSelectors": list((context or {}).get("blocklist_selectors") or ()), "blocklistCopy": list((context or {}).get("blocklist_copy") or ())}
     errs: list[str] = []
     driver_bin = os.environ.get("CHROMEDRIVER_BIN")
     driver = webdriver.Chrome(service=Service(executable_path=driver_bin), options=opts) if driver_bin else webdriver.Chrome(options=opts)
@@ -413,25 +413,23 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False) -> l
             driver.get(url)
             time.sleep(0.28)
             uses_theme = bool(driver.execute_script("return document.documentElement.hasAttribute('data-theme') || !!document.querySelector('[data-theme]');"))
-            themes = ("white", "dark") if uses_theme else ("default",)
-            for th in themes:
+            for th in (("white", "dark") if uses_theme else ("default",)):
                 if th != "default":
                     driver.execute_script("document.documentElement.setAttribute('data-theme', arguments[0]);", th)
                 for w, h in VIEWPORTS:
                     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": w, "height": h, "deviceScaleFactor": 1, "mobile": w < 600})
                     time.sleep(0.12)
-                    res = driver.execute_script(CDP_AUDIT_JS, {"allowShowcase": allow_showcase_chrome})
-                    errs.extend(f"[{url} theme={th}] {e}" for e in res)
+                    errs.extend(f"[{url} theme={th}] {e}" for e in driver.execute_script(CDP_AUDIT_JS, payload))
                     errs.extend(probe_navbar_shift(driver, url, th, w))
     finally:
         driver.quit()
     return errs
 
 
-def run_cdp_target(target: str, html_files: list[Path], *, allow_showcase_chrome: bool = False) -> list[str]:
+def run_cdp_target(target: str, html_files: list[Path], *, allow_showcase_chrome: bool = False, context: dict[str, Any] | None = None) -> list[str]:
     """Serve local HTML target directory if needed and execute audit_cdp_urls."""
     if target.startswith(("http://", "https://")):
-        return audit_cdp_urls([target], allow_showcase_chrome=allow_showcase_chrome)
+        return audit_cdp_urls([target], allow_showcase_chrome=allow_showcase_chrome, context=context)
     if not html_files:
         return []
     root = Path(target).resolve()
@@ -442,7 +440,7 @@ def run_cdp_target(target: str, html_files: list[Path], *, allow_showcase_chrome
     try:
         base = f"http://127.0.0.1:{srv.server_address[1]}"
         urls = [f"{base}/{urllib.parse.quote(f.relative_to(serve_dir).as_posix(), safe='/')}" for f in html_files]
-        return audit_cdp_urls(urls, allow_showcase_chrome=allow_showcase_chrome)
+        return audit_cdp_urls(urls, allow_showcase_chrome=allow_showcase_chrome, context=context)
     finally:
         srv.shutdown()
         srv.server_close()

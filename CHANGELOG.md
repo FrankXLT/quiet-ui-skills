@@ -2,6 +2,14 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.4.0] - 2026-11-22
+
+### Added
+- **Persistent `.quiet-ui.md` Project Contract (`skills/quiet-ui/scripts/audit_ux_and_drift.py`, `audit_quiet_html.py`, `grill-me-audience-intake.md`, `brownfield-retrofit-and-migration.md`)**: Standardized the persistent target-repo contract (`Project Mode`, `Primary Medium`, `Chromatic Budget`, `Navigation Shell`, `Strict Drift`, `Mount Prefixes`, `Excludes`, `Capability Parity Ledger`, and `Deprecation Blocklist`), with `--init-context PATH`, explicit `--context PATH`, 3-ancestor auto-discovery, additive CLI override merging, and Guardrail 6 Day-30 Extract & Normalize (`--strict-drift`).
+- **Accessible Forms, 4-Way Zero-States & 3-Tier Reversibility (`src/css/14-forms-and-states.css`, `scripts/bench_forms_specimen.py`, `skills/quiet-ui/foundation/forms-states-and-resilience.md`)**: Added `@layer shell` form/state primitives (`.va-form-grid`, `.va-field`, `.va-input`/`.va-select`/`.va-textarea` with `44px` coarse/mobile ergonomics and `16px` zoom-free mobile font floor, `.va-gate-reason`, `.va-empty-state[data-kind="first-run|filtered|warmup|stale"]`, `.va-stale-retained`, `.va-undo-toast`) and interactive Specimen 44 (`#qe-forms-zero-states`), expanding the Component Library from `43` to `44` specimens.
+- **Wide-Script / CJK Off-DOM Gutter & Knockout Label Math (`src/js/quiet-svg-chart-layout.js`, `skills/quiet-evidence/scripts/compilers/svg_labels.py`)**: Added East-Asian Wide/Fullwidth (`1.75x`) & zero-width combining-mark visual unit width calculators (`visual_char_units()` / `QuietSvgLayout.visualUnits`), off-DOM `measureTextPx` visual-unit fallback, wide-char category gutter floor, CJK grapheme line wrapping, and haloed SVG box sizing.
+- **5 New Portable Static & CDP Auditor Gates (`audit_ux_and_drift.py`, `audit_quiet_checks.py`, `tests/test_v940_context_forms_drift.py`, `tests/test_repo_hygiene.py`)**: Added `[UNLABELED_FORM_CONTROL]`, `[DEAD_END_ZERO_STATE]`, `[BLOCKLIST_RESURRECTION]` (selector + copy across HTML, non-comment JS, and live CDP DOM), `[TOKEN_BYPASS_HEX]` (exempting `var(--tok, #fallback)`, `@layer tokens/legacy`, `[data-theme]`, `@media print`, `forced-colors`, and `/* token-exempt */`), and `[INLINE_STYLE_SPRAWL]`, plus automated `AGENTS.md` foundation link and `44`-specimen cross-doc sync checks.
+
 ## [9.3.0] - 2026-11-22
 
 ### Added
