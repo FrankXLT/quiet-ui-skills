@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# quiet-ui-skills — 1-Command Installer for Quiet UI v9.5.0 Plugin & 3 Skills
+# quiet-ui-skills — 1-Command Installer for Quiet UI v9.6.0 Plugin & 3 Skills
 # Bundles:
 #   1. Antigravity Native Plugin -> ~/.gemini/config/plugins/quiet-ui-skills
 #   2. Cross-Agent Skills        -> ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}
@@ -24,7 +24,7 @@ for sk in "${PILLAR_SKILLS[@]}"; do
   fi
 done
 
-if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_checks.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_cdp_probes.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_static_rules.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_ux_and_drift.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_workbench_probes.py" ]]; then
+if [[ ! -f "${EV_ASSETS_SRC}/quiet-evidence-bundle.css" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_html.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_quiet_checks.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_cdp_probes.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_editorial_print.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_static_rules.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_ux_and_drift.py" || ! -f "${UI_SKILL_SRC}/scripts/audit_workbench_probes.py" ]]; then
   echo "[ERROR] Missing portable skill assets or auditor modules; run python3 -B scripts/build_all.py first." >&2
   exit 1
 fi
@@ -62,7 +62,7 @@ install_plugin_bundle() {
   for sk in "${PILLAR_SKILLS[@]}"; do
     copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${plugin_dest}/skills/${sk}"
   done
-  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.5.0 -> ${plugin_dest}"
+  echo "[OK] Installed Antigravity Plugin Quiet UI Skills v9.6.0 -> ${plugin_dest}"
 }
 
 if [[ $# -ge 1 ]]; then
@@ -74,7 +74,7 @@ if [[ $# -ge 1 ]]; then
     for sk in "${PILLAR_SKILLS[@]}"; do
       copy_clean_tree "${SCRIPT_DIR}/skills/${sk}" "${TARGET_ROOT}/${sk}"
     done
-    echo "[OK] Installed 3 pillar skills v9.5.0 -> ${TARGET_ROOT}"
+    echo "[OK] Installed 3 pillar skills v9.6.0 -> ${TARGET_ROOT}"
   fi
 else
   # 1. Purge only repo-owned legacy loose skill directories so they never shadow the plugin

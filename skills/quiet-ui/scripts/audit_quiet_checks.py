@@ -3,12 +3,7 @@
 
 from __future__ import annotations
 
-import functools
-import os
-import sys
-import threading
-import time
-import urllib.parse
+import functools, os, sys, threading, time, urllib.parse
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -16,8 +11,11 @@ from typing import Any
 _SCRIPT_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPT_DIR not in sys.path:
     sys.path.insert(0, _SCRIPT_DIR)
-
 from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, CDP_WORKBENCH_PROBES_JS, probe_navbar_shift, probe_workbench_1920  # noqa: E402
+try:
+    from audit_editorial_print import CDP_EDITORIAL_PRINT_JS, probe_print_flow_collision  # noqa: E402
+except ImportError:  # pragma: no cover - partial sandbox copy fallback
+    CDP_EDITORIAL_PRINT_JS, probe_print_flow_collision = "", (lambda *_a, **_kw: [])  # type: ignore[assignment]
 from audit_ux_and_drift import CDP_UX_DRIFT_JS  # noqa: E402
 from audit_static_rules import (  # noqa: E402, F401
     BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
@@ -26,8 +24,7 @@ from audit_static_rules import (  # noqa: E402, F401
     has_responsive_table_stacking, is_asset_in_scope, matches_exclude, parse_mount_prefixes,
     resolve_asset_detail, resolve_asset_path,
 )
-
-CDP_AUDIT_JS = CDP_SVG_PROBES_JS + "\n" + CDP_DOC_PROBES_JS + "\n" + CDP_UX_DRIFT_JS + "\n" + CDP_WORKBENCH_PROBES_JS + "\n" + r"""
+CDP_AUDIT_JS = "\n".join((CDP_SVG_PROBES_JS, CDP_DOC_PROBES_JS, CDP_UX_DRIFT_JS, CDP_WORKBENCH_PROBES_JS, CDP_EDITORIAL_PRINT_JS)) + "\n" + r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
@@ -226,6 +223,7 @@ function auditDoc(doc, maxW, ctxTag) {
     pushErr(`[OVERFLOW${ctxTag}] @${vw}px: scrollWidth=${doc.documentElement.scrollWidth} > width=${maxW}`);
   }
   for (const tbl of doc.querySelectorAll('table')) {
+    if (tbl.closest('[hidden]')) continue;
     const tr = tbl.getBoundingClientRect();
     if (tr.width <= 0 || tr.height <= 0) continue;
     if (tr.right > maxW + 2) {
@@ -368,7 +366,7 @@ function auditDoc(doc, maxW, ctxTag) {
     }
   }
   auditDocV922(doc, win, ctxTag);
-  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts); if (typeof auditDocV940Workbench === 'function') auditDocV940Workbench(doc, win, ctxTag, opts);
+  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts); if (typeof auditDocV940Workbench === 'function') auditDocV940Workbench(doc, win, ctxTag, opts); if (typeof auditDocEditorial === 'function') auditDocEditorial(doc, win, ctxTag, opts);
   for (const fr of doc.querySelectorAll('iframe')) {
     try {
       const fdoc = fr.contentDocument;
@@ -383,7 +381,6 @@ auditDoc(document, vw, '');
 return errs;
 """
 
-
 class _SafeHTTPHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args: Any, directory: str, **kwargs: Any) -> None:
         super().__init__(*args, directory=directory, **kwargs)
@@ -393,13 +390,11 @@ class _SafeHTTPHandler(SimpleHTTPRequestHandler):
     def log_message(self, format: str, *args: Any) -> None:
         return
 
-
 def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False, context: dict[str, Any] | None = None) -> list[str]:
-    """Audit URLs in Headless Chrome across 390, 820, and 1440 viewports."""
+    """Audit URLs in Headless Chrome across 390, 820, and 1440 viewports plus @media print."""
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
     from selenium.webdriver.chrome.service import Service
-
     opts = Options()
     if os.environ.get("CHROME_BIN"):
         opts.binary_location = os.environ["CHROME_BIN"]
@@ -423,6 +418,8 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False, cont
                     errs.extend(f"[{url} theme={th}] {e}" for e in driver.execute_script(CDP_AUDIT_JS, payload))
                     errs.extend(probe_navbar_shift(driver, url, th, w))
                 errs.extend(probe_workbench_1920(driver, url, th, payload, CDP_AUDIT_JS))
+                if th in ("white", "default"):
+                    errs.extend(probe_print_flow_collision(driver, url, th))
     finally:
         driver.quit()
     return errs

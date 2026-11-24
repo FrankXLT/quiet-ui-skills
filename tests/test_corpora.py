@@ -231,8 +231,8 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
         errors.extend(f"[{wrel}] Unbound evidence '{u}'" for u in sorted(set(parsed_evidence) - bound_files))
         errors.extend(f"[{wrel}] Unbound metric '{u}'" for u in sorted(set(metrics) - bound_metrics))
 
-    if total_views != 21:
-        errors.append(f"Expected 21 views across 6 worlds, found {total_views}")
+    if total_views != 22:
+        errors.append(f"Expected 22 views across 6 worlds, found {total_views}")
     for key, req in (("mediums", REQUIRED_MEDIUMS), ("lenses", REQUIRED_LENSES), ("tempos", REQUIRED_TEMPOS), ("budgets", REQUIRED_BUDGETS), ("modalities", REQUIRED_MODALITIES)):
         if cov[key] != req:
             errors.append(f"Matrix mismatch for {key}: {sorted(cov[key])}")
@@ -241,12 +241,12 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
 
 
 class TestCorporaConservation(unittest.TestCase):
-    """Validate 6-domain coverage, multi-theme compilation, and 181 conservation checks."""
+    """Validate 6-domain coverage, multi-theme compilation, and 204 conservation checks."""
 
-    def test_all_6_worlds_matrix_and_181_conservation_checks(self) -> None:
+    def test_all_6_worlds_matrix_and_conservation_checks(self) -> None:
         res = audit_corpora(CORPORA_DIR)
         self.assertTrue(res["ok"], "Corpora audit failed:\n" + "\n".join(res["errors"]))
-        self.assertEqual(res["stats"], {"worlds": 6, "views": 21, "evidence_specs": 26, "conserved_checks": 181})
+        self.assertEqual(res["stats"], {"worlds": 6, "views": 22, "evidence_specs": 29, "conserved_checks": 204})
 
     def test_each_world_compiles_under_all_themes_and_l1_to_l3(self) -> None:
         for corpus_path in sorted(CORPORA_DIR.glob("*/corpus.json")):

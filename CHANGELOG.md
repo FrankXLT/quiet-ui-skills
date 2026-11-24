@@ -2,6 +2,13 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.6.0] - 2026-11-24
+
+### Added
+- **Live Showcase View `v22 — Reading & Mobility Data Brief` & `49` Component Library Specimens (`src/views/world_04_public_data.py`, `src/css/17-editorial-research-brief.css`, `docs/bench/specimens/m4_civic_research.json`)**: Expanded the Studio showcase from `21` to **`22`** views (`18` in `brand-starter`, `22` in `personal-starter`) and the Component Library from `44` to **`49`** specimens, featuring a Question-First headline + left-margin freshness stamp, interactive scope switcher (`US National` | `Maryland` | `Wyoming`) atomically updating lead clause/callouts/map selection, unboxed 3-number editorial callout strip, synchronized `Web Brief | Briefing Slide (16:9)` toggle, calm light-surface `<pre><code>` blocks (`var(--bg-subtle)`), and full-height non-scrolling narrative splits.
+- **Five Deterministic Civic & Research Compilers (`skills/quiet-evidence/scripts/compilers/civic_*.py`, `src/js/quiet-card-export.js`)**: Added `us_hex_tile_map` (51 equal-area US+DC hexagons, 5-bin 1–2–5 legend, WCAG relative-luminance adaptive dark/white text ink), `arrow_dumbbell` (ranked start-to-end directional arrows with `*` fallback-vintage footnotes), `paired_subgroup_bars` (Pew-style two-step bars + row-aligned shaded `Overall` column), `dual_slopegraph` (`Count | % Share` split rule, unit-once top row, hollow rings, dynamic step-leader right gutter & crossover callout), and `diverging_matrix` (rate-of-change diverging cell tints beside unshaded dollar levels, cohort range definitions, and `20.0%` equal-chance baseline notes), wrapped in 4-part Takeaway Figure Cards with `[Chart | Table]` (`hidden="until-found"`), TSV `Copy data`, and Markdown `Copy for AI`.
+- **Five Automated Print, Editorial & Label Quality Gates (`skills/quiet-ui/scripts/audit_editorial_print.py`)**: Extended the `--cdp` portable auditor with `[PRINT_FLOW_COLLISION]` (`@media print` fixed-bar/overlap/clip detection), `[PROSE_COLUMN_STARVATION]`, `[NESTED_PROSE_SCROLL]`, `[CODE_LUMINANCE_SHOCK]`, `[DIAGONAL_TICK_OR_ROTATED_Y_TITLE]`, and `[END_LABEL_CLIP]`, alongside [foundation/public-data-and-storytelling.md](skills/quiet-ui/foundation/public-data-and-storytelling.md) and Workflow E in [docs/WORKFLOWS.md](docs/WORKFLOWS.md).
+
 ## [9.5.0] - 2026-11-23
 
 ### Added

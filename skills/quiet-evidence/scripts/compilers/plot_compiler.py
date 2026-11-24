@@ -8,6 +8,9 @@ import math
 import zlib
 from typing import Any
 
+from .civic_bars_and_slope import compile_dual_slopegraph, compile_paired_subgroup_bars
+from .civic_maps_and_dumbbells import compile_arrow_dumbbell, compile_us_hex_tile_map
+from .civic_matrix_and_export import compile_diverging_matrix
 from .comparison_plots import compile_dumbbell, compile_forest, compile_stacked_bar, compile_waterfall
 from .echarts_adapter import build_echarts_payload, render_echarts_toggle_bar
 from .sankey_and_strip import compile_sankey
@@ -357,22 +360,24 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
         )
         parts.append(f'<div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">{format_math_html(eq.get("lhs", ""))} = </span>{tokens_html}</div>')
 
+    _plot_kinds = {
+        "waterfall": lambda s, r, m: compile_waterfall(s, r, m),
+        "stacked_bar": lambda s, r, m: compile_stacked_bar(s, r, m),
+        "gantt": lambda s, r, m: compile_gantt(s, r, m),
+        "heatmap": lambda s, r, m: compile_heatmap(s, r, m),
+        "dumbbell": lambda s, r, m: compile_dumbbell(s),
+        "forest": lambda s, r, m: compile_forest(s),
+        "sankey": lambda s, r, m: compile_sankey(s, r, m),
+        "us_hex_tile_map": compile_us_hex_tile_map,
+        "arrow_dumbbell": compile_arrow_dumbbell,
+        "paired_subgroup_bars": compile_paired_subgroup_bars,
+        "dual_slopegraph": compile_dual_slopegraph,
+        "diverging_matrix": lambda s, r, m: compile_diverging_matrix(s, r, m),
+    }
+
     def _emit_plot(sub: dict[str, Any], k: str) -> str:
-        if k == "waterfall":
-            return compile_waterfall(sub, eff_rigor, medium)
-        if k == "stacked_bar":
-            return compile_stacked_bar(sub, eff_rigor, medium)
-        if k == "gantt":
-            return compile_gantt(sub, eff_rigor, medium)
-        if k == "heatmap":
-            return compile_heatmap(sub, eff_rigor, medium)
-        if k == "dumbbell":
-            return compile_dumbbell(sub)
-        if k == "forest":
-            return compile_forest(sub)
-        if k == "sankey":
-            return compile_sankey(sub, eff_rigor, medium)
-        return _compile_cartesian(sub, eff_rigor, medium)
+        fn = _plot_kinds.get(k)
+        return fn(sub, eff_rigor, medium) if fn else _compile_cartesian(sub, eff_rigor, medium)
 
     echarts_host = '<div class="qe-echarts-host" hidden></div>' if payload is not None else ""
     parts.append(

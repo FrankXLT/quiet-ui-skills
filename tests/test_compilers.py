@@ -82,7 +82,7 @@ class TestTokensAndMath(unittest.TestCase):
 
 
 class TestEvidenceCompilers(unittest.TestCase):
-    def test_all_33_bench_specimens_and_css_tokens(self) -> None:
+    def test_all_38_bench_specimens_and_css_tokens(self) -> None:
         spec_dir = REPO_ROOT / "docs" / "bench" / "specimens"
         tok_css = (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text("utf-8")
         tok_only = set(re.findall(r"(--[a-z0-9-]+)\s*:", tok_css))
@@ -101,7 +101,7 @@ class TestEvidenceCompilers(unittest.TestCase):
                 out_l3 = compile_spec(sp, rigor="L3", medium="m1", theme="white")
                 for ref in re.findall(r"var\((--[a-z0-9-]+)", out_l3):
                     self.assertIn(ref, tok_only, f"Undefined token in {sp.get('id')}: {ref}")
-        self.assertEqual(count, 33)
+        self.assertEqual(count, 38)
 
     def test_modalities_rigor_and_pill_grammar(self) -> None:
         spec_dir = REPO_ROOT / "docs" / "bench" / "specimens"

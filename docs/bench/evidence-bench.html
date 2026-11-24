@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.5 — Component Library (44 Building Blocks)</title>
+  <title>Quiet UI v9.6 — Component Library (49 Building Blocks)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 @layer reset, tokens, shell, archetypes, evidence, views, utilities;
@@ -131,6 +131,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --border-strong: #CBD5E1;
   --accent-primary: #1D4ED8;
   --accent-focal: var(--accent-primary);
+  --text-on-accent: #FFFFFF;
   --status-ok: #15803D;
   --status-ok-bg: #ECFDF5;
   --status-warn: #B45309;
@@ -165,6 +166,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --border-strong: #D6CFC5;
   --accent-primary: #1E40AF;
   --accent-focal: var(--accent-primary);
+  --text-on-accent: #FFFFFF;
   --status-ok: #15803D;
   --status-ok-bg: #E8F5EE;
   --status-warn: #92400E;
@@ -199,6 +201,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --border-strong: #46433E;
   --accent-primary: #60A5FA;
   --accent-focal: var(--accent-primary);
+  --text-on-accent: #0F172A;
   --status-ok: #4ADE80;
   --status-ok-bg: rgba(34, 197, 94, 0.15);
   --status-warn: #FBBF24;
@@ -233,6 +236,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   --border-strong: #334155;
   --accent-primary: #38BDF8;
   --accent-focal: var(--accent-primary);
+  --text-on-accent: #0F172A;
   --status-ok: #4ADE80;
   --status-ok-bg: rgba(34, 197, 94, 0.16);
   --status-warn: #FBBF24;
@@ -250,6 +254,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 /* C1 Quiet Monochrome Override */
 [data-chromatic="c1"],
 [data-color-policy="c1"] {
+  --text-on-accent: var(--bg-canvas);
   --status-ok: var(--text-secondary);
   --status-warn: var(--text-primary);
   --status-danger: var(--text-primary);
@@ -1500,6 +1505,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 }
 .qe-copy-status { font-family: var(--font-mono); font-size: 0.75rem; color: var(--status-ok); opacity: 0; transition: opacity 0.15s ease; }
 .qe-copy-status.is-visible { opacity: 1; }
+.qe-copy-status.is-error { color: var(--status-danger); }
 .qe-eco-pre {
   margin: 0; padding: 0.7rem 0.9rem;
   background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: 8px;
@@ -2594,6 +2600,422 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 }
 
 
+/* Quiet UI v9.6.0 — Question-First Editorial Brief, Civic Charts, Takeaway Cards & Dual-Physics Print */
+
+@layer evidence {
+  .va-card-chart-panel,
+  .va-card-table-panel { min-inline-size: 0; }
+  .va-card-table-panel[hidden="until-found"] { content-visibility: hidden; block-size: 0; overflow-x: auto; overflow-y: hidden; }
+  .qe-takeaway-subtitle {
+    margin: 0.15rem 0 0.55rem;
+    font-size: var(--ts-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .va-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 0.75rem;
+    margin-block-end: 0.65rem;
+  }
+  .va-chart-table-switch {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    overflow: hidden;
+  }
+  .va-seg-btn {
+    border: 0;
+    border-inline-end: 1px solid var(--border-hairline);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    padding: 0.28rem 0.7rem;
+    min-block-size: 28px;
+    cursor: pointer;
+  }
+  .va-seg-btn:last-child { border-inline-end: 0; }
+  .va-seg-btn[aria-pressed="true"],
+  .va-seg-btn.is-active {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+  .va-copy-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .va-action-btn {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    padding: 0.28rem 0.65rem;
+    min-block-size: 28px;
+    cursor: pointer;
+  }
+  .va-action-btn:hover { background: var(--bg-elevated); border-color: var(--accent-primary); }
+  .va-action-btn:focus-visible,
+  .va-seg-btn:focus-visible,
+  .va-scope-btn:focus-visible,
+  .va-hex-tile:focus-visible { outline: 2px solid var(--accent-focal); outline-offset: 2px; }
+  .va-copy-status {
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    color: var(--status-ok);
+    min-inline-size: 0;
+  }
+  .va-copy-status.is-error { color: var(--status-danger); }
+  .qe-takeaway-footer {
+    margin-top: 0.65rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  .qe-takeaway-note,
+  .qe-takeaway-source { margin: 0; }
+  .va-fallback-note {
+    margin: 0.4rem 0 0;
+    font-size: var(--ts-xs);
+    color: var(--text-muted);
+  }
+
+  /* Legend Swatches & Interactive Hex Tile Readout */
+  .va-hex-legend,
+  .va-arrow-legend,
+  .va-subgroup-legend,
+  .va-slope-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.9rem;
+    margin-block-end: 0.55rem;
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .va-hex-bin-item { display: inline-flex; align-items: center; gap: 0.35rem; font-variant-numeric: tabular-nums; }
+  .va-hex-swatch {
+    display: inline-block;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 2px;
+    background: var(--swatch, var(--accent-focal));
+    border: 1px solid var(--border-strong);
+  }
+  .va-dot-swatch {
+    display: inline-block;
+    inline-size: 9px;
+    block-size: 9px;
+    border-radius: 999px;
+    border: 2px solid var(--swatch, var(--text-secondary));
+    background: var(--bg-surface);
+    vertical-align: middle;
+  }
+  .va-arrow-swatch.is-gain { color: var(--accent-focal); font-weight: 700; }
+  .va-arrow-swatch.is-drop { color: var(--status-danger); font-weight: 700; }
+  .va-hex-tile { cursor: pointer; outline: none; }
+  .va-hex-tile.is-selected polygon { stroke: var(--text-primary); stroke-width: 2.6; }
+  .va-hex-readout {
+    margin-top: 0.45rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--radius-xs);
+    background: var(--bg-elevated);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* Diverging % Change + Unshaded $ Level Matrix */
+  .va-cohort-defs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.95rem;
+    margin-block-end: 0.5rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+  }
+  .va-diverging-scroll {
+    overflow-x: auto;
+    max-inline-size: 100%;
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+  }
+  .va-diverging-matrix { inline-size: 100%; border-collapse: separate; border-spacing: 0; }
+  .va-diverging-matrix th:first-child,
+  .va-diverging-matrix td:first-child {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 2;
+    background: var(--bg-surface);
+    border-inline-end: 1px solid var(--border-hairline);
+    white-space: nowrap;
+  }
+  .va-diverging-matrix th,
+  .va-diverging-matrix td { padding: 0.48rem 0.65rem; }
+  .va-cell-diverge[data-diverge="pos-hi"] { background: var(--status-ok-bg); color: var(--tint-emerald-fg); font-weight: 700; }
+  .va-cell-diverge[data-diverge="pos-lo"] { background: color-mix(in oklab, var(--status-ok-bg) 52%, var(--bg-canvas)); color: var(--text-primary); font-weight: 600; }
+  .va-cell-diverge[data-diverge="neg-lo"] { background: color-mix(in oklab, var(--status-warn-bg) 55%, var(--bg-canvas)); color: var(--text-primary); font-weight: 600; }
+  .va-cell-diverge[data-diverge="neg-hi"] { background: var(--status-err-bg); color: var(--tint-rose-fg); font-weight: 700; }
+  .va-cell-diverge[data-diverge="flat"] { background: var(--bg-surface); color: var(--text-secondary); }
+  .va-cell-level { background: transparent; color: var(--text-primary); }
+  .va-scroll-cue { margin: 0.35rem 0 0; font-size: var(--ts-xs); color: var(--text-muted); }
+}
+
+@layer views {
+  /* Question-First Editorial Brief & Unboxed Callouts (v22) */
+  .va-question-brief {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-inline-size: 1040px;
+    margin-inline: auto;
+  }
+  .va-brief-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block-end: 0.9rem;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  @media (min-width: 820px) {
+    .va-brief-hero { grid-template-columns: 165px minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+  }
+  .va-freshness-stamp {
+    border-inline-start: 2px solid var(--border-strong);
+    padding-inline-start: 0.7rem;
+    font-size: var(--ts-xs);
+    color: var(--text-secondary);
+    line-height: 1.45;
+  }
+  .va-brief-question {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    font-weight: 700;
+    line-height: 1.22;
+    color: var(--text-primary);
+  }
+  .va-brief-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    margin-block-end: 0.65rem;
+  }
+  .va-scope-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elevated);
+    overflow: hidden;
+  }
+  .va-scope-btn {
+    border: 0;
+    border-inline-end: 1px solid var(--border-hairline);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--ts-xs);
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    min-block-size: 30px;
+    cursor: pointer;
+  }
+  .va-scope-btn:last-child { border-inline-end: 0; }
+  .va-scope-btn[aria-pressed="true"],
+  .va-scope-btn.is-active {
+    background: var(--accent-focal);
+    color: var(--text-on-accent, #FFFFFF);
+  }
+  .va-lead-answer {
+    margin: 0;
+    padding: 0.65rem 0.9rem;
+    border-inline-start: 3px solid var(--accent-focal);
+    background: var(--bg-elevated);
+    font-size: var(--ts-base);
+    line-height: 1.55;
+    color: var(--text-primary);
+  }
+  .va-lead-highlight { font-weight: 700; color: var(--accent-focal); }
+
+  /* Unboxed 3-Number Editorial Callout Strip */
+  .va-editorial-callouts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+    gap: 0.85rem 1.5rem;
+    padding: 0.55rem 0 0.85rem;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+  .va-callout-stat {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    min-inline-size: 0;
+  }
+  .va-callout-num {
+    display: block;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(1.65rem, 2.8vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-primary);
+  }
+  .va-callout-desc {
+    margin: 0.25rem 0 0;
+    font-size: var(--ts-sm);
+    line-height: 1.45;
+    color: var(--text-secondary);
+  }
+  .va-callout-src { display: inline-block; margin-top: 0.2rem; font-size: var(--ts-xs); color: var(--text-muted); }
+
+  /* Narrative Split Flow + Light-Mode Calm Code Block */
+  .va-brief-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.1rem;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .va-brief-split { grid-template-columns: minmax(36ch, 0.92fr) minmax(0, 1.35fr); }
+  }
+  .va-editorial-prose {
+    min-inline-size: min(100%, 35ch);
+    font-size: var(--ts-base);
+    line-height: 1.6;
+    color: var(--text-primary);
+  }
+  .va-editorial-prose :is(h2, h3) { margin: 0 0 0.45rem; font-size: var(--ts-md); }
+  .va-editorial-prose p { margin: 0 0 0.65rem; }
+  .va-brief-signpost {
+    margin: 0.65rem 0 0;
+    padding: 0.55rem 0.75rem;
+    border-inline-start: 2px solid var(--border-strong);
+    font-size: var(--ts-sm);
+    color: var(--text-secondary);
+  }
+  :is(.va-editorial-prose pre, .va-code-surface) {
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: var(--ts-xs);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin: 0.75rem 0 0;
+  }
+
+  /* Multi-Format 16:9 Briefing Slide Deck vs Web Brief ([hidden] governed by @layer utilities) */
+  .va-brief-web { display: flex; flex-direction: column; gap: 1.1rem; }
+  .va-slide-deck { display: flex; flex-direction: column; gap: 1rem; }
+  .va-slide-frame {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-card);
+    background: var(--bg-surface);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
+  @media (min-width: 900px) {
+    .va-slide-frame { min-block-size: 460px; }
+  }
+  .va-slide-kicker { font-size: var(--ts-xs); font-weight: 700; color: var(--accent-focal); }
+}
+
+@media (forced-colors: active) {
+  .va-scope-btn[aria-pressed="true"],
+  .va-seg-btn[aria-pressed="true"] { border: 2px solid Highlight; background: Highlight; color: HighlightText; }
+  .va-cell-diverge { outline: 1px solid CanvasText; }
+}
+
+@media print {
+  .qe-topbar,
+  #va-studio-bar,
+  .va-studio-chrome,
+  .va-studio-topbar,
+  .va-tab-strip,
+  .va-picker-bar,
+  .va-side-rail,
+  .va-card-actions,
+  .va-format-toggle,
+  .va-scope-bar,
+  .va-scroll-cue { display: none; }
+  :root,
+  [data-theme] {
+    --bg-surface: #FFFFFF;
+    --bg-canvas: #FFFFFF;
+    --bg-elevated: #F8FAFC;
+    --bg-subtle: #F1F5F9;
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #475569;
+    --border-hairline: #CBD5E1;
+    --border-strong: #94A3B8;
+    --accent-focal: #1D4ED8;
+    --text-on-accent: #FFFFFF;
+    color: #0F172A;
+    background: #FFFFFF;
+  }
+  body { color: #0F172A; background: #FFFFFF; }
+  header,
+  nav,
+  aside { position: static; }
+  .va-question-brief { display: block; max-inline-size: 100%; }
+  .va-brief-hero,
+  .va-brief-split,
+  .va-editorial-callouts { display: block; }
+  .va-callout-stat { margin-block-end: 0.55rem; break-inside: avoid; }
+  .qe-bench-grid { display: block; }
+  .qe-specimen,
+  .va-figure-card,
+  .qe-figure,
+  .va-slide-frame { display: block; float: none; position: static; break-inside: avoid; page-break-inside: avoid; margin-block-end: 0.9rem; max-inline-size: 100%; }
+  .va-card-table-panel[hidden="until-found"] { display: none; }
+  .va-diverging-scroll,
+  .va-table-wrap,
+  .qe-table-wrap { overflow: visible; border: 0; }
+  .va-diverging-matrix,
+  table.qe-table,
+  table.va-data-table,
+  table.booktabs { font-size: 8.4pt; inline-size: 100%; max-inline-size: 100%; table-layout: auto; }
+  .va-diverging-matrix :is(th, td):first-child { position: static; white-space: normal; }
+  :is(.va-diverging-matrix, table.qe-table, table.va-data-table, table.booktabs) :is(th, td) {
+    padding: 0.25rem 0.35rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+
 @layer shell {
 /* Unified Hairline M3 Multi-Pane Workbench ([Left | Center | Right]) */
   .va-workbench-panes {
@@ -2721,8 +3143,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.5 · READY-TO-USE BUILDING BLOCKS</span>
-        <h1>Component Library (44 Building Blocks · 4 Themes)</h1>
+        <span class="va-kicker">QUIET UI v9.6 · READY-TO-USE BUILDING BLOCKS</span>
+        <h1>Component Library (49 Building Blocks · 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -2769,10 +3191,10 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
-      <div><strong>44 Ready-to-Use Building Blocks</strong> · Clean forms, helpful empty-state messages, undo notifications, menus, summary cards, date pickers, readable charts, timelines, signal graphs, and system diagrams — each tested across all 4 light, paper, and dark themes.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">44 of 44 specimens visible</span>
+      <div><strong>49 Ready-to-Use Building Blocks</strong> · Clean forms, helpful empty-state messages, undo notifications, menus, summary cards, date pickers, readable charts, timelines, signal graphs, and system diagrams — each tested across all 4 light, paper, and dark themes.</div>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">49 of 49 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="44 Building Blocks"><article class="qe-specimen" data-modality="M1" data-schema-modality="scalar" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m1-l1-fleet-kpi" data-qe-modality="scalar" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Clinical ICU Arterial Pressure (MAP) Orientation</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCALAR</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-scalar-card">
+    <section class="qe-bench-grid" aria-label="49 Building Blocks"><article class="qe-specimen" data-modality="M1" data-schema-modality="scalar" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m1-l1-fleet-kpi" data-qe-modality="scalar" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Clinical ICU Arterial Pressure (MAP) Orientation</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCALAR</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-scalar-card">
 <div class="qe-scalar-zone1 qe-scalar-top"><span></span><span class="qe-scalar-ts va-nums">Checked Today · 9:15 PM</span></div>
 <h3 class="qe-scalar-title">Clinical ICU Arterial Pressure (MAP) Orientation</h3>
 <div class="qe-scalar-zone2 qe-scalar-val-row">
@@ -7390,7 +7812,703 @@ p.line(x, y, line_width=2); p.add_layout(Whisker(base=&#x27;x&#x27;, upper=&#x27
       &quot;corridor_abs&quot;: 9.5
     }
   ]
-}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>axes.{x_axis,y_axis}, series[].{label,epistemic,data_points[]} (cartesian)</code></div><div><strong>Optional (omit if null):</strong> <code>envelopes[], uncertainty_bands[], baseline_fit, policy_effective_date</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M5" data-schema-modality="waveform" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m5-l1-day-arc" data-qe-modality="waveform" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">24-Hour Substation BESS Dispatch &amp; Calibration Duty Arc</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">WAVEFORM</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-waveform-wrap" data-rigor="L1" data-medium="m2">
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>axes.{x_axis,y_axis}, series[].{label,epistemic,data_points[]} (cartesian)</code></div><div><strong>Optional (omit if null):</strong> <code>envelopes[], uncertainty_bands[], baseline_fit, policy_effective_date</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="plot" data-rigor="L1"><figure class="va-figure-card qe-figure" id="m4-l1-us-hex-tile-map" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">PLOT</span><span class="va-pill" data-variant="tag">L1</span></span></div><p class="qe-takeaway-subtitle">Share of 4th-grade students at or above NAEP Proficient by jurisdiction (%), 2024 assessment</p><div class="va-card-actions" data-qe-card="m4-l1-us-hex-tile-map"><div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format"><button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="m4-l1-us-hex-tile-map-chart">Chart</button><button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="m4-l1-us-hex-tile-map-table">Table</button></div><div class="va-copy-group"><button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button><button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button><span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span></div></div><div class="va-card-chart-panel" id="m4-l1-us-hex-tile-map-chart"><div class="qe-plot-wrap" data-rigor="L1" data-medium="m2">
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency"><div class="qe-svg-fallback"><div class="qe-legend-series va-hex-legend" role="list" aria-label="Scale bins"><span class="va-hex-bin-item"><span class="va-hex-swatch" style="--swatch:#E2E8F0"></span><span>&lt; 24%</span></span><span class="va-hex-bin-item"><span class="va-hex-swatch" style="--swatch:#BAE6FD"></span><span>24%–28%</span></span><span class="va-hex-bin-item"><span class="va-hex-swatch" style="--swatch:#38BDF8"></span><span>28%–32%</span></span><span class="va-hex-bin-item"><span class="va-hex-swatch" style="--swatch:#0369A1"></span><span>32%–36%</span></span><span class="va-hex-bin-item"><span class="va-hex-swatch" style="--swatch:#1E3A8A"></span><span>36%+</span></span></div><div class="va-figure-scroll va-hex-stage"><svg class="qe-svg qe-svg-640 va-hex-map-svg" viewBox="0 0 640 342" role="img" aria-label="Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency"><g class="va-hex-tile" data-state="AK" data-state-name="Alaska" data-value="24%" data-full-value="24%" data-note="" data-bin="1" tabindex="0" role="button" aria-label="Alaska (AK): 24%"><polygon points="94.9,31.2 94.9,52.8 76.2,63.6 57.5,52.8 57.5,31.2 76.2,20.4" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="76.2" y="39.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">AK</text><text x="76.2" y="54.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">24%</text></g><g class="va-hex-tile" data-state="ME" data-state-name="Maine" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Maine (ME): 29%"><polygon points="561.3,31.2 561.3,52.8 542.6,63.6 523.9,52.8 523.9,31.2 542.6,20.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="542.6" y="39.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">ME</text><text x="542.6" y="54.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="WI" data-state-name="Wisconsin" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Wisconsin (WI): 32%"><polygon points="328.1,68.7 328.1,90.3 309.4,101.1 290.7,90.3 290.7,68.7 309.4,57.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="309.4" y="76.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">WI</text><text x="309.4" y="91.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="VT" data-state-name="Vermont" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Vermont (VT): 32%"><polygon points="497.7,68.7 497.7,90.3 479.0,101.1 460.3,90.3 460.3,68.7 479.0,57.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="479.0" y="76.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">VT</text><text x="479.0" y="91.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="NH" data-state-name="New Hampshire" data-value="35%" data-full-value="35%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="New Hampshire (NH): 35%"><polygon points="540.1,68.7 540.1,90.3 521.4,101.1 502.7,90.3 502.7,68.7 521.4,57.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="521.4" y="76.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">NH</text><text x="521.4" y="91.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">35%</text></g><g class="va-hex-tile" data-state="WA" data-state-name="Washington" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Washington (WA): 33%"><polygon points="137.3,106.2 137.3,127.8 118.6,138.6 99.9,127.8 99.9,106.2 118.6,95.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="118.6" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">WA</text><text x="118.6" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile" data-state="ID" data-state-name="Idaho" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Idaho (ID): 33%"><polygon points="179.7,106.2 179.7,127.8 161.0,138.6 142.3,127.8 142.3,106.2 161.0,95.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="161.0" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">ID</text><text x="161.0" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile" data-state="MT" data-state-name="Montana" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Montana (MT): 32%"><polygon points="222.1,106.2 222.1,127.8 203.4,138.6 184.7,127.8 184.7,106.2 203.4,95.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="203.4" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">MT</text><text x="203.4" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="ND" data-state-name="North Dakota" data-value="30%" data-full-value="30%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="North Dakota (ND): 30%"><polygon points="264.5,106.2 264.5,127.8 245.8,138.6 227.1,127.8 227.1,106.2 245.8,95.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="245.8" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">ND</text><text x="245.8" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">30%</text></g><g class="va-hex-tile" data-state="MN" data-state-name="Minnesota" data-value="34%" data-full-value="34%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Minnesota (MN): 34%"><polygon points="306.9,106.2 306.9,127.8 288.2,138.6 269.5,127.8 269.5,106.2 288.2,95.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="288.2" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">MN</text><text x="288.2" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">34%</text></g><g class="va-hex-tile" data-state="IL" data-state-name="Illinois" data-value="31%" data-full-value="31%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Illinois (IL): 31%"><polygon points="349.3,106.2 349.3,127.8 330.6,138.6 311.9,127.8 311.9,106.2 330.6,95.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="330.6" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">IL</text><text x="330.6" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">31%</text></g><g class="va-hex-tile" data-state="MI" data-state-name="Michigan" data-value="28%" data-full-value="28%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Michigan (MI): 28%"><polygon points="391.7,106.2 391.7,127.8 373.0,138.6 354.3,127.8 354.3,106.2 373.0,95.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="373.0" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">MI</text><text x="373.0" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">28%</text></g><g class="va-hex-tile" data-state="NY" data-state-name="New York" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="New York (NY): 29%"><polygon points="476.5,106.2 476.5,127.8 457.8,138.6 439.1,127.8 439.1,106.2 457.8,95.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="457.8" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">NY</text><text x="457.8" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="MA" data-state-name="Massachusetts" data-value="41%" data-full-value="41%" data-note="" data-bin="4" tabindex="0" role="button" aria-label="Massachusetts (MA): 41%"><polygon points="518.9,106.2 518.9,127.8 500.2,138.6 481.5,127.8 481.5,106.2 500.2,95.4" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="500.2" y="114.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">MA</text><text x="500.2" y="129.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">41%</text></g><g class="va-hex-tile" data-state="OR" data-state-name="Oregon" data-value="28%" data-full-value="28%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Oregon (OR): 28%"><polygon points="158.5,143.7 158.5,165.3 139.8,176.1 121.1,165.3 121.1,143.7 139.8,132.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="139.8" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">OR</text><text x="139.8" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">28%</text></g><g class="va-hex-tile" data-state="NV" data-state-name="Nevada" data-value="27%" data-full-value="27%" data-note="" data-bin="1" tabindex="0" role="button" aria-label="Nevada (NV): 27%"><polygon points="200.9,143.7 200.9,165.3 182.2,176.1 163.5,165.3 163.5,143.7 182.2,132.9" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="182.2" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">NV</text><text x="182.2" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">27%</text></g><g class="va-hex-tile" data-state="WY" data-state-name="Wyoming" data-value="36%" data-full-value="36%" data-note="Rank tied #4 nationwide" data-bin="4" tabindex="0" role="button" aria-label="Wyoming (WY): 36%"><polygon points="243.3,143.7 243.3,165.3 224.6,176.1 205.9,165.3 205.9,143.7 224.6,132.9" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="224.6" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">WY</text><text x="224.6" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">36%</text></g><g class="va-hex-tile" data-state="SD" data-state-name="South Dakota" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="South Dakota (SD): 32%"><polygon points="285.7,143.7 285.7,165.3 267.0,176.1 248.3,165.3 248.3,143.7 267.0,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="267.0" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">SD</text><text x="267.0" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="IA" data-state-name="Iowa" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Iowa (IA): 32%"><polygon points="328.1,143.7 328.1,165.3 309.4,176.1 290.7,165.3 290.7,143.7 309.4,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="309.4" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">IA</text><text x="309.4" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="IN" data-state-name="Indiana" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Indiana (IN): 33%"><polygon points="370.5,143.7 370.5,165.3 351.8,176.1 333.1,165.3 333.1,143.7 351.8,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="351.8" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">IN</text><text x="351.8" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile" data-state="OH" data-state-name="Ohio" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Ohio (OH): 32%"><polygon points="412.9,143.7 412.9,165.3 394.2,176.1 375.5,165.3 375.5,143.7 394.2,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="394.2" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">OH</text><text x="394.2" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="PA" data-state-name="Pennsylvania" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Pennsylvania (PA): 33%"><polygon points="455.3,143.7 455.3,165.3 436.6,176.1 417.9,165.3 417.9,143.7 436.6,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="436.6" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">PA</text><text x="436.6" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile" data-state="NJ" data-state-name="New Jersey" data-value="38%" data-full-value="38%" data-note="" data-bin="4" tabindex="0" role="button" aria-label="New Jersey (NJ): 38%"><polygon points="497.7,143.7 497.7,165.3 479.0,176.1 460.3,165.3 460.3,143.7 479.0,132.9" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="479.0" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">NJ</text><text x="479.0" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">38%</text></g><g class="va-hex-tile" data-state="CT" data-state-name="Connecticut" data-value="36%" data-full-value="36%" data-note="" data-bin="4" tabindex="0" role="button" aria-label="Connecticut (CT): 36%"><polygon points="540.1,143.7 540.1,165.3 521.4,176.1 502.7,165.3 502.7,143.7 521.4,132.9" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="521.4" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">CT</text><text x="521.4" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">36%</text></g><g class="va-hex-tile" data-state="RI" data-state-name="Rhode Island" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Rhode Island (RI): 32%"><polygon points="582.5,143.7 582.5,165.3 563.8,176.1 545.1,165.3 545.1,143.7 563.8,132.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="563.8" y="151.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">RI</text><text x="563.8" y="166.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="CA" data-state-name="California" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="California (CA): 29%"><polygon points="137.3,181.2 137.3,202.8 118.6,213.6 99.9,202.8 99.9,181.2 118.6,170.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="118.6" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">CA</text><text x="118.6" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="UT" data-state-name="Utah" data-value="37%" data-full-value="37%" data-note="" data-bin="4" tabindex="0" role="button" aria-label="Utah (UT): 37%"><polygon points="179.7,181.2 179.7,202.8 161.0,213.6 142.3,202.8 142.3,181.2 161.0,170.4" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="161.0" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">UT</text><text x="161.0" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">37%</text></g><g class="va-hex-tile" data-state="CO" data-state-name="Colorado" data-value="36%" data-full-value="36%" data-note="" data-bin="4" tabindex="0" role="button" aria-label="Colorado (CO): 36%"><polygon points="222.1,181.2 222.1,202.8 203.4,213.6 184.7,202.8 184.7,181.2 203.4,170.4" fill="#1E3A8A" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="203.4" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">CO</text><text x="203.4" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">36%</text></g><g class="va-hex-tile" data-state="NE" data-state-name="Nebraska" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Nebraska (NE): 33%"><polygon points="264.5,181.2 264.5,202.8 245.8,213.6 227.1,202.8 227.1,181.2 245.8,170.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="245.8" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">NE</text><text x="245.8" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile" data-state="MO" data-state-name="Missouri" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Missouri (MO): 29%"><polygon points="306.9,181.2 306.9,202.8 288.2,213.6 269.5,202.8 269.5,181.2 288.2,170.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="288.2" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">MO</text><text x="288.2" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="KY" data-state-name="Kentucky" data-value="31%" data-full-value="31%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Kentucky (KY): 31%"><polygon points="349.3,181.2 349.3,202.8 330.6,213.6 311.9,202.8 311.9,181.2 330.6,170.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="330.6" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">KY</text><text x="330.6" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">31%</text></g><g class="va-hex-tile" data-state="WV" data-state-name="West Virginia" data-value="22%" data-full-value="22%" data-note="" data-bin="0" tabindex="0" role="button" aria-label="West Virginia (WV): 22%"><polygon points="391.7,181.2 391.7,202.8 373.0,213.6 354.3,202.8 354.3,181.2 373.0,170.4" fill="#E2E8F0" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="373.0" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">WV</text><text x="373.0" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">22%</text></g><g class="va-hex-tile" data-state="VA" data-state-name="Virginia" data-value="33%" data-full-value="33%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Virginia (VA): 33%"><polygon points="434.1,181.2 434.1,202.8 415.4,213.6 396.7,202.8 396.7,181.2 415.4,170.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="415.4" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">VA</text><text x="415.4" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">33%</text></g><g class="va-hex-tile is-selected" data-state="MD" data-state-name="Maryland" data-value="35%" data-full-value="35%" data-note="+4 pts above US 31%" data-bin="3" tabindex="0" role="button" aria-label="Maryland (MD): 35%"><polygon points="476.5,181.2 476.5,202.8 457.8,213.6 439.1,202.8 439.1,181.2 457.8,170.4" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="457.8" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">MD</text><text x="457.8" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">35%</text></g><g class="va-hex-tile" data-state="DE" data-state-name="Delaware" data-value="26%" data-full-value="26%" data-note="" data-bin="1" tabindex="0" role="button" aria-label="Delaware (DE): 26%"><polygon points="518.9,181.2 518.9,202.8 500.2,213.6 481.5,202.8 481.5,181.2 500.2,170.4" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="500.2" y="189.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">DE</text><text x="500.2" y="204.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">26%</text></g><g class="va-hex-tile" data-state="AZ" data-state-name="Arizona" data-value="28%" data-full-value="28%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Arizona (AZ): 28%"><polygon points="200.9,218.7 200.9,240.3 182.2,251.1 163.5,240.3 163.5,218.7 182.2,207.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="182.2" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">AZ</text><text x="182.2" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">28%</text></g><g class="va-hex-tile" data-state="NM" data-state-name="New Mexico" data-value="21%" data-full-value="21%" data-note="" data-bin="0" tabindex="0" role="button" aria-label="New Mexico (NM): 21%"><polygon points="243.3,218.7 243.3,240.3 224.6,251.1 205.9,240.3 205.9,218.7 224.6,207.9" fill="#E2E8F0" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="224.6" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">NM</text><text x="224.6" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">21%</text></g><g class="va-hex-tile" data-state="KS" data-state-name="Kansas" data-value="30%" data-full-value="30%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Kansas (KS): 30%"><polygon points="285.7,218.7 285.7,240.3 267.0,251.1 248.3,240.3 248.3,218.7 267.0,207.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="267.0" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">KS</text><text x="267.0" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">30%</text></g><g class="va-hex-tile" data-state="AR" data-state-name="Arkansas" data-value="27%" data-full-value="27%" data-note="" data-bin="1" tabindex="0" role="button" aria-label="Arkansas (AR): 27%"><polygon points="328.1,218.7 328.1,240.3 309.4,251.1 290.7,240.3 290.7,218.7 309.4,207.9" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="309.4" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">AR</text><text x="309.4" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">27%</text></g><g class="va-hex-tile" data-state="TN" data-state-name="Tennessee" data-value="31%" data-full-value="31%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Tennessee (TN): 31%"><polygon points="370.5,218.7 370.5,240.3 351.8,251.1 333.1,240.3 333.1,218.7 351.8,207.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="351.8" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">TN</text><text x="351.8" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">31%</text></g><g class="va-hex-tile" data-state="NC" data-state-name="North Carolina" data-value="32%" data-full-value="32%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="North Carolina (NC): 32%"><polygon points="412.9,218.7 412.9,240.3 394.2,251.1 375.5,240.3 375.5,218.7 394.2,207.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="394.2" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">NC</text><text x="394.2" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">32%</text></g><g class="va-hex-tile" data-state="SC" data-state-name="South Carolina" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="South Carolina (SC): 29%"><polygon points="455.3,218.7 455.3,240.3 436.6,251.1 417.9,240.3 417.9,218.7 436.6,207.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="436.6" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">SC</text><text x="436.6" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="DC" data-state-name="District of Columbia" data-value="26%" data-full-value="26%" data-note="Equal tile hitbox" data-bin="1" tabindex="0" role="button" aria-label="District of Columbia (DC): 26%"><polygon points="497.7,218.7 497.7,240.3 479.0,251.1 460.3,240.3 460.3,218.7 479.0,207.9" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="479.0" y="226.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">DC</text><text x="479.0" y="241.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">26%</text></g><g class="va-hex-tile" data-state="OK" data-state-name="Oklahoma" data-value="24%" data-full-value="24%" data-note="" data-bin="1" tabindex="0" role="button" aria-label="Oklahoma (OK): 24%"><polygon points="264.5,256.2 264.5,277.8 245.8,288.6 227.1,277.8 227.1,256.2 245.8,245.4" fill="#BAE6FD" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="245.8" y="264.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">OK</text><text x="245.8" y="279.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">24%</text></g><g class="va-hex-tile" data-state="LA" data-state-name="Louisiana" data-value="30%" data-full-value="30%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Louisiana (LA): 30%"><polygon points="306.9,256.2 306.9,277.8 288.2,288.6 269.5,277.8 269.5,256.2 288.2,245.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="288.2" y="264.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">LA</text><text x="288.2" y="279.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">30%</text></g><g class="va-hex-tile" data-state="MS" data-state-name="Mississippi" data-value="31%" data-full-value="31%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Mississippi (MS): 31%"><polygon points="349.3,256.2 349.3,277.8 330.6,288.6 311.9,277.8 311.9,256.2 330.6,245.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="330.6" y="264.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">MS</text><text x="330.6" y="279.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">31%</text></g><g class="va-hex-tile" data-state="AL" data-state-name="Alabama" data-value="28%" data-full-value="28%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Alabama (AL): 28%"><polygon points="391.7,256.2 391.7,277.8 373.0,288.6 354.3,277.8 354.3,256.2 373.0,245.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="373.0" y="264.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">AL</text><text x="373.0" y="279.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">28%</text></g><g class="va-hex-tile" data-state="GA" data-state-name="Georgia" data-value="31%" data-full-value="31%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Georgia (GA): 31%"><polygon points="434.1,256.2 434.1,277.8 415.4,288.6 396.7,277.8 396.7,256.2 415.4,245.4" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="415.4" y="264.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">GA</text><text x="415.4" y="279.2" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">31%</text></g><g class="va-hex-tile" data-state="HI" data-state-name="Hawaii" data-value="30%" data-full-value="30%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Hawaii (HI): 30%"><polygon points="116.1,293.7 116.1,315.3 97.4,326.1 78.7,315.3 78.7,293.7 97.4,282.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="97.4" y="301.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">HI</text><text x="97.4" y="316.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">30%</text></g><g class="va-hex-tile" data-state="TX" data-state-name="Texas" data-value="29%" data-full-value="29%" data-note="" data-bin="2" tabindex="0" role="button" aria-label="Texas (TX): 29%"><polygon points="243.3,293.7 243.3,315.3 224.6,326.1 205.9,315.3 205.9,293.7 224.6,282.9" fill="#38BDF8" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="224.6" y="301.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#0F172A">TX</text><text x="224.6" y="316.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#0F172A">29%</text></g><g class="va-hex-tile" data-state="FL" data-state-name="Florida" data-value="35%" data-full-value="35%" data-note="" data-bin="3" tabindex="0" role="button" aria-label="Florida (FL): 35%"><polygon points="455.3,293.7 455.3,315.3 436.6,326.1 417.9,315.3 417.9,293.7 436.6,282.9" fill="#0369A1" stroke="var(--bg-surface)" stroke-width="1.8"/><text x="436.6" y="301.5" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="#FFFFFF">FL</text><text x="436.6" y="316.7" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="#FFFFFF">35%</text></g></svg></div><div class="va-hex-readout" role="status" aria-live="polite">Maryland (MD): 35% · +4 pts above US 31%</div></div></div>
+</div></div><div class="va-card-table-panel va-table-wrap" id="m4-l1-us-hex-tile-map-table" hidden="until-found" tabindex="0" role="region" aria-label="Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency data table"><table class="booktabs qe-table"><caption>Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency</caption><thead><tr><th scope="col">State</th><th scope="col">Name</th><th scope="col">Value (%)</th></tr></thead><tbody><tr><th scope="row">AL</th><td>Alabama</td><td>28</td></tr><tr><th scope="row">AK</th><td>Alaska</td><td>24</td></tr><tr><th scope="row">AZ</th><td>Arizona</td><td>28</td></tr><tr><th scope="row">AR</th><td>Arkansas</td><td>27</td></tr><tr><th scope="row">CA</th><td>California</td><td>29</td></tr><tr><th scope="row">CO</th><td>Colorado</td><td>36</td></tr><tr><th scope="row">CT</th><td>Connecticut</td><td>36</td></tr><tr><th scope="row">DE</th><td>Delaware</td><td>26</td></tr><tr><th scope="row">DC</th><td>District of Columbia</td><td>26</td></tr><tr><th scope="row">FL</th><td>Florida</td><td>35</td></tr><tr><th scope="row">GA</th><td>Georgia</td><td>31</td></tr><tr><th scope="row">HI</th><td>Hawaii</td><td>30</td></tr><tr><th scope="row">ID</th><td>Idaho</td><td>33</td></tr><tr><th scope="row">IL</th><td>Illinois</td><td>31</td></tr><tr><th scope="row">IN</th><td>Indiana</td><td>33</td></tr><tr><th scope="row">IA</th><td>Iowa</td><td>32</td></tr><tr><th scope="row">KS</th><td>Kansas</td><td>30</td></tr><tr><th scope="row">KY</th><td>Kentucky</td><td>31</td></tr><tr><th scope="row">LA</th><td>Louisiana</td><td>30</td></tr><tr><th scope="row">ME</th><td>Maine</td><td>29</td></tr><tr><th scope="row">MD</th><td>Maryland</td><td>35</td></tr><tr><th scope="row">MA</th><td>Massachusetts</td><td>41</td></tr><tr><th scope="row">MI</th><td>Michigan</td><td>28</td></tr><tr><th scope="row">MN</th><td>Minnesota</td><td>34</td></tr><tr><th scope="row">MS</th><td>Mississippi</td><td>31</td></tr><tr><th scope="row">MO</th><td>Missouri</td><td>29</td></tr><tr><th scope="row">MT</th><td>Montana</td><td>32</td></tr><tr><th scope="row">NE</th><td>Nebraska</td><td>33</td></tr><tr><th scope="row">NV</th><td>Nevada</td><td>27</td></tr><tr><th scope="row">NH</th><td>New Hampshire</td><td>35</td></tr><tr><th scope="row">NJ</th><td>New Jersey</td><td>38</td></tr><tr><th scope="row">NM</th><td>New Mexico</td><td>21</td></tr><tr><th scope="row">NY</th><td>New York</td><td>29</td></tr><tr><th scope="row">NC</th><td>North Carolina</td><td>32</td></tr><tr><th scope="row">ND</th><td>North Dakota</td><td>30</td></tr><tr><th scope="row">OH</th><td>Ohio</td><td>32</td></tr><tr><th scope="row">OK</th><td>Oklahoma</td><td>24</td></tr><tr><th scope="row">OR</th><td>Oregon</td><td>28</td></tr><tr><th scope="row">PA</th><td>Pennsylvania</td><td>33</td></tr><tr><th scope="row">RI</th><td>Rhode Island</td><td>32</td></tr><tr><th scope="row">SC</th><td>South Carolina</td><td>29</td></tr><tr><th scope="row">SD</th><td>South Dakota</td><td>32</td></tr><tr><th scope="row">TN</th><td>Tennessee</td><td>31</td></tr><tr><th scope="row">TX</th><td>Texas</td><td>29</td></tr><tr><th scope="row">UT</th><td>Utah</td><td>37</td></tr><tr><th scope="row">VT</th><td>Vermont</td><td>32</td></tr><tr><th scope="row">VA</th><td>Virginia</td><td>33</td></tr><tr><th scope="row">WA</th><td>Washington</td><td>33</td></tr><tr><th scope="row">WV</th><td>West Virginia</td><td>22</td></tr><tr><th scope="row">WI</th><td>Wisconsin</td><td>32</td></tr><tr><th scope="row">WY</th><td>Wyoming</td><td>36</td></tr></tbody></table></div><footer class="qe-takeaway-footer"><p class="qe-takeaway-note"><strong>Note:</strong> Each state plus DC occupies one equal-area hexagon; text ink switches automatically between dark and white from bin luminance.</p><p class="qe-takeaway-source"><strong>Source:</strong> NAEP Nation&#x27;s Report Card (2024 Public Data Release)</p></footer><script type="application/json" class="qe-export-payload">{"title": "Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency", "tsv": "State\tName\tValue (%)\nAL\tAlabama\t28\nAK\tAlaska\t24\nAZ\tArizona\t28\nAR\tArkansas\t27\nCA\tCalifornia\t29\nCO\tColorado\t36\nCT\tConnecticut\t36\nDE\tDelaware\t26\nDC\tDistrict of Columbia\t26\nFL\tFlorida\t35\nGA\tGeorgia\t31\nHI\tHawaii\t30\nID\tIdaho\t33\nIL\tIllinois\t31\nIN\tIndiana\t33\nIA\tIowa\t32\nKS\tKansas\t30\nKY\tKentucky\t31\nLA\tLouisiana\t30\nME\tMaine\t29\nMD\tMaryland\t35\nMA\tMassachusetts\t41\nMI\tMichigan\t28\nMN\tMinnesota\t34\nMS\tMississippi\t31\nMO\tMissouri\t29\nMT\tMontana\t32\nNE\tNebraska\t33\nNV\tNevada\t27\nNH\tNew Hampshire\t35\nNJ\tNew Jersey\t38\nNM\tNew Mexico\t21\nNY\tNew York\t29\nNC\tNorth Carolina\t32\nND\tNorth Dakota\t30\nOH\tOhio\t32\nOK\tOklahoma\t24\nOR\tOregon\t28\nPA\tPennsylvania\t33\nRI\tRhode Island\t32\nSC\tSouth Carolina\t29\nSD\tSouth Dakota\t32\nTN\tTennessee\t31\nTX\tTexas\t29\nUT\tUtah\t37\nVT\tVermont\t32\nVA\tVirginia\t33\nWA\tWashington\t33\nWV\tWest Virginia\t22\nWI\tWisconsin\t32\nWY\tWyoming\t36", "markdown": "### Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency\n_Share of 4th-grade students at or above NAEP Proficient by jurisdiction (%), 2024 assessment_\n\n| State | Name | Value (%) |\n| --- | --- | --- |\n| AL | Alabama | 28 |\n| AK | Alaska | 24 |\n| AZ | Arizona | 28 |\n| AR | Arkansas | 27 |\n| CA | California | 29 |\n| CO | Colorado | 36 |\n| CT | Connecticut | 36 |\n| DE | Delaware | 26 |\n| DC | District of Columbia | 26 |\n| FL | Florida | 35 |\n| GA | Georgia | 31 |\n| HI | Hawaii | 30 |\n| ID | Idaho | 33 |\n| IL | Illinois | 31 |\n| IN | Indiana | 33 |\n| IA | Iowa | 32 |\n| KS | Kansas | 30 |\n| KY | Kentucky | 31 |\n| LA | Louisiana | 30 |\n| ME | Maine | 29 |\n| MD | Maryland | 35 |\n| MA | Massachusetts | 41 |\n| MI | Michigan | 28 |\n| MN | Minnesota | 34 |\n| MS | Mississippi | 31 |\n| MO | Missouri | 29 |\n| MT | Montana | 32 |\n| NE | Nebraska | 33 |\n| NV | Nevada | 27 |\n| NH | New Hampshire | 35 |\n| NJ | New Jersey | 38 |\n| NM | New Mexico | 21 |\n| NY | New York | 29 |\n| NC | North Carolina | 32 |\n| ND | North Dakota | 30 |\n| OH | Ohio | 32 |\n| OK | Oklahoma | 24 |\n| OR | Oregon | 28 |\n| PA | Pennsylvania | 33 |\n| RI | Rhode Island | 32 |\n| SC | South Carolina | 29 |\n| SD | South Dakota | 32 |\n| TN | Tennessee | 31 |\n| TX | Texas | 29 |\n| UT | Utah | 37 |\n| VT | Vermont | 32 |\n| VA | Virginia | 33 |\n| WA | Washington | 33 |\n| WV | West Virginia | 22 |\n| WI | Wisconsin | 32 |\n| WY | Wyoming | 36 |\n\n**Note:** Each state plus DC occupies one equal-area hexagon; text ink switches automatically between dark and white from bin luminance.\n**Source:** NAEP Nation's Report Card (2024 Public Data Release)"}</script><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:plot)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:plot&quot;,
+  &quot;id&quot;: &quot;m4-l1-us-hex-tile-map&quot;,
+  &quot;plot_kind&quot;: &quot;us_hex_tile_map&quot;,
+  &quot;takeaway&quot;: true,
+  &quot;unit&quot;: &quot;%&quot;,
+  &quot;decimals&quot;: 0,
+  &quot;focus_state&quot;: &quot;MD&quot;,
+  &quot;bin_breaks&quot;: [
+    24,
+    28,
+    32,
+    36
+  ],
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Equal-Area US 51-Hex Tile Map \u2014 Grade 4 Reading Proficiency&quot;,
+    &quot;subtitle&quot;: &quot;Share of 4th-grade students at or above NAEP Proficient by jurisdiction (%), 2024 assessment&quot;,
+    &quot;rigor_level&quot;: &quot;L1&quot;,
+    &quot;note&quot;: &quot;Each state plus DC occupies one equal-area hexagon; text ink switches automatically between dark and white from bin luminance.&quot;,
+    &quot;source&quot;: &quot;NAEP Nation&#x27;s Report Card (2024 Public Data Release)&quot;
+  },
+  &quot;states&quot;: {
+    &quot;AL&quot;: {
+      &quot;name&quot;: &quot;Alabama&quot;,
+      &quot;value&quot;: 28
+    },
+    &quot;AK&quot;: {
+      &quot;name&quot;: &quot;Alaska&quot;,
+      &quot;value&quot;: 24
+    },
+    &quot;AZ&quot;: {
+      &quot;name&quot;: &quot;Arizona&quot;,
+      &quot;value&quot;: 28
+    },
+    &quot;AR&quot;: {
+      &quot;name&quot;: &quot;Arkansas&quot;,
+      &quot;value&quot;: 27
+    },
+    &quot;CA&quot;: {
+      &quot;name&quot;: &quot;California&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;CO&quot;: {
+      &quot;name&quot;: &quot;Colorado&quot;,
+      &quot;value&quot;: 36
+    },
+    &quot;CT&quot;: {
+      &quot;name&quot;: &quot;Connecticut&quot;,
+      &quot;value&quot;: 36
+    },
+    &quot;DE&quot;: {
+      &quot;name&quot;: &quot;Delaware&quot;,
+      &quot;value&quot;: 26
+    },
+    &quot;DC&quot;: {
+      &quot;name&quot;: &quot;District of Columbia&quot;,
+      &quot;value&quot;: 26,
+      &quot;note&quot;: &quot;Equal tile hitbox&quot;
+    },
+    &quot;FL&quot;: {
+      &quot;name&quot;: &quot;Florida&quot;,
+      &quot;value&quot;: 35
+    },
+    &quot;GA&quot;: {
+      &quot;name&quot;: &quot;Georgia&quot;,
+      &quot;value&quot;: 31
+    },
+    &quot;HI&quot;: {
+      &quot;name&quot;: &quot;Hawaii&quot;,
+      &quot;value&quot;: 30
+    },
+    &quot;ID&quot;: {
+      &quot;name&quot;: &quot;Idaho&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;IL&quot;: {
+      &quot;name&quot;: &quot;Illinois&quot;,
+      &quot;value&quot;: 31
+    },
+    &quot;IN&quot;: {
+      &quot;name&quot;: &quot;Indiana&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;IA&quot;: {
+      &quot;name&quot;: &quot;Iowa&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;KS&quot;: {
+      &quot;name&quot;: &quot;Kansas&quot;,
+      &quot;value&quot;: 30
+    },
+    &quot;KY&quot;: {
+      &quot;name&quot;: &quot;Kentucky&quot;,
+      &quot;value&quot;: 31
+    },
+    &quot;LA&quot;: {
+      &quot;name&quot;: &quot;Louisiana&quot;,
+      &quot;value&quot;: 30
+    },
+    &quot;ME&quot;: {
+      &quot;name&quot;: &quot;Maine&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;MD&quot;: {
+      &quot;name&quot;: &quot;Maryland&quot;,
+      &quot;value&quot;: 35,
+      &quot;note&quot;: &quot;+4 pts above US 31%&quot;
+    },
+    &quot;MA&quot;: {
+      &quot;name&quot;: &quot;Massachusetts&quot;,
+      &quot;value&quot;: 41
+    },
+    &quot;MI&quot;: {
+      &quot;name&quot;: &quot;Michigan&quot;,
+      &quot;value&quot;: 28
+    },
+    &quot;MN&quot;: {
+      &quot;name&quot;: &quot;Minnesota&quot;,
+      &quot;value&quot;: 34
+    },
+    &quot;MS&quot;: {
+      &quot;name&quot;: &quot;Mississippi&quot;,
+      &quot;value&quot;: 31
+    },
+    &quot;MO&quot;: {
+      &quot;name&quot;: &quot;Missouri&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;MT&quot;: {
+      &quot;name&quot;: &quot;Montana&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;NE&quot;: {
+      &quot;name&quot;: &quot;Nebraska&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;NV&quot;: {
+      &quot;name&quot;: &quot;Nevada&quot;,
+      &quot;value&quot;: 27
+    },
+    &quot;NH&quot;: {
+      &quot;name&quot;: &quot;New Hampshire&quot;,
+      &quot;value&quot;: 35
+    },
+    &quot;NJ&quot;: {
+      &quot;name&quot;: &quot;New Jersey&quot;,
+      &quot;value&quot;: 38
+    },
+    &quot;NM&quot;: {
+      &quot;name&quot;: &quot;New Mexico&quot;,
+      &quot;value&quot;: 21
+    },
+    &quot;NY&quot;: {
+      &quot;name&quot;: &quot;New York&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;NC&quot;: {
+      &quot;name&quot;: &quot;North Carolina&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;ND&quot;: {
+      &quot;name&quot;: &quot;North Dakota&quot;,
+      &quot;value&quot;: 30
+    },
+    &quot;OH&quot;: {
+      &quot;name&quot;: &quot;Ohio&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;OK&quot;: {
+      &quot;name&quot;: &quot;Oklahoma&quot;,
+      &quot;value&quot;: 24
+    },
+    &quot;OR&quot;: {
+      &quot;name&quot;: &quot;Oregon&quot;,
+      &quot;value&quot;: 28
+    },
+    &quot;PA&quot;: {
+      &quot;name&quot;: &quot;Pennsylvania&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;RI&quot;: {
+      &quot;name&quot;: &quot;Rhode Island&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;SC&quot;: {
+      &quot;name&quot;: &quot;South Carolina&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;SD&quot;: {
+      &quot;name&quot;: &quot;South Dakota&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;TN&quot;: {
+      &quot;name&quot;: &quot;Tennessee&quot;,
+      &quot;value&quot;: 31
+    },
+    &quot;TX&quot;: {
+      &quot;name&quot;: &quot;Texas&quot;,
+      &quot;value&quot;: 29
+    },
+    &quot;UT&quot;: {
+      &quot;name&quot;: &quot;Utah&quot;,
+      &quot;value&quot;: 37
+    },
+    &quot;VT&quot;: {
+      &quot;name&quot;: &quot;Vermont&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;VA&quot;: {
+      &quot;name&quot;: &quot;Virginia&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;WA&quot;: {
+      &quot;name&quot;: &quot;Washington&quot;,
+      &quot;value&quot;: 33
+    },
+    &quot;WV&quot;: {
+      &quot;name&quot;: &quot;West Virginia&quot;,
+      &quot;value&quot;: 22
+    },
+    &quot;WI&quot;: {
+      &quot;name&quot;: &quot;Wisconsin&quot;,
+      &quot;value&quot;: 32
+    },
+    &quot;WY&quot;: {
+      &quot;name&quot;: &quot;Wyoming&quot;,
+      &quot;value&quot;: 36,
+      &quot;note&quot;: &quot;Rank tied #4 nationwide&quot;
+    }
+  }
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>states{51}.{value}, unit, focus_state</code></div><div><strong>Optional (omit if null):</strong> <code>bin_breaks[], palette[], states[].note</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="plot" data-rigor="L2"><figure class="va-figure-card qe-figure" id="m4-l2-arrow-dumbbell" data-qe-modality="plot" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">PLOT</span><span class="va-pill" data-variant="tag">L2</span></span></div><p class="qe-takeaway-subtitle">Percentage-point shift in NAEP Grade 4 Reading proficiency across benchmark jurisdictions (2019 -&gt; 2024)</p><div class="va-card-actions" data-qe-card="m4-l2-arrow-dumbbell"><div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format"><button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="m4-l2-arrow-dumbbell-chart">Chart</button><button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="m4-l2-arrow-dumbbell-table">Table</button></div><div class="va-copy-group"><button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button><button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button><span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span></div></div><div class="va-card-chart-panel" id="m4-l2-arrow-dumbbell-chart"><div class="qe-plot-wrap" data-rigor="L2" data-medium="m2">
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts"><div class="qe-svg-fallback"><div class="qe-legend-series va-arrow-legend"><span><span class="va-dot-swatch" style="--swatch:var(--text-secondary)"></span> 2019 Rate</span><span><span class="va-arrow-swatch is-gain">→</span> 2024 Rate gain</span><span><span class="va-arrow-swatch is-drop">←</span> 2024 Rate decline</span></div><div class="va-figure-scroll"><svg class="qe-svg qe-svg-640" viewBox="0 0 640 324" role="img" aria-label="Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts">
+<line x1="230.7" y1="28.0" x2="230.7" y2="270.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="230.7" y="288.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">25</text>
+<line x1="302.7" y1="28.0" x2="302.7" y2="270.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="302.7" y="288.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">30</text>
+<line x1="374.6" y1="28.0" x2="374.6" y2="270.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="374.6" y="288.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">35</text>
+<line x1="446.5" y1="28.0" x2="446.5" y2="270.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="446.5" y="288.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">40</text>
+<line x1="518.5" y1="28.0" x2="518.5" y2="270.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="518.5" y="288.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">45</text>
+<text x="374.6" y="310.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.8" font-weight="700" fill="var(--text-primary)">4th-Grade Reading Proficiency Rate (%)</text>
+<line x1="158.8" y1="49.0" x2="590.4" y2="49.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="53.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Louisiana</text>
+<line x1="245.1" y1="49.0" x2="296.2" y2="49.0" stroke="var(--accent-focal)" stroke-width="2.4"/>
+<circle cx="245.1" cy="49.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="302.7,49.0 295.2,44.6 295.2,53.4" fill="var(--accent-focal)"/>
+<text x="236.1" y="53.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">26%</text>
+<text x="311.7" y="53.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">30%</text>
+<line x1="158.8" y1="83.0" x2="590.4" y2="83.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="87.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Maryland</text>
+<line x1="374.6" y1="83.0" x2="374.6" y2="83.0" stroke="var(--accent-focal)" stroke-width="2.4"/>
+<circle cx="374.6" cy="83.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="374.6,83.0 367.1,78.6 367.1,87.4" fill="var(--accent-focal)"/>
+<text x="365.6" y="87.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">35%</text>
+<text x="383.6" y="87.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">35%</text>
+<line x1="158.8" y1="117.0" x2="590.4" y2="117.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="121.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Mississippi</text>
+<line x1="331.4" y1="117.0" x2="323.6" y2="117.0" stroke="var(--status-danger)" stroke-width="2.4"/>
+<circle cx="331.4" cy="117.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="317.1,117.0 324.6,112.6 324.6,121.4" fill="var(--status-danger)"/>
+<text x="308.1" y="121.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">31%</text>
+<text x="340.4" y="121.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">32%</text>
+<line x1="158.8" y1="151.0" x2="590.4" y2="151.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="155.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Wyoming</text>
+<line x1="446.5" y1="151.0" x2="395.5" y2="151.0" stroke="var(--status-danger)" stroke-width="2.4"/>
+<circle cx="446.5" cy="151.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="389.0,151.0 396.5,146.6 396.5,155.4" fill="var(--status-danger)"/>
+<text x="380.0" y="155.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">36%</text>
+<text x="455.5" y="155.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">40%</text>
+<line x1="158.8" y1="185.0" x2="590.4" y2="185.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="189.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">US National</text>
+<line x1="374.6" y1="185.0" x2="323.6" y2="185.0" stroke="var(--status-danger)" stroke-width="2.4"/>
+<circle cx="374.6" cy="185.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="317.1,185.0 324.6,180.6 324.6,189.4" fill="var(--status-danger)"/>
+<text x="308.1" y="189.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">31%</text>
+<text x="383.6" y="189.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">35%</text>
+<line x1="158.8" y1="219.0" x2="590.4" y2="219.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="223.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Massachusetts</text>
+<line x1="518.5" y1="219.0" x2="467.4" y2="219.0" stroke="var(--status-danger)" stroke-width="2.4"/>
+<circle cx="518.5" cy="219.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="460.9,219.0 468.4,214.6 468.4,223.4" fill="var(--status-danger)"/>
+<text x="451.9" y="223.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">41%</text>
+<text x="527.5" y="223.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">45%</text>
+<line x1="158.8" y1="253.0" x2="590.4" y2="253.0" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>
+<text x="148.8" y="257.0" text-anchor="end" font-family="var(--font-sans)" font-size="12.0" font-weight="600" fill="var(--text-primary)">Rural Districts *</text>
+<line x1="331.4" y1="253.0" x2="280.4" y2="253.0" stroke="var(--status-danger)" stroke-width="2.4"/>
+<circle cx="331.4" cy="253.0" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>
+<polygon points="273.9,253.0 281.4,248.6 281.4,257.4" fill="var(--status-danger)"/>
+<text x="264.9" y="257.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-danger)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">28%</text>
+<text x="340.4" y="257.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">32%</text>
+</svg></div><p class="va-fallback-note">* Prior-year fallback series: Rural Districts: 2022–2023 pooled cohort.</p></div></div>
+</div></div><div class="va-card-table-panel va-table-wrap" id="m4-l2-arrow-dumbbell-table" hidden="until-found" tabindex="0" role="region" aria-label="Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts data table"><table class="booktabs qe-table"><caption>Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts</caption><thead><tr><th scope="col">Cohort / State</th><th scope="col">2019 Rate</th><th scope="col">2024 Rate</th><th scope="col">Change</th><th scope="col">Vintage Note</th></tr></thead><tbody><tr><th scope="row">Louisiana</th><td>26.0</td><td>30.0</td><td>+4.0</td><td>Current</td></tr><tr><th scope="row">Maryland</th><td>35.0</td><td>35.0</td><td>+0.0</td><td>Current</td></tr><tr><th scope="row">Mississippi</th><td>32.0</td><td>31.0</td><td>-1.0</td><td>Current</td></tr><tr><th scope="row">Wyoming</th><td>40.0</td><td>36.0</td><td>-4.0</td><td>Current</td></tr><tr><th scope="row">US National</th><td>35.0</td><td>31.0</td><td>-4.0</td><td>Current</td></tr><tr><th scope="row">Massachusetts</th><td>45.0</td><td>41.0</td><td>-4.0</td><td>Current</td></tr><tr><th scope="row">Rural Districts *</th><td>32.0</td><td>28.0</td><td>-4.0</td><td>2022–2023 pooled cohort</td></tr></tbody></table></div><footer class="qe-takeaway-footer"><p class="qe-takeaway-note"><strong>Note:</strong> Arrows point toward 2024 rates; rows marked with an asterisk retain prior-cycle 2022 reporting where local sample thresholds deferred 2024 updates.</p><p class="qe-takeaway-source"><strong>Source:</strong> NAEP Long-Term Trend &amp; State Assessment Series (2019–2024)</p></footer><script type="application/json" class="qe-export-payload">{"title": "Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts", "tsv": "Cohort / State\t2019 Rate\t2024 Rate\tChange\tVintage Note\nLouisiana\t26.0\t30.0\t+4.0\tCurrent\nMaryland\t35.0\t35.0\t+0.0\tCurrent\nMississippi\t32.0\t31.0\t-1.0\tCurrent\nWyoming\t40.0\t36.0\t-4.0\tCurrent\nUS National\t35.0\t31.0\t-4.0\tCurrent\nMassachusetts\t45.0\t41.0\t-4.0\tCurrent\nRural Districts *\t32.0\t28.0\t-4.0\t2022–2023 pooled cohort", "markdown": "### Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts\n_Percentage-point shift in NAEP Grade 4 Reading proficiency across benchmark jurisdictions (2019 -\u003e 2024)_\n\n| Cohort / State | 2019 Rate | 2024 Rate | Change | Vintage Note |\n| --- | --- | --- | --- | --- |\n| Louisiana | 26.0 | 30.0 | +4.0 | Current |\n| Maryland | 35.0 | 35.0 | +0.0 | Current |\n| Mississippi | 32.0 | 31.0 | -1.0 | Current |\n| Wyoming | 40.0 | 36.0 | -4.0 | Current |\n| US National | 35.0 | 31.0 | -4.0 | Current |\n| Massachusetts | 45.0 | 41.0 | -4.0 | Current |\n| Rural Districts * | 32.0 | 28.0 | -4.0 | 2022–2023 pooled cohort |\n\n**Note:** Arrows point toward 2024 rates; rows marked with an asterisk retain prior-cycle 2022 reporting where local sample thresholds deferred 2024 updates.\n**Source:** NAEP Long-Term Trend & State Assessment Series (2019–2024)"}</script><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:plot)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:plot&quot;,
+  &quot;id&quot;: &quot;m4-l2-arrow-dumbbell&quot;,
+  &quot;plot_kind&quot;: &quot;arrow_dumbbell&quot;,
+  &quot;takeaway&quot;: true,
+  &quot;unit&quot;: &quot;%&quot;,
+  &quot;decimals&quot;: 0,
+  &quot;start_label&quot;: &quot;2019 Rate&quot;,
+  &quot;end_label&quot;: &quot;2024 Rate&quot;,
+  &quot;x_label&quot;: &quot;4th-Grade Reading Proficiency Rate&quot;,
+  &quot;sort&quot;: &quot;delta_desc&quot;,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Ranked Directional Arrow Dumbbell \u2014 Reading Proficiency Shifts&quot;,
+    &quot;subtitle&quot;: &quot;Percentage-point shift in NAEP Grade 4 Reading proficiency across benchmark jurisdictions (2019 -&gt; 2024)&quot;,
+    &quot;rigor_level&quot;: &quot;L2&quot;,
+    &quot;note&quot;: &quot;Arrows point toward 2024 rates; rows marked with an asterisk retain prior-cycle 2022 reporting where local sample thresholds deferred 2024 updates.&quot;,
+    &quot;source&quot;: &quot;NAEP Long-Term Trend &amp; State Assessment Series (2019\u20132024)&quot;
+  },
+  &quot;items&quot;: [
+    {
+      &quot;label&quot;: &quot;Louisiana&quot;,
+      &quot;start&quot;: 26,
+      &quot;end&quot;: 30
+    },
+    {
+      &quot;label&quot;: &quot;Maryland&quot;,
+      &quot;start&quot;: 35,
+      &quot;end&quot;: 35
+    },
+    {
+      &quot;label&quot;: &quot;Mississippi&quot;,
+      &quot;start&quot;: 32,
+      &quot;end&quot;: 31
+    },
+    {
+      &quot;label&quot;: &quot;Wyoming&quot;,
+      &quot;start&quot;: 40,
+      &quot;end&quot;: 36
+    },
+    {
+      &quot;label&quot;: &quot;US National&quot;,
+      &quot;start&quot;: 35,
+      &quot;end&quot;: 31
+    },
+    {
+      &quot;label&quot;: &quot;Massachusetts&quot;,
+      &quot;start&quot;: 45,
+      &quot;end&quot;: 41
+    },
+    {
+      &quot;label&quot;: &quot;Rural Districts *&quot;,
+      &quot;start&quot;: 32,
+      &quot;end&quot;: 28,
+      &quot;fallback_vintage&quot;: &quot;2022\u20132023 pooled cohort&quot;
+    }
+  ]
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>items[].{label,start,end}, start_label, end_label</code></div><div><strong>Optional (omit if null):</strong> <code>items[].fallback_vintage, sort, unit</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="plot" data-rigor="L1"><figure class="va-figure-card qe-figure" id="m4-l1-paired-subgroup-bars" data-qe-modality="plot" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Paired Subgroup Bars + Shaded Overall Column — News Usage</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">PLOT</span><span class="va-pill" data-variant="tag">L1</span></span></div><p class="qe-takeaway-subtitle">Share getting news daily via digital summaries vs direct publications by age group (%), Oct 2025</p><div class="va-card-actions" data-qe-card="m4-l1-paired-subgroup-bars"><div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format"><button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="m4-l1-paired-subgroup-bars-chart">Chart</button><button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="m4-l1-paired-subgroup-bars-table">Table</button></div><div class="va-copy-group"><button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button><button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button><span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span></div></div><div class="va-card-chart-panel" id="m4-l1-paired-subgroup-bars-chart"><div class="qe-plot-wrap" data-rigor="L1" data-medium="m2">
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Paired Subgroup Bars + Shaded Overall Column — News Usage"><div class="qe-svg-fallback"><div class="qe-legend-series va-subgroup-legend"><span><span class="va-hex-swatch" style="--swatch:var(--accent-focal)"></span> Adults Ages 18–29</span><span><span class="va-hex-swatch" style="--swatch:var(--status-ok)"></span> Adults Ages 65+</span><span><span class="va-hex-swatch" style="--swatch:var(--bg-elevated)"></span> All Adults</span></div><div class="va-figure-scroll"><svg class="qe-svg qe-svg-640" viewBox="0 0 640 296" role="img" aria-label="Paired Subgroup Bars + Shaded Overall Column — News Usage">
+<rect x="520.0" y="14" width="108.0" height="238.0" rx="4" fill="var(--bg-elevated)" stroke="var(--border-hairline)" stroke-width="1"/>
+<text x="574.0" y="30.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.8" font-weight="700" fill="var(--text-primary)">All Adults</text>
+<line x1="510.0" y1="16" x2="510.0" y2="252.0" stroke="var(--border-hairline)" stroke-width="1"/>
+<line x1="160.0" y1="40.0" x2="160.0" y2="252.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="160.0" y="270.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">0</text>
+<line x1="257.3" y1="40.0" x2="257.3" y2="252.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="257.3" y="270.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">20</text>
+<line x1="354.7" y1="40.0" x2="354.7" y2="252.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="354.7" y="270.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">40</text>
+<line x1="452.0" y1="40.0" x2="452.0" y2="252.0" stroke="var(--border-hairline)" stroke-width="0.9"/>
+<text x="452.0" y="270.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">60</text>
+<line x1="160.0" y1="40.0" x2="160.0" y2="252.0" stroke="var(--text-primary)" stroke-width="1.1"/>
+<line x1="12" y1="96.0" x2="628.0" y2="96.0" stroke="var(--border-hairline)" stroke-width="0.7"/>
+<text x="150.0" y="74.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.8" font-weight="600" fill="var(--text-primary)">Daily briefing email</text>
+<rect x="160.0" y="51.5" width="118.7" height="16.5" rx="2" fill="var(--accent-focal)"/>
+<text x="272.7" y="63.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">24.4%</text>
+<rect x="160.0" y="71.5" width="224.8" height="16.5" rx="2" fill="var(--status-ok)"/>
+<text x="378.8" y="83.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">46.2%</text>
+<text x="574.0" y="74.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">35.8%</text>
+<line x1="12" y1="148.0" x2="628.0" y2="148.0" stroke="var(--border-hairline)" stroke-width="0.7"/>
+<text x="150.0" y="126.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.8" font-weight="600" fill="var(--text-primary)">Video explainer clip</text>
+<rect x="160.0" y="103.5" width="265.7" height="16.5" rx="2" fill="var(--accent-focal)"/>
+<text x="419.7" y="115.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">54.6%</text>
+<rect x="160.0" y="123.5" width="72.0" height="16.5" rx="2" fill="var(--status-ok)"/>
+<text x="226.0" y="135.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">14.8%</text>
+<text x="574.0" y="126.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">31.2%</text>
+<line x1="12" y1="200.0" x2="628.0" y2="200.0" stroke="var(--border-hairline)" stroke-width="0.7"/>
+<text x="150.0" y="178.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.8" font-weight="600" fill="var(--text-primary)">Interactive data table</text>
+<rect x="160.0" y="155.5" width="184.9" height="16.5" rx="2" fill="var(--accent-focal)"/>
+<text x="338.9" y="167.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">38.0%</text>
+<rect x="160.0" y="175.5" width="143.1" height="16.5" rx="2" fill="var(--status-ok)"/>
+<text x="297.1" y="187.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">29.4%</text>
+<text x="574.0" y="178.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">33.5%</text>
+<line x1="12" y1="252.0" x2="628.0" y2="252.0" stroke="var(--border-hairline)" stroke-width="0.7"/>
+<text x="150.0" y="230.0" text-anchor="end" font-family="var(--font-sans)" font-size="11.8" font-weight="600" fill="var(--text-primary)">Printed PDF handout</text>
+<rect x="160.0" y="207.5" width="44.8" height="16.5" rx="2" fill="var(--accent-focal)"/>
+<text x="210.8" y="219.7" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">9.2%</text>
+<rect x="160.0" y="227.5" width="168.4" height="16.5" rx="2" fill="var(--status-ok)"/>
+<text x="322.4" y="239.7" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-on-accent, #FFFFFF)">34.6%</text>
+<text x="574.0" y="230.5" text-anchor="middle" font-family="var(--font-mono)" font-size="12.0" font-weight="700" fill="var(--text-primary)">21.8%</text>
+</svg></div></div></div>
+</div></div><div class="va-card-table-panel va-table-wrap" id="m4-l1-paired-subgroup-bars-table" hidden="until-found" tabindex="0" role="region" aria-label="Paired Subgroup Bars + Shaded Overall Column — News Usage data table"><table class="booktabs qe-table"><caption>Paired Subgroup Bars + Shaded Overall Column — News Usage</caption><thead><tr><th scope="col">Category</th><th scope="col">Adults Ages 18–29</th><th scope="col">Adults Ages 65+</th><th scope="col">All Adults</th></tr></thead><tbody><tr><th scope="row">Daily briefing email</th><td>24.4</td><td>46.2</td><td>35.8</td></tr><tr><th scope="row">Video explainer clip</th><td>54.6</td><td>14.8</td><td>31.2</td></tr><tr><th scope="row">Interactive data table</th><td>38.0</td><td>29.4</td><td>33.5</td></tr><tr><th scope="row">Printed PDF handout</th><td>9.2</td><td>34.6</td><td>21.8</td></tr></tbody></table></div><footer class="qe-takeaway-footer"><p class="qe-takeaway-note"><strong>Note:</strong> Fixed-decimal alignment compares subgroup shares side by side while the shaded right column anchors the weighted US adult total.</p><p class="qe-takeaway-source"><strong>Source:</strong> Public Civic Literacy Survey (Autumn 2025 Wave)</p></footer><script type="application/json" class="qe-export-payload">{"title": "Paired Subgroup Bars + Shaded Overall Column — News Usage", "tsv": "Category\tAdults Ages 18–29\tAdults Ages 65+\tAll Adults\nDaily briefing email\t24.4\t46.2\t35.8\nVideo explainer clip\t54.6\t14.8\t31.2\nInteractive data table\t38.0\t29.4\t33.5\nPrinted PDF handout\t9.2\t34.6\t21.8", "markdown": "### Paired Subgroup Bars + Shaded Overall Column — News Usage\n_Share getting news daily via digital summaries vs direct publications by age group (%), Oct 2025_\n\n| Category | Adults Ages 18–29 | Adults Ages 65+ | All Adults |\n| --- | --- | --- | --- |\n| Daily briefing email | 24.4 | 46.2 | 35.8 |\n| Video explainer clip | 54.6 | 14.8 | 31.2 |\n| Interactive data table | 38.0 | 29.4 | 33.5 |\n| Printed PDF handout | 9.2 | 34.6 | 21.8 |\n\n**Note:** Fixed-decimal alignment compares subgroup shares side by side while the shaded right column anchors the weighted US adult total.\n**Source:** Public Civic Literacy Survey (Autumn 2025 Wave)"}</script><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:plot)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Paired Subgroup Bars + Shaded Overall Column — News Usage"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:plot&quot;,
+  &quot;id&quot;: &quot;m4-l1-paired-subgroup-bars&quot;,
+  &quot;plot_kind&quot;: &quot;paired_subgroup_bars&quot;,
+  &quot;takeaway&quot;: true,
+  &quot;unit&quot;: &quot;%&quot;,
+  &quot;decimals&quot;: 1,
+  &quot;subgroups&quot;: [
+    &quot;Adults Ages 18\u201329&quot;,
+    &quot;Adults Ages 65+&quot;
+  ],
+  &quot;overall_label&quot;: &quot;All Adults&quot;,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Paired Subgroup Bars + Shaded Overall Column \u2014 News Usage&quot;,
+    &quot;subtitle&quot;: &quot;Share getting news daily via digital summaries vs direct publications by age group (%), Oct 2025&quot;,
+    &quot;rigor_level&quot;: &quot;L1&quot;,
+    &quot;note&quot;: &quot;Fixed-decimal alignment compares subgroup shares side by side while the shaded right column anchors the weighted US adult total.&quot;,
+    &quot;source&quot;: &quot;Public Civic Literacy Survey (Autumn 2025 Wave)&quot;
+  },
+  &quot;groups&quot;: [
+    {
+      &quot;label&quot;: &quot;Daily briefing email&quot;,
+      &quot;a&quot;: 24.4,
+      &quot;b&quot;: 46.2,
+      &quot;overall&quot;: 35.8
+    },
+    {
+      &quot;label&quot;: &quot;Video explainer clip&quot;,
+      &quot;a&quot;: 54.6,
+      &quot;b&quot;: 14.8,
+      &quot;overall&quot;: 31.2
+    },
+    {
+      &quot;label&quot;: &quot;Interactive data table&quot;,
+      &quot;a&quot;: 38.0,
+      &quot;b&quot;: 29.4,
+      &quot;overall&quot;: 33.5
+    },
+    {
+      &quot;label&quot;: &quot;Printed PDF handout&quot;,
+      &quot;a&quot;: 9.2,
+      &quot;b&quot;: 34.6,
+      &quot;overall&quot;: 21.8
+    }
+  ]
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>groups[].{label,a,b,overall}, subgroups[2], overall_label</code></div><div><strong>Optional (omit if null):</strong> <code>color_a, color_b, decimals</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="plot" data-rigor="L2"><figure class="va-figure-card qe-figure" id="m4-l2-dual-slopegraph" data-qe-modality="plot" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">PLOT</span><span class="va-pill" data-variant="tag">L2</span></span></div><p class="qe-takeaway-subtitle">Nominal grants in billions ($B) alongside category share (%) comparing FY2015 to FY2025</p><div class="va-card-actions" data-qe-card="m4-l2-dual-slopegraph"><div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format"><button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="m4-l2-dual-slopegraph-chart">Chart</button><button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="m4-l2-dual-slopegraph-table">Table</button></div><div class="va-copy-group"><button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button><button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button><span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span></div></div><div class="va-card-chart-panel" id="m4-l2-dual-slopegraph-chart"><div class="qe-plot-wrap" data-rigor="L2" data-medium="m2">
+<div class="va-figure-scroll" tabindex="0" role="region" aria-label="Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation"><div class="qe-svg-fallback"><div class="qe-legend-series va-slope-legend"><span><span class="va-hex-swatch" style="--swatch:var(--accent-focal)"></span> Public Infrastructure</span><span><span class="va-hex-swatch" style="--swatch:var(--text-secondary)"></span> School Grants</span><span><span class="va-hex-swatch" style="--swatch:var(--status-ok)"></span> Clean Grid &amp; Transit</span><span><span class="va-hex-swatch" style="--swatch:var(--tint-violet-fg)"></span> Workforce Training</span></div><div class="va-figure-scroll"><svg class="qe-svg qe-svg-640" viewBox="0 0 640 310" role="img" aria-label="Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation">
+<text x="158.9" y="24.0" text-anchor="middle" font-family="var(--font-sans)" font-size="12.2" font-weight="700" fill="var(--text-primary)">Annual Volume ($B)</text>
+<text x="382.9" y="24.0" text-anchor="middle" font-family="var(--font-sans)" font-size="12.2" font-weight="700" fill="var(--text-primary)">Share of Total (%)</text>
+<line x1="297.9" y1="16" x2="297.9" y2="296.0" stroke="var(--border-strong)" stroke-width="1"/>
+<line x1="68.0" y1="60.0" x2="68.0" y2="278.0" stroke="var(--border-hairline)" stroke-width="1"/>
+<text x="68.0" y="296.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)">2015</text>
+<line x1="249.9" y1="60.0" x2="249.9" y2="278.0" stroke="var(--border-hairline)" stroke-width="1"/>
+<text x="249.9" y="296.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)">2025</text>
+<line x1="345.9" y1="60.0" x2="345.9" y2="278.0" stroke="var(--border-hairline)" stroke-width="1"/>
+<text x="345.9" y="296.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)">2015</text>
+<line x1="419.9" y1="60.0" x2="419.9" y2="278.0" stroke="var(--border-hairline)" stroke-width="1"/>
+<text x="419.9" y="296.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)">2025</text>
+<line x1="68.0" y1="177.2" x2="249.9" y2="100.5" stroke="var(--accent-focal)" stroke-width="2.2"/>
+<circle cx="68.0" cy="177.2" r="4.0" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="2.1"/>
+<circle cx="249.9" cy="100.5" r="4.0" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="2.1"/>
+<text x="59.0" y="185.1" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">94.0</text>
+<text x="258.9" y="104.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">168.4B</text>
+<line x1="345.9" y1="145.5" x2="419.9" y2="111.7" stroke="var(--accent-focal)" stroke-width="2.2"/>
+<circle cx="345.9" cy="145.5" r="4.0" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="2.1"/>
+<circle cx="419.9" cy="111.7" r="4.0" fill="var(--bg-canvas)" stroke="var(--accent-focal)" stroke-width="2.1"/>
+<text x="336.9" y="149.5" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--accent-focal)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">31.2</text>
+<polyline fill="none" stroke="var(--accent-focal)" stroke-width="1.1" opacity="0.7" points="424.9,111.7 427.9,111.7 434.9,111.7 439.9,111.7"/>
+<text x="442.9" y="115.7" text-anchor="start" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">39.4% · Public Infrastructure</text>
+<line x1="68.0" y1="164.6" x2="249.9" y2="135.2" stroke="var(--text-secondary)" stroke-width="2.2"/>
+<circle cx="68.0" cy="164.6" r="4.0" fill="var(--bg-canvas)" stroke="var(--text-secondary)" stroke-width="2.1"/>
+<circle cx="249.9" cy="135.2" r="4.0" fill="var(--bg-canvas)" stroke="var(--text-secondary)" stroke-width="2.1"/>
+<text x="59.0" y="168.6" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">106.2B</text>
+<text x="258.9" y="139.2" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">134.8</text>
+<line x1="345.9" y1="129.0" x2="419.9" y2="144.2" stroke="var(--text-secondary)" stroke-width="2.2"/>
+<circle cx="345.9" cy="129.0" r="4.0" fill="var(--bg-canvas)" stroke="var(--text-secondary)" stroke-width="2.1"/>
+<circle cx="419.9" cy="144.2" r="4.0" fill="var(--bg-canvas)" stroke="var(--text-secondary)" stroke-width="2.1"/>
+<text x="336.9" y="133.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-secondary)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">35.2%</text>
+<polyline fill="none" stroke="var(--text-secondary)" stroke-width="1.1" opacity="0.7" points="424.9,144.2 427.9,144.2 434.9,144.2 439.9,144.2"/>
+<text x="442.9" y="148.2" text-anchor="start" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">31.5 · School Grants</text>
+<line x1="68.0" y1="215.9" x2="249.9" y2="188.9" stroke="var(--status-ok)" stroke-width="2.2"/>
+<circle cx="68.0" cy="215.9" r="4.0" fill="var(--bg-canvas)" stroke="var(--status-ok)" stroke-width="2.1"/>
+<circle cx="249.9" cy="188.9" r="4.0" fill="var(--bg-canvas)" stroke="var(--status-ok)" stroke-width="2.1"/>
+<text x="59.0" y="219.9" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-ok)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">56.4</text>
+<text x="258.9" y="192.9" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-ok)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">82.6</text>
+<line x1="345.9" y1="197.0" x2="419.9" y2="194.5" stroke="var(--status-ok)" stroke-width="2.2"/>
+<circle cx="345.9" cy="197.0" r="4.0" fill="var(--bg-canvas)" stroke="var(--status-ok)" stroke-width="2.1"/>
+<circle cx="419.9" cy="194.5" r="4.0" fill="var(--bg-canvas)" stroke="var(--status-ok)" stroke-width="2.1"/>
+<text x="336.9" y="201.0" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--status-ok)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">18.7</text>
+<polyline fill="none" stroke="var(--status-ok)" stroke-width="1.1" opacity="0.7" points="424.9,194.5 427.9,194.5 434.9,194.5 439.9,194.5"/>
+<text x="442.9" y="198.5" text-anchor="start" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--status-ok)">19.3 · Clean Grid &amp; Transit</text>
+<line x1="68.0" y1="227.9" x2="249.9" y2="230.8" stroke="var(--tint-violet-fg)" stroke-width="2.2"/>
+<circle cx="68.0" cy="227.9" r="4.0" fill="var(--bg-canvas)" stroke="var(--tint-violet-fg)" stroke-width="2.1"/>
+<circle cx="249.9" cy="230.8" r="4.0" fill="var(--bg-canvas)" stroke="var(--tint-violet-fg)" stroke-width="2.1"/>
+<text x="59.0" y="236.4" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--tint-violet-fg)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">44.8</text>
+<text x="258.9" y="234.8" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--tint-violet-fg)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">41.9</text>
+<line x1="345.9" y1="212.6" x2="419.9" y2="233.6" stroke="var(--tint-violet-fg)" stroke-width="2.2"/>
+<circle cx="345.9" cy="212.6" r="4.0" fill="var(--bg-canvas)" stroke="var(--tint-violet-fg)" stroke-width="2.1"/>
+<circle cx="419.9" cy="233.6" r="4.0" fill="var(--bg-canvas)" stroke="var(--tint-violet-fg)" stroke-width="2.1"/>
+<text x="336.9" y="217.5" text-anchor="end" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--tint-violet-fg)" class="va-svg-halo-text" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.2" stroke-linejoin="round">14.9</text>
+<polyline fill="none" stroke="var(--tint-violet-fg)" stroke-width="1.1" opacity="0.7" points="424.9,233.6 427.9,233.6 434.9,233.6 439.9,233.6"/>
+<text x="442.9" y="237.6" text-anchor="start" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--tint-violet-fg)">9.8 · Workforce Training</text>
+<circle cx="370.8" cy="134.1" r="3.6" fill="var(--bg-canvas)" stroke="var(--text-primary)" stroke-width="1.6"/>
+<line x1="370.8" y1="130.1" x2="370.8" y2="116.1" stroke="var(--text-secondary)" stroke-width="1.0" stroke-dasharray="2,2"/>
+<g class="qe-svg-knockout"><rect class="qe-svg-knockout-bg" x="349.9" y="99.6" width="81.8" height="17.0" rx="2" fill="var(--bg-canvas)" stroke="none"/><text x="390.8" y="112.1" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="var(--text-primary)">2021 cross</text></g>
+</svg></div></div></div>
+<div class="qe-param-legend"><span class="qe-legend-series"><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--accent-focal)" stroke-width="2"/></svg><span class="qe-leg-txt">Series · Analytical Model</span></span><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--text-secondary)" stroke-width="2" stroke-dasharray="6,3"/></svg><span class="qe-leg-txt">Series · Analytical Model</span></span><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--status-ok)" stroke-width="2" stroke-dasharray="2,3"/></svg><span class="qe-leg-txt">Series · Analytical Model</span></span><span class="qe-leg-item" data-epistemic="model"><svg class="qe-leg-svg" width="20" height="14" viewBox="0 0 20 14" aria-hidden="true"><line x1="1" y1="7" x2="19" y2="7" stroke="var(--tint-violet-fg)" stroke-width="2" stroke-dasharray="8,3,2,3"/></svg><span class="qe-leg-txt">Series · Analytical Model</span></span></span></div>
+</div></div><div class="va-card-table-panel va-table-wrap" id="m4-l2-dual-slopegraph-table" hidden="until-found" tabindex="0" role="region" aria-label="Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation data table"><table class="booktabs qe-table"><caption>Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation</caption><thead><tr><th scope="col">Group</th><th scope="col">Count (2015, B)</th><th scope="col">Count (2025, B)</th><th scope="col">Share (2015, %)</th><th scope="col">Share (2025, %)</th></tr></thead><tbody><tr><th scope="row">Public Infrastructure</th><td>94.0</td><td>168.4</td><td>31.2</td><td>39.4</td></tr><tr><th scope="row">School Grants</th><td>106.2</td><td>134.8</td><td>35.2</td><td>31.5</td></tr><tr><th scope="row">Clean Grid &amp; Transit</th><td>56.4</td><td>82.6</td><td>18.7</td><td>19.3</td></tr><tr><th scope="row">Workforce Training</th><td>44.8</td><td>41.9</td><td>14.9</td><td>9.8</td></tr></tbody></table></div><footer class="qe-takeaway-footer"><p class="qe-takeaway-note"><strong>Note:</strong> Units appear once on the top visual row of each slope panel; dynamic step-leader gutters ensure complete category labels never truncate.</p><p class="qe-takeaway-source"><strong>Source:</strong> US Treasury &amp; OMB Public Assistance Tables (FY2015 vs FY2025)</p></footer><script type="application/json" class="qe-export-payload">{"title": "Paired Count & % Share Dual Slopegraph — Federal Grant Allocation", "tsv": "Group\tCount (2015, B)\tCount (2025, B)\tShare (2015, %)\tShare (2025, %)\nPublic Infrastructure\t94.0\t168.4\t31.2\t39.4\nSchool Grants\t106.2\t134.8\t35.2\t31.5\nClean Grid & Transit\t56.4\t82.6\t18.7\t19.3\nWorkforce Training\t44.8\t41.9\t14.9\t9.8", "markdown": "### Paired Count & % Share Dual Slopegraph — Federal Grant Allocation\n_Nominal grants in billions ($B) alongside category share (%) comparing FY2015 to FY2025_\n\n| Group | Count (2015, B) | Count (2025, B) | Share (2015, %) | Share (2025, %) |\n| --- | --- | --- | --- | --- |\n| Public Infrastructure | 94.0 | 168.4 | 31.2 | 39.4 |\n| School Grants | 106.2 | 134.8 | 35.2 | 31.5 |\n| Clean Grid & Transit | 56.4 | 82.6 | 18.7 | 19.3 |\n| Workforce Training | 44.8 | 41.9 | 14.9 | 9.8 |\n\n**Note:** Units appear once on the top visual row of each slope panel; dynamic step-leader gutters ensure complete category labels never truncate.\n**Source:** US Treasury & OMB Public Assistance Tables (FY2015 vs FY2025)"}</script><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:plot)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Paired Count &amp; % Share Dual Slopegraph — Federal Grant Allocation"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:plot&quot;,
+  &quot;id&quot;: &quot;m4-l2-dual-slopegraph&quot;,
+  &quot;plot_kind&quot;: &quot;dual_slopegraph&quot;,
+  &quot;takeaway&quot;: true,
+  &quot;left_title&quot;: &quot;Annual Volume ($B)&quot;,
+  &quot;right_title&quot;: &quot;Share of Total (%)&quot;,
+  &quot;left_unit&quot;: &quot;B&quot;,
+  &quot;right_unit&quot;: &quot;%&quot;,
+  &quot;left_decimals&quot;: 1,
+  &quot;right_decimals&quot;: 1,
+  &quot;start_label&quot;: &quot;2015&quot;,
+  &quot;end_label&quot;: &quot;2025&quot;,
+  &quot;crossover&quot;: {
+    &quot;label&quot;: &quot;2021 cross&quot;
+  },
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Paired Count &amp; % Share Dual Slopegraph \u2014 Federal Grant Allocation&quot;,
+    &quot;subtitle&quot;: &quot;Nominal grants in billions ($B) alongside category share (%) comparing FY2015 to FY2025&quot;,
+    &quot;rigor_level&quot;: &quot;L2&quot;,
+    &quot;note&quot;: &quot;Units appear once on the top visual row of each slope panel; dynamic step-leader gutters ensure complete category labels never truncate.&quot;,
+    &quot;source&quot;: &quot;US Treasury &amp; OMB Public Assistance Tables (FY2015 vs FY2025)&quot;
+  },
+  &quot;series&quot;: [
+    {
+      &quot;label&quot;: &quot;Public Infrastructure&quot;,
+      &quot;left_start&quot;: 94.0,
+      &quot;left_end&quot;: 168.4,
+      &quot;right_start&quot;: 31.2,
+      &quot;right_end&quot;: 39.4
+    },
+    {
+      &quot;label&quot;: &quot;School Grants&quot;,
+      &quot;left_start&quot;: 106.2,
+      &quot;left_end&quot;: 134.8,
+      &quot;right_start&quot;: 35.2,
+      &quot;right_end&quot;: 31.5
+    },
+    {
+      &quot;label&quot;: &quot;Clean Grid &amp; Transit&quot;,
+      &quot;left_start&quot;: 56.4,
+      &quot;left_end&quot;: 82.6,
+      &quot;right_start&quot;: 18.7,
+      &quot;right_end&quot;: 19.3
+    },
+    {
+      &quot;label&quot;: &quot;Workforce Training&quot;,
+      &quot;left_start&quot;: 44.8,
+      &quot;left_end&quot;: 41.9,
+      &quot;right_start&quot;: 14.9,
+      &quot;right_end&quot;: 9.8
+    }
+  ]
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>series[].{label,left_start,left_end,right_start,right_end}</code></div><div><strong>Optional (omit if null):</strong> <code>crossover.label, left_unit, right_unit</code></div><div><strong>Warmup / empty fallback:</strong> Preserve unit axes and window; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10 and omit absent envelopes.</div></div></details></figure></article><article class="qe-specimen" data-modality="M2" data-schema-modality="table" data-rigor="L2"><figure class="va-figure-card qe-figure" id="m2-l2-diverging-mobility-matrix" data-qe-modality="table" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Diverging % Change + Unshaded $ Level Table — Household Mobility</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">TABLE</span><span class="va-pill" data-variant="tag">L2</span></span></div><p class="qe-takeaway-subtitle">5-year real % change (shaded by direction) paired alongside unshaded median household income ($), 2019 vs 2024</p><div class="va-card-actions" data-qe-card="m2-l2-diverging-mobility-matrix"><div class="va-copy-group"><button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button><button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button><span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span></div></div><div class="va-card-chart-panel" id="m2-l2-diverging-mobility-matrix-chart"><div class="va-cohort-defs" role="note" aria-label="Cohort range definitions"><span class="va-cohort-item"><strong>Lower fifth</strong> &lt; $34,000 household income</span><span class="va-cohort-item"><strong>Middle fifth</strong> $58,000–$94,000</span><span class="va-cohort-item"><strong>Top fifth</strong> &gt; $152,000</span></div>
+<div class="va-table-region va-table-wrap qe-table-wrap va-diverging-scroll" tabindex="0" role="region" aria-label="Diverging % Change + Unshaded $ Level Table — Household Mobility">
+<table class="booktabs qe-table va-diverging-matrix">
+<caption id="tbl-matrix" class="qe-table-caption qe-caption-sr">Diverging % Change + Unshaded $ Level Table — Household Mobility</caption>
+<thead><tr>
+<th scope="col" class="" data-col-role="string">Jurisdiction / Cohort</th>
+<th scope="col" class="num" data-col-role="level_usd">2019 Median</th>
+<th scope="col" class="num" data-col-role="level_usd">2024 Median</th>
+<th scope="col" class="num" data-col-role="rate_pct">5-Yr Real %</th>
+<th scope="col" class="num" data-col-role="rate_pct">Upward Quintile %</th>
+</tr></thead><tbody>
+<tr>
+<th scope="row" data-label="Jurisdiction / Cohort">US National</th>
+<td class="num va-cell-level" data-nowrap="true" data-label="2019 Median">$72,830</td>
+<td class="num va-cell-level" data-nowrap="true" data-label="2024 Median">$74,580</td>
+<td class="num va-cell-diverge" data-diverge="pos-lo" data-nowrap="true" data-label="5-Yr Real %">+2.4%</td>
+<td class="num va-cell-diverge" data-diverge="pos-lo" data-nowrap="true" data-label="Upward Quintile %">+2.4%</td>
+</tr>
+<tr>
+<th scope="row" data-label="Jurisdiction / Cohort">Maryland</th>
+<td class="num va-cell-level" data-nowrap="true" data-label="2019 Median">$94,850</td>
+<td class="num va-cell-level" data-nowrap="true" data-label="2024 Median">$98,461</td>
+<td class="num va-cell-diverge" data-diverge="pos-lo" data-nowrap="true" data-label="5-Yr Real %">+3.8%</td>
+<td class="num va-cell-diverge" data-diverge="pos-hi" data-nowrap="true" data-label="Upward Quintile %">+6.1%</td>
+</tr>
+<tr>
+<th scope="row" data-label="Jurisdiction / Cohort">Wyoming</th>
+<td class="num va-cell-level" data-nowrap="true" data-label="2019 Median">$69,640</td>
+<td class="num va-cell-level" data-nowrap="true" data-label="2024 Median">$72,495</td>
+<td class="num va-cell-diverge" data-diverge="pos-lo" data-nowrap="true" data-label="5-Yr Real %">+4.1%</td>
+<td class="num va-cell-diverge" data-diverge="pos-hi" data-nowrap="true" data-label="Upward Quintile %">+5.4%</td>
+</tr>
+<tr>
+<th scope="row" data-label="Jurisdiction / Cohort">Lower-Fifth Cohort</th>
+<td class="num va-cell-level" data-nowrap="true" data-label="2019 Median">$28,400</td>
+<td class="num va-cell-level" data-nowrap="true" data-label="2024 Median">$27,180</td>
+<td class="num va-cell-diverge" data-diverge="neg-lo" data-nowrap="true" data-label="5-Yr Real %">-4.3%</td>
+<td class="num va-cell-diverge" data-diverge="neg-lo" data-nowrap="true" data-label="Upward Quintile %">-1.8%</td>
+</tr>
+<tr>
+<th scope="row" data-label="Jurisdiction / Cohort">Top-Fifth Cohort</th>
+<td class="num va-cell-level" data-nowrap="true" data-label="2019 Median">$182,400</td>
+<td class="num va-cell-level" data-nowrap="true" data-label="2024 Median">$193,890</td>
+<td class="num va-cell-diverge" data-diverge="pos-hi" data-nowrap="true" data-label="5-Yr Real %">+6.3%</td>
+<td class="num va-cell-diverge" data-diverge="pos-hi" data-nowrap="true" data-label="Upward Quintile %">+5.8%</td>
+</tr>
+</tbody></table></div>
+<p class="va-scroll-cue" aria-hidden="true">Scroll table horizontally on compact screens — rate columns tinted, dollar levels unshaded.</p></div><footer class="qe-takeaway-footer"><p class="qe-takeaway-note"><strong>Note:</strong> Equal-chance baseline: under random intergenerational sorting, each income fifth would capture exactly 20.0% of adult children; divergence above or below 20% indicates persistence or upward mobility.</p><p class="qe-takeaway-source"><strong>Source:</strong> US Census Bureau ACS 1-Year Estimates &amp; Opportunity Insights Baseline</p></footer><script type="application/json" class="qe-export-payload">{"title": "Diverging % Change + Unshaded $ Level Table — Household Mobility", "tsv": "Jurisdiction / Cohort\t2019 Median\t2024 Median\t5-Yr Real %\tUpward Quintile %\nUS National\t72830\t74580\t2.4\t2.4\nMaryland\t94850\t98461\t3.8\t6.1\nWyoming\t69640\t72495\t4.1\t5.4\nLower-Fifth Cohort\t28400\t27180\t-4.3\t-1.8\nTop-Fifth Cohort\t182400\t193890\t6.3\t5.8", "markdown": "### Diverging % Change + Unshaded $ Level Table — Household Mobility\n_5-year real % change (shaded by direction) paired alongside unshaded median household income ($), 2019 vs 2024_\n\n| Jurisdiction / Cohort | 2019 Median | 2024 Median | 5-Yr Real % | Upward Quintile % |\n| --- | --- | --- | --- | --- |\n| US National | 72830 | 74580 | 2.4 | 2.4 |\n| Maryland | 94850 | 98461 | 3.8 | 6.1 |\n| Wyoming | 69640 | 72495 | 4.1 | 5.4 |\n| Lower-Fifth Cohort | 28400 | 27180 | -4.3 | -1.8 |\n| Top-Fifth Cohort | 182400 | 193890 | 6.3 | 5.8 |\n\n**Note:** Equal-chance baseline: under random intergenerational sorting, each income fifth would capture exactly 20.0% of adult children; divergence above or below 20% indicates persistence or upward mobility.\n**Source:** US Census Bureau ACS 1-Year Estimates & Opportunity Insights Baseline"}</script><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:table)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Diverging % Change + Unshaded $ Level Table — Household Mobility"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:table&quot;,
+  &quot;id&quot;: &quot;m2-l2-diverging-mobility-matrix&quot;,
+  &quot;table_kind&quot;: &quot;diverging_matrix&quot;,
+  &quot;takeaway&quot;: true,
+  &quot;diverging_threshold&quot;: 5.0,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Diverging % Change + Unshaded $ Level Table \u2014 Household Mobility&quot;,
+    &quot;subtitle&quot;: &quot;5-year real % change (shaded by direction) paired alongside unshaded median household income ($), 2019 vs 2024&quot;,
+    &quot;rigor_level&quot;: &quot;L2&quot;,
+    &quot;note&quot;: &quot;Equal-chance baseline: under random intergenerational sorting, each income fifth would capture exactly 20.0% of adult children; divergence above or below 20% indicates persistence or upward mobility.&quot;,
+    &quot;source&quot;: &quot;US Census Bureau ACS 1-Year Estimates &amp; Opportunity Insights Baseline&quot;
+  },
+  &quot;cohort_definitions&quot;: [
+    {
+      &quot;label&quot;: &quot;Lower fifth&quot;,
+      &quot;range&quot;: &quot;&lt; $34,000 household income&quot;
+    },
+    {
+      &quot;label&quot;: &quot;Middle fifth&quot;,
+      &quot;range&quot;: &quot;$58,000\u2013$94,000&quot;
+    },
+    {
+      &quot;label&quot;: &quot;Top fifth&quot;,
+      &quot;range&quot;: &quot;&gt; $152,000&quot;
+    }
+  ],
+  &quot;columns&quot;: [
+    {
+      &quot;key&quot;: &quot;scope&quot;,
+      &quot;label&quot;: &quot;Jurisdiction / Cohort&quot;,
+      &quot;data_type&quot;: &quot;string&quot;
+    },
+    {
+      &quot;key&quot;: &quot;income_2019&quot;,
+      &quot;label&quot;: &quot;2019 Median&quot;,
+      &quot;role&quot;: &quot;level_usd&quot;,
+      &quot;decimals&quot;: 0
+    },
+    {
+      &quot;key&quot;: &quot;income_2024&quot;,
+      &quot;label&quot;: &quot;2024 Median&quot;,
+      &quot;role&quot;: &quot;level_usd&quot;,
+      &quot;decimals&quot;: 0
+    },
+    {
+      &quot;key&quot;: &quot;inc_pct&quot;,
+      &quot;label&quot;: &quot;5-Yr Real %&quot;,
+      &quot;role&quot;: &quot;rate_pct&quot;,
+      &quot;decimals&quot;: 1
+    },
+    {
+      &quot;key&quot;: &quot;upward_pct&quot;,
+      &quot;label&quot;: &quot;Upward Quintile %&quot;,
+      &quot;role&quot;: &quot;rate_pct&quot;,
+      &quot;decimals&quot;: 1
+    }
+  ],
+  &quot;rows&quot;: [
+    {
+      &quot;scope&quot;: &quot;US National&quot;,
+      &quot;income_2019&quot;: 72830,
+      &quot;income_2024&quot;: 74580,
+      &quot;inc_pct&quot;: 2.4,
+      &quot;upward_pct&quot;: 2.4
+    },
+    {
+      &quot;scope&quot;: &quot;Maryland&quot;,
+      &quot;income_2019&quot;: 94850,
+      &quot;income_2024&quot;: 98461,
+      &quot;inc_pct&quot;: 3.8,
+      &quot;upward_pct&quot;: 6.1
+    },
+    {
+      &quot;scope&quot;: &quot;Wyoming&quot;,
+      &quot;income_2019&quot;: 69640,
+      &quot;income_2024&quot;: 72495,
+      &quot;inc_pct&quot;: 4.1,
+      &quot;upward_pct&quot;: 5.4
+    },
+    {
+      &quot;scope&quot;: &quot;Lower-Fifth Cohort&quot;,
+      &quot;income_2019&quot;: 28400,
+      &quot;income_2024&quot;: 27180,
+      &quot;inc_pct&quot;: -4.3,
+      &quot;upward_pct&quot;: -1.8
+    },
+    {
+      &quot;scope&quot;: &quot;Top-Fifth Cohort&quot;,
+      &quot;income_2019&quot;: 182400,
+      &quot;income_2024&quot;: 193890,
+      &quot;inc_pct&quot;: 6.3,
+      &quot;upward_pct&quot;: 5.8
+    }
+  ]
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>columns[], rows[], cells(scope, income_2019, income_2024, inc_pct)</code></div><div><strong>Optional (omit if null):</strong> <code>row.flag, row.uncertainty, footnotes[]</code></div><div><strong>Warmup / empty fallback:</strong> Show column headers with explicit &#x27;0 observed rows&#x27; state; emit &#x27;—&#x27; for null cells instead of 0.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M5" data-schema-modality="waveform" data-rigor="L1"><figure class="va-figure-card qe-figure" id="bench-m5-l1-day-arc" data-qe-modality="waveform" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">24-Hour Substation BESS Dispatch &amp; Calibration Duty Arc</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">WAVEFORM</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-waveform-wrap" data-rigor="L1" data-medium="m2">
 <div class="va-figure-scroll" tabindex="0" role="region" aria-label="24-Hour Substation BESS Dispatch &amp; Calibration Duty Arc"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 132" role="img" aria-label="24-Hour Substation BESS Dispatch &amp; Calibration Duty Arc">
 <rect data-role="track" x="54.0" y="48.0" width="612.0" height="28.0" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>
 <rect data-role="phase" x="54.0" y="49.0" width="153.0" height="26.0" fill="var(--bg-elevated)" stroke="var(--text-secondary)" stroke-width="1.2"/>
@@ -14941,6 +16059,221 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   root.QuietSankeyLayout = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
 }(typeof window !== 'undefined' ? window : globalThis));
+
+
+/* Quiet UI v9.6.0 — Card Export (Chart/Table Toggle, Copy TSV, Copy for AI) & Civic Brief Controls */
+(() => {
+  if (typeof window === 'undefined' || typeof document === 'undefined' || !document || typeof document.addEventListener !== 'function' || window.__quietCardExportInit) return;
+  window.__quietCardExportInit = true;
+
+  let toggleSeq = 0;
+
+  function writeClipboard(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+    }
+    return fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    return new Promise((resolve, reject) => {
+      const prev = document.activeElement;
+      const ta = document.createElement('textarea');
+      try {
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        document.body.appendChild(ta);
+        ta.focus({ preventScroll: true });
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        if (document.execCommand('copy')) resolve();
+        else reject(new Error('Clipboard copy rejected'));
+      } catch (err) {
+        reject(err);
+      } finally {
+        ta.remove();
+        if (prev && typeof prev.focus === 'function') prev.focus({ preventScroll: true });
+      }
+    });
+  }
+
+  function announceStatus(card, label, isErr) {
+    const status = card.querySelector('.va-copy-status, .qe-copy-status');
+    if (!status) return;
+    toggleSeq = (toggleSeq + 1) % 2;
+    status.textContent = label + (toggleSeq ? '\u00A0' : '');
+    status.classList.add('is-visible');
+    status.classList.toggle('is-error', !!isErr);
+    clearTimeout(status._qeTimer);
+    status._qeTimer = setTimeout(() => {
+      status.classList.remove('is-visible', 'is-error');
+      status.textContent = '';
+    }, 2800);
+  }
+
+  function setCardMode(card, mode) {
+    const chartPanel = card.querySelector('.va-card-chart-panel');
+    const tablePanel = card.querySelector('.va-card-table-panel');
+    const btnChart = card.querySelector('[data-qe-view="chart"]');
+    const btnTable = card.querySelector('[data-qe-view="table"]');
+    if (!chartPanel || !tablePanel) return;
+    const showTable = mode === 'table';
+    chartPanel.hidden = showTable;
+    if (showTable) {
+      tablePanel.removeAttribute('hidden');
+    } else {
+      tablePanel.setAttribute('hidden', 'until-found');
+    }
+    if (btnChart) {
+      btnChart.setAttribute('aria-pressed', showTable ? 'false' : 'true');
+      btnChart.classList.toggle('is-active', !showTable);
+    }
+    if (btnTable) {
+      btnTable.setAttribute('aria-pressed', showTable ? 'true' : 'false');
+      btnTable.classList.toggle('is-active', showTable);
+    }
+  }
+
+  function readPayload(card) {
+    const el = card.querySelector('script.qe-export-payload');
+    if (!el) return null;
+    try { return JSON.parse(el.textContent || '{}'); } catch (_err) { return null; }
+  }
+
+  document.addEventListener('beforematch', (e) => {
+    const panel = e.target && e.target.closest ? e.target.closest('.va-card-table-panel') : null;
+    if (!panel) return;
+    const card = panel.closest('.qe-figure, .va-figure-card');
+    if (card) setCardMode(card, 'table');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target || typeof e.target.closest !== 'function') return;
+    const viewBtn = e.target.closest('[data-qe-view]');
+    if (viewBtn) {
+      const card = viewBtn.closest('.qe-figure, .va-figure-card');
+      if (card) setCardMode(card, viewBtn.getAttribute('data-qe-view'));
+      return;
+    }
+
+    const copyBtn = e.target.closest('[data-qe-copy]');
+    if (copyBtn) {
+      const card = copyBtn.closest('.qe-figure, .va-figure-card');
+      if (!card) return;
+      const payload = readPayload(card);
+      if (!payload) return;
+      const kind = copyBtn.getAttribute('data-qe-copy');
+      const text = kind === 'ai' ? (payload.markdown || payload.tsv || '') : (payload.tsv || '');
+      if (!text) return;
+      writeClipboard(text).then(
+        () => announceStatus(card, kind === 'ai' ? 'Copied for AI' : 'Copied data', false),
+        () => announceStatus(card, 'Copy failed', true),
+      );
+      return;
+    }
+
+    const hexTile = e.target.closest('.va-hex-tile');
+    if (hexTile) {
+      activateHexTile(hexTile);
+      return;
+    }
+
+    const scopeBtn = e.target.closest('[data-v22-scope]');
+    if (scopeBtn) {
+      applyBriefScope(scopeBtn);
+      return;
+    }
+
+    const fmtBtn = e.target.closest('[data-v22-format]');
+    if (fmtBtn) {
+      applyBriefFormat(fmtBtn);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const hexTile = e.target && e.target.closest ? e.target.closest('.va-hex-tile') : null;
+    if (hexTile) {
+      e.preventDefault();
+      activateHexTile(hexTile);
+    }
+  });
+
+  function activateHexTile(tile) {
+    const stage = tile.closest('.va-figure-card, .qe-figure, .va-hex-stage') || tile.parentElement;
+    if (!stage) return;
+    stage.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
+    tile.classList.add('is-selected');
+    const card = tile.closest('.va-figure-card, .qe-figure') || stage.parentElement;
+    const ro = card ? card.querySelector('.va-hex-readout') : null;
+    if (ro) {
+      const nm = tile.getAttribute('data-state-name') || '';
+      const ab = tile.getAttribute('data-state') || '';
+      const fv = tile.getAttribute('data-full-value') || tile.getAttribute('data-value') || '';
+      const note = tile.getAttribute('data-note') || '';
+      ro.textContent = `${nm} (${ab}): ${fv}${note ? ' · ' + note : ''}`;
+    }
+  }
+
+  function applyBriefScope(btn) {
+    const root = btn.closest('.va-question-brief');
+    if (!root) return;
+    const scope = btn.getAttribute('data-v22-scope');
+    root.querySelectorAll('[data-v22-scope]').forEach((b) => {
+      const on = b.getAttribute('data-v22-scope') === scope;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.classList.toggle('is-active', on);
+    });
+    const payloadEl = root.querySelector('script.v22-scope-payload');
+    if (!payloadEl) return;
+    let scopes = {};
+    try { scopes = JSON.parse(payloadEl.textContent || '{}'); } catch (_err) { return; }
+    const d = scopes[scope];
+    if (!d) return;
+    const lead = root.querySelector('[data-v22-lead]');
+    if (lead) {
+      const span = document.createElement('span');
+      span.className = 'va-lead-highlight';
+      span.textContent = d.lead_clause || '';
+      lead.replaceChildren(span, document.createTextNode(' ' + (d.lead_rest || '')));
+    }
+    const callouts = root.querySelectorAll('[data-v22-callout]');
+    const stats = Array.isArray(d.callouts) ? d.callouts : [];
+    callouts.forEach((box, idx) => {
+      const s = stats[idx];
+      if (!s) return;
+      const numEl = box.querySelector('.va-callout-num');
+      const descEl = box.querySelector('.va-callout-desc');
+      if (numEl) numEl.textContent = s.num || '';
+      if (descEl) descEl.textContent = s.desc || '';
+    });
+    if (d.focus_state) {
+      const tile = Array.from(root.querySelectorAll('.va-hex-tile')).find((el) => el.getAttribute('data-state') === d.focus_state);
+      if (tile) activateHexTile(tile);
+    }
+  }
+
+  function applyBriefFormat(btn) {
+    const root = btn.closest('.va-question-brief');
+    if (!root) return;
+    const fmt = btn.getAttribute('data-v22-format');
+    root.querySelectorAll('[data-v22-format]').forEach((b) => {
+      const on = b.getAttribute('data-v22-format') === fmt;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.classList.toggle('is-active', on);
+    });
+    const webPane = root.querySelector('.va-brief-web');
+    const slidePane = root.querySelector('.va-brief-slides');
+    const isDeck = fmt === 'deck';
+    if (webPane) webPane.hidden = isDeck;
+    if (slidePane) slidePane.hidden = !isDeck;
+  }
+})();
 
 
 /* SPDX-License-Identifier: Apache-2.0 */

@@ -53,9 +53,19 @@ federal statistical series, and open engineering pedagogy specifications.
   - Models first-order RC capacitor discharge (`V(t) = V_0 * exp(-t / tau)` with `V_0 = 5.00 V` and `tau = 2.40 s`) using **Pedagogical Flow** semantic term tokens (`tx` for `V_0`, `path_loss` for `exp(-t / tau)`).
   - Discrete student oscilloscope captures (`f_s = 1.00 kHz`, `T_amb = 22.4 ± 0.2 °C`, `±u_y` probe uncertainty) are plotted strictly as scatter glyphs with uncertainty whiskers and a synchronized bottom residual strip per **NIST SP 811** and **JCGM 100:2008**.
 
+### 2.4 View `v22-reading-and-mobility-brief` (Public Data & Research Storytelling)
+- **Primary Evidence Specs**:
+  - `evidence/v22_reading_hex_map.json` (`urn:quiet-ui:schema:v9:plot`, `us_hex_tile_map`, `L1`)
+  - `evidence/v22_reading_arrow_dumbbell.json` (`urn:quiet-ui:schema:v9:plot`, `arrow_dumbbell`, `L2`)
+  - `evidence/v22_mobility_matrix.json` (`urn:quiet-ui:schema:v9:table`, `diverging_matrix`, `L2`)
+- **Methodology Basis**:
+  - Grounded in public-domain US Department of Education NAEP Grade 4 Reading benchmarks and US Census Bureau ACS 1-Year household income / intergenerational mobility baseline comparisons (`17 U.S.C. § 105`).
+  - Enforces Takeaway Figure Card ergonomics (`[Chart | Table]` toggle, `Copy data`, `Copy for AI`), equal-chance `20.0%` baseline disclosure, and dual-physics Web Brief / Slide Deck / Print Sheet alignment.
+
 ---
 
 ## 3. Clean-Room & Licensing Compliance
 
 1. **Zero PII & Zero Proprietary Telemetry**: All account IDs (`TREASURY-POOL-04`), bench rigs (`RC-BENCH-RIG-04`), and capital program labels are synthetic clean-room identifiers.
-2. **Permissive Attribution**: Published under the repository's Apache-2.0 license with full public-domain attribution to GAO, USWDS, NIST, NAVAIR, and SEC methodological standards.
+2. **Permissive Attribution**: Published under the repository's Apache-2.0 license with full public-domain attribution to GAO, USWDS, NAEP, US Census Bureau, NIST, NAVAIR, and SEC methodological standards.
+

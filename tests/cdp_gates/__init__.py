@@ -17,7 +17,7 @@ ALL_WORLDS_VIEWS: list[tuple[str, tuple[str, ...]]] = [
     ("01-clinical-icu-and-trials", ("v01-icu-bedside-terminal", "v02-trial-regulatory-brief", "v03-patient-recovery-companion")),
     ("02-cloud-cyber-and-ai-ops", ("v04-sre-incident-workbench", "v05-zero-trust-ato-spec", "v06-ai-drift-and-lineage-ide", "v19-product-roadmap-and-triage")),
     ("03-industrial-grid-and-manufacturing", ("v07-grid-scada-poi-console", "v08-plant-floor-wall-kiosk", "v09-spc-quality-and-modbus-report")),
-    ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab", "v20-student-capstone-lab-report")),
+    ("04-civic-finance-and-stem-learning", ("v10-civic-capital-budget-deck", "v11-treasury-stress-test-solver", "v12-stem-interactive-lab", "v20-student-capstone-lab-report", "v22-reading-and-mobility-brief")),
     ("05-physical-systems-auto-and-aero", ("v13-propulsion-archival-monograph", "v14-fieldbus-and-scope-debugger", "v15-collimated-flight-hud", "v16-transparent-window-overlay", "v21-field-anomaly-escalation-tsn")),
     ("06-smart-home-and-energy", ("v17-picture-frame-home-kiosk", "v18-home-assistant-companion-console")),
 ]

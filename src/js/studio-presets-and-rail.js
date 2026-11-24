@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.5 — Curated Form-Factor Presets, Global Stepping & Interactive #va-shell-rail
+ * Quiet UI v9.6 — Curated Form-Factor Presets, Global Stepping & Interactive #va-shell-rail
  */
 (function (window) {
   'use strict';
@@ -27,6 +27,7 @@
     'v19-product-roadmap-and-triage': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
     'v20-student-capstone-lab-report': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
     'v21-field-anomaly-escalation-tsn': { vp: '390x844', medium: 'auto', theme: 'white', preset_label: 'Mobile' },
+    'v22-reading-and-mobility-brief': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
   };
 
   function esc(val) {

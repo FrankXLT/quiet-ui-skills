@@ -104,6 +104,56 @@
       "value": 0.8,
       "unit": "sigma",
       "description": "Maximum standardized residual across replicated bench trials"
+    },
+    "reading_proficiency_us_pct": {
+      "value": 31,
+      "unit": "%",
+      "description": "US national share of Grade 4 students at or above NAEP Proficient reading"
+    },
+    "reading_proficiency_md_pct": {
+      "value": 35,
+      "unit": "%",
+      "description": "Maryland share of Grade 4 students at or above NAEP Proficient reading"
+    },
+    "reading_proficiency_wy_pct": {
+      "value": 36,
+      "unit": "%",
+      "description": "Wyoming share of Grade 4 students at or above NAEP Proficient reading"
+    },
+    "median_income_us_usd": {
+      "value": 74580,
+      "unit": "USD",
+      "description": "US national 2024 median household income"
+    },
+    "median_income_md_usd": {
+      "value": 98461,
+      "unit": "USD",
+      "description": "Maryland 2024 median household income"
+    },
+    "median_income_wy_usd": {
+      "value": 72495,
+      "unit": "USD",
+      "description": "Wyoming 2024 median household income"
+    },
+    "real_income_growth_us_pct": {
+      "value": 2.4,
+      "unit": "%",
+      "description": "US national 5-year real median household income change"
+    },
+    "real_income_growth_md_pct": {
+      "value": 3.8,
+      "unit": "%",
+      "description": "Maryland 5-year real median household income change"
+    },
+    "real_income_growth_wy_pct": {
+      "value": 4.1,
+      "unit": "%",
+      "description": "Wyoming 5-year real median household income change"
+    },
+    "equal_chance_mobility_pct": {
+      "value": 20.0,
+      "unit": "%",
+      "description": "Null-hypothesis equal-chance intergenerational quintile mobility share"
     }
   },
   "evidence_bindings": [
@@ -157,6 +207,34 @@
         "rc_mean_trial_v",
         "rc_uncertainty_v",
         "rc_sigma_bound"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v22_reading_hex_map.json",
+      "metric_ids": [
+        "reading_proficiency_us_pct",
+        "reading_proficiency_md_pct",
+        "reading_proficiency_wy_pct"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v22_reading_arrow_dumbbell.json",
+      "metric_ids": [
+        "reading_proficiency_us_pct",
+        "reading_proficiency_md_pct",
+        "reading_proficiency_wy_pct"
+      ]
+    },
+    {
+      "evidence_file": "evidence/v22_mobility_matrix.json",
+      "metric_ids": [
+        "median_income_us_usd",
+        "median_income_md_usd",
+        "median_income_wy_usd",
+        "real_income_growth_us_pct",
+        "real_income_growth_md_pct",
+        "real_income_growth_wy_pct",
+        "equal_chance_mobility_pct"
       ]
     }
   ],
@@ -284,6 +362,40 @@
         "status": "NOMINAL",
         "primary_margin": "5-station calibrated mean 1.82 V vs 1.84 V theory at tau = 2.40 s from V_0 = 5.00 V (±0.05 V repeatability, <= 0.8 sigma)",
         "bounded_action": "Request Lab Section 2 signoff: all 5 bench stations reproduce first-order RC decay within combined +/-0.05 V calibration uncertainty."
+      }
+    },
+    {
+      "view_id": "v22-reading-and-mobility-brief",
+      "title": "Reading Proficiency & Household Mobility Public Data Brief",
+      "domain_cluster": "Public Data & Civic Research",
+      "presenter": "Civic Data Editor",
+      "audience": "Everyday Readers, Policy Analysts & Slide Briefings",
+      "lenses": [
+        "Consumer / Common Reader",
+        "Program Manager"
+      ],
+      "tempos": [
+        "T1",
+        "T2"
+      ],
+      "mediums": [
+        "M1",
+        "M2"
+      ],
+      "chromatic_budget": "Archival Proof",
+      "nav_shells": [
+        "N1"
+      ],
+      "rigor_level": "L2",
+      "evidence_refs": [
+        "evidence/v22_reading_hex_map.json",
+        "evidence/v22_reading_arrow_dumbbell.json",
+        "evidence/v22_mobility_matrix.json"
+      ],
+      "decision_gate": {
+        "status": "NOMINAL",
+        "primary_margin": "31% US Grade 4 proficiency (Maryland 35%, Wyoming 36%) paired with $74,580 US median income (+2.4% real growth) vs 20.0% neutral baseline",
+        "bounded_action": "Publish synchronized Web Brief, 16:9 Slide Deck, and Paper Print Sheet from conserved census and NAEP files."
       }
     }
   ]

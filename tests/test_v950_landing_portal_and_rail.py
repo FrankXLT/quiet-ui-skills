@@ -110,7 +110,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         self.assertEqual(state_info["barBg"], "rgb(255, 255, 255)")
         self.assertEqual(state_info["domainCount"], 6)
         self.assertEqual(state_info["stdCount"], 4)
-        self.assertEqual(state_info["viewBtnCount"], 21)
+        self.assertEqual(state_info["viewBtnCount"], 22)
         self.assertFalse(state_info["overflowX"], "landing page horizontal overflow at 1440px")
 
         for morph_mode in ("paper", "mobile", "dark", "brief", "screen"):
@@ -150,7 +150,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         self.assertEqual(slider_res["warnState"], "warn")
         self.assertIn("-26.5 mmHg", slider_res["warnMargin"])
 
-        for rel, expected_cnt in (("customizations/personal-starter/showcase.html", 21), ("customizations/brand-starter/showcase.html", 17)):
+        for rel, expected_cnt in (("customizations/personal-starter/showcase.html", 22), ("customizations/brand-starter/showcase.html", 18)):
             driver.get(f"{root_url}/{rel}")
             time.sleep(0.2)
             cnt = driver.execute_script(
@@ -212,12 +212,12 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         )
         self.assertEqual(init["studioView"], "examples")
         self.assertEqual(init["vp"], "1920x1080")
-        self.assertEqual(init["pos"], "1 / 21")
+        self.assertEqual(init["pos"], "1 / 22")
         self.assertEqual(init["matBg"], "rgb(226, 232, 240)")
         self.assertEqual(init["frame"], "screen")
 
         visited: list[dict[str, str]] = []
-        for step_idx in range(21):
+        for step_idx in range(22):
             snap = driver.execute_script(
                 """
                 const api = window.QuietStudioPortalV9;
@@ -234,7 +234,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
                 };
                 """
             )
-            self.assertEqual(snap["pos"], f"{step_idx + 1} / 21")
+            self.assertEqual(snap["pos"], f"{step_idx + 1} / 22")
             self.assertFalse(snap["hasDomainSel"])
             self.assertEqual(snap["optgroups"], 6)
             visited.append(snap)
@@ -243,7 +243,7 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
 
         wrapped_view = driver.execute_script("return window.QuietStudioPortalV9.state.view;")
         self.assertEqual(wrapped_view, "v01-icu-bedside-terminal", "wraparound failed to return to v01")
-        self.assertEqual(len({v["view"] for v in visited}), 21)
+        self.assertEqual(len({v["view"] for v in visited}), 22)
         self.assertEqual(len({v["domain"] for v in visited}), 6)
         frames = {v["frame"] for v in visited}
         themes = {v["theme"] for v in visited}

@@ -1,9 +1,9 @@
 {
   "name": "quiet-ui-skills",
   "displayName": "Quiet UI Skills",
-  "description": "Quiet UI v9.5 3-pillar suite: OAW Overview landing + interactive rail studio, 7-medium portable UI architecture, .quiet-ui.md contract & HTML/CDP auditor (quiet-ui), standalone calibrated metrology & open-standards SVG compilers + CJK-safe QuietSvgLayout (quiet-evidence), audience translation (quiet-bridge), and starter customization kits.",
+  "description": "Quiet UI v9.6 3-pillar suite: 22-view interactive studio, 49-specimen Component Library, Question-First public data & Print-Flow checks (quiet-ui), deterministic US 51-hex map/dumbbell/slopegraph/diverging matrix compilers + Takeaway Copy-for-AI (quiet-evidence), audience translation (quiet-bridge), and starter kits.",
   "logo": "assets/logo.svg",
-  "version": "9.5.0",
+  "version": "9.6.0",
   "suggestedPrompts": [
     "Turn these engineering notes and metrics into a clean Quiet UI page",
     "Compile calibrated plots, bitfields, or sequence/N2/fault-tree SVG schematics from structured JSON",

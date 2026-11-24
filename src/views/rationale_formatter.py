@@ -51,6 +51,7 @@ _VIEW_SLUG_PLAIN: dict[str, str] = {
     "v19-product-roadmap-and-triage": "v19 · Product Release Roadmap",
     "v20-student-capstone-lab-report": "v20 · Student Lab Report",
     "v21-field-anomaly-escalation-tsn": "v21 · Test Bay Repair Plan",
+    "v22-reading-and-mobility-brief": "v22 · Reading & Mobility Data Brief",
 }
 
 _NAV_PLAIN: dict[str, str] = {

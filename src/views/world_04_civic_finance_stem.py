@@ -9,8 +9,10 @@ from typing import Any
 
 try:
     from world_directional_views import build_v20_html
+    from world_04_public_data import build_v22_html
 except ImportError:
     from src.views.world_directional_views import build_v20_html
+    from src.views.world_04_public_data import build_v22_html
 
 try:
     from world_common import (
@@ -219,6 +221,9 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
         "drawdown": "v11_treasury_drawdown_plot.json",
         "rc_lab": "v12_stem_rc_cooling_lab.json",
         "repeatability": "v20_student_repeatability_dumbbell.json",
+        "hex_map": "v22_reading_hex_map.json",
+        "arrow_dumbbell": "v22_reading_arrow_dumbbell.json",
+        "mobility_matrix": "v22_mobility_matrix.json",
     }
     corpus, bp, specs = load_world_inputs(corpora_dir, "04-civic-finance-and-stem-learning", spec_files)
     html_map = {
@@ -226,6 +231,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
         "v11-treasury-stress-test-solver": _build_v11_html(corpus, specs),
         "v12-stem-interactive-lab": _build_v12_html(corpus, specs),
         "v20-student-capstone-lab-report": build_v20_html(corpus, specs),
+        "v22-reading-and-mobility-brief": build_v22_html(corpus, specs),
     }
     view_cfg = {
         "v10-civic-capital-budget-deck": {
@@ -281,6 +287,18 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_removed": "Narrative-Last Lab Logs & Uncalibrated Averaging",
             "bias_risk": "Forces judges to hunt through chronology for whether error bounds actually hold across rigs.",
             "bias_replacement": "Lead-with-claim capstone defense pairing repeatability dumbbell with error bounds and self-critique.",
+        },
+        "v22-reading-and-mobility-brief": {
+            "option_label": "v22 · Reading & Mobility Data Brief", "default_medium": "m2",
+            "chromatic_code": "c1", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "nav_icon": "landmark", "nav_brand": "Public Data Brief",
+            "topbar_brand": "Reading & Mobility Public Data Brief", "rail_brand": "Brief Sections",
+            "topbar_status": [], "nav_items": ["Question Lead", "51-State Map", "Trend Dumbbell", "Mobility Table"],
+            "nav_anchors": ["v22-overview", "v22-map", "v22-dumbbell", "v22-matrix"],
+            "inv_col": "v22-reading-and-mobility-brief", "short_tag": "v22",
+            "bias_removed": "Buried Policy Leads, Area Distortion & Print Clipping",
+            "bias_risk": "Masks small states behind geographic area while clipping table columns on mobile and PDF prints.",
+            "bias_replacement": "Question-First Brief with unboxed key numbers, 51-hex state map, ranked arrow dumbbell, and Chart/Table + Copy for AI cards.",
         },
     }
     return assemble_world_bundle(corpus, bp, "04 · Budgets, Finance & Labs", view_cfg, html_map)

@@ -439,6 +439,7 @@
 }
 .qe-copy-status { font-family: var(--font-mono); font-size: 0.75rem; color: var(--status-ok); opacity: 0; transition: opacity 0.15s ease; }
 .qe-copy-status.is-visible { opacity: 1; }
+.qe-copy-status.is-error { color: var(--status-danger); }
 .qe-eco-pre {
   margin: 0; padding: 0.7rem 0.9rem;
   background: var(--bg-elevated); border: 1px solid var(--border-hairline); border-radius: 8px;

@@ -221,6 +221,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
         ("02-cloud-cyber-and-ai-ops", "v19-product-roadmap-and-triage", "document.querySelectorAll('#v19-triage .v9-triage-row')[2].click();return document.getElementById('v19-triage-detail').textContent;", "+3.0 d"),
         ("04-civic-finance-and-stem-learning", "v20-student-capstone-lab-report", "document.querySelector('#v20-rubric-chips [data-v20-focus=\"error\"]').click();return document.getElementById('v20-focus-note').textContent;", "Error Bounds"),
         ("05-physical-systems-auto-and-aero", "v21-field-anomaly-escalation-tsn", "document.getElementById('v21-handoff-arm').click();document.getElementById('v21-handoff-send').click();return document.getElementById('v21-handoff-status').textContent;", "HANDOFF SENT"),
+        ("04-civic-finance-and-stem-learning", "v22-reading-and-mobility-brief", "document.querySelector('[data-v22-scope=\"md\"]').click();return document.querySelector('[data-v22-lead]').textContent;", "35% of Maryland"),
     ]
     for wid, vid, js, expect in checks:
         driver.get(f"{base_url}?world={wid}&view={vid}&theme=white")
@@ -237,7 +238,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
     if not driver.execute_script("const s=window.QuietStudioPortalV9.state;return s.world==='04-civic-finance-and-stem-learning'&&s.view==='v10-civic-capital-budget-deck';"):
         errs.append("[DEEPLINK_V10] failed domain resolution")
 
-    for rel, cnt in (("customizations/personal-starter/showcase.html", 21), ("customizations/brand-starter/showcase.html", 17)):
+    for rel, cnt in (("customizations/personal-starter/showcase.html", 22), ("customizations/brand-starter/showcase.html", 18)):
         driver.get(f"{root_url}/{rel}?theme=dark")
         time.sleep(0.25)
         n = int(driver.execute_script("return JSON.parse(document.getElementById('va-v9-manifest').textContent).worlds.reduce((a,w)=>a+w.views.length,0);"))
@@ -250,7 +251,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
 
 
 def run_studio_and_viewport_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Run all Studio bar, 21-view x 5-viewport continuum, theme, print, interaction & starter CDP checks."""
+    """Run all Studio bar, 22-view x 5-viewport continuum, theme, print, interaction & starter CDP checks."""
     errs: list[str] = []
     _check_studio_bar_and_viewports(driver, base_url, errs)
     _check_themes_print_why_and_interactions(driver, base_url, root_url, errs)

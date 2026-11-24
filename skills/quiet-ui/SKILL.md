@@ -3,9 +3,9 @@ name: quiet-ui
 description: Design system and UI architecture skill generating responsive HTML interfaces across 7 delivery mediums with 4-theme tokens, concentric geometry, and human-factors controls grounded in ISA-101, FDA IEC 62366, and NASA-STD-3001.
 ---
 
-# Quiet UI v9.5.0 — Qualitative Delivery Medium Physics & Shells
+# Quiet UI v9.6.0 — Qualitative Delivery Medium Physics & Shells
 
-Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, editorial briefs, and optical HUDs alike.
+Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, civic data briefs, and optical HUDs alike.
 
 ---
 
@@ -33,6 +33,7 @@ Load ONLY the specific foundation and medium guides matching your active vector:
 
 ### Foundation Guides
 - [foundation/data-grounding-and-widget-binding.md](foundation/data-grounding-and-widget-binding.md): Data-to-Widget Binding Map, on-card series legends, `.va-kpi-card` unbounded rules, Cyclical Whisker Anti-Sum Rule, effective-dated rate epochs, `SHA-256[:12]` showcase sanitization, `N < 10` warmup labels, zero mock JS/JSON fixtures/self-badges/raw `brain:` IDs.
+- [foundation/public-data-and-storytelling.md](foundation/public-data-and-storytelling.md): Question-First Briefs, unboxed `.va-editorial-callouts`, 4-part Takeaway Figure Cards (`Chart | Table` `hidden="until-found"`, `Copy data`, `Copy for AI`), calm light-theme `<pre><code>`, `>= 35ch` prose splits, `16:9` Slide Decks, and `@media print` flow hygiene.
 - [foundation/brownfield-retrofit-and-migration.md](foundation/brownfield-retrofit-and-migration.md): `.quiet-ui.md` persistent context contract, Greenfield vs. Brownfield Retrofit guardrails, Capability Parity Ledger (`KEEP | CONSOLIDATE | DEPRECATE`), Deprecation Blocklist, monolith-to-zoom decomposition, strangler routes, `@layer` quarantine (`layer(legacy)`), and Guardrail 6 Day-30 Extract & Normalize (`--strict-drift`).
 - [foundation/forms-states-and-resilience.md](foundation/forms-states-and-resilience.md): Accessible labels (`[UNLABELED_FORM_CONTROL]`), progressive `blur`/`input`/submit `:user-invalid` validation, `.va-gate-reason`, `[aria-busy="true"]`, 4-way zero-data taxonomy (`first-run`, `filtered` `Clear filters`, `warmup`, `.va-stale-retained`), and 3-tier reversibility (`.va-undo-toast` `>= 7s`, `ARM -> EXECUTE`, `<dialog closedby="any">`).
 - [foundation/tokens-and-surfaces.md](foundation/tokens-and-surfaces.md): 4-theme OKLCH tokens (incl. `--bg-subtle`), 4-way mirror parity, canonical `@layer reset, tokens, shell, archetypes, evidence, views, utilities;` order, concentric radius math, and border depth rules.
@@ -53,7 +54,7 @@ Load ONLY the specific foundation and medium guides matching your active vector:
 
 ## 4. Portable HTML/CSS Auditor (`scripts/audit_quiet_html.py`)
 
-Verify any external HTML/CSS/JS asset tree or live localhost URL (`~/.agents/skills/quiet-ui/` or `skills/quiet-ui/`) against Quiet UI styling (`[HIDDEN_LAYER]`, `[IMPORTANT]`, `[FONT_FLOOR]`), `.quiet-ui.md` blocklists (`[BLOCKLIST_RESURRECTION]`), `--strict-drift` (`[TOKEN_BYPASS_HEX]`, `[INLINE_STYLE_SPRAWL]`), form/zero-state contracts (`[UNLABELED_FORM_CONTROL]`, `[DEAD_END_ZERO_STATE]`), chrome budgets (`[STICKY_CHROME_BLOAT]`, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`, `[PROSE_PANE_CRAMPED]`, `[TREE_NESTED_CARD_BORDERS]`, `[PLOT_AXIS_MISALIGN]`, `[PILL_SPRAWL]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`), data honesty (`[SELF_BADGE]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[JARGON_TERMINOLOGY]`), and SVG bounds (`[AXIS_LABEL_CLIPPED]`, `[BAR_HAIRLINE_DENSITY]`):
+Verify any external HTML/CSS/JS asset tree or live localhost URL (`~/.agents/skills/quiet-ui/` or `skills/quiet-ui/`) against Quiet UI styling (`[HIDDEN_LAYER]`, `[IMPORTANT]`, `[FONT_FLOOR]`), `.quiet-ui.md` blocklists (`[BLOCKLIST_RESURRECTION]`), `--strict-drift` (`[TOKEN_BYPASS_HEX]`, `[INLINE_STYLE_SPRAWL]`), form/zero-state contracts (`[UNLABELED_FORM_CONTROL]`, `[DEAD_END_ZERO_STATE]`), chrome budgets (`[STICKY_CHROME_BLOAT]`, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`, `[PROSE_PANE_CRAMPED]`, `[TREE_NESTED_CARD_BORDERS]`, `[PLOT_AXIS_MISALIGN]`, `[PILL_SPRAWL]`, `[NAVBAR_SHIFT]`, `[PANE_CONTROL_CLIPPED]`), editorial/print checks (`[PRINT_FLOW_COLLISION]`, `[PROSE_COLUMN_STARVATION]`, `[NESTED_PROSE_SCROLL]`, `[CODE_LUMINANCE_SHOCK]`, `[DIAGONAL_TICK_OR_ROTATED_Y_TITLE]`, `[END_LABEL_CLIP]`), data honesty (`[SELF_BADGE]`, `[FAKE_UNBOUNDED_GAUGE]`, `[JSON_MOCK_FIXTURE]`, `[EMOJI_IN_CHROME]`, `[JARGON_TERMINOLOGY]`), and SVG bounds (`[AXIS_LABEL_CLIPPED]`, `[BAR_HAIRLINE_DENSITY]`):
 
 ```bash
 # Scaffold .quiet-ui.md and run static + strict drift audit (auto-discovers .quiet-ui.md)

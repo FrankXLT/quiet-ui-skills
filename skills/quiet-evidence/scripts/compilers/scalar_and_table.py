@@ -361,6 +361,9 @@ def _format_col_header_html(c: dict[str, Any]) -> str:
 
 def compile_table(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
     """Compile Modality 2 (urn:quiet-ui:schema:v9:table) into responsive Booktabs/PPSM HTML."""
+    if str(spec.get("table_kind") or "").lower() == "diverging_matrix":
+        from .civic_matrix_and_export import compile_diverging_matrix
+        return compile_diverging_matrix(spec, rigor=rigor, medium=medium, theme=theme, chrome=chrome)
     meta = spec.get("metadata", {})
     eff_rigor = (rigor or meta.get("rigor_level", "L2")).upper()
     max_prio = 1 if eff_rigor == "L1" else (2 if eff_rigor == "L2" else 3)

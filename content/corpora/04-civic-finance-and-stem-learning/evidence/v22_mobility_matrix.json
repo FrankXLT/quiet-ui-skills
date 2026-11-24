@@ -1,0 +1,33 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v22-mobility-matrix",
+  "table_kind": "diverging_matrix",
+  "takeaway": true,
+  "diverging_threshold": 5.0,
+  "metadata": {
+    "title": "Real household income grew fastest in Wyoming (+4.1%) and Maryland (+3.8%), reaching $98,461 in MD",
+    "subtitle": "Unshaded median household income ($) beside diverging 5-year real % growth and upward quintile mobility (%)",
+    "rigor_level": "L2",
+    "note": "Equal-chance baseline: under neutral intergenerational sorting, each income fifth captures 20.0% of grown children; rates above or below reflect regional mobility divergence.",
+    "source": "US Census Bureau ACS 1-Year Estimates & Opportunity Insights (2019–2024)"
+  },
+  "cohort_definitions": [
+    {"label": "Lower fifth", "range": "< $34,000 household income"},
+    {"label": "Middle fifth", "range": "$58,000–$94,000"},
+    {"label": "Top fifth", "range": "> $152,000"}
+  ],
+  "columns": [
+    {"key": "scope", "label": "Jurisdiction / Cohort", "data_type": "string"},
+    {"key": "income_2019", "label": "2019 Median", "role": "level_usd", "decimals": 0},
+    {"key": "income_2024", "label": "2024 Median", "role": "level_usd", "decimals": 0},
+    {"key": "inc_pct", "label": "5-Yr Real %", "role": "rate_pct", "decimals": 1},
+    {"key": "upward_pct", "label": "Upward Mobility %", "role": "rate_pct", "decimals": 1}
+  ],
+  "rows": [
+    {"scope": "US National", "income_2019": 72830, "income_2024": 74580, "inc_pct": 2.4, "upward_pct": 2.4},
+    {"scope": "Maryland", "income_2019": 94850, "income_2024": 98461, "inc_pct": 3.8, "upward_pct": 6.1},
+    {"scope": "Wyoming", "income_2019": 69640, "income_2024": 72495, "inc_pct": 4.1, "upward_pct": 5.4},
+    {"scope": "Lower-Fifth Cohort", "income_2019": 28400, "income_2024": 27180, "inc_pct": -4.3, "upward_pct": -1.8},
+    {"scope": "Top-Fifth Cohort", "income_2019": 182400, "income_2024": 193890, "inc_pct": 6.3, "upward_pct": 5.8}
+  ]
+}

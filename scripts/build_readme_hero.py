@@ -104,7 +104,7 @@ def _capture_bench(driver: Any, base_url: str) -> Image.Image:
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": CAP_W, "height": CAP_H, "deviceScaleFactor": 1.0, "mobile": False})
     driver.get(f"{base_url}/docs/bench/evidence-bench.html?theme=dark-paper")
     for _ in range(50):
-        if driver.execute_script("return document.querySelectorAll('.qe-specimen').length===44&&!!window.QuietEChartsAdapter;"):
+        if driver.execute_script("return document.querySelectorAll('.qe-specimen').length===49&&!!window.QuietEChartsAdapter;"):
             break
         time.sleep(0.08)
     driver.execute_script(
@@ -126,8 +126,8 @@ def _composite(panels: list[tuple[str, str, Image.Image]]) -> Image.Image:
     f_title, f_sub, f_tag = _font(BOLD_FONT_CANDIDATES, 19), _font(MONO_FONT_CANDIDATES, 12), _font(BOLD_FONT_CANDIDATES, 13)
     draw.rectangle([0, 0, 1600, 42], fill="#0B1120")
     draw.line([(0, 42), (1600, 42)], fill="#1E293B", width=1)
-    draw.text((24, 10), "QUIET UI v9.5", fill="#38BDF8", font=f_title)
-    draw.text((152, 14), "6-Domain Studio (21 Views)  ·  44 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
+    draw.text((24, 10), "QUIET UI v9.6", fill="#38BDF8", font=f_title)
+    draw.text((152, 14), "6-Domain Studio (22 Views)  ·  49 Modular Evidence & UI Specimens", fill="#E2E8F0", font=f_tag)
     rb = "Themes: White  ·  Dark  ·  Paper  ·  Dark-Paper   |   NIST 1-2-5  ·  Zero Truncation"
     draw.text((1576 - draw.textbbox((0, 0), rb, font=f_sub)[2], 15), rb, fill="#94A3B8", font=f_sub)
     for (x, y), (label, badge, img) in zip([(24, 52), (806, 52), (24, 487), (806, 487)], panels):
@@ -167,7 +167,7 @@ def main() -> int:
             ("v01 · Clinical ICU Waveform & Vital Scope", "DOMAIN 01 · WHITE", _capture_showcase(driver, base, "01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "white", fit_sel="#v01-hemo")),
             ("v15 · Collimated Night Flight HUD Optics", "DOMAIN 05 · DARK", _capture_showcase(driver, base, "05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", "dark", night_js)),
             ("v18 · Home Assistant Energy & Climate", "DOMAIN 06 · PAPER", _capture_showcase(driver, base, "06-smart-home-and-energy", "v18-home-assistant-companion-console", "paper")),
-            ("Component Library · ECharts Gantt & ATO Enclave", "44 SPECIMENS · DARK-PAPER", _capture_bench(driver, base)),
+            ("Component Library · ECharts Gantt & ATO Enclave", "49 SPECIMENS · DARK-PAPER", _capture_bench(driver, base)),
         ]
         hero = _composite(panels)
         OUT_PATH.parent.mkdir(parents=True, exist_ok=True)

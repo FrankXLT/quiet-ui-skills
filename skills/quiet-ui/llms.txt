@@ -1,9 +1,9 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.5
+# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.6
 
 > 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
 
-- **v9.5 Multi-Domain Interactive Studio (`6 Domains · 21 Views`):** `quiet-ui-showcase.html` (Overview Landing Page, Light Topbar, `1080p` Framed Portal, Interactive `#va-shell-rail`, GitHub Pages: `docs/index.html`)
-- **3-Pillar Component Library (`44 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + Forms/Zero-States/Undo + UI/Bridge Controls + Data Contracts)
+- **v9.6 Multi-Domain Interactive Studio (`6 Domains · 22 Views`):** `quiet-ui-showcase.html` (Overview Landing Page, Light Topbar, `1080p` Framed Portal, Interactive `#va-shell-rail`, GitHub Pages: `docs/index.html`)
+- **3-Pillar Component Library (`49 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + Civic Tile Maps/Arrow Dumbbells/Subgroup Bars/Dual Slopegraphs/Diverging Matrices + Copy-for-AI Takeaway Cards + Data Contracts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells · `.quiet-ui.md` Contract) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
 - **License:** Apache 2.0 (Core 3-Pillar Plugin) + MIT (Customizations, Tokens & 100% of Generated UI/SVG Deliverables)
@@ -20,8 +20,8 @@ Installs the native **Quiet UI Skills** plugin into `~/.gemini/config/plugins/qu
 
 ### Customize in 60 Seconds (`customizations/`)
 One manifest (`customizations/<name>/customization.json`) skins UI shells and every compiled SVG schematic simultaneously:
-- **`customizations/personal-starter/`**: Full-range blueprint (21 views across 6 domains) for personal research, telemetry, optical viewport HUD, and tactile consoles.
-- **`customizations/brand-starter/`**: Product blueprint (17 views across Domains 01–05) for enterprise documentation, workflows, roadmaps, and engineering workspaces.
+- **`customizations/personal-starter/`**: Full-range blueprint (22 views across 6 domains) for personal research, telemetry, optical viewport HUD, and tactile consoles.
+- **`customizations/brand-starter/`**: Product blueprint (18 views across Domains 01–05) for enterprise documentation, workflows, roadmaps, public data briefs, and engineering workspaces.
 
 ```bash
 python3 customizations/scripts/build_showcase.py customizations/<target>
@@ -43,11 +43,11 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 5. **Data-First Widget Binding (`skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`):**
    - Inspect live schemas and produce a **Data-to-Widget Binding Map** *before* picking specimens. Omit absent target/delta sub-slots, never borrow targets across pools, evaluate pricing changes per immutable `effective_from` rate epoch, sanitize public showcase snapshots via deterministic `SHA-256[:12]` aliasing + `0`-match grep gate, show `Warming up — N samples collected` when `N < 10`, avoid retroactive scoring against newly added rules, and keep inline mock JS arrays, `Quiet` self-badges, and raw `brain:` IDs out of app chrome.
 
-## 3. Pillar 1 — `quiet-ui` (7 Delivery Mediums, Forms & Drift Gates)
+## 3. Pillar 1 — `quiet-ui` (7 Delivery Mediums, Forms, Public Data & Print Gates)
 
 - `M1` — Paper & Ink Print Sheets (unboxed, `@media print` optimized)
-- `M2` — Editorial Web Monographs, RFCs & Two-Column Proof Layouts (`72ch`)
-- `M3` — Stateful Web Workbenches, `.va-stage[data-stage="canvas|workbench|ops"]` + `[data-width="reading|workbench"]` (`112rem` cap), `.va-workbench-panes` / `.va-pane` / `.va-pane-hdr` hairline columns, sticky topbar trigger + auto-closing opaque `.va-side-rail[data-mode="overlay"]` + single-row `40px` `.va-rail-footer` (`.va-swatch-row`/`.va-swatch-btn` left + `Compact -> d3` / `Comfortable -> d2` right, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`), single-owner nav (`N4` hides `.va-tab-strip`, `<= 22%` chrome budget), flat borderless `20px`-caret `.va-tree-row` + `2.25rem` `.va-tree-children` indent (`<= 5` items + `.va-tree-more`), `.va-toolbar-joined` segmented track, `.va-split-reader-gallery` (`>= 60%` prose `>= 760px` + `< 760px` `<dialog class="va-modal-sheet" closedby="any">`), `.va-form-grid` / `.va-empty-state` (4-way zero-states incl. `filtered` `Clear filters` `[DEAD_END_ZERO_STATE]` & `.va-stale-retained`) / `>= 7s` `.va-undo-toast`, bounded `.va-period-stepper` (`minDate`/`maxDate`, `Cal-to-Date` vs `Rolling`), `QuietSankeyLayout`, `.va-kpi-gauge-card` + trackless `.va-kpi-card`, Guardrail 6 Day-30 Extract & Normalize (`--strict-drift`: `[TOKEN_BYPASS_HEX]`, `[INLINE_STYLE_SPRAWL]`, `[BLOCKLIST_RESURRECTION]`), and Guardrail 7 parity + `audit_workbench_probes.py` (`[CHROME_HEIGHT_BUDGET]`, `[WORKBENCH_STAGE_TUNNEL]`, `[DUPLICATE_PRIMARY_NAV]`, `[UNBORDERED_SEGMENTED_TRACK]`, `[VISIBLE_HITBOX_OUTLINE]`, `[TREE_INDENT_INVERSION]`, `[RAW_SLUG_OR_GRAMMAR_LEAK]`)
+- `M2` — Editorial Web Monographs, Question-First Briefs, Multi-Format Decks (`16:9` + Web Brief + Print) & Two-Column Proof Layouts (`>= 35ch` / `72ch`)
+- `M3` — Stateful Web Workbenches, `.va-stage[data-stage="canvas|workbench|ops"]` + `[data-width="reading|workbench"]` (`112rem` cap), `.va-workbench-panes` / `.va-pane` / `.va-pane-hdr` hairline columns, sticky topbar trigger + auto-closing opaque `.va-side-rail[data-mode="overlay"]` + single-row `40px` `.va-rail-footer` (`.va-swatch-row`/`.va-swatch-btn` left + `Compact -> d3` / `Comfortable -> d2` right, `[DENSITY_STOP_SPRAWL]`, `[RAIL_FOOTER_CLUTTER]`), single-owner nav (`N4` hides `.va-tab-strip`, `<= 22%` chrome budget), flat borderless `20px`-caret `.va-tree-row` + `2.25rem` `.va-tree-children` indent (`<= 5` items + `.va-tree-more`), `.va-toolbar-joined` segmented track, `.va-split-reader-gallery` (`>= 60%` prose `>= 760px` + `< 760px` `<dialog class="va-modal-sheet" closedby="any">`), `.va-form-grid` / `.va-empty-state` (4-way zero-states incl. `filtered` `Clear filters` `[DEAD_END_ZERO_STATE]` & `.va-stale-retained`) / `>= 7s` `.va-undo-toast`, bounded `.va-period-stepper`, `QuietSankeyLayout`, `.va-kpi-gauge-card` + trackless `.va-kpi-card`, Guardrail 6 Day-30 Extract & Normalize (`--strict-drift`: `[TOKEN_BYPASS_HEX]`, `[INLINE_STYLE_SPRAWL]`, `[BLOCKLIST_RESURRECTION]`), Guardrail 7 parity (`audit_workbench_probes.py`), and `audit_editorial_print.py` (`[PRINT_FLOW_COLLISION]`, `[PROSE_COLUMN_STARVATION]`, `[NESTED_PROSE_SCROLL]`, `[CODE_LUMINANCE_SHOCK]`, `[DIAGONAL_TICK_OR_ROTATED_Y_TITLE]`, `[END_LABEL_CLIP]`)
 - `M4` — Walk-Up POI Terminals & Guarded Industrial SCADA Consoles
 - `M5` — 10-Foot Ambient Wall Displays (`>= 32px` KPIs, zero decorative chrome)
 - `M6` — Collimated Optical HUDs (`>= 65%` unobstructed central keep-out zone)
@@ -55,17 +55,17 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 
 ## 4. Pillar 2 — `quiet-evidence` (6 Deterministic Evidence Modalities)
 
-- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & trackless `.va-kpi-card` metrics), `tables` (Booktabs & `N <= 8` `.va-inline-bar` bullet rows), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest, `gantt`, `heatmap`; browser SVGs use CJK/wide-script-aware `QuietSvgLayout.visualUnits` + visible on-card legends for `>= 2` series, while ECharts bundles `QuietEChartsDefaults` for `binTimeSeries`, `buildCyclicalWhiskerOption` active-day `Min–Avg–Max + Recent` whiskers over plain `"Activity by Hour of Day"` copy `[JARGON_TERMINOLOGY]`, `trimTrailingFutureWeeks` + `>= 0.06` zero-cell contrast, `grid.top >= 30, nameGap >= 12`, `alignPlotGridFrames` / `alignSharedAxes`, `applySafeLegendLayout`, `observeChartResize`, and `QuietPeriodStepper`), `bitfields`, and `schematics`.
+- **Modalities (`compile_evidence.py` & `window.QuietSvgLayout`):** `scalars` (linear range/threshold gauges & trackless `.va-kpi-card` metrics), `tables` (Booktabs, `diverging_matrix`, & `N <= 8` `.va-inline-bar` bullet rows), `waveforms` (linked clinical/HIL/reflection multi-channel scopes), `plots` (calibrated Cartesian/calibration curves, stacked bars, dumbbell, forest, `gantt`, `heatmap`, `us_hex_tile_map`, `arrow_dumbbell`, `paired_subgroup_bars`, `dual_slopegraph`; browser Takeaway Figure Cards with `[Chart | Table]`, TSV `Copy data`, and Markdown `Copy for AI` via `quiet-card-export.js`; ECharts bundles `QuietEChartsDefaults` for `binTimeSeries`, `buildCyclicalWhiskerOption`, `trimTrailingFutureWeeks`, `alignPlotGridFrames`), `bitfields`, and `schematics`.
 
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.5.0).
-- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [forms-states-and-resilience.md](skills/quiet-ui/foundation/forms-states-and-resilience.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py` + `audit_ux_and_drift.py`).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.6.0).
+- [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [public-data-and-storytelling.md](skills/quiet-ui/foundation/public-data-and-storytelling.md), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [forms-states-and-resilience.md](skills/quiet-ui/foundation/forms-states-and-resilience.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`, `audit_editorial_print.py`, `audit_ux_and_drift.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + CJK-safe `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & `.quiet-ui.md`-aware intake router.
-- [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows, Guardrail 6 drift normalization, 4-variant pill grammar, and verification lifecycle.
+- [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows (A–E), Guardrail 6 drift normalization, 4-variant pill grammar, and verification lifecycle.
 - [scripts/build_all.py](scripts/build_all.py): Canonical single-command artifact synchronizer & `--check` drift gate.
-- [tests/](tests/): Unified stdlib (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_v930_endstate_lessons.py`, `test_v940_context_forms_drift.py`) and Chrome CDP (`test_cdp_visuals.py`) suite.
+- [tests/](tests/): Unified stdlib (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_v940_context_forms_drift.py`, `test_v960_civic_and_print_audit.py`) and Chrome CDP (`test_cdp_visuals.py`) suite.
 - [tokens/quiet-ui-tokens.css](tokens/quiet-ui-tokens.css): Standalone 4-theme CSS Custom Properties (MIT).
 - [customizations/README.md](customizations/README.md): 60-second brand & personal onboarding guide (MIT).

@@ -1,0 +1,184 @@
+[
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "m4-l1-us-hex-tile-map",
+    "plot_kind": "us_hex_tile_map",
+    "takeaway": true,
+    "unit": "%",
+    "decimals": 0,
+    "focus_state": "MD",
+    "bin_breaks": [24, 28, 32, 36],
+    "metadata": {
+      "title": "Specimen 45: Equal-Area US 51-Hex Tile Map — Grade 4 Reading Proficiency",
+      "subtitle": "Share of 4th-grade students at or above NAEP Proficient by jurisdiction (%), 2024 assessment",
+      "rigor_level": "L1",
+      "note": "Each state plus DC occupies one equal-area hexagon; text ink switches automatically between dark and white from bin luminance.",
+      "source": "NAEP Nation's Report Card (2024 Public Data Release)"
+    },
+    "states": {
+      "AL": {"name": "Alabama", "value": 28},
+      "AK": {"name": "Alaska", "value": 24},
+      "AZ": {"name": "Arizona", "value": 28},
+      "AR": {"name": "Arkansas", "value": 27},
+      "CA": {"name": "California", "value": 29},
+      "CO": {"name": "Colorado", "value": 36},
+      "CT": {"name": "Connecticut", "value": 36},
+      "DE": {"name": "Delaware", "value": 26},
+      "DC": {"name": "District of Columbia", "value": 26, "note": "Equal tile hitbox"},
+      "FL": {"name": "Florida", "value": 35},
+      "GA": {"name": "Georgia", "value": 31},
+      "HI": {"name": "Hawaii", "value": 30},
+      "ID": {"name": "Idaho", "value": 33},
+      "IL": {"name": "Illinois", "value": 31},
+      "IN": {"name": "Indiana", "value": 33},
+      "IA": {"name": "Iowa", "value": 32},
+      "KS": {"name": "Kansas", "value": 30},
+      "KY": {"name": "Kentucky", "value": 31},
+      "LA": {"name": "Louisiana", "value": 30},
+      "ME": {"name": "Maine", "value": 29},
+      "MD": {"name": "Maryland", "value": 35, "note": "+4 pts above US 31%"},
+      "MA": {"name": "Massachusetts", "value": 41},
+      "MI": {"name": "Michigan", "value": 28},
+      "MN": {"name": "Minnesota", "value": 34},
+      "MS": {"name": "Mississippi", "value": 31},
+      "MO": {"name": "Missouri", "value": 29},
+      "MT": {"name": "Montana", "value": 32},
+      "NE": {"name": "Nebraska", "value": 33},
+      "NV": {"name": "Nevada", "value": 27},
+      "NH": {"name": "New Hampshire", "value": 35},
+      "NJ": {"name": "New Jersey", "value": 38},
+      "NM": {"name": "New Mexico", "value": 21},
+      "NY": {"name": "New York", "value": 29},
+      "NC": {"name": "North Carolina", "value": 32},
+      "ND": {"name": "North Dakota", "value": 30},
+      "OH": {"name": "Ohio", "value": 32},
+      "OK": {"name": "Oklahoma", "value": 24},
+      "OR": {"name": "Oregon", "value": 28},
+      "PA": {"name": "Pennsylvania", "value": 33},
+      "RI": {"name": "Rhode Island", "value": 32},
+      "SC": {"name": "South Carolina", "value": 29},
+      "SD": {"name": "South Dakota", "value": 32},
+      "TN": {"name": "Tennessee", "value": 31},
+      "TX": {"name": "Texas", "value": 29},
+      "UT": {"name": "Utah", "value": 37},
+      "VT": {"name": "Vermont", "value": 32},
+      "VA": {"name": "Virginia", "value": 33},
+      "WA": {"name": "Washington", "value": 33},
+      "WV": {"name": "West Virginia", "value": 22},
+      "WI": {"name": "Wisconsin", "value": 32},
+      "WY": {"name": "Wyoming", "value": 36, "note": "Rank tied #4 nationwide"}
+    }
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "m4-l2-arrow-dumbbell",
+    "plot_kind": "arrow_dumbbell",
+    "takeaway": true,
+    "unit": "%",
+    "decimals": 0,
+    "start_label": "2019 Rate",
+    "end_label": "2024 Rate",
+    "x_label": "4th-Grade Reading Proficiency Rate",
+    "sort": "delta_desc",
+    "metadata": {
+      "title": "Specimen 46: Ranked Directional Arrow Dumbbell — Reading Proficiency Shifts",
+      "subtitle": "Percentage-point shift in NAEP Grade 4 Reading proficiency across benchmark jurisdictions (2019 -> 2024)",
+      "rigor_level": "L2",
+      "note": "Arrows point toward 2024 rates; rows marked with an asterisk retain prior-cycle 2022 reporting where local sample thresholds deferred 2024 updates.",
+      "source": "NAEP Long-Term Trend & State Assessment Series (2019–2024)"
+    },
+    "items": [
+      {"label": "Louisiana", "start": 26, "end": 30},
+      {"label": "Maryland", "start": 35, "end": 35},
+      {"label": "Mississippi", "start": 32, "end": 31},
+      {"label": "Wyoming", "start": 40, "end": 36},
+      {"label": "US National", "start": 35, "end": 31},
+      {"label": "Massachusetts", "start": 45, "end": 41},
+      {"label": "Rural Districts *", "start": 32, "end": 28, "fallback_vintage": "2022–2023 pooled cohort"}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "m4-l1-paired-subgroup-bars",
+    "plot_kind": "paired_subgroup_bars",
+    "takeaway": true,
+    "unit": "%",
+    "decimals": 1,
+    "subgroups": ["Adults Ages 18–29", "Adults Ages 65+"],
+    "overall_label": "All Adults",
+    "metadata": {
+      "title": "Specimen 47: Paired Subgroup Bars + Shaded Overall Column — News Usage",
+      "subtitle": "Share getting news daily via digital summaries vs direct publications by age group (%), Oct 2025",
+      "rigor_level": "L1",
+      "note": "Fixed-decimal alignment compares subgroup shares side by side while the shaded right column anchors the weighted US adult total.",
+      "source": "Public Civic Literacy Survey (Autumn 2025 Wave)"
+    },
+    "groups": [
+      {"label": "Daily briefing email", "a": 24.4, "b": 46.2, "overall": 35.8},
+      {"label": "Video explainer clip", "a": 54.6, "b": 14.8, "overall": 31.2},
+      {"label": "Interactive data table", "a": 38.0, "b": 29.4, "overall": 33.5},
+      {"label": "Printed PDF handout", "a": 9.2, "b": 34.6, "overall": 21.8}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:plot",
+    "id": "m4-l2-dual-slopegraph",
+    "plot_kind": "dual_slopegraph",
+    "takeaway": true,
+    "left_title": "Annual Volume ($B)",
+    "right_title": "Share of Total (%)",
+    "left_unit": "B",
+    "right_unit": "%",
+    "left_decimals": 1,
+    "right_decimals": 1,
+    "start_label": "2015",
+    "end_label": "2025",
+    "crossover": {"label": "2021 cross"},
+    "metadata": {
+      "title": "Specimen 48: Paired Count & % Share Dual Slopegraph — Federal Grant Allocation",
+      "subtitle": "Nominal grants in billions ($B) alongside category share (%) comparing FY2015 to FY2025",
+      "rigor_level": "L2",
+      "note": "Units appear once on the top visual row of each slope panel; dynamic step-leader gutters ensure complete category labels never truncate.",
+      "source": "US Treasury & OMB Public Assistance Tables (FY2015 vs FY2025)"
+    },
+    "series": [
+      {"label": "Public Infrastructure", "left_start": 94.0, "left_end": 168.4, "right_start": 31.2, "right_end": 39.4},
+      {"label": "School Grants", "left_start": 106.2, "left_end": 134.8, "right_start": 35.2, "right_end": 31.5},
+      {"label": "Clean Grid & Transit", "left_start": 56.4, "left_end": 82.6, "right_start": 18.7, "right_end": 19.3},
+      {"label": "Workforce Training", "left_start": 44.8, "left_end": 41.9, "right_start": 14.9, "right_end": 9.8}
+    ]
+  },
+  {
+    "$schema": "urn:quiet-ui:schema:v9:table",
+    "id": "m2-l2-diverging-mobility-matrix",
+    "table_kind": "diverging_matrix",
+    "takeaway": true,
+    "diverging_threshold": 5.0,
+    "metadata": {
+      "title": "Specimen 49: Diverging % Change + Unshaded $ Level Table — Household Mobility",
+      "subtitle": "5-year real % change (shaded by direction) paired alongside unshaded median household income ($), 2019 vs 2024",
+      "rigor_level": "L2",
+      "note": "Equal-chance baseline: under random intergenerational sorting, each income fifth would capture exactly 20.0% of adult children; divergence above or below 20% indicates persistence or upward mobility.",
+      "source": "US Census Bureau ACS 1-Year Estimates & Opportunity Insights Baseline"
+    },
+    "cohort_definitions": [
+      {"label": "Lower fifth", "range": "< $34,000 household income"},
+      {"label": "Middle fifth", "range": "$58,000–$94,000"},
+      {"label": "Top fifth", "range": "> $152,000"}
+    ],
+    "columns": [
+      {"key": "scope", "label": "Jurisdiction / Cohort", "data_type": "string"},
+      {"key": "income_2019", "label": "2019 Median", "role": "level_usd", "decimals": 0},
+      {"key": "income_2024", "label": "2024 Median", "role": "level_usd", "decimals": 0},
+      {"key": "inc_pct", "label": "5-Yr Real %", "role": "rate_pct", "decimals": 1},
+      {"key": "upward_pct", "label": "Upward Quintile %", "role": "rate_pct", "decimals": 1}
+    ],
+    "rows": [
+      {"scope": "US National", "income_2019": 72830, "income_2024": 74580, "inc_pct": 2.4, "upward_pct": 2.4},
+      {"scope": "Maryland", "income_2019": 94850, "income_2024": 98461, "inc_pct": 3.8, "upward_pct": 6.1},
+      {"scope": "Wyoming", "income_2019": 69640, "income_2024": 72495, "inc_pct": 4.1, "upward_pct": 5.4},
+      {"scope": "Lower-Fifth Cohort", "income_2019": 28400, "income_2024": 27180, "inc_pct": -4.3, "upward_pct": -1.8},
+      {"scope": "Top-Fifth Cohort", "income_2019": 182400, "income_2024": 193890, "inc_pct": 6.3, "upward_pct": 5.8}
+    ]
+  }
+]

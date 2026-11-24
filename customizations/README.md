@@ -29,11 +29,11 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 | Blueprint | Scope | Coverage | Optical Backplates | Best For |
 | :--- | :--- | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial Workspaces | 21 Views | 8 CC0 / PD Photos | Personal research, clinical/grid consoles, optical HUDs, and smart-home decks. |
-| **`brand-starter`** | Team & Product Portal | 17 Views | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
+| **`personal-starter`** | Personal & Spatial Workspaces | 22 Views | 8 CC0 / PD Photos | Personal research, clinical/grid consoles, optical HUDs, and smart-home decks. |
+| **`brand-starter`** | Team & Product Portal | 18 Views | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
 
 > [!NOTE]
-> `brand-starter` omits optical HUD overlays and residential smart-home views, keeping enterprise software and engineering deployments focused across 17 views.
+> `brand-starter` omits optical HUD overlays and residential smart-home views, keeping enterprise software and engineering deployments focused across 18 views.
 
 ---
 
@@ -43,8 +43,8 @@ Please clone the starter, extract design tokens into customization.json, update 
 customizations/
 ├── README.md                          # This architecture guide
 ├── LICENSE                            # Standalone MIT License (0 NOTICE obligations)
-├── personal-starter/                  # Read-only 21-view blueprint
-│   ├── customization.json             # Manifest (mode: personal, all 21 views)
+├── personal-starter/                  # Read-only 22-view blueprint
+│   ├── customization.json             # Manifest (mode: personal, all 22 views)
 │   ├── intent/                        # Architectural design rationale
 │   │   ├── 00-global-structure.md     # Layout, chrome & 7-step typography
 │   │   ├── 01-docs-and-specs.md       # Editorial & regulatory spec rationale
@@ -53,9 +53,9 @@ customizations/
 │   ├── styles/
 │   │   ├── quiet-ui-tokens.css        # MIT base design tokens
 │   │   └── overrides.css              # Custom :root variables & CSS rules
-│   └── showcase.html                  # Pre-compiled 21-view preview
-├── brand-starter/                     # Read-only 17-view product blueprint
-│   └── ...                            # Same anatomy with 17 product views
+│   └── showcase.html                  # Pre-compiled 22-view preview
+├── brand-starter/                     # Read-only 18-view product blueprint
+│   └── ...                            # Same anatomy with 18 product views
 └── scripts/                           # Build & verification toolchain
     ├── build_showcase.py              # Compiles showcase from customization.json
     └── verify_customization.py        # Validates WCAG contrast & geometric gates

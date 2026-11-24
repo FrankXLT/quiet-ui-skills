@@ -1,0 +1,27 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v22-reading-arrow-dumbbell",
+  "plot_kind": "arrow_dumbbell",
+  "takeaway": true,
+  "unit": "%",
+  "decimals": 0,
+  "start_label": "2019 Rate",
+  "end_label": "2024 Rate",
+  "x_label": "Grade 4 Reading Proficient Share",
+  "sort": "delta_desc",
+  "metadata": {
+    "title": "Reading gains in Louisiana contrast with four-point national declines since 2019",
+    "subtitle": "2019 vs 2024 share of Grade 4 students proficient (%) ranked by net shift",
+    "rigor_level": "L2",
+    "note": "National proficiency slipped from 35% to 31%, while Maryland held at 35% and Wyoming shifted from 40% to 36%. Rows marked with an asterisk retain fallback reporting.",
+    "source": "NAEP State & National Reading Trends (2019–2024)"
+  },
+  "items": [
+    {"label": "Louisiana", "start": 26, "end": 30},
+    {"label": "Maryland", "start": 35, "end": 35},
+    {"label": "Mississippi", "start": 32, "end": 31},
+    {"label": "Wyoming", "start": 40, "end": 36},
+    {"label": "US National", "start": 35, "end": 31},
+    {"label": "Rural Districts *", "start": 32, "end": 28, "fallback_vintage": "2022–2023 pooled cohort"}
+  ]
+}

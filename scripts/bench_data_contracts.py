@@ -160,6 +160,18 @@ def contract_for_evidence_spec(spec: dict[str, Any]) -> str:
     elif pkind == "sankey":
         req_s = "nodes[].{id,label}, links[].{source,target,value,unit}"
         opt_s = "loss_nodes, stage_subtotals"
+    elif pkind == "us_hex_tile_map":
+        req_s = "states{51}.{value}, unit, focus_state"
+        opt_s = "bin_breaks[], palette[], states[].note"
+    elif pkind == "arrow_dumbbell":
+        req_s = "items[].{label,start,end}, start_label, end_label"
+        opt_s = "items[].fallback_vintage, sort, unit"
+    elif pkind == "paired_subgroup_bars":
+        req_s = "groups[].{label,a,b,overall}, subgroups[2], overall_label"
+        opt_s = "color_a, color_b, decimals"
+    elif pkind == "dual_slopegraph":
+        req_s = "series[].{label,left_start,left_end,right_start,right_end}"
+        opt_s = "crossover.label, left_unit, right_unit"
     else:
         req_s = f"axes.{{x_axis,y_axis}}, series[].{{label,epistemic,data_points[]}} ({pkind})"
         opt_s = "envelopes[], uncertainty_bands[], baseline_fit, policy_effective_date"

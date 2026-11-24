@@ -3,7 +3,7 @@ name: quiet-evidence
 description: Quantitative data metrology and structural topology skill compiling NIST 1-2-5 plots, bitfields, HIL waveforms, and MIL-STD schematics from deterministic JSON schemas.
 ---
 
-# Quiet UI Pillar 2 (`v9.5.0`) — Unified Quantitative Evidence & Metrology
+# Quiet UI Pillar 2 (`v9.6.0`) — Unified Quantitative Evidence & Metrology
 
 Quiet UI Pillar 2 governs data fidelity, unit calculus, scale intervals, and physical topology across six modalities and a three-level rigor continuum (`L1 · Orientation`, `L2 · Governance`, `L3 · Physical, Clinical & Metrological`).
 
@@ -20,6 +20,7 @@ Before compiling or generating any quantitative visual, complete the [Data-to-Wi
 6. **Grayscale & Dash Redundancy**: Multi-series plots must be distinguishable by stroke dash pattern or marker glyph in pure black-and-white print.
 7. **Cross-Plot Axis, Time Binning & Spine Registration**: Co-displayed plots MUST bin dense series cleanly (`QuietEChartsDefaults.binTimeSeries` -> `1h` `<= 3d`, `1d` `4–92d`, ISO `1w` `> 92d`), use wide-script/CJK-aware `measureCategoryGutter` (`visualUnits` `1.75x` fullwidth + combining-mark exclusion, `mono` detection, `axisLabelMargin`), align column `[x_left, x_right]` / row `[y_top, y_bottom]` `containLabel: false` pixel spines (`computeGridFrameGutters` / `alignPlotGridFrames`), and lock shared `1–2–5` Y ceilings per unit (`sharedNiceScale125`) — auto-enabling `independentXSpan` across disparate X formats (`YYYY-MM-DD` vs. `00h..23h`).
 8. **Chart Form by Category Count (`N`) & Cyclical Anti-Sum Rule**: `N <= 3` categories render as stat strips or micro-bars (`<= 72px`); `N <= 8` comparisons use `.va-inline-bar` bullet tables (`<= 32px`/row); composite `[Chart + Table]` cards stay 1-column full-width. For cyclical hour/weekday/month cadences, never sum raw totals across days—plot active-day `Min–Max` range whiskers + `Active Avg` bar + `Recent` marker via `QuietEChartsDefaults.buildCyclicalWhiskerOption` (`"Activity by Hour of Day"`, never jargon `"diurnal"`, `[JARGON_TERMINOLOGY]`).
+9. **Civic & Research Storytelling Forms (`us_hex_tile_map`, `arrow_dumbbell`, `paired_subgroup_bars`, `dual_slopegraph`, `diverging_matrix`)**: Wrap public-data cards via 4-part Takeaway Figure Cards with `[Chart | Table]`, `Copy data` TSV, `Copy for AI` Markdown, luminance-adaptive ink, unit-once top slope rows, step-leader right gutters (`[END_LABEL_CLIP]`), and unshaded `$` levels beside diverging `%` tints.
 
 > [!IMPORTANT]
 > **Hard Ban on Freehand SVG Guessing**: LLMs MUST NOT guess SVG coordinate numbers freehand. Author `urn:quiet-ui:schema:v9:<modality>` JSON via `compile_evidence.py`, or route dynamic browser plots through bundled `window.QuietSvgLayout` and `QuietEChartsDefaults` (`quiet-evidence-bundle.js`).

@@ -57,6 +57,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/11-directional-and-planner.css",
         "src/css/15-glass-and-stage-interactions.css",
         "src/css/16-kiosks-and-sticky-rail.css",
+        "src/css/17-editorial-research-brief.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():
@@ -82,6 +83,7 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/quiet-cyclical-whiskers.js",
             "src/js/quiet-period-stepper.js",
             "src/js/quiet-sankey-layout.js",
+            "src/js/quiet-card-export.js",
             "src/js/echarts-quiet-adapter.js",
             "src/js/world-01-interactions.js",
             "src/js/world-02-05-interactions.js",

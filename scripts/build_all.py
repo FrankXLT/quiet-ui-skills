@@ -34,6 +34,7 @@ EVIDENCE_CSS_PARTS: tuple[str, ...] = (
     "src/css/12-period-and-scope.css",
     "src/css/13-split-reader-dialog.css",
     "src/css/14-forms-and-states.css",
+    "src/css/17-editorial-research-brief.css",
     "docs/bench/evidence-bench.css",
 )
 
@@ -66,6 +67,7 @@ def _render_evidence_bundle_js() -> str:
         "src/js/quiet-cyclical-whiskers.js",
         "src/js/quiet-period-stepper.js",
         "src/js/quiet-sankey-layout.js",
+        "src/js/quiet-card-export.js",
     )
     parts = [
         (REPO_ROOT / rel).read_text(encoding="utf-8")

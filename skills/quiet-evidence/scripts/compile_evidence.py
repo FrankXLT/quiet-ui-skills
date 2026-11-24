@@ -26,6 +26,7 @@ from compilers import (  # noqa: E402
     compile_table,
     compile_waveform,
 )
+from compilers.civic_matrix_and_export import wrap_takeaway_card  # noqa: E402
 from compilers.echarts_adapter import render_ecosystem_drawer  # noqa: E402
 from compilers.tokens_and_scales import esc  # noqa: E402
 
@@ -110,6 +111,8 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
             "src/css/03-pills-and-annunciators.css",
             "src/css/12-period-and-scope.css",
             "src/css/13-split-reader-dialog.css",
+            "src/css/14-forms-and-states.css",
+            "src/css/17-editorial-research-brief.css",
             "docs/bench/evidence-bench.css",
         ),
     ) or _FALLBACK_TOKENS_CSS
@@ -122,6 +125,7 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
             "src/js/echarts-layout-defaults.js",
             "src/js/quiet-cyclical-whiskers.js",
             "src/js/quiet-period-stepper.js",
+            "src/js/quiet-card-export.js",
         ),
     )
     scheme = "dark" if theme in {"dark", "dark-paper"} else "light"
@@ -156,6 +160,7 @@ def _compile_single_dict(
         return inner_html
 
     fig_id = esc(data.get("id", f"qe-{modality}"))
+    inner_html = wrap_takeaway_card(data, inner_html, modality, fig_id)
     title = esc(meta.get("title", modality.title()))
     desc = str(meta.get("description", ""))
     desc_html = ""

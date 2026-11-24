@@ -1,17 +1,17 @@
-# Quiet UI v9.5.0 — Master Engineering Workflows & Architecture
+# Quiet UI v9.6.0 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.5.0 (`3-Pillar Unified Continuum`)  
-> **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS
+> **Target Version**: Quiet UI v9.6.0 (`3-Pillar Unified Continuum`)  
+> **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS, NAEP/Census ACS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.5 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Risk, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.6 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Public Data, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.5
+                                      QUIET UI v9.6
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼
@@ -30,7 +30,7 @@ Quiet UI v9.5 abandons rigid monolithic page templates and artificial walls betw
    - Enforces deterministic compilation via zero-dependency Python/JS builders consuming structured JSON specs (`urn:quiet-ui:schema:v9:*`), completely terminating freehand SVG coordinate guessing.
 
 3. **Pillar 3 — Directional Presenter-to-Audience Bridge & Murder Board (`skills/quiet-bridge/`)**:
-   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (21 presenter-to-audience pairs)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
+   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (22 presenter-to-audience views)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
    - Projects across seven foundational audience lenses: *Technician/Operator*, *Discipline Engineer*, *Project/Systems Engineer*, *Program Manager*, *Consumer/Common Reader*, *Educator/Mentor*, and *Student/Learner*.
    - Operates across three decision tempos: *Tactical* (5–15s anomaly intervention), *Executive* (1–3m gate compression *within that leader's discipline*), and *Analytical* (10–45m full evidentiary proof).
    - Enforces the **4 Universal Audience Evaluation Invariants** across every domain view:
@@ -340,13 +340,18 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context
 
 ---
 
-## 10. Studio Portal Navigation & Stage Interaction Contract (`v9.5.0`)
+## 10. Studio Portal Navigation & Stage Interaction Contract (`v9.6.0`)
 
-1. **Unified `<optgroup>` Domain + View Picker (`#va-view-select`)**: The Studio topbar consolidates domain and example selection inside a single `<optgroup>` selector paired with seamless cross-domain `<` and `>` stepping (`1 / 21`..`21 / 21`), resetting per-view curated form-factor and theme presets on every view switch (`<`, `>`, or picker change).
+1. **Unified `<optgroup>` Domain + View Picker (`#va-view-select`)**: The Studio topbar consolidates domain and example selection inside a single `<optgroup>` selector paired with seamless cross-domain `<` and `>` stepping (`1 / 22`..`22 / 22`), resetting per-view curated form-factor and theme presets on every view switch (`<`, `>`, or picker change).
 2. **Viewport-Pinned Sticky Rail & Stage-Only Scroll (`N1` / `N3`)**: On desktop (`>= 1100px`), `.va-shell-rail` is clamped to `calc(100dvh - var(--va-topbar-sticky-h, 0px))` with an internal `.va-rail-scroll` list and pinned `.va-rail-footer`. Anchor clicks use explicit stage `window.scrollTo` offset math (`spotlightAnchor`) instead of `scrollIntoView` so neither `.va-shell-topbar` nor `.va-shell-rail` ever shifts off-screen.
 3. **Device Frame Presets & Full-Bleed Appliances (`Tablet` / `v08` / `v15`–`v17`)**: Portal framing supports `1080p`, `Tablet` (`1280×800` anodized bezel for `v08` interactive Plant Test & HMI Display), `Paper`, `Mobile`, and `Fill`. Optical HUD (`v15`), maritime smart-glass visor with default-on peripheral AR channel markers (`v16`), and museum-matted living-room art frame (`v17`) bleed `100%` edge-to-edge without outer white stage margins.
 4. **Overview Standards Ledger (`#va-landing-standards`)**: The Studio `Overview` landing documents the 4 foundational authorities (`NIST SP 811` / `ISO 80000`, `ISA-101` / `NUREG-0700`, `FDA IEC 62366` / `NASA-STD-3001`, and `SAE J1939` / `ITU-T Z.120` / `NIST AI RMF 100-1`).
 
+---
 
+## 11. Workflow E — Multi-Format Research & Civic Storytelling (`v9.6.0`)
 
-
+When transforming public datasets, policy briefs, or survey waves into reader-facing articles, slide briefings, and printed PDFs (`v22-reading-and-mobility-brief` and Specimens `45–49`):
+1. **Question-First Lead & Unboxed Editorial Callouts**: Open sections with an everyday reader question, a left-margin `.va-freshness-stamp`, an interactive scope switcher (`US National | Maryland | Wyoming`) atomically driving `.va-lead-highlight` and 3 unboxed `.va-editorial-callouts` numbers, and explicit source attribution.
+2. **Takeaway Figure Cards & In-Card Data Portability**: Render plots (`us_hex_tile_map` 51-state hex grid with WCAG luminance-adaptive ink, `arrow_dumbbell` with `*` fallback-vintage notes, `paired_subgroup_bars`, `dual_slopegraph` with unit-once top rows and dynamic step-leader gutters, and `diverging_matrix` keeping `$ Level` columns unshaded alongside diverging `% Change` tints and equal-chance `20.0%` baseline notes) inside 4-part Takeaway Figure Cards with `[Chart | Table]` (`hidden="until-found"`), TSV `Copy data`, and Markdown `Copy for AI` (`role="status"` confirmation).
+3. **Multi-Format Sync & Editorial/Print CDP Gates**: Project one conserved ledger seamlessly across Web Brief, `16:9` `.va-slide-frame` Briefing Deck (+ Appendix), and `@media print` handouts; enforce zero `[PRINT_FLOW_COLLISION]`, `[PROSE_COLUMN_STARVATION]`, `[NESTED_PROSE_SCROLL]`, calm cool-slate light `<pre><code>` (`[CODE_LUMINANCE_SHOCK]`), zero `[DIAGONAL_TICK_OR_ROTATED_Y_TITLE]`, and zero `[END_LABEL_CLIP]`.

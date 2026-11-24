@@ -45,17 +45,18 @@ Directional translation eliminates habitual sender pathologies before rendering 
 | `v11` | **Deterministic Point-Forecast Masking**: Showing only a smooth average liquidity line under a `+250 bps` rate shock while concealing Monte Carlo tail dispersion (`±u_y`) and regulatory `20.0%` breach proximity. | Plot discrete `n = 10,000` Monte Carlo medians with explicit `±u_y` error whiskers against the dashed deterministic duration model (`corridor_rel: 0.04`), anchored to the `20.0%` lower abort envelope and bottom residual strip. |
 | `v12` | **Notation-First Overload & Dot-Connecting**: Dumping unanchored differential equations before physical intuition, drawing Bezier curves through noisy bench captures, or hiding units and test temperature. | Bind `V_0 (5.00 V)` (`tx`) and `exp(-t / tau) (tau = 2.40 s)` (`path_loss`) via matching Pedagogical Flow tokens on `>= 90%` neutral surface, display discrete circle markers with `±u_y` whiskers, and include `va-test-condition-block` (`T_amb = 22.4 ± 0.2 °C`, `f_s = 1.00 kHz`). |
 | `v20` | **Chronological Lab-Notebook Narration**: Burying quantitative repeatability results behind pages of equipment lists and hiding station-to-station drift. | Open with Headline Claim (`1.82 V` observed vs `1.84 V` predicted within `±0.05 V`), show 5-station before/after dumbbell against raw trace, and audit every bound via judge self-critique checklist. |
+| `v22` | **Buried Policy Leads & Print Table Clipping**: Hiding national/state totals beneath methodology paragraphs, clipping right-hand table columns, or trapping commentary in scrollboxes. | Open with Question-First Brief (`US National` / `Maryland` / `Wyoming`), unboxed 3-number callouts, 51-hex map, ranked arrow dumbbell, and unshaded `$` level + diverging `%` change table with `Chart/Table` and `Copy for AI` actions. |
 
 ---
 
 ## 4. Verification of the 4 Universal Audience Evaluation Invariants
 
-| Invariant | `v10-civic-capital-budget-deck` | `v11-treasury-stress-test-solver` | `v12-stem-interactive-lab` | `v20-student-capstone-lab-report` |
-| :--- | :--- | :--- | :--- | :--- |
-| **1. Baseline & Corridor** | `15.0 M USD` lower Policy Reserve Floor envelope rendered across waterfall and referenced in every table row. | `20.0%` lower Regulatory Liquidity Floor abort envelope (`direction: "lower"`) rendered beneath Q1-Q8 drawdown. | `V(t) = 5.0 * exp(-x / 2.4)` analytical corridor (`corridor_rel: 0.04`) and `1-2-5` NIST axes (`0..10 s`, `0..5 V`). | `V_0 = 5.00 V` exponential benchmark predicting `1.84 V` at `tau = 2.40 s` within `±0.05 V` repeatability corridor. |
-| **2. Epistemic Provenance** | Distinguishes starting base (`48.0 M USD`), restricted/debt inflows (`+16.5`, `+22.0`), outlays (`-28.4`, `-31.2`), and net closing total (`26.9 M USD`). | Separates analytical duration model (`dashed` line + band) from discrete `n = 10,000` Monte Carlo medians (`circle` + `±u_y` whiskers) + residual strip. | Separates continuous RC model (`dashed` `path_loss` curve) from discrete student oscilloscope samples (`tx` circles + `±u_y` whiskers) + L3 condition strip. | Pairs raw oscilloscope capture with zero-adjusted 5-bench repeatability dumbbell shifts (`Stn 1..Stn 5`). |
-| **3. Margin & Consequence** | Exposes `+11.9 M USD` (`179.3%` coverage) remaining above `15.0 M USD` floor without mental arithmetic. | Exposes `+8.4%` Q4 headroom and `+5.1%` Q8 floor headroom (`25.1% ± 1.8%` vs. `20.0%` floor) via direct pill callouts. | Exposes `1*tau = 2.40 s (1.84 V)` physical checkpoint and normalized residuals within `±0.8 sigma` (`[-2sigma, +2sigma]` band). | Confirms `1.82 V` station mean lies inside `±0.05 V` calibration bound and all residuals remain `<= 0.8 sigma`. |
-| **4. Actionable Disposition** | `NOMINAL` on School HVAC (`28.4 M USD`); `REVIEW` on Water Main (`31.2 M USD`) triggers Option B split vote. | `NOMINAL` liquidity runway authorizes Q3-Q4 coupon reinvestment schedule without forced asset sales. | `NOMINAL` experimental agreement clears student team to proceed from RC calibration to Section 2 frequency sweep. | Cleared 4-point self-critique checklist authorizes capstone judge and instructor grading signoff. |
+| Invariant | `v10-civic-capital-budget-deck` | `v11-treasury-stress-test-solver` | `v12-stem-interactive-lab` | `v20-student-capstone-lab-report` | `v22-reading-and-mobility-brief` |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Baseline & Corridor** | `15.0 M USD` lower Policy Reserve Floor envelope rendered across waterfall and referenced in every table row. | `20.0%` lower Regulatory Liquidity Floor abort envelope (`direction: "lower"`) rendered beneath Q1-Q8 drawdown. | `V(t) = 5.0 * exp(-x / 2.4)` analytical corridor (`corridor_rel: 0.04`) and `1-2-5` NIST axes (`0..10 s`, `0..5 V`). | `V_0 = 5.00 V` exponential benchmark predicting `1.84 V` at `tau = 2.40 s` within `±0.05 V` repeatability corridor. | Equal-chance `20.0%` intergenerational mobility null baseline and `31%` US reading rate benchmarked nationwide. |
+| **2. Epistemic Provenance** | Distinguishes starting base (`48.0 M USD`), restricted/debt inflows (`+16.5`, `+22.0`), outlays (`-28.4`, `-31.2`), and net closing total (`26.9 M USD`). | Separates analytical duration model (`dashed` line + band) from discrete `n = 10,000` Monte Carlo medians (`circle` + `±u_y` whiskers) + residual strip. | Separates continuous RC model (`dashed` `path_loss` curve) from discrete student oscilloscope samples (`tx` circles + `±u_y` whiskers) + L3 condition strip. | Pairs raw oscilloscope capture with zero-adjusted 5-bench repeatability dumbbell shifts (`Stn 1..Stn 5`). | Pairs state hex ratings, asterisk-marked fallback vintages (`*`), and Cohort percentile bounds before unshaded dollar tables. |
+| **3. Margin & Consequence** | Exposes `+11.9 M USD` (`179.3%` coverage) remaining above `15.0 M USD` floor without mental arithmetic. | Exposes `+8.4%` Q4 headroom and `+5.1%` Q8 floor headroom (`25.1% ± 1.8%` vs. `20.0%` floor) via direct pill callouts. | Exposes `1*tau = 2.40 s (1.84 V)` physical checkpoint and normalized residuals within `±0.8 sigma` (`[-2sigma, +2sigma]` band). | Confirms `1.82 V` station mean lies inside `±0.05 V` calibration bound and all residuals remain `<= 0.8 sigma`. | Highlights Maryland (`35%`, `$98,461`, `+3.8%`) and Wyoming (`36%`, `$72,495`, `+4.1%`) divergence cleanly against national baselines. |
+| **4. Actionable Disposition** | `NOMINAL` on School HVAC (`28.4 M USD`); `REVIEW` on Water Main (`31.2 M USD`) triggers Option B split vote. | `NOMINAL` liquidity runway authorizes Q3-Q4 coupon reinvestment schedule without forced asset sales. | `NOMINAL` experimental agreement clears student team to proceed from RC calibration to Section 2 frequency sweep. | Cleared 4-point self-critique checklist authorizes capstone judge and instructor grading signoff. | Synchronized Question-First Web Brief, `16:9` Slide Deck, and collision-free `@media print` handout via one shared dataset. |
 
 ---
 
@@ -76,6 +77,10 @@ Directional translation eliminates habitual sender pathologies before rendering 
 ### 5.4 View `v20`: Student / Researcher -> Educator / Judge
 - **Student (`L3`)**: "After correcting zero-offset drift across five lab stations, 1τ crossing mean settled at `1.82 V` vs `1.84 V` model inside `±0.05 V` calibration bounds and `<= 0.8 sigma` residuals."
 - **Educator (`T2`)**: "Headline repeatability claim verified across raw scope trace, 5-bench comparison dumbbell, and four-step error self-critique checklist."
+
+### 5.5 View `v22`: Civic Reader <-> Research Analyst
+- **Civic Reader (`T2`)**: "Thirty-one percent of US fourth-graders read proficiently, while real US median household income reached `$74,580` (`+2.4%` over 5 years); switching to Maryland (`35%`, `$98,461`) or Wyoming (`36%`, `$72,495`) updates the first sentence and callouts identically."
+- **Research Analyst (`L2`)**: "Every Takeaway Figure Card provides 1-click `[Chart | Table]` inspection, TSV `Copy data`, structured Markdown `Copy for AI`, and clean `20.0%` equal-chance baseline notes."
 
 ---
 
@@ -103,6 +108,16 @@ All numerical values below are conserved identically across `corpus.json`, `evid
 | `rc_mean_trial_v` | `1.82` | `V` | `v20_student_repeatability_dumbbell.json` | Five-bench mean calibrated voltage (`Stn 1..Stn 5`) |
 | `rc_uncertainty_v` | `0.05` | `V` | `v20_student_repeatability_dumbbell.json` | Combined instrument calibration repeatability bound `±0.05 V` |
 | `rc_sigma_bound` | `0.8` | `sigma` | `v20_student_repeatability_dumbbell.json` | Maximum residual magnitude (`<= 0.8 sigma`) across trials |
+| `reading_proficiency_us_pct` | `31` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | US national Grade 4 NAEP Reading proficient rate (`31%`) |
+| `reading_proficiency_md_pct` | `35` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | Maryland Grade 4 NAEP Reading proficient rate (`35%`) |
+| `reading_proficiency_wy_pct` | `36` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | Wyoming Grade 4 NAEP Reading proficient rate (`36%`) |
+| `median_income_us_usd` | `74580` | `USD` | `v22_mobility_matrix.json` | US median household income `$74,580` (`74580`) |
+| `median_income_md_usd` | `98461` | `USD` | `v22_mobility_matrix.json` | Maryland median household income `$98,461` (`98461`) |
+| `median_income_wy_usd` | `72495` | `USD` | `v22_mobility_matrix.json` | Wyoming median household income `$72,495` (`72495`) |
+| `real_income_growth_us_pct` | `2.4` | `%` | `v22_mobility_matrix.json` | US 5-year real median income growth (`+2.4%`) |
+| `real_income_growth_md_pct` | `3.8` | `%` | `v22_mobility_matrix.json` | Maryland 5-year real median income growth (`+3.8%`) |
+| `real_income_growth_wy_pct` | `4.1` | `%` | `v22_mobility_matrix.json` | Wyoming 5-year real median income growth (`+4.1%`) |
+| `equal_chance_mobility_pct` | `20.0` | `%` | `v22_mobility_matrix.json` | Equal-chance intergenerational quintile baseline (`20.0%`) |
 
 ---
 
@@ -117,4 +132,5 @@ All numerical values below are conserved identically across `corpus.json`, `evid
 | **ER-1, ER-2 & TRG-09** (Cognitive Speed & Term Binding) | `v12` | One independent variable (`t / s`); `pedagogical_equation` terms color-bound to plot series. | `tx` binds `V_0 (5.00 V)` to scatter points; `path_loss` binds `exp(-t / tau)` to dashed model curve. | **PASS** |
 | **LR-1 & LR-2** (Error Bars & Residuals) | `v12` | Measured student points carry `±u_y` and bottom normalized residual strip. | All 9 samples include `u_y` (`0.03–0.06 V`) and `residual_strip.enabled = true`. | **PASS** |
 | **ER-3 & Student-Upward** (`Student Upward Lab Presentation`) | `v20-student-capstone-lab-report` | Student -> Educator claim-first structure, zero-offset repeatability dumbbell, error propagation & self-critique checklist. | Conserves `5.00 V`, `2.40 s`, `1.84 V`, `1.82 V` trial mean, `±0.05 V`, `<= 0.8 sigma`. | **PASS** |
-| **TRG-08** (Audience Match) | All | No unitless blobs for engineers; no hex dumps for boards/citizens. | `v10` uses plain GAO/USWDS table + waterfall; `v11`/`v12`/`v20` use `1-2-5` NIST scales and repeatability comparisons. | **PASS** |
+| **CR-6 & Print-Flow** (`Public Data Storytelling`) | `v22-reading-and-mobility-brief` | Question-First Brief, unboxed callouts, 51-hex map, arrow dumbbell, unshaded `$` matrix, `Chart/Table`, `Copy for AI`, zero `@media print` collisions. | Conserves `31%`, `35%`, `36%`, `74580`, `98461`, `72495`, `2.4%`, `3.8%`, `4.1%`, `20.0%` across Web Brief, Deck, and Print Sheet. | **PASS** |
+| **TRG-08** (Audience Match) | All | No unitless blobs for engineers; no hex dumps for boards/citizens. | `v10`/`v22` use plain civic prose + accessible tables; `v11`/`v12`/`v20` use `1-2-5` NIST scales. | **PASS** |

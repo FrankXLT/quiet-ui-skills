@@ -104,7 +104,7 @@ def verify_showcase(html_path: Path, enabled: list[str], disabled: list[str], mo
                 world_ids = [w["world_id"] for w in worlds]
                 view_ids = [vw["view_id"] for w in worlds for vw in w.get("views", [])]
                 if html_path.parent.name in {"personal-starter", "brand-starter"}:
-                    expected_cnt = 21 if mode == "personal" else 17
+                    expected_cnt = 22 if mode == "personal" else 18
                     if len(view_ids) != expected_cnt:
                         errs.append(f"[V9_VIEW_COUNT] Mode '{mode}' expected {expected_cnt} views, got {len(view_ids)}")
                 elif not view_ids:
