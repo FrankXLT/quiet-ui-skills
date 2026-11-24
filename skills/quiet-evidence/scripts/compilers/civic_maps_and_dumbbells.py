@@ -228,9 +228,13 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str, chrome
 
     legend_html = (
         '<div class="qe-legend-series va-arrow-legend">'
-        f'<span><span class="va-dot-swatch" style="--swatch:var(--text-secondary)"></span> {esc(start_lbl)}</span>'
-        f'<span><span class="va-arrow-swatch is-gain">→</span> {esc(end_lbl)} gain</span>'
-        f'<span><span class="va-arrow-swatch is-drop">←</span> {esc(end_lbl)} decline</span>'
+        f'<span><span class="va-dot-swatch" style="--swatch:var(--text-secondary)"></span>{esc(start_lbl)}</span>'
+        '<span><svg class="va-arrow-swatch is-gain" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
+        '<line x1="1" y1="5" x2="11.5" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
+        f'<polygon points="17,5 10.5,1.2 10.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} gain</span>'
+        '<span><svg class="va-arrow-swatch is-drop" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
+        '<line x1="6.5" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
+        f'<polygon points="1,5 7.5,1.2 7.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} decline</span>'
         "</div>"
     )
     title = str(spec.get("metadata", {}).get("title") or "Directional Arrow Dumbbell")

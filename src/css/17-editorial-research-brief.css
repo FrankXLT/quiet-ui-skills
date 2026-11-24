@@ -152,8 +152,10 @@
     background: var(--bg-surface);
     vertical-align: middle;
   }
-  .va-arrow-swatch.is-gain { color: var(--accent-focal); font-weight: 700; }
-  .va-arrow-swatch.is-drop { color: var(--status-danger); font-weight: 700; }
+  .va-arrow-legend > span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .va-arrow-swatch { display: inline-block; flex: 0 0 auto; overflow: visible; }
+  .va-arrow-swatch.is-gain { color: var(--accent-focal); }
+  .va-arrow-swatch.is-drop { color: var(--status-danger); }
   .va-hex-tile { cursor: pointer; outline: none; }
   .va-hex-tile.is-selected polygon { stroke: var(--text-primary); stroke-width: 2.8; }
   .va-hex-readout {
@@ -367,6 +369,8 @@
   .va-card-table-panel thead th.num,
   .va-diverging-matrix thead th,
   .va-diverging-matrix thead th.num { white-space: normal; overflow-wrap: break-word; }
+  .va-card-table-panel thead th:first-child { text-align: start; }
+  .va-card-table-panel tbody th[scope="row"] { text-align: start; text-transform: none; font-weight: 600; font-variant-numeric: var(--font-nums); }
   .va-card-table-panel table.booktabs :is(th, td) { padding: 0.35rem 0.5rem; }
   [data-form-factor="touch"] .va-inline-scope-select { min-block-size: 32px; }
   [data-form-factor="touch"] .va-footer-link { min-block-size: 28px; }

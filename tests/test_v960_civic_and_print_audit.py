@@ -214,6 +214,15 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             self.assertIn("Copied for AI", copy_chk["txt"])
             self.assertIn("Copied for AI", copy_chk["st"])
             self.assertLessEqual(abs(copy_chk["w"] - w_before), 1.5)
+            arrow_chk = driver.execute_script(
+                "const g=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-gain');"
+                "const d=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-drop');"
+                "return {gW:g?.getBoundingClientRect().width||0,dW:d?.getBoundingClientRect().width||0,"
+                "gCol:g?getComputedStyle(g).color:'',dCol:d?getComputedStyle(d).color:''};"
+            )
+            self.assertGreaterEqual(arrow_chk["gW"], 10.0)
+            self.assertGreaterEqual(arrow_chk["dW"], 10.0)
+            self.assertNotEqual(arrow_chk["gCol"], arrow_chk["dCol"])
             driver.switch_to.default_content()
 
             # Dark theme inline select contrast + @media print ink reset + footer link hidden
@@ -242,13 +251,25 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             self.assertEqual(cue_disp, "none")
             driver.switch_to.default_content()
 
-            # Explorer curves (v11 & v06) Table toggle + return to Chart
+            # Explorer curves (v11 & v06) Table toggle + left-aligned col0 row headers + return to Chart
             driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v11-treasury-stress-test-solver&theme=white")
             time.sleep(0.35)
             driver.switch_to.frame("va-stage-portal")
             driver.execute_script("document.querySelector('[data-qe-view=\"table\"]').click();")
-            v11_tbl = driver.execute_script("const p=document.querySelector('.va-card-table-panel');return !p.hasAttribute('hidden') && p.querySelectorAll('tbody tr').length===8;")
-            self.assertTrue(v11_tbl, "v11 Table toggle should show 8 quarters")
+            v11_tbl = driver.execute_script(
+                "const p=document.querySelector('.va-card-table-panel');"
+                "const h0=p.querySelector('thead th:first-child'), r0=p.querySelector('tbody th[scope=\"row\"], tbody td:first-child');"
+                "const rl=[...p.querySelectorAll('tbody tr :first-child')].map(e=>e.textContent.trim());"
+                "const td=p.querySelector('tbody td.num');"
+                "return {ok:!p.hasAttribute('hidden')&&rl.length===8,hA:getComputedStyle(h0).textAlign,rA:getComputedStyle(r0).textAlign,"
+                "tdA:getComputedStyle(td).textAlign,rl0:rl[0],rl7:rl[7],hasNum:r0.classList.contains('num')};"
+            )
+            self.assertTrue(v11_tbl["ok"], "v11 Table toggle should show 8 quarters")
+            self.assertIn(v11_tbl["hA"], {"left", "start"})
+            self.assertIn(v11_tbl["rA"], {"left", "start"})
+            self.assertFalse(v11_tbl["hasNum"])
+            self.assertEqual(v11_tbl["tdA"], "right")
+            self.assertEqual((v11_tbl["rl0"], v11_tbl["rl7"]), ("1", "8"))
             driver.execute_script("document.querySelector('[data-qe-view=\"chart\"]').click();")
             self.assertTrue(driver.execute_script("return document.querySelector('.va-card-table-panel').hasAttribute('hidden');"))
             driver.switch_to.default_content()
@@ -257,8 +278,15 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             time.sleep(0.35)
             driver.switch_to.frame("va-stage-portal")
             driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"table\"]').click();")
-            v06_tbl = driver.execute_script("const p=document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel');return !p.hasAttribute('hidden') && p.querySelectorAll('tbody tr').length===10;")
-            self.assertTrue(v06_tbl, "v06 Table toggle should show 10 calibration bins")
+            v06_tbl = driver.execute_script(
+                "const p=document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel');"
+                "const r0=p.querySelector('tbody th[scope=\"row\"]');"
+                "return {ok:!p.hasAttribute('hidden')&&p.querySelectorAll('tbody tr').length===10,"
+                "rA:getComputedStyle(r0).textAlign,r0Txt:r0.textContent.trim()};"
+            )
+            self.assertTrue(v06_tbl["ok"], "v06 Table toggle should show 10 calibration bins")
+            self.assertIn(v06_tbl["rA"], {"left", "start"})
+            self.assertEqual(v06_tbl["r0Txt"], "0.05")
             driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"chart\"]').click();")
             self.assertTrue(driver.execute_script("return document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel').hasAttribute('hidden');"))
             driver.switch_to.default_content()

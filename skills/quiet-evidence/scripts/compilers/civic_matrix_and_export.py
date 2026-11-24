@@ -133,6 +133,15 @@ def _eval_model_y(model_sr: dict[str, Any], xv: float, legend: list[dict[str, An
         return None
 
 
+def _fmt_axis_row_id(pt: dict[str, Any], whole_ints: bool) -> str:
+    if pt.get("x_label") is not None:
+        return _cell_str(pt.get("x_label"))
+    xv = finite_float(pt.get("x"))
+    if whole_ints and xv is not None:
+        return str(int(round(xv)))
+    return _cell_str(pt.get("x"))
+
+
 def _extract_cartesian_table(spec: dict[str, Any], series_list: list[dict[str, Any]]) -> tuple[list[str], list[list[str]]]:
     axes = spec.get("axes") or {}
     x_ax, y_ax = axes.get("x_axis") or {}, axes.get("y_axis") or {}
@@ -143,14 +152,15 @@ def _extract_cartesian_table(spec: dict[str, Any], series_list: list[dict[str, A
     if len(pts_series) == 1:
         sr = pts_series[0]
         pts = list((sr.get("data_points") or sr.get("points") or [])[:40])
+        x_vals = [finite_float(p.get("x")) for p in pts]
+        whole_ints = bool(x_vals) and all(v is not None and abs(v - round(v)) <= 1e-9 for v in x_vals)
         has_uy = any(pt.get("u_y") is not None for pt in pts)
         model_sr = models[0] if len(models) == 1 else None
         headers = [x_hdr, y_hdr] + (["± u_y"] if has_uy else []) + (["Model"] if model_sr else [])
         rows: list[list[str]] = []
         for pt in pts:
             xv, yv = finite_float(pt.get("x")), finite_float(pt.get("y"))
-            x_txt = _cell_str(pt.get("x_label") if pt.get("x_label") is not None else pt.get("x"))
-            row = [x_txt, _cell_str(pt.get("y"))]
+            row = [_fmt_axis_row_id(pt, whole_ints), _cell_str(pt.get("y"))]
             if has_uy:
                 uy = finite_float(pt.get("u_y"))
                 row.append(f"±{pt['u_y']}" if uy is not None else "—")
@@ -161,13 +171,16 @@ def _extract_cartesian_table(spec: dict[str, Any], series_list: list[dict[str, A
             rows.append(row)
         return headers, rows
 
-    has_uy = any(pt.get("u_y") is not None for sr in pts_series for pt in (sr.get("data_points") or sr.get("points") or [])[:40])
+    all_pts = [pt for sr in pts_series for pt in (sr.get("data_points") or sr.get("points") or [])[:40]]
+    x_vals = [finite_float(p.get("x")) for p in all_pts]
+    whole_ints = bool(x_vals) and all(v is not None and abs(v - round(v)) <= 1e-9 for v in x_vals)
+    has_uy = any(pt.get("u_y") is not None for pt in all_pts)
     headers = ["Series", x_hdr, y_hdr] + (["± u_y"] if has_uy else [])
     rows = []
     for sr in pts_series:
         sname = _cell_str(sr.get("label") or sr.get("name") or sr.get("id") or "Series")
         for pt in (sr.get("data_points") or sr.get("points") or [])[:40]:
-            row = [sname, _cell_str(pt.get("x_label") if pt.get("x_label") is not None else pt.get("x")), _cell_str(pt.get("y"))]
+            row = [sname, _fmt_axis_row_id(pt, whole_ints), _cell_str(pt.get("y"))]
             if has_uy:
                 row.append(f"±{pt['u_y']}" if finite_float(pt.get("u_y")) is not None else "—")
             rows.append(row)
@@ -307,14 +320,14 @@ def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig
 
     table_panel = ""
     if has_table_toggle:
-        num_cols = [_is_numeric_col(rows, ci) for ci in range(len(headers))]
+        num_cols = [False if ci == 0 else _is_numeric_col(rows, ci) for ci in range(len(headers))]
         ths = "".join(
             f'<th scope="col" class="num">{esc(h)}</th>' if num_cols[ci] else f'<th scope="col">{esc(h)}</th>'
             for ci, h in enumerate(headers)
         )
         trs = "".join(
             "<tr>" + "".join(
-                f'<th scope="row"{" class=\"num\"" if num_cols[ci] else ""}>{esc(c)}</th>'
+                f'<th scope="row">{esc(c)}</th>'
                 if ci == 0
                 else f'<td{" class=\"num\"" if num_cols[ci] else ""} data-label="{esc(headers[ci])}">{esc(c)}</td>'
                 for ci, c in enumerate(r)
