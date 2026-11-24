@@ -1,4 +1,4 @@
-# Quiet UI Skills (`v9.5.0`)
+# Quiet UI Skills (`v9.6.0`)
 
 [![Quiet UI CI](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/FrankXLT/quiet-ui-skills/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/Plugin%20%26%203--Pillar%20Engine-Apache%202.0-blue.svg)](LICENSE)
@@ -11,7 +11,7 @@
 2. **`quiet-evidence` (Metrology, Clean-Room SVG Compilers & CJK-Safe `QuietSvgLayout`):** Deterministically compiles calibrated waveforms, analytical & calibration plots, cyclical Min–Avg–Max whiskers (`buildCyclicalWhiskerOption`), waterfalls, 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics—with East-Asian wide (`1.75x`) & combining-mark gutter math (`visual_char_units` / `QuietSvgLayout.visualUnits`) across SVG and ECharts.
 3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation, persistent `.quiet-ui.md` intake memory, and explicit `Warming up — N samples collected` disclosures on thin buffers.
 
-![Quiet UI v9.5 — 6-Domain Studio & 44-Component Suite](docs/assets/quiet-ui-hero.png)
+![Quiet UI v9.6 — 6-Domain Studio, 22 Views & 49-Component Suite](docs/assets/quiet-ui-hero.png)
 
 ---
 
@@ -102,7 +102,7 @@ All 7 delivery mediums (`M1–M7`) and all 22 domain views default to **Pure Whi
 python3 -B scripts/build_all.py
 python3 -B scripts/build_all.py --check
 
-# 2. Run zero-dependency suite (compilers, 181 corpus checks, portability, hygiene)
+# 2. Run zero-dependency suite (compilers, 204 corpus checks, portability, hygiene)
 QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
 
 # 3. Run full Headless Chrome CDP visual gates (requires selenium + pillow)

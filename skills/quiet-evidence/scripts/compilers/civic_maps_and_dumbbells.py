@@ -125,7 +125,8 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
     breaks, palette, bin_labels = _compute_hex_bins(valid_vals, spec)
     unit = str(spec.get("unit") or "%").strip()
     decimals = 0 if spec.get("decimals") is None else int(spec["decimals"])
-    focus_state = str(spec.get("focus_state") or "MD").strip().upper()
+    raw_focus = spec.get("focus_state")
+    focus_state = str(raw_focus).strip().upper() if raw_focus is not None else ""
     title = str(spec.get("metadata", {}).get("title") or "US 51-State Equal-Area Tile Map")
 
     r, dx, dy = 23.0, 42.4, 37.5
@@ -139,7 +140,8 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
     legend_html = f'<div class="qe-legend-series va-hex-legend" role="list" aria-label="Scale bins">{"".join(legend_pills)}</div>'
 
     svg_parts: list[str] = [f'<svg class="qe-svg qe-svg-640 va-hex-map-svg" viewBox="0 0 640 342" role="img" aria-label="{esc(title)}">']
-    focus_summary = ""
+    focus_summary = str(spec.get("focus_summary") or "")
+    selected_tile_svg = ""
     for abbr, name, row, col in US_HEX_GRID:
         cx, cy = x0 + (col + (0.5 if row % 2 else 0.0)) * dx, y0 + row * dy
         entry = state_map.get(abbr) or {}
@@ -150,19 +152,26 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
         val_txt = f"{val:.{decimals}f}{unit}" if (val is not None and unit == "%") else (f"{val:.{decimals}f}" if val is not None else "n/a")
         val_full = f"{val_txt} {unit}".strip() if (val is not None and unit != "%") else val_txt
         note_txt = str(entry.get("note") or "")
-        is_focus = " is-selected" if abbr == focus_state else ""
-        if abbr == focus_state and val is not None:
+        selected = bool(focus_state and abbr == focus_state)
+        is_focus = " is-selected" if selected else ""
+        if selected and val is not None:
             focus_summary = f"{name} ({abbr}): {val_full}" + (f" · {note_txt}" if note_txt else "")
         pts = _hex_polygon_points(cx, cy, r - 1.4)
-        svg_parts.append(
+        tile_svg = (
             f'<g class="va-hex-tile{is_focus}" data-state="{esc(abbr)}" data-state-name="{esc(name)}" '
             f'data-value="{esc(val_txt)}" data-full-value="{esc(val_full)}" data-note="{esc(note_txt)}" '
             f'data-bin="{b_idx}" tabindex="0" role="button" aria-label="{esc(name)} ({esc(abbr)}): {esc(val_full)}">'
+            f'<polygon points="{pts}" fill="{esc(fill)}" stroke="var(--bg-surface)" stroke-width="1.8"/>'
+            f'<text x="{cx:.1f}" y="{cy - 3.0:.1f}" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="{esc(ink)}">{esc(abbr)}</text>'
+            f'<text x="{cx:.1f}" y="{cy + 12.2:.1f}" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="{esc(ink)}">{esc(val_txt)}</text>'
+            "</g>"
         )
-        svg_parts.append(f'<polygon points="{pts}" fill="{esc(fill)}" stroke="var(--bg-surface)" stroke-width="1.8"/>')
-        svg_parts.append(f'<text x="{cx:.1f}" y="{cy - 3.0:.1f}" text-anchor="middle" font-family="var(--font-sans)" font-size="11.6" font-weight="700" fill="{esc(ink)}">{esc(abbr)}</text>')
-        svg_parts.append(f'<text x="{cx:.1f}" y="{cy + 12.2:.1f}" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="{esc(ink)}">{esc(val_txt)}</text>')
-        svg_parts.append("</g>")
+        if selected:
+            selected_tile_svg = tile_svg
+        else:
+            svg_parts.append(tile_svg)
+    if selected_tile_svg:
+        svg_parts.append(selected_tile_svg)
     svg_parts.append("</svg>")
     readout = f'<div class="va-hex-readout" role="status" aria-live="polite">{esc(focus_summary or "Select any state hex tile to inspect exact rate and bin.")}</div>'
     return f'{legend_html}<div class="va-figure-scroll va-hex-stage">{"".join(svg_parts)}</div>{readout}'
@@ -193,10 +202,22 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str) -> str
     sc = compute_linear_125_scale(lo_raw - span_raw * 0.14, hi_raw + span_raw * 0.14, target_ticks=5)
     fmt = lambda v: f"{v:.{decimals}f}{unit}" if unit == "%" else (f"{v:.{decimals}f}" if decimals else f"{v:g}")
 
-    max_l_px = max((len(str(it.get("label") or f"Row {i+1}") + (" *" if it.get("fallback_vintage") else "")) * 7.2 for i, it in enumerate(items)), default=110.0)
-    max_r_px = max((len(fmt(max(_fval(it, "start", "min"), _fval(it, "end", "max")))) * 7.2 for it in items), default=42.0)
+    def _row_lbl(it: dict[str, Any], idx: int) -> tuple[str, str]:
+        raw_lbl = str(it.get("label") or f"Row {idx + 1}").rstrip()
+        fb = str(it.get("fallback_vintage") or "").strip()
+        lbl = raw_lbl if (not fb or raw_lbl.endswith("*")) else f"{raw_lbl} *"
+        return lbl, fb
+
+    max_l_px = max((len(_row_lbl(it, i)[0]) * 7.2 for i, it in enumerate(items)), default=110.0)
+    max_r_px = max(
+        (
+            len(fmt(max(_fval(it, "start", "min"), _fval(it, "end", "max"))) + (" (unchanged)" if abs(_fval(it, "end", "max") - _fval(it, "start", "min")) <= 1e-6 else "")) * 7.0
+            for it in items
+        ),
+        default=48.0,
+    )
     x0 = min(220.0, max(142.0, max_l_px + 22.0))
-    pw = max(280.0, 628.0 - x0 - max_r_px - 16.0)
+    pw = max(270.0, 628.0 - x0 - max_r_px - 20.0)
     y0, row_h = 32.0, 34.0
     ph = max(72.0, len(items) * row_h)
     vh = int(y0 + ph + 54)
@@ -226,27 +247,29 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str) -> str
     for i, it in enumerate(items):
         cy = y0 + (i + 0.5) * row_h
         s_val, e_val = _fval(it, "start", "min"), _fval(it, "end", "max")
-        fb = str(it.get("fallback_vintage") or "").strip()
-        raw_lbl = str(it.get("label") or f"Row {i + 1}").rstrip()
-        has_star = raw_lbl.endswith("*")
-        lbl = raw_lbl if (not fb or has_star) else f"{raw_lbl} *"
+        lbl, fb = _row_lbl(it, i)
         if fb:
-            fallback_notes.append(f"{raw_lbl.rstrip(' *')}: {fb}")
+            fallback_notes.append(f"{lbl.rstrip(' *')}: {fb}")
         xs, xe = px(s_val), px(e_val)
-        col = resolve_token(it.get("color"), "var(--accent-focal)" if e_val >= s_val else "var(--status-danger)")
-        direction = 1 if xe >= xs else -1
         parts.append(f'<line x1="{x0:.1f}" y1="{cy:.1f}" x2="{x0 + pw:.1f}" y2="{cy:.1f}" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>')
         parts.append(halo_text(x0 - 10.0, cy + 4.0, lbl, anchor="end", size=12.0, weight="600", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
-        shaft_end = xe - direction * 6.5 if abs(xe - xs) > 9.0 else xs
-        parts.append(f'<line x1="{xs:.1f}" y1="{cy:.1f}" x2="{shaft_end:.1f}" y2="{cy:.1f}" stroke="{esc(col)}" stroke-width="2.4"/>')
-        parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>')
-        parts.append(f'<polygon points="{_arrow_head_points(xe, cy, direction)}" fill="{esc(col)}"/>')
-        left_is_end = xe < xs
-        lx, rx = (xe, xs) if left_is_end else (xs, xe)
-        l_txt, r_txt = (fmt(e_val), fmt(s_val)) if left_is_end else (fmt(s_val), fmt(e_val))
-        l_col, r_col = (col, "var(--text-secondary)") if left_is_end else ("var(--text-secondary)", col)
-        parts.append(halo_text(lx - 9.0, cy + 4.0, l_txt, anchor="end", size=11.5, weight="600", fill=l_col, halo=True))
-        parts.append(halo_text(rx + 9.0, cy + 4.0, r_txt, anchor="start", size=11.5, weight="700" if not left_is_end else "600", fill=r_col, halo=True))
+        if abs(xe - xs) < 2.0:
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="4.6" fill="var(--bg-surface)" stroke="var(--accent-focal)" stroke-width="2.0"/>')
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="2.0" fill="var(--accent-focal)"/>')
+            parts.append(halo_text(xs + 12.5, cy + 4.0, f"{fmt(e_val)} (unchanged)", anchor="start", size=11.5, weight="600", fill="var(--text-primary)", halo=True))
+        else:
+            col = resolve_token(it.get("color"), "var(--accent-focal)" if e_val >= s_val else "var(--status-danger)")
+            direction = 1 if xe >= xs else -1
+            shaft_end = xe - direction * 6.5 if abs(xe - xs) > 9.0 else xs
+            parts.append(f'<line x1="{xs:.1f}" y1="{cy:.1f}" x2="{shaft_end:.1f}" y2="{cy:.1f}" stroke="{esc(col)}" stroke-width="2.4"/>')
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="4.0" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.8"/>')
+            parts.append(f'<polygon points="{_arrow_head_points(xe, cy, direction)}" fill="{esc(col)}"/>')
+            left_is_end = xe < xs
+            lx, rx = (xe, xs) if left_is_end else (xs, xe)
+            l_txt, r_txt = (fmt(e_val), fmt(s_val)) if left_is_end else (fmt(s_val), fmt(e_val))
+            l_col, r_col = (col, "var(--text-secondary)") if left_is_end else ("var(--text-secondary)", col)
+            parts.append(halo_text(lx - 12.0, cy + 4.0, l_txt, anchor="end", size=11.5, weight="600", fill=l_col, halo=True))
+            parts.append(halo_text(rx + 12.0, cy + 4.0, r_txt, anchor="start", size=11.5, weight="700" if not left_is_end else "600", fill=r_col, halo=True))
 
     parts.append("</svg>")
     fb_html = f'<p class="va-fallback-note">* Prior-year fallback series: {esc("; ".join(fallback_notes))}.</p>' if fallback_notes else ""

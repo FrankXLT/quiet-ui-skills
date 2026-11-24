@@ -38,7 +38,8 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
         "us": {
             "lead_clause": f"{us_read}% of US fourth-graders read proficiently in 2024, down four points since 2019,",
             "lead_rest": f"while real US median household income reached ${us_inc:,} (+{us_g:.1f}% over five years).",
-            "focus_state": "MD",
+            "focus_state": "",
+            "focus_summary": f"US National: {us_read}% proficient nationwide (state range 21%–41%) · Select any state hex tile to inspect.",
             "callouts": [
                 {"num": f"{us_read}%", "desc": "4th-graders at or above Proficient reading across all US public schools (2024)"},
                 {"num": f"${us_inc:,}", "desc": "Real US median household income in 2024 inflation-adjusted dollars"},

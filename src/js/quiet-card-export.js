@@ -146,6 +146,7 @@
     if (!stage) return;
     stage.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
     tile.classList.add('is-selected');
+    if (tile.parentNode) tile.parentNode.appendChild(tile);
     const card = tile.closest('.va-figure-card, .qe-figure') || stage.parentElement;
     const ro = card ? card.querySelector('.va-hex-readout') : null;
     if (ro) {
@@ -192,6 +193,10 @@
     if (d.focus_state) {
       const tile = Array.from(root.querySelectorAll('.va-hex-tile')).find((el) => el.getAttribute('data-state') === d.focus_state);
       if (tile) activateHexTile(tile);
+    } else {
+      root.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
+      const ro = root.querySelector('#v22-map .va-hex-readout, .va-hex-readout');
+      if (ro) ro.textContent = d.focus_summary || 'Select any state hex tile to inspect exact rate and bin.';
     }
   }
 

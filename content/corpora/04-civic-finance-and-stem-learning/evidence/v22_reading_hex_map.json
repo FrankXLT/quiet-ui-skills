@@ -5,7 +5,8 @@
   "takeaway": true,
   "unit": "%",
   "decimals": 0,
-  "focus_state": "MD",
+  "focus_state": "",
+  "focus_summary": "US National: 31% proficient nationwide (state range 21%–41%) · Select any state hex tile to inspect.",
   "bin_breaks": [24, 28, 32, 36],
   "metadata": {
     "title": "Thirty-one percent of US fourth-graders read proficiently, while states span 21% to 41%",

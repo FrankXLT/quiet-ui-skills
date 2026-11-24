@@ -43,6 +43,7 @@ class TestCivicCompilersAndExport(unittest.TestCase):
         self.assertIn("fallback-note", dumb_html)
         self.assertIn("2022–2023 pooled cohort", dumb_html)
         self.assertIn("<polygon", dumb_html)
+        self.assertIn("(unchanged)", dumb_html)
 
         sub_html = compile_spec(specs[2], rigor="L1", theme="white")
         self.assertIn("All Adults", sub_html)
@@ -107,11 +108,25 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             time.sleep(0.35)
             driver.switch_to.frame("va-stage-portal")
 
-            # Scope toggle US -> Maryland -> Wyoming
+            # Initially US National has zero selected state hex outline
+            init_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
+            self.assertEqual(init_sel, [], f"Expected zero hex outlines on US National load, got {init_sel}")
+
+            # Scope toggle US -> Maryland -> Wyoming -> back to US National
+            driver.execute_script("document.querySelector('[data-v22-scope=\"md\"]').click();")
+            md_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
+            self.assertEqual(md_sel, ["MD"])
+
             driver.execute_script("document.querySelector('[data-v22-scope=\"wy\"]').click();")
+            wy_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
+            self.assertEqual(wy_sel, ["WY"])
             lead_wy = driver.execute_script("return document.querySelector('[data-v22-lead]').textContent;")
             self.assertIn("36% of Wyoming", lead_wy)
             self.assertIn("$72,495", driver.execute_script("return document.querySelectorAll('.va-callout-num')[1].textContent;"))
+
+            driver.execute_script("document.querySelector('[data-v22-scope=\"us\"]').click();")
+            us_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
+            self.assertEqual(us_sel, [], f"Expected US National scope click to clear hex outline, got {us_sel}")
 
             # Hex tile click readout
             driver.execute_script("document.querySelector('.va-hex-tile[data-state=\"DC\"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));")
@@ -133,7 +148,7 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             self.assertTrue(deck_vis)
             driver.switch_to.default_content()
 
-            # Dark theme checks on v22 + print ink contrast reset + Bench copy confirmation opacity
+            # Dark theme checks on v22 + print ink contrast reset + Bench copy confirmation opacity + sticky topbar clearance
             driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=dark")
             time.sleep(0.3)
             driver.switch_to.frame("va-stage-portal")
@@ -157,6 +172,14 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
 
             driver.get(f"{root_url}/docs/bench/evidence-bench.html")
             time.sleep(0.35)
+            clr = driver.execute_script(
+                "const c=[...document.querySelectorAll('.qe-specimen')].find(e=>/Equal-Area US 51-Hex Tile Map/i.test(e.textContent||''));"
+                "c.scrollIntoView({behavior:'instant',block:'start'});"
+                "const tb=document.querySelector('.qe-topbar').getBoundingClientRect().bottom;"
+                "const ct=c.getBoundingClientRect().top;"
+                "return {tb, ct};"
+            )
+            self.assertGreaterEqual(clr["ct"], clr["tb"] + 8.0, f"Sticky topbar overlapped scrolled card header: {clr}")
             btn = driver.find_element(By.CSS_SELECTOR, '.qe-specimen [data-qe-copy="ai"]')
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
             time.sleep(0.08)

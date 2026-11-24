@@ -1762,7 +1762,15 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
 
 /* Quiet UI v9.6.0 — Question-First Editorial Brief, Civic Charts, Takeaway Cards & Dual-Physics Print */
 
+@layer shell {
+  html:has(.qe-topbar):not([data-bench-embed="1"]) { scroll-padding-top: 5.5rem; }
+}
+
 @layer evidence {
+  .qe-specimen,
+  .va-figure-card,
+  .qe-figure,
+  .va-question-brief section[id] { scroll-margin-top: 5.5rem; }
   .va-card-chart-panel,
   .va-card-table-panel { min-inline-size: 0; }
   .va-card-table-panel[hidden="until-found"] { content-visibility: hidden; block-size: 0; overflow-x: auto; overflow-y: hidden; }
@@ -1890,7 +1898,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   .va-arrow-swatch.is-gain { color: var(--accent-focal); font-weight: 700; }
   .va-arrow-swatch.is-drop { color: var(--status-danger); font-weight: 700; }
   .va-hex-tile { cursor: pointer; outline: none; }
-  .va-hex-tile.is-selected polygon { stroke: var(--text-primary); stroke-width: 2.6; }
+  .va-hex-tile.is-selected polygon { stroke: var(--text-primary); stroke-width: 2.8; }
   .va-hex-readout {
     margin-top: 0.45rem;
     padding: 0.35rem 0.65rem;

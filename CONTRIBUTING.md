@@ -51,7 +51,7 @@ QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 2. **Adding or Updating a Domain Corpus (`content/corpora/`)**:
    - Preserve exact numerical conservation across `corpus.json`, `distillation_blueprint.md`, `evidence/*.json`, and `src/views/`.
    - Document public-domain / CC0 sources in `SOURCE_ATTRIBUTION.md`.
-   - Run `python3 -B -m unittest tests/test_corpora.py -v` to confirm `181+` conservation checks pass.
+   - Run `python3 -B -m unittest tests/test_corpora.py -v` to confirm `204+` conservation checks pass.
 3. **Creating a Starter Customization (`customizations/<name>/`)**:
    - Copy `customizations/brand-starter/` or `customizations/personal-starter/` without altering the read-only starters or `skills/`.
    - Compile with `python3 -B customizations/scripts/build_showcase.py customizations/<name>` and validate with `python3 -B customizations/scripts/verify_customization.py customizations/<name> --check-immutability`.
