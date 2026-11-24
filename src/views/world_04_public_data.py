@@ -88,15 +88,7 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
   <header class="va-article-header" id="v22-overview">
     <p class="va-provenance-eyebrow">Public Data Brief · Updated Nov 2026 · NAEP &amp; Census ACS</p>
     <h1 class="va-brief-question">How have reading proficiency and household income mobility shifted across U.S. states?</h1>
-    <p class="va-lead-answer">
-      Across
-      <select class="va-inline-scope-select" id="v22-scope-select" data-v22-scope-select aria-label="Select jurisdiction scope">
-        <option value="us" selected="selected">the United States</option>
-        <option value="md">Maryland</option>
-        <option value="wy">Wyoming</option>
-      </select>,
-      <span data-v22-lead><span class="va-lead-highlight">{_esc(us_c["lead_clause"])}</span> {_esc(us_c["lead_rest"])}</span>
-    </p>
+    <p class="va-lead-answer">Across <select class="va-inline-scope-select" id="v22-scope-select" data-v22-scope-select aria-label="Select jurisdiction scope"><option value="us" selected="selected">the United States</option><option value="md">Maryland</option><option value="wy">Wyoming</option></select>, <span data-v22-lead><span class="va-lead-highlight">{_esc(us_c["lead_clause"])}</span> {_esc(us_c["lead_rest"])}</span></p>
   </header>
 
   <section class="va-editorial-callouts" aria-label="Key Public Metrics">{callout_cards}</section>

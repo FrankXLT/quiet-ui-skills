@@ -6663,10 +6663,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   /* Unboxed 3-Number Typographic Callouts */
   .va-editorial-callouts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    gap: 0.85rem 1.4rem;
-    padding-block: 0.25rem 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem 1.25rem;
+    padding-block: 0.15rem 0.9rem;
     border-bottom: 1px solid var(--border-hairline);
+  }
+  @media (min-width: 560px) {
+    .va-editorial-callouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   .va-callout-stat { border: 0; background: transparent; padding: 0; min-inline-size: 0; }
   .va-callout-num {
@@ -15074,15 +15077,7 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
   <header class="va-article-header" id="v22-overview">
     <p class="va-provenance-eyebrow">Public Data Brief · Updated Nov 2026 · NAEP &amp; Census ACS</p>
     <h1 class="va-brief-question">How have reading proficiency and household income mobility shifted across U.S. states?</h1>
-    <p class="va-lead-answer">
-      Across
-      <select class="va-inline-scope-select" id="v22-scope-select" data-v22-scope-select aria-label="Select jurisdiction scope">
-        <option value="us" selected="selected">the United States</option>
-        <option value="md">Maryland</option>
-        <option value="wy">Wyoming</option>
-      </select>,
-      <span data-v22-lead><span class="va-lead-highlight">31% of fourth-graders read proficiently in 2024, down four points since 2019,</span> while real national median household income reached $74,580 (+2.4% over five years).</span>
-    </p>
+    <p class="va-lead-answer">Across <select class="va-inline-scope-select" id="v22-scope-select" data-v22-scope-select aria-label="Select jurisdiction scope"><option value="us" selected="selected">the United States</option><option value="md">Maryland</option><option value="wy">Wyoming</option></select>, <span data-v22-lead><span class="va-lead-highlight">31% of fourth-graders read proficiently in 2024, down four points since 2019,</span> while real national median household income reached $74,580 (+2.4% over five years).</span></p>
   </header>
 
   <section class="va-editorial-callouts" aria-label="Key Public Metrics"><div class="va-callout-stat" data-v22-callout="0"><span class="va-callout-num">31%</span><p class="va-callout-desc">4th-graders at or above Proficient reading across all US public schools (2024)</p><span class="va-callout-src">NAEP &amp; Census ACS Public Series</span></div><div class="va-callout-stat" data-v22-callout="1"><span class="va-callout-num">$74,580</span><p class="va-callout-desc">Real US median household income in 2024 inflation-adjusted dollars</p><span class="va-callout-src">NAEP &amp; Census ACS Public Series</span></div><div class="va-callout-stat" data-v22-callout="2"><span class="va-callout-num">+2.4%</span><p class="va-callout-desc">5-year real US household growth alongside 0.0 pp (20.0%) mobility baseline</p><span class="va-callout-src">NAEP &amp; Census ACS Public Series</span></div></section>

@@ -275,10 +275,13 @@
   /* Unboxed 3-Number Typographic Callouts */
   .va-editorial-callouts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-    gap: 0.85rem 1.4rem;
-    padding-block: 0.25rem 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem 1.25rem;
+    padding-block: 0.15rem 0.9rem;
     border-bottom: 1px solid var(--border-hairline);
+  }
+  @media (min-width: 560px) {
+    .va-editorial-callouts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   .va-callout-stat { border: 0; background: transparent; padding: 0; min-inline-size: 0; }
   .va-callout-num {
