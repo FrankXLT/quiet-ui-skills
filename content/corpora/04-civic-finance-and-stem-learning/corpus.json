@@ -369,13 +369,12 @@
       "title": "Reading Proficiency & Household Mobility Public Data Brief",
       "domain_cluster": "Public Data & Civic Research",
       "presenter": "Civic Data Editor",
-      "audience": "Everyday Readers, Policy Analysts & Slide Briefings",
+      "audience": "Everyday Readers & Civic Data Analysts",
       "lenses": [
         "Consumer / Common Reader",
         "Program Manager"
       ],
       "tempos": [
-        "T1",
         "T2"
       ],
       "mediums": [
@@ -384,7 +383,7 @@
       ],
       "chromatic_budget": "Archival Proof",
       "nav_shells": [
-        "N1"
+        "N0"
       ],
       "rigor_level": "L2",
       "evidence_refs": [
@@ -394,8 +393,8 @@
       ],
       "decision_gate": {
         "status": "NOMINAL",
-        "primary_margin": "31% US Grade 4 proficiency (Maryland 35%, Wyoming 36%) paired with $74,580 US median income (+2.4% real growth) vs 20.0% neutral baseline",
-        "bounded_action": "Publish synchronized Web Brief, 16:9 Slide Deck, and Paper Print Sheet from conserved census and NAEP files."
+        "primary_margin": "31% US Grade 4 proficiency (Maryland 35%, Wyoming 36%) paired with $74,580 US median income (+2.4% real growth) vs 20.0% (0.0 pp) neutral baseline",
+        "bounded_action": "Publish Path A fluid journalistic article on full-canvas N0 layout paired with collision-free Paper Print Sheet from conserved census and NAEP files."
       }
     }
   ]

@@ -36,6 +36,8 @@ class TestCivicCompilersAndExport(unittest.TestCase):
 
         hex_html = compile_spec(specs[0], rigor="L1", theme="white")
         self.assertEqual(hex_html.count('class="va-hex-tile'), 51)
+        self.assertIn('role="group"', hex_html)
+        self.assertIn('va-hex-focus-ring', hex_html)
         self.assertIn('fill="#0F172A"', hex_html)
         self.assertIn('fill="#FFFFFF"', hex_html)
 
@@ -48,29 +50,57 @@ class TestCivicCompilersAndExport(unittest.TestCase):
         sub_html = compile_spec(specs[2], rigor="L1", theme="white")
         self.assertIn("All Adults", sub_html)
         self.assertIn("Adults Ages 18–29", sub_html)
+        self.assertIn("is-overall", sub_html)
+        self.assertIn('class="qe-svg qe-svg-880"', sub_html)
+        self.assertNotIn('data-qe-view="table"', sub_html)
+        self.assertIn('data-qe-copy="ai"', sub_html)
 
         slope_html = compile_spec(specs[3], rigor="L2", theme="white")
         self.assertIn("2021 cross", slope_html)
         self.assertIn("Public Infrastructure", slope_html)
+        self.assertNotIn("va-slope-legend", slope_html)
+        self.assertNotIn("Analytical Model", slope_html)
         self.assertNotIn("…", slope_html)
         self.assertNotIn("...", slope_html)
 
         mat_html = compile_spec(specs[4], rigor="L2", theme="white")
         self.assertIn("va-diverging-matrix", mat_html)
         self.assertIn('data-diverge="pos-hi"', mat_html)
+        self.assertIn('data-diverge="flat"', mat_html)
+        self.assertIn("0.0 pp", mat_html)
+        self.assertIn("Mobility vs 20% Baseline (pp)", mat_html)
+        self.assertIn("qe-caption-sr", mat_html)
         self.assertIn('class="num va-cell-level"', mat_html)
         self.assertIn("20.0%", mat_html)
         self.assertIn("Copy for AI", mat_html)
         self.assertIn('role="status"', mat_html)
-        for sp in specs[:4]:
-            frag = compile_spec(sp)
+
+        for idx in (0, 1, 3):
+            frag = compile_spec(specs[idx])
             self.assertIn('data-qe-view="table"', frag)
+            self.assertIn('qe-caption-sr', frag)
+            self.assertIn('class="num"', frag)
             self.assertIn('hidden="until-found"', frag)
             self.assertIn('data-qe-copy="ai"', frag)
 
+        ed_frag = compile_spec(specs[0], rigor="L1", theme="white", chrome="editorial", include_spec_drawer=False)
+        self.assertIn("is-editorial", ed_frag)
+        self.assertNotIn("va-card-actions", ed_frag)
+        self.assertIn("data-qe-editorial-toggle", ed_frag)
+        self.assertIn("Show data table", ed_frag)
+        self.assertIn("va-editorial-footer-line", ed_frag)
+
+        for p_rel in (
+            "content/corpora/02-cloud-cyber-and-ai-ops/evidence/v06_ai_calibration_plot.json",
+            "content/corpora/04-civic-finance-and-stem-learning/evidence/v11_treasury_drawdown_plot.json",
+        ):
+            curve_frag = compile_spec(REPO_ROOT / p_rel, rigor="L3", medium="m3")
+            self.assertIn('data-qe-view="table"', curve_frag)
+            self.assertIn("± u_y", curve_frag)
+
 
 class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
-    """Run live Chrome CDP checks on v22, Specimens 45–49, and all 5 editorial/print auditor codes."""
+    """Run live Chrome CDP checks on Path A v22, Specimens 45–49, v06/v11 toggles, 390px picker, and print gates."""
 
     def _require_or_skip(self) -> None:
         if os.environ.get("QUIET_SKIP_CDP") == "1":
@@ -108,78 +138,148 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             time.sleep(0.35)
             driver.switch_to.frame("va-stage-portal")
 
-            # Initially US National has zero selected state hex outline
+            # Path A structural invariants: n0 zero sidebar, provenance eyebrow, inline select, unboxed figures, zero slide/code/toolbar clutter
+            v22_layout = driver.execute_script(
+                "const nav=document.documentElement.dataset.effectiveNav;"
+                "const railVis=getComputedStyle(document.getElementById('va-shell-rail')).display;"
+                "const barCnt=document.querySelectorAll('#v22-public-brief .va-card-actions').length;"
+                "const preCnt=document.querySelectorAll('#v22-public-brief pre').length;"
+                "const slideCnt=document.querySelectorAll('#v22-public-brief .va-brief-slides').length;"
+                "const selW=document.querySelector('[data-v22-scope-select]').getBoundingClientRect().width;"
+                "const proseW=document.querySelector('#v22-reading-essay').getBoundingClientRect().width;"
+                "const hexW=document.querySelector('#v22-map').getBoundingClientRect().width;"
+                "const hexTop=document.querySelector('#v22-map svg').getBoundingClientRect().top;"
+                "return {nav, railVis, barCnt, preCnt, slideCnt, selW, proseW, hexW, hexTop};"
+            )
+            self.assertEqual(v22_layout["nav"], "n0")
+            self.assertEqual(v22_layout["railVis"], "none")
+            self.assertEqual(v22_layout["barCnt"], 0, "Expected zero top button toolbars in Path A article")
+            self.assertEqual(v22_layout["preCnt"], 0, "Expected zero stray code slabs in View 22")
+            self.assertEqual(v22_layout["slideCnt"], 0, "Expected zero slide deck toggle in View 22")
+            self.assertGreater(v22_layout["hexW"], v22_layout["proseW"] + 60.0)
+            self.assertLess(v22_layout["hexTop"], 900.0)
+
             init_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
             self.assertEqual(init_sel, [], f"Expected zero hex outlines on US National load, got {init_sel}")
 
-            # Scope toggle US -> Maryland -> Wyoming -> back to US National
-            driver.execute_script("document.querySelector('[data-v22-scope=\"md\"]').click();")
-            md_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
-            self.assertEqual(md_sel, ["MD"])
+            # Inline sentence scope select US -> Maryland -> Wyoming -> US National
+            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='md';s.dispatchEvent(new Event('change',{bubbles:true}));")
+            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), ["MD"])
 
-            driver.execute_script("document.querySelector('[data-v22-scope=\"wy\"]').click();")
-            wy_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
-            self.assertEqual(wy_sel, ["WY"])
+            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='wy';s.dispatchEvent(new Event('change',{bubbles:true}));")
+            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), ["WY"])
             lead_wy = driver.execute_script("return document.querySelector('[data-v22-lead]').textContent;")
             self.assertIn("36% of Wyoming", lead_wy)
             self.assertIn("$72,495", driver.execute_script("return document.querySelectorAll('.va-callout-num')[1].textContent;"))
 
-            driver.execute_script("document.querySelector('[data-v22-scope=\"us\"]').click();")
-            us_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
-            self.assertEqual(us_sel, [], f"Expected US National scope click to clear hex outline, got {us_sel}")
+            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='us';s.dispatchEvent(new Event('change',{bubbles:true}));")
+            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), [])
 
-            # Hex tile click readout
+            # Hex tile click readout + keyboard Enter focus retention
             driver.execute_script("document.querySelector('.va-hex-tile[data-state=\"DC\"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));")
             ro = driver.execute_script("return document.querySelector('.va-hex-readout').textContent;")
             self.assertIn("District of Columbia (DC): 26%", ro)
+            ca_tile = driver.find_element(By.CSS_SELECTOR, '.va-hex-tile[data-state="CA"]')
+            driver.execute_script("arguments[0].focus();", ca_tile)
+            ca_tile.send_keys("\n")
+            kept_focus = driver.execute_script("return document.activeElement?.getAttribute('data-state') || '';")
+            self.assertEqual(kept_focus, "CA", "Hex tile activation dropped keyboard focus")
 
-            # In-card Chart -> Table toggle and Copy for AI status confirmation (authentic click)
-            driver.execute_script("document.querySelector('#v22-map [data-qe-view=\"table\"]').click();")
-            tbl_visible = driver.execute_script("const p=document.querySelector('#v22-map .va-card-table-panel');return !p.hasAttribute('hidden') && p.querySelectorAll('tbody tr').length===51;")
-            self.assertTrue(tbl_visible, "Chart -> Table toggle did not reveal 51-row table")
-            driver.find_element(By.CSS_SELECTOR, '#v22-map [data-qe-copy="ai"]').click()
+            # Quiet footer Show data table -> Show chart + hidden caption + Copy for AI zero-jump
+            driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
+            tbl_chk = driver.execute_script(
+                "const p=document.querySelector('#v22-map .va-card-table-panel');"
+                "const capW=p.querySelector('caption').getBoundingClientRect().width;"
+                "const btnTxt=document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent;"
+                "const align=getComputedStyle(p.querySelector('tbody td.num')).textAlign;"
+                "return {vis:!p.hasAttribute('hidden'), rows:p.querySelectorAll('tbody tr').length, capW, btnTxt, align};"
+            )
+            self.assertTrue(tbl_chk["vis"])
+            self.assertEqual(tbl_chk["rows"], 51)
+            self.assertLessEqual(tbl_chk["capW"], 2.0)
+            self.assertEqual(tbl_chk["btnTxt"], "Show chart")
+            self.assertEqual(tbl_chk["align"], "right")
+
+            driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
+            self.assertEqual(driver.execute_script("return document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent;"), "Show data table")
+
+            copy_link = driver.find_element(By.CSS_SELECTOR, '#v22-map [data-qe-copy="ai"]')
+            w_before = float(copy_link.rect["width"])
+            copy_link.click()
             time.sleep(0.15)
-            status_txt = driver.execute_script("return document.querySelector('#v22-map .va-copy-status').textContent;")
-            self.assertIn("Copied for AI", status_txt)
-
-            # Web Brief -> 16:9 Slide Deck toggle
-            driver.execute_script("document.querySelector('[data-v22-format=\"deck\"]').click();")
-            deck_vis = driver.execute_script("return !document.querySelector('.va-brief-slides').hidden && document.querySelector('.va-brief-web').hidden;")
-            self.assertTrue(deck_vis)
+            copy_chk = driver.execute_script(
+                "const b=document.querySelector('#v22-map [data-qe-copy=\"ai\"]');"
+                "return {txt:b.textContent.trim(), st:document.querySelector('#v22-map .va-copy-status').textContent, w:b.getBoundingClientRect().width};"
+            )
+            self.assertIn("Copied for AI", copy_chk["txt"])
+            self.assertIn("Copied for AI", copy_chk["st"])
+            self.assertLessEqual(abs(copy_chk["w"] - w_before), 1.5)
             driver.switch_to.default_content()
 
-            # Dark theme checks on v22 + print ink contrast reset + Bench copy confirmation opacity + sticky topbar clearance
+            # Dark theme inline select contrast + @media print ink reset + footer link hidden
             driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=dark")
             time.sleep(0.3)
             driver.switch_to.frame("va-stage-portal")
-            btn_colors = driver.execute_script(
-                "const b=document.querySelector('.va-scope-btn.is-active');"
-                "const cs=getComputedStyle(b);return {fg:cs.color,bg:cs.backgroundColor};"
+            sel_cols = driver.execute_script(
+                "const b=document.querySelector('[data-v22-scope-select]');"
+                "const cs=getComputedStyle(b), bs=getComputedStyle(document.body);return {fg:cs.color,bg:bs.backgroundColor};"
             )
             def _lum(rgb_s: str) -> float:
                 nums = [int(x) / 255.0 for x in rgb_s.replace("rgba(", "").replace("rgb(", "").split(")")[0].split(",")[:3]]
                 lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in nums]
                 return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
-            l_fg, l_bg = _lum(btn_colors["fg"]), _lum(btn_colors["bg"])
+            l_fg, l_bg = _lum(sel_cols["fg"]), _lum(sel_cols["bg"])
             ratio = (max(l_fg, l_bg) + 0.05) / (min(l_fg, l_bg) + 0.05)
-            self.assertGreaterEqual(ratio, 4.5, f"Active scope button contrast {ratio:.2f}:1 < 4.5:1 ({btn_colors})")
+            self.assertGreaterEqual(ratio, 4.5, f"Inline select contrast {ratio:.2f}:1 < 4.5:1 ({sel_cols})")
             driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
             time.sleep(0.1)
             print_ink = driver.execute_script("return getComputedStyle(document.querySelector('.va-brief-question')).color;")
+            link_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-footer-link')).display;")
+            cue_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-scroll-cue')).display;")
             driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
             self.assertLess(_lum(print_ink), 0.05, f"Expected dark print ink even from dark theme, got {print_ink}")
+            self.assertEqual(link_disp, "none")
+            self.assertEqual(cue_disp, "none")
             driver.switch_to.default_content()
 
+            # Explorer curves (v11 & v06) Table toggle + return to Chart
+            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v11-treasury-stress-test-solver&theme=white")
+            time.sleep(0.35)
+            driver.switch_to.frame("va-stage-portal")
+            driver.execute_script("document.querySelector('[data-qe-view=\"table\"]').click();")
+            v11_tbl = driver.execute_script("const p=document.querySelector('.va-card-table-panel');return !p.hasAttribute('hidden') && p.querySelectorAll('tbody tr').length===8;")
+            self.assertTrue(v11_tbl, "v11 Table toggle should show 8 quarters")
+            driver.execute_script("document.querySelector('[data-qe-view=\"chart\"]').click();")
+            self.assertTrue(driver.execute_script("return document.querySelector('.va-card-table-panel').hasAttribute('hidden');"))
+            driver.switch_to.default_content()
+
+            driver.get(f"{root_url}/quiet-ui-showcase.html?world=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=white")
+            time.sleep(0.35)
+            driver.switch_to.frame("va-stage-portal")
+            driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"table\"]').click();")
+            v06_tbl = driver.execute_script("const p=document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel');return !p.hasAttribute('hidden') && p.querySelectorAll('tbody tr').length===10;")
+            self.assertTrue(v06_tbl, "v06 Table toggle should show 10 calibration bins")
+            driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"chart\"]').click();")
+            self.assertTrue(driver.execute_script("return document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel').hasAttribute('hidden');"))
+            driver.switch_to.default_content()
+
+            # Component Library Specimens 45-49 checks
             driver.get(f"{root_url}/docs/bench/evidence-bench.html")
             time.sleep(0.35)
-            clr = driver.execute_script(
-                "const c=[...document.querySelectorAll('.qe-specimen')].find(e=>/Equal-Area US 51-Hex Tile Map/i.test(e.textContent||''));"
-                "c.scrollIntoView({behavior:'instant',block:'start'});"
+            bench_chk = driver.execute_script(
+                "const specs=[...document.querySelectorAll('.qe-specimen')];"
+                "const s49=specs.find(e=>e.querySelector('#m2-l2-diverging-mobility-matrix'));"
+                "const cue=s49.querySelector('.va-scroll-cue');"
+                "const s45=specs.find(e=>/Equal-Area US 51-Hex Tile Map/i.test(e.textContent||''));"
+                "s45.scrollIntoView({behavior:'instant',block:'start'});"
                 "const tb=document.querySelector('.qe-topbar').getBoundingClientRect().bottom;"
-                "const ct=c.getBoundingClientRect().top;"
-                "return {tb, ct};"
+                "const ct=s45.getBoundingClientRect().top;"
+                "return {tb, ct, s49Wide:s49.classList.contains('qe-specimen-wide'), cueDisp:getComputedStyle(cue).display};"
             )
-            self.assertGreaterEqual(clr["ct"], clr["tb"] + 8.0, f"Sticky topbar overlapped scrolled card header: {clr}")
+            self.assertGreaterEqual(bench_chk["ct"], bench_chk["tb"] + 8.0)
+            self.assertTrue(bench_chk["s49Wide"], "Specimen 49 should span full grid width")
+            self.assertEqual(bench_chk["cueDisp"], "none", "Desktop non-overflowing Specimen 49 should hide horizontal scroll cue")
+
             btn = driver.find_element(By.CSS_SELECTOR, '.qe-specimen [data-qe-copy="ai"]')
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
             time.sleep(0.08)
@@ -192,6 +292,27 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             )
             self.assertIn("Copied for AI", status_res["t"])
             self.assertGreaterEqual(float(status_res["op"]), 0.99, f"Expected visible copy confirmation opacity>=0.99, got {status_res}")
+
+            # 390px mobile Studio topbar picker readable width without clipping + M1 scroll-cue suppression
+            set_viewport(driver, 390, 844, 1)
+            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=white&medium=m1")
+            time.sleep(0.3)
+            mob_chk = driver.execute_script(
+                "const bar=document.getElementById('va-studio-bar').getBoundingClientRect();"
+                "const ctr=document.querySelector('.va-bar-center').getBoundingClientRect();"
+                "const sel=document.getElementById('va-view-select').getBoundingClientRect();"
+                "const cmp=document.getElementById('va-tab-components');"
+                "const cmpClip=cmp.scrollWidth>cmp.clientWidth+1;"
+                "const d=document.getElementById('va-stage-portal').contentDocument;"
+                "const m1Cue=d.querySelector('#v22-matrix .va-scroll-cue');"
+                "return {barH:bar.height, selW:sel.width, selClip:sel.right>ctr.right+1, cmpClip, ov:document.documentElement.scrollWidth>window.innerWidth+1, m1CueDisp:m1Cue?getComputedStyle(m1Cue).display:'none'};"
+            )
+            self.assertLessEqual(mob_chk["barH"], 48.5)
+            self.assertGreaterEqual(mob_chk["selW"], 120.0, f"Expected mobile #va-view-select >=120px wide, got {mob_chk}")
+            self.assertFalse(mob_chk["selClip"], f"Expected #va-view-select unclipped inside .va-bar-center, got {mob_chk}")
+            self.assertFalse(mob_chk["cmpClip"], f"Expected Components tab unclipped, got {mob_chk}")
+            self.assertFalse(mob_chk["ov"], "390px Studio bar caused horizontal overflow")
+            self.assertEqual(mob_chk["m1CueDisp"], "none", f"Expected M1 scroll-cue hidden at 390px, got {mob_chk}")
         finally:
             driver.quit()
             srv.shutdown()

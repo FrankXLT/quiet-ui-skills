@@ -80,7 +80,7 @@ def _num(d: dict[str, Any], *keys: str, default: float = 0.0) -> float:
     return default
 
 
-def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str) -> str:
+def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str, chrome: str = "bench") -> str:
     """Compile two-step subgroup comparison bars with shaded row-aligned Overall column."""
     groups = list(spec.get("groups") or spec.get("items") or [])
     sub_labels = list(spec.get("subgroups") or ["Group A", "Group B"])
@@ -100,7 +100,10 @@ def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str) 
             if fv is not None:
                 vals.append(fv)
     sc = compute_linear_125_scale(0.0, max(vals) * 1.08, target_ticks=4)
-    x0, x_bar_max, x_col, col_w = 160.0, 496.0, 520.0, 108.0
+    wide_bench = chrome == "bench"
+    vb_w = 880 if wide_bench else 640
+    svg_cls = "qe-svg qe-svg-880" if wide_bench else "qe-svg qe-svg-640"
+    x0, x_bar_max, x_col, col_w = (176.0, 712.0, 738.0, 128.0) if wide_bench else (160.0, 496.0, 520.0, 108.0)
     track_w = x_bar_max - x0 - 44.0
     row_h, y0 = 52.0, 44.0
     ph = max(92.0, len(groups) * row_h)
@@ -113,12 +116,12 @@ def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str) 
         '<div class="qe-legend-series va-subgroup-legend">'
         f'<span><span class="va-hex-swatch" style="--swatch:{esc(col_a)}"></span> {esc(sub_labels[0])}</span>'
         f'<span><span class="va-hex-swatch" style="--swatch:{esc(col_b)}"></span> {esc(sub_labels[1])}</span>'
-        f'<span><span class="va-hex-swatch" style="--swatch:var(--bg-elevated)"></span> {esc(overall_lbl)}</span>'
+        f'<span><span class="va-hex-swatch is-overall" style="--swatch:var(--bg-elevated)"></span> {esc(overall_lbl)}</span>'
         "</div>"
     )
     title = str(spec.get("metadata", {}).get("title") or "Paired Subgroup Comparison")
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 {vh}" role="img" aria-label="{esc(title)}">']
-    parts.append(f'<rect x="{x_col:.1f}" y="14" width="{col_w:.1f}" height="{y0 + ph - 14:.1f}" rx="4" fill="var(--bg-elevated)" stroke="var(--border-hairline)" stroke-width="1"/>')
+    parts: list[str] = [f'<svg class="{svg_cls}" viewBox="0 0 {vb_w} {vh}" role="img" aria-label="{esc(title)}">']
+    parts.append(f'<rect x="{x_col:.1f}" y="14" width="{col_w:.1f}" height="{y0 + ph - 14:.1f}" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>')
     parts.append(halo_text(x_col + col_w / 2.0, 30.0, overall_lbl, anchor="middle", size=11.8, weight="700", fill="var(--text-primary)", halo=False))
     parts.append(f'<line x1="{x_col - 10:.1f}" y1="16" x2="{x_col - 10:.1f}" y2="{y0 + ph:.1f}" stroke="var(--border-hairline)" stroke-width="1"/>')
     for xv in sc["majors"]:
@@ -207,10 +210,6 @@ def compile_dual_slopegraph(spec: dict[str, Any], rigor: str, medium: str) -> st
     xl1 = 68.0
 
     palette = [resolve_token(r.get("color"), SERIES_STYLES[i % len(SERIES_STYLES)]["stroke"]) for i, r in enumerate(rows)]
-    legend_html = '<div class="qe-legend-series va-slope-legend">' + "".join(
-        f'<span><span class="va-hex-swatch" style="--swatch:{esc(palette[i])}"></span> {esc(r.get("label") or f"Series {i+1}")}</span>'
-        for i, r in enumerate(rows)
-    ) + "</div>"
 
     yl0_map = _decollide_ys([(i, py_l(_num(r, "left_start"))) for i, r in enumerate(rows)], y_top - 4, y_bot + 10, 16.5)
     yl1_map = _decollide_ys([(i, py_l(_num(r, "left_end"))) for i, r in enumerate(rows)], y_top - 4, y_bot + 10, 16.5)
@@ -263,4 +262,4 @@ def compile_dual_slopegraph(spec: dict[str, Any], rigor: str, medium: str) -> st
         parts.append(svg_knockout_label(cx_c, cy_lbl, str(cross_cfg["label"]), anchor="middle", size=11.4, weight="600", fill="var(--text-primary)", surface_fill="var(--bg-canvas)", x_bounds=(xr1 + 4.0, xr2 - 4.0)))
 
     parts.append("</svg>")
-    return f'{legend_html}<div class="va-figure-scroll">{chr(10).join(parts)}</div>'
+    return f'<div class="va-figure-scroll">{chr(10).join(parts)}</div>'

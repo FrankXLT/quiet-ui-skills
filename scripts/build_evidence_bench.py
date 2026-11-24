@@ -56,7 +56,7 @@ def _compile_bench_cards(spec_dir: Path) -> str:
                 contract_tail = ""
             else:
                 contract_tail = contract_html
-            is_wide = rigor == "L3" or modality in {"bitfield", "plot", "waveform", "schematic"} or mod_code == "M2"
+            is_wide = rigor == "L3" or modality in {"table", "bitfield", "plot", "waveform", "schematic"} or mod_code == "M2"
             wide_cls = " qe-specimen-wide" if is_wide else ""
             eff_mod = "M2" if modality == "table" else mod_code
             cards_html.append(

@@ -221,7 +221,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
         ("02-cloud-cyber-and-ai-ops", "v19-product-roadmap-and-triage", "document.querySelectorAll('#v19-triage .v9-triage-row')[2].click();return document.getElementById('v19-triage-detail').textContent;", "+3.0 d"),
         ("04-civic-finance-and-stem-learning", "v20-student-capstone-lab-report", "document.querySelector('#v20-rubric-chips [data-v20-focus=\"error\"]').click();return document.getElementById('v20-focus-note').textContent;", "Error Bounds"),
         ("05-physical-systems-auto-and-aero", "v21-field-anomaly-escalation-tsn", "document.getElementById('v21-handoff-arm').click();document.getElementById('v21-handoff-send').click();return document.getElementById('v21-handoff-status').textContent;", "HANDOFF SENT"),
-        ("04-civic-finance-and-stem-learning", "v22-reading-and-mobility-brief", "document.querySelector('[data-v22-scope=\"md\"]').click();return document.querySelector('[data-v22-lead]').textContent;", "35% of Maryland"),
+        ("04-civic-finance-and-stem-learning", "v22-reading-and-mobility-brief", "const s=document.querySelector('[data-v22-scope-select]');s.value='md';s.dispatchEvent(new Event('change',{bubbles:true}));return document.querySelector('[data-v22-lead]').textContent;", "35% of Maryland"),
     ]
     for wid, vid, js, expect in checks:
         driver.get(f"{base_url}?world={wid}&view={vid}&theme=white")

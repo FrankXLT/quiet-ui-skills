@@ -160,7 +160,8 @@ def _compile_single_dict(
         return inner_html
 
     fig_id = esc(data.get("id", f"qe-{modality}"))
-    inner_html = wrap_takeaway_card(data, inner_html, modality, fig_id)
+    is_editorial = chrome == "editorial" or bool(data.get("editorial"))
+    inner_html = wrap_takeaway_card(data, inner_html, modality, fig_id, editorial=is_editorial)
     title = esc(meta.get("title", modality.title()))
     desc = str(meta.get("description", ""))
     desc_html = ""
@@ -191,8 +192,9 @@ def _compile_single_dict(
         else ""
     )
     caption = desc_html
+    fig_cls = "va-figure-card qe-figure is-editorial" if is_editorial else "va-figure-card qe-figure"
     return (
-        f'<figure class="va-figure-card qe-figure" id="{fig_id}" '
+        f'<figure class="{fig_cls}" id="{fig_id}" '
         f'data-qe-modality="{esc(modality)}" data-qe-rigor="{esc(eff_rigor)}" '
         f'data-qe-medium="{esc(medium)}" data-qe-theme="{esc(theme)}">'
         f'<div class="va-figure-hdr qe-card-head">'
@@ -249,7 +251,7 @@ def main() -> None:
     parser.add_argument("--rigor", choices=["L1", "L2", "L3"], default=None)
     parser.add_argument("--medium", choices=["m1", "m2", "m3", "m4", "m5", "m6", "m7"], default="m2")
     parser.add_argument("--theme", choices=["white", "paper", "dark-paper", "dark"], default="white")
-    parser.add_argument("--chrome", choices=["bench", "embedded"], default="bench")
+    parser.add_argument("--chrome", choices=["bench", "embedded", "editorial"], default="bench")
     parser.add_argument("--standalone", action="store_true", help="Wrap output in full self-contained HTML5 doc")
     parser.add_argument("--fragment", action="store_true", help="Force HTML fragment output even when writing --out .html")
     parser.add_argument("--out", default=None, help="Optional output HTML path")

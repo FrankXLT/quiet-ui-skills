@@ -36,14 +36,14 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
 
     scope_data = {
         "us": {
-            "lead_clause": f"{us_read}% of US fourth-graders read proficiently in 2024, down four points since 2019,",
-            "lead_rest": f"while real US median household income reached ${us_inc:,} (+{us_g:.1f}% over five years).",
+            "lead_clause": f"{us_read}% of fourth-graders read proficiently in 2024, down four points since 2019,",
+            "lead_rest": f"while real national median household income reached ${us_inc:,} (+{us_g:.1f}% over five years).",
             "focus_state": "",
             "focus_summary": f"US National: {us_read}% proficient nationwide (state range 21%–41%) · Select any state hex tile to inspect.",
             "callouts": [
                 {"num": f"{us_read}%", "desc": "4th-graders at or above Proficient reading across all US public schools (2024)"},
                 {"num": f"${us_inc:,}", "desc": "Real US median household income in 2024 inflation-adjusted dollars"},
-                {"num": f"+{us_g:.1f}%", "desc": f"5-year real US household growth alongside {eq_pct:.1f}% equal-chance quintile baseline"},
+                {"num": f"+{us_g:.1f}%", "desc": f"5-year real US household growth alongside 0.0 pp ({eq_pct:.1f}%) mobility baseline"},
             ],
         },
         "md": {
@@ -53,7 +53,7 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
             "callouts": [
                 {"num": f"{md_read}%", "desc": f"Maryland Grade 4 Proficient reading share (+{md_read - us_read} pts above US national rate)"},
                 {"num": f"${md_inc:,}", "desc": "Maryland 2024 median household income rank top-three nationwide"},
-                {"num": f"+{md_g:.1f}%", "desc": f"Maryland 5-year real household growth (+6.1% upward vs {eq_pct:.1f}% baseline)"},
+                {"num": f"+{md_g:.1f}%", "desc": f"Maryland 5-year real household growth (+6.1 pp vs {eq_pct:.1f}% mobility baseline)"},
             ],
         },
         "wy": {
@@ -63,15 +63,15 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
             "callouts": [
                 {"num": f"{wy_read}%", "desc": f"Wyoming Grade 4 Proficient reading share (+{wy_read - us_read} pts above US national rate)"},
                 {"num": f"${wy_inc:,}", "desc": "Wyoming 2024 median household income across rural and energy counties"},
-                {"num": f"+{wy_g:.1f}%", "desc": f"Wyoming 5-year real income gain (+5.4% upward vs {eq_pct:.1f}% neutral baseline)"},
+                {"num": f"+{wy_g:.1f}%", "desc": f"Wyoming 5-year real income gain (+5.4 pp vs {eq_pct:.1f}% neutral mobility baseline)"},
             ],
         },
     }
     safe_scope_json = json.dumps(scope_data, ensure_ascii=False).replace("</", "<\\/")
 
-    hex_html = compile_spec(specs["hex_map"], rigor="L1", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="embedded")
-    dumb_html = compile_spec(specs["arrow_dumbbell"], rigor="L2", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="embedded")
-    mat_html = compile_spec(specs["mobility_matrix"], rigor="L2", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="embedded")
+    hex_html = compile_spec(specs["hex_map"], rigor="L1", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="editorial")
+    dumb_html = compile_spec(specs["arrow_dumbbell"], rigor="L2", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="editorial")
+    mat_html = compile_spec(specs["mobility_matrix"], rigor="L2", medium="m2", theme="white", include_wrapper=True, include_spec_drawer=False, chrome="editorial")
 
     us_c = scope_data["us"]
     callout_cards = "".join(
@@ -83,88 +83,47 @@ def build_v22_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> 
         for idx, item in enumerate(us_c["callouts"])
     )
 
-    code_snippet = (
-        "# Reproducible summary verification (pure standard library)\n"
-        f"us_read_pct, md_read_pct, wy_read_pct = {us_read}, {md_read}, {wy_read}\n"
-        f"income_2024 = {{'US': {us_inc}, 'Maryland': {md_inc}, 'Wyoming': {wy_inc}}}"
-    )
-
     return f"""
-<div class="v9-stage-inner va-question-brief" id="v22-public-brief">
-  <section class="va-brief-hero" id="v22-overview" aria-label="Question-First Brief Lead">
-    <aside class="va-freshness-stamp" aria-label="Brief Freshness">
-      <strong>Public Data Brief</strong><br/>
-      Updated Nov 2026<br/>
-      NAEP + Census ACS<br/>
-      Equal-Chance Verified
-    </aside>
-    <div>
-      <h1 class="va-brief-question">How have reading proficiency and household income mobility shifted across U.S. states?</h1>
-      <div class="va-brief-toolbar">
-        <div class="va-scope-bar" role="group" aria-label="Select jurisdiction scope">
-          <button type="button" class="va-scope-btn is-active" data-v22-scope="us" aria-pressed="true">US National</button>
-          <button type="button" class="va-scope-btn" data-v22-scope="md" aria-pressed="false">Maryland</button>
-          <button type="button" class="va-scope-btn" data-v22-scope="wy" aria-pressed="false">Wyoming</button>
-        </div>
-        <div class="va-toolbar-joined va-format-toggle" role="group" aria-label="Select output format">
-          <button type="button" class="va-seg-btn is-active" data-v22-format="brief" aria-pressed="true">Web Brief</button>
-          <button type="button" class="va-seg-btn" data-v22-format="deck" aria-pressed="false">Briefing Slide (16:9)</button>
-        </div>
-      </div>
-      <p class="va-lead-answer" data-v22-lead><span class="va-lead-highlight">{_esc(us_c["lead_clause"])}</span> {_esc(us_c["lead_rest"])}</p>
-    </div>
-  </section>
+<article class="v9-stage-inner va-question-brief va-editorial-article" id="v22-public-brief">
+  <header class="va-article-header" id="v22-overview">
+    <p class="va-provenance-eyebrow">Public Data Brief · Updated Nov 2026 · NAEP &amp; Census ACS</p>
+    <h1 class="va-brief-question">How have reading proficiency and household income mobility shifted across U.S. states?</h1>
+    <p class="va-lead-answer">
+      Across
+      <select class="va-inline-scope-select" id="v22-scope-select" data-v22-scope-select aria-label="Select jurisdiction scope">
+        <option value="us" selected="selected">the United States</option>
+        <option value="md">Maryland</option>
+        <option value="wy">Wyoming</option>
+      </select>,
+      <span data-v22-lead><span class="va-lead-highlight">{_esc(us_c["lead_clause"])}</span> {_esc(us_c["lead_rest"])}</span>
+    </p>
+  </header>
 
   <section class="va-editorial-callouts" aria-label="Key Public Metrics">{callout_cards}</section>
 
-  <div class="va-brief-web">
-    <section id="v22-map" aria-label="National State Hex Map">
-      {hex_html}
-    </section>
+  <section class="va-breakout-wide va-editorial-section" id="v22-map" aria-label="National State Hex Map">
+    {hex_html}
+  </section>
 
-    <section class="va-brief-split" id="v22-dumbbell" aria-label="Trend Breakdown and Methodology">
-      <article class="va-editorial-prose">
-        <h2>Why unequal state boundaries distort small states</h2>
-        <p>Standard geographic maps compress Delaware, Rhode Island, Washington, DC, and Maryland into slivers that conceal both <strong>{md_read}%</strong> proficiency and sample margins. Rendering all 51 jurisdictions as equal-area hexagons keeps click targets uniform while automatically inverting label ink whenever fill luminance crosses the contrast threshold.</p>
-        <p>Comparing 2019 against 2024 shows diverging post-pandemic paths: Louisiana gained four points while national scores slipped from 35% to <strong>{us_read}%</strong>. Districts still operating under 2022–2023 pooled collections stay marked with an asterisk rather than being silently merged.</p>
-        <p class="va-brief-signpost">Need slide-by-slide executive talking points? Switch to <strong>Briefing Slide (16:9)</strong> above or open <strong>Print Sheet</strong> to inspect clean archival pagination with zero sticky overlays.</p>
-        <pre class="va-code-surface" tabindex="0" role="region" aria-label="Notebook check snippet"><code>{_esc(code_snippet)}</code></pre>
-      </article>
-      <div class="va-split-visual">{dumb_html}</div>
-    </section>
+  <section class="va-editorial-prose" id="v22-reading-essay" aria-label="Small-State Geography and Reading Trends">
+    <h2>Why equal-area tiles reveal small-state gains and stagnation</h2>
+    <p>Conventional geographic choropleths squeeze Delaware, Rhode Island, the District of Columbia, and Maryland into narrow slivers that obscure both <strong>{md_read}%</strong> Grade 4 proficiency and local sampling precision. Giving every state plus Washington, DC an identical hexagonal footprint preserves legibility across all 51 jurisdictions while flipping text ink automatically for dark and pale bins alike.</p>
+    <p>Viewed side by side from 2019 to 2024, state trajectories split sharply around the <strong>{us_read}%</strong> national average. Louisiana added four points over five years and Maryland held steady at {md_read}%, while Wyoming shed four points from 40% to <strong>{wy_read}%</strong>. Rural district aggregates still anchored in 2022–2023 pooled collections stay marked explicitly with an asterisk rather than being blended silently into 2024 totals.</p>
+  </section>
 
-    <section id="v22-matrix" aria-label="Income Distribution and Mobility Matrix">
-      {mat_html}
-    </section>
-  </div>
+  <section class="va-breakout-wide va-editorial-section" id="v22-dumbbell" aria-label="Ranked Reading Proficiency Shifts">
+    {dumb_html}
+  </section>
 
-  <div class="va-brief-slides va-slide-deck" hidden>
-    <article class="va-slide-frame">
-      <div class="va-slide-kicker">Slide 1 of 3 · Question-First Synthesis</div>
-      <h2>State outcomes diverge sharply around the {us_read}% national reading baseline</h2>
-      <p>Maryland sustains {md_read}% Grade 4 proficiency (${md_inc:,} median income, +{md_g:.1f}% real gain) and Wyoming posts {wy_read}% (${wy_inc:,}, +{wy_g:.1f}%), even as the national average softened from 35% to {us_read}% (+{us_g:.1f}% median household income gain).</p>
-      <div class="va-table-region va-table-wrap" tabindex="0" role="region" aria-label="Executive Slide Metrics">
-        <table class="booktabs qe-table">
-          <thead><tr><th scope="col">Scope</th><th scope="col" class="num">Grade 4 Proficient</th><th scope="col" class="num">Median Income</th><th scope="col" class="num">5-Yr Real Growth</th></tr></thead>
-          <tbody>
-            <tr><th scope="row">US National</th><td class="num">{us_read}%</td><td class="num">${us_inc:,}</td><td class="num">+{us_g:.1f}%</td></tr>
-            <tr><th scope="row">Maryland</th><td class="num">{md_read}%</td><td class="num">${md_inc:,}</td><td class="num">+{md_g:.1f}%</td></tr>
-            <tr><th scope="row">Wyoming</th><td class="num">{wy_read}%</td><td class="num">${wy_inc:,}</td><td class="num">+{wy_g:.1f}%</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </article>
-    <article class="va-slide-frame">
-      <div class="va-slide-kicker">Slide 2 of 3 · One-Chart Focal Evidence</div>
-      <h2>Equal-area US 51-state map exposes small-state performance cleanly</h2>
-      <p>All 50 states plus DC hold uniform visual area. Toggle the Web Brief view for interactive hex selection, full CSV export, and Markdown copy for AI briefing workflows.</p>
-    </article>
-    <article class="va-slide-frame">
-      <div class="va-slide-kicker">Slide 3 of 3 · Appendix &amp; Methodological Guardrails</div>
-      <h2>Equal-chance {eq_pct:.1f}% baseline &amp; vintage disclosure rules</h2>
-      <p>Under random sorting, each income fifth captures {eq_pct:.1f}% of adult children. Dollar levels stay unshaded while growth rates use quiet diverging bands; prior-cycle pooled district series remain flagged with asterisks (*).</p>
-    </article>
-  </div>
+  <section class="va-editorial-prose" id="v22-mobility-essay" aria-label="Household Gains and Intergenerational Mobility">
+    <h2>Real income growth alone does not close generational mobility gaps</h2>
+    <p>Nominal pay raises meant little where post-2021 living costs absorbed household gains. Between 2019 and 2024, real US median household income edged up <strong>+{us_g:.1f}%</strong> to <strong>${us_inc:,}</strong>, led by energy and rural employment recovery in Wyoming (+{wy_g:.1f}% to ${wy_inc:,}) and sustained high-wage attainment in Maryland (+{md_g:.1f}% to ${md_inc:,}).</p>
+    <p>Income levels do not tell the whole mobility story on their own. Under an equal-chance generational benchmark where children from any fifth stand a uniform <strong>{eq_pct:.1f}%</strong> probability of advancing (<strong>0.0 pp</strong> neutral benchmark), Maryland leads by <strong>+6.1 pp</strong> and Wyoming by <strong>+5.4 pp</strong>, whereas households in the lowest income fifth fell <strong>-4.3%</strong> in real income and sit <strong>-1.8 pp</strong> below neutral mobility expectations.</p>
+  </section>
+
+  <section class="va-breakout-wide va-editorial-section" id="v22-matrix" aria-label="Income Distribution and Mobility Matrix">
+    {mat_html}
+  </section>
 
   <script type="application/json" class="v22-scope-payload">{safe_scope_json}</script>
-</div>"""
+</article>"""

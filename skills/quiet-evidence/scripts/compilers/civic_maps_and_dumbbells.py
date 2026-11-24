@@ -139,9 +139,9 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
     ]
     legend_html = f'<div class="qe-legend-series va-hex-legend" role="list" aria-label="Scale bins">{"".join(legend_pills)}</div>'
 
-    svg_parts: list[str] = [f'<svg class="qe-svg qe-svg-640 va-hex-map-svg" viewBox="0 0 640 342" role="img" aria-label="{esc(title)}">']
+    svg_parts: list[str] = [f'<svg class="qe-svg qe-svg-640 va-hex-map-svg" viewBox="0 0 640 342" role="group" aria-label="{esc(title)}"><title>{esc(title)}</title>']
     focus_summary = str(spec.get("focus_summary") or "")
-    selected_tile_svg = ""
+    selected_pts = ""
     for abbr, name, row, col in US_HEX_GRID:
         cx, cy = x0 + (col + (0.5 if row % 2 else 0.0)) * dx, y0 + row * dy
         entry = state_map.get(abbr) or {}
@@ -154,9 +154,11 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
         note_txt = str(entry.get("note") or "")
         selected = bool(focus_state and abbr == focus_state)
         is_focus = " is-selected" if selected else ""
-        if selected and val is not None:
-            focus_summary = f"{name} ({abbr}): {val_full}" + (f" · {note_txt}" if note_txt else "")
         pts = _hex_polygon_points(cx, cy, r - 1.4)
+        if selected:
+            selected_pts = pts
+            if val is not None:
+                focus_summary = f"{name} ({abbr}): {val_full}" + (f" · {note_txt}" if note_txt else "")
         tile_svg = (
             f'<g class="va-hex-tile{is_focus}" data-state="{esc(abbr)}" data-state-name="{esc(name)}" '
             f'data-value="{esc(val_txt)}" data-full-value="{esc(val_full)}" data-note="{esc(note_txt)}" '
@@ -166,12 +168,9 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
             f'<text x="{cx:.1f}" y="{cy + 12.2:.1f}" text-anchor="middle" font-family="var(--font-mono)" font-size="11.4" font-weight="600" fill="{esc(ink)}">{esc(val_txt)}</text>'
             "</g>"
         )
-        if selected:
-            selected_tile_svg = tile_svg
-        else:
-            svg_parts.append(tile_svg)
-    if selected_tile_svg:
-        svg_parts.append(selected_tile_svg)
+        svg_parts.append(tile_svg)
+    ring_hidden = "" if selected_pts else ' visibility="hidden"'
+    svg_parts.append(f'<polygon class="va-hex-focus-ring" points="{selected_pts}" fill="none" stroke="var(--text-primary)" stroke-width="2.8" stroke-linejoin="round" pointer-events="none"{ring_hidden}/>')
     svg_parts.append("</svg>")
     readout = f'<div class="va-hex-readout" role="status" aria-live="polite">{esc(focus_summary or "Select any state hex tile to inspect exact rate and bin.")}</div>'
     return f'{legend_html}<div class="va-figure-scroll va-hex-stage">{"".join(svg_parts)}</div>{readout}'
@@ -183,7 +182,7 @@ def _arrow_head_points(x_tip: float, cy: float, direction: int) -> str:
     return f"{x_tip:.1f},{cy:.1f} {x_tip - dx:.1f},{cy - 4.4:.1f} {x_tip - dx:.1f},{cy + 4.4:.1f}"
 
 
-def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str) -> str:
+def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str, chrome: str = "bench") -> str:
     """Compile ranked directional arrow dumbbell comparing start -> end values with fallback vintage notes."""
     items = list(spec.get("items") or spec.get("series_items") or [])
     sort_mode = str(spec.get("sort") or "as_is").lower()
@@ -216,8 +215,11 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str) -> str
         ),
         default=48.0,
     )
-    x0 = min(220.0, max(142.0, max_l_px + 22.0))
-    pw = max(270.0, 628.0 - x0 - max_r_px - 20.0)
+    wide_bench = chrome in {"bench", "editorial"}
+    vb_w = 880 if wide_bench else 640
+    svg_cls = "qe-svg qe-svg-880" if wide_bench else "qe-svg qe-svg-640"
+    x0 = min(220.0, max(150.0 if wide_bench else 142.0, max_l_px + 22.0))
+    pw = max(440.0 if wide_bench else 270.0, (vb_w - 14.0) - x0 - max_r_px - 20.0)
     y0, row_h = 32.0, 34.0
     ph = max(72.0, len(items) * row_h)
     vh = int(y0 + ph + 54)
@@ -232,7 +234,7 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str) -> str
         "</div>"
     )
     title = str(spec.get("metadata", {}).get("title") or "Directional Arrow Dumbbell")
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 {vh}" role="img" aria-label="{esc(title)}">']
+    parts: list[str] = [f'<svg class="{svg_cls}" viewBox="0 0 {vb_w} {vh}" role="img" aria-label="{esc(title)}">']
     for xv in sc["majors"]:
         xx = px(xv)
         if xx < x0 + 6 or xx > x0 + pw - 6:

@@ -290,15 +290,15 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
         },
         "v22-reading-and-mobility-brief": {
             "option_label": "v22 · Reading & Mobility Data Brief", "default_medium": "m2",
-            "chromatic_code": "c1", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c1", "default_nav": "n0", "allowed_navs": ["n0"],
             "nav_icon": "landmark", "nav_brand": "Public Data Brief",
             "topbar_brand": "Reading & Mobility Public Data Brief", "rail_brand": "Brief Sections",
-            "topbar_status": [], "nav_items": ["Question Lead", "51-State Map", "Trend Dumbbell", "Mobility Table"],
-            "nav_anchors": ["v22-overview", "v22-map", "v22-dumbbell", "v22-matrix"],
+            "topbar_status": [], "nav_items": [],
+            "nav_anchors": [],
             "inv_col": "v22-reading-and-mobility-brief", "short_tag": "v22",
-            "bias_removed": "Buried Policy Leads, Area Distortion & Print Clipping",
-            "bias_risk": "Masks small states behind geographic area while clipping table columns on mobile and PDF prints.",
-            "bias_replacement": "Question-First Brief with unboxed key numbers, 51-hex state map, ranked arrow dumbbell, and Chart/Table + Copy for AI cards.",
+            "bias_removed": "Hybrid App Chrome, Sidebar Squeezing & Chart Toolbar Clutter",
+            "bias_risk": "Sidebars, boxed button bars above figures, and inline code slabs fracture journalistic reading rhythm.",
+            "bias_replacement": "Full-canvas centered 68-character prose with quiet inline scope dropdown, unboxed breakout visuals, and source footer table/AI links.",
         },
     }
     return assemble_world_bundle(corpus, bp, "04 · Budgets, Finance & Labs", view_cfg, html_map)

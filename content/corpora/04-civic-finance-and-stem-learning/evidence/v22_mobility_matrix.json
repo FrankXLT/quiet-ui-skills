@@ -6,9 +6,9 @@
   "diverging_threshold": 5.0,
   "metadata": {
     "title": "Real household income grew fastest in Wyoming (+4.1%) and Maryland (+3.8%), reaching $98,461 in MD",
-    "subtitle": "Unshaded median household income ($) beside diverging 5-year real % growth and upward quintile mobility (%)",
+    "subtitle": "Unshaded median household income ($) beside 5-year real growth (%) and intergenerational mobility shift vs 20.0% equal-chance baseline (pp), 2019 vs 2024",
     "rigor_level": "L2",
-    "note": "Equal-chance baseline: under neutral intergenerational sorting, each income fifth captures 20.0% of grown children; rates above or below reflect regional mobility divergence.",
+    "note": "Equal-chance baseline (0.0 pp = 20.0%): under neutral intergenerational sorting, each income fifth captures 20.0% of grown children; US National sits at the 0.0 pp equal-chance benchmark, while positive or negative percentage-point (pp) shifts show state and cohort divergence.",
     "source": "US Census Bureau ACS 1-Year Estimates & Opportunity Insights (2019–2024)"
   },
   "cohort_definitions": [
@@ -21,10 +21,10 @@
     {"key": "income_2019", "label": "2019 Median", "role": "level_usd", "decimals": 0},
     {"key": "income_2024", "label": "2024 Median", "role": "level_usd", "decimals": 0},
     {"key": "inc_pct", "label": "5-Yr Real %", "role": "rate_pct", "decimals": 1},
-    {"key": "upward_pct", "label": "Upward Mobility %", "role": "rate_pct", "decimals": 1}
+    {"key": "upward_pct", "label": "Mobility vs 20% Baseline (pp)", "role": "rate_pct", "suffix": " pp", "decimals": 1}
   ],
   "rows": [
-    {"scope": "US National", "income_2019": 72830, "income_2024": 74580, "inc_pct": 2.4, "upward_pct": 2.4},
+    {"scope": "US National", "income_2019": 72830, "income_2024": 74580, "inc_pct": 2.4, "upward_pct": 0.0},
     {"scope": "Maryland", "income_2019": 94850, "income_2024": 98461, "inc_pct": 3.8, "upward_pct": 6.1},
     {"scope": "Wyoming", "income_2019": 69640, "income_2024": 72495, "inc_pct": 4.1, "upward_pct": 5.4},
     {"scope": "Lower-Fifth Cohort", "income_2019": 28400, "income_2024": 27180, "inc_pct": -4.3, "upward_pct": -1.8},

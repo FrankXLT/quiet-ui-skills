@@ -39,7 +39,18 @@
     });
   }
 
-  function announceStatus(card, label, isErr) {
+  function announceStatus(card, label, isErr, triggerBtn) {
+    if (triggerBtn && triggerBtn.classList && triggerBtn.classList.contains('va-footer-copy-link')) {
+      const txtEl = triggerBtn.querySelector('.va-copy-link-label') || triggerBtn;
+      clearTimeout(triggerBtn._qeBtnTimer);
+      txtEl.textContent = label;
+      triggerBtn.classList.toggle('is-copied', !isErr);
+      triggerBtn.classList.toggle('is-error', !!isErr);
+      triggerBtn._qeBtnTimer = setTimeout(() => {
+        txtEl.textContent = 'Copy for AI';
+        triggerBtn.classList.remove('is-copied', 'is-error');
+      }, 2800);
+    }
     const status = card.querySelector('.va-copy-status, .qe-copy-status');
     if (!status) return;
     toggleSeq = (toggleSeq + 1) % 2;
@@ -53,11 +64,41 @@
     }, 2800);
   }
 
+  let syncScheduled = false;
+  const _cueObserver = typeof ResizeObserver === 'function'
+    ? new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target;
+          el.classList.toggle('has-overflow', el.scrollWidth > el.clientWidth + 2);
+        });
+      })
+    : null;
+
+  function syncScrollCues() {
+    syncScheduled = false;
+    document.querySelectorAll('.va-diverging-scroll').forEach((el) => {
+      if (_cueObserver && !el._qeObserved) {
+        el._qeObserved = true;
+        _cueObserver.observe(el);
+      }
+      el.classList.toggle('has-overflow', el.scrollWidth > el.clientWidth + 2);
+    });
+  }
+
+  function scheduleSyncScrollCues() {
+    if (syncScheduled) return;
+    syncScheduled = true;
+    safeRaf(syncScrollCues);
+  }
+
+  const safeRaf = (fn) => (typeof requestAnimationFrame === 'function' ? requestAnimationFrame(fn) : setTimeout(fn, 0));
+
   function setCardMode(card, mode) {
     const chartPanel = card.querySelector('.va-card-chart-panel');
     const tablePanel = card.querySelector('.va-card-table-panel');
     const btnChart = card.querySelector('[data-qe-view="chart"]');
     const btnTable = card.querySelector('[data-qe-view="table"]');
+    const edToggle = card.querySelector('[data-qe-editorial-toggle]');
     if (!chartPanel || !tablePanel) return;
     const showTable = mode === 'table';
     chartPanel.hidden = showTable;
@@ -74,6 +115,15 @@
       btnTable.setAttribute('aria-pressed', showTable ? 'true' : 'false');
       btnTable.classList.toggle('is-active', showTable);
     }
+    if (edToggle) {
+      edToggle.textContent = showTable ? 'Show chart' : 'Show data table';
+      const targetId = showTable ? chartPanel.id : tablePanel.id;
+      if (targetId) edToggle.setAttribute('aria-controls', targetId);
+    }
+    if (!showTable && window.QuietEChartsAdapter && typeof window.QuietEChartsAdapter.refresh === 'function') {
+      safeRaf(() => window.QuietEChartsAdapter.refresh(card.ownerDocument || document));
+    }
+    scheduleSyncScrollCues();
   }
 
   function readPayload(card) {
@@ -98,6 +148,16 @@
       return;
     }
 
+    const edBtn = e.target.closest('[data-qe-editorial-toggle]');
+    if (edBtn) {
+      const card = edBtn.closest('.qe-figure, .va-figure-card');
+      if (!card) return;
+      const tblPanel = card.querySelector('.va-card-table-panel');
+      const isTableOpen = Boolean(tblPanel && !tblPanel.hasAttribute('hidden'));
+      setCardMode(card, isTableOpen ? 'chart' : 'table');
+      return;
+    }
+
     const copyBtn = e.target.closest('[data-qe-copy]');
     if (copyBtn) {
       const card = copyBtn.closest('.qe-figure, .va-figure-card');
@@ -108,8 +168,8 @@
       const text = kind === 'ai' ? (payload.markdown || payload.tsv || '') : (payload.tsv || '');
       if (!text) return;
       writeClipboard(text).then(
-        () => announceStatus(card, kind === 'ai' ? 'Copied for AI' : 'Copied data', false),
-        () => announceStatus(card, 'Copy failed', true),
+        () => announceStatus(card, kind === 'ai' ? 'Copied for AI' : 'Copied data', false, copyBtn),
+        () => announceStatus(card, 'Copy failed', true, copyBtn),
       );
       return;
     }
@@ -122,14 +182,15 @@
 
     const scopeBtn = e.target.closest('[data-v22-scope]');
     if (scopeBtn) {
-      applyBriefScope(scopeBtn);
-      return;
+      const root = scopeBtn.closest('.va-question-brief');
+      applyBriefScope(root, scopeBtn.getAttribute('data-v22-scope'));
     }
+  });
 
-    const fmtBtn = e.target.closest('[data-v22-format]');
-    if (fmtBtn) {
-      applyBriefFormat(fmtBtn);
-    }
+  document.addEventListener('change', (e) => {
+    const sel = e.target && e.target.closest ? e.target.closest('[data-v22-scope-select]') : null;
+    if (!sel) return;
+    applyBriefScope(sel.closest('.va-question-brief'), sel.value);
   });
 
   document.addEventListener('keydown', (e) => {
@@ -141,12 +202,26 @@
     }
   });
 
+  function updateHexRing(svg, tile) {
+    const ring = svg ? svg.querySelector('.va-hex-focus-ring') : null;
+    if (!ring) return;
+    const poly = tile ? tile.querySelector('polygon') : null;
+    const pts = poly ? poly.getAttribute('points') : '';
+    if (pts) {
+      ring.setAttribute('points', pts);
+      ring.removeAttribute('visibility');
+    } else {
+      ring.setAttribute('points', '');
+      ring.setAttribute('visibility', 'hidden');
+    }
+  }
+
   function activateHexTile(tile) {
     const stage = tile.closest('.va-figure-card, .qe-figure, .va-hex-stage') || tile.parentElement;
     if (!stage) return;
     stage.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
     tile.classList.add('is-selected');
-    if (tile.parentNode) tile.parentNode.appendChild(tile);
+    updateHexRing(tile.closest('svg'), tile);
     const card = tile.closest('.va-figure-card, .qe-figure') || stage.parentElement;
     const ro = card ? card.querySelector('.va-hex-readout') : null;
     if (ro) {
@@ -158,10 +233,10 @@
     }
   }
 
-  function applyBriefScope(btn) {
-    const root = btn.closest('.va-question-brief');
-    if (!root) return;
-    const scope = btn.getAttribute('data-v22-scope');
+  function applyBriefScope(root, scope) {
+    if (!root || !scope) return;
+    const sel = root.querySelector('[data-v22-scope-select]');
+    if (sel && sel.value !== scope) sel.value = scope;
     root.querySelectorAll('[data-v22-scope]').forEach((b) => {
       const on = b.getAttribute('data-v22-scope') === scope;
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -195,24 +270,18 @@
       if (tile) activateHexTile(tile);
     } else {
       root.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
+      updateHexRing(root.querySelector('.va-hex-map-svg'), null);
       const ro = root.querySelector('#v22-map .va-hex-readout, .va-hex-readout');
       if (ro) ro.textContent = d.focus_summary || 'Select any state hex tile to inspect exact rate and bin.';
     }
   }
 
-  function applyBriefFormat(btn) {
-    const root = btn.closest('.va-question-brief');
-    if (!root) return;
-    const fmt = btn.getAttribute('data-v22-format');
-    root.querySelectorAll('[data-v22-format]').forEach((b) => {
-      const on = b.getAttribute('data-v22-format') === fmt;
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      b.classList.toggle('is-active', on);
-    });
-    const webPane = root.querySelector('.va-brief-web');
-    const slidePane = root.querySelector('.va-brief-slides');
-    const isDeck = fmt === 'deck';
-    if (webPane) webPane.hidden = isDeck;
-    if (slidePane) slidePane.hidden = !isDeck;
+  if (typeof window.addEventListener === 'function') window.addEventListener('resize', scheduleSyncScrollCues, { passive: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scheduleSyncScrollCues);
+  else scheduleSyncScrollCues();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleSyncScrollCues);
+  const obsRoot = document.body || document.documentElement;
+  if (typeof MutationObserver === 'function' && obsRoot) {
+    new MutationObserver(scheduleSyncScrollCues).observe(obsRoot, { childList: true, subtree: true });
   }
 })();

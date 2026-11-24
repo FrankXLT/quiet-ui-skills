@@ -369,8 +369,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
         "forest": lambda s, r, m: compile_forest(s),
         "sankey": lambda s, r, m: compile_sankey(s, r, m),
         "us_hex_tile_map": compile_us_hex_tile_map,
-        "arrow_dumbbell": compile_arrow_dumbbell,
-        "paired_subgroup_bars": compile_paired_subgroup_bars,
+        "arrow_dumbbell": lambda s, r, m: compile_arrow_dumbbell(s, r, m, chrome=chrome),
+        "paired_subgroup_bars": lambda s, r, m: compile_paired_subgroup_bars(s, r, m, chrome=chrome),
         "dual_slopegraph": compile_dual_slopegraph,
         "diverging_matrix": lambda s, r, m: compile_diverging_matrix(s, r, m),
     }
@@ -400,7 +400,8 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
         if len(comps) > 1:
             parts.append("</div>")
 
-    vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else spec.get("series", [])
+    _self_labeled = {"us_hex_tile_map", "arrow_dumbbell", "paired_subgroup_bars", "dual_slopegraph"}
+    vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else ([] if kind in _self_labeled else spec.get("series", []))
     series_items: list[str] = []
     param_items: list[str] = []
     omit_l1_legend = eff_rigor == "L1" and chrome == "embedded" and len(vis_series) <= 1 and not spec.get("parametric_legend")

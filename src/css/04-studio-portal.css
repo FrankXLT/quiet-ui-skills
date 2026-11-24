@@ -153,11 +153,16 @@ summary::-webkit-details-marker { display: none; }
   .va-tier-select { min-inline-size: 0; max-inline-size: 290px; }
 }
 @media (max-width: 519px) {
-  #va-studio-bar, .va-studio-bar { padding: 0 0.3rem; gap: 0.2rem; }
-  .va-bar-left, .va-bar-right { gap: 0.18rem; }
-  .va-mode-tab { padding: 0 0.35rem; font-size: 11px; }
+  #va-studio-bar, .va-studio-bar { padding: 0 0.25rem; gap: 0.2rem; }
+  .va-bar-left, .va-bar-right { gap: 0.16rem; }
+  .va-mode-tab { padding: 0 0.28rem; font-size: 11px; }
+  html[data-studio-view="examples"] :is(#va-step-prev, #va-step-next) { display: none; }
+  #va-bridge-btn { min-inline-size: 26px; padding: 0 0.34rem; }
+  #va-bridge-btn span { display: none; }
+  .va-bar-center { flex: 1 1 0; min-inline-size: 0; }
+  .va-tier-select { inline-size: 100%; min-inline-size: 0; max-inline-size: 100%; padding-inline: 0.35rem 0.2rem; font-size: 11.5px; }
   .va-step-btn { inline-size: 22px; }
-  .va-studio-btn { padding: 0.15rem 0.36rem; }
+  .va-studio-btn { padding: 0.15rem 0.34rem; }
 }
 
 html[data-studio-view="overview"] :is(.va-bar-center, #va-bridge-btn, .va-examples-only, #va-portal-mat),

@@ -269,6 +269,7 @@
   function mountWrap(doc, wrap, lib) {
     var host = wrap.querySelector('.qe-echarts-host'), scroll = wrap.querySelector('.va-figure-scroll');
     if (!host || !scroll || !lib || !shouldEnableECharts(doc, wrap)) { disposeWrap(wrap, lib); return; }
+    if (!scroll.clientWidth && wrap.closest('.va-card-chart-panel[hidden]')) return;
     var payload;
     try { payload = JSON.parse(wrap.dataset.quietEcharts || ''); } catch (_err) { disposeWrap(wrap, lib); return; }
     host.hidden = false;
@@ -444,4 +445,4 @@
   }
 
   global.QuietEChartsAdapter = { boot: boot, refresh: refresh, disposeAll: disposeAll };
-}(window));
+}(typeof window !== 'undefined' ? window : globalThis));

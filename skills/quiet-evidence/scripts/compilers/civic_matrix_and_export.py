@@ -4,9 +4,15 @@
 from __future__ import annotations
 
 import json
+import math
+import re
 from typing import Any
 
-from .tokens_and_scales import esc, finite_float
+from .math_eval import eval_equation
+from .plot_helpers import build_eq_env
+from .tokens_and_scales import esc, finite_float, format_math_unicode
+
+_NUM_CELL_RE = re.compile(r"^[+\-\u2212±$]?\s*\d[\d,]*(?:\.\d+)?(?:\s*(?:%|pp|B|M|k|bps|V|s|ms|kW))?$")
 
 
 def _diverge_band(val: float | None, hi_thr: float = 5.0) -> str:
@@ -28,20 +34,34 @@ def _cell_str(val: Any) -> str:
     return "—" if val is None or val == "" else str(val)
 
 
+def _is_numeric_col(rows: list[list[str]], col_idx: int) -> bool:
+    seen = False
+    for r in rows:
+        if col_idx >= len(r):
+            continue
+        txt = str(r[col_idx]).strip()
+        if not txt or txt == "—":
+            continue
+        if not _NUM_CELL_RE.match(txt):
+            return False
+        seen = True
+    return seen
+
+
 def _fmt_matrix_cell(raw: Any, col: dict[str, Any]) -> str:
     role = str(col.get("role") or col.get("data_type") or "").lower()
     if raw is None or raw == "":
         return "—"
     fv = finite_float(raw)
     if fv is None:
-        return esc(raw)
+        return str(raw)
     dec_raw = col.get("decimals")
     decimals = (1 if role == "rate_pct" else 0) if dec_raw is None else int(dec_raw)
     prefix = str(col.get("prefix") or ("$" if "usd" in role else ""))
     suffix = str(col.get("suffix") or ("%" if role == "rate_pct" else ""))
     if role == "rate_pct" and fv > 0:
-        return esc(f"+{fv:,.{decimals}f}{suffix}")
-    return esc(f"{prefix}{fv:,.{decimals}f}{suffix}")
+        return f"+{fv:,.{decimals}f}{suffix}"
+    return f"{prefix}{fv:,.{decimals}f}{suffix}"
 
 
 def compile_diverging_matrix(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
@@ -78,7 +98,7 @@ def compile_diverging_matrix(spec: dict[str, Any], rigor: str | None = None, med
             key = str(c.get("key") or "")
             role = str(c.get("role") or c.get("data_type") or "").lower()
             raw = row.get(key)
-            cell_html = _fmt_matrix_cell(raw, c)
+            cell_html = esc(_fmt_matrix_cell(raw, c))
             is_num = role in {"rate_pct", "level_usd", "numeric"} or c.get("alignment") == "right"
             cls_list: list[str] = ["num"] if is_num else []
             div_attr = ""
@@ -98,12 +118,72 @@ def compile_diverging_matrix(spec: dict[str, Any], rigor: str | None = None, med
     return "\n".join(parts)
 
 
+def _eval_model_y(model_sr: dict[str, Any], xv: float, legend: list[dict[str, Any]] | None) -> float | None:
+    eq = str(model_sr.get("equation") or "").strip()
+    if not eq:
+        return None
+    env = build_eq_env(legend, model_sr)
+    for alias in ("x", "tau", "f", "t", "IMEP", "L", "N"):
+        env.setdefault(alias, xv)
+    env["x"] = xv
+    try:
+        yv = eval_equation(eq.split("=")[-1].strip(), **env)
+        return yv if math.isfinite(yv) else None
+    except Exception:
+        return None
+
+
+def _extract_cartesian_table(spec: dict[str, Any], series_list: list[dict[str, Any]]) -> tuple[list[str], list[list[str]]]:
+    axes = spec.get("axes") or {}
+    x_ax, y_ax = axes.get("x_axis") or {}, axes.get("y_axis") or {}
+    x_hdr = format_math_unicode(x_ax.get("quantity_calculus") or x_ax.get("quantity") or "X")
+    y_hdr = format_math_unicode(y_ax.get("quantity_calculus") or y_ax.get("quantity") or "Y")
+    pts_series = [sr for sr in series_list if (sr.get("data_points") or sr.get("points"))]
+    models = [sr for sr in series_list if sr.get("epistemic_type") == "analytical_model" and sr.get("equation")]
+    if len(pts_series) == 1:
+        sr = pts_series[0]
+        pts = list((sr.get("data_points") or sr.get("points") or [])[:40])
+        has_uy = any(pt.get("u_y") is not None for pt in pts)
+        model_sr = models[0] if len(models) == 1 else None
+        headers = [x_hdr, y_hdr] + (["± u_y"] if has_uy else []) + (["Model"] if model_sr else [])
+        rows: list[list[str]] = []
+        for pt in pts:
+            xv, yv = finite_float(pt.get("x")), finite_float(pt.get("y"))
+            x_txt = _cell_str(pt.get("x_label") if pt.get("x_label") is not None else pt.get("x"))
+            row = [x_txt, _cell_str(pt.get("y"))]
+            if has_uy:
+                uy = finite_float(pt.get("u_y"))
+                row.append(f"±{pt['u_y']}" if uy is not None else "—")
+            if model_sr:
+                mv = _eval_model_y(model_sr, xv, spec.get("parametric_legend")) if xv is not None else None
+                dec = len(str(pt.get("y")).split(".")[1]) if (yv is not None and "." in str(pt.get("y"))) else 2
+                row.append(f"{mv:.{dec}f}" if mv is not None else "—")
+            rows.append(row)
+        return headers, rows
+
+    has_uy = any(pt.get("u_y") is not None for sr in pts_series for pt in (sr.get("data_points") or sr.get("points") or [])[:40])
+    headers = ["Series", x_hdr, y_hdr] + (["± u_y"] if has_uy else [])
+    rows = []
+    for sr in pts_series:
+        sname = _cell_str(sr.get("label") or sr.get("name") or sr.get("id") or "Series")
+        for pt in (sr.get("data_points") or sr.get("points") or [])[:40]:
+            row = [sname, _cell_str(pt.get("x_label") if pt.get("x_label") is not None else pt.get("x")), _cell_str(pt.get("y"))]
+            if has_uy:
+                row.append(f"±{pt['u_y']}" if finite_float(pt.get("u_y")) is not None else "—")
+            rows.append(row)
+    return headers, rows
+
+
 def extract_table_model(spec: dict[str, Any]) -> tuple[list[str], list[list[str]]]:
     """Extract uniform (headers, rows) strings from any supported plot or table schema."""
     mod_cols = spec.get("columns")
     if isinstance(mod_cols, list) and isinstance(spec.get("rows"), list):
         headers = [str(c.get("label") or c.get("key") or "") for c in mod_cols]
-        rows = [[_cell_str(r.get(str(c.get("key") or ""))) for c in mod_cols] for r in spec["rows"]]
+        has_fmt = spec.get("table_kind") == "diverging_matrix" or any(c.get("role") for c in mod_cols)
+        rows = [
+            [(_fmt_matrix_cell(r.get(str(c.get("key") or "")), c) if has_fmt else _cell_str(r.get(str(c.get("key") or "")))) for c in mod_cols]
+            for r in spec["rows"]
+        ]
         return headers, rows
 
     kind = str(spec.get("plot_kind") or "").lower()
@@ -142,13 +222,7 @@ def extract_table_model(spec: dict[str, Any]) -> tuple[list[str], list[list[str]
 
     series_list = list(spec.get("series") or [])
     if series_list:
-        headers = ["Series", "X", "Y"]
-        rows = [
-            [_cell_str(sr.get("label") or sr.get("name") or sr.get("id") or "Series"), _cell_str(pt.get("x_label") if pt.get("x_label") is not None else pt.get("x")), _cell_str(pt.get("y"))]
-            for sr in series_list
-            for pt in (sr.get("data_points") or [])[:40]
-        ]
-        return headers, rows
+        return _extract_cartesian_table(spec, series_list)
 
     steps = list(spec.get("steps") or spec.get("items") or [])
     if steps:
@@ -191,8 +265,8 @@ def build_export_payload(spec: dict[str, Any], headers: list[str], rows: list[li
     return {"title": title, "tsv": "\n".join(tsv_lines), "markdown": "\n".join(md_parts)}
 
 
-def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig_id: str) -> str:
-    """Wrap figure content with Takeaway subtitle, Chart/Table switcher, Copy for AI & Note/Source footer."""
+def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig_id: str, editorial: bool = False) -> str:
+    """Wrap figure content with subtitle, interactive export controls (Path B top bar or Path A footer links), & Note/Source."""
     meta = spec.get("metadata") or {}
     subtitle = str(meta.get("subtitle") or "")
     note = str(meta.get("note") or spec.get("baseline_note") or "")
@@ -203,49 +277,74 @@ def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig
 
     safe_id = esc(fig_id)
     headers, rows = extract_table_model(spec)
-    has_table_toggle = modality != "table" and bool(headers and rows)
+    kind = str(spec.get("plot_kind") or "").lower()
+    compact_bars = kind == "paired_subgroup_bars" and len(spec.get("groups") or spec.get("items") or []) <= 6 and spec.get("table_toggle") is not True
+    has_table_toggle = modality != "table" and not compact_bars and spec.get("table_toggle") is not False and bool(headers and rows)
     payload = build_export_payload(spec, headers, rows)
     safe_json = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c").replace(">", "\\u003e")
 
     sub_html = f'<p class="qe-takeaway-subtitle">{esc(subtitle)}</p>' if subtitle else ""
-    toggle_btns = ""
-    if has_table_toggle:
-        toggle_btns = (
-            '<div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format">'
-            f'<button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="{safe_id}-chart">Chart</button>'
-            f'<button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="{safe_id}-table">Table</button>'
+    actions_html = ""
+    if not editorial:
+        toggle_btns = ""
+        if has_table_toggle:
+            toggle_btns = (
+                '<div class="va-toolbar-joined va-chart-table-switch" role="group" aria-label="View format">'
+                f'<button type="button" class="va-seg-btn is-active" data-qe-view="chart" aria-pressed="true" aria-controls="{safe_id}-chart">Chart</button>'
+                f'<button type="button" class="va-seg-btn" data-qe-view="table" aria-pressed="false" aria-controls="{safe_id}-table">Table</button>'
+                "</div>"
+            )
+        actions_html = (
+            f'<div class="va-card-actions" data-qe-card="{safe_id}">'
+            f"{toggle_btns}"
+            '<div class="va-copy-group">'
+            '<button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button>'
+            '<button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button>'
+            '<span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span>'
+            "</div>"
             "</div>"
         )
-    actions_html = (
-        f'<div class="va-card-actions" data-qe-card="{safe_id}">'
-        f"{toggle_btns}"
-        '<div class="va-copy-group">'
-        '<button type="button" class="va-action-btn" data-qe-copy="tsv">Copy data</button>'
-        '<button type="button" class="va-action-btn" data-qe-copy="ai">Copy for AI</button>'
-        '<span class="va-copy-status qe-copy-status" role="status" aria-live="polite"></span>'
-        "</div>"
-        "</div>"
-    )
+
     table_panel = ""
     if has_table_toggle:
-        ths = "".join(f'<th scope="col">{esc(h)}</th>' for h in headers)
+        num_cols = [_is_numeric_col(rows, ci) for ci in range(len(headers))]
+        ths = "".join(
+            f'<th scope="col" class="num">{esc(h)}</th>' if num_cols[ci] else f'<th scope="col">{esc(h)}</th>'
+            for ci, h in enumerate(headers)
+        )
         trs = "".join(
             "<tr>" + "".join(
-                f'<th scope="row">{esc(c)}</th>' if ci == 0 else f"<td>{esc(c)}</td>"
+                f'<th scope="row"{" class=\"num\"" if num_cols[ci] else ""}>{esc(c)}</th>'
+                if ci == 0
+                else f'<td{" class=\"num\"" if num_cols[ci] else ""} data-label="{esc(headers[ci])}">{esc(c)}</td>'
                 for ci, c in enumerate(r)
             ) + "</tr>"
             for r in rows
         )
         table_panel = (
             f'<div class="va-card-table-panel va-table-wrap" id="{safe_id}-table" hidden="until-found" tabindex="0" role="region" aria-label="{esc(payload["title"])} data table">'
-            f'<table class="booktabs qe-table"><caption>{esc(payload["title"])}</caption><thead><tr>{ths}</tr></thead><tbody>{trs}</tbody></table>'
+            f'<table class="booktabs qe-table"><caption class="qe-table-caption qe-caption-sr">{esc(payload["title"])}</caption><thead><tr>{ths}</tr></thead><tbody>{trs}</tbody></table>'
             "</div>"
         )
 
     footer_bits: list[str] = []
     if note:
         footer_bits.append(f'<p class="qe-takeaway-note"><strong>Note:</strong> {esc(note)}</p>')
-    if source:
+    if editorial:
+        src_parts = [f"<span><strong>Source:</strong> {esc(source)}</span>" if source else "<span><strong>Source:</strong> Public Dataset</span>"]
+        if has_table_toggle:
+            src_parts.append(
+                '<span class="va-footer-sep" aria-hidden="true">·</span>'
+                f'<button type="button" class="va-footer-link" data-qe-editorial-toggle aria-controls="{safe_id}-table">Show data table</button>'
+            )
+        src_parts.append(
+            '<span class="va-footer-sep" aria-hidden="true">·</span>'
+            '<button type="button" class="va-footer-link va-footer-copy-link" data-qe-copy="ai">'
+            '<span class="va-copy-link-label">Copy for AI</span></button>'
+            '<span class="va-copy-status qe-copy-status qe-caption-sr" role="status" aria-live="polite"></span>'
+        )
+        footer_bits.append(f'<p class="qe-takeaway-source va-editorial-footer-line" data-qe-card="{safe_id}">{"".join(src_parts)}</p>')
+    elif source:
         footer_bits.append(f'<p class="qe-takeaway-source"><strong>Source:</strong> {esc(source)}</p>')
     footer_html = f'<footer class="qe-takeaway-footer">{"".join(footer_bits)}</footer>' if footer_bits else ""
 
