@@ -217,11 +217,12 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             arrow_chk = driver.execute_script(
                 "const g=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-gain');"
                 "const d=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-drop');"
-                "return {gW:g?.getBoundingClientRect().width||0,dW:d?.getBoundingClientRect().width||0,"
+                "const gr=g?.getBoundingClientRect(), dr=d?.getBoundingClientRect();"
+                "return {gW:gr?.width||0,gH:gr?.height||0,dW:dr?.width||0,dH:dr?.height||0,"
                 "gCol:g?getComputedStyle(g).color:'',dCol:d?getComputedStyle(d).color:''};"
             )
-            self.assertGreaterEqual(arrow_chk["gW"], 10.0)
-            self.assertGreaterEqual(arrow_chk["dW"], 10.0)
+            self.assertTrue(14.0 <= arrow_chk["gW"] <= 24.0 and 6.0 <= arrow_chk["gH"] <= 16.0, arrow_chk)
+            self.assertTrue(14.0 <= arrow_chk["dW"] <= 24.0 and 6.0 <= arrow_chk["dH"] <= 16.0, arrow_chk)
             self.assertNotEqual(arrow_chk["gCol"], arrow_chk["dCol"])
             driver.switch_to.default_content()
 

@@ -1914,8 +1914,8 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     background: var(--bg-surface);
     vertical-align: middle;
   }
-  .va-arrow-legend > span { display: inline-flex; align-items: center; gap: 0.35rem; }
-  .va-arrow-swatch { display: inline-block; flex: 0 0 auto; overflow: visible; }
+  .va-arrow-legend > span { display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+  .va-arrow-legend svg.va-arrow-swatch { display: inline-block; inline-size: 18px; block-size: 10px; max-inline-size: 18px; flex: 0 0 18px; margin: 0; overflow: visible; }
   .va-arrow-swatch.is-gain { color: var(--accent-focal); }
   .va-arrow-swatch.is-drop { color: var(--status-danger); }
   .va-hex-tile { cursor: pointer; outline: none; }
