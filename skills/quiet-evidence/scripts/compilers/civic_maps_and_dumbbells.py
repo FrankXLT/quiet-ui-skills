@@ -172,7 +172,14 @@ def compile_us_hex_tile_map(spec: dict[str, Any], rigor: str, medium: str) -> st
     ring_hidden = "" if selected_pts else ' visibility="hidden"'
     svg_parts.append(f'<polygon class="va-hex-focus-ring" points="{selected_pts}" fill="none" stroke="var(--text-primary)" stroke-width="2.8" stroke-linejoin="round" pointer-events="none"{ring_hidden}/>')
     svg_parts.append("</svg>")
-    readout = f'<div class="va-hex-readout" role="status" aria-live="polite">{esc(focus_summary or "Select any state hex tile to inspect exact rate and bin.")}</div>'
+    if focus_summary and " · Select " in focus_summary:
+        head, tail = focus_summary.split(" · Select ", 1)
+        readout_inner = f'{esc(head)}<span class="va-hex-prompt">{esc(" · Select " + tail)}</span>'
+    elif focus_summary:
+        readout_inner = esc(focus_summary)
+    else:
+        readout_inner = '<span class="va-hex-prompt">Select any state hex tile to inspect exact rate and bin.</span>'
+    readout = f'<div class="va-hex-readout" role="status" aria-live="polite">{readout_inner}</div>'
     return f'{legend_html}<div class="va-figure-scroll va-hex-stage">{"".join(svg_parts)}</div>{readout}'
 
 
@@ -180,6 +187,72 @@ def _arrow_head_points(x_tip: float, cy: float, direction: int) -> str:
     """Build crisp triangle arrowhead pointing right (+1) or left (-1)."""
     dx = 7.5 * direction
     return f"{x_tip:.1f},{cy:.1f} {x_tip - dx:.1f},{cy - 4.4:.1f} {x_tip - dx:.1f},{cy + 4.4:.1f}"
+
+
+def _arrow_dumbbell_mobile_svg(
+    items: list[dict[str, Any]],
+    sc: dict[str, Any],
+    title: str,
+    x_lbl: str,
+    fmt: Any,
+    row_lbl_fn: Any,
+) -> str:
+    vb_w, x0, pw, y0, row_h = 340, 18.0, 304.0, 14.0, 46.0
+    ph = max(72.0, len(items) * row_h)
+    vh = int(y0 + ph + 48)
+    span = max(sc["max"] - sc["min"], 1e-12)
+    px = lambda v: x0 + max(0.0, min(1.0, (float(v) - sc["min"]) / span)) * pw
+    parts = [f'<svg class="qe-svg qe-svg-340" viewBox="0 0 {vb_w} {vh}" role="img" aria-label="{esc(title)}">']
+    grid_xs = [px(xv) for xv in sc["majors"] if x0 + 4 <= px(xv) <= x0 + pw - 4]
+    prev_tx = -99.0
+    for xv in sc["majors"]:
+        xx = px(xv)
+        if xx - prev_tx >= 42.0:
+            anc = "start" if xx < 30.0 else ("end" if xx > vb_w - 30.0 else "middle")
+            parts.append(halo_text(xx, y0 + ph + 16.0, format_tick_numeral(xv, step=sc["step"]), anchor=anc, size=10.8, fill="var(--text-secondary)", halo=False))
+            prev_tx = xx
+    parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 36.0, x_lbl, anchor="middle", size=11.0, weight="700", fill="var(--text-primary)", halo=False))
+    for i, it in enumerate(items):
+        top_y = y0 + i * row_h
+        cy = top_y + 31.0
+        for gxx in grid_xs:
+            parts.append(f'<line x1="{gxx:.1f}" y1="{top_y + 21.0:.1f}" x2="{gxx:.1f}" y2="{top_y + 41.0:.1f}" stroke="var(--border-hairline)" stroke-width="0.8"/>')
+        s_val = _fval(it, "start", "min")
+        e_val = _fval(it, "end", "max")
+        lbl, _ = row_lbl_fn(it, i)
+        short_lbl = lbl if len(lbl) <= 27 else f"{lbl[:25].rstrip()}…"
+        xs, xe = px(s_val), px(e_val)
+        unchanged = abs(xe - xs) < 2.0
+        col = "var(--accent-focal)" if unchanged else resolve_token(it.get("color"), "var(--accent-focal)" if e_val >= s_val else "var(--status-danger)")
+        val_txt = f"{fmt(e_val)} (unchanged)" if unchanged else f"{fmt(s_val)} to {fmt(e_val)}"
+        parts.append(halo_text(12.0, top_y + 14.0, short_lbl, anchor="start", size=11.2, weight="600", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+        parts.append(halo_text(vb_w - 12.0, top_y + 14.0, val_txt, anchor="end", size=10.8, weight="700", fill=col if not unchanged else "var(--text-primary)", halo=False))
+        parts.append(f'<line x1="{x0:.1f}" y1="{cy:.1f}" x2="{x0 + pw:.1f}" y2="{cy:.1f}" stroke="var(--border-hairline)" stroke-width="0.6" stroke-dasharray="2,3"/>')
+        if unchanged:
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="4.2" fill="var(--bg-surface)" stroke="var(--accent-focal)" stroke-width="1.8"/>')
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="1.8" fill="var(--accent-focal)"/>')
+        else:
+            direction = 1 if xe >= xs else -1
+            shaft_end = xe - direction * 5.8 if abs(xe - xs) > 8.0 else xs
+            parts.append(f'<line x1="{xs:.1f}" y1="{cy:.1f}" x2="{shaft_end:.1f}" y2="{cy:.1f}" stroke="{esc(col)}" stroke-width="2.2"/>')
+            parts.append(f'<circle cx="{xs:.1f}" cy="{cy:.1f}" r="3.6" fill="var(--bg-surface)" stroke="var(--text-secondary)" stroke-width="1.6"/>')
+            parts.append(f'<polygon points="{_arrow_head_points(xe, cy, direction)}" fill="{esc(col)}"/>')
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
+def _arrow_dumbbell_legend(start_lbl: str, end_lbl: str) -> str:
+    return (
+        '<div class="qe-legend-series va-arrow-legend">'
+        f'<span><span class="va-dot-swatch" style="--swatch:var(--text-secondary)"></span>{esc(start_lbl)}</span>'
+        '<span><svg class="va-arrow-swatch is-gain" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
+        '<line x1="1" y1="5" x2="11.5" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
+        f'<polygon points="17,5 10.5,1.2 10.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} gain</span>'
+        '<span><svg class="va-arrow-swatch is-drop" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
+        '<line x1="6.5" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
+        f'<polygon points="1,5 7.5,1.2 7.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} decline</span>'
+        "</div>"
+    )
 
 
 def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str, chrome: str = "bench") -> str:
@@ -226,17 +299,7 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str, chrome
     span = max(sc["max"] - sc["min"], 1e-12)
     px = lambda v: x0 + max(0.0, min(1.0, (float(v) - sc["min"]) / span)) * pw
 
-    legend_html = (
-        '<div class="qe-legend-series va-arrow-legend">'
-        f'<span><span class="va-dot-swatch" style="--swatch:var(--text-secondary)"></span>{esc(start_lbl)}</span>'
-        '<span><svg class="va-arrow-swatch is-gain" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
-        '<line x1="1" y1="5" x2="11.5" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
-        f'<polygon points="17,5 10.5,1.2 10.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} gain</span>'
-        '<span><svg class="va-arrow-swatch is-drop" width="18" height="10" viewBox="0 0 18 10" aria-hidden="true">'
-        '<line x1="6.5" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>'
-        f'<polygon points="1,5 7.5,1.2 7.5,8.8" fill="currentColor"/></svg>{esc(end_lbl)} decline</span>'
-        "</div>"
-    )
+    legend_html = _arrow_dumbbell_legend(start_lbl, end_lbl)
     title = str(spec.get("metadata", {}).get("title") or "Directional Arrow Dumbbell")
     parts: list[str] = [f'<svg class="{svg_cls}" viewBox="0 0 {vb_w} {vh}" role="img" aria-label="{esc(title)}">']
     for xv in sc["majors"]:
@@ -278,5 +341,7 @@ def compile_arrow_dumbbell(spec: dict[str, Any], rigor: str, medium: str, chrome
             parts.append(halo_text(rx + 12.0, cy + 4.0, r_txt, anchor="start", size=11.5, weight="700" if not left_is_end else "600", fill=r_col, halo=True))
 
     parts.append("</svg>")
+    if wide_bench:
+        parts.append(_arrow_dumbbell_mobile_svg(items, sc, title, x_lbl, fmt, _row_lbl))
     fb_html = f'<p class="va-fallback-note">* Prior-year fallback series: {esc("; ".join(fallback_notes))}.</p>' if fallback_notes else ""
     return f'{legend_html}<div class="va-figure-scroll">{chr(10).join(parts)}</div>{fb_html}'

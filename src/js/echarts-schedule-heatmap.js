@@ -375,18 +375,19 @@
         });
       }
       if (narrow) {
-        if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 6, itemWidth: 10, textStyle: { color: textSec, fontSize: 11 } });
+        if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 6, itemWidth: 10, textStyle: Object.assign({}, opt.legend.textStyle || {}, { color: textSec, fontSize: 11 }) });
         if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: 46, right: 12, top: 68, bottom: 44, containLabel: true });
       }
     } else if (kind === 'waterfall' && narrow) {
-      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: { color: textSec, fontSize: 11 } });
+      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { left: 6, right: 6, itemGap: 8, textStyle: Object.assign({}, opt.legend.textStyle || {}, { color: textSec, fontSize: 11 }) });
       var wrappedWfY = wrapAxisNames(opt.yAxis, 14, 46);
-      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 64 : 52, right: 12, top: 52, bottom: 62, containLabel: true });
+      if (opt.grid) opt.grid = Object.assign({}, opt.grid, { left: wrappedWfY ? 68 : 54, right: 12, top: 52, bottom: 66, containLabel: true });
       if (opt.xAxis && opt.xAxis.axisLabel) {
         opt.xAxis.axisLabel = {
           color: textSec,
           fontSize: 11,
-          lineHeight: 13,
+          lineHeight: 15,
+          margin: 8,
           interval: 0,
           rotate: 0,
           formatter: function (v) {
@@ -402,16 +403,17 @@
         });
       }
     } else if (kind === 'cartesian' && narrow) {
-      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { top: 2, left: 6, right: 6, itemGap: 6, itemWidth: 12, textStyle: { color: textSec, fontSize: 11 } });
+      if (opt.legend) opt.legend = Object.assign({}, opt.legend, { top: 2, left: 6, right: 6, itemGap: 6, itemWidth: 12, textStyle: Object.assign({}, opt.legend.textStyle || {}, { color: textSec, fontSize: 11 }) });
       var maxAxChars = Math.max(18, Math.floor(((w || 320) - 96) / 10.5));
       var wrappedX = wrapAxisNames(opt.xAxis, maxAxChars, 20);
-      wrapAxisNames(opt.yAxis, 22, 42);
+      var wrappedY = wrapAxisNames(opt.yAxis, 22, 42);
+      var leftPx = wrappedY ? 80 : 68;
       if (Array.isArray(opt.grid)) {
-        opt.grid[0] = Object.assign({}, opt.grid[0], { right: 14, top: 58, bottom: wrappedX ? 140 : 132 });
-        opt.grid[1] = Object.assign({}, opt.grid[1], { right: 14, bottom: wrappedX ? 54 : 46 });
-        if (wrappedX && opt.graphic && opt.graphic[0]) opt.graphic[0] = Object.assign({}, opt.graphic[0], { bottom: 120 });
+        opt.grid[0] = Object.assign({}, opt.grid[0], { left: leftPx, right: 14, top: 58, bottom: wrappedX ? 140 : 132 });
+        opt.grid[1] = Object.assign({}, opt.grid[1], { left: leftPx, right: 14, bottom: wrappedX ? 54 : 46 });
+        if (opt.graphic && opt.graphic[0]) opt.graphic[0] = Object.assign({}, opt.graphic[0], { left: leftPx + 4, bottom: wrappedX ? 120 : 112 });
       } else if (opt.grid) {
-        opt.grid = Object.assign({}, opt.grid, { right: 14, top: 56, bottom: wrappedX ? 58 : 52 });
+        opt.grid = Object.assign({}, opt.grid, { left: leftPx, right: 14, top: 56, bottom: wrappedX ? 58 : 52 });
       }
       (opt.series || []).forEach(function (sr) {
         if (sr.markPoint && Array.isArray(sr.markPoint.data)) {

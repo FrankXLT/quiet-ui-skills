@@ -34,8 +34,9 @@ EVIDENCE_CSS_PARTS: tuple[str, ...] = (
     "src/css/12-period-and-scope.css",
     "src/css/13-split-reader-dialog.css",
     "src/css/14-forms-and-states.css",
-    "src/css/17-editorial-research-brief.css",
     "docs/bench/evidence-bench.css",
+    "src/css/17-editorial-research-brief.css",
+    "src/css/18-editorial-print-rules.css",
 )
 
 

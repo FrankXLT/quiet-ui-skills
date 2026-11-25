@@ -91,6 +91,16 @@
 
   summary { list-style: none; cursor: pointer; }
   summary::-webkit-details-marker { display: none; }
+  sub,
+  sup {
+    font-size: 0.75em;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+    color: inherit;
+  }
+  sub { bottom: -0.22em; }
+  sup { top: -0.45em; }
 }
 
 @layer utilities {

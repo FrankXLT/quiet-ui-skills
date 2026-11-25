@@ -4,7 +4,7 @@
   "plot_kind": "cartesian",
   "metadata": {
     "title": "Shewhart X̄ SPC Control Chart — Bearing Bore Diameter (C_pk = 1.64, n = 5)",
-    "description": "NIST/SEMATECH Shewhart X̄ control chart plotting discrete subgroup means (±uᵧ) against ±3σ control limits (UCL 10.042 mm, CL 10.000 mm, LCL 9.958 mm), engineering spec limits (USL 10.070 mm, LSL 9.930 mm), and normalized residual strip.",
+    "description": "NIST/SEMATECH Shewhart X̄ control chart plotting discrete subgroup means (±u_y) against ±3σ control limits (UCL 10.042 mm, CL 10.000 mm, LCL 9.958 mm), engineering spec limits (USL 10.070 mm, LSL 9.930 mm), and normalized residual strip.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-16T21:30:00Z"
   },

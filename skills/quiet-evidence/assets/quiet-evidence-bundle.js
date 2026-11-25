@@ -2422,13 +2422,19 @@
       return;
     }
 
-    const edBtn = e.target.closest('[data-qe-editorial-toggle]');
+    const edBtn = e.target.closest('[data-qe-editorial-toggle], [data-qe-editorial-return]');
     if (edBtn) {
       const card = edBtn.closest('.qe-figure, .va-figure-card');
       if (!card) return;
-      const tblPanel = card.querySelector('.va-card-table-panel');
-      const isTableOpen = Boolean(tblPanel && !tblPanel.hasAttribute('hidden'));
-      setCardMode(card, isTableOpen ? 'chart' : 'table');
+      if (edBtn.hasAttribute('data-qe-editorial-return')) {
+        setCardMode(card, 'chart');
+        const mainToggle = card.querySelector('[data-qe-editorial-toggle]');
+        if (mainToggle && mainToggle.focus) mainToggle.focus();
+      } else {
+        const tblPanel = card.querySelector('.va-card-table-panel');
+        const isTableOpen = Boolean(tblPanel && !tblPanel.hasAttribute('hidden'));
+        setCardMode(card, isTableOpen ? 'chart' : 'table');
+      }
       return;
     }
 
@@ -2546,7 +2552,21 @@
       root.querySelectorAll('.va-hex-tile.is-selected').forEach((n) => n.classList.remove('is-selected'));
       updateHexRing(root.querySelector('.va-hex-map-svg'), null);
       const ro = root.querySelector('#v22-map .va-hex-readout, .va-hex-readout');
-      if (ro) ro.textContent = d.focus_summary || 'Select any state hex tile to inspect exact rate and bin.';
+      if (ro) {
+        const msg = d.focus_summary || '';
+        const idx = msg.indexOf(' · Select ');
+        if (idx >= 0) {
+          const sp = document.createElement('span');
+          sp.className = 'va-hex-prompt';
+          sp.textContent = msg.slice(idx);
+          ro.replaceChildren(document.createTextNode(msg.slice(0, idx)), sp);
+        } else {
+          const sp = document.createElement('span');
+          sp.className = 'va-hex-prompt';
+          sp.textContent = msg || 'Select any state hex tile to inspect exact rate and bin.';
+          ro.replaceChildren(sp);
+        }
+      }
     }
   }
 

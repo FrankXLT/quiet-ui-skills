@@ -135,7 +135,7 @@
     "$schema": "urn:quiet-ui:schema:v9:plot",
     "id": "bench-m4-l3-allan-deviation",
     "metadata": {
-      "title": "Log-Log Modified Allan Deviation Mod σᵧ(τ) & Residual Strip",
+      "title": "Log-Log Modified Allan Deviation Mod sigma_y(tau) & Residual Strip",
       "description": "Physical metrological log-log plot with mandatory 2..9 minor decades, ±1σ uncertainty corridor, discrete error whiskers, contract ceiling, and bottom normalized residual strip.",
       "rigor_level": "L3",
       "timestamp_utc": "2026-11-16T21:15:00Z"

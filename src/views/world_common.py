@@ -160,11 +160,12 @@ def load_world_inputs(
     return corpus, bp, specs
 
 
-def render_params_aside(title: str, rows: list[tuple[str, str]]) -> str:
+def render_params_aside(title: str, rows: list[tuple[str, str]], math_keys: tuple[str, ...] = ()) -> str:
     """Render an M2 desktop right-margin parameters aside (unboxed automatically in M1/print)."""
     stitle = _html.escape(str(title), quote=True)
+    math_set = set(math_keys)
     items = "".join(
-        f'<div class="v9-param-row"><dt>{_html.escape(str(k))}</dt><dd class="va-nums">{_html.escape(str(v))}</dd></div>'
+        f'<div class="v9-param-row"><dt>{_html.escape(str(k))}</dt><dd class="va-nums">{format_math_html(str(v)) if k in math_set else _html.escape(str(v))}</dd></div>'
         for k, v in rows
     )
     return f'<aside class="v9-params-aside" aria-label="{stitle}"><h3>{stitle}</h3><dl class="v9-params-list">{items}</dl></aside>'

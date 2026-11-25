@@ -112,8 +112,9 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
             "src/css/12-period-and-scope.css",
             "src/css/13-split-reader-dialog.css",
             "src/css/14-forms-and-states.css",
-            "src/css/17-editorial-research-brief.css",
             "docs/bench/evidence-bench.css",
+            "src/css/17-editorial-research-brief.css",
+            "src/css/18-editorial-print-rules.css",
         ),
     ) or _FALLBACK_TOKENS_CSS
     js = _load_bundle_asset(
@@ -141,6 +142,17 @@ def _wrap_standalone_html(body_html: str, title: str, theme: str, medium: str) -
     )
 
 
+def _format_figure_math_html(raw: str) -> str:
+    """Format figure title/caption math tokens with crisp <sub> tags while leaving multi-char acronyms untouched."""
+    import re as _re
+    s = _re.sub(r"\bp_hat\b", "p̂", raw.replace("+/-", "±"))
+    s = _re.sub(r"\by_hat\b", "ŷ", s)
+    s = _re.sub(r"\b(?:eta|η)_bte\b", "η_bte", s)
+    s = _re.sub(r"\bsigma_y\b", "σ_y", s)
+    s = _re.sub(r"\btau\b", "τ", s)
+    return _re.sub(r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|η|τ|[A-Za-z]))_([A-Za-z0-9]{1,3})(?![A-Za-z0-9_])", r"\1<sub>\2</sub>", esc(s))
+
+
 def _compile_single_dict(
     data: dict[str, Any],
     raw_text: str,
@@ -162,18 +174,10 @@ def _compile_single_dict(
     fig_id = esc(data.get("id", f"qe-{modality}"))
     is_editorial = chrome == "editorial" or bool(data.get("editorial"))
     inner_html = wrap_takeaway_card(data, inner_html, modality, fig_id, editorial=is_editorial)
-    title = esc(meta.get("title", modality.title()))
+    raw_title = str(meta.get("title", modality.title()))
+    title = _format_figure_math_html(raw_title)
     desc = str(meta.get("description", ""))
-    desc_html = ""
-    if desc:
-        import re as _re
-        d_uni = _re.sub(r"\btau\b", "τ", desc.replace("+/-", "±").replace("p_hat", "p̂").replace("y_hat", "ŷ"))
-        d_html = _re.sub(
-            r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|[A-Za-z]))_([a-z0-9]{1,3})(?![A-Za-z0-9_])",
-            r"\1<sub>\2</sub>",
-            esc(d_uni),
-        )
-        desc_html = f'<figcaption class="va-figure-caption">{d_html}</figcaption>'
+    desc_html = f'<figcaption class="va-figure-caption">{_format_figure_math_html(desc)}</figcaption>' if desc else ""
     drawer = ""
     if include_spec_drawer:
         drawer = (
@@ -181,7 +185,7 @@ def _compile_single_dict(
             '<summary class="qe-spec-summary">Inspect JSON Spec ('
             f'{esc(data.get("$schema", ""))}'
             ")</summary>"
-            f'<pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for {title}"><code>{esc(raw_text)}</code></pre>'
+            f'<pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for {esc(raw_title)}"><code>{esc(raw_text)}</code></pre>'
             "</details>"
         )
     eco_drawer = render_ecosystem_drawer(data) if (include_spec_drawer and chrome == "bench" and (modality == "plot" or data.get("waveform_kind") == "strip_chart")) else ""

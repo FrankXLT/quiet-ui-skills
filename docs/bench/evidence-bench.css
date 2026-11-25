@@ -33,15 +33,8 @@
   }
   .qe-skip-link:focus { left: 0.75rem; }
 
-  .qe-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    background: var(--bg-glass);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-hairline);
-    padding: 0.6rem 1.25rem;
-  }
+  .qe-topbar { position: sticky; top: 0; z-index: 30; background: var(--bg-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-hairline); padding: 0.6rem 1.25rem; }
+  @media (max-width: 759px) { .qe-topbar { position: static; padding: 0.55rem 0.75rem; } }
   html[data-bench-embed="1"] .qe-topbar { display: none; }
   .qe-topbar-inner {
     max-inline-size: 86rem;

@@ -4,7 +4,7 @@
   "takeaway": true,
   "metadata": {
     "title": "Treasury +250 bps Rate-Shock Portfolio Liquidity Ratio (Quarters 1-8)",
-    "description": "Quantitative Risk drawdown comparison of 10,000-path Monte Carlo median liquidity ratios (±uᵧ IQR dispersion) against deterministic duration-convexity decay under a +250 bps parallel Treasury shock and the 20.0% minimum regulatory liquidity floor.",
+    "description": "Quantitative Risk drawdown comparison of 10,000-path Monte Carlo median liquidity ratios (±u_y IQR dispersion) against deterministic duration-convexity decay under a +250 bps parallel Treasury shock and the 20.0% minimum regulatory liquidity floor.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z",
     "source": "GAO / SEC-10Q +250 bps Monte Carlo Simulation (TREASURY-POOL-04)"

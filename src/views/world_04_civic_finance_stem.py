@@ -121,7 +121,7 @@ def _build_v11_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Treasury +{shock} bps Rate-Shock Liquidity Drawdown Solver</h1>
-    <p class="v9-masthead-sub">Monte Carlo 10,000-path liquidity medians (±u_y) vs deterministic convexity decay against the {floor_pct:.1f}% statutory floor.</p>
+    <p class="v9-masthead-sub">Monte Carlo 10,000-path liquidity medians (±{format_math_html("u_y")}) vs deterministic convexity decay against the {floor_pct:.1f}% statutory floor.</p>
   </header>
 
   <section id="v11-solver" class="v9-gate-band" aria-label="Rate-Shock Solver Summary">

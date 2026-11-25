@@ -63,7 +63,7 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
     )
 
     x0, y0, pw, ph = 78.0, 26.0, 536.0, 206.0
-    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 296" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Waterfall Plot"))}">']
+    parts: list[str] = [f'<svg class="qe-svg qe-svg-640" viewBox="0 0 640 304" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Waterfall Plot"))}">']
     for yv in sc["majors"]:
         py = _proj_lin_y(yv, sc, y0, ph)
         parts.append(f'<line x1="{x0}" y1="{py:.1f}" x2="{x0 + pw}" y2="{py:.1f}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
@@ -95,7 +95,7 @@ def compile_waterfall(spec: dict[str, Any], rigor: str, medium: str) -> str:
             parts.append(
                 f'<text x="{cx:.1f}" y="{y0 + ph + 18.0:.1f}" text-anchor="middle" font-family="var(--font-mono)" '
                 f'font-size="11.5" font-weight="500" fill="var(--text-secondary)">'
-                f'<tspan x="{cx:.1f}">{esc(l1)}</tspan><tspan x="{cx:.1f}" dy="14">{esc(l2)}</tspan></text>'
+                f'<tspan x="{cx:.1f}">{esc(l1)}</tspan><tspan x="{cx:.1f}" dy="17">{esc(l2)}</tspan></text>'
             )
         else:
             parts.append(halo_text(cx, y0 + ph + 19.0, lbl, anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))

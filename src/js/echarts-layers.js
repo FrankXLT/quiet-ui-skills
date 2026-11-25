@@ -186,6 +186,38 @@
     return opt;
   }
 
+  function makeWaterfallSpanSeries(name, itemColor, items, isInc, unit) {
+    return {
+      name: name,
+      type: 'custom',
+      encode: { x: 0, y: [1, 2], tooltip: 3 },
+      itemStyle: { color: itemColor },
+      label: {
+        show: true,
+        fontSize: 10,
+        fontWeight: 700,
+        formatter: function (p) {
+          var v = p.value && Number(p.value[3]);
+          if (!Number.isFinite(v)) return '';
+          if (isInc === null) return v.toFixed(1) + unit;
+          return (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(1) + unit;
+        },
+      },
+      renderItem: function (_params, api) {
+        var idx = api.value(0), lo = api.value(1), hi = api.value(2), sVal = api.value(3);
+        var x = api.coord([idx, 0])[0], yTop = api.coord([idx, hi])[1], yBot = api.coord([idx, lo])[1];
+        var bw = Math.min(50, api.size([1, 0])[0] * 0.58);
+        return {
+          type: 'rect',
+          shape: { x: x - bw / 2, y: yTop, width: bw, height: Math.max(2, yBot - yTop), r: sVal >= 0 ? [3, 3, 0, 0] : [0, 0, 3, 3] },
+          style: api.style(),
+          textConfig: { position: sVal >= 0 ? 'top' : 'bottom', distance: 5 },
+        };
+      },
+      data: items,
+    };
+  }
+
   function buildWaterfallOption(doc, payload, t, envData) {
     var yMeta = payload.y || {};
     var kinds = payload.stepKinds || [];
@@ -220,45 +252,10 @@
         decItems.push({ value: [idx, lo, hi, sVal], itemStyle: { color: t.statusWarn, borderColor: t.statusWarn }, label: { color: t.statusWarn } });
       }
     });
-    function makeSpanSeries(name, itemColor, items, isInc) {
-      return {
-        name: name,
-        type: 'custom',
-        encode: { x: 0, y: [1, 2], tooltip: 3 },
-        itemStyle: { color: itemColor },
-        label: {
-          show: true,
-          fontSize: 10,
-          fontWeight: 700,
-          formatter: function (p) {
-            var v = p.value && Number(p.value[3]);
-            if (!Number.isFinite(v)) return '';
-            if (isInc === null) return v.toFixed(1) + unit;
-            return (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(1) + unit;
-          },
-        },
-        renderItem: function (_params, api) {
-          var idx = api.value(0), lo = api.value(1), hi = api.value(2), sVal = api.value(3);
-          var x = api.coord([idx, 0])[0];
-          var yTop = api.coord([idx, hi])[1];
-          var yBot = api.coord([idx, lo])[1];
-          var bw = Math.min(50, api.size([1, 0])[0] * 0.58);
-          var r = sVal >= 0 ? [3, 3, 0, 0] : [0, 0, 3, 3];
-          var lblPos = sVal >= 0 ? 'top' : 'bottom';
-          return {
-            type: 'rect',
-            shape: { x: x - bw / 2, y: yTop, width: bw, height: Math.max(2, yBot - yTop), r: r },
-            style: api.style(),
-            textConfig: { position: lblPos, distance: 5 },
-          };
-        },
-        data: items,
-      };
-    }
     var wfSeries = [
-      makeSpanSeries('Total / Balance', t.statusOk, totItems, null),
-      makeSpanSeries('Increase', t.accentFocal, incItems, true),
-      makeSpanSeries('Reduction / Cost', t.statusWarn, decItems, false),
+      makeWaterfallSpanSeries('Total / Balance', t.statusOk, totItems, null, unit),
+      makeWaterfallSpanSeries('Increase', t.accentFocal, incItems, true, unit),
+      makeWaterfallSpanSeries('Reduction / Cost', t.statusWarn, decItems, false, unit),
     ];
     if (envData.length) {
       wfSeries[0].markLine = {
@@ -293,12 +290,12 @@
         },
       },
       legend: { top: 2, left: 64, textStyle: { color: t.textSecondary, fontSize: 11 }, data: ['Total / Balance', 'Increase', 'Reduction / Cost'] },
-      grid: { left: 66, right: 24, top: 44, bottom: 56, containLabel: true },
+      grid: { left: 66, right: 24, top: 44, bottom: 64, containLabel: true },
       xAxis: {
         type: 'category',
         data: payload.categories || [],
         axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
-        axisLabel: { color: t.textSecondary, fontSize: 10.5, interval: 0, formatter: function (v) { var w = String(v).split(' '); return w.length === 2 ? w.join('\n') : v; } },
+        axisLabel: { color: t.textSecondary, fontSize: 11, lineHeight: 15, margin: 10, interval: 0, formatter: function (v) { var w = String(v).split(' '); return w.length === 2 ? w.join('\n') : v; } },
       },
       yAxis: {
         type: 'value',

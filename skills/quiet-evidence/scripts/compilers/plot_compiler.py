@@ -96,7 +96,7 @@ def _render_graticule(
     ylbl = y_ax.get("quantity_calculus") or format_quantity_header(y_ax.get("quantity", "y"), None, y_ax.get("unit", ""))
     parts.append(halo_text(x0 + pw / 2.0, y0 + ph + 40.0, xlbl, anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))
     y_lbl_sz = 11.0 if len(str(ylbl)) > 28 else 12.0
-    parts.append(f'<text x="22" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 22 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="{y_lbl_sz:.1f}" font-weight="700" fill="var(--text-primary)">{format_math_svg(ylbl, 9.2)}</text>')
+    parts.append(f'<text x="26" y="{y0 + ph / 2.0:.1f}" transform="rotate(-90 26 {y0 + ph / 2.0:.1f})" text-anchor="middle" font-family="var(--font-mono)" font-size="{y_lbl_sz:.1f}" font-weight="700" fill="var(--text-primary)">{format_math_svg(ylbl, 9.2)}</text>')
     return parts
 
 
@@ -274,7 +274,7 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
     if not y_ax.get("domain"):
         ys.extend(float(e["threshold_value"]) for e in envs if e.get("threshold_value") is not None and math.isfinite(float(e["threshold_value"])))
     y_sc = _axis_scale(y_ax, ys)
-    x0, y0, pw, ph = (78.0, 26.0, 404.0, 224.0) if has_gutter else (78.0, 26.0, 496.0, 224.0)
+    x0, y0, pw, ph = (80.0, 26.0, 402.0, 224.0) if has_gutter else (80.0, 26.0, 494.0, 224.0)
     inset_x = pw * 0.035
     data_x = (x0 + inset_x, pw - 2.0 * inset_x)
     vb_h = 402 if show_res else 306
@@ -334,85 +334,19 @@ def _compile_cartesian(spec: dict[str, Any], rigor: str, medium: str) -> str:
 # Legend swatch builder moved to plot_helpers.legend_swatch_svg
 
 
-def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
-    """Compile Modality 4 (urn:quiet-ui:schema:v9:plot) into NIST-calibrated HTML/SVG."""
-    meta = spec.get("metadata", {})
-    eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()
-    kind = spec.get("plot_kind", "cartesian")
-    payload = build_echarts_payload(spec, eff_rigor, medium)
-    payload_attr = f' data-quiet-echarts="{esc(json.dumps(payload, separators=(",", ":"), allow_nan=False))}"' if payload is not None else ""
-    parts: list[str] = [f'<div class="qe-plot-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}"{payload_attr}>']
-
-    if chrome == "bench" and payload is not None:
-        parts.append(render_echarts_toggle_bar())
-
-    hide_cond = chrome == "embedded" and (eff_rigor == "L1" or kind == "stacked_bar")
-    cond_html = "" if hide_cond else render_test_condition_strip(spec.get("test_environment"), eff_rigor)
-    if cond_html:
-        parts.append(cond_html)
-
-    if spec.get("pedagogical_equation"):
-        eq = spec["pedagogical_equation"]
-        tokens_html = " ".join(
-            f'<button type="button" class="va-pill qe-eq-term qe-term-{esc(t["term"])}" data-variant="chip" data-term="{esc(t["term"])}">'
-            f'<span>{format_math_html(t["symbol"])}</span></button>' if t.get("term") else f'<span class="qe-eq-op">{format_math_html(t["symbol"])}</span>'
-            for t in eq.get("terms", [])
-        )
-        parts.append(f'<div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">{format_math_html(eq.get("lhs", ""))} = </span>{tokens_html}</div>')
-
-    _plot_kinds = {
-        "waterfall": lambda s, r, m: compile_waterfall(s, r, m),
-        "stacked_bar": lambda s, r, m: compile_stacked_bar(s, r, m),
-        "gantt": lambda s, r, m: compile_gantt(s, r, m),
-        "heatmap": lambda s, r, m: compile_heatmap(s, r, m),
-        "dumbbell": lambda s, r, m: compile_dumbbell(s),
-        "forest": lambda s, r, m: compile_forest(s),
-        "sankey": lambda s, r, m: compile_sankey(s, r, m),
-        "us_hex_tile_map": compile_us_hex_tile_map,
-        "arrow_dumbbell": lambda s, r, m: compile_arrow_dumbbell(s, r, m, chrome=chrome),
-        "paired_subgroup_bars": lambda s, r, m: compile_paired_subgroup_bars(s, r, m, chrome=chrome),
-        "dual_slopegraph": compile_dual_slopegraph,
-        "diverging_matrix": lambda s, r, m: compile_diverging_matrix(s, r, m),
-    }
-
-    def _emit_plot(sub: dict[str, Any], k: str) -> str:
-        fn = _plot_kinds.get(k)
-        return fn(sub, eff_rigor, medium) if fn else _compile_cartesian(sub, eff_rigor, medium)
-
-    echarts_host = '<div class="qe-echarts-host" hidden></div>' if payload is not None else ""
-    parts.append(
-        f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Analytical Plot"))}">'
-        f'<div class="qe-svg-fallback">{_emit_plot(spec, kind)}</div>{echarts_host}</div>'
-    )
-    comps = list(spec.get("companions", []))
-    if spec.get("companion"):
-        comps.insert(0, spec["companion"])
-    if comps:
-        if len(comps) > 1:
-            parts.append('<div class="qe-companions-grid">')
-        for comp in comps:
-            ck = comp.get("plot_kind", "dumbbell")
-            comp_inner = (
-                f'<div class="qe-subpanel-title">{format_math_html(comp.get("title", "Companion Plot"))}</div>'
-                f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(comp.get("title", "Companion Plot"))}">{_emit_plot(comp, ck)}</div>'
-            )
-            parts.append(f'<div class="qe-companion-item">{comp_inner}</div>' if len(comps) > 1 else comp_inner)
-        if len(comps) > 1:
-            parts.append("</div>")
-
+def _compile_plot_legend(spec: dict[str, Any], kind: str, eff_rigor: str, chrome: str) -> str:
+    """Build epistemic series legend items and parametric chips for Modality 4 plots."""
     _self_labeled = {"us_hex_tile_map", "arrow_dumbbell", "paired_subgroup_bars", "dual_slopegraph"}
     vis_series = _visible_series(spec, eff_rigor) if kind == "cartesian" else ([] if kind in _self_labeled else spec.get("series", []))
     series_items: list[str] = []
     param_items: list[str] = []
-    omit_l1_legend = eff_rigor == "L1" and chrome == "embedded" and len(vis_series) <= 1 and not spec.get("parametric_legend")
-    if not omit_l1_legend:
+    if not (eff_rigor == "L1" and chrome == "embedded" and len(vis_series) <= 1 and not spec.get("parametric_legend")):
         for idx, sr in enumerate(vis_series):
             st = SERIES_STYLES[idx % len(SERIES_STYLES)]
             term = sr.get("term")
             col = resolve_token(sr.get("stroke_color") or sr.get("marker_color"), resolve_term_colors(term)["fg"] if term else st["stroke"])
             ep_kind = "discrete" if sr.get("epistemic_type") == "discrete_measurement" else "model"
-            has_unc = _series_has_uncertainty(sr)
-            ep_lbl = ('Discrete Sample\u00a0<span class="qe-unit-nw">(&#177;u<sub>y</sub>)</span>' if has_unc else 'Discrete Sample') if ep_kind == "discrete" else "Analytical Model"
+            ep_lbl = ('Discrete Sample\u00a0<span class="qe-unit-nw">(&#177;u<sub>y</sub>)</span>' if _series_has_uncertainty(sr) else 'Discrete Sample') if ep_kind == "discrete" else "Analytical Model"
             swatch = _legend_swatch_svg(sr, st, col)
             if (eff_rigor == "L1" and chrome == "embedded") or kind == "stacked_bar":
                 series_items.append(f'<span class="qe-leg-item">{swatch}<span class="qe-leg-txt">{format_math_html(sr.get("name", "Series"))}</span></span>')
@@ -431,12 +365,71 @@ def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "
             f'<span class="qe-leg-item"><svg width="12" height="10" aria-hidden="true"><circle cx="6" cy="5" r="3.8" fill="var(--accent-focal)"/></svg>{esc(str(lbls[1] if len(lbls) > 1 else "After"))}</span>',
         ])
     for param in spec.get("parametric_legend", []):
-        u = str(param.get("unit", ""))
-        param_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], u))}</span>')
-    if series_items or param_items:
-        s_span = f'<span class="qe-legend-series">{"".join(series_items)}</span>' if series_items else ""
-        p_span = f'<span class="qe-param-strip">{"".join(param_items)}</span>' if param_items else ""
-        parts.append(f'<div class="qe-param-legend">{s_span}{p_span}</div>')
+        param_items.append(f'<span class="qe-leg-param va-nums">{format_math_html(param["symbol"])} = {esc(format_value_unit(param["value"], str(param.get("unit", ""))))}</span>')
+    if not (series_items or param_items):
+        return ""
+    s_span = f'<span class="qe-legend-series">{"".join(series_items)}</span>' if series_items else ""
+    p_span = f'<span class="qe-param-strip">{"".join(param_items)}</span>' if param_items else ""
+    return f'<div class="qe-param-legend">{s_span}{p_span}</div>'
 
+
+def compile_plot(spec: dict[str, Any], rigor: str | None = None, medium: str = "m2", theme: str = "white", chrome: str = "bench") -> str:
+    """Compile Modality 4 (urn:quiet-ui:schema:v9:plot) into NIST-calibrated HTML/SVG."""
+    meta = spec.get("metadata", {})
+    eff_rigor = (rigor or meta.get("rigor_level", "L3")).upper()
+    kind = spec.get("plot_kind", "cartesian")
+    payload = build_echarts_payload(spec, eff_rigor, medium)
+    payload_attr = f' data-quiet-echarts="{esc(json.dumps(payload, separators=(",", ":"), allow_nan=False))}"' if payload is not None else ""
+    parts: list[str] = [f'<div class="qe-plot-wrap" data-rigor="{esc(eff_rigor)}" data-medium="{esc(medium)}"{payload_attr}>']
+    if chrome == "bench" and payload is not None:
+        parts.append(render_echarts_toggle_bar())
+    if not (chrome == "embedded" and (eff_rigor == "L1" or kind == "stacked_bar")):
+        cond_html = render_test_condition_strip(spec.get("test_environment"), eff_rigor)
+        if cond_html:
+            parts.append(cond_html)
+    if spec.get("pedagogical_equation"):
+        eq = spec["pedagogical_equation"]
+        tokens_html = " ".join(
+            f'<button type="button" class="va-pill qe-eq-term qe-term-{esc(t["term"])}" data-variant="chip" data-term="{esc(t["term"])}">'
+            f'<span>{format_math_html(t["symbol"])}</span></button>' if t.get("term") else f'<span class="qe-eq-op">{format_math_html(t["symbol"])}</span>'
+            for t in eq.get("terms", [])
+        )
+        parts.append(f'<div class="qe-equation-bar" aria-label="Governing Equation"><span class="qe-eq-lhs">{format_math_html(eq.get("lhs", ""))} = </span>{tokens_html}</div>')
+    _plot_kinds = {
+        "waterfall": lambda s, r, m: compile_waterfall(s, r, m),
+        "stacked_bar": lambda s, r, m: compile_stacked_bar(s, r, m),
+        "gantt": lambda s, r, m: compile_gantt(s, r, m),
+        "heatmap": lambda s, r, m: compile_heatmap(s, r, m),
+        "dumbbell": lambda s, r, m: compile_dumbbell(s),
+        "forest": lambda s, r, m: compile_forest(s),
+        "sankey": lambda s, r, m: compile_sankey(s, r, m),
+        "us_hex_tile_map": compile_us_hex_tile_map,
+        "arrow_dumbbell": lambda s, r, m: compile_arrow_dumbbell(s, r, m, chrome=chrome),
+        "paired_subgroup_bars": lambda s, r, m: compile_paired_subgroup_bars(s, r, m, chrome=chrome),
+        "dual_slopegraph": compile_dual_slopegraph,
+        "diverging_matrix": lambda s, r, m: compile_diverging_matrix(s, r, m),
+    }
+    def _emit_plot(sub: dict[str, Any], k: str) -> str:
+        fn = _plot_kinds.get(k)
+        return fn(sub, eff_rigor, medium) if fn else _compile_cartesian(sub, eff_rigor, medium)
+    echarts_host = '<div class="qe-echarts-host" hidden></div>' if payload is not None else ""
+    parts.append(f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(meta.get("title", "Analytical Plot"))}"><div class="qe-svg-fallback">{_emit_plot(spec, kind)}</div>{echarts_host}</div>')
+    comps = list(spec.get("companions", []))
+    if spec.get("companion"):
+        comps.insert(0, spec["companion"])
+    if comps:
+        if len(comps) > 1:
+            parts.append('<div class="qe-companions-grid">')
+        for comp in comps:
+            comp_inner = (
+                f'<div class="qe-subpanel-title">{format_math_html(comp.get("title", "Companion Plot"))}</div>'
+                f'<div class="va-figure-scroll" tabindex="0" role="region" aria-label="{esc(comp.get("title", "Companion Plot"))}">{_emit_plot(comp, comp.get("plot_kind", "dumbbell"))}</div>'
+            )
+            parts.append(f'<div class="qe-companion-item">{comp_inner}</div>' if len(comps) > 1 else comp_inner)
+        if len(comps) > 1:
+            parts.append("</div>")
+    legend_html = _compile_plot_legend(spec, kind, eff_rigor, chrome)
+    if legend_html:
+        parts.append(legend_html)
     parts.append("</div>")
     return "\n".join(parts)

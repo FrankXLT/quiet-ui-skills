@@ -124,103 +124,74 @@
     return items;
   }
 
-  function buildCartesianOption(doc, rawPayload, activeTerm) {
-    var t = readTokens(doc);
-    var layers = getLayers();
-    var payload = (layers && layers.mapCartesianPayload) ? layers.mapCartesianPayload(rawPayload) : rawPayload;
-    var xMeta = payload.x || {};
-    var yMeta = payload.y || {};
-    var series = [];
+  function buildCartesianSeriesList(doc, payload, layers, t, activeTerm) {
+    var series = [], showWhiskers = payload.rigor !== 'L1';
     var envData = buildEnvelopes(doc, payload, t);
-    var showWhiskers = payload.rigor !== 'L1';
-
     (payload.series || []).forEach(function (sr, idx) {
-      var col = resolveSeriesColor(doc, sr, idx, t);
-      var dimmed = activeTerm && sr.term && sr.term !== activeTerm;
-      var opacity = dimmed ? 0.22 : 1.0;
+      var col = resolveSeriesColor(doc, sr, idx, t), opacity = (activeTerm && sr.term && sr.term !== activeTerm) ? 0.22 : 1.0;
       if (sr.epistemic === 'analytical_model') {
-        if (sr.corridor && layers) {
-          var band = layers.makeCorridorSeries(sr, col, opacity, 0);
-          if (band) series.push(band);
-        }
+        var band = sr.corridor && layers ? layers.makeCorridorSeries(sr, col, opacity, 0) : null;
+        if (band) series.push(band);
         series.push({
-          id: sr.id || 'model-' + idx,
-          name: sr.name || 'Model',
-          type: 'line',
-          showSymbol: false,
-          smooth: false,
-          data: sr.data || [],
-          lineStyle: { color: col, width: dimmed ? 1.5 : 2.1, type: sr.dashed ? 'dashed' : 'solid', opacity: opacity },
-          itemStyle: { color: col, opacity: opacity },
-          z: 2,
+          id: sr.id || 'model-' + idx, name: sr.name || 'Model', type: 'line', showSymbol: false, smooth: false,
+          data: sr.data || [], lineStyle: { color: col, width: opacity < 1 ? 1.5 : 2.1, type: sr.dashed ? 'dashed' : 'solid', opacity: opacity },
+          itemStyle: { color: col, opacity: opacity }, z: 2,
         });
       } else {
         var isConn = sr.connectPiecewise !== undefined ? !!sr.connectPiecewise : !!sr.connect;
-        var ptsData = (sr.data || []).map(function (p) { return p.length >= 4 ? [p[0], p[1], p[2], p[3]] : [p[0], p[1]]; });
         var baseMeas = {
-          id: sr.id || 'meas-' + idx,
-          name: sr.name || 'Measurement',
-          type: isConn ? 'line' : 'scatter',
-          encode: { x: 0, y: 1 },
-          symbol: mapSymbol(sr.symbol),
-          symbolSize: isConn ? 6.5 : 7.5,
-          data: ptsData,
-          itemStyle: { color: col, opacity: opacity },
-          z: 4,
+          id: sr.id || 'meas-' + idx, name: sr.name || 'Measurement', type: isConn ? 'line' : 'scatter', encode: { x: 0, y: 1 },
+          symbol: mapSymbol(sr.symbol), symbolSize: isConn ? 6.5 : 7.5,
+          data: (sr.data || []).map(function (p) { return p.length >= 4 ? [p[0], p[1], p[2], p[3]] : [p[0], p[1]]; }),
+          itemStyle: { color: col, opacity: opacity }, z: 4,
         };
-        if (isConn) {
-          baseMeas.connectNulls = false;
-          baseMeas.showSymbol = true;
-          baseMeas.smooth = false;
-          baseMeas.lineStyle = { color: col, width: dimmed ? 1.5 : 2.1, opacity: opacity };
-        }
+        if (isConn) Object.assign(baseMeas, { connectNulls: false, showSymbol: true, smooth: false, lineStyle: { color: col, width: opacity < 1 ? 1.5 : 2.1, opacity: opacity } });
         series.push(baseMeas);
         if (showWhiskers) {
-          var whisker = sr.whiskers ? makeWhiskerSeries(sr.name || 'meas', col, sr.whiskers, opacity, true) : makeWhiskerSeries(sr.name || 'meas', col, sr.data || [], opacity, false);
+          var whisker = makeWhiskerSeries(sr.name || 'meas', col, sr.whiskers || sr.data || [], opacity, !!sr.whiskers);
           if (whisker) series.push(whisker);
         }
       }
     });
-
     if (layers) series = series.concat(layers.makeSlopedEnvelopes(payload, t, cssVar, doc, 0));
-    if (envData.length) {
-      series.push({
-        type: 'line', silent: true, legendHoverLink: false, tooltip: { show: false },
-        symbol: 'none', lineStyle: { opacity: 0 }, itemStyle: { opacity: 0 }, data: [],
-        markLine: { silent: true, symbol: ['none', 'none'], data: envData }, z: 5,
-      });
-    }
+    if (envData.length) series.push({ type: 'line', silent: true, legendHoverLink: false, tooltip: { show: false }, symbol: 'none', lineStyle: { opacity: 0 }, itemStyle: { opacity: 0 }, data: [], markLine: { silent: true, symbol: ['none', 'none'], data: envData }, z: 5 });
+    return series;
+  }
+
+  function buildCartesianOption(doc, rawPayload, activeTerm) {
+    var t = readTokens(doc), layers = getLayers();
+    var payload = (layers && layers.mapCartesianPayload) ? layers.mapCartesianPayload(rawPayload) : rawPayload;
+    var xMeta = payload.x || {}, yMeta = payload.y || {};
+    var series = buildCartesianSeriesList(doc, payload, layers, t, activeTerm);
+    var totalScatterPts = (payload.series || []).reduce(function (acc, sr) {
+      return (sr.epistemic !== 'analytical_model' && !sr.connectPiecewise) ? acc + (sr.data || []).length : acc;
+    }, 0);
+    var SUB_RICH = { sub: { fontSize: 8.5, lineHeight: 10, verticalAlign: 'bottom', padding: [0, 0, -1.5, 0] } };
+    var fmtSub = function (txt) {
+      var s = txt == null ? '' : String(txt);
+      if (s.indexOf('{') >= 0 || s.indexOf('}') >= 0) return s;
+      return s.replace(/(^|[^A-Za-z0-9_])([A-Za-z\u03b7\u03c3\u03c4\u03bc\u0394\u0177p](?:\u0302|\u0304)?)_([A-Za-z0-9]{1,4})(?![A-Za-z0-9_])/g, '$1$2{sub|$3}');
+    };
     var xAxisBase = {
       type: xMeta.log ? 'log' : 'value',
       min: (xMeta.log && xMeta.min <= 0) || !Number.isFinite(xMeta.min) ? undefined : xMeta.min,
       max: (xMeta.log && xMeta.max <= 0) || !Number.isFinite(xMeta.max) ? undefined : xMeta.max,
       interval: !xMeta.log && Number.isFinite(xMeta.interval) ? xMeta.interval : undefined,
-      name: xMeta.name || 'x',
-      nameLocation: 'middle',
-      nameGap: 28,
-      nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
+      name: fmtSub(xMeta.name || 'x'), nameLocation: 'middle', nameGap: 28,
+      nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600, rich: SUB_RICH },
       axisLine: { onZero: false, lineStyle: { color: t.textSecondary } },
       axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: (xMeta.logMapped && layers) ? layers.fmtLogDecade : (xMeta.log ? undefined : fmtLinearTick) },
       splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
     };
-    var totalScatterPts = (payload.series || []).reduce(function (acc, sr) {
-      return (sr.epistemic !== 'analytical_model' && !sr.connectPiecewise) ? acc + (sr.data || []).length : acc;
-    }, 0);
     var opt = {
-      animation: false,
-      backgroundColor: 'transparent',
+      animation: false, backgroundColor: 'transparent',
       textStyle: { fontFamily: 'Inter, system-ui, sans-serif', color: t.textPrimary },
       tooltip: {
-        trigger: totalScatterPts >= 20 ? 'item' : 'axis',
-        renderMode: 'richText',
-        confine: true,
-        backgroundColor: t.bgElevated,
-        borderColor: t.borderStrong,
-        borderWidth: 1,
-        textStyle: { color: t.textPrimary, fontSize: 12 },
+        trigger: totalScatterPts >= 20 ? 'item' : 'axis', renderMode: 'richText', confine: true,
+        backgroundColor: t.bgElevated, borderColor: t.borderStrong, borderWidth: 1, textStyle: { color: t.textPrimary, fontSize: 12 },
         valueFormatter: yMeta.logMapped ? function (v) { return typeof v === 'number' && Number.isFinite(v) ? Math.pow(10, v).toExponential(2) : ''; } : undefined,
       },
-      legend: { top: 2, left: 64, right: 16, itemWidth: 16, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11 }, data: (payload.series || []).map(function (s) { return s.name; }) },
+      legend: { top: 2, left: 64, right: 16, itemWidth: 16, itemHeight: 8, textStyle: { color: t.textSecondary, fontSize: 11, rich: SUB_RICH }, formatter: fmtSub, data: (payload.series || []).map(function (s) { return s.name; }) },
       grid: { left: (yMeta.log || yMeta.logMapped) ? 72 : 66, right: 24, top: 44, bottom: 52, containLabel: true },
       xAxis: xAxisBase,
       yAxis: {
@@ -228,17 +199,22 @@
         min: (yMeta.log && yMeta.min <= 0) || !Number.isFinite(yMeta.min) ? undefined : yMeta.min,
         max: (yMeta.log && yMeta.max <= 0) || !Number.isFinite(yMeta.max) ? undefined : yMeta.max,
         interval: !yMeta.log && Number.isFinite(yMeta.interval) ? yMeta.interval : undefined,
-        name: yMeta.name || 'y',
-        nameLocation: 'middle',
-        nameGap: (yMeta.log || yMeta.logMapped) ? 52 : 44,
-        nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600 },
+        name: fmtSub(yMeta.name || 'y'), nameLocation: 'middle', nameGap: (yMeta.log || yMeta.logMapped) ? 52 : 44,
+        nameTextStyle: { color: t.textSecondary, fontSize: 11.5, fontWeight: 600, rich: SUB_RICH },
         axisLine: { lineStyle: { color: t.textSecondary } },
         axisLabel: { color: t.textSecondary, fontSize: 11, hideOverlap: true, formatter: (yMeta.logMapped && layers) ? layers.fmtLogDecade : (yMeta.log ? undefined : fmtLinearTick) },
         splitLine: { lineStyle: { color: t.borderHairline, type: 'dashed' } },
       },
       series: series,
     };
-    return (payload.residuals && layers) ? layers.attachResidualStrip(opt, payload, t, xAxisBase) : opt;
+    if (payload.residuals && layers) {
+      opt = layers.attachResidualStrip(opt, payload, t, xAxisBase);
+      if (opt && opt.graphic && opt.graphic[0] && opt.graphic[0].style) {
+        opt.graphic[0].style.text = fmtSub(opt.graphic[0].style.text);
+        opt.graphic[0].style.rich = SUB_RICH;
+      }
+    }
+    return opt;
   }
 
   function shouldEnableECharts(doc, wrap) {
@@ -348,7 +324,7 @@
     };
     var fallbackCopy = function () {
       var d = drawer.ownerDocument || global.document;
-      if (!d || !d.body || typeof d.execCommand !== 'function') { done('Copy failed'); return; }
+      if (!d || !d.body || typeof d.execCommand !== 'function') return done('Copy failed');
       var ta = d.createElement('textarea');
       ta.value = txt; ta.readOnly = true;
       ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;left:-9999px';
@@ -370,8 +346,7 @@
       doc.addEventListener('click', function (ev) {
         var btn = ev.target && ev.target.closest ? ev.target.closest('.qe-mode-btn[data-qe-mode]') : null;
         if (btn) {
-          var mode = btn.dataset.qeMode || 'svg';
-          var wrap = btn.closest('.qe-plot-wrap');
+          var mode = btn.dataset.qeMode || 'svg', wrap = btn.closest('.qe-plot-wrap');
           if (wrap) {
             wrap.dataset.echartsMode = mode;
             wrap.querySelectorAll('.qe-mode-btn[data-qe-mode]').forEach(function (b) {
@@ -384,15 +359,13 @@
           return;
         }
         var ecoTab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
-        if (ecoTab) { activateEcoTab(ecoTab); return; }
+        if (ecoTab) return activateEcoTab(ecoTab);
         var copyBtn = ev.target && ev.target.closest ? ev.target.closest('.qe-copy-btn') : null;
-        if (copyBtn) { copyEcoSnippet(copyBtn); return; }
+        if (copyBtn) return copyEcoSnippet(copyBtn);
         var termBtn = ev.target && ev.target.closest ? ev.target.closest('button[data-term], .qe-eq-term[data-term]') : null;
         if (termBtn) {
-          var term = termBtn.dataset.term || '';
-          var scopeEl = termBtn.closest('.qe-figure, .v9-stage-inner') || doc;
-          var wraps = scopeEl.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]');
-          wraps.forEach(function (w) {
+          var term = termBtn.dataset.term || '', scopeEl = termBtn.closest('.qe-figure, .v9-stage-inner') || doc;
+          scopeEl.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) {
             if (term && scopeEl === doc && w.dataset.quietEcharts.indexOf('"' + term + '"') < 0) return;
             w.dataset.activeTerm = w.dataset.activeTerm === term ? '' : term;
           });
@@ -401,17 +374,15 @@
       });
       doc.addEventListener('keydown', function (ev) {
         var tab = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-tab[role="tab"]') : null;
-        if (!tab) return;
-        var list = tab.closest('[role="tablist"]');
-        var tabs = list ? Array.prototype.slice.call(list.querySelectorAll('.qe-eco-tab[role="tab"]')) : [];
-        var idx = tabs.indexOf(tab);
-        if (idx < 0) return;
-        var nxt = ev.key === 'ArrowRight' ? (idx + 1) % tabs.length : (ev.key === 'ArrowLeft' ? (idx - 1 + tabs.length) % tabs.length : (ev.key === 'Home' ? 0 : (ev.key === 'End' ? tabs.length - 1 : -1)));
+        var list = tab && tab.closest('[role="tablist"]');
+        if (!list) return;
+        var tabs = Array.prototype.slice.call(list.querySelectorAll('.qe-eco-tab[role="tab"]')), idx = tabs.indexOf(tab);
+        var nxt = idx < 0 ? -1 : (ev.key === 'ArrowRight' ? (idx + 1) % tabs.length : (ev.key === 'ArrowLeft' ? (idx - 1 + tabs.length) % tabs.length : (ev.key === 'Home' ? 0 : (ev.key === 'End' ? tabs.length - 1 : -1))));
         if (nxt >= 0) { ev.preventDefault(); activateEcoTab(tabs[nxt]); tabs[nxt].focus(); }
       });
       doc.addEventListener('beforematch', function (ev) {
-        var panel = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-panel[role="tabpanel"]') : null;
-        var tid = panel && panel.getAttribute('aria-labelledby');
+        var p = ev.target && ev.target.closest ? ev.target.closest('.qe-eco-panel[role="tabpanel"]') : null;
+        var tid = p && p.getAttribute('aria-labelledby');
         if (tid) activateEcoTab(doc.getElementById(tid));
       }, true);
     }
@@ -421,28 +392,19 @@
       RESIZE_OBSERVERS.set(doc, ro);
     }
   }
-
+  function refresh(docRef) {
+    var doc = docRef || global.document, lib = getLib();
+    if (doc) doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
+  }
   function boot(docRef) {
     var doc = docRef || global.document;
-    if (!doc) return;
-    bindEvents(doc);
-    var lib = getLib();
-    doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); });
+    if (doc) { bindEvents(doc); refresh(doc); }
   }
-
-  function refresh(docRef) {
-    var doc = docRef || global.document;
-    if (doc) { var lib = getLib(); doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { mountWrap(doc, w, lib); }); }
-  }
-
   function disposeAll(docRef) {
-    var doc = docRef || global.document;
+    var doc = docRef || global.document, ro = doc && RESIZE_OBSERVERS.get(doc), lib = getLib();
     if (!doc) return;
-    var ro = RESIZE_OBSERVERS.get(doc);
     if (ro) { ro.disconnect(); RESIZE_OBSERVERS.delete(doc); }
-    var lib = getLib();
     doc.querySelectorAll('.qe-plot-wrap[data-quiet-echarts]').forEach(function (w) { disposeWrap(w, lib); });
   }
-
   global.QuietEChartsAdapter = { boot: boot, refresh: refresh, disposeAll: disposeAll };
 }(typeof window !== 'undefined' ? window : globalThis));

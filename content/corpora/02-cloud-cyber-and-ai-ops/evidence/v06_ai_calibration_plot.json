@@ -4,7 +4,7 @@
   "takeaway": true,
   "metadata": {
     "title": "Classifier Reliability & Calibration Drift Curve with Normalized Residual Strip",
-    "description": "AI metrology reliability diagram plotting predicted probability p̂ [0.05..0.95] against empirical validation frequency fₒ across 10 uniform bins (N = 1200 total, 120 samples/bin) with ±uᵧ binomial uncertainty whiskers, ideal y = x diagonal, overconfidence drift gate, and bottom normalized residual strip.",
+    "description": "AI metrology reliability diagram plotting predicted probability p̂ [0.05..0.95] against empirical validation frequency f_obs across 10 uniform bins (N = 1200 total, 120 samples/bin) with ±u_y binomial uncertainty whiskers, ideal y = x diagonal, overconfidence drift gate, and bottom normalized residual strip.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T04:15:00Z",
     "source": "NIST AI RMF 100-1 Validation Bins (CLS-ROUTER-V4, N=1,200)"

@@ -99,15 +99,21 @@ def format_math_unicode(text: Any) -> str:
     return s.replace(" - ", " − ")
 
 
+def _norm_sub_chars(txt: str) -> str:
+    for bad, rep in (("ŷᵢ", "ŷ_i"), ("yᵢ", "y_i"), ("xᵢ", "x_i")):
+        txt = txt.replace(bad, rep)
+    return txt
+
+
 def format_math_html(text: Any) -> str:
     """Format ASCII math notation into escaped HTML with <sub> subscripts."""
-    uni = esc(format_math_unicode(text))
+    uni = esc(_norm_sub_chars(format_math_unicode(text)))
     return _SUB_TOKEN_RE.sub(r"\1<sub>\2</sub>", uni)
 
 
 def format_math_svg(text: Any, sub_size: float = 8.8) -> str:
     """Format ASCII math notation into escaped SVG markup with <tspan dy font-size=sub_size> subscripts."""
-    uni = format_math_unicode(text)
+    uni = _norm_sub_chars(format_math_unicode(text))
     out: list[str] = []
     pos, shifted = 0, False
     sz = max(7.0, float(sub_size))

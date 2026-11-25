@@ -334,8 +334,16 @@ def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig
             ) + "</tr>"
             for r in rows
         )
+        top_return = (
+            '<div class="va-table-top-bar">'
+            f'<button type="button" class="va-footer-link va-table-return-link" data-qe-editorial-return aria-controls="{safe_id}-chart">Show chart</button>'
+            "</div>"
+            if editorial
+            else ""
+        )
         table_panel = (
             f'<div class="va-card-table-panel va-table-wrap" id="{safe_id}-table" hidden="until-found" tabindex="0" role="region" aria-label="{esc(payload["title"])} data table">'
+            f"{top_return}"
             f'<table class="booktabs qe-table"><caption class="qe-table-caption qe-caption-sr">{esc(payload["title"])}</caption><thead><tr>{ths}</tr></thead><tbody>{trs}</tbody></table>'
             "</div>"
         )

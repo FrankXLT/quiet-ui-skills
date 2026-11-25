@@ -21,11 +21,11 @@ from .sankey_and_strip import build_sankey_echarts_payload, build_strip_chart_ec
 from .tokens_and_scales import compute_linear_125_scale, finite_float
 
 _MATH_SUBS: tuple[tuple[str, str], ...] = (
-    (", B_cap", ""), ("B_cap", "B"), ("L_ratio", "L"), ("eta_bte", "\u03b7"), ("f_obs", "f\u2092\u1d66\u209b"),
-    ("p_hat", "p\u0302"), ("y_hat", "y\u0302"), ("X_bar", "X\u0304"), ("sigma_y", "\u03c3\u1d67"), ("C_pk", "C\u209a\u2096"),
-    ("P_load", "Home Load"), ("P_grid", "Net Grid"), ("P_pv", "Solar Power"), ("P_rx", "P\u1d63\u2093"),
-    ("V_0", "V\u2080"), ("f_0", "f\u2080"), ("V_c", "V"), ("t_rms", "t\u1d63\u2098\u209b"), ("R_net", "R\u2099\u2091\u209c"),
-    ("alpha_fiber", "\u03b1"), ("tau_s", "\u03c4"), ("D^3", "D\u00b3"), ("+/-", "\u00b1"), ("u_y", "u"),
+    (", B_cap", ""), ("B_cap", "B"), ("L_ratio", "L"), ("eta_bte", "\u03b7_bte"), ("f_obs", "f_obs"),
+    ("p_hat", "p\u0302"), ("y_hat", "y\u0302"), ("X_bar", "X\u0304"), ("sigma_y", "\u03c3_y"), ("C_pk", "C_pk"),
+    ("P_load", "Home Load"), ("P_grid", "Net Grid"), ("P_pv", "Solar Power"), ("P_rx", "P_rx"),
+    ("V_0", "V\u2080"), ("f_0", "f\u2080"), ("V_c", "V"), ("t_rms", "t_rms"), ("R_net", "R_net"),
+    ("alpha_fiber", "\u03b1"), ("tau_s", "\u03c4"), ("D^3", "D\u00b3"), ("+/-", "\u00b1"), ("u_y", "u_y"),
 )
 _WORD_TAU_RE = re.compile(r"\btau\b")
 _SIGMA_WORD_RE = re.compile(r"\bsigma\b")
@@ -407,7 +407,7 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
     if bool((spec.get("residual_strip") or {}).get("enabled")) and rigor == "L3":
         r_pts = compute_normalized_residuals(raw_series, log_x=log_x, legend=spec.get("parametric_legend"))
         if r_pts:
-            out["residuals"] = {"label": "Normalized Residuals (y\u1d62 \u2212 y\u0302\u1d62) / u", "bound": 2.0, "points": [[round_coord(xv), round(rv, 3)] for xv, rv in r_pts]}
+            out["residuals"] = {"label": "Normalized Residuals (y_i \u2212 y\u0302_i) / u_y", "bound": 2.0, "points": [[round_coord(xv), round(rv, 3)] for xv, rv in r_pts]}
     return out
 
 def render_echarts_toggle_bar() -> str:

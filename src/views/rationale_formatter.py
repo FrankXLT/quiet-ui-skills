@@ -129,7 +129,7 @@ def scrub_prose(text: Any) -> str:
     s = re.sub(r"\bV\d{2}:\s*", "", s)
     s = s.replace("**", "").replace("`", "").replace("$", "")
     s = s.replace("<->", "↔").replace("->", "→")
-    for raw_m, sym_m in (("X_bar", "X̄"), ("C_pk", "Cpk"), ("p_hat", "p̂"), ("f_obs", "observed frequency (fₒ)"), ("u_y", "uᵧ"), ("U_y", "uᵧ"), ("U_Y", "uᵧ")):
+    for raw_m, sym_m in (("X_bar", "X̄"), ("C_pk", "Cpk"), ("p_hat", "p̂"), ("f_obs", "observed frequency (f(obs))"), ("u_y", "u(y)"), ("U_y", "u(y)"), ("U_Y", "u(y)")):
         s = s.replace(raw_m, sym_m)
     s = _ROW_STATUS_RE.sub(lambda m: "(status: Review Needed)" if m.group(1).lower() == "warn" else f"(status: {m.group(1).title()})", s)
     s = _JSON_PATH_RE.sub(lambda m: "supporting data specs" if "*" in m.group(1) else humanize_identifier(m.group(1)) + " spec", s)

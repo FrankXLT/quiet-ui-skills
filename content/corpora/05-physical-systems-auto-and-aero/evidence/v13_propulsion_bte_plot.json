@@ -2,8 +2,8 @@
   "$schema": "urn:quiet-ui:schema:v9:plot",
   "id": "w05-v13-propulsion-bte-plot",
   "metadata": {
-    "title": "Argonne D³ Dynamometer Brake Thermal Efficiency (ηᵦₜₑ) vs. IMEP",
-    "description": "Steady-state propulsion dynamometer measurements (discrete points with ±uᵧ whiskers) compared against cubic analytical efficiency model peaking at 42.8 % at 14.0 bar IMEP, bounded by cruise derate floor and thermal/knock ceiling.",
+    "title": "Argonne D³ Dynamometer Brake Thermal Efficiency (eta_bte) vs. IMEP",
+    "description": "Steady-state propulsion dynamometer measurements (discrete points with ±u_y whiskers) compared against cubic analytical efficiency model peaking at 42.8 % at 14.0 bar IMEP, bounded by cruise derate floor and thermal/knock ceiling.",
     "rigor_level": "L3",
     "timestamp_utc": "2026-11-17T05:30:00Z",
     "peak_bte_pct": 42.8

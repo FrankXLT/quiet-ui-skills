@@ -80,6 +80,59 @@ def _num(d: dict[str, Any], *keys: str, default: float = 0.0) -> float:
     return default
 
 
+def _paired_bars_mobile_svg(
+    groups: list[dict[str, Any]],
+    sc: dict[str, Any],
+    overall_lbl: str,
+    title: str,
+    col_a: str,
+    col_b: str,
+    fmt: Any,
+) -> str:
+    vb_w, x0, x_bar_max, x_col, col_w = 340, 10.0, 256.0, 264.0, 68.0
+    track_w = x_bar_max - x0 - 46.0
+    row_h, y0 = 54.0, 28.0
+    ph = max(90.0, len(groups) * row_h)
+    vh = int(y0 + ph + 28)
+    span = max(sc["max"] - sc["min"], 1e-9)
+    px = lambda v: x0 + max(0.0, min(1.0, (float(v) - sc["min"]) / span)) * track_w
+    parts = [f'<svg class="qe-svg qe-svg-340" viewBox="0 0 {vb_w} {vh}" role="img" aria-label="{esc(title)}">']
+    parts.append(f'<rect x="{x_col:.1f}" y="8" width="{col_w:.1f}" height="{y0 + ph - 8:.1f}" rx="4" fill="var(--bg-elevated)" stroke="var(--border-strong)" stroke-width="1"/>')
+    parts.append(halo_text(x_col + col_w / 2.0, 21.0, overall_lbl, anchor="middle", size=11.0, weight="700", fill="var(--text-primary)", halo=False))
+    parts.append(f'<line x1="{x_col - 5:.1f}" y1="10" x2="{x_col - 5:.1f}" y2="{y0 + ph:.1f}" stroke="var(--border-hairline)" stroke-width="0.9"/>')
+    grid_xs = [px(xv) for xv in sc["majors"]]
+    prev_tx = -99.0
+    for xv in sc["majors"]:
+        xx = px(xv)
+        if xx - prev_tx >= 42.0:
+            parts.append(halo_text(xx, y0 + ph + 16.0, format_tick_numeral(xv, step=sc["step"]), anchor="start" if xx <= x0 + 6 else "middle", size=10.8, fill="var(--text-secondary)", halo=False))
+            prev_tx = xx
+    for i, g in enumerate(groups):
+        top_y = y0 + i * row_h
+        lbl = str(g.get("label") or f"Group {i + 1}")
+        parts.append(f'<line x1="8" y1="{y0 + (i + 1) * row_h:.1f}" x2="{x_col + col_w:.1f}" y2="{y0 + (i + 1) * row_h:.1f}" stroke="var(--border-hairline)" stroke-width="0.7"/>')
+        parts.append(halo_text(x0, top_y + 13.0, lbl, anchor="start", size=11.0, weight="600", font="var(--font-sans)", fill="var(--text-primary)", halo=False))
+        for gxx in grid_xs:
+            if gxx > x0 + 2:
+                parts.append(f'<line x1="{gxx:.1f}" y1="{top_y + 17.5:.1f}" x2="{gxx:.1f}" y2="{top_y + 49.0:.1f}" stroke="var(--border-hairline)" stroke-width="0.8"/>')
+        parts.append(f'<line x1="{x0:.1f}" y1="{top_y + 17.5:.1f}" x2="{x0:.1f}" y2="{top_y + 49.0:.1f}" stroke="var(--text-primary)" stroke-width="1"/>')
+        for key, col, bar_off in (("a", col_a, 18.0), ("b", col_b, 34.0)):
+            val = finite_float(g.get(key), 0.0) or 0.0
+            bw = max(2.0, px(val) - x0)
+            by = top_y + bar_off
+            parts.append(f'<rect x="{x0:.1f}" y="{by:.1f}" width="{bw:.1f}" height="14.0" rx="2" fill="{esc(col)}"/>')
+            v_txt = fmt(val)
+            if bw >= _approx_px(v_txt, 10.8) + 12.0:
+                parts.append(halo_text(x0 + bw - 5.0, by + 10.6, v_txt, anchor="end", size=10.8, weight="700", fill=_bar_ink(col), halo=False))
+            else:
+                parts.append(halo_text(x0 + bw + 5.0, by + 10.6, v_txt, anchor="start", size=10.8, weight="600", fill="var(--text-primary)", halo=True))
+        ov = finite_float(g.get("overall"))
+        ov_txt = fmt(ov) if ov is not None else "—"
+        parts.append(halo_text(x_col + col_w / 2.0, top_y + 33.0, ov_txt, anchor="middle", size=11.4, weight="700", fill="var(--text-primary)", halo=False))
+    parts.append("</svg>")
+    return "\n".join(parts)
+
+
 def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str, chrome: str = "bench") -> str:
     """Compile two-step subgroup comparison bars with shaded row-aligned Overall column."""
     groups = list(spec.get("groups") or spec.get("items") or [])
@@ -151,6 +204,8 @@ def compile_paired_subgroup_bars(spec: dict[str, Any], rigor: str, medium: str, 
         parts.append(halo_text(x_col + col_w / 2.0, cy + 4.5, ov_txt, anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False))
 
     parts.append("</svg>")
+    if wide_bench:
+        parts.append(_paired_bars_mobile_svg(groups, sc, overall_lbl, title, col_a, col_b, fmt))
     return f'{legend_html}<div class="va-figure-scroll">{chr(10).join(parts)}</div>'
 
 

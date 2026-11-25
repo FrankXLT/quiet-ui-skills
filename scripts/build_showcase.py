@@ -58,6 +58,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/15-glass-and-stage-interactions.css",
         "src/css/16-kiosks-and-sticky-rail.css",
         "src/css/17-editorial-research-brief.css",
+        "src/css/18-editorial-print-rules.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():

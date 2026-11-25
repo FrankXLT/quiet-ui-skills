@@ -72,8 +72,8 @@ def _build_v13_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         ("Torque Standard", "NIST-TRQ-2026-05"),
         ("Ambient Cell Temp", "25.0 ± 0.5 °C"),
         ("Acquisition Rate", "100.0 Hz Steady-State"),
-        ("Peak Efficiency", f"ηᵦₜₑ = {bte:.1f}% @ 14.0 bar"),
-    ])}
+        ("Peak Efficiency", f"eta_bte = {bte:.1f}% @ 14.0 bar"),
+    ], math_keys=("Peak Efficiency",))}
   </div>
 
   <section id="v13-plot" aria-label="Brake Thermal Efficiency Curve">{bte_html}</section>
