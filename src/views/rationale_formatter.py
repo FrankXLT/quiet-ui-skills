@@ -52,6 +52,10 @@ _VIEW_SLUG_PLAIN: dict[str, str] = {
     "v20-student-capstone-lab-report": "v20 · Student Lab Report",
     "v21-field-anomaly-escalation-tsn": "v21 · Test Bay Repair Plan",
     "v22-reading-and-mobility-brief": "v22 · Reading & Mobility Data Brief",
+    "v23-semantic-config-diff-review": "v23 · Edge Policy Config Diff",
+    "v24-telemetry-event-triage-desk": "v24 · High-Row Event Triage Desk",
+    "v25-subsea-corridor-and-link-margin": "v25 · Subsea Repeater Corridor",
+    "v26-constrained-trade-space-calculator": "v26 · Capital Trade-Space Solver",
 }
 
 _NAV_PLAIN: dict[str, str] = {

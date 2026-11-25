@@ -88,6 +88,22 @@
         "evidence/v09_spc_control_plot.json",
         "evidence/v09_modbus_plc_bitfield.json"
       ]
+    },
+    {
+      "view_id": "v25-subsea-corridor-and-link-margin",
+      "title": "Trans-Shelf Subsea Fiber Corridor & Optical Link-Margin Console",
+      "presenter": "Subsea Optical Engineer",
+      "audience": "Marine Network Operations",
+      "lenses": ["Discipline Engineer", "Technician / Operator"],
+      "tempos": ["T2", "T3"],
+      "mediums": ["M3"],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": ["N2"],
+      "rigor_level": "L3",
+      "evidence_refs": [
+        "evidence/v25_subsea_osnr_plot.json",
+        "evidence/v25_subsea_corridor_table.json"
+      ]
     }
   ],
   "canonical_metrics": {
@@ -174,7 +190,13 @@
       "value": "0x0A15",
       "unit": "hex",
       "description": "Live 16-bit PLC_BREAKER_INTERLOCK_WORD value (ISLAND_ARMED = 1)"
-    }
+    },
+    "subsea_trunk_length_km": {"value": 640, "unit": "km", "description": "Shore-to-shore subsea fiber trunk length (CLS-Alpha to CLS-Bravo)"},
+    "subsea_repeater_count": {"value": 8, "unit": "1", "description": "Wet-plant EDFA repeaters along the 640 km corridor"},
+    "subsea_fault_excess_loss_db": {"value": 4.8, "unit": "dB", "description": "Anchor-drag excess attenuation on Span S5 at 362 km shelf break"},
+    "subsea_min_osnr_db": {"value": 16.4, "unit": "dB", "description": "Minimum channel OSNR at Span S5 before FEC decoding"},
+    "subsea_fec_floor_db": {"value": 15.0, "unit": "dB", "description": "SD-FEC minimum operating OSNR floor (+1.4 dB net margin)"},
+    "subsea_line_feed_a": {"value": 1.12, "unit": "A", "description": "Constant-current power feed equipment line current"}
   },
   "evidence_bindings": [
     {
@@ -217,6 +239,14 @@
         "modbus_reg_addr",
         "modbus_reg_value"
       ]
+    },
+    {
+      "evidence_file": "evidence/v25_subsea_osnr_plot.json",
+      "metric_ids": ["subsea_trunk_length_km", "subsea_repeater_count", "subsea_min_osnr_db", "subsea_fec_floor_db"]
+    },
+    {
+      "evidence_file": "evidence/v25_subsea_corridor_table.json",
+      "metric_ids": ["subsea_trunk_length_km", "subsea_repeater_count", "subsea_fault_excess_loss_db", "subsea_min_osnr_db", "subsea_line_feed_a"]
     }
   ]
 }

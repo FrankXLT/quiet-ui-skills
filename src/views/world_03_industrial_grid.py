@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from world_wave2_infra_calc import build_v25_html
+except ImportError:
+    from src.views.world_wave2_infra_calc import build_v25_html
+
+try:
     from world_common import (
         assemble_world_bundle,
         cm_val,
@@ -341,6 +346,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
         "v07-grid-scada-poi-console": _build_v07_html(corpus, specs),
         "v08-plant-floor-wall-kiosk": _build_v08_html(corpus),
         "v09-spc-quality-and-modbus-report": _build_v09_html(corpus, specs),
+        "v25-subsea-corridor-and-link-margin": build_v25_html(),
     }
     v07_status = [
         {"text": f"POI {p_act:.1f} MW", "variant": "plain", "state": "nominal"},
@@ -379,6 +385,24 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
             "inv_col": "v09-spc-quality-and-modbus-report", "short_tag": "v09",
             "bias_risk": "Bare yield percentages and smoothed spline fits conceal centering drift and interlock status.",
             "actionable_disposition": "Authorize release of 12 bearing bore lots (C_pk = 1.64 >= 1.33, 0 USL/LSL breaches).",
+        },
+        "v25-subsea-corridor-and-link-margin": {
+            "option_label": "v25 · Subsea Repeater Corridor", "default_medium": "m3",
+            "chromatic_code": "c4", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
+            "nav_icon": "compass", "nav_brand": "Subsea Corridor",
+            "topbar_brand": "Trans-Shelf Trunk · 640 km · 8 Repeaters", "rail_brand": "Corridor Views",
+            "topbar_status": [], "nav_items": ["Corridor & OSNR"],
+            "nav_anchors": ["v25-corr-title"],
+            "inv_col": "v25-subsea-corridor-and-link-margin", "short_tag": "v25",
+            "invariants_fallback": {
+                "baseline": "640 km shore-to-shore corridor anchored above the 15.0 dB SD-FEC threshold.",
+                "provenance": "Locks bathymetric seabed terrain and Coherent OTDR OSNR readouts along shared km stations.",
+                "margin": "Span S5 (+4.8 dB @ 362 km) maintains 16.4 dB minimum OSNR (+1.4 dB net headroom).",
+                "disposition": "Spotlight Span S5 fault node and verify 1.12 A constant current line feed ahead of ROV dispatch.",
+            },
+            "bias_removed": "Unscaled Topology Diagrams Detached From Optical Budget",
+            "bias_risk": "Disconnected maps obscure how shelf-break anchor loss collapses optical link margin.",
+            "bias_replacement": "Distance-locked bathymetry and OSNR curve with synchronized 10-row repeater ledger.",
         },
     }
     return assemble_world_bundle(corpus, bp, "03 · Power Grid & Factory", view_cfg, html_map)

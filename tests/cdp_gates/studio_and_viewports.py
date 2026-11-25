@@ -238,7 +238,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
     if not driver.execute_script("const s=window.QuietStudioPortalV9.state;return s.world==='04-civic-finance-and-stem-learning'&&s.view==='v10-civic-capital-budget-deck';"):
         errs.append("[DEEPLINK_V10] failed domain resolution")
 
-    for rel, cnt in (("customizations/personal-starter/showcase.html", 22), ("customizations/brand-starter/showcase.html", 18)):
+    for rel, cnt in (("customizations/personal-starter/showcase.html", 26), ("customizations/brand-starter/showcase.html", 22)):
         driver.get(f"{root_url}/{rel}?theme=dark")
         time.sleep(0.25)
         n = int(driver.execute_script("return JSON.parse(document.getElementById('va-v9-manifest').textContent).worlds.reduce((a,w)=>a+w.views.length,0);"))
@@ -251,7 +251,7 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
 
 
 def run_studio_and_viewport_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Run all Studio bar, 22-view x 5-viewport continuum, theme, print, interaction & starter CDP checks."""
+    """Run all Studio bar, 26-view x 5-viewport continuum, theme, print, interaction & starter CDP checks."""
     errs: list[str] = []
     _check_studio_bar_and_viewports(driver, base_url, errs)
     _check_themes_print_why_and_interactions(driver, base_url, root_url, errs)

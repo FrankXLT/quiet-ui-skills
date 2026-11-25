@@ -32,6 +32,16 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 | `roadmap_float_days` | `3.0` | `d` | `evidence/v19_release_roadmap_gantt.json` -> `tasks[2].float_days` | `v19-product-roadmap-and-triage` |
 | `tracked_blockers` | `4` | `1` | `evidence/v19_release_roadmap_gantt.json` -> `tracked_blockers` | `v19-product-roadmap-and-triage` |
 | `ood_routed_samples` | `10` | `1` | `evidence/v06_ood_drift_samples_table.json` -> `rows.length` | `v06-ai-drift-and-lineage-ide` |
+| `edge_cluster_total` | `14` | `1` | `evidence/v23_config_diff_table.json` -> `metadata.description` | `v23-semantic-config-diff-review` |
+| `canary_cluster_count` | `2` | `1` | `evidence/v23_config_diff_table.json` -> `metadata.description` | `v23-semantic-config-diff-review` |
+| `canary_traffic_pct` | `14.3` | `%` | `evidence/v23_config_diff_table.json` -> `rows[0].clusters` | `v23-semantic-config-diff-review` |
+| `diff_changed_params` | `6` | `1` | `evidence/v23_config_diff_table.json` -> `rows.length` | `v23-semantic-config-diff-review` |
+| `diff_total_params` | `24` | `1` | `evidence/v23_config_diff_table.json` -> `rows[3].clusters` | `v23-semantic-config-diff-review` |
+| `canary_soak_window_min` | `30` | `min` | `evidence/v23_config_diff_table.json` -> `rows[1].clusters` | `v23-semantic-config-diff-review` |
+| `triage_total_events` | `48` | `1` | `evidence/v24_telemetry_histogram_plot.json` -> `test_environment.sample_subgroup_size` | `v24-telemetry-event-triage-desk` |
+| `triage_critical_faults` | `9` | `1` | `evidence/v24_telemetry_histogram_plot.json` -> `series[0].name` | `v24-telemetry-event-triage-desk` |
+| `triage_affected_services` | `4` | `1` | `evidence/v24_telemetry_histogram_plot.json` -> `test_environment.standard_id` | `v24-telemetry-event-triage-desk` |
+| `triage_median_latency_ms` | `148.0` | `ms` | `evidence/v24_telemetry_histogram_plot.json` -> `metadata.description` | `v24-telemetry-event-triage-desk` |
 
 ---
 
@@ -43,6 +53,8 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 | `v05-zero-trust-ato-spec` | Security Architect | Authorizing Official (AO) & CISO | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M1` / `M2`, `N2` | Archival Proof | `L2` | 3 bounded enclaves, 4 PPSM edges, `CSR_MTLS_POLICY` (`0x8003B104`) decode |
 | `v06-ai-drift-and-lineage-ide` | ML / Data Platform Engineer | Application Engineer | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M3`, `N3` | Archival Proof | `L3` | 4-entity ER lineage (`RAW_EVENTS` -> `DRIFT_ALERTS`), `ECE = 0.050`, `10` OOD drift samples, `±u_y` bins, residuals |
 | `v19-product-roadmap-and-triage` | Engineering Lead | Product Manager & Leadership | Program Manager, Project / Systems Engineer | `T2` (1-3 m) | `M3`, `N2` | Decision Contrast | `L2` | Critical-path release Gantt (`Today Day 8`), `+3.0 d` float, `250.0 ms` SLO gate, `4` blocker queue |
+| `v23-semantic-config-diff-review` | Platform Security Lead | Change Advisory Board & SREs | Project / Systems Engineer, Program Manager | `T2` (1-3 m) | `M3`, `N2` | Decision Contrast | `L2` | Semantic r41 vs r42 diff (`6` changed / `24` params), `14.3%` canary (`2/14`), `30 min` soak, 2-step promotion + `r41` revert |
+| `v24-telemetry-event-triage-desk` | Incident Commander | On-Call Responder | Technician / Operator, Discipline Engineer | `T1` (5-15 s) | `M3`, `N2` | Quiet Cockpit | `L2` | 48-row triage table (`9` critical, `14` warnings, `11` auth/TLS, `14` nominal), 24-bucket burst chart, live row inspector & filter recovery |
 
 ---
 
@@ -60,6 +72,12 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 - **`v19-product-roadmap-and-triage` (Engineering Lead -> Product Manager)**:
   - *Scrubbed*: Flat unprioritized backlog cards that mask critical-path launch blockers behind non-critical polish tasks.
   - *Retained*: Ordered critical-path dependencies (`12.0 s` OTel fix -> `<= 250.0 ms` p99 recovery -> GA cutover), `+3.0 d` parallel `0x8003B104` float buffer, and compact `38px` `4`-blocker triage strips.
+- **`v23-semantic-config-diff-review` (Security Lead -> Change Board)**:
+  - *Scrubbed*: Unparsed raw unified line diffs and single-click global config pushes without soak gates or revert controls.
+  - *Retained*: Typed semantic table separating `r41` vs `r42` across `6` changes, breaking client-pinning warning, canary blast radius (`2/14`, `14.3%`), and two-step reversible gate.
+- **`v24-telemetry-event-triage-desk` (Incident Commander -> On-Call Responder)**:
+  - *Scrubbed*: Unbounded JSON log dumps, orphan badges, and zero-match dead ends when searches miss.
+  - *Retained*: 24-bucket burst histogram (`14:20Z-14:35Z`), 48-row tabular ledger (`148.0 ms` median across `4` services), synchronized inspector, and 1-click `Clear filters` recovery.
 
 ---
 
@@ -70,21 +88,17 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
    - `v05`: `CSR_MTLS_POLICY` anchors live `0x8003B104` against `0x00000000` reset baseline and strict FIPS bit `[31] = 1`.
    - `v06`: Plots `f_obs` against ideal `f_obs = p_hat` (`equation: "x"`) with `±0.04` corridor and `x - 0.08` overconfidence warning envelope.
    - `v19`: Gates GA cutover against `<= 250.0 ms` p99 latency, `12.0 s` OTel scrape continuity, and `0x8003B104` FIPS validation.
+   - `v23`/`v24`: Anchor `r42` against `r41` baseline + `30 min` soak gate, and triage rows against `14:00Z-15:00Z` nominal baseline (`45.0 ms` vs `148.0 ms` median).
 2. **Epistemic Provenance**:
-   - `v04`: Explicitly breaks `<path>` traces with `M` across the `44.0 s .. 56.0 s` (`12.0 s`) OTel `null` scrape dropout (`interpolate: false`) rather than interpolating synthetic telemetry.
-   - `v05`: Separates hardware-attested `RO` bits (`MTLS_PEER_ATTEST`) from configurable `RW` and `W1C` interlock latches (`HSM_TAMPER_LATCH`).
-   - `v06`: Uses discrete circle markers with binomial `±u_y` whiskers for validation bins (`N = 1200`) and dashed curves for the analytical `y = x` model (zero Bezier splines).
-   - `v19`: Ties each Gantt span and triage workstream directly to canonical telemetry (`v04`), policy (`v05`), and fallback (`v06`) gate milestones.
+   - `v04`: Explicitly breaks `<path>` traces with `M` across `44.0 s .. 56.0 s` (`12.0 s`) OTel `null` dropout.
+   - `v05`/`v06`: Separate hardware `RO`/`RW` latches and discrete `N = 1200` markers from analytical curves.
+   - `v19`/`v23`/`v24`: Bind blockers, cluster traffic shares (`14.3%`), and 48 telemetry spans to trace/revision identifiers.
 3. **Margin & Consequence**:
-   - `v04`: Peak `420.0 ms` exceeds `250.0 ms` by `+170.0 ms` (`+68.0%`); burn rate `16.8 %/h` exceeds `14.4 %/h` by `+2.4 %/h`.
-   - `v05`: Enforces zero-margin fail-closed interlocks (`LEGACY_TLS_ALLOW = 0`, `CRL_FAIL_OPEN = 0`, `REPLAY_WIN_LOG2 = 0`).
-   - `v06`: `ECE = 0.050` exceeds `0.040` gate by `+0.010`; `p_hat = 0.85` bin (`f_obs = 0.73`) breaches `-0.080` envelope by `-0.040` (`-0.120` total gap).
-   - `v19`: Shows `0.0 d` float on critical-path items vs. `+3.0 d` parallel security buffer so schedule slack is explicit without guesswork.
+   - `v04`: Peak `420.0 ms` exceeds `250.0 ms` by `+170.0 ms`; burn rate `16.8 %/h` exceeds `14.4 %/h` by `+2.4 %/h`.
+   - `v05`/`v06`/`v19`: Expose interlocks, `-0.120` calibration gap, and `+3.0 d` float explicitly.
+   - `v23`/`v24`: Flag `strict_spki_pin` breaking scope (`14` clusters) and isolate `9` burst faults in `14:20Z-14:35Z`.
 4. **Actionable Disposition**:
-   - `v04`: `CANARY_GATE` drops `1 -> 0` at `36.0 s`; operator holds canary isolated across `12.0 s` telemetry gap until `t = 68.0 s` recovery confirmation.
-   - `v05`: AO/CISO signs boundary authorization with `CSR_MTLS_POLICY = 0x8003B104` and 4 enumerated PPSM cross-enclave rules.
-   - `v06`: Application Engineer routes predictions with `p_hat >= 0.75` to deterministic fallback and logs alert in `DRIFT_ALERTS`.
-   - `v19`: Product Lead holds launch cutover under `CONDITIONAL HOLD` while tracking all `4` launch blockers to soak signoff.
+   - `v04`–`v19`: Hold canary/ATO/fallback/GA launch with deterministic checks; `v23` stages `2`-cluster canary with instant `r41` rollback; `v24` copies trace summary from live inspector.
 
 ---
 
@@ -99,3 +113,5 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 | `v06-ai-drift-and-lineage-ide` | `SR-7` (`TRG-11` AI Fallback Gate) | Reports OOD ECE drift bound and enforces deterministic fallback gate for overconfident bins | `ece_drift_score = 0.050`, `ece_drift_threshold = 0.040`, `overconfidence_gate_offset = -0.08` | `PASS` |
 | `v06-ai-drift-and-lineage-ide` | `CR-2` (`TRG-01` Physical Metrology) | Discrete markers + `±u_y` whiskers + normalized residual strip (`0` Bezier curves) + Crow's-Foot lineage | `sample_count = 1200`, `er_entity_count = 4` | `PASS` |
 | `v19-product-roadmap-and-triage` | `TR-2` / `T2` (`Eng Lead -> PM`) | Critical-path release Gantt + 38px triage queue conserving p99 ceiling, OTel gap Patch, and policy latch | `p99_threshold_ms = 250.0 ms`, `scrape_dropout_s = 12.0 s`, `fips_policy_hex = 0x8003B104`, `roadmap_float_days = 3.0 d`, `tracked_blockers = 4` | `PASS` |
+| `v23-semantic-config-diff-review` | `TRG-06` (`Reversible Change Gate`) | Side-by-side semantic diff, context toggle, blast-radius bar (`14.3%`), 2-step promotion + `r41` revert | `edge_cluster_total = 14`, `canary_cluster_count = 2`, `diff_changed_params = 6`, `diff_total_params = 24`, `canary_soak_window_min = 30` | `PASS` |
+| `v24-telemetry-event-triage-desk` | `CR-4` (`Dense Table & Recovery`) | 48-row log triage + 24-bucket burst chart + synced row inspector + working `Clear filters` empty state | `triage_total_events = 48`, `triage_critical_faults = 9`, `triage_affected_services = 4`, `triage_median_latency_ms = 148.0` | `PASS` |

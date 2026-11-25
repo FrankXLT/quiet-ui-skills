@@ -1,0 +1,71 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v26-tradespace-crossover-plot",
+  "plot_kind": "cartesian",
+  "metadata": {
+    "title": "36-Month Compute & Storage Cumulative Spend Trade-Space (Default 25% Growth · 60% Commit · 24 mo Floor)",
+    "description": "Cumulative capital trajectory over 36 months comparing Option A Pay-As-You-Go vs Option B Hybrid 3-Year Commit (Month 14 crossover below Option A at 25% growth, 60% commit, 24 months runway floor) and Option C Colocation CapEx against the 5.2 M USD budget ceiling.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-25T10:30:00Z",
+    "source": "Capital Planning Sensitivity Model (36-Month Horizon, Month 14 Break-Even)"
+  },
+  "test_environment": {
+    "dut_id": "INFRA-TRADESPACE-36M",
+    "standard_id": "GAO Cost Estimating & 36-Month TCO Model",
+    "calibration_id": "FIN-CAPEX-2026-Q4",
+    "sample_subgroup_size": 36
+  },
+  "axes": {
+    "x_axis": {"quantity": "mo", "unit": "mo", "quantity_calculus": "Evaluation Month (0-36)", "scale_type": "linear", "domain": [0.0, 36.0]},
+    "y_axis": {"quantity": "spend", "unit": "M USD", "quantity_calculus": "Cumulative Spend, C / M USD", "scale_type": "linear", "domain": [0.0, 6.0]}
+  },
+  "envelopes": [
+    {"id": "budget-ceiling", "type": "warning", "direction": "upper", "threshold_value": 5.2, "label": "Budget Ceiling (5.2 M USD)", "stroke_color": "var(--status-warn)", "stroke_style": "dashed"}
+  ],
+  "series": [
+    {
+      "id": "option-a-paygo",
+      "name": "Option A: Elastic Cloud Pay-As-You-Go",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--text-secondary)",
+      "data_points": [
+        {"x": 0.0, "y": 0.0}, {"x": 6.0, "y": 0.69}, {"x": 12.0, "y": 1.47},
+        {"x": 14.0, "y": 1.74}, {"x": 18.0, "y": 2.33}, {"x": 24.0, "y": 3.3},
+        {"x": 30.0, "y": 4.38}, {"x": 36.0, "y": 5.59}
+      ]
+    },
+    {
+      "id": "option-b-hybrid",
+      "name": "Option B: Hybrid 3-Yr Commit + Burst",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 0.0, "y": 0.41}, {"x": 6.0, "y": 0.94}, {"x": 12.0, "y": 1.52},
+        {"x": 14.0, "y": 1.73}, {"x": 18.0, "y": 2.18}, {"x": 24.0, "y": 2.91},
+        {"x": 30.0, "y": 3.72}, {"x": 36.0, "y": 4.64}
+      ]
+    },
+    {
+      "id": "option-c-colo",
+      "name": "Option C: Dedicated Colocation CapEx",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--status-warn)",
+      "data_points": [
+        {"x": 0.0, "y": 2.1}, {"x": 6.0, "y": 2.56}, {"x": 12.0, "y": 3.02},
+        {"x": 14.0, "y": 3.17}, {"x": 18.0, "y": 3.49}, {"x": 24.0, "y": 3.96},
+        {"x": 30.0, "y": 4.44}, {"x": 36.0, "y": 4.92}
+      ]
+    }
+  ],
+  "annotations": [
+    {"x": 14.0, "y": 1.73, "dx": 28, "dy": -24, "label": "Break-Even Crossover (Month 14)"}
+  ],
+  "parametric_legend": [
+    {"symbol": "g", "value": "25", "unit": "%"},
+    {"symbol": "c_res", "value": "60", "unit": "%"},
+    {"symbol": "R_floor", "value": "24", "unit": "mo"}
+  ]
+}

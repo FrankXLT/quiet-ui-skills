@@ -9,8 +9,10 @@ from typing import Any
 
 try:
     from world_directional_views import build_v19_html
+    from world_wave2_ops import WAVE2_WORLD02_VIEW_CFG, build_v23_html, build_v24_html
 except ImportError:
     from src.views.world_directional_views import build_v19_html
+    from src.views.world_wave2_ops import WAVE2_WORLD02_VIEW_CFG, build_v23_html, build_v24_html
 
 try:
     from world_common import (
@@ -312,6 +314,8 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         "v05-zero-trust-ato-spec": _build_v05_html(corpus, specs),
         "v06-ai-drift-and-lineage-ide": _build_v06_html(corpus, specs),
         "v19-product-roadmap-and-triage": build_v19_html(corpus, specs),
+        "v23-semantic-config-diff-review": build_v23_html(),
+        "v24-telemetry-event-triage-desk": build_v24_html(),
     }
     v06_status = [
         {"text": "1 DRIFT ALERT", "variant": "status", "state": "warn"},
@@ -368,4 +372,5 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
             "bias_replacement": "Critical-path Gantt timelines coupled directly to 38px blocker triage rows and +3.0 d parallel float counters.",
         },
     }
+    view_cfg.update(WAVE2_WORLD02_VIEW_CFG)
     return assemble_world_bundle(corpus, bp, "02 · Cloud Software & AI", view_cfg, html_map)

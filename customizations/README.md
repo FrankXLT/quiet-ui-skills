@@ -53,9 +53,9 @@ customizations/
 │   ├── styles/
 │   │   ├── quiet-ui-tokens.css        # MIT base design tokens
 │   │   └── overrides.css              # Custom :root variables & CSS rules
-│   └── showcase.html                  # Pre-compiled 22-view preview
-├── brand-starter/                     # Read-only 18-view product blueprint
-│   └── ...                            # Same anatomy with 18 product views
+│   └── showcase.html                  # Pre-compiled 26-view preview
+├── brand-starter/                     # Read-only 22-view product blueprint
+│   └── ...                            # Same anatomy with 22 product views
 └── scripts/                           # Build & verification toolchain
     ├── build_showcase.py              # Compiles showcase from customization.json
     └── verify_customization.py        # Validates WCAG contrast & geometric gates

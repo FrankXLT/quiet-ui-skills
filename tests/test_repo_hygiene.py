@@ -177,11 +177,11 @@ class TestRepoHygiene(unittest.TestCase):
                 errs.append(f"AGENTS.md missing foundation guide reference '{fnd.name}'")
         bench_html = (REPO_ROOT / "docs" / "bench" / "evidence-bench.html").read_text(encoding="utf-8")
         spec_cnt = len(re.findall(r'<article\b[^>]*class="[^"]*\bqe-specimen\b', bench_html))
-        if spec_cnt != 50:
-            errs.append(f"docs/bench/evidence-bench.html expected 50 specimens, found {spec_cnt}")
+        if spec_cnt != 53:
+            errs.append(f"docs/bench/evidence-bench.html expected 53 specimens, found {spec_cnt}")
         for doc_rel in ("README.md", "AGENTS.md", "llms.txt"):
-            if "50" not in (REPO_ROOT / doc_rel).read_text(encoding="utf-8"):
-                errs.append(f"{doc_rel}: missing 50 specimen count sync")
+            if "53" not in (REPO_ROOT / doc_rel).read_text(encoding="utf-8"):
+                errs.append(f"{doc_rel}: missing 53 specimen count sync")
         self.assertEqual(errs, [], "Docs contract failures:\n" + "\n".join(errs))
 
     def test_starter_customizations_and_immutability_gate(self) -> None:

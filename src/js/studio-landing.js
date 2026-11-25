@@ -156,7 +156,7 @@
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-morph-card"><span class="va-chip-prompt">&gt;</span><span>how_it_works_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>real_world_rules_</span></button>' +
       '<button type="button" class="va-landing-chip" data-open-examples="1"><span class="va-chip-prompt">&gt;</span><span>' + totalViews + '_live_examples_</span></button>' +
-      '<button type="button" class="va-landing-chip" data-open-components="1"><span class="va-chip-prompt">&gt;</span><span>50_building_blocks_</span></button>' +
+      '<button type="button" class="va-landing-chip" data-open-components="1"><span class="va-chip-prompt">&gt;</span><span>53_building_blocks_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>three_skills_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-pillars"><span class="va-chip-prompt">&gt;</span><span>one_minute_install_</span></button>' +
       '</div></section>' +
@@ -193,10 +193,10 @@
       '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Focused Skills and One-Minute Install">' +
       '<div class="va-landing-sec-hdr"><h2>Three Focused Skills &amp; One-Minute Install</h2><span>Works locally with Antigravity, Claude Code, Cursor, Codex, and Windsurf — zero extra packages required.</span></div>' +
       '<div class="va-pillars-grid"><div class="va-pillar-col"><h3>quiet-ui (Clean Layouts)</h3><p>Chooses sensible spacing, fonts, and menus for desktop apps, printed reports, wall boards, and phones — plus <code>audit_quiet_html.py</code> to catch layout bugs automatically.</p></div>' +
-      '<div class="va-pillar-col"><h3>quiet-evidence (Honest Charts)</h3><p>Builds 50 ready-to-use charts, timelines, tables, signal traces, and diagrams where labels stay readable across light and dark themes.</p></div>' +
+      '<div class="va-pillar-col"><h3>quiet-evidence (Honest Charts)</h3><p>Builds 53 ready-to-use charts, timelines, tables, signal traces, and diagrams where labels stay readable across light and dark themes.</p></div>' +
       '<div class="va-pillar-col"><h3>quiet-bridge (Plain Language)</h3><p>Tailors complex data for executives, engineers, operators, or students in clear everyday language without altering a single number.</p></div></div>' +
       '<div class="va-install-bar"><div class="va-install-code-row"><code>' + esc(installCmd) + '</code><button type="button" id="va-landing-copy-install" class="va-studio-btn">Copy</button>' +
-      '<span id="va-landing-copy-status" class="va-copy-status" role="status"></span></div><button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 50 Building Blocks &rarr;</button></div></section></div>';
+      '<span id="va-landing-copy-status" class="va-copy-status" role="status"></span></div><button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 53 Building Blocks &rarr;</button></div></section></div>';
   }
 
   function wireMorphControls(root) {

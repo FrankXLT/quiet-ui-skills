@@ -1,0 +1,76 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v25-subsea-osnr-plot",
+  "plot_kind": "cartesian",
+  "metadata": {
+    "title": "Trans-Shelf Subsea Trunk OSNR Margin Profile (0-640 km · 8 Repeaters)",
+    "description": "Distance-aligned optical signal-to-noise ratio (OSNR) link-margin curve from CLS-Alpha (0 km) across 8 repeaters and branching unit BU-03 (240 km) to CLS-Bravo (640 km), highlighting the 16.4 dB trough on Span S5 (362 km) above the 15.0 dB FEC floor.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-25T10:15:00Z",
+    "source": "Subsea Line Monitoring Coherent OTDR (CLS-Alpha to CLS-Bravo, 640 km, 8 repeaters)"
+  },
+  "test_environment": {
+    "dut_id": "CLS-TRANS-SHELF-640",
+    "standard_id": "ITU-T G.698.2 / Subsea Wet-Plant SLTE",
+    "calibration_id": "CAL-OTDR-SUBSEA-2026",
+    "ambient_temperature_c": 4.2,
+    "temperature_uncertainty_c": 0.3,
+    "sample_subgroup_size": 10
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "d_km",
+      "unit": "km",
+      "quantity_calculus": "Corridor Distance, d / km",
+      "scale_type": "linear",
+      "domain": [0.0, 640.0]
+    },
+    "y_axis": {
+      "quantity": "osnr_db",
+      "unit": "dB",
+      "quantity_calculus": "Received OSNR, OSNR / dB",
+      "scale_type": "linear",
+      "domain": [12.0, 28.0]
+    }
+  },
+  "envelopes": [
+    {
+      "id": "sd-fec-floor",
+      "type": "abort",
+      "direction": "lower",
+      "threshold_value": 15.0,
+      "label": "SD-FEC Limit (15.0 dB)",
+      "stroke_color": "var(--status-danger)",
+      "stroke_style": "dashed"
+    }
+  ],
+  "series": [
+    {
+      "id": "trunk-osnr",
+      "name": "Measured Channel OSNR (R1-R8)",
+      "epistemic_type": "discrete_measurement",
+      "marker_glyph": "circle",
+      "marker_color": "var(--accent-focal)",
+      "data_points": [
+        {"x": 0.0, "y": 26.0, "u_y": 0.2},
+        {"x": 68.0, "y": 24.2, "u_y": 0.2},
+        {"x": 140.0, "y": 22.9, "u_y": 0.2},
+        {"x": 210.0, "y": 21.8, "u_y": 0.3},
+        {"x": 240.0, "y": 20.9, "u_y": 0.3},
+        {"x": 302.0, "y": 20.1, "u_y": 0.3},
+        {"x": 362.0, "y": 16.4, "u_y": 0.4},
+        {"x": 440.0, "y": 17.3, "u_y": 0.3},
+        {"x": 515.0, "y": 17.8, "u_y": 0.3},
+        {"x": 640.0, "y": 18.2, "u_y": 0.3}
+      ]
+    }
+  ],
+  "annotations": [
+    {"x": 362.0, "y": 16.4, "dx": 28, "dy": -26, "label": "Span S5 Dip: 16.4 dB (+1.4 dB margin)"}
+  ],
+  "parametric_legend": [
+    {"symbol": "L_trunk", "value": "640", "unit": "km"},
+    {"symbol": "OSNR_min", "value": "16.4", "unit": "dB"},
+    {"symbol": "FEC_floor", "value": "15.0", "unit": "dB"}
+  ]
+}

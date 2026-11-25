@@ -1,0 +1,105 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:plot",
+  "id": "v24-telemetry-histogram-plot",
+  "plot_kind": "stacked_bar",
+  "metadata": {
+    "title": "Regional Checkout & Auth Incident Event Volume (48 Events · 4 Services · 148.0 ms Median)",
+    "description": "60-minute event volume binned across 24 2.5-minute intervals showing peak 9 critical faults during 14:20Z to 14:35Z across checkout-api, auth-gateway, token-signer, and tls-ingress (48 total events, median latency 148.0 ms).",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-25T15:00:00Z",
+    "source": "Regional Telemetry Collector (48 events, 14:00Z-15:00Z)"
+  },
+  "test_environment": {
+    "dut_id": "CHECKOUT-AUTH-MESH",
+    "standard_id": "OpenTelemetry Trace Triage (4 services)",
+    "ambient_temperature_c": 22.0,
+    "temperature_uncertainty_c": 0.5,
+    "sample_subgroup_size": 48
+  },
+  "axes": {
+    "x_axis": {
+      "quantity": "t_utc",
+      "unit": "UTC",
+      "quantity_calculus": "UTC Window Bucket (2.5 min steps)",
+      "scale_type": "category",
+      "categories": [
+        "14:00", "14:02", "14:05", "14:07", "14:10", "14:12", "14:15", "14:17",
+        "14:20", "14:22", "14:25", "14:27", "14:30", "14:32", "14:35", "14:37",
+        "14:40", "14:42", "14:45", "14:47", "14:50", "14:52", "14:55", "14:57"
+      ]
+    },
+    "y_axis": {
+      "quantity": "events",
+      "unit": "count",
+      "quantity_calculus": "Event Count / bucket",
+      "scale_type": "linear",
+      "domain": [0, 5]
+    }
+  },
+  "series": [
+    {
+      "id": "critical-faults",
+      "name": "Critical Faults (9)",
+      "series_type": "bar",
+      "stack": "triage",
+      "marker_color": "var(--status-danger)",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 0}, {"x": 3, "y": 0},
+        {"x": 4, "y": 0}, {"x": 5, "y": 0}, {"x": 6, "y": 0}, {"x": 7, "y": 0},
+        {"x": 8, "y": 2}, {"x": 9, "y": 2}, {"x": 10, "y": 2}, {"x": 11, "y": 1},
+        {"x": 12, "y": 1}, {"x": 13, "y": 1}, {"x": 14, "y": 0}, {"x": 15, "y": 0},
+        {"x": 16, "y": 0}, {"x": 17, "y": 0}, {"x": 18, "y": 0}, {"x": 19, "y": 0},
+        {"x": 20, "y": 0}, {"x": 21, "y": 0}, {"x": 22, "y": 0}, {"x": 23, "y": 0}
+      ]
+    },
+    {
+      "id": "warnings",
+      "name": "Warnings (14)",
+      "series_type": "bar",
+      "stack": "triage",
+      "marker_color": "var(--status-warn)",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0}, {"x": 1, "y": 1}, {"x": 2, "y": 0}, {"x": 3, "y": 1},
+        {"x": 4, "y": 0}, {"x": 5, "y": 1}, {"x": 6, "y": 1}, {"x": 7, "y": 1},
+        {"x": 8, "y": 1}, {"x": 9, "y": 2}, {"x": 10, "y": 1}, {"x": 11, "y": 1},
+        {"x": 12, "y": 1}, {"x": 13, "y": 1}, {"x": 14, "y": 1}, {"x": 15, "y": 0},
+        {"x": 16, "y": 1}, {"x": 17, "y": 0}, {"x": 18, "y": 0}, {"x": 19, "y": 0},
+        {"x": 20, "y": 0}, {"x": 21, "y": 0}, {"x": 22, "y": 0}, {"x": 23, "y": 0}
+      ]
+    },
+    {
+      "id": "auth-tls",
+      "name": "Auth & TLS (11)",
+      "series_type": "bar",
+      "stack": "triage",
+      "marker_color": "var(--accent-focal)",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 0}, {"x": 1, "y": 0}, {"x": 2, "y": 1}, {"x": 3, "y": 0},
+        {"x": 4, "y": 1}, {"x": 5, "y": 0}, {"x": 6, "y": 1}, {"x": 7, "y": 1},
+        {"x": 8, "y": 1}, {"x": 9, "y": 0}, {"x": 10, "y": 1}, {"x": 11, "y": 1},
+        {"x": 12, "y": 0}, {"x": 13, "y": 1}, {"x": 14, "y": 1}, {"x": 15, "y": 1},
+        {"x": 16, "y": 0}, {"x": 17, "y": 1}, {"x": 18, "y": 0}, {"x": 19, "y": 0},
+        {"x": 20, "y": 0}, {"x": 21, "y": 0}, {"x": 22, "y": 0}, {"x": 23, "y": 0}
+      ]
+    },
+    {
+      "id": "nominal",
+      "name": "Nominal (14)",
+      "series_type": "bar",
+      "stack": "triage",
+      "marker_color": "var(--text-muted)",
+      "epistemic_type": "discrete_measurement",
+      "data_points": [
+        {"x": 0, "y": 1}, {"x": 1, "y": 1}, {"x": 2, "y": 0}, {"x": 3, "y": 1},
+        {"x": 4, "y": 0}, {"x": 5, "y": 1}, {"x": 6, "y": 0}, {"x": 7, "y": 0},
+        {"x": 8, "y": 0}, {"x": 9, "y": 0}, {"x": 10, "y": 0}, {"x": 11, "y": 0},
+        {"x": 12, "y": 0}, {"x": 13, "y": 0}, {"x": 14, "y": 0}, {"x": 15, "y": 1},
+        {"x": 16, "y": 1}, {"x": 17, "y": 1}, {"x": 18, "y": 1}, {"x": 19, "y": 1},
+        {"x": 20, "y": 2}, {"x": 21, "y": 1}, {"x": 22, "y": 1}, {"x": 23, "y": 1}
+      ]
+    }
+  ]
+}

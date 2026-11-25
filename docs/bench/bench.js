@@ -413,6 +413,7 @@
     bindBenchInteractiveControls();
     applyFilters();
     if (window.QuietEChartsAdapter) window.QuietEChartsAdapter.boot(document);
+    if (window.QuietWave2Runtime) window.QuietWave2Runtime.boot(document);
   }
 
   if (document.readyState === 'loading') {

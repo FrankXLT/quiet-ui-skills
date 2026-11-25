@@ -411,6 +411,7 @@
         });
       }
     }
+    if (global.QuietWave2Runtime) global.QuietWave2Runtime.boot(doc);
   }
 
   global.QuietWorlds02To05Runtime = { boot: wireWorlds02To05 };

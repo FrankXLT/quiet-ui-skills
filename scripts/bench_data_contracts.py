@@ -68,6 +68,21 @@ UI_BRIDGE_CONTRACTS: dict[str, tuple[str, str, str]] = {
         "siblings[].{label, val}, initialMode (auto|ack), ?alarm= override",
         "Honor prefers-reduced-motion: reduce (steady double frame), pause elapsed timers on document.hidden, and force Phase 4 in @media print.",
     ),
+    "ui-semantic-diff-gate": (
+        "diffRows[].{key, baseline, candidate, delta, blastRadius, riskClass}, clustersTotal",
+        "contextKeys[] (unchanged context toggle), canaryTrafficPct",
+        "Disable global confirmation until canary staging runs; keep 1-click revert and undo toast active across promotion.",
+    ),
+    "ui-triage-log-inspector": (
+        "events[].{utcTs, service, spanId, traceId, durationMs, severity, message}, bucketTotals[]",
+        "upstreamCaller, statusCode, selectedSpanId",
+        "Expose matching row count and 1-click Clear filters recovery inside a non-empty zero-match panel whenever search returns 0 rows.",
+    ),
+    "ui-constrained-tradespace": (
+        "growthPct (10..50), commitPct (20..80), runwayFloorMonths (18..36), horizonMonths (36)",
+        "budgetCeilingMusd (5.20), coloCapexMusd (2.10)",
+        "Block capital options whose upfront outlay drops cash runway below floor; recompute crossover marker cleanly on every input event.",
+    ),
 }
 
 

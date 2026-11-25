@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.7 — Standalone 50-Specimen 3-Pillar Component Library Builder."""
+"""Quiet UI v9.7 — Standalone 53-Specimen 3-Pillar Component Library Builder."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from bench_cyclical_specimen import compile_cyclical_whisker_specimen  # noqa: E
 from bench_data_contracts import contract_for_evidence_spec  # noqa: E402
 from bench_forms_specimen import compile_forms_specimen  # noqa: E402
 from bench_ui_specimens import compile_ui_bridge_specimens  # noqa: E402
+from bench_wave2_specimens import compile_wave2_specimens  # noqa: E402
 from compile_evidence import compile_spec, detect_modality  # noqa: E402
 from compilers.tokens_and_scales import esc  # noqa: E402
 
@@ -68,6 +69,7 @@ def _compile_bench_cards(spec_dir: Path) -> str:
     cards_html.append(compile_cyclical_whisker_specimen())
     cards_html.append(compile_forms_specimen())
     cards_html.append(compile_alarm_lifecycle_specimen())
+    cards_html.append(compile_wave2_specimens())
     return "".join(cards_html)
 
 
@@ -89,6 +91,7 @@ def _bundle_bench_css() -> str:
         "src/css/17-editorial-research-brief.css",
         "src/css/18-editorial-print-rules.css",
         "src/css/19-alarm-lifecycle.css",
+        "src/css/20-wave2-archetypes.css",
     ):
         fpath = REPO_ROOT / rel
         if fpath.exists():
@@ -120,6 +123,7 @@ def _bundle_bench_js() -> str:
             "src/js/echarts-quiet-adapter.js",
             "src/js/quiet-alarm-trace.js",
             "src/js/quiet-alarm-lifecycle.js",
+            "src/js/quiet-wave2-interactions.js",
             "docs/bench/bench.js",
         )
         if (REPO_ROOT / rel).exists()
@@ -137,7 +141,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.7 — Component Library (50 Building Blocks)</title>
+  <title>Quiet UI v9.7 — Component Library (53 Building Blocks)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 {css_bundle}
@@ -149,7 +153,7 @@ def _render_bench_shell(cards_markup: str) -> str:
     <div class="qe-topbar-inner">
       <div class="qe-brand">
         <span class="va-kicker">QUIET UI v9.7 · READY-TO-USE BUILDING BLOCKS</span>
-        <h1>Component Library (50 Building Blocks · 4 Themes)</h1>
+        <h1>Component Library (53 Building Blocks · 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">
         <div class="qe-ctrl-group">
@@ -196,10 +200,10 @@ def _render_bench_shell(cards_markup: str) -> str:
   </header>
   <main id="bench-main" class="qe-bench-main" tabindex="-1">
     <section class="qe-bench-summary" aria-label="Component Library Overview">
-      <div><strong>50 Ready-to-Use Building Blocks</strong> · Clean forms, helpful empty-state messages, undo notifications, menus, summary cards, date pickers, readable charts, timelines, signal graphs, 4-phase alarm lifecycles, and system diagrams — each tested across all 4 light, paper, and dark themes.</div>
-      <span id="bench-visible-count" class="qe-visible-count va-nums">50 of 50 specimens visible</span>
+      <div><strong>53 Ready-to-Use Building Blocks</strong> · Clean forms, helpful empty-state messages, undo notifications, menus, summary cards, date pickers, readable charts, timelines, signal graphs, 4-phase alarm lifecycles, semantic diffs, triage log streams, and system diagrams — each tested across all 4 light, paper, and dark themes.</div>
+      <span id="bench-visible-count" class="qe-visible-count va-nums">53 of 53 specimens visible</span>
     </section>
-    <section class="qe-bench-grid" aria-label="50 Building Blocks">{cards_markup}</section>
+    <section class="qe-bench-grid" aria-label="53 Building Blocks">{cards_markup}</section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script id="qe-bench-runtime">
@@ -211,13 +215,13 @@ def _render_bench_shell(cards_markup: str) -> str:
 
 
 def render_bench_html() -> str:
-    """Compile all 50 3-pillar component specimens and return the full HTML string."""
+    """Compile all 53 3-pillar component specimens and return the full HTML string."""
     cards_markup = _compile_bench_cards(REPO_ROOT / "docs" / "bench" / "specimens")
     return _render_bench_shell(cards_markup)
 
 
 def build_bench(out_path: Path | None = None) -> Path:
-    """Compile all 50 3-pillar component specimens into docs/bench/evidence-bench.html."""
+    """Compile all 53 3-pillar component specimens into docs/bench/evidence-bench.html."""
     target = out_path or (REPO_ROOT / "docs" / "bench" / "evidence-bench.html")
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(render_bench_html(), encoding="utf-8")
@@ -226,4 +230,4 @@ def build_bench(out_path: Path | None = None) -> Path:
 
 if __name__ == "__main__":
     written = build_bench()
-    print(f"[OK] Built 3-Pillar Component Library (50 specimens) -> {written}")
+    print(f"[OK] Built 3-Pillar Component Library (53 specimens) -> {written}")

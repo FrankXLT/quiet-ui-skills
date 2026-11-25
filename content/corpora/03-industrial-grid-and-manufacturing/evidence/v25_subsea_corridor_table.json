@@ -1,0 +1,31 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v25-subsea-corridor-table",
+  "metadata": {
+    "title": "Trans-Shelf Subsea Repeater & Span Telemetry Ledger (640 km · 8 Repeaters · 1.12 A Line Feed)",
+    "description": "10-row repeater and span table conserved across bathymetry corridor and OSNR margin curve, tracking 4.8 dB excess attenuation on Span S5 (362 km) and 16.4 dB minimum OSNR under 1.12 A constant-current feed.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-25T10:15:00Z"
+  },
+  "columns": [
+    {"key": "node_span", "label": "Node / Span", "data_type": "string", "priority": 1},
+    {"key": "km", "label": "Dist. (km)", "unit": "km", "quantity_calculus": "d / km", "data_type": "numeric", "priority": 1},
+    {"key": "depth_m", "label": "Depth (m)", "unit": "m", "quantity_calculus": "z / m", "data_type": "numeric", "priority": 2},
+    {"key": "pump_ma", "label": "Pump (mA)", "unit": "mA", "quantity_calculus": "I_p / mA", "data_type": "numeric", "priority": 2},
+    {"key": "loss_db", "label": "Loss (dB)", "unit": "dB", "quantity_calculus": "A / dB", "data_type": "numeric", "priority": 1},
+    {"key": "osnr_db", "label": "OSNR (dB)", "unit": "dB", "quantity_calculus": "OSNR / dB", "data_type": "numeric", "priority": 1},
+    {"key": "status", "label": "Status", "data_type": "status", "priority": 1}
+  ],
+  "rows": [
+    {"node_span": "CLS-Alpha Landing", "km": 0, "depth_m": 0, "pump_ma": 1120, "loss_db": 0.4, "osnr_db": 26.0, "status": "NOMINAL"},
+    {"node_span": "Span S1 / Repeater R1", "km": 68, "depth_m": -110, "pump_ma": 420, "loss_db": 13.6, "osnr_db": 24.2, "status": "NOMINAL"},
+    {"node_span": "Span S2 / Repeater R2", "km": 140, "depth_m": -180, "pump_ma": 430, "loss_db": 14.1, "osnr_db": 22.9, "status": "NOMINAL"},
+    {"node_span": "Span S3 / Repeater R3", "km": 210, "depth_m": -420, "loss_db": 13.8, "pump_ma": 425, "osnr_db": 21.8, "status": "NOMINAL"},
+    {"node_span": "Branch Unit BU-03", "km": 240, "depth_m": -760, "pump_ma": 390, "loss_db": 6.1, "osnr_db": 20.9, "status": "NOMINAL"},
+    {"node_span": "Span S4 / Repeater R4", "km": 302, "depth_m": -1180, "pump_ma": 435, "loss_db": 14.4, "osnr_db": 20.1, "status": "NOMINAL"},
+    {"node_span": "Span S5 (4.8 dB Fault) / R5", "km": 362, "depth_m": -1420, "pump_ma": 510, "loss_db": 19.2, "osnr_db": 16.4, "status": "WARN", "_row_status": "warn"},
+    {"node_span": "Span S6 / Repeater R6", "km": 440, "depth_m": -2940, "pump_ma": 440, "loss_db": 14.2, "osnr_db": 17.3, "status": "NOMINAL"},
+    {"node_span": "Span S7 / Repeater R7", "km": 515, "depth_m": -3680, "pump_ma": 438, "loss_db": 14.0, "osnr_db": 17.8, "status": "NOMINAL"},
+    {"node_span": "Span S8 / R8 -> CLS-Bravo (640 km, 1.12 A, 8 Rpts)", "km": 640, "depth_m": 0, "pump_ma": 432, "loss_db": 13.9, "osnr_db": 18.2, "status": "NOMINAL"}
+  ]
+}

@@ -340,9 +340,9 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context
 
 ---
 
-## 10. Studio Portal Navigation & Stage Interaction Contract (`v9.6.0`)
+## 10. Studio Portal Navigation & Stage Interaction Contract (`v9.7.0`)
 
-1. **Unified `<optgroup>` Domain + View Picker (`#va-view-select`)**: The Studio topbar consolidates domain and example selection inside a single `<optgroup>` selector paired with seamless cross-domain `<` and `>` stepping (`1 / 22`..`22 / 22`), resetting per-view curated form-factor and theme presets on every view switch (`<`, `>`, or picker change).
+1. **Unified `<optgroup>` Domain + View Picker (`#va-view-select`)**: The Studio topbar consolidates domain and example selection inside a single `<optgroup>` selector paired with seamless cross-domain `<` and `>` stepping (`1 / 26`..`26 / 26`), resetting per-view curated form-factor and theme presets on every view switch (`<`, `>`, or picker change).
 2. **Viewport-Pinned Sticky Rail & Stage-Only Scroll (`N1` / `N3`)**: On desktop (`>= 1100px`), `.va-shell-rail` is clamped to `calc(100dvh - var(--va-topbar-sticky-h, 0px))` with an internal `.va-rail-scroll` list and pinned `.va-rail-footer`. Anchor clicks use explicit stage `window.scrollTo` offset math (`spotlightAnchor`) instead of `scrollIntoView` so neither `.va-shell-topbar` nor `.va-shell-rail` ever shifts off-screen.
 3. **Device Frame Presets & Full-Bleed Appliances (`Tablet` / `v08` / `v15`–`v17`)**: Portal framing supports `1080p`, `Tablet` (`1280×800` anodized bezel for `v08` interactive Plant Test & HMI Display), `Paper`, `Mobile`, and `Fill`. Optical HUD (`v15`), maritime smart-glass visor with default-on peripheral AR channel markers (`v16`), and museum-matted living-room art frame (`v17`) bleed `100%` edge-to-edge without outer white stage margins.
 4. **Overview Standards Ledger (`#va-landing-standards`)**: The Studio `Overview` landing documents the 4 foundational authorities (`NIST SP 811` / `ISO 80000`, `ISA-101` / `NUREG-0700`, `FDA IEC 62366` / `NASA-STD-3001`, and `SAE J1939` / `ITU-T Z.120` / `NIST AI RMF 100-1`).
@@ -370,4 +370,13 @@ Multi-panel operational consoles (`v08` Microgrid Quad, `v01` ICU Console, `v04`
 | **4. Acknowledged Diagnostic** | Click `Acknowledge Alarm` (`ack`; `v07` default) | Flashing halts immediately; restores exact balanced console layout smoothly while latching steady fault highlight + **`Replay Breach`** control. | `@media print` (`M1`) always forces Phase 4 steady diagnostics (`display: none` on `.va-alarm-takeover`); timers pause on `document.hidden`; deterministic `?alarm=` hooks prevent test races. |
 
 - **Target Channel Card Binding & Synchronized Page Status Pill**: Bind `[data-alarm-fault-target="1"]` strictly to one live telemetry card (`v08` Q2 Frequency, `v01` MAP Card 1, `v04` Latency Tile 1, `v07` Frequency Card 2) and synchronize `[data-alarm-header-pill]` + N3 topbar metrics identically (`ALL SYSTEMS NOMINAL` -> `APPROACHING LIMIT` -> `1 UNACK ALARM` -> `1 LATCHED FAULT`), paired with **Single Control Home** (`v02`, `v05`, `v07`, `v09`, `v10`, `v19`, `v20` keep chip bars inline without duplicating `Interactive Controls` in the left rail).
+
+---
+
+## 13. Wave 2 Studio Archetypes (`v23–v26` & Specimens `51–53`, `v9.7.0`)
+
+1. **Semantic Config Diff Review (`v23`, Specimen `51`)**: Evaluates `r41` vs `r42` across `14` edge clusters (`6 of 24` changed, `2/14 = 14.3%` canary, `30 min` soak) with Single Control Home filters, unchanged context key toggle, breaking pinning callout, and two-step reversible rollout gate + `r41` undo toast.
+2. **High-Row Telemetry Triage Desk (`v24`, Specimen `52`)**: Binds `48` events (`9` critical burst `14:20Z–14:35Z`, `14` warnings, `11` auth/TLS, `14` nominal; median `148.0 ms`) across a `24`-bucket histogram, live search bar, split-pane table + synchronized Right-Side Row Inspector, and `Clear filters` zero-match recovery.
+3. **Subsea Corridor & Link-Margin Schematic (`v25`)**: Synchronizes `0–640 km` 2D bathymetry (`CLS-Alpha` to `CLS-Bravo`, `8` repeaters, `BU-03` @ `240 km`, `Span S5` `+4.8 dB` @ `362 km`) pixel-for-pixel above the distance-locked OSNR profile (`16.4 dB` min vs `15.0 dB` SD-FEC floor) and `1.12 A` repeater table.
+4. **Constrained Trade-Space Calculator (`v26`, Specimen `53`)**: Coupled sliders (`Growth 10–50%`, `Commit 20–80%`, `Runway Floor 18–36 mo`) dynamically recompute 36-month Option A/B/C curves, vertical break-even crossover marker (`Month 14`), 10-row comparison ledger, and feasibility disposition (`5.2 M USD` budget cap).
 

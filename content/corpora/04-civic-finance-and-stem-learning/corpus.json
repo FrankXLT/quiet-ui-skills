@@ -158,7 +158,13 @@
       "value": 20.0,
       "unit": "%",
       "description": "Null-hypothesis equal-chance intergenerational quintile mobility share"
-    }
+    },
+    "tradespace_default_growth_pct": {"value": 25, "unit": "%", "description": "Default annual workload growth sensitivity"},
+    "tradespace_default_commit_pct": {"value": 60, "unit": "%", "description": "Default reserved 3-year commit coverage"},
+    "tradespace_runway_floor_months": {"value": 24, "unit": "mo", "description": "Minimum cash runway policy floor"},
+    "tradespace_crossover_month": {"value": 14, "unit": "mo", "description": "Break-even crossover month for Hybrid vs PayGo"},
+    "tradespace_horizon_months": {"value": 36, "unit": "mo", "description": "Total capital planning evaluation horizon"},
+    "tradespace_budget_ceiling_musd": {"value": 5.2, "unit": "M USD", "description": "36-month capital expenditure budget ceiling"}
   },
   "evidence_bindings": [
     {
@@ -241,7 +247,8 @@
         "real_income_growth_wy_pct",
         "equal_chance_mobility_pct"
       ]
-    }
+    },
+    {"evidence_file": "evidence/v26_tradespace_crossover_plot.json", "metric_ids": ["tradespace_default_growth_pct", "tradespace_default_commit_pct", "tradespace_runway_floor_months", "tradespace_crossover_month", "tradespace_horizon_months", "tradespace_budget_ceiling_musd"]}
   ],
   "views": [
     {
@@ -399,6 +406,21 @@
         "primary_margin": "31% US Grade 4 proficiency (Maryland 35%, Wyoming 36%) paired with $74,580 US median income (+2.4% real growth) vs 20.0% (0.0 pp) neutral baseline",
         "bounded_action": "Publish Path A fluid journalistic article on full-canvas N0 layout paired with collision-free Paper Print Sheet from conserved census and NAEP files."
       }
+    },
+    {
+      "view_id": "v26-constrained-trade-space-calculator",
+      "title": "Constrained Capital Trade-Space & 36-Month Runway Calculator",
+      "domain_cluster": "Civic Finance & Capital Planning",
+      "presenter": "Financial Systems Architect",
+      "audience": "Executive & Treasury Committee",
+      "lenses": ["Program Manager", "Discipline Engineer"],
+      "tempos": ["T2"],
+      "mediums": ["M3"],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": ["N2"],
+      "rigor_level": "L2",
+      "evidence_refs": ["evidence/v26_tradespace_crossover_plot.json"],
+      "decision_gate": {"status": "NOMINAL", "primary_margin": "Option B Hybrid 3-Yr Commit saves $0.95 M vs PayGo over 36 mo with Month 14 break-even crossover and >= 24 mo runway floor", "bounded_action": "Approve Option B 60% reserved commit coverage below the 5.2 M USD 36-month capital ceiling while protecting the 24-month cash runway."}
     }
   ]
 }

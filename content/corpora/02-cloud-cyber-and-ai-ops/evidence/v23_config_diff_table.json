@@ -1,0 +1,26 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v23-config-diff-table",
+  "metadata": {
+    "title": "Edge mTLS & Rate-Limit Policy Diff (Baseline r41 vs Candidate r42 across 14 Clusters)",
+    "description": "Structured semantic diff evaluating 6 changed parameters out of 24 across 14 edge clusters with 2 canary clusters (14.3% traffic), 30 min soak gate, and 1-click r41 rollback readiness.",
+    "rigor_level": "L2",
+    "timestamp_utc": "2026-11-25T10:00:00Z"
+  },
+  "columns": [
+    {"key": "param_key", "label": "Parameter Key", "data_type": "string", "priority": 1},
+    {"key": "baseline_r41", "label": "Baseline r41", "data_type": "string", "priority": 1},
+    {"key": "candidate_r42", "label": "Candidate r42", "data_type": "string", "priority": 1},
+    {"key": "delta_impact", "label": "Signed Delta / Policy Impact", "data_type": "string", "priority": 1},
+    {"key": "clusters", "label": "Affected Clusters", "data_type": "string", "priority": 2},
+    {"key": "risk_level", "label": "Risk Classification", "data_type": "status", "priority": 1}
+  ],
+  "rows": [
+    {"param_key": "mtls.client_cert_pinning", "baseline_r41": "optional_ca", "candidate_r42": "strict_spki_pin", "delta_impact": "Drops unpinned legacy peers (Preflight check required)", "clusters": "2 canary -> 14 total (14.3% first wave)", "risk_level": "BREAKING", "_row_status": "danger"},
+    {"param_key": "tls.min_version", "baseline_r41": "TLSv1.2", "candidate_r42": "TLSv1.3", "delta_impact": "Removes RSA key-exchange ciphers (+1 revision)", "clusters": "14 / 14 (30 min soak)", "risk_level": "MODERATE", "_row_status": "warn"},
+    {"param_key": "ingress.header_sanitization", "baseline_r41": "permissive", "candidate_r42": "strict_rfc9110", "delta_impact": "Rejects duplicate Host/TE smuggling frames", "clusters": "14 / 14", "risk_level": "LOW", "_row_status": "nominal"},
+    {"param_key": "ratelimit.burst_rps", "baseline_r41": "450 req/s", "candidate_r42": "600 req/s", "delta_impact": "+150 req/s (+33.3% burst headroom)", "clusters": "2 / 14 canary (24 total keys checked)", "risk_level": "LOW", "_row_status": "nominal"},
+    {"param_key": "upstream.connect_timeout_ms", "baseline_r41": "2500 ms", "candidate_r42": "1200 ms", "delta_impact": "-1300 ms (-52.0% faster upstream failover)", "clusters": "2 / 14 canary (6 changed of 24)", "risk_level": "MODERATE", "_row_status": "warn"},
+    {"param_key": "conn_pool.max_idle_conns", "baseline_r41": "256", "candidate_r42": "384", "delta_impact": "+128 warm sockets (+50.0% reuse)", "clusters": "14 / 14", "risk_level": "LOW", "_row_status": "nominal"}
+  ]
+}

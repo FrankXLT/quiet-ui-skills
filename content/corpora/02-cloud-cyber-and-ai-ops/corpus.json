@@ -26,9 +26,29 @@
     "sample_count": 1200,
     "roadmap_float_days": 3.0,
     "tracked_blockers": 4,
-    "ood_routed_samples": 10
+    "ood_routed_samples": 10,
+    "edge_cluster_total": 14,
+    "canary_cluster_count": 2,
+    "canary_traffic_pct": 14.3,
+    "diff_changed_params": 6,
+    "diff_total_params": 24,
+    "canary_soak_window_min": 30,
+    "triage_total_events": 48,
+    "triage_critical_faults": 9,
+    "triage_affected_services": 4,
+    "triage_median_latency_ms": 148.0
   },
   "evidence_bindings": {
+    "edge_cluster_total": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.metadata.description", "unit": "1"},
+    "canary_cluster_count": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.metadata.description", "unit": "1"},
+    "canary_traffic_pct": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.rows[0].clusters", "unit": "%"},
+    "diff_changed_params": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.rows.length", "unit": "1"},
+    "diff_total_params": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.rows[3].clusters", "unit": "1"},
+    "canary_soak_window_min": {"file": "evidence/v23_config_diff_table.json", "json_path": "$.rows[1].clusters", "unit": "min"},
+    "triage_total_events": {"file": "evidence/v24_telemetry_histogram_plot.json", "json_path": "$.test_environment.sample_subgroup_size", "unit": "1"},
+    "triage_critical_faults": {"file": "evidence/v24_telemetry_histogram_plot.json", "json_path": "$.series[0].name", "unit": "1"},
+    "triage_affected_services": {"file": "evidence/v24_telemetry_histogram_plot.json", "json_path": "$.test_environment.standard_id", "unit": "1"},
+    "triage_median_latency_ms": {"file": "evidence/v24_telemetry_histogram_plot.json", "json_path": "$.metadata.description", "unit": "ms"},
     "ood_routed_samples": {
       "file": "evidence/v06_ood_drift_samples_table.json",
       "json_path": "$.rows.length",
@@ -244,6 +264,34 @@
         "evidence/v19_release_roadmap_gantt.json"
       ],
       "actionable_disposition": "Hold GA cutover until 4 tracked launch blockers clear: patch 12.0 s OTel gap, restore p99 <= 250.0 ms, enforce 0x8003B104 policy, preserving +3.0 d security float."
+    },
+    {
+      "id": "v23-semantic-config-diff-review",
+      "title": "Edge mTLS & Rate-Limit Policy Diff Review",
+      "presenter": "Platform Security Lead",
+      "audience": "Change Advisory Board & SREs",
+      "lenses": ["Project / Systems Engineer", "Program Manager"],
+      "tempos": ["T2"],
+      "mediums": ["M3"],
+      "chromatic_budget": "Decision Contrast",
+      "nav_shells": ["N2"],
+      "rigor_level": "L2",
+      "evidence_refs": ["evidence/v23_config_diff_table.json"],
+      "actionable_disposition": "Stage r42 across 2 canary clusters (14.3% traffic) for 30 min soak with 1-click r41 revert after verifying strict_spki_pin preflight."
+    },
+    {
+      "id": "v24-telemetry-event-triage-desk",
+      "title": "High-Row Checkout & Auth Event Triage Desk",
+      "presenter": "Incident Commander",
+      "audience": "On-Call Responder",
+      "lenses": ["Technician / Operator", "Discipline Engineer"],
+      "tempos": ["T1"],
+      "mediums": ["M3"],
+      "chromatic_budget": "Quiet Cockpit",
+      "nav_shells": ["N2"],
+      "rigor_level": "L2",
+      "evidence_refs": ["evidence/v24_telemetry_histogram_plot.json"],
+      "actionable_disposition": "Isolate 9 critical faults clustered between 14:20Z and 14:35Z across 4 services (median 148.0 ms) via live inspector and trace correlation copy."
     }
   ]
 }

@@ -28,6 +28,10 @@
     'v20-student-capstone-lab-report': { vp: '1056x1368', medium: 'm1', theme: 'paper', preset_label: 'Paper Sheet' },
     'v21-field-anomaly-escalation-tsn': { vp: '390x844', medium: 'auto', theme: 'white', preset_label: 'Mobile' },
     'v22-reading-and-mobility-brief': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v23-semantic-config-diff-review': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v24-telemetry-event-triage-desk': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v25-subsea-corridor-and-link-margin': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
+    'v26-constrained-trade-space-calculator': { vp: '1920x1080', medium: 'auto', theme: 'white', preset_label: '1080p Screen' },
   };
 
   function esc(val) {

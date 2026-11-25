@@ -11,14 +11,14 @@
 2. **`quiet-evidence` (Metrology, Clean-Room SVG Compilers & CJK-Safe `QuietSvgLayout`):** Deterministically compiles calibrated waveforms, analytical & calibration plots, cyclical Min–Avg–Max whiskers (`buildCyclicalWhiskerOption`), waterfalls, 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics—with East-Asian wide (`1.75x`) & combining-mark gutter math (`visual_char_units` / `QuietSvgLayout.visualUnits`) across SVG and ECharts.
 3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation, persistent `.quiet-ui.md` intake memory, and explicit `Warming up — N samples collected` disclosures on thin buffers.
 
-![Quiet UI v9.6 — 6-Domain Studio, 22 Views & 50-Component Suite](docs/assets/quiet-ui-hero.png)
+![Quiet UI v9.7 — 6-Domain Studio, 26 Views & 53-Component Suite](docs/assets/quiet-ui-hero.png)
 
 ---
 
 ## Quick Start & Installation
 
-- **Live v9.6 Interactive Studio (`6 Domains · 22 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
-- **3-Pillar Component Library (`50 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, US 51-hex tile maps, ranked directional arrow dumbbells, paired subgroup bars, dual count/% slopegraphs, diverging %/$ tables (`Chart | Table` & `Copy for AI`), forms & zero-states, 4-phase alarm lifecycles, systems schematics, and decision bridges.
+- **Live v9.7 Interactive Studio (`6 Domains · 26 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
+- **3-Pillar Component Library (`53 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, US 51-hex tile maps, ranked directional arrow dumbbells, paired subgroup bars, dual count/% slopegraphs, diverging %/$ tables (`Chart | Table` & `Copy for AI`), forms & zero-states, 4-phase alarm lifecycles, Wave 2 Semantic Config Diff Gate, High-Row Telemetry Triage Inspector, Trade-Space Solver, systems schematics, and decision bridges.
 - **Agent Onboarding (`AGENTS.md` / `CLAUDE.md`):** Read [`AGENTS.md`](AGENTS.md) for single-command rebuilds (`scripts/build_all.py`), portable auditor usage (`audit_quiet_html.py`), and repository invariants.
 - **Deep-Link Any State:** Append `?mode=examples&domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
 
@@ -43,8 +43,8 @@ One manifest (`customizations/<name>/customization.json`) skins **both** your UI
 
 | Starter Blueprint | Scope | Enabled Views | Optical & Gallery Backplates | Target Use Cases |
 | :--- | :---: | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial | All **22 Views** (6 Domains) | All 7 PD/CC0 & NASA photos | Personal research briefs, telemetry consoles, Home Assistant walls, optical HUDs, maritime glass. |
-| **`brand-starter`** | Team & Product | **18 Views** (Domains 01–05) | Omitted | Enterprise software products, SaaS dashboards, public data briefs & systems schematics. |
+| **`personal-starter`** | Personal & Spatial | All **26 Views** (6 Domains) | All 7 PD/CC0 & NASA photos | Personal research briefs, telemetry consoles, Home Assistant walls, optical HUDs, maritime glass. |
+| **`brand-starter`** | Team & Product | **22 Views** (Domains 01–05) | Omitted | Enterprise software products, SaaS dashboards, public data briefs & systems schematics. |
 
 ```text
 I want to customize Quiet UI for [personal / brand] use in customizations/<my-name>/.
@@ -72,7 +72,7 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 ## 1. `quiet-ui`: 7 Delivery Mediums & Continuum Archetypes
 
-All 7 delivery mediums (`M1–M7`) and all 22 domain views default to **Pure White (`data-theme="white"`)** and switch live across **Warm Paper (`paper`)**, **Warm Sepia Dark (`dark-paper`)**, and **Carbon Dark (`dark`)**:
+All 7 delivery mediums (`M1–M7`) and all 26 domain views default to **Pure White (`data-theme="white"`)** and switch live across **Warm Paper (`paper`)**, **Warm Sepia Dark (`dark-paper`)**, and **Carbon Dark (`dark`)**:
 
 | # | Tier ID | Structural Archetype | Box Weight | Default Nav | Primary Use Cases |
 | :-: | :--- | :--- | :---: | :---: | :--- |
@@ -102,7 +102,7 @@ All 7 delivery mediums (`M1–M7`) and all 22 domain views default to **Pure Whi
 python3 -B scripts/build_all.py
 python3 -B scripts/build_all.py --check
 
-# 2. Run zero-dependency suite (compilers, 204 corpus checks, portability, hygiene)
+# 2. Run zero-dependency suite (compilers, 261 corpus checks, portability, hygiene)
 QUIET_SKIP_CDP=1 python3 -B -m unittest discover -s tests -v
 
 # 3. Run full Headless Chrome CDP visual gates (requires selenium + pillow)
@@ -116,20 +116,20 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context
 ```text
 quiet-ui-skills/
 ├── AGENTS.md / CLAUDE.md                          # Agent-native build, test & invariant contracts
-├── plugin.json                                      # Native Antigravity plugin manifest (v9.6.0)
+├── plugin.json                                      # Native Antigravity plugin manifest (v9.7.0)
 ├── pyproject.toml                                   # PEP 621 zero-runtime-dep metadata & [dev] extras
-├── quiet-ui-showcase.html                           # Unified 6-domain 22-view Quiet UI v9.6 Studio
+├── quiet-ui-showcase.html                           # Unified 6-domain 26-view Quiet UI v9.7 Studio
 ├── assets/logo.svg                                  # High-contrast square plugin icon
 ├── LICENSE / NOTICE / TRADEMARKS.md                 # Apache 2.0 Core 3-Pillar + MIT Customizations & Output
 ├── THIRD_PARTY_LICENSES.md                          # Clean-room zero third-party runtime & Apache ECharts license notice
 ├── install.sh                                       # 1-command plugin & 3-pillar cross-agent installer
 ├── tokens/quiet-ui-tokens.css                       # Standalone 4-theme CSS design tokens (MIT)
-├── src/                                             # Flattened CSS (00–18), JS runtime & 22-view generators
+├── src/                                             # Flattened CSS (00–20), JS runtime & 26-view generators
 ├── scripts/                                         # Canonical builders (build_all.py, build_showcase.py, serve_showcase.py)
 ├── tests/                                           # Unified stdlib & Chrome CDP visual regression suite
 ├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
-├── docs/bench/evidence-bench.html                   # 50-specimen deterministic 3-Pillar Component Library
-├── customizations/                                  # Personal (22-view) & Brand (18-view) starter kits (MIT)
+├── docs/bench/evidence-bench.html                   # 53-specimen deterministic 3-Pillar Component Library
+├── customizations/                                  # Personal (26-view) & Brand (22-view) starter kits (MIT)
 └── skills/
     ├── quiet-ui/                                    # Pillar 1: 7 mediums, forms/zero-states, .quiet-ui.md & audit_quiet_html.py
     ├── quiet-evidence/                              # Pillar 2: Calibrated compilers, portable assets & CJK-safe QuietSvgLayout
