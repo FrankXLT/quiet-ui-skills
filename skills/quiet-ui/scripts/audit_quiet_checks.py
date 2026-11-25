@@ -8,14 +8,17 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
-_SCRIPT_DIR = str(Path(__file__).resolve().parent)
-if _SCRIPT_DIR not in sys.path:
-    sys.path.insert(0, _SCRIPT_DIR)
+if (_sd := str(Path(__file__).resolve().parent)) not in sys.path:
+    sys.path.insert(0, _sd)
 from audit_cdp_probes import CDP_DOC_PROBES_JS, CDP_SVG_PROBES_JS, CDP_WORKBENCH_PROBES_JS, probe_navbar_shift, probe_workbench_1920  # noqa: E402
 try:
     from audit_editorial_print import CDP_EDITORIAL_PRINT_JS, probe_print_flow_collision  # noqa: E402
 except ImportError:  # pragma: no cover - partial sandbox copy fallback
     CDP_EDITORIAL_PRINT_JS, probe_print_flow_collision = "", (lambda *_a, **_kw: [])  # type: ignore[assignment]
+try:
+    from audit_wave35_probes import CDP_WAVE35_PROBES_JS, probe_wave35_extras  # noqa: E402
+except ImportError:  # pragma: no cover - partial sandbox copy fallback
+    CDP_WAVE35_PROBES_JS, probe_wave35_extras = "", (lambda *_a, **_kw: [])  # type: ignore[assignment]
 from audit_ux_and_drift import CDP_UX_DRIFT_JS  # noqa: E402
 from audit_static_rules import (  # noqa: E402, F401
     BRAIN_TEXT_RE, COMMENT_RE, EARLY_LAYER_NAMES, OVERFLOW_RULE_RE, SELF_BADGE_RE, SKIP_DIRS,
@@ -24,7 +27,7 @@ from audit_static_rules import (  # noqa: E402, F401
     has_responsive_table_stacking, is_asset_in_scope, matches_exclude, parse_mount_prefixes,
     resolve_asset_detail, resolve_asset_path,
 )
-CDP_AUDIT_JS = "\n".join((CDP_SVG_PROBES_JS, CDP_DOC_PROBES_JS, CDP_UX_DRIFT_JS, CDP_WORKBENCH_PROBES_JS, CDP_EDITORIAL_PRINT_JS)) + "\n" + r"""
+CDP_AUDIT_JS = "\n".join((CDP_SVG_PROBES_JS, CDP_DOC_PROBES_JS, CDP_UX_DRIFT_JS, CDP_WORKBENCH_PROBES_JS, CDP_EDITORIAL_PRINT_JS, CDP_WAVE35_PROBES_JS)) + "\n" + r"""
 const opts = arguments[0] || {};
 const allowShowcase = !!opts.allowShowcase;
 const errs = [], seen = new Set(), vw = window.innerWidth;
@@ -366,9 +369,10 @@ function auditDoc(doc, maxW, ctxTag) {
     }
   }
   auditDocV922(doc, win, ctxTag);
-  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts); if (typeof auditDocV940Workbench === 'function') auditDocV940Workbench(doc, win, ctxTag, opts); if (typeof auditDocEditorial === 'function') auditDocEditorial(doc, win, ctxTag, opts);
+  if (typeof auditDocV940 === 'function') auditDocV940(doc, win, ctxTag, opts); if (typeof auditDocV940Workbench === 'function') auditDocV940Workbench(doc, win, ctxTag, opts); if (typeof auditDocEditorial === 'function') auditDocEditorial(doc, win, ctxTag, opts); if (typeof auditDocWave35 === 'function') auditDocWave35(doc, win, ctxTag, opts);
   for (const fr of doc.querySelectorAll('iframe')) {
     try {
+      if (!isVis(fr, win.getComputedStyle(fr))) continue;
       const fdoc = fr.contentDocument;
       if (fdoc && fdoc.documentElement) {
         const fw = Math.round(fr.clientWidth || maxW);
@@ -414,17 +418,16 @@ def audit_cdp_urls(urls: list[str], *, allow_showcase_chrome: bool = False, cont
                     driver.execute_script("document.documentElement.setAttribute('data-theme', arguments[0]);", th)
                 for w, h in VIEWPORTS:
                     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": w, "height": h, "deviceScaleFactor": 1, "mobile": w < 600})
-                    time.sleep(0.12)
+                    time.sleep(0.24 if (th != "default" and w == VIEWPORTS[0][0]) else 0.12)
                     errs.extend(f"[{url} theme={th}] {e}" for e in driver.execute_script(CDP_AUDIT_JS, payload))
                     errs.extend(probe_navbar_shift(driver, url, th, w))
+                errs.extend(probe_wave35_extras(driver, url, th, payload, CDP_AUDIT_JS))
                 errs.extend(probe_workbench_1920(driver, url, th, payload, CDP_AUDIT_JS))
                 if th in ("white", "default"):
                     errs.extend(probe_print_flow_collision(driver, url, th))
     finally:
         driver.quit()
     return errs
-
-
 def run_cdp_target(target: str, html_files: list[Path], *, allow_showcase_chrome: bool = False, context: dict[str, Any] | None = None) -> list[str]:
     """Serve local HTML target directory if needed and execute audit_cdp_urls."""
     if target.startswith(("http://", "https://")):

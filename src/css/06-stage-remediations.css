@@ -402,7 +402,7 @@
   .va-m1-block-only, .v02-sap-appendix { display: block; }
   .v9-m1-folio { display: flex; }
   .va-stage { inline-size: 100%; padding: 0; margin: 0; border: none; box-shadow: none; background: #FFFFFF; }
-  .v9-stage-inner { max-inline-size: 100%; padding: 0; }
+  .v9-stage-inner { max-inline-size: 100%; box-sizing: border-box; padding-block: 0; padding-inline: max(1.5rem, 24px); }
   .v9-editorial-grid { display: block; }
   :is(.v9-prose-card, .v02-prose-col) {
     background: transparent; border: none; border-radius: 0; padding: 0.2rem 0;
@@ -417,7 +417,8 @@
   p, li, td, th { orphans: 3; widows: 3; }
   .va-figure-scroll, .va-table-wrap, .va-bleed-wide { overflow: visible; }
   .qe-svg-560, .qe-svg-600, .qe-svg-640, .qe-svg-680, .qe-svg-720 { inline-size: 100%; min-inline-size: 0; }
-  :is(.v01-exec-btn, .v02-chip.is-active, .v9-chip.is-active, .v9-tactile-exec, .v18-unit-btn.is-active, .v18-filter-btn.is-active) { color: #FFFFFF; }
+  :is(.v01-exec-btn, .v9-tactile-exec):not(:disabled):not([aria-disabled="true"]),
+  :is(.v02-chip.is-active, .v9-chip.is-active, .v18-unit-btn.is-active, .v18-filter-btn.is-active) { color: #FFFFFF; }
   .v18-tone-amber { color: #B45309; }
   .v18-tone-teal { color: #0F766E; }
   .v18-tone-indigo { color: #4338CA; }

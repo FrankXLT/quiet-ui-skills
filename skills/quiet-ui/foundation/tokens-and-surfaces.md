@@ -183,6 +183,7 @@ If the output yields more than one unique hash, token mirror parity is broken an
 
 > [!IMPORTANT]
 > Always declare `utilities` **last** in your `@layer ...;` statement and place `.hidden, [hidden]:not([hidden="until-found"]) { display: none; }` inside `@layer utilities` (`src/css/00-layers-and-reset.css`). Putting `.hidden` inside `@layer reset` or `@layer base` lets `display: flex` / `grid` in later layers (`shell`, `views`) override `.hidden` without `!important`, while `:not([hidden="until-found"])` keeps Find-in-page (`beforematch`) panels functional.
+> Always style disabled controls (`:is(:disabled, [aria-disabled="true"])`) with `opacity: 1`, `background: var(--disabled-bg)`, `color: var(--disabled-fg)`, and `border: 1px dashed var(--disabled-border)` (`>= 3.0:1` UI contrast across `white`, `paper`, `dark-paper`, and `dark`, plus `GrayText` under `@media (forced-colors: active)`). Never stack opacity dimming over dark-theme `#090D16` selectors (`[DISABLED_CONTROL_LOW_CONTRAST]`).
 
 ---
 
@@ -194,5 +195,6 @@ If the output yields more than one unique hash, token mirror parity is broken an
 | Uniform 12px Radius on Outer & Inner | Causes optical corner jamming where inner element cuts through margin. | Apply concentric formula: `var(--radius-inner) = max(0, card - inset)`. |
 | 3+ Nested Border Lines | Creates visual noise ("barnacle cage") that degrades scan speed. | Replace inner borders with surface elevation tints (`var(--bg-elevated)`). |
 | Per-Component Custom Themes | Destroys cognitive predictability across multi-panel interfaces. | Restrict surface tokens to the global `data-theme` scope. |
+| Opacity-dimmed `:disabled` or dark active-ink leaks | Drops disabled safety buttons below `1.5:1` in dark themes (`[DISABLED_CONTROL_LOW_CONTRAST]`). | Use `--disabled-bg`, `--disabled-fg`, `--disabled-border`, and `:not(:disabled):not([aria-disabled="true"])` guards. |
 | `.hidden` in `@layer reset` or `@layer base` | Later layers (`display: flex` / `grid`) silently override `.hidden` (`[HIDDEN_LAYER]`). | Declare `utilities` last in `@layer` order and define `.hidden` inside `@layer utilities`. |
 | Divergent Local Token Copies | Causes drift between local prototypes and production renders. | Enforce 4-way SHA-256 mirror parity check before commits. |

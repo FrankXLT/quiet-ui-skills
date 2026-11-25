@@ -134,7 +134,7 @@ def compile_dumbbell(spec: dict[str, Any]) -> str:
         lo_d = 0.0 if (0.0 < lo_raw <= hi_raw * 0.25) else (lo_raw - span_raw * 0.15)
         hi_d = hi_raw + span_raw * 0.15
     sc = compute_linear_125_scale(lo_d, hi_d, target_ticks=5)
-    x0, y0, pw, ph = 84.0, 26.0, 600.0, 196.0
+    x0, y0, pw, ph = 84.0, 44.0, 600.0, 178.0
     parts: list[str] = [f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 278" role="img" aria-label="{esc(spec.get("metadata", {}).get("title", "Dumbbell Plot"))}">']
     for yv in sc["majors"]:
         py = _proj_lin_y(yv, sc, y0, ph)
@@ -157,7 +157,7 @@ def compile_dumbbell(spec: dict[str, Any]) -> str:
         markers.append(f'<circle cx="{cx:.1f}" cy="{yb:.1f}" r="4.5" fill="var(--bg-canvas)" stroke="var(--text-muted)" stroke-width="1.6"/>')
         markers.append(f'<circle cx="{cx:.1f}" cy="{ya:.1f}" r="4.8" fill="var(--accent-focal)" stroke="var(--bg-canvas)" stroke-width="1.2"/>')
         val_txt = f'{float(it["after"]):.1f}' if dense else f'{float(it["after"]):.1f}{sep}{unit}'
-        val_y = (ya - 10.0) if (ya >= yb or ya > y0 + 20.0) else (ya + 17.0)
+        val_y = min(ya, yb) - 18.0 if min(ya, yb) - 18.0 >= 14.0 else max(ya, yb) + 18.0
         if not dense or i % 2 == 0 or abs(ya - yb) >= 18.0:
             labels.append(halo_text(cx, val_y, val_txt, anchor="middle", size=11.5, weight="700", fill="var(--accent-focal)"))
         x_row_y = y0 + ph + (34.0 if (dense and i % 2 == 1) else 18.0)

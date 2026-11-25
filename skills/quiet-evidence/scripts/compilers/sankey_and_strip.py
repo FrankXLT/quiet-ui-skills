@@ -222,9 +222,9 @@ def _render_strip_lane(
             parts.append(f'<line x1="{proj_x(xmaj):.1f}" y1="{wave_top:.1f}" x2="{proj_x(xmaj):.1f}" y2="{ly + lane_h:.1f}" stroke="var(--border-hairline)" stroke-width="0.8"/>')
 
     step_y = (y_max - y_min) / 2.0
-    parts.append(halo_text(x0 - 6.0, wave_top + 11.0, format_tick_numeral(y_max, step=step_y), anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
-    parts.append(halo_text(x0 - 6.0, wave_top + wave_h / 2.0 + 4.0, format_tick_numeral(0.5 * (y_min + y_max), step=step_y), anchor="end", size=11.5, fill="var(--text-muted)", halo=False))
-    parts.append(halo_text(x0 - 6.0, ly + lane_h - 2.0, format_tick_numeral(y_min, step=step_y), anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+    parts.append(halo_text(x0 - 10.0, wave_top + 11.0, format_tick_numeral(y_max, step=step_y), anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
+    parts.append(halo_text(x0 - 10.0, wave_top + wave_h / 2.0 + 4.0, format_tick_numeral(0.5 * (y_min + y_max), step=step_y), anchor="end", size=11.5, fill="var(--text-muted)", halo=False, attrs='data-axis="y"'))
+    parts.append(halo_text(x0 - 10.0, ly + lane_h - 2.0, format_tick_numeral(y_min, step=step_y), anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
     parts.append(halo_text(x0 - 8.0, ly + 14.0, f"T{idx + 1}", anchor="end", size=11.5, weight="700", fill=col, halo=False))
     hdr_txt = f'{tr.get("name", f"Track {idx + 1}")} ({tr.get("quantity_calculus", tr.get("unit", ""))})'
     parts.append(f'<text x="{x0 + 8.0:.1f}" y="{ly + 14.0:.1f}" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="600" fill="var(--text-primary)">{format_math_svg(hdr_txt, 8.8)}</text>')

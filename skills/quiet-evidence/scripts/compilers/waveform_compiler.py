@@ -68,11 +68,11 @@ def _compile_day_arc(spec: dict[str, Any]) -> str:
     for h in range(0, 25, 4):
         tx = x0 + (h / 24.0) * pw
         parts.append(f'<line x1="{tx:.1f}" y1="{y0 + bh}" x2="{tx:.1f}" y2="{y0 + bh + 5}" stroke="var(--border-strong)" stroke-width="1"/>')
-        parts.append(halo_text(tx, y0 + bh + 19.0, f"{h:02d}:00", anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
+        parts.append(halo_text(tx, y0 + bh + 21.0, f"{h:02d}:00", anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="x"'))
     for ev in spec.get("events", []):
         ex = x0 + (float(ev["hour"]) / 24.0) * pw
         ecol = resolve_token(ev.get("color"), "var(--status-warn)")
-        parts.append(f'<line x1="{ex:.1f}" y1="{y0 - 8}" x2="{ex:.1f}" y2="{y0 + bh + 2}" stroke="{ecol}" stroke-width="1.6" stroke-dasharray="3,2"/>')
+        parts.append(f'<line x1="{ex:.1f}" y1="{y0 - 8}" x2="{ex:.1f}" y2="{y0 + bh}" stroke="{ecol}" stroke-width="1.6" stroke-dasharray="3,2"/>')
         parts.append(svg_knockout_label(ex, y0 - 15.0, str(ev["label"]), anchor="middle", size=11.5, weight="700", fill=ecol, surface_fill="var(--bg-surface)", x_bounds=(8.0, 712.0), math=False))
     parts.append("</svg>")
     return "\n".join(parts)
@@ -243,10 +243,10 @@ def _render_analog_channel(
     parts.append(f'<line x1="{x0}" y1="{y_mid_px:.1f}" x2="{x0 + pw}" y2="{y_mid_px:.1f}" stroke="var(--border-hairline)" stroke-width="0.8" stroke-dasharray="2,3"/>')
     for ty in (y_hi_px, y_mid_px, y_lo_px):
         parts.append(f'<line x1="{x0 - 4}" y1="{ty:.1f}" x2="{x0}" y2="{ty:.1f}" stroke="var(--border-strong)" stroke-width="1"/>')
-    parts.append(halo_text(x0 - 7.0, wave_top + 13.0, top_lbl, anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+    parts.append(halo_text(x0 - 10.0, wave_top + 13.0, top_lbl, anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
     if (y_mid_px - y_hi_px >= 13.0 and y_lo_px - y_mid_px >= 13.0) or not is_bipolar:
-        parts.append(halo_text(x0 - 7.0, y_mid_px + 4.0, mid_lbl, anchor="end", size=11.5, weight="700" if is_bipolar else "500", fill="var(--text-muted)" if is_bipolar else "var(--text-secondary)", halo=False))
-    parts.append(halo_text(x0 - 7.0, ly + lane_h - 3.0, bot_lbl, anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+        parts.append(halo_text(x0 - 10.0, y_mid_px + 4.0, mid_lbl, anchor="end", size=11.5, weight="700" if is_bipolar else "500", fill="var(--text-muted)" if is_bipolar else "var(--text-secondary)", halo=False, attrs='data-axis="y"'))
+    parts.append(halo_text(x0 - 10.0, ly + lane_h - 3.0, bot_lbl, anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
 
     if rigor in {"L2", "L3"}:
         thr_cands: list[dict[str, Any]] = []
@@ -339,10 +339,10 @@ def _render_scope_lane(
         has_neg = any(isinstance(s, (list, tuple)) and len(s) >= 2 and (fv := _safe_float(s[1])) is not None and fv < 0 for s in samples)
         parts.append(f'<line x1="{x0 - 4}" y1="{wave_top + 10:.1f}" x2="{x0}" y2="{wave_top + 10:.1f}" stroke="var(--border-strong)" stroke-width="1"/>')
         parts.append(f'<line x1="{x0 - 4}" y1="{ly + lane_h - 10:.1f}" x2="{x0}" y2="{ly + lane_h - 10:.1f}" stroke="var(--border-strong)" stroke-width="1"/>')
-        parts.append(halo_text(x0 - 7.0, wave_top + 14.0, "+1" if has_neg else "1", anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+        parts.append(halo_text(x0 - 10.0, wave_top + 14.0, "+1" if has_neg else "1", anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
         if has_neg:
-            parts.append(halo_text(x0 - 7.0, wave_top + wave_h / 2.0 + 4.0, "0 ▶", anchor="end", size=11.5, weight="700", fill="var(--text-muted)", halo=False))
-        parts.append(halo_text(x0 - 7.0, ly + lane_h - 6.0, "-1" if has_neg else "0", anchor="end", size=11.5, fill="var(--text-secondary)", halo=False))
+            parts.append(halo_text(x0 - 10.0, wave_top + wave_h / 2.0 + 4.0, "0 ▶", anchor="end", size=11.5, weight="700", fill="var(--text-muted)", halo=False, attrs='data-axis="y"'))
+        parts.append(halo_text(x0 - 10.0, ly + lane_h - 6.0, "-1" if has_neg else "0", anchor="end", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="y"'))
         segs, gaps = _digital_segments(samples, t_min, t_span, x0, pw, wave_top, wave_h)
     else:
         segs, gaps = _render_analog_channel(parts, ch, t_min, t_span, x0, pw, wave_top, wave_h, ly, lane_h, max_gap, rigor)
@@ -393,7 +393,7 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
     for xmaj in t_sc["majors"]:
         if t_min - 1e-9 <= xmaj <= t_max + 1e-9:
             px = x0 + ((xmaj - t_min) / t_span) * pw
-            parts.append(halo_text(px, y0 + tot_h + 18.0, format_tick_numeral(xmaj, step=t_sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False))
+            parts.append(halo_text(px, y0 + tot_h + 18.0, format_tick_numeral(xmaj, step=t_sc["step"]), anchor="middle", size=11.5, fill="var(--text-secondary)", halo=False, attrs='data-axis="x"'))
     parts.append(halo_text(max(140.0, min(580.0, x0 + pw / 2.0)), y0 + tot_h + 36.0, tb.get("quantity_calculus", f"t / {t_unit}"), anchor="middle", size=12.0, weight="700", fill="var(--text-primary)", halo=False, math=True))
 
     minor_cls = "qe-grid-minor" if medium == "m1" else "qe-grid-minor qe-m1-only"

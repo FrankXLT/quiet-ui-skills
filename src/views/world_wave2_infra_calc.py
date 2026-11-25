@@ -42,7 +42,7 @@ def build_v25_bathymetry_svg() -> str:
     sea_d = cable_d + f" L {_km_to_x(640):.1f} 36.0 L {_km_to_x(0):.1f} 36.0 Z"
     grid = "".join(
         f'<line x1="56" y1="{_depth_to_y(-d):.1f}" x2="1108" y2="{_depth_to_y(-d):.1f}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
-        f'<text x="50" y="{_depth_to_y(-d) + 4:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{"0 m" if d == 0 else f"-{d} m"}</text>'
+        f'<text data-axis="y" x="46" y="{_depth_to_y(-d) + 4:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{"0 m" if d == 0 else f"-{d} m"}</text>'
         for d in (0, 1000, 2000, 3000, 4000)
     )
     pos_map = {
@@ -96,11 +96,11 @@ def build_v25_osnr_svg() -> str:
     y_fec = _osnr_to_y(15.0)
     grid_y = "".join(
         f'<line x1="56" y1="{_osnr_to_y(db):.1f}" x2="1108" y2="{_osnr_to_y(db):.1f}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
-        f'<text x="50" y="{_osnr_to_y(db) + 4:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{db} dB</text>'
+        f'<text data-axis="y" x="46" y="{_osnr_to_y(db) + 4:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{db} dB</text>'
         for db in (12, 16, 20, 24, 28)
     )
     grid_x = "".join(
-        f'<text x="{_km_to_x(km):.1f}" y="204" text-anchor="{"start" if km == 0 else ("end" if km == 640 else "middle")}" font-size="11.5" fill="var(--text-muted)">{km} km</text>'
+        f'<text data-axis="x" x="{_km_to_x(km):.1f}" y="204" text-anchor="{"start" if km == 0 else ("end" if km == 640 else "middle")}" font-size="11.5" fill="var(--text-muted)">{km} km</text>'
         for km in (0, 160, 240, 362, 480, 640)
     )
     markers = "".join(
@@ -232,7 +232,7 @@ def compute_v26_model(growth_pct: int = 25, commit_pct: int = 60, runway_floor: 
 
 def _v26_chart_svg(model: dict[str, object]) -> str:
     y_max = float(model.get("y_max", 6.5))  # type: ignore[arg-type]
-    ml, pw = 48.0, 1058.0
+    ml, pw = 54.0, 1052.0
 
     def _poly(vals: list[float]) -> str:
         return "M " + " L ".join(
@@ -242,12 +242,12 @@ def _v26_chart_svg(model: dict[str, object]) -> str:
 
     ticks = (0.0, 2.0, 4.0, 6.0, 8.0) if y_max > 7.0 else (0.0, 2.0, 4.0, 6.0)
     grid_y = "".join(
-        f'<line x1="48" y1="{232.0 - (v / y_max) * 194.0:.1f}" x2="1106" y2="{232.0 - (v / y_max) * 194.0:.1f}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
-        f'<text x="42" y="{236.0 - (v / y_max) * 194.0:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">${v:.1f}M</text>'
+        f'<line x1="54" y1="{232.0 - (v / y_max) * 194.0:.1f}" x2="1106" y2="{232.0 - (v / y_max) * 194.0:.1f}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
+        f'<text data-axis="y" x="44" y="{236.0 - (v / y_max) * 194.0:.1f}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">${v:.1f}M</text>'
         for v in ticks
     )
     grid_x = "".join(
-        f'<text data-v26-xtick="{m}" x="{ml + (m / 36.0) * pw:.1f}" y="252" text-anchor="{"start" if m == 0 else ("end" if m == 36 else "middle")}" font-size="11.5" fill="var(--text-muted)">Mo {m}</text>'
+        f'<text data-axis="x" data-v26-xtick="{m}" x="{ml + (m / 36.0) * pw:.1f}" y="252" text-anchor="{"start" if m == 0 else ("end" if m == 36 else "middle")}" font-size="11.5" fill="var(--text-muted)">Mo {m}</text>'
         for m in (0, 6, 12, 18, 24, 30, 36)
     )
     y_ceil = 232.0 - (5.2 / y_max) * 194.0
@@ -257,19 +257,19 @@ def _v26_chart_svg(model: dict[str, object]) -> str:
     cy = 232.0 - min(y_max, float(model["pts_b"][cm])) / y_max * 194.0  # type: ignore[index]
     box_x = min(cx + 8.0, 916.0)
     c_disp = "" if cross_m is not None else ' display="none"'
-    geom = '{"w":1120,"h":264,"ml":48,"mr":14,"yTop":38,"lineTop":24,"yBot":232,"mobile":false}'
+    geom = '{"w":1120,"h":264,"ml":54,"mr":14,"yTop":38,"lineTop":24,"yBot":232,"mobile":false}'
     return (
         f'<svg data-v26-svg data-v26-geom=\'{geom}\' viewBox="0 0 1120 264" preserveAspectRatio="xMidYMid meet" role="img" '
         'aria-label="36-month cumulative spend curves for Options A, B, and C with break-even crossover marker">'
         f'<g data-v26-ygrid>{grid_y}</g><g data-v26-xgrid>{grid_x}</g>'
-        f'<line data-v26-ceil-line x1="48" y1="{y_ceil:.1f}" x2="1106" y2="{y_ceil:.1f}" stroke="var(--status-danger)" stroke-dasharray="6 4" stroke-width="1.5"/>'
+        f'<line data-v26-ceil-line x1="54" y1="{y_ceil:.1f}" x2="1106" y2="{y_ceil:.1f}" stroke="var(--status-danger)" stroke-dasharray="6 4" stroke-width="1.5"/>'
         f'<line data-v26-cross-line{c_disp} x1="{cx:.1f}" y1="24" x2="{cx:.1f}" y2="232" stroke="var(--accent-focal)" stroke-dasharray="4 3" stroke-width="1.4"/>'
         f'<path data-v26-path="a" d="{_poly(model["pts_a"])}" fill="none" stroke="var(--text-muted)" stroke-width="2.1"/>'  # type: ignore[arg-type]
         f'<path data-v26-path="c" d="{_poly(model["pts_c"])}" fill="none" stroke="var(--status-warn)" stroke-width="2.1" stroke-dasharray="5 3"/>'  # type: ignore[arg-type]
         f'<path data-v26-path="b" d="{_poly(model["pts_b"])}" fill="none" stroke="var(--accent-focal)" stroke-width="2.6"/>'  # type: ignore[arg-type]
         f'<circle data-v26-cross-dot{c_disp} cx="{cx:.1f}" cy="{cy:.1f}" r="5" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.8"/>'
-        f'<rect data-v26-ceil-bg x="54" y="{y_ceil - 18:.1f}" width="174" height="16" rx="2" fill="var(--bg-surface)" opacity="0.96"/>'
-        f'<text class="va-svg-halo-text" data-v26-ceil-lbl x="60" y="{y_ceil - 6:.1f}" text-anchor="start" font-size="11.5" font-weight="650" fill="var(--status-danger)">Budget Ceiling ($5.20M)</text>'
+        f'<rect data-v26-ceil-bg x="60" y="{y_ceil - 18:.1f}" width="174" height="16" rx="2" fill="var(--bg-surface)" opacity="0.96"/>'
+        f'<text class="va-svg-halo-text" data-v26-ceil-lbl x="66" y="{y_ceil - 6:.1f}" text-anchor="start" font-size="11.5" font-weight="650" fill="var(--status-danger)">Budget Ceiling ($5.20M)</text>'
         f'<rect data-v26-cross-bg{c_disp} x="{box_x:.1f}" y="{max(20.0, cy - 26):.1f}" width="184" height="19" rx="3" fill="var(--bg-surface)" stroke="var(--accent-focal)"/>'
         f'<text class="va-svg-halo-text" data-v26-cross-lbl{c_disp} x="{box_x + 6:.1f}" y="{max(33.0, cy - 13):.1f}" font-size="11.5" font-weight="650" fill="var(--accent-focal)">Break-Even Crossover (Mo {cm})</text>'
         '</svg>'

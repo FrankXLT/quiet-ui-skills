@@ -67,11 +67,13 @@ Select the appropriate canonical schema rather than guessing freehand SVGs or wr
 | Audit Code | Failure Mode Caught | Remediation Rule |
 | :--- | :--- | :--- |
 | **`[PRINT_FLOW_COLLISION]`** | Persistent fixed navbars stamping over print plots, figures overlapping prose, or tables clipping right page margins. | Strip topbars/rails/action buttons/footer links in `@media print`, set `position: static`, `break-inside: avoid`, and expand `.va-diverging-matrix` full-width. |
+| **`[PRINT_EDGE_CLIP]`** | Zeroed horizontal padding (`padding-inline: 0`) pushing standalone/editorial print text flush against `x = 0` or right paper edge. | Keep `box-sizing: border-box; padding-inline: max(1.5rem, 24px);` on `.va-editorial-article`, `.va-question-brief`, and `.v9-stage-inner` under `@media print`. |
 | **`[PROSE_COLUMN_STARVATION]`** | Split commentary squeezed `< 35ch` (`< 260px`) beside desktop charts. | Avoid 50/50 splits around long-form data stories; flow prose cleanly along a `68ch` centered column. |
 | **`[NESTED_PROSE_SCROLL]`** | Prose trapped in short inner scrollboxes or fade-out gradient masks. | Let editorial prose expand at full natural flow height (`overflow: visible`). |
 | **`[CODE_LUMINANCE_SHOCK]`** | Pitch-black `#000000` `<pre><code>` blocks glaring inside `white`/`paper` briefs. | Use `var(--bg-subtle)` cool-slate surfaces with `1px solid var(--border-strong)` on technical developer specs (omit raw code in general civic articles). |
 | **`[DIAGONAL_TICK_OR_ROTATED_Y_TITLE]`** | Sawtooth rotated X-axis ticks or stacked vertical Y-axis prose duplicating subtitle units. | Keep horizontal X ticks and place metric units once in `.qe-takeaway-subtitle`. |
 | **`[END_LABEL_CLIP]`** | Right-edge line labels clipping SVG bounds or ending with ellipsis (`...`). | Measure widest label dynamically (`_approx_px` / `QuietSvgLayout`) and separate vertically with step leaders. |
+| **`[SVG_LABEL_STROKE_COLLISION]`** | Plotted curve, slope, or cable polyline slicing through or crowding `< 6px` near visible SVG text labels. | Position vertex/annotation labels `>= 6px` clear of non-grid strokes across `1440px`, `900px`, and `390px` unless inside an opaque badge `<rect>`. |
 
 ---
 

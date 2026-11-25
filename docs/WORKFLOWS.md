@@ -157,8 +157,13 @@ All shell navigation and interactive dock elements are scoped inside `@layer she
     .va-interactive-cursor {
       display: none;
     }
-    .va-prose {
+    .va-prose,
+    .v9-stage-inner,
+    .va-editorial-article,
+    .va-question-brief {
       max-inline-size: 100%;
+      box-sizing: border-box;
+      padding-inline: max(1.5rem, 24px);
     }
     .va-card,
     .va-panel-tonal {
@@ -380,4 +385,11 @@ Multi-panel operational consoles (`v08` Microgrid Quad, `v01` ICU Console, `v04`
 3. **Subsea Corridor & Link-Margin Schematic (`v25`)**: Synchronizes full-width `0–640 km` 2D bathymetry (`CLS-Alpha` to `CLS-Bravo`, `Repeaters R1–R8`, `BU-03` @ `240 km`, `Span S5` `+4.8 dB` @ `362 km`) pixel-for-pixel above the distance-locked OSNR profile (`16.4 dB` min vs `15.0 dB` SD-FEC floor) and `1.12 A` repeater table.
 4. **Constrained Trade-Space Calculator (`v26`, Specimen `53`)**: Coupled sliders (`Growth 10–50%`, `Commit 20–80%`, `Runway Floor 18–36 mo`) dynamically update full-width Option A/B/C spend curves, crossover marker (`Month 14`), `10`-row ledger, amber `OVER-CONSTRAINED` warning (`OVER CEILING`) when zero options satisfy both `$5.20M` cap and runway floor, and red `None (Runway Blocked)` gate when all runway options fail.
 
+---
 
+## 14. Wave 3.5 Three-Layer Enforced Invariants (`audit_wave35_probes.py`)
+
+1. **Chart & Schematic Label-to-Line Clearance (`WF-05`, `[SVG_LABEL_STROKE_COLLISION]`)**: Across `1440px`, `900px`, and `390px`, visible SVG `<text>` annotations must maintain `>= 6px` clearance from non-grid plotted polylines, slopes, and curves unless enclosed in an opaque legend/badge `<rect>`.
+2. **Readable Disabled Safety Gates (`WF-01`, `[DISABLED_CONTROL_LOW_CONTRAST]`)**: Locked `:disabled` / `[aria-disabled="true"]` controls bind to `--disabled-bg`, `--disabled-fg`, and `1px dashed var(--disabled-border)` (`opacity: 1`, `>= 3.0:1` UI / `>= 2.8:1` hard CDP floor across all 4 themes, `GrayText` under `forced-colors`), guarding dark-theme active-ink rules with `:not(:disabled):not([aria-disabled="true"])`.
+3. **Unbroken Monospace Parameter Keys (`WF-01`, `[PARAM_KEY_MIDWORD_WRAP]`)**: Keep `td > code` and `.w2-code` keys `white-space: nowrap; word-break: normal` above `600px` (`820–900px` tablet), allowing adjacent prose cells to wrap on word boundaries before `<= 600px` stacked cards engage.
+4. **Horizontal Print Safe Margins (`WF-03` & `WF-08`, `[PRINT_EDGE_CLIP]`)**: Under `@media print`, preserve `box-sizing: border-box; padding-inline: max(1.5rem, 24px);` on `.v9-stage-inner`, `.va-editorial-article`, and `.va-question-brief` so standalone and iframe prints clear `>= 12px` edge margins.

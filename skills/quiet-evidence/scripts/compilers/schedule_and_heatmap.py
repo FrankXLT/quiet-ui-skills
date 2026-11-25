@@ -92,7 +92,7 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
         px_e = px_map(float(t.get("end", t.get("start", 0.0))))
         pos_by_id[str(t.get("id") or f"t{idx}")] = (px_s, px_e, cy)
 
-    # Orthogonal dependency connectors drawn behind bars
+    # Orthogonal dependency connectors routed via inter-row lane away from duration notes
     for idx, t in enumerate(tasks):
         tid = str(t.get("id") or f"t{idx}")
         dst_s, _dst_e, dst_cy = pos_by_id[tid]
@@ -100,13 +100,13 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
             src = pos_by_id.get(str(dep_id))
             if not src:
                 continue
-            _src_s, src_e, src_cy = src
-            if dst_s >= src_e + 10.0:
-                mid_x = src_e + 6.0
-                d = f"M {src_e:.1f} {src_cy:.1f} H {mid_x:.1f} V {dst_cy:.1f} H {dst_s - 2:.1f}"
-            else:
-                mid_y = (src_cy + dst_cy) / 2.0
-                d = f"M {src_e:.1f} {src_cy:.1f} H {src_e + 7:.1f} V {mid_y:.1f} H {max(x0 + 2, dst_s - 8):.1f} V {dst_cy:.1f} H {dst_s - 2:.1f}"
+            src_s, src_e, src_cy = src
+            go_down = dst_cy >= src_cy
+            exit_x = max(src_s + 2.0, src_e - 12.0)
+            exit_y = src_cy + (7.0 if go_down else -7.0)
+            lane_y = src_cy + (row_h * 0.5 if go_down else -row_h * 0.5)
+            enter_x = max(x0 + 2.0, dst_s - 7.0)
+            d = f"M {exit_x:.1f} {exit_y:.1f} V {lane_y:.1f} H {enter_x:.1f} V {dst_cy:.1f} H {dst_s - 2:.1f}"
             parts.append(f'<path d="{d}" fill="none" stroke="var(--text-muted)" stroke-width="1.1" marker-end="url(#qe-gantt-arr)"/>')
 
     # Task labels, bars, float buffers, and milestone markers
@@ -130,7 +130,7 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
             pts = f"{px_e:.1f},{cy - 7:.1f} {px_e + 7:.1f},{cy:.1f} {px_e:.1f},{cy + 7:.1f} {px_e - 7:.1f},{cy:.1f}"
             parts.append(f'<polygon points="{pts}" fill="var(--status-warn)" stroke="var(--bg-canvas)" stroke-width="1.2"/>')
             m_lbl = f"{float(t.get('end', 0.0)):g} {unit}"
-            if px_e < x0 + pw - 74.0:
+            if px_e + 12.0 + len(m_lbl) * 6.8 <= x0 + pw:
                 parts.append(halo_text(px_e + 11.0, cy + 4.0, m_lbl, anchor="start", size=11.5, weight="700", fill="var(--status-warn)", halo=True))
             else:
                 parts.append(halo_text(px_e - 11.0, cy + 4.0, m_lbl, anchor="end", size=11.5, weight="700", fill="var(--status-warn)", halo=True))
@@ -148,7 +148,7 @@ def compile_gantt(spec: dict[str, Any], rigor: str = "L2", medium: str = "m2") -
                 note_col = "var(--text-muted)" if flt > 0.0 else "var(--accent-focal)"
                 anchor_r = px_f if flt > 0.0 else px_e
                 if anchor_r < x0 + pw - 46.0:
-                    parts.append(halo_text(anchor_r + 6.0, cy + 4.0, note, anchor="start", size=11.5, weight="600", fill=note_col, halo=True))
+                    parts.append(halo_text(anchor_r + 9.0, cy + 4.0, note, anchor="start", size=11.5, weight="600", fill=note_col, halo=True))
                 elif px_s > x0 + 48.0:
                     parts.append(halo_text(px_s - 6.0, cy + 4.0, note, anchor="end", size=11.5, weight="600", fill=note_col, halo=True))
 

@@ -257,7 +257,7 @@ def compile_dual_slopegraph(spec: dict[str, Any], rigor: str, medium: str) -> st
         (_approx_px(f"{_num(r, 'right_end', 'pct_end'):.{r_dec}f}{right_unit if idx == top_r1 else ''} · {r.get('label') or f'Series {idx + 1}'}", 11.5) for idx, r in enumerate(rows)),
         default=110.0,
     )
-    gutter_w = min(280.0, max(128.0, max_gutter_txt + 8.0))
+    gutter_w = min(280.0, max(128.0, max_gutter_txt + 14.0))
     xr2 = max(310.0, 632.0 - gutter_w - 26.0)
     xr1 = max(254.0, xr2 - 74.0)
     x_sep = xr1 - 48.0
@@ -304,7 +304,7 @@ def compile_dual_slopegraph(spec: dict[str, Any], rigor: str, medium: str) -> st
         parts.append(halo_text(xr1 - 9.0, yr0_map[i] + 4.0, rs_txt, anchor="end", size=11.5, weight="600", fill=col, halo=True))
         ty_r, elbow_x = yr1_map[i], xr2 + 8.0
         parts.append(f'<polyline fill="none" stroke="{esc(col)}" stroke-width="1.1" opacity="0.7" points="{xr2 + 5:.1f},{yre:.1f} {elbow_x:.1f},{yre:.1f} {elbow_x + 7:.1f},{ty_r:.1f} {elbow_x + 12:.1f},{ty_r:.1f}"/>')
-        parts.append(halo_text(elbow_x + 15.0, ty_r + 4.0, re_txt, anchor="start", size=11.5, weight="700", font="var(--font-sans)", fill=col, halo=False))
+        parts.append(halo_text(elbow_x + 20.0, ty_r + 4.0, re_txt, anchor="start", size=11.5, weight="700", font="var(--font-sans)", fill=col, halo=False))
 
     cross_cfg = spec.get("crossover") or {}
     cross = _crossover_coords(right_coords)

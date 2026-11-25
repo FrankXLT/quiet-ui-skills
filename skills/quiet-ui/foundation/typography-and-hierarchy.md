@@ -200,5 +200,6 @@ Data tables are core scientific instruments. Table truncation or clipped cell va
 | Obscure jargon or pictographic emojis inside chrome controls | Confuses everyday operators and breaks forced-colors / screen readers (`[EMOJI_IN_CHROME]`). | Use plain everyday titles paired with `currentColor` `<svg>` icons. |
 | Proportional digits in live telemetry readouts | Text characters jump horizontally as numbers increment (1 vs 8). | Declare `font-variant-numeric: tabular-nums slashed-zero`. |
 | Horizontal scrollbars on desktop table displays | Vital telemetry obscured off-screen during mission analysis. | Use responsive grid collapsing and `.va-bleed-wide` breakouts. |
+| Mid-word breaks on monospace parameter keys (`820–900px`) | `overflow-wrap: anywhere` slices dotted keys (`sanitizat`/`ion`) instead of wrapping prose columns (`[PARAM_KEY_MIDWORD_WRAP]`). | Keep `td > code` / `.w2-code` `white-space: nowrap; word-break: normal` at `min-width: 601px` and stack rows cleanly `<= 600px`. |
 | Font size reduction below 11px for "compactness" | Unreadable on non-Retina displays; triggers accessibility audit failure. | Enforce minimum floor `max(11px, ...)`. |
 | Mixing sans-serif and serif indiscriminately | Visual chaos and diluted editorial voice. | Strictly reserve `--font-serif` for headers and monograph abstracts. |

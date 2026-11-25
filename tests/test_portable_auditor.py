@@ -20,6 +20,8 @@ PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_cdp_probes.p
 STATIC_RULES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_static_rules.py"
 UX_DRIFT_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_ux_and_drift.py"
 WORKBENCH_PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_workbench_probes.py"
+EDITORIAL_PRINT_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_editorial_print.py"
+WAVE35_PROBES_SRC = REPO_ROOT / "skills" / "quiet-ui" / "scripts" / "audit_wave35_probes.py"
 COMPILER_SRC = REPO_ROOT / "skills" / "quiet-evidence" / "scripts" / "compile_evidence.py"
 
 VALID_HTML = """<!DOCTYPE html>
@@ -62,6 +64,8 @@ class TestPortableAuditor(unittest.TestCase):
         shutil.copy2(STATIC_RULES_SRC, self.tmp_dir / "audit_static_rules.py")
         shutil.copy2(UX_DRIFT_SRC, self.tmp_dir / "audit_ux_and_drift.py")
         shutil.copy2(WORKBENCH_PROBES_SRC, self.tmp_dir / "audit_workbench_probes.py")
+        shutil.copy2(EDITORIAL_PRINT_SRC, self.tmp_dir / "audit_editorial_print.py")
+        shutil.copy2(WAVE35_PROBES_SRC, self.tmp_dir / "audit_wave35_probes.py")
 
     def tearDown(self) -> None:
         self._tmp.cleanup()

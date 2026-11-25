@@ -149,3 +149,27 @@
     .va-tab-strip[data-s44-tabs] { flex-wrap: wrap; overflow-x: visible; }
   }
 }
+
+@layer utilities {
+  :is(.va-btn-primary, .va-btn-ghost, .va-pill-btn, .va-tb-btn, .v9-tactile-btn, .v01-zero-btn, .v01-arm-btn):is(:disabled, [aria-disabled="true"]),
+  .va-toolbar-joined .va-tb-btn:is(:disabled, [aria-disabled="true"]) {
+    opacity: 1;
+    background: var(--disabled-bg, var(--bg-elevated));
+    color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong));
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  @media (min-width: 601px) {
+    table:not(.va-wrap-prose) td > code:not(.va-wrap-prose),
+    table td[data-param-key] { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+  }
+  @media (forced-colors: active) {
+    :is(button, .va-btn-primary, .va-btn-ghost, .va-pill-btn, .va-tb-btn, .w2-action-btn, .v9-tactile-btn, .v9-tactile-exec, .v01-zero-btn, .v01-arm-btn, .v01-exec-btn, .v9-guard-btn, .va-preset-item):is(:disabled, [aria-disabled="true"]) {
+      color: GrayText;
+      background: ButtonFace;
+      border: 1px dashed GrayText;
+      outline: 1px solid GrayText;
+    }
+  }
+}

@@ -298,7 +298,7 @@
   function readV26Geom(scope) {
     var svg = scope.querySelector('[data-v26-svg]'), g = null;
     try { g = svg ? JSON.parse(svg.getAttribute('data-v26-geom') || 'null') : null; } catch (e) { g = null; }
-    var ml = g && g.ml ? g.ml : 48, mr = g && g.mr ? g.mr : 14, w = g && g.w ? g.w : 1120;
+    var ml = g && g.ml ? g.ml : 54, mr = g && g.mr ? g.mr : 14, w = g && g.w ? g.w : 1120;
     var yTop = g && g.yTop && g.yTop >= 32 ? g.yTop : 38, lineTop = g && g.lineTop ? g.lineTop : 24, yBot = g && g.yBot ? g.yBot : 232;
     return { ml: ml, mr: mr, w: w, pw: Math.max(180, w - ml - mr), yTop: yTop, lineTop: lineTop, yBot: yBot, spanY: yBot - yTop, mobile: !!(g && g.mobile) };
   }
@@ -322,7 +322,7 @@
       var ln = yGrid.ownerDocument.createElementNS(ns, 'line');
       setAttrs(ln, { x1: geom.ml, y1: yy.toFixed(1), x2: geom.ml + geom.pw, y2: yy.toFixed(1), stroke: 'var(--border-subtle)', 'stroke-dasharray': '2 3' });
       var tx = yGrid.ownerDocument.createElementNS(ns, 'text');
-      setAttrs(tx, { x: geom.ml - 6, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' });
+      setAttrs(tx, { 'data-axis': 'y', x: geom.ml - 10, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' });
       tx.textContent = '$' + v.toFixed(1) + 'M';
       yGrid.appendChild(ln); yGrid.appendChild(tx);
     });

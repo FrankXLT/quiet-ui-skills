@@ -83,9 +83,15 @@
   .v9-tactile-btn[aria-pressed="true"] { background: var(--tint-amber-bg); border-color: var(--status-warn); color: var(--tint-amber-fg); }
   .v9-tactile-exec { background: var(--accent-primary); border-color: var(--accent-primary); color: #FFFFFF; font-weight: 700; }
   @media screen {
-    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-tactile-exec { color: #090D16; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v9-tactile-exec:not(:disabled):not([aria-disabled="true"]) { color: #090D16; }
   }
-  .v9-tactile-exec:disabled { opacity: 0.72; cursor: not-allowed; background: var(--bg-elevated); color: var(--text-muted); border: 1px dashed var(--border-strong); }
+  .v9-tactile-exec:is(:disabled, [aria-disabled="true"]) {
+    opacity: 1;
+    cursor: not-allowed;
+    background: var(--disabled-bg, var(--bg-elevated));
+    color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong));
+  }
   @media (max-width: 599px) {
     .v9-tactile-btn { min-block-size: 44px; inline-size: 100%; }
   }

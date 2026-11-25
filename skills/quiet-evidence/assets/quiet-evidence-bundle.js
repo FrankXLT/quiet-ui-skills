@@ -3351,8 +3351,8 @@
     [240, -760, 'branch', 'NOMINAL', 'BU-03', 'BU-03', 'BU-03', 'start', 9, 22, 22],
     [302, -1180, 'branch', 'NOMINAL', 'Repeater R4', 'R4', 'R4', 'end', -9, 96, 96],
     [362, -1420, 'fault', 'WARN', 'R5', 'R5', 'R5', 'end', -9, 108, 108],
-    [440, -2940, 'deep', 'NOMINAL', 'Repeater R6', 'R6', 'R6', 'end', -6, 158, 154],
-    [515, -3680, 'deep', 'NOMINAL', 'Repeater R7', 'R7', 'R7', 'end', -6, 186, 178],
+    [440, -2940, 'deep', 'NOMINAL', 'Repeater R6', 'R6', 'R6', 'end', -6, 158, 158],
+    [515, -3680, 'deep', 'NOMINAL', 'Repeater R7', 'R7', 'R7', 'end', -6, 186, 186],
     [585, -3850, 'deep', 'NOMINAL', 'Repeater R8', 'Repeater R8', 'R8', 'middle', 0, 198, 198],
     [640, 0, 'deep', 'NOMINAL', 'CLS-Bravo', 'CLS-Bravo', 'Bravo', 'end', 0, 22, 22],
   ];
@@ -3452,7 +3452,7 @@
       if (showTick) {
         var anc = i === 0 ? 'start' : (i === 23 ? 'end' : 'middle');
         var tx = i === 0 ? ml : (i === 23 ? ml + pw : x + bw / 2);
-        grp.appendChild(el(doc, 'text', { x: tx.toFixed(1), y: 166, 'text-anchor': anc, 'font-size': '11.5', fill: 'var(--text-muted)' }, b[0]));
+        grp.appendChild(el(doc, 'text', { 'data-axis': 'x', x: tx.toFixed(1), y: 166, 'text-anchor': anc, 'font-size': '11.5', fill: 'var(--text-muted)' }, b[0]));
       }
       svg.appendChild(grp);
     });
@@ -3460,7 +3460,7 @@
 
   function renderV25Bathy(svg, vw) {
     var doc = svg.ownerDocument, mob = vw < 560, med = vw >= 560 && vw < 940;
-    var ml = mob ? 44 : 56, mr = mob ? 10 : 12, pw = Math.max(180, vw - ml - mr), h = mob ? 216 : 210;
+    var ml = mob ? 46 : 58, mr = mob ? 10 : 12, pw = Math.max(180, vw - ml - mr), h = mob ? 216 : 210;
     var kx = function (km) { return ml + (km / 640) * pw; };
     var dy = function (d) { return 36 + (Math.abs(d) / 4000) * 144; };
     var scope = svg.closest('[data-v25-scope]'), activeGrp = scope ? (scope.dataset.v25ActiveSpan || 'all') : 'all';
@@ -3472,7 +3472,7 @@
     [0, 1000, 2000, 3000, 4000].forEach(function (d) {
       var yy = dy(d).toFixed(1), lbl = d === 0 ? '0 m' : (mob ? '-' + (d / 1000) + 'km' : '-' + d + ' m');
       svg.appendChild(el(doc, 'line', { x1: ml, y1: yy, x2: ml + pw, y2: yy, stroke: 'var(--border-subtle)', 'stroke-dasharray': '2 3' }));
-      svg.appendChild(el(doc, 'text', { x: ml - 6, y: (Number(yy) + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' }, lbl));
+      svg.appendChild(el(doc, 'text', { 'data-axis': 'y', x: ml - 10, y: (Number(yy) + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' }, lbl));
     });
     svg.appendChild(el(doc, 'path', { d: cPath, fill: 'none', stroke: 'var(--text-primary)', 'stroke-width': '2.2' }));
     var xf = kx(362), boxW = mob ? 124 : 222, boxX = clamp(ml + 4, vw - mr - boxW, xf + 8);
@@ -3497,7 +3497,7 @@
   }
 
   function renderV25Osnr(svg, vw) {
-    var doc = svg.ownerDocument, mob = vw < 560, ml = mob ? 44 : 56, mr = mob ? 10 : 12;
+    var doc = svg.ownerDocument, mob = vw < 560, ml = mob ? 46 : 58, mr = mob ? 10 : 12;
     var pw = Math.max(180, vw - ml - mr), scope = svg.closest('[data-v25-scope]');
     var activeGrp = scope ? (scope.dataset.v25ActiveSpan || 'all') : 'all';
     var kx = function (km) { return ml + (km / 640) * pw; };
@@ -3507,11 +3507,11 @@
     [12, 16, 20, 24, 28].forEach(function (db) {
       var yy = oy(db);
       svg.appendChild(el(doc, 'line', { x1: ml, y1: yy.toFixed(1), x2: ml + pw, y2: yy.toFixed(1), stroke: 'var(--border-subtle)', 'stroke-dasharray': '2 3' }));
-      svg.appendChild(el(doc, 'text', { x: ml - 6, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' }, db + ' dB'));
+      svg.appendChild(el(doc, 'text', { 'data-axis': 'y', x: ml - 10, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' }, db + ' dB'));
     });
     (mob ? [0, 240, 362, 640] : [0, 160, 240, 362, 480, 640]).forEach(function (km) {
       var anc = km === 0 ? 'start' : (km === 640 ? 'end' : 'middle');
-      svg.appendChild(el(doc, 'text', { x: kx(km).toFixed(1), y: 204, 'text-anchor': anc, 'font-size': '11.5', fill: 'var(--text-muted)' }, km + ' km'));
+      svg.appendChild(el(doc, 'text', { 'data-axis': 'x', x: kx(km).toFixed(1), y: 204, 'text-anchor': anc, 'font-size': '11.5', fill: 'var(--text-muted)' }, km + ' km'));
     });
     var yFec = oy(15.0), xf = kx(362);
     svg.appendChild(el(doc, 'line', { x1: kx(240).toFixed(1), y1: 24, x2: kx(240).toFixed(1), y2: 184, stroke: 'var(--border-strong)', 'stroke-dasharray': '2 4' }));
@@ -3536,7 +3536,7 @@
   }
 
   function renderV26Box(svg, vw) {
-    var doc = svg.ownerDocument, mob = vw < 560, ml = mob ? 42 : 48, mr = mob ? 10 : 14;
+    var doc = svg.ownerDocument, mob = vw < 560, ml = mob ? 48 : 54, mr = mob ? 10 : 14;
     var pw = Math.max(180, vw - ml - mr), xg = svg.querySelector('[data-v26-xgrid]');
     var geom = { w: vw, h: 264, ml: ml, mr: mr, yTop: 38, lineTop: 24, yBot: 232, mobile: mob };
     svg.setAttribute('viewBox', '0 0 ' + vw + ' 264');
@@ -3549,7 +3549,7 @@
       (mob ? [0, 12, 24, 36] : [0, 6, 12, 18, 24, 30, 36]).forEach(function (m) {
         var anc = m === 0 ? 'start' : (m === 36 ? 'end' : 'middle');
         xg.appendChild(el(doc, 'text', {
-          'data-v26-xtick': String(m), x: (ml + (m / 36) * pw).toFixed(1), y: 252,
+          'data-axis': 'x', 'data-v26-xtick': String(m), x: (ml + (m / 36) * pw).toFixed(1), y: 252,
           'text-anchor': anc, 'font-size': '11.5', fill: 'var(--text-muted)',
         }, 'Mo ' + m));
       });
@@ -3924,7 +3924,7 @@
   function readV26Geom(scope) {
     var svg = scope.querySelector('[data-v26-svg]'), g = null;
     try { g = svg ? JSON.parse(svg.getAttribute('data-v26-geom') || 'null') : null; } catch (e) { g = null; }
-    var ml = g && g.ml ? g.ml : 48, mr = g && g.mr ? g.mr : 14, w = g && g.w ? g.w : 1120;
+    var ml = g && g.ml ? g.ml : 54, mr = g && g.mr ? g.mr : 14, w = g && g.w ? g.w : 1120;
     var yTop = g && g.yTop && g.yTop >= 32 ? g.yTop : 38, lineTop = g && g.lineTop ? g.lineTop : 24, yBot = g && g.yBot ? g.yBot : 232;
     return { ml: ml, mr: mr, w: w, pw: Math.max(180, w - ml - mr), yTop: yTop, lineTop: lineTop, yBot: yBot, spanY: yBot - yTop, mobile: !!(g && g.mobile) };
   }
@@ -3948,7 +3948,7 @@
       var ln = yGrid.ownerDocument.createElementNS(ns, 'line');
       setAttrs(ln, { x1: geom.ml, y1: yy.toFixed(1), x2: geom.ml + geom.pw, y2: yy.toFixed(1), stroke: 'var(--border-subtle)', 'stroke-dasharray': '2 3' });
       var tx = yGrid.ownerDocument.createElementNS(ns, 'text');
-      setAttrs(tx, { x: geom.ml - 6, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' });
+      setAttrs(tx, { 'data-axis': 'y', x: geom.ml - 10, y: (yy + 4).toFixed(1), 'text-anchor': 'end', 'font-size': '11.5', fill: 'var(--text-muted)' });
       tx.textContent = '$' + v.toFixed(1) + 'M';
       yGrid.appendChild(ln); yGrid.appendChild(tx);
     });

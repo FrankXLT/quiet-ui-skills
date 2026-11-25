@@ -231,9 +231,15 @@
     min-block-size: 30px;
     cursor: pointer;
   }
-  .va-preset-item:hover:not(:disabled) { background: var(--bg-elevated); }
+  .va-preset-item:hover:not(:disabled):not([aria-disabled="true"]) { background: var(--bg-elevated); }
   .va-preset-item[aria-checked="true"] { font-weight: 700; background: var(--bg-subtle); }
-  .va-preset-item:disabled { opacity: 0.52; cursor: not-allowed; }
+  .va-preset-item:is(:disabled, [aria-disabled="true"]) {
+    opacity: 1;
+    background: var(--disabled-bg, var(--bg-elevated));
+    color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong));
+    cursor: not-allowed;
+  }
   .va-preset-span { font-family: var(--font-mono); font-size: var(--ts-xs); color: var(--text-muted); }
 
   /* 3-Level Scope Chip & Split-Intent Navigation Tree Row */

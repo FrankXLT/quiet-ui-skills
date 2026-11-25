@@ -257,10 +257,11 @@
 :root[data-theme="white"] :is(.v9-br-banner, .v9-triage-row, .v9-guard-pad, .v9-br-check) .va-pill[data-variant="status"][data-state="warn"] {
   color: var(--tint-amber-fg);
 }
-.v9-guard-btn:disabled {
-  border: 1px dashed var(--border-strong);
-  background: var(--bg-elevated);
-  color: var(--text-muted);
+.v9-guard-btn:is(:disabled, [aria-disabled="true"]) {
+  opacity: 1;
+  border: 1px dashed var(--disabled-border, var(--border-strong));
+  background: var(--disabled-bg, var(--bg-elevated));
+  color: var(--disabled-fg, var(--text-muted));
   cursor: not-allowed;
 }
 

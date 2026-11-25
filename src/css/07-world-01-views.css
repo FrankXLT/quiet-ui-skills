@@ -96,9 +96,15 @@
   .v01-arm-btn.is-armed { border-color: var(--status-warn); background: var(--status-warn-bg); color: var(--status-warn); }
   .v01-exec-btn { border-color: transparent; background: var(--status-warn); color: #FFFFFF; }
   @media screen {
-    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn { color: #090D16; }
+    :root:is([data-theme="dark"], [data-theme="dark-paper"]):not([data-medium="m1"]) .v01-exec-btn:not(:disabled):not([aria-disabled="true"]) { color: #090D16; }
   }
-  .v01-exec-btn:disabled { opacity: 0.72; cursor: not-allowed; background: var(--bg-elevated); color: var(--text-muted); border: 1px dashed var(--border-strong); }
+  .v01-exec-btn:is(:disabled, [aria-disabled="true"]) {
+    opacity: 1;
+    cursor: not-allowed;
+    background: var(--disabled-bg, var(--bg-elevated));
+    color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong));
+  }
   .v01-audit-box {
     background: var(--bg-elevated);
     border: 1px solid var(--border-hairline);

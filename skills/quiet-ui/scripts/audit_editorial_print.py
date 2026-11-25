@@ -227,6 +227,10 @@ return errs;
 
 def probe_print_flow_collision(driver: Any, url: str, theme: str) -> list[str]:
     """Emulate @media print at portrait Letter width and assert zero print collisions or clips."""
+    try:
+        from audit_wave35_probes import probe_print_safe_margins  # noqa: E402
+    except ImportError:  # pragma: no cover - partial sandbox copy fallback
+        probe_print_safe_margins = lambda *_a, **_kw: []  # type: ignore[assignment]
     errs: list[str] = []
     driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {"width": 820, "height": 1100, "deviceScaleFactor": 1, "mobile": False})
     driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
@@ -234,6 +238,7 @@ def probe_print_flow_collision(driver: Any, url: str, theme: str) -> list[str]:
         time.sleep(0.14)
         for msg in driver.execute_script(_PRINT_AUDIT_JS) or ():
             errs.append(f"[{url} theme={theme}] {msg}")
+        errs.extend(probe_print_safe_margins(driver, url, theme))
     finally:
         driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
         driver.execute_cdp_cmd("Emulation.clearDeviceMetricsOverride", {})

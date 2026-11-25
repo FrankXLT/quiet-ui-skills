@@ -81,7 +81,7 @@
   }
 
   .va-editorial-article,
-  .va-question-brief { display: block; inline-size: 100%; max-inline-size: 100%; padding-block: 0; padding-inline: 0; }
+  .va-question-brief { display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box; padding-block: 0; padding-inline: max(1.5rem, 24px); }
   .va-editorial-article > .va-editorial-prose { max-inline-size: min(66ch, 100%); margin-inline: 0; }
   .va-editorial-callouts { display: block; }
   .va-callout-stat { margin-block-end: 0.55rem; break-inside: avoid; }

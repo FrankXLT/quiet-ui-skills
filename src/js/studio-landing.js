@@ -82,8 +82,8 @@
     const estW = txt.length * 6.3, padX = 5, padY = 3;
     const xs = [299, 156, 223, 385, 86];
     const yOpts = [];
-    if (yT >= 32) yOpts.push({ y: +(yT - 7).toFixed(1), top: yT - 18, bot: yT - 5, bonus: 1.5 });
-    if (yT <= 108) yOpts.push({ y: +(yT + 14).toFixed(1), top: yT + 3, bot: yT + 16, bonus: 0.0 });
+    if (yT >= 32) yOpts.push({ y: +(yT - 13.5).toFixed(1), top: yT - 25, bot: yT - 11.5, bonus: 1.5 });
+    if (yT <= 106) yOpts.push({ y: +(yT + 21.0).toFixed(1), top: yT + 10.0, bot: yT + 23.0, bonus: 0.0 });
     let best = { x: 299, anchor: 'middle', y: yOpts[0].y, score: -1 };
     yOpts.forEach(function (yo) {
       xs.forEach(function (cx) {
@@ -110,13 +110,15 @@
     const yT = yOf(threshold);
     const lblTxt = 'Limit ' + threshold + ' mmHg';
     const pos = placeThresholdLabel(coords, yT, x0, x1, lblTxt);
+    const pw = +(lblTxt.length * 6.8 + 10).toFixed(1);
+    const px = +(pos.anchor === 'middle' ? pos.x - pw / 2 : (pos.anchor === 'end' ? pos.x - pw + 3 : pos.x - 3)).toFixed(1);
     const grids = [100, 80, 60, 40].map(function (v) {
       const gy = yOf(v);
       return '<line x1="' + x0 + '" y1="' + gy + '" x2="' + x1 + '" y2="' + gy + '" stroke="var(--morph-border)" stroke-width="0.9"/>' +
-        '<text x="40" y="' + (gy + 4) + '" text-anchor="end" font-size="12" fill="var(--morph-muted)">' + v + '</text>';
+        '<text data-axis="y" x="36" y="' + (gy + 4) + '" text-anchor="end" font-size="12" fill="var(--morph-muted)">' + v + '</text>';
     }).join('');
     const xTicks = [['0 s', x0, 'start'], ['2 s', 176, 'middle'], ['4 s', 306, 'middle'], ['6 s', x1, 'end']].map(function (t) {
-      return '<text x="' + t[1] + '" y="140" text-anchor="' + t[2] + '" font-size="12" fill="var(--morph-muted)">' + t[0] + '</text>';
+      return '<text data-axis="x" x="' + t[1] + '" y="140" text-anchor="' + t[2] + '" font-size="12" fill="var(--morph-muted)">' + t[0] + '</text>';
     }).join('');
     const dots = coords.map(function (p) {
       return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="2.8" fill="var(--morph-accent)"/>';
@@ -126,6 +128,7 @@
       '<path d="' + pathD + '" fill="none" stroke="var(--morph-accent)" stroke-width="2" stroke-linejoin="round"/>' +
       dots +
       '<line id="va-morph-thresh-line" x1="' + x0 + '" y1="' + yT + '" x2="' + x1 + '" y2="' + yT + '" stroke="var(--morph-warn)" stroke-width="1.6" stroke-dasharray="5 3"/>' +
+      '<rect x="' + px + '" y="' + (pos.y - 13.0).toFixed(1) + '" width="' + pw + '" height="18.0" rx="2" fill="var(--morph-elevated)" opacity="0.96"/>' +
       '<text id="va-morph-thresh-label" class="va-svg-halo-text" x="' + pos.x + '" y="' + pos.y + '" text-anchor="' + pos.anchor + '" font-size="11.5" font-weight="700" paint-order="stroke fill" stroke="var(--morph-elevated)" stroke-width="4" stroke-linejoin="round" fill="var(--morph-warn)">' + lblTxt + '</text>' +
       '</svg>';
   }
