@@ -278,6 +278,47 @@ def build_export_payload(spec: dict[str, Any], headers: list[str], rows: list[li
     return {"title": title, "tsv": "\n".join(tsv_lines), "markdown": "\n".join(md_parts)}
 
 
+def _build_takeaway_table_panel(
+    safe_id: str,
+    title: str,
+    headers: list[str],
+    rows: list[list[str]],
+    editorial: bool,
+) -> str:
+    """Render hidden-until-found table panel; keep editorial return bars outside the bordered .va-table-wrap frame."""
+    num_cols = [False if ci == 0 else _is_numeric_col(rows, ci) for ci in range(len(headers))]
+    ths = "".join(
+        f'<th scope="col" class="num">{esc(h)}</th>' if num_cols[ci] else f'<th scope="col">{esc(h)}</th>'
+        for ci, h in enumerate(headers)
+    )
+    trs = "".join(
+        "<tr>" + "".join(
+            f'<th scope="row">{esc(c)}</th>'
+            if ci == 0
+            else f'<td{" class=\"num\"" if num_cols[ci] else ""} data-label="{esc(headers[ci])}">{esc(c)}</td>'
+            for ci, c in enumerate(r)
+        ) + "</tr>"
+        for r in rows
+    )
+    table_html = (
+        f'<table class="booktabs qe-table"><caption class="qe-table-caption qe-caption-sr">{esc(title)}</caption>'
+        f"<thead><tr>{ths}</tr></thead><tbody>{trs}</tbody></table>"
+    )
+    if editorial:
+        return (
+            f'<div class="va-card-table-panel" id="{safe_id}-table" hidden="until-found">'
+            '<div class="va-table-top-bar">'
+            f'<button type="button" class="va-footer-link va-table-return-link" data-qe-editorial-return aria-controls="{safe_id}-chart">Show chart</button>'
+            "</div>"
+            f'<div class="va-table-wrap qe-table-wrap" tabindex="0" role="region" aria-label="{esc(title)} data table">'
+            f"{table_html}</div></div>"
+        )
+    return (
+        f'<div class="va-card-table-panel va-table-wrap" id="{safe_id}-table" hidden="until-found" tabindex="0" role="region" aria-label="{esc(title)} data table">'
+        f"{table_html}</div>"
+    )
+
+
 def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig_id: str, editorial: bool = False) -> str:
     """Wrap figure content with subtitle, interactive export controls (Path B top bar or Path A footer links), & Note/Source."""
     meta = spec.get("metadata") or {}
@@ -318,35 +359,7 @@ def wrap_takeaway_card(spec: dict[str, Any], inner_html: str, modality: str, fig
             "</div>"
         )
 
-    table_panel = ""
-    if has_table_toggle:
-        num_cols = [False if ci == 0 else _is_numeric_col(rows, ci) for ci in range(len(headers))]
-        ths = "".join(
-            f'<th scope="col" class="num">{esc(h)}</th>' if num_cols[ci] else f'<th scope="col">{esc(h)}</th>'
-            for ci, h in enumerate(headers)
-        )
-        trs = "".join(
-            "<tr>" + "".join(
-                f'<th scope="row">{esc(c)}</th>'
-                if ci == 0
-                else f'<td{" class=\"num\"" if num_cols[ci] else ""} data-label="{esc(headers[ci])}">{esc(c)}</td>'
-                for ci, c in enumerate(r)
-            ) + "</tr>"
-            for r in rows
-        )
-        top_return = (
-            '<div class="va-table-top-bar">'
-            f'<button type="button" class="va-footer-link va-table-return-link" data-qe-editorial-return aria-controls="{safe_id}-chart">Show chart</button>'
-            "</div>"
-            if editorial
-            else ""
-        )
-        table_panel = (
-            f'<div class="va-card-table-panel va-table-wrap" id="{safe_id}-table" hidden="until-found" tabindex="0" role="region" aria-label="{esc(payload["title"])} data table">'
-            f"{top_return}"
-            f'<table class="booktabs qe-table"><caption class="qe-table-caption qe-caption-sr">{esc(payload["title"])}</caption><thead><tr>{ths}</tr></thead><tbody>{trs}</tbody></table>'
-            "</div>"
-        )
+    table_panel = _build_takeaway_table_panel(safe_id, str(payload["title"]), headers, rows, editorial) if has_table_toggle else ""
 
     footer_bits: list[str] = []
     if note:

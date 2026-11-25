@@ -150,6 +150,13 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         self.assertEqual(slider_res["warnState"], "warn")
         self.assertIn("-26.5 mmHg", slider_res["warnMargin"])
 
+        rail_js = (
+            "return ['#va-landing-morph-card','#va-landing-standards h2','#va-landing-standards .va-landing-sec-hdr span',"
+            "'#va-landing-standards .va-standard-card','#va-landing-pillars'].map(s=>document.querySelector(s).getBoundingClientRect().left);"
+        )
+        main_lefts = driver.execute_script(rail_js)
+        self.assertLessEqual(max(main_lefts) - min(main_lefts), 0.1, f"Main Overview left rail drift: {main_lefts}")
+
         for rel, expected_cnt in (("customizations/personal-starter/showcase.html", 22), ("customizations/brand-starter/showcase.html", 18)):
             driver.get(f"{root_url}/{rel}")
             time.sleep(0.2)
@@ -157,6 +164,9 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
                 "return document.documentElement.dataset.studioView === 'overview' ? document.querySelectorAll('#va-studio-landing .va-domain-view-btn').length : -1;"
             )
             self.assertEqual(int(cnt), expected_cnt, f"starter {rel} landing view button mismatch")
+            if "brand-starter" in rel:
+                brand_lefts = driver.execute_script(rail_js)
+                self.assertLessEqual(max(brand_lefts) - min(brand_lefts), 0.1, f"Brand Overview left rail drift: {brand_lefts}")
 
     def _check_light_topbar_viewports(self, driver: Any, base_url: str) -> None:
         for vp_w, vp_h in ((390, 844), (840, 1050), (1440, 900), (1920, 1080), (3840, 2160)):

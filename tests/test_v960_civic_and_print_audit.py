@@ -89,6 +89,8 @@ class TestCivicCompilersAndExport(unittest.TestCase):
         self.assertIn("data-qe-editorial-toggle", ed_frag)
         self.assertIn("Show data table", ed_frag)
         self.assertIn("va-editorial-footer-line", ed_frag)
+        self.assertIn('<div class="va-card-table-panel" id=', ed_frag)
+        self.assertNotIn("va-card-table-panel va-table-wrap", ed_frag)
 
         for p_rel in (
             "content/corpora/02-cloud-cyber-and-ai-ops/evidence/v06_ai_calibration_plot.json",
@@ -127,10 +129,7 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
         root_url = f"http://127.0.0.1:{port}"
         driver = create_headless_driver()
         try:
-            driver.execute_cdp_cmd(
-                "Browser.grantPermissions",
-                {"permissions": ["clipboardReadWrite", "clipboardSanitizedWrite"]},
-            )
+            driver.execute_cdp_cmd("Browser.grantPermissions", {"permissions": ["clipboardReadWrite", "clipboardSanitizedWrite"]})
             from selenium.webdriver.common.by import By
 
             set_viewport(driver, 1440, 900, 1)
@@ -151,11 +150,8 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
                 "const hexTop=document.querySelector('#v22-map svg').getBoundingClientRect().top;"
                 "return {nav, railVis, barCnt, preCnt, slideCnt, selW, proseW, hexW, hexTop};"
             )
-            self.assertEqual(v22_layout["nav"], "n0")
-            self.assertEqual(v22_layout["railVis"], "none")
-            self.assertEqual(v22_layout["barCnt"], 0, "Expected zero top button toolbars in Path A article")
-            self.assertEqual(v22_layout["preCnt"], 0, "Expected zero stray code slabs in View 22")
-            self.assertEqual(v22_layout["slideCnt"], 0, "Expected zero slide deck toggle in View 22")
+            self.assertEqual((v22_layout["nav"], v22_layout["railVis"]), ("n0", "none"))
+            self.assertEqual((v22_layout["barCnt"], v22_layout["preCnt"], v22_layout["slideCnt"]), (0, 0, 0))
             self.assertGreater(v22_layout["hexW"], v22_layout["proseW"] + 60.0)
             self.assertLess(v22_layout["hexTop"], 900.0)
 
@@ -185,23 +181,30 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
             kept_focus = driver.execute_script("return document.activeElement?.getAttribute('data-state') || '';")
             self.assertEqual(kept_focus, "CA", "Hex tile activation dropped keyboard focus")
 
-            # Quiet footer Show data table -> Show chart + hidden caption + Copy for AI zero-jump
+            # Quiet footer Show data table -> borderless top Show chart return -> focus return + Copy for AI
             driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
             tbl_chk = driver.execute_script(
-                "const p=document.querySelector('#v22-map .va-card-table-panel');"
-                "const capW=p.querySelector('caption').getBoundingClientRect().width;"
-                "const btnTxt=document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent;"
-                "const align=getComputedStyle(p.querySelector('tbody td.num')).textAlign;"
-                "return {vis:!p.hasAttribute('hidden'), rows:p.querySelectorAll('tbody tr').length, capW, btnTxt, align};"
+                "const p=document.querySelector('#v22-map .va-card-table-panel'), w=p.querySelector('.va-table-wrap'),"
+                " bar=p.querySelector('.va-table-top-bar'), ret=p.querySelector('[data-qe-editorial-return]');"
+                "const wr=w.getBoundingClientRect(), rr=ret.getBoundingClientRect();"
+                "return {vis:!p.hasAttribute('hidden'), rows:p.querySelectorAll('tbody tr').length,"
+                " capW:p.querySelector('caption').getBoundingClientRect().width,"
+                " btnTxt:document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent,"
+                " align:getComputedStyle(p.querySelector('tbody td.num')).textAlign,"
+                " pBdr:parseFloat(getComputedStyle(p).borderTopWidth), inWrap:!!(w&&w.contains(bar)),"
+                " gap:wr.top-rr.bottom, rDelta:Math.abs(wr.right-rr.right)};"
             )
-            self.assertTrue(tbl_chk["vis"])
-            self.assertEqual(tbl_chk["rows"], 51)
+            self.assertTrue(tbl_chk["vis"] and not tbl_chk["inWrap"] and tbl_chk["pBdr"] == 0.0, tbl_chk)
+            self.assertEqual((tbl_chk["rows"], tbl_chk["btnTxt"], tbl_chk["align"]), (51, "Show chart", "right"))
             self.assertLessEqual(tbl_chk["capW"], 2.0)
-            self.assertEqual(tbl_chk["btnTxt"], "Show chart")
-            self.assertEqual(tbl_chk["align"], "right")
-
-            driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
-            self.assertEqual(driver.execute_script("return document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent;"), "Show data table")
+            self.assertGreaterEqual(tbl_chk["gap"], 4.0, tbl_chk)
+            self.assertLessEqual(tbl_chk["rDelta"], 1.0, tbl_chk)
+            ret_chk = driver.execute_script(
+                "document.querySelector('#v22-map [data-qe-editorial-return]').click();"
+                "const t=document.querySelector('#v22-map [data-qe-editorial-toggle]');"
+                "return {txt:t.textContent, focused:document.activeElement===t, hid:document.querySelector('#v22-map .va-card-table-panel').hasAttribute('hidden')};"
+            )
+            self.assertEqual(ret_chk, {"txt": "Show data table", "focused": True, "hid": True})
 
             copy_link = driver.find_element(By.CSS_SELECTOR, '#v22-map [data-qe-copy="ai"]')
             w_before = float(copy_link.rect["width"])
