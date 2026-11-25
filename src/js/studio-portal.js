@@ -252,9 +252,9 @@
         if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
         if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc);
         if (win.QuietStageRichV9) win.QuietStageRichV9.boot(doc);
-        if (win.QuietAlarmLifecycle) win.QuietAlarmLifecycle.boot(doc);
       }
       syncShellNav(doc, viewMeta);
+      if (win && win.QuietAlarmLifecycle) win.QuietAlarmLifecycle.boot(doc);
       state.renderedView = state.view;
       state.renderedNav = doc.documentElement.dataset.effectiveNav;
       if (win) {
@@ -263,8 +263,11 @@
       }
       main.scrollTop = 0;
     } else {
-      if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) { syncShellNav(doc, viewMeta); state.renderedNav = doc.documentElement.dataset.effectiveNav; }
-      else if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.syncRailFooter(doc, state);
+      if (doc.documentElement.dataset.effectiveNav !== state.renderedNav) {
+        syncShellNav(doc, viewMeta); state.renderedNav = doc.documentElement.dataset.effectiveNav;
+        var aHost = doc.querySelector('.va-alarm-console');
+        if (win && win.QuietAlarmTrace && aHost && aHost.__vaAlarmInst) win.QuietAlarmTrace.syncBoundUI(aHost, aHost.__vaAlarmInst);
+      } else if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.syncRailFooter(doc, state);
       if (win && win.QuietEChartsAdapter) win.QuietEChartsAdapter.refresh(doc);
     }
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.bindPortalScrollTuck(iframe);

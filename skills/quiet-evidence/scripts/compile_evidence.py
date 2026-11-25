@@ -150,7 +150,7 @@ def _format_figure_math_html(raw: str) -> str:
     s = _re.sub(r"\b(?:eta|η)_bte\b", "η_bte", s)
     s = _re.sub(r"\bsigma_y\b", "σ_y", s)
     s = _re.sub(r"\btau\b", "τ", s)
-    return _re.sub(r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|η|τ|[A-Za-z]))_([A-Za-z0-9]{1,3})(?![A-Za-z0-9_])", r"\1<sub>\2</sub>", esc(s))
+    return _re.sub(r"(?<![A-Za-z0-9_])((?:p̂|ŷ|σ|η|τ|ω|[A-Za-z]))_([A-Za-z0-9]{1,3})(?![A-Za-z0-9_])", r"\1<sub>\2</sub>", esc(s))
 
 
 def _compile_single_dict(

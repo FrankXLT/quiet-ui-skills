@@ -114,11 +114,16 @@
     (payload.envelopes || []).forEach(function (env) {
       if (typeof env.value !== 'number' || !Number.isFinite(env.value)) return;
       var col = cssVar(doc, env.token || '--status-warn', env.type === 'abort' ? t.statusDanger : t.statusWarn);
+      var lblTxt = env.label || String(env.value);
+      var lp = String(env.labelPosition || '').toLowerCase();
+      var pos = (lp === 'below' || lp === 'insideendbottom') ? 'insideEndBottom'
+        : ((lp === 'above' || lp === 'insideendtop') ? 'insideEndTop'
+          : ((lblTxt.trim().indexOf('-2%') === 0 || env.direction === 'lower') ? 'insideEndBottom' : 'insideEndTop'));
       items.push({
-        name: env.label || String(env.value),
+        name: lblTxt,
         yAxis: env.value,
         lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
-        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
+        label: { formatter: lblTxt, position: pos, distance: 5, color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
       });
     });
     return items;
@@ -170,7 +175,7 @@
     var fmtSub = function (txt) {
       var s = txt == null ? '' : String(txt);
       if (s.indexOf('{') >= 0 || s.indexOf('}') >= 0) return s;
-      return s.replace(/(^|[^A-Za-z0-9_])([A-Za-z\u03b7\u03c3\u03c4\u03bc\u0394\u0177p](?:\u0302|\u0304)?)_([A-Za-z0-9]{1,4})(?![A-Za-z0-9_])/g, '$1$2{sub|$3}');
+      return s.replace(/(^|[^A-Za-z0-9_])([A-Za-z\u03b7\u03c3\u03c4\u03c9\u03bc\u0394\u0177p](?:\u0302|\u0304)?)_([A-Za-z0-9]{1,4})(?![A-Za-z0-9_])/g, '$1$2{sub|$3}');
     };
     var xAxisBase = {
       type: xMeta.log ? 'log' : 'value',

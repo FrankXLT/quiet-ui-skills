@@ -55,6 +55,7 @@
       "threshold_value": 5.10,
       "type": "warning",
       "direction": "none",
+      "label_position": "above",
       "stroke_style": "dashed",
       "stroke_color": "var(--status-warn)"
     },
@@ -63,6 +64,7 @@
       "threshold_value": 4.90,
       "type": "warning",
       "direction": "none",
+      "label_position": "below",
       "stroke_style": "dashed",
       "stroke_color": "var(--status-warn)"
     }

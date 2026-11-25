@@ -24,6 +24,7 @@ def compile_alarm_lifecycle_specimen() -> str:
         "direction": "below",
         "nominalStart": 98.2,
         "breachPeak": 91.4,
+        "ackValue": 91.4,
         "breachReason": "94.0% Floor Breach",
         "ackActionHint": "Click Acknowledge Alarm to restore balanced sibling grid with latched steady fault.",
         "siblings": [

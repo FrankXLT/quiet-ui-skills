@@ -186,7 +186,7 @@ def _check_v17_and_v18_smart_home(driver: Any, base_url: str, errs: list[str]) -
         doc.getElementById('v18-garage-arm').click(); doc.getElementById('v18-garage-exec').click();
         if (doc.getElementById('v18-garage-pill').textContent.trim() !== 'OPEN') return 'garage unlock failed';
         doc.querySelector('button[data-v18-filter="climate"]').click();
-        return [...doc.querySelectorAll('.v18-zone-tile')].filter(el => !el.hasAttribute('hidden')).length === 2 ? 'ok' : 'filter failed';
+        return [...doc.querySelectorAll('.v18-zone-tile')].filter(el => !el.hasAttribute('hidden')).length === 3 ? 'ok' : 'filter failed';
     """)
     if v18_desk != "ok":
         errs.append(f"[V18_DESKTOP] {v18_desk}")

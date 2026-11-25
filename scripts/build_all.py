@@ -70,6 +70,7 @@ def _render_evidence_bundle_js() -> str:
         "src/js/quiet-period-stepper.js",
         "src/js/quiet-sankey-layout.js",
         "src/js/quiet-card-export.js",
+        "src/js/quiet-alarm-trace.js",
         "src/js/quiet-alarm-lifecycle.js",
     )
     parts = [

@@ -40,17 +40,8 @@ except ImportError:
     )
 
 
-def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> str:
-    cm = corpus["canonical_metrics"]
-    p99_peak = float(cm_val(cm, "p99_peak_ms"))
-    p99_lim = float(cm_val(cm, "p99_threshold_ms"))
-    burn = float(cm_val(cm, "error_budget_burn_pct_hr"))
-    burn_lim = float(cm_val(cm, "error_budget_burn_limit_pct_hr"))
-    drop_s = float(cm_val(cm, "scrape_dropout_s"))
-    ca_s = float(cm_val(cm, "cursor_a_s"))
-    cb_s = float(cm_val(cm, "cursor_b_s"))
-    scope_html = embed_compile(specs["scope"], "L3", "m3")
-    alarm_cfg = {
+def _v04_alarm_cfg(p99_lim: float, p99_peak: float, burn: float, drop_s: float) -> dict[str, Any]:
+    return {
         "viewId": "v04-sre-incident-workbench",
         "initialMode": "auto",
         "paramLabel": "API Checkout Latency (p99)",
@@ -61,6 +52,7 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         "direction": "above",
         "nominalStart": 182.0,
         "breachPeak": p99_peak,
+        "ackValue": p99_peak,
         "breachReason": f"> {p99_lim:.1f} ms SLO Ceiling",
         "ackActionHint": "Acknowledge alert to return to balanced scope and trigger canary traffic drain.",
         "siblings": [
@@ -70,12 +62,22 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         ],
     }
 
+
+def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> str:
+    cm = corpus["canonical_metrics"]
+    p99_peak, p99_lim = float(cm_val(cm, "p99_peak_ms")), float(cm_val(cm, "p99_threshold_ms"))
+    burn, burn_lim = float(cm_val(cm, "error_budget_burn_pct_hr")), float(cm_val(cm, "error_budget_burn_limit_pct_hr"))
+    drop_s, ca_s, cb_s = float(cm_val(cm, "scrape_dropout_s")), float(cm_val(cm, "cursor_a_s")), float(cm_val(cm, "cursor_b_s"))
+    scope_html = embed_compile(specs["scope"], "L3", "m3")
+    alarm_cfg = _v04_alarm_cfg(p99_lim, p99_peak, burn, drop_s)
+
     return f"""<div class="v9-stage-inner v9-view-v04">
   <header class="v9-masthead">
     <div class="v9-masthead-eyebrow">
       <span class="va-kicker">API-EDGE-CLUSTER-W2 · SRE-SLO-250MS · OTEL-COL-V0.114.0</span>
       <div class="v9-masthead-tags">
         <span class="va-pill" data-variant="tag">PROM-SCRAPE-4S</span>
+        <span class="va-pill" data-variant="status" data-state="nominal" data-alarm-header-pill="1">ALL SYSTEMS NOMINAL</span>
         <span id="v04-gate-pill" class="va-pill" data-variant="status" data-state="danger">CANARY TRIPPED</span>
       </div>
     </div>

@@ -8,9 +8,13 @@
   .v9-stage-inner.v9-view-v08 {
     max-inline-size: min(100%, 104rem);
     min-block-size: calc(100dvh - 16px);
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 0.55rem;
     padding: 0.72rem 1.25rem;
+  }
+  .v9-view-v08 > .va-alarm-console,
+  .v9-view-v08 > .va-alarm-console > .va-alarm-balanced-wrap {
+    flex: 1 1 auto;
   }
   .v08-wall-header {
     display: flex;

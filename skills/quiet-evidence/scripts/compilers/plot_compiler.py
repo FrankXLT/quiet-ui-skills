@@ -144,8 +144,10 @@ def _render_envelopes(
         raw_lbl = str(env.get("label", "Limit"))
         if is_horiz:
             if len(raw_lbl) <= 15:
+                lp = str(env.get("label_position") or "").lower()
+                dy_g = -3.0 if lp == "above" else (11.0 if lp == "below" else 4.0)
                 parts.append(f'<line x1="{x0 + pw:.1f}" y1="{px_pts[0][1]:.1f}" x2="{x0 + pw + 5.0:.1f}" y2="{px_pts[0][1]:.1f}" stroke="{col}" stroke-width="1.5"/>')
-                gutter.append({"x": x0 + pw + 8.0, "y": px_pts[0][1] + 4.0, "text": raw_lbl, "anchor": "start", "fill": col, "weight": "700", "w": 110.0})
+                gutter.append({"x": x0 + pw + 8.0, "y": px_pts[0][1] + dy_g, "text": raw_lbl, "anchor": "start", "fill": col, "weight": "700", "w": 110.0})
             else:
                 labels.append({"x": x0 + pw * 0.5, "y": px_pts[0][1] + 4.0, "text": raw_lbl, "anchor": "middle", "fill": col, "weight": "700"})
         else:

@@ -392,6 +392,8 @@ def build_echarts_payload(spec: dict[str, Any], rigor: str = "L3", medium: str =
         etyp = str(e.get("type") or "warning")
         etok = _extract_token(e.get("stroke_color"), "--status-warn" if etyp != "abort" else "--status-danger")
         edef = {"label": _plain_text(e.get("label") or ""), "type": etyp, "direction": str(e.get("direction") or "upper"), "token": etok}
+        if e.get("label_position"):
+            edef["labelPosition"] = str(e["label_position"])
         if e.get("equation"):
             cpts = clip_curve_to_y(_sample_analytical_series(spec, {"equation": e["equation"]}, x_min, x_max, log_x), y_lo, y_hi, log_x=log_x, log_y=log_y)
             if len(cpts) >= 2:

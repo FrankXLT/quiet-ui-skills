@@ -117,7 +117,7 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
         <h2 class="v9-sec-title">Headline Claim: Underdamped Step Ringdown Peak {v_peak:.2f} V (+{mp_pct:.1f}%) Settles Within {t_set:.2f} s</h2>
         <span class="va-pill" data-variant="status" data-state="nominal">PASS · ≤ {sig:.1f} σ</span>
       </div>
-      <p class="qe-fig-desc">Driving a {v0:.2f} V step with 22% damping ratio (ζ = {zeta:.2f}) reached a measured {v_peak:.2f} V first crest before entering the ±2% [4.90 V, 5.10 V] envelope by t_s = {t_set:.2f} s, while five replicated stations stayed within ±{u_cal:.2f} V ({v_mean:.2f} V mean vs {v_tau:.2f} V reference).</p>
+      <p class="qe-fig-desc">Driving a {v0:.2f} V step with 22% damping ratio (ζ = {zeta:.2f}) reached a measured {v_peak:.2f} V first crest before entering the ±2% [4.90 V, 5.10 V] envelope by <i>t</i><sub>s</sub> = {t_set:.2f} s, while five replicated stations stayed within ±{u_cal:.2f} V ({v_mean:.2f} V mean vs {v_tau:.2f} V reference).</p>
       <div class="v20-rubric-bar" id="v20-rubric-chips" role="group" aria-label="Reviewer rubric lens">
         <span class="v9-demo-label">Rubric Focus:</span>
         <button type="button" class="va-pill" data-variant="chip" data-v20-focus="claim" aria-pressed="true">Claim &amp; Ringdown</button>

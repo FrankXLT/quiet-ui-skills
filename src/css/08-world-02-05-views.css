@@ -183,5 +183,13 @@
     }
     .v9-view-v07 #v07-topology .qe-schematic-hdr { grid-column: 1 / -1; }
     .v9-view-v07 #v07-topology .qe-svg-720 { max-inline-size: 100%; }
+
+    .v9-stage-inner.v9-view-v06 { padding: 0.45rem 1rem; gap: 0.42rem; }
+    .v9-view-v06 .v9-masthead { gap: 0.14rem; padding-bottom: 0.22rem; }
+    .v9-view-v06 .v9-gate-band { padding: 0.46rem 0.72rem; gap: 0.3rem; }
+    .v9-view-v06 #v06-lineage { gap: 0.55rem; padding-bottom: 1.5rem; }
+    .v9-view-v06 #v06-lineage .qe-figure { padding: 0.45rem 0.72rem; gap: 0.25rem; }
+    .v9-view-v06 #v06-ood-samples table.booktabs th { white-space: nowrap; padding: 0.34rem 0.48rem; font-size: var(--ts-xs); }
+    .v9-view-v06 #v06-ood-samples table.booktabs td { padding: 0.48rem 0.48rem; line-height: 1.38; }
   }
 }

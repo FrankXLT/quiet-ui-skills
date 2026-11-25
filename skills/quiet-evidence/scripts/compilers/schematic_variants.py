@@ -161,7 +161,7 @@ def compile_er_lineage(spec: dict[str, Any]) -> str:
     rels = spec.get("relations", [])
     is_grid = len(entities) >= 4
     rows = (len(entities) + 1) // 2 if is_grid else 1
-    vb_h = int(20 + rows * 164) if is_grid else 192
+    vb_h = int(16 + rows * 132) if is_grid else 192
     parts: list[str] = [
         f'<svg class="qe-svg qe-svg-720" viewBox="0 0 720 {vb_h}" role="img" aria-label="ER Schema Lineage">',
         '<defs><marker id="qe-er-many" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 1 L 10 6 L 0 11 M 5 1 L 5 11" fill="none" stroke="var(--border-strong)" stroke-width="1.2"/></marker>'
@@ -171,17 +171,17 @@ def compile_er_lineage(spec: dict[str, Any]) -> str:
     for idx, e in enumerate(entities):
         if is_grid:
             col_i, row_i = idx % 2, idx // 2
-            ex, ey, ew, eh = (36.0 if col_i == 0 else 388.0), 20.0 + row_i * 164.0, 296.0, 122.0
+            ex, ey, ew, eh = (36.0 if col_i == 0 else 388.0), 14.0 + row_i * 132.0, 296.0, 104.0
         else:
             ex, ey, ew, eh = float(e["x"]), float(e["y"]), float(e.get("w", 190)), float(e.get("h", 120))
         layout[e["id"]] = {"x": ex, "y": ey, "w": ew, "h": eh, "row": idx // 2 if is_grid else 0, "col": idx % 2 if is_grid else idx}
         hdr_bg = "var(--tint-indigo-bg)" if e.get("focal") else "var(--bg-header)"
         stroke = "var(--accent-focal)" if e.get("focal") else "var(--border-strong)"
         parts.append(f'<rect data-role="node" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="{eh:.1f}" rx="5" fill="var(--bg-card)" stroke="{stroke}" stroke-width="1.5"/>')
-        parts.append(f'<rect data-role="node-header" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="24" rx="5" fill="{hdr_bg}"/>')
-        parts.append(halo_text(ex + ew / 2.0, ey + 16.0, str(e["label"]), anchor="middle", size=11.5, weight="700", fill=stroke if e.get("focal") else "var(--text-primary)", halo=False))
+        parts.append(f'<rect data-role="node-header" x="{ex:.1f}" y="{ey:.1f}" width="{ew:.1f}" height="22" rx="5" fill="{hdr_bg}"/>')
+        parts.append(halo_text(ex + ew / 2.0, ey + 15.0, str(e["label"]), anchor="middle", size=11.5, weight="700", fill=stroke if e.get("focal") else "var(--text-primary)", halo=False))
         for ci, col_txt in enumerate(e.get("columns", [])):
-            parts.append(halo_text(ex + 12.0, ey + 43.0 + ci * 17.5, str(col_txt), anchor="start", size=11.5, fill="var(--text-secondary)", halo=False))
+            parts.append(halo_text(ex + 12.0, ey + 37.5 + ci * 15.5, str(col_txt), anchor="start", size=11.5, fill="var(--text-secondary)", halo=False))
 
     for r in rels:
         s, d = layout.get(r["from"]), layout.get(r["to"])

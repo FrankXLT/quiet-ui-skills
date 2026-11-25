@@ -3427,7 +3427,6 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     display: block;
     inline-size: 100%;
     block-size: auto;
-    max-block-size: 185px;
   }
 
   .va-alarm-timeline {
@@ -3448,53 +3447,39 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     color: var(--text-secondary);
   }
 
-  .va-alarm-tl-step.is-active {
-    border-color: var(--status-err);
-    color: var(--text-primary);
-    font-weight: 700;
-  }
+  .va-alarm-tl-step.is-active { border-color: var(--status-err); color: var(--text-primary); font-weight: 700; }
 
   .va-alarm-siblings {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.45rem 0.75rem;
-    padding: 0.5rem 0.75rem;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-inner);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.75rem;
+    padding: 0.5rem 0.75rem; background: var(--bg-surface);
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-inner);
   }
-
   .va-alarm-sibling-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: var(--ts-xs);
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: var(--ts-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums;
   }
-
-  .va-alarm-sibling-dot {
-    inline-size: 7px;
-    block-size: 7px;
-    border-radius: 50%;
-    background: var(--status-ok);
-    flex: 0 0 auto;
-  }
+  .va-alarm-sibling-dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--status-ok); flex: 0 0 auto; }
 
   .va-alarm-takeover-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.65rem;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 0.65rem 1rem; padding-top: 0.6rem; border-top: 1px solid var(--border-subtle);
+  }
+  .va-alarm-action-hints { display: flex; flex-direction: column; align-items: flex-end; gap: 0.12rem; min-inline-size: 0; }
+  .va-alarm-shortcut-note { font-size: var(--ts-xs); font-weight: 600; color: var(--text-primary); }
+  .va-kbd {
+    display: inline-block; padding: 0.08rem 0.36rem; font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700;
+    line-height: 1.25; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: var(--radius-xs);
   }
 
-  .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"] {
+  .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"],
+  .va-alarm-console[data-alarm-phase="approaching"] .v08-kpi-card[data-alarm-fault-target="1"] {
+    border-color: var(--status-warn);
     outline: 2px solid var(--status-warn);
     outline-offset: 2px;
   }
-  .va-alarm-console[data-alarm-phase="ack"] [data-alarm-fault-target="1"] {
+  .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) [data-alarm-fault-target="1"],
+  .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) .v08-kpi-card[data-alarm-fault-target="1"] {
+    border-color: var(--status-err);
     outline: 2px solid var(--status-err);
     outline-offset: 2px;
   }
@@ -3536,9 +3521,11 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
     .va-alarm-ack-btn,
     .va-alarm-btn { border: 2px solid ButtonText; forced-color-adjust: none; }
     .va-alarm-takeover,
-    .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"],
-    .va-alarm-console[data-alarm-phase="ack"] [data-alarm-fault-target="1"] { outline: 2px solid Highlight; outline-offset: 2px; }
-    .va-alarm-console[data-alarm-phase="ack"] > .va-alarm-banner { border-inline-start: 4px solid Highlight; }
+    .va-alarm-console:is([data-alarm-phase="approaching"], [data-alarm-phase="unack"], [data-alarm-phase="ack"]) [data-alarm-fault-target="1"],
+    .va-alarm-console:is([data-alarm-phase="approaching"], [data-alarm-phase="unack"], [data-alarm-phase="ack"]) .v08-kpi-card[data-alarm-fault-target="1"] {
+      border-color: Highlight; outline: 2px solid Highlight; outline-offset: 2px;
+    }
+    .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) > .va-alarm-banner { border-inline-start: 4px solid Highlight; }
     .va-alarm-sibling-dot { background: Highlight; border: 1px solid CanvasText; }
     .va-alarm-focus-svg { forced-color-adjust: auto; }
   }
@@ -12357,26 +12344,26 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
 </svg></div></div><div class="qe-subpanel"><div class="qe-subpanel-title">Panel E: Crow&#x27;s-Foot Telemetry Schema Lineage</div><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Panel E: Crow&#x27;s-Foot Telemetry Schema Lineage"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 192" role="img" aria-label="ER Schema Lineage">
 <defs><marker id="qe-er-many" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 1 L 10 6 L 0 11 M 5 1 L 5 11" fill="none" stroke="var(--border-strong)" stroke-width="1.2"/></marker><marker id="qe-er-one" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 4 1 L 4 11 M 8 1 L 8 11" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/></marker></defs>
 <rect data-role="node" x="24.0" y="24.0" width="190.0" height="114.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
-<rect data-role="node-header" x="24.0" y="24.0" width="190.0" height="24" rx="5" fill="var(--bg-header)"/>
-<text x="119.0" y="40.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">WR_BOUNDARY_NODES</text>
-<text x="36.0" y="67.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK id : TEXT</text>
-<text x="36.0" y="84.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">sector_id : INT</text>
-<text x="36.0" y="102.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">wavelength : INT</text>
-<text x="36.0" y="119.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">status : TEXT</text>
+<rect data-role="node-header" x="24.0" y="24.0" width="190.0" height="22" rx="5" fill="var(--bg-header)"/>
+<text x="119.0" y="39.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">WR_BOUNDARY_NODES</text>
+<text x="36.0" y="61.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK id : TEXT</text>
+<text x="36.0" y="77.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">sector_id : INT</text>
+<text x="36.0" y="92.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">wavelength : INT</text>
+<text x="36.0" y="108.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">status : TEXT</text>
 <rect data-role="node" x="264.0" y="24.0" width="196.0" height="114.0" rx="5" fill="var(--bg-card)" stroke="var(--accent-focal)" stroke-width="1.5"/>
-<rect data-role="node-header" x="264.0" y="24.0" width="196.0" height="24" rx="5" fill="var(--tint-indigo-bg)"/>
-<text x="362.0" y="40.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">WR_PHASE_SAMPLES</text>
-<text x="276.0" y="67.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK sample_id : UUID</text>
-<text x="276.0" y="84.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK node_id : TEXT</text>
-<text x="276.0" y="102.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">tai_epoch_ns : BIGINT</text>
-<text x="276.0" y="119.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">phase_skew_ps : NUM</text>
+<rect data-role="node-header" x="264.0" y="24.0" width="196.0" height="22" rx="5" fill="var(--tint-indigo-bg)"/>
+<text x="362.0" y="39.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">WR_PHASE_SAMPLES</text>
+<text x="276.0" y="61.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK sample_id : UUID</text>
+<text x="276.0" y="77.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK node_id : TEXT</text>
+<text x="276.0" y="92.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">tai_epoch_ns : BIGINT</text>
+<text x="276.0" y="108.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">phase_skew_ps : NUM</text>
 <rect data-role="node" x="506.0" y="24.0" width="190.0" height="114.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
-<rect data-role="node-header" x="506.0" y="24.0" width="190.0" height="24" rx="5" fill="var(--bg-header)"/>
-<text x="601.0" y="40.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">PTP_HOLDOVER_EVENTS</text>
-<text x="518.0" y="67.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK event_id : UUID</text>
-<text x="518.0" y="84.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK node_id : TEXT</text>
-<text x="518.0" y="102.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">duration_s : NUM</text>
-<text x="518.0" y="119.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">drift_ps_min : NUM</text>
+<rect data-role="node-header" x="506.0" y="24.0" width="190.0" height="22" rx="5" fill="var(--bg-header)"/>
+<text x="601.0" y="39.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">PTP_HOLDOVER_EVENTS</text>
+<text x="518.0" y="61.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK event_id : UUID</text>
+<text x="518.0" y="77.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK node_id : TEXT</text>
+<text x="518.0" y="92.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">duration_s : NUM</text>
+<text x="518.0" y="108.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">drift_ps_min : NUM</text>
 <line x1="214.0" y1="81.0" x2="264.0" y2="81.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
 <path d="M 119.0 138.0 L 119.0 166 A 6 6 0 0 0 125.0 172 L 595.0 172 A 6 6 0 0 0 601.0 166 L 601.0 138.0" fill="none" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
 </svg></div></div></div><figcaption class="va-figure-caption">Physical, Clinical &amp; Metrological multi-panel schematic featuring 78-ohm MIL-STD-1553B and 120-ohm SAE J1939 CAN-FD differential buses, plus Delta Lanes, FSM, and Crow&#x27;s-Foot ER lineage.</figcaption><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:schematic)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for 78 Ω MIL-STD-1553B &amp; 120 Ω CAN-FD Buses, Delta Lanes, FSM &amp; ER Lineage"><code>{
@@ -12935,35 +12922,35 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       ]
     }
   ]
-}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>top_event, branches[].{gate,children[]}</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M6" data-schema-modality="schematic" data-rigor="L2"><figure class="va-figure-card qe-figure" id="bench-27-m6-er-lineage" data-qe-modality="schematic" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Telemetry Warehouse Relational Lineage</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCHEMATIC</span><span class="va-pill" data-variant="tag">L2</span></span></div><div class="qe-schematic-wrap" data-rigor="L2" data-medium="m2"><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Telemetry Warehouse Relational Lineage"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 348" role="img" aria-label="ER Schema Lineage">
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>top_event, branches[].{gate,children[]}</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="M6" data-schema-modality="schematic" data-rigor="L2"><figure class="va-figure-card qe-figure" id="bench-27-m6-er-lineage" data-qe-modality="schematic" data-qe-rigor="L2" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Telemetry Warehouse Relational Lineage</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCHEMATIC</span><span class="va-pill" data-variant="tag">L2</span></span></div><div class="qe-schematic-wrap" data-rigor="L2" data-medium="m2"><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Telemetry Warehouse Relational Lineage"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 280" role="img" aria-label="ER Schema Lineage">
 <defs><marker id="qe-er-many" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 1 L 10 6 L 0 11 M 5 1 L 5 11" fill="none" stroke="var(--border-strong)" stroke-width="1.2"/></marker><marker id="qe-er-one" viewBox="0 0 12 12" refX="2" refY="6" markerWidth="8" markerHeight="8" orient="auto"><path d="M 4 1 L 4 11 M 8 1 L 8 11" fill="none" stroke="var(--border-strong)" stroke-width="1.4"/></marker></defs>
-<rect data-role="node" x="36.0" y="20.0" width="296.0" height="122.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
-<rect data-role="node-header" x="36.0" y="20.0" width="296.0" height="24" rx="5" fill="var(--bg-header)"/>
-<text x="184.0" y="36.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">assets</text>
-<text x="48.0" y="63.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK asset_id : uuid</text>
-<text x="48.0" y="80.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">serial_code : text</text>
-<text x="48.0" y="98.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">bay_location : text</text>
-<rect data-role="node" x="388.0" y="20.0" width="296.0" height="122.0" rx="5" fill="var(--bg-card)" stroke="var(--accent-focal)" stroke-width="1.5"/>
-<rect data-role="node-header" x="388.0" y="20.0" width="296.0" height="24" rx="5" fill="var(--tint-indigo-bg)"/>
-<text x="536.0" y="36.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">telemetry_runs</text>
-<text x="400.0" y="63.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK run_id : uuid</text>
-<text x="400.0" y="80.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK asset_id → assets</text>
-<text x="400.0" y="98.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">sample_rate_hz : float</text>
-<rect data-role="node" x="36.0" y="184.0" width="296.0" height="122.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
-<rect data-role="node-header" x="36.0" y="184.0" width="296.0" height="24" rx="5" fill="var(--bg-header)"/>
-<text x="184.0" y="200.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">calibration_certs</text>
-<text x="48.0" y="227.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK cert_id : uuid</text>
-<text x="48.0" y="244.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK asset_id → assets</text>
-<text x="48.0" y="262.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">valid_until : date</text>
-<rect data-role="node" x="388.0" y="184.0" width="296.0" height="122.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
-<rect data-role="node-header" x="388.0" y="184.0" width="296.0" height="24" rx="5" fill="var(--bg-header)"/>
-<text x="536.0" y="200.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">anomaly_events</text>
-<text x="400.0" y="227.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK event_id : uuid</text>
-<text x="400.0" y="244.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK run_id → telemetry_runs</text>
-<text x="400.0" y="262.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">severity_code : int</text>
-<line x1="332.0" y1="81.0" x2="388.0" y2="81.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
-<line x1="184.0" y1="142.0" x2="184.0" y2="184.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
-<line x1="536.0" y1="142.0" x2="536.0" y2="184.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
+<rect data-role="node" x="36.0" y="14.0" width="296.0" height="104.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<rect data-role="node-header" x="36.0" y="14.0" width="296.0" height="22" rx="5" fill="var(--bg-header)"/>
+<text x="184.0" y="29.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">assets</text>
+<text x="48.0" y="51.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK asset_id : uuid</text>
+<text x="48.0" y="67.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">serial_code : text</text>
+<text x="48.0" y="82.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">bay_location : text</text>
+<rect data-role="node" x="388.0" y="14.0" width="296.0" height="104.0" rx="5" fill="var(--bg-card)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<rect data-role="node-header" x="388.0" y="14.0" width="296.0" height="22" rx="5" fill="var(--tint-indigo-bg)"/>
+<text x="536.0" y="29.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--accent-focal)">telemetry_runs</text>
+<text x="400.0" y="51.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK run_id : uuid</text>
+<text x="400.0" y="67.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK asset_id → assets</text>
+<text x="400.0" y="82.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">sample_rate_hz : float</text>
+<rect data-role="node" x="36.0" y="146.0" width="296.0" height="104.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<rect data-role="node-header" x="36.0" y="146.0" width="296.0" height="22" rx="5" fill="var(--bg-header)"/>
+<text x="184.0" y="161.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">calibration_certs</text>
+<text x="48.0" y="183.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK cert_id : uuid</text>
+<text x="48.0" y="199.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK asset_id → assets</text>
+<text x="48.0" y="214.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">valid_until : date</text>
+<rect data-role="node" x="388.0" y="146.0" width="296.0" height="104.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<rect data-role="node-header" x="388.0" y="146.0" width="296.0" height="22" rx="5" fill="var(--bg-header)"/>
+<text x="536.0" y="161.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="700" fill="var(--text-primary)">anomaly_events</text>
+<text x="400.0" y="183.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">PK event_id : uuid</text>
+<text x="400.0" y="199.0" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">FK run_id → telemetry_runs</text>
+<text x="400.0" y="214.5" text-anchor="start" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">severity_code : int</text>
+<line x1="332.0" y1="66.0" x2="388.0" y2="66.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
+<line x1="184.0" y1="118.0" x2="184.0" y2="146.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
+<line x1="536.0" y1="118.0" x2="536.0" y2="146.0" stroke="var(--border-strong)" stroke-width="1.5" marker-start="url(#qe-er-one)" marker-end="url(#qe-er-many)"/>
 </svg></div></div><figcaption class="va-figure-caption">2x2 Crow&#x27;s-Foot entity schema binding calibrated test assets to time-series telemetry and anomaly logs.</figcaption><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:schematic)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Telemetry Warehouse Relational Lineage"><code>{
   &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:schematic&quot;,
   &quot;id&quot;: &quot;bench-27-m6-er-lineage&quot;,
@@ -13393,7 +13380,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       &quot;to&quot;: &quot;cap&quot;
     }
   ]
-}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>schematic_kind (pipeline), nodes[], connections[]</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-grammar" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-pill-and-status-grammar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ATOMIC GRAMMAR</div><h2 class="qe-fig-title">3-Tier Pill &amp; Status Annunciator Grammar</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Separates borderless nominal status dots, sharp 2px taxonomy tags, and 999px interactive action buttons.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Status Badges (Non-Interactive · Nominal Borderless)</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">NOMINAL · 99.8%</span><span class="va-pill" data-variant="status" data-state="warn">CAUTION · THERMAL</span><span class="va-pill" data-variant="status" data-state="fault">TRIP · 2OO3 QUORUM</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Monochrome Keycap Tags (2px Sharp Radius)</div><div class="v9-demo-row"><span class="va-pill" data-variant="tag">NIST SP 811</span><span class="va-pill" data-variant="tag">READ ONLY</span><span class="va-pill" data-variant="tag">ISO-101 CONFORMANT</span></div></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Interactive Action Filter Chips (Button · 999px Pill Radius)</div><div class="v9-demo-row v9-demo-chips" role="group" aria-label="Telemetry stream filter"><button type="button" class="va-pill" data-variant="chip" aria-pressed="true">Critical Only</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Calibrated Sensors</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Scheduled Hold</button><span class="va-nums qe-fig-desc" data-chip-readout aria-live="polite">Active filter: Critical Only</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>telemetry.state (nominal|warn|fault), metadata.flags[]</code></div><div><strong>Optional (omit if null):</strong> <code>excursion.margin_pct, protocol.mode_tag (omit when unbacked)</code></div><div><strong>Warmup / empty fallback:</strong> Render neutral &#x27;Nominal&#x27; dot or &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-controls" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-guarded-and-consumer-controls"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ERGONOMIC ACTUATION</div><h2 class="qe-fig-title">Guarded Industrial Switch &amp; Calm Discrete Controls</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 °C trim steppers.</p><div class="qe-bench-body"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Industrial Two-Step Guarded Interlock</div><div class="v9-guard-pad" data-guard-pad><button type="button" class="v9-guard-btn" data-guard-arm aria-expanded="false">Arm Feeder Transfer</button><button type="button" class="v9-guard-btn v9-guard-confirm" data-guard-confirm hidden>Confirm Execute</button><button type="button" class="v9-guard-btn" data-guard-cancel hidden>Cancel</button><span class="va-pill" data-variant="status" data-state="nominal" data-guard-state aria-live="polite">SAFE · LOCKED</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Calm Consumer Segmented Preset &amp; Trim Stepper</div><div class="v9-demo-row"><div class="v9-seg-group" role="group" aria-label="Comfort mode preset"><button type="button" class="v9-seg-btn" aria-pressed="false">Away</button><button type="button" class="v9-seg-btn" aria-pressed="true">Comfort</button><button type="button" class="v9-seg-btn" aria-pressed="false">Eco Night</button></div><div class="v9-stepper" data-stepper data-min="16.0" data-max="26.0" data-step="0.5" data-val="21.0"><button type="button" class="v9-stepper-btn" data-step-delta="-0.5" aria-label="Decrease setpoint">-</button><span class="v9-stepper-val va-nums" data-step-display aria-live="polite">21.0 °C</span><button type="button" class="v9-stepper-btn" data-step-delta="0.5" aria-label="Increase setpoint">+</button></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>actuator.state, interlock.armed (bool), command_endpoint</code></div><div><strong>Optional (omit if null):</strong> <code>command.ack_latency_ms, operator_note (omit when absent)</code></div><div><strong>Warmup / empty fallback:</strong> Disable EXECUTE when interlock state or ACK timestamp is stale/unknown.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-triage" data-rigor="L1"><div class="va-card qe-bench-card" id="ui-compact-triage-queue"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · WORKSPACE TRIAGE</div><h2 class="qe-fig-title">Dense 38px Issue Triage Queue &amp; State Filters</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L1</span></div></div><p class="qe-fig-desc">Single-scan horizontal triage strips with inline priority tags, state filters, and click-to-inspect owner metadata.</p><div class="qe-bench-body"><div class="v9-triage-wrap" data-triage-root><div class="v9-triage-bar"><div class="v9-demo-row" role="group" aria-label="Filter triage queue"><button type="button" class="va-pill" data-variant="chip" data-triage-filter="all" aria-pressed="true">All (4)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="open" aria-pressed="false">Open (3)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="done" aria-pressed="false">Verified (1)</button></div></div><div class="v9-triage-list" role="listbox" aria-label="Issue triage rows"><button type="button" class="v9-triage-row" role="option" aria-selected="true" tabindex="0" data-triage-state="open" data-triage-detail="Owner: Security Gate · Target +1.0 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">API token rotation grace window blocks canary ingest</span><span class="va-pill" data-variant="status" data-state="fault">BLOCKED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Controls Lab · Target +2.5 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">TSN boundary clock drift spikes under 85 °C thermal ramp</span><span class="va-pill" data-variant="status" data-state="warn">TRIAGED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="done" data-triage-detail="Owner: Release QA · Merged to integration"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Verify zero SVG clipping on 390 px mobile viewport sweep</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Lab Bench · Target +0.5 d"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Publish calibrated RC cooling repeatability summary table</span><span class="va-pill" data-variant="status" data-state="warn">REVIEW</span></button></div><div class="v9-triage-meta" data-triage-detail-box aria-live="polite">Owner: Security Gate · Target +1.0 d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>items[].{id, title, severity, status, owner}</code></div><div><strong>Optional (omit if null):</strong> <code>items[].target_window, filter.bucket_counts (omit if untracked)</code></div><div><strong>Warmup / empty fallback:</strong> Show &#x27;0 matching items&#x27; empty row rather than stubbed triage tasks.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-tree" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-coupled-tree-explorer"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · HIERARCHICAL NAVIGATOR</div><h2 class="qe-fig-title">WAI-ARIA Coupled Tree Explorer &amp; Inspector</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L3</span></div></div><p class="qe-fig-desc">Native keyboard-accessible tree disclosure coupled synchronously with an operational SLA detail inspector.</p><div class="qe-bench-body"><div class="v9-tree-shell" data-tree-root><ul class="v9-tree-nav" role="tree" aria-label="System Subsystem Hierarchy"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-toggle aria-expanded="true" aria-selected="false" tabindex="-1"><span>Core Cluster (Prod)</span><span aria-hidden="true">▾</span></button><ul role="group"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="true" tabindex="0" data-node-title="Edge Ingress Gateway" data-node-state="nominal" data-node-sla="99.94% · 14.2 ms p99" data-node-note="Zero packet drop across dual TLS terminators in last 24h.">Edge Ingress Gateway</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Worker Queue Pool" data-node-state="warn" data-node-sla="97.80% · Depth 412" data-node-note="Elevated backlog from schema migration batch window.">Worker Queue Pool</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Ledger Write Replica" data-node-state="nominal" data-node-sla="100.0% · 0.0 s lag" data-node-note="Synchronous quorum replication verified on 3 zones.">Ledger Write Replica</button></li></ul></li></ul><div class="v9-tree-detail" data-tree-detail aria-live="polite"><div class="v9-demo-row"><strong data-tree-title>Edge Ingress Gateway</strong><span class="va-pill" data-variant="status" data-state="nominal" data-tree-badge>NOMINAL</span></div><div class="va-nums" data-tree-sla>SLO: 99.94% · 14.2 ms p99</div><p class="qe-fig-desc" data-tree-note>Zero packet drop across dual TLS terminators in last 24h.</p></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>tree.nodes[].{id, label, role, children[]}, node.summary</code></div><div><strong>Optional (omit if null):</strong> <code>node.telemetry_note, node.uptime_pct (omit when missing)</code></div><div><strong>Warmup / empty fallback:</strong> Render empty inspector card with node ID only; never fabricate 24h drop counts.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-gate" data-rigor="L2"><div class="va-card qe-bench-card" id="br-review-room-gate-band"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · EXECUTIVE BLUF BRIDGE</div><h2 class="qe-fig-title">Decision Gate Banner &amp; Readiness Checklist</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Lead-with-verdict gate banner tying executive go/hold posture directly to quantitative verification checkboxes.</p><div class="qe-bench-body"><div class="v9-br-banner"><div class="v9-br-head"><strong>Verdict: CONDITIONAL HOLD — Complete Failover Drill Prior to Cutover</strong><span class="va-pill" data-variant="status" data-state="warn">HOLD · 3/4 GATES PASS</span></div><p class="qe-fig-desc">Primary schema backfill and telemetry unit normalization passed verification; final Canary signoff requires green multi-AZ failover latency under 250.0 ms.</p><div class="v9-br-checks"><div class="v9-br-check"><span>1. Type &amp; Build Parity</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>2. Metric Conservation</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>3. Multi-AZ Failover (&lt; 250 ms)</span><span class="va-pill" data-variant="status" data-state="warn">PENDING</span></div><div class="v9-br-check"><span>4. Rollback Snapshot Verified</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>gate.verdict, gate.checklist[].{label, status, state}</code></div><div><strong>Optional (omit if null):</strong> <code>gate.blocker_reason, gate.signoff_ts (omit if not recorded)</code></div><div><strong>Warmup / empty fallback:</strong> Hold verdict neutral (&#x27;Pending Signoff&#x27;) until every gate check reports real status.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-runbook" data-rigor="L2"><div class="va-card qe-bench-card" id="br-split-runbook-and-callout"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · PROCEDURAL BRIDGE</div><h2 class="qe-fig-title">Split Verification Runbook &amp; Escalation Callout</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Asymmetric split pairing ordered diagnostic steps and copy-safe command blocks with fault escalation thresholds.</p><div class="qe-bench-body"><div class="v9-split-runbook"><div class="v9-demo-subcard"><div class="v9-demo-label">Field Diagnostic &amp; Recovery Sequence</div><ol class="v9-runbook-steps"><li>Measure bus termination impedance across CAN_H / CAN_L (expect 60.0 Ω nominal with dual 120 Ω ends).</li><li>Inspect optical/TSN grandmaster lock offset against 0.35 µs dropout ceiling before escalating.</li><li>Capture deterministic trace bundle and attach calibration delta before resetting fault latch.</li></ol><pre class="v9-runbook-cmd" role="region" aria-label="Diagnostic command" tabindex="0"><code>diag-probe --bus tsn0 --check-eol --window 12s</code></pre></div><div class="v9-callout-stack"><div class="v9-callout-box is-warn"><strong>Thermal Derating Watch</strong><br/>Defer load step above 85 °C enclosure ambient until coolant delta recovers below 4 °C.</div><div class="v9-callout-box"><strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 µs) directly to Systems Controls Desk.</div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>steps[].{seq, title, action, outcome}, safety.warning</code></div><div><strong>Optional (omit if null):</strong> <code>telemetry.live_probe, step.elapsed_s (omit when offline)</code></div><div><strong>Warmup / empty fallback:</strong> Display documented static step copy paired with explicit &#x27;Telemetry offline&#x27; note.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-kpi-gauges" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-dense-kpi-gauge-cards"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 COCKPIT PRIMITIVE</div><h2 class="qe-fig-title">Dense Operational KPI Gauge Row &amp; Trackless Unbounded Cards</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Compact 4-up/2-up cards combining bounded used/limit gauges (.va-kpi-gauge-card) with trackless scalar cards (.va-kpi-card) for unbounded totals.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-kpi-demo-wrap><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><span class="v9-demo-label">4-up Desktop / 2-up Tablet KPI Gauges (Absent Sub-Slots Omitted Cleanly)</span><button type="button" class="va-pill" data-variant="chip" data-kpi-toggle-state aria-pressed="true">Simulate Post-Restart Warmup (N=3)</button></div><div class="va-kpi-gauge-grid"><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Partner Quota</span><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span></div><div class="va-kpi-gauge-val">68.4%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Partner Quota Utilization" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:68.4%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:71.4%" title="Daily target 71.4%"></span></div><div class="va-kpi-gauge-stats"><span>6.84M / 10M</span><span>n=482</span><span>Target 71.4%</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Core Compute</span><span class="va-pill" data-variant="tag">NO TARGET PIN</span></div><div class="va-kpi-gauge-val">41.2%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Core Compute Utilization" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:41.2%"></div></div><div class="va-kpi-gauge-stats"><span>82.4M / 200M</span><span>n=1,920</span></div></div><div class="va-kpi-gauge-card" data-state="warn"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Queue Depth</span><span class="va-pill" data-variant="status" data-state="warn">ADVISORY</span></div><div class="va-kpi-gauge-val">84.0%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Queue Depth" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:84%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:80%" title="Queue advisory threshold 80%"></span></div><div class="va-kpi-gauge-stats"><span>42 / 50 slots</span><span>p95 180 ms</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div><div class="va-kpi-gauge-val" data-kpi-warmup-val>3 / 50 calls</div><div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div></div><div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div></div></div><div class="va-kpi-grid"><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Cumulative Steps</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">14,820 steps</div><div class="va-kpi-stats"><span>Unbounded total</span><span>7d window</span></div></div><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Total Tokens</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">1.42M tokens</div><div class="va-kpi-stats"><span>No capacity ceiling</span><span>No fake gauge bar</span></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>cards[].{id, label, used_pct, used_label, limit_label, n_samples}</code></div><div><strong>Optional (omit if null):</strong> <code>cards[].daily_target_pct (omit pin when null), cards[].sub_stats[] (up to 3)</code></div><div><strong>Warmup / empty fallback:</strong> Keep proportional gauge + numerator/limit; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-joined-toolbar" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-joined-workspace-toolbar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TOOLBAR GRAMMAR</div><h2 class="qe-fig-title">Compact Joined Workspace Toolbar (27px Desktop / 44px Touch)</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Single-row ARIA toolbar with hairline-joined filter groups that wrap cleanly on 900px foldables and expand to 44px touch targets on phones.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="va-toolbar-joined" role="toolbar" aria-label="Telemetry filter and export controls" data-joined-toolbar><div class="va-tb-group" role="group" aria-label="Time window"><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="24h" aria-pressed="true">24h</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="7d" aria-pressed="false">7d</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="30d" aria-pressed="false">30d</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Cohort scope"><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="all" aria-pressed="true">All Runs (482)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="excursions" aria-pressed="false">Excursions (19)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="post" aria-pressed="false">Since Ceiling Effective</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Export actions"><button type="button" class="va-tb-btn" data-tb-action="export">Export CSV</button><button type="button" class="va-tb-btn" data-tb-action="reset">Reset</button></div></div><div class="v9-triage-meta" data-tb-status aria-live="polite">Window: 24h · Scope: All Runs (482)</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>filters.{window_opts[], scope_opts[]}, actions[].{id, label}</code></div><div><strong>Optional (omit if null):</strong> <code>active_count, export_href (disable/omit if endpoint unavailable)</code></div><div><strong>Warmup / empty fallback:</strong> Render compact joined buttons with aria-pressed on stateful toggles; expand to 44px on touch.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-period-stepper" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-period-stepper-popover"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TEMPORAL &amp; SCOPE PRIMITIVE</div><h2 class="qe-fig-title">Compound Period Stepper, Grouped Popover &amp; Scope Chip</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Consolidates Calendar-to-Date (MTD/QTD/YTD) and Rolling (30d/90d/52w) windows into one keyboard-accessible popover plus 3-level entity scope chip.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-stepper-demo><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><div class="va-period-stepper" data-period-stepper data-value="mtd"><div class="va-period-nav"><button type="button" class="va-period-step" data-period-step="-1" aria-label="Previous window">&lsaquo;</button><button type="button" class="va-period-trigger" aria-haspopup="menu" aria-expanded="false"><span data-period-label>MTD &middot; Nov 1&ndash;22</span><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="va-period-step" data-period-step="1" aria-label="Next window">&rsaquo;</button></div><button type="button" class="va-period-today" data-period-today hidden>Today</button><div class="va-preset-popover" role="menu" focusgroup="menu nomemory" aria-label="Telemetry time window presets" hidden><div class="va-preset-group"><div class="va-preset-group-label">Calendar-to-Date</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="true" data-preset="mtd" data-label="MTD" data-span="Nov 1&ndash;22" data-at-today="true"><span>Month-to-Date (MTD)</span><span class="va-preset-span">Nov 1&ndash;22</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="qtd" data-label="QTD" data-span="Oct 1&ndash;Nov 22"><span>Quarter-to-Date (QTD)</span><span class="va-preset-span">Oct&ndash;Nov</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="ytd" data-label="YTD" data-span="Jan 1&ndash;Nov 22"><span>Year-to-Date (YTD)</span><span class="va-preset-span">Jan&ndash;Nov</span></button></div><div class="va-preset-group"><div class="va-preset-group-label">Rolling Windows</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r30" data-label="Last 30d" data-span="Oct 24&ndash;Nov 22"><span>Last 30d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r90" data-label="Last 90d" data-span="Aug 25&ndash;Nov 22"><span>Last 90d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r52w" data-label="Last 52w" data-span="52 weeks"><span>Last 52w</span><span class="va-preset-span">1w bins</span></button></div></div></div><div class="va-scope-chip" data-level="entity" data-scope-demo><span class="va-scope-dot" aria-hidden="true"></span><span class="va-scope-label" data-scope-label>Substation B &middot; Transformer 02</span><button type="button" class="va-scope-clear" data-scope-reset aria-label="Clear entity scope">&times;</button></div></div><div class="v9-triage-meta" data-stepper-status aria-live="polite">Active window: MTD &middot; Nov 1&ndash;22 &middot; Adaptive bin: 1d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>period.{preset, start_iso, end_iso, step_delta}, scope.{level, entity, item}</code></div><div><strong>Optional (omit if null):</strong> <code>preset.disabled_reason (disable unsupported offline presets with explanatory title)</code></div><div><strong>Warmup / empty fallback:</strong> Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="cyclical_whisker" data-rigor="L2"><figure class="va-card qe-bench-card qe-figure" id="qe-cyclical-whiskers"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 2 · M4 CYCLICAL WHISKERS</div><h2 class="qe-fig-title">Activity by Hour of Day — Min/Avg/Max Whiskers</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">M4 · L2</span></div></div><p class="qe-fig-desc">Active-day per-slot Min–Max range stems, Active Avg crossbars, and Last 24h markers across 00h–23h (replaces raw multi-day sums whose bars scale artificially with window length).</p><div class="qe-plot-wrap" data-echarts-mode="echarts" data-quiet-echarts="{&quot;kind&quot;:&quot;cyclical_whisker&quot;,&quot;buckets&quot;:[{&quot;label&quot;:&quot;00h&quot;,&quot;min&quot;:2,&quot;avg&quot;:5.2,&quot;max&quot;:11,&quot;recent&quot;:4,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;01h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.4,&quot;max&quot;:8,&quot;recent&quot;:3,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;02h&quot;,&quot;min&quot;:0,&quot;avg&quot;:2.1,&quot;max&quot;:6,&quot;recent&quot;:1,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;03h&quot;,&quot;min&quot;:0,&quot;avg&quot;:1.8,&quot;max&quot;:5,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;04h&quot;,&quot;min&quot;:1,&quot;avg&quot;:2.4,&quot;max&quot;:7,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;05h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.9,&quot;max&quot;:9,&quot;recent&quot;:5,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;06h&quot;,&quot;min&quot;:3,&quot;avg&quot;:6.8,&quot;max&quot;:13,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;07h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.4,&quot;max&quot;:19,&quot;recent&quot;:12,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;08h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.2,&quot;max&quot;:26,&quot;recent&quot;:18,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;09h&quot;,&quot;min&quot;:10,&quot;avg&quot;:20.8,&quot;max&quot;:31,&quot;recent&quot;:24,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;10h&quot;,&quot;min&quot;:12,&quot;avg&quot;:23.5,&quot;max&quot;:35,&quot;recent&quot;:27,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;11h&quot;,&quot;min&quot;:11,&quot;avg&quot;:22.1,&quot;max&quot;:34,&quot;recent&quot;:21,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;12h&quot;,&quot;min&quot;:9,&quot;avg&quot;:18.7,&quot;max&quot;:29,&quot;recent&quot;:17,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;13h&quot;,&quot;min&quot;:11,&quot;avg&quot;:21.6,&quot;max&quot;:33,&quot;recent&quot;:25,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;14h&quot;,&quot;min&quot;:13,&quot;avg&quot;:24.4,&quot;max&quot;:37,&quot;recent&quot;:29,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;15h&quot;,&quot;min&quot;:12,&quot;avg&quot;:22.9,&quot;max&quot;:35,&quot;recent&quot;:22,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;16h&quot;,&quot;min&quot;:10,&quot;avg&quot;:19.6,&quot;max&quot;:31,&quot;recent&quot;:20,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;17h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.8,&quot;max&quot;:27,&quot;recent&quot;:15,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;18h&quot;,&quot;min&quot;:6,&quot;avg&quot;:13.5,&quot;max&quot;:23,&quot;recent&quot;:14,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;19h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.9,&quot;max&quot;:21,&quot;recent&quot;:13,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;20h&quot;,&quot;min&quot;:4,&quot;avg&quot;:10.6,&quot;max&quot;:19,&quot;recent&quot;:9,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;21h&quot;,&quot;min&quot;:4,&quot;avg&quot;:9.4,&quot;max&quot;:17,&quot;recent&quot;:11,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;22h&quot;,&quot;min&quot;:3,&quot;avg&quot;:7.8,&quot;max&quot;:15,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;23h&quot;,&quot;min&quot;:2,&quot;avg&quot;:6.1,&quot;max&quot;:13,&quot;recent&quot;:5,&quot;activeDays&quot;:14}],&quot;opts&quot;:{&quot;unit&quot;:&quot;calls/day&quot;,&quot;recentLabel&quot;:&quot;Last 24h&quot;,&quot;rangeLabel&quot;:&quot;Min\u2013Max&quot;,&quot;avgLabel&quot;:&quot;Active Avg&quot;}}"><div class="qe-plot-modebar" role="group" aria-label="Plot rendering backend"><span class="qe-modebar-label">Renderer</span><button type="button" class="qe-mode-btn" data-qe-mode="svg" aria-pressed="false">Quiet SVG</button><button type="button" class="qe-mode-btn is-active" data-qe-mode="echarts" aria-pressed="true">Live ECharts</button></div><div class="qe-legend-series" aria-label="Series legend"><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="7" y1="1" x2="7" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="1" x2="10" y2="1" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="11" x2="10" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/></svg><span class="qe-leg-txt">Min–Max</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="2" y1="6" x2="12" y2="6" stroke="var(--text-primary)" stroke-width="2.4"/></svg><span class="qe-leg-txt">Active Avg</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><circle cx="7" cy="6" r="3.5" fill="var(--accent-focal)"/></svg><span class="qe-leg-txt">Last 24h</span></span></div><div class="va-figure-scroll"><div class="qe-echarts-host"></div><svg class="qe-svg-fallback qe-svg-680" viewBox="0 0 680 240" role="img" aria-label="Activity by Hour of Day Min Avg Max Whiskers" preserveAspectRatio="xMidYMid meet"><title>Activity by Hour of Day — Min/Avg/Max Whiskers</title><text x="54" y="18" font-family="var(--font-sans)" font-size="11" font-weight="600" fill="var(--text-secondary)">Activity / (calls/day)</text><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="206.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">0</text><line x1="54.0" y1="158.5" x2="660.0" y2="158.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="162.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">10</text><line x1="54.0" y1="115.0" x2="660.0" y2="115.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="119.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20</text><line x1="54.0" y1="71.5" x2="660.0" y2="71.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="75.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">30</text><line x1="54.0" y1="28.0" x2="660.0" y2="28.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="32.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">40</text><line x1="54.0" y1="28.0" x2="54.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="66.6" y1="193.3" x2="66.6" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="154.2" x2="70.1" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="193.3" x2="70.1" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="59.6" y1="179.4" x2="73.6" y2="179.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="66.6" cy="184.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="66.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">00h</text><line x1="91.9" y1="197.7" x2="91.9" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="167.2" x2="95.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="197.7" x2="95.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="84.9" y1="187.2" x2="98.9" y2="187.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="91.9" cy="188.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="117.1" y1="202.0" x2="117.1" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="175.9" x2="120.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="202.0" x2="120.6" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="110.1" y1="192.9" x2="124.1" y2="192.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="117.1" cy="197.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="142.4" y1="202.0" x2="142.4" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="180.2" x2="145.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="202.0" x2="145.9" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="135.4" y1="194.2" x2="149.4" y2="194.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="142.4" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="167.6" y1="197.7" x2="167.6" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="171.6" x2="171.1" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="197.7" x2="171.1" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="160.6" y1="191.6" x2="174.6" y2="191.6" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="167.6" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="167.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">04h</text><line x1="192.9" y1="197.7" x2="192.9" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="162.8" x2="196.4" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="197.7" x2="196.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="185.9" y1="185.0" x2="199.9" y2="185.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="192.9" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="218.1" y1="188.9" x2="218.1" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="145.4" x2="221.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="188.9" x2="221.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="211.1" y1="172.4" x2="225.1" y2="172.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="218.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="243.4" y1="180.2" x2="243.4" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="119.4" x2="246.9" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="180.2" x2="246.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="236.4" y1="152.4" x2="250.4" y2="152.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="243.4" cy="149.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="268.6" y1="167.2" x2="268.6" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="88.9" x2="272.1" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="167.2" x2="272.1" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="261.6" y1="131.5" x2="275.6" y2="131.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="268.6" cy="123.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="268.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">08h</text><line x1="293.9" y1="158.5" x2="293.9" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="67.2" x2="297.4" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="158.5" x2="297.4" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="286.9" y1="111.5" x2="300.9" y2="111.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="293.9" cy="97.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="319.1" y1="149.8" x2="319.1" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="49.8" x2="322.6" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="149.8" x2="322.6" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="312.1" y1="99.8" x2="326.1" y2="99.8" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="319.1" cy="84.5" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="344.4" y1="154.2" x2="344.4" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="54.1" x2="347.9" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="154.2" x2="347.9" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="337.4" y1="105.9" x2="351.4" y2="105.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="344.4" cy="110.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="369.6" y1="162.8" x2="369.6" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="75.9" x2="373.1" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="162.8" x2="373.1" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="362.6" y1="120.7" x2="376.6" y2="120.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="369.6" cy="128.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="369.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">12h</text><line x1="394.9" y1="154.2" x2="394.9" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="58.5" x2="398.4" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="154.2" x2="398.4" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="387.9" y1="108.0" x2="401.9" y2="108.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="394.9" cy="93.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="420.1" y1="145.4" x2="420.1" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="41.0" x2="423.6" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="145.4" x2="423.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="413.1" y1="95.9" x2="427.1" y2="95.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="420.1" cy="75.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="445.4" y1="149.8" x2="445.4" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="49.8" x2="448.9" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="149.8" x2="448.9" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="438.4" y1="102.4" x2="452.4" y2="102.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="445.4" cy="106.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="470.6" y1="158.5" x2="470.6" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="67.2" x2="474.1" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="158.5" x2="474.1" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="463.6" y1="116.7" x2="477.6" y2="116.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="470.6" cy="115.0" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="470.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">16h</text><line x1="495.9" y1="167.2" x2="495.9" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="84.5" x2="499.4" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="167.2" x2="499.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="488.9" y1="128.9" x2="502.9" y2="128.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="495.9" cy="136.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="521.1" y1="175.9" x2="521.1" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="102.0" x2="524.6" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="175.9" x2="524.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="514.1" y1="143.3" x2="528.1" y2="143.3" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="521.1" cy="141.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="546.4" y1="180.2" x2="546.4" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="110.6" x2="549.9" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="180.2" x2="549.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="539.4" y1="150.2" x2="553.4" y2="150.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="546.4" cy="145.4" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="571.6" y1="184.6" x2="571.6" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="119.4" x2="575.1" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="184.6" x2="575.1" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="564.6" y1="155.9" x2="578.6" y2="155.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="571.6" cy="162.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="571.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20h</text><line x1="596.9" y1="184.6" x2="596.9" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="128.1" x2="600.4" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="184.6" x2="600.4" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="589.9" y1="161.1" x2="603.9" y2="161.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="596.9" cy="154.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="622.1" y1="188.9" x2="622.1" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="136.8" x2="625.6" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="188.9" x2="625.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="615.1" y1="168.1" x2="629.1" y2="168.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="622.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="647.4" y1="193.3" x2="647.4" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="145.4" x2="650.9" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="193.3" x2="650.9" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="640.4" y1="175.5" x2="654.4" y2="175.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="647.4" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="647.4" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">23h</text></svg></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>buckets[].{label (00h..23h|Mon..Sun), min, avg, max, activeDays}</code></div><div><strong>Optional (omit if null):</strong> <code>buckets[].recent (Last 24h | Current Cycle marker; omit if current cycle empty)</code></div><div><strong>Warmup / empty fallback:</strong> Skip slots with activeDays === 0 rather than zero-filling; never plot multi-day raw sums on cyclical axes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-forms-states" data-rigor="L2"><div class="va-card qe-bench-card" id="qe-forms-zero-states"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · FORMS, ZERO-STATES &amp; REVERSIBILITY</div><h2 class="qe-fig-title">Validated Threshold Form, 4-Way Zero-States &amp; Reversible Undo</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Demonstrates blur/submit validation with corrective input clearing, explicit gate reasons, 4 honest zero-data patterns (with 1-click filter recovery), and reversible Undo toasts.</p><div class="qe-bench-body"><div class="va-workbench-panes" data-s44-root><section class="va-pane" aria-labelledby="s44-form-hdr"><div class="va-pane-hdr"><strong id="s44-form-hdr" class="v9-sec-title">Threshold Form &amp; Reversible Undo</strong><span class="va-pill" data-variant="status" data-state="nominal" data-s44-rule-pill>Active · 250 ms</span></div><div class="va-pane-body v9-demo-stack"><form class="v9-demo-stack" data-s44-form novalidate><div class="va-field"><label class="va-field-label" for="s44-threshold-input">Alert Ceiling (ms)</label><span id="s44-threshold-hint" class="va-field-hint">Allowed range: 10–5000 ms (validates on blur/submit; clears on input).</span><input class="va-input va-nums" id="s44-threshold-input" name="ceiling_ms" type="number" min="10" max="5000" required value="250" aria-invalid="false" aria-describedby="s44-threshold-hint" data-error="s44-threshold-err"><div id="s44-threshold-err" class="va-field-error" hidden>Enter an integer ceiling between 10 and 5000 ms.</div></div><div class="va-gate-reason" data-s44-gate-reason data-state="nominal" aria-live="polite">Ready: active threshold 250 ms can be saved or archived safely.</div><div class="v9-demo-row"><button type="submit" class="va-btn-primary" data-s44-save>Save Threshold</button><button type="button" class="va-btn-ghost" data-s44-archive>Archive Rule</button></div></form><div class="va-undo-toast" data-s44-toast role="status" aria-live="polite" hidden><span class="va-undo-msg" data-s44-toast-msg>Rule archived.</span><span class="va-undo-actions"><button type="button" class="va-tb-btn" data-s44-undo>Undo</button><button type="button" class="va-tb-btn" data-s44-toast-dismiss aria-label="Dismiss notification">Dismiss</button></span></div></div></section><section class="va-pane" aria-labelledby="s44-states-hdr"><div class="va-pane-hdr"><strong id="s44-states-hdr" class="v9-sec-title">4-Way Zero-Data Taxonomy</strong><span class="va-pane-count">4 states</span></div><div class="va-pane-body v9-demo-stack"><div class="va-tab-strip" role="tablist" aria-label="Zero-data state taxonomy" data-s44-tabs><button type="button" class="va-tab" role="tab" id="s44-tab-filtered" aria-selected="true" aria-controls="s44-panel-filtered" data-s44-kind="filtered">Filtered (0)</button><button type="button" class="va-tab" role="tab" id="s44-tab-first-run" aria-selected="false" aria-controls="s44-panel-first-run" data-s44-kind="first-run">First-Run</button><button type="button" class="va-tab" role="tab" id="s44-tab-warmup" aria-selected="false" aria-controls="s44-panel-warmup" data-s44-kind="warmup">Warmup (N=4)</button><button type="button" class="va-tab" role="tab" id="s44-tab-stale" aria-selected="false" aria-controls="s44-panel-stale" data-s44-kind="stale">Stale Cache</button></div><div id="s44-panel-filtered" role="tabpanel" aria-labelledby="s44-tab-filtered" data-s44-panel="filtered"><div class="va-empty-state" data-kind="filtered"><h3 class="va-empty-title" data-s44-filtered-title>0 runs match "region:ap-east · status:fault"</h3><p class="va-empty-copy" data-s44-filtered-copy>Two active filters exclude all 48 recorded spans in this window.</p><div class="va-empty-actions"><button type="button" class="va-btn-primary" data-s44-clear-filters>Clear filters</button><button type="button" class="va-btn-ghost" data-s44-reapply-filters hidden>Re-apply filter</button></div></div></div><div id="s44-panel-first-run" role="tabpanel" aria-labelledby="s44-tab-first-run" data-s44-panel="first-run" hidden><div class="va-empty-state" data-kind="first-run"><h3 class="va-empty-title">No collectors connected</h3><p class="va-empty-copy">Attach an OpenTelemetry or Modbus probe endpoint to stream verified latencies.</p><div class="va-empty-actions"><button type="button" class="va-btn-primary" data-s44-connect>Connect Collector</button></div></div></div><div id="s44-panel-warmup" role="tabpanel" aria-labelledby="s44-tab-warmup" data-s44-panel="warmup" hidden><div class="va-empty-state" data-kind="warmup"><h3 class="va-empty-title">Warming up — 4 samples collected</h3><p class="va-empty-copy">Sampling every 30 s; steady baseline percentiles unlock once N &ge; 10 samples arrive.</p></div></div><div id="s44-panel-stale" role="tabpanel" aria-labelledby="s44-tab-stale" data-s44-panel="stale" hidden><div class="va-empty-state" data-kind="stale"><h3 class="va-empty-title">Upstream sync timed out — showing last valid values</h3><div class="va-stale-retained"><span>p95 Latency: 142 ms · Error Rate: 0.4%</span><span class="va-pill" data-variant="status" data-state="warn">STALE · Last sync 14:22:08 UTC</span></div><div class="va-empty-actions"><button type="button" class="va-btn-ghost" data-s44-retry>Retry now</button></div></div></div></div></section></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>threshold_ms (10..5000), sync.{status, last_sync_utc}, filter_query</code></div><div><strong>Optional (omit if null):</strong> <code>gate_reason (when blocked), cached_last_good.{p95_ms, error_pct}</code></div><div><strong>Warmup / empty fallback:</strong> Retain last valid values with STALE badge on timeout; expose Clear filters on filtered zero-results.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-alarm-lifecycle" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-alarm-lifecycle"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ISA-18.2 / IEC 60601-1-8 ALARM LIFECYCLE</div><h2 class="qe-fig-title">Automated 4-Phase Alarm Takeover &amp; Acknowledge Flow</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3 / M4 / M5</span></div></div><p class="qe-fig-desc">Transitions calmly from Safe Baseline through Pre-Breach Approach to Reduced-Motion-Safe Autonomous Takeover, then restores the balanced layout after Acknowledgement.</p><div class="qe-bench-body"><div class="va-alarm-console" data-alarm-config="{&quot;viewId&quot;:&quot;specimen-50-alarm&quot;,&quot;initialMode&quot;:&quot;ack&quot;,&quot;benchControls&quot;:true,&quot;paramLabel&quot;:&quot;Feeder-B Bus Voltage&quot;,&quot;channelTag&quot;:&quot;ISA-18.2 / IEC 60601-1-8&quot;,&quot;unit&quot;:&quot;% nominal&quot;,&quot;decimals&quot;:1,&quot;threshold&quot;:94.0,&quot;direction&quot;:&quot;below&quot;,&quot;nominalStart&quot;:98.2,&quot;breachPeak&quot;:91.4,&quot;breachReason&quot;:&quot;94.0% Floor Breach&quot;,&quot;ackActionHint&quot;:&quot;Click Acknowledge Alarm to restore balanced sibling grid with latched steady fault.&quot;,&quot;siblings&quot;:[{&quot;label&quot;:&quot;Feeder-A Voltage&quot;,&quot;val&quot;:&quot;99.1%&quot;},{&quot;label&quot;:&quot;Grid Sync Freq&quot;,&quot;val&quot;:&quot;59.985 Hz&quot;},{&quot;label&quot;:&quot;Reserve SoC&quot;,&quot;val&quot;:&quot;78.4%&quot;}]}" data-alarm-phase="ack"><div class="va-sr-only va-alarm-live" aria-live="polite" aria-atomic="true"></div><div class="va-alarm-banner" data-alarm-banner></div><section class="va-alarm-takeover" data-alarm-takeover aria-label="Specimen 50 Unacknowledged Alarm Takeover"></section><div class="va-alarm-balanced-wrap" data-alarm-balanced><div class="v9-demo-grid"><div class="v9-demo-subcard" data-alarm-fault-target="1"><div class="v9-demo-label">Feeder-B Bus Voltage (Monitored Channel)</div><div class="v9-demo-row"><strong>Threshold: &gt;= 94.0% nominal</strong><span class="va-pill" data-variant="status" data-state="fault">LATCHED EXCURSION · 91.4%</span></div><p class="qe-fig-desc">Steps 1–4 demonstrate Calm Baseline, Amber Approaching Limit, Reduced-Motion-Safe Takeover, and Acknowledged Diagnostic restoration.</p></div><div class="v9-demo-subcard"><div class="v9-demo-label">Nominal Sibling Channels</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">FEEDER-A 99.1%</span><span class="va-pill" data-variant="status" data-state="nominal">SYNC 59.985 Hz</span><span class="va-pill" data-variant="status" data-state="nominal">BESS 78.4%</span></div></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>channel.{paramLabel, unit, threshold, direction, nominalStart, breachPeak}</code></div><div><strong>Optional (omit if null):</strong> <code>siblings[].{label, val}, initialMode (auto|ack), ?alarm= override</code></div><div><strong>Warmup / empty fallback:</strong> Honor prefers-reduced-motion: reduce (steady double frame), pause elapsed timers on document.hidden, and force Phase 4 in @media print.</div></div></details></div></article></section>
+}</code></pre></details><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>schematic_kind (pipeline), nodes[], connections[]</code></div><div><strong>Optional (omit if null):</strong> <code>cutoff_probabilities, phases, enclave_annotations</code></div><div><strong>Warmup / empty fallback:</strong> Render structural skeleton only; display &#x27;No live measurements attached&#x27; instead of guessed rates.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-grammar" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-pill-and-status-grammar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ATOMIC GRAMMAR</div><h2 class="qe-fig-title">3-Tier Pill &amp; Status Annunciator Grammar</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Separates borderless nominal status dots, sharp 2px taxonomy tags, and 999px interactive action buttons.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Status Badges (Non-Interactive · Nominal Borderless)</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">NOMINAL · 99.8%</span><span class="va-pill" data-variant="status" data-state="warn">CAUTION · THERMAL</span><span class="va-pill" data-variant="status" data-state="fault">TRIP · 2OO3 QUORUM</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Monochrome Keycap Tags (2px Sharp Radius)</div><div class="v9-demo-row"><span class="va-pill" data-variant="tag">NIST SP 811</span><span class="va-pill" data-variant="tag">READ ONLY</span><span class="va-pill" data-variant="tag">ISO-101 CONFORMANT</span></div></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Interactive Action Filter Chips (Button · 999px Pill Radius)</div><div class="v9-demo-row v9-demo-chips" role="group" aria-label="Telemetry stream filter"><button type="button" class="va-pill" data-variant="chip" aria-pressed="true">Critical Only</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Calibrated Sensors</button><button type="button" class="va-pill" data-variant="chip" aria-pressed="false">Scheduled Hold</button><span class="va-nums qe-fig-desc" data-chip-readout aria-live="polite">Active filter: Critical Only</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>telemetry.state (nominal|warn|fault), metadata.flags[]</code></div><div><strong>Optional (omit if null):</strong> <code>excursion.margin_pct, protocol.mode_tag (omit when unbacked)</code></div><div><strong>Warmup / empty fallback:</strong> Render neutral &#x27;Nominal&#x27; dot or &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-controls" data-rigor="L2"><div class="va-card qe-bench-card" id="ui-guarded-and-consumer-controls"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ERGONOMIC ACTUATION</div><h2 class="qe-fig-title">Guarded Industrial Switch &amp; Calm Discrete Controls</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Two-step arming for hazardous switchgear paired with low-friction segmented modes and 0.5 °C trim steppers.</p><div class="qe-bench-body"><div class="v9-demo-grid"><div class="v9-demo-subcard"><div class="v9-demo-label">Industrial Two-Step Guarded Interlock</div><div class="v9-guard-pad" data-guard-pad><button type="button" class="v9-guard-btn" data-guard-arm aria-expanded="false">Arm Feeder Transfer</button><button type="button" class="v9-guard-btn v9-guard-confirm" data-guard-confirm hidden>Confirm Execute</button><button type="button" class="v9-guard-btn" data-guard-cancel hidden>Cancel</button><span class="va-pill" data-variant="status" data-state="nominal" data-guard-state aria-live="polite">SAFE · LOCKED</span></div></div><div class="v9-demo-subcard"><div class="v9-demo-label">Calm Consumer Segmented Preset &amp; Trim Stepper</div><div class="v9-demo-row"><div class="v9-seg-group" role="group" aria-label="Comfort mode preset"><button type="button" class="v9-seg-btn" aria-pressed="false">Away</button><button type="button" class="v9-seg-btn" aria-pressed="true">Comfort</button><button type="button" class="v9-seg-btn" aria-pressed="false">Eco Night</button></div><div class="v9-stepper" data-stepper data-min="16.0" data-max="26.0" data-step="0.5" data-val="21.0"><button type="button" class="v9-stepper-btn" data-step-delta="-0.5" aria-label="Decrease setpoint">-</button><span class="v9-stepper-val va-nums" data-step-display aria-live="polite">21.0 °C</span><button type="button" class="v9-stepper-btn" data-step-delta="0.5" aria-label="Increase setpoint">+</button></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>actuator.state, interlock.armed (bool), command_endpoint</code></div><div><strong>Optional (omit if null):</strong> <code>command.ack_latency_ms, operator_note (omit when absent)</code></div><div><strong>Warmup / empty fallback:</strong> Disable EXECUTE when interlock state or ACK timestamp is stale/unknown.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-triage" data-rigor="L1"><div class="va-card qe-bench-card" id="ui-compact-triage-queue"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · WORKSPACE TRIAGE</div><h2 class="qe-fig-title">Dense 38px Issue Triage Queue &amp; State Filters</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L1</span></div></div><p class="qe-fig-desc">Single-scan horizontal triage strips with inline priority tags, state filters, and click-to-inspect owner metadata.</p><div class="qe-bench-body"><div class="v9-triage-wrap" data-triage-root><div class="v9-triage-bar"><div class="v9-demo-row" role="group" aria-label="Filter triage queue"><button type="button" class="va-pill" data-variant="chip" data-triage-filter="all" aria-pressed="true">All (4)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="open" aria-pressed="false">Open (3)</button><button type="button" class="va-pill" data-variant="chip" data-triage-filter="done" aria-pressed="false">Verified (1)</button></div></div><div class="v9-triage-list" role="listbox" aria-label="Issue triage rows"><button type="button" class="v9-triage-row" role="option" aria-selected="true" tabindex="0" data-triage-state="open" data-triage-detail="Owner: Security Gate · Target +1.0 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">API token rotation grace window blocks canary ingest</span><span class="va-pill" data-variant="status" data-state="fault">BLOCKED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Controls Lab · Target +2.5 d"><span class="va-pill" data-variant="tag">P1</span><span class="v9-triage-title">TSN boundary clock drift spikes under 85 °C thermal ramp</span><span class="va-pill" data-variant="status" data-state="warn">TRIAGED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="done" data-triage-detail="Owner: Release QA · Merged to integration"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Verify zero SVG clipping on 390 px mobile viewport sweep</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></button><button type="button" class="v9-triage-row" role="option" aria-selected="false" tabindex="-1" data-triage-state="open" data-triage-detail="Owner: Lab Bench · Target +0.5 d"><span class="va-pill" data-variant="tag">P2</span><span class="v9-triage-title">Publish calibrated RC cooling repeatability summary table</span><span class="va-pill" data-variant="status" data-state="warn">REVIEW</span></button></div><div class="v9-triage-meta" data-triage-detail-box aria-live="polite">Owner: Security Gate · Target +1.0 d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>items[].{id, title, severity, status, owner}</code></div><div><strong>Optional (omit if null):</strong> <code>items[].target_window, filter.bucket_counts (omit if untracked)</code></div><div><strong>Warmup / empty fallback:</strong> Show &#x27;0 matching items&#x27; empty row rather than stubbed triage tasks.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-tree" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-coupled-tree-explorer"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · HIERARCHICAL NAVIGATOR</div><h2 class="qe-fig-title">WAI-ARIA Coupled Tree Explorer &amp; Inspector</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L3</span></div></div><p class="qe-fig-desc">Native keyboard-accessible tree disclosure coupled synchronously with an operational SLA detail inspector.</p><div class="qe-bench-body"><div class="v9-tree-shell" data-tree-root><ul class="v9-tree-nav" role="tree" aria-label="System Subsystem Hierarchy"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-toggle aria-expanded="true" aria-selected="false" tabindex="-1"><span>Core Cluster (Prod)</span><span aria-hidden="true">▾</span></button><ul role="group"><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="true" tabindex="0" data-node-title="Edge Ingress Gateway" data-node-state="nominal" data-node-sla="99.94% · 14.2 ms p99" data-node-note="Zero packet drop across dual TLS terminators in last 24h.">Edge Ingress Gateway</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Worker Queue Pool" data-node-state="warn" data-node-sla="97.80% · Depth 412" data-node-note="Elevated backlog from schema migration batch window.">Worker Queue Pool</button></li><li role="none"><button type="button" class="v9-tree-btn" role="treeitem" data-tree-node aria-selected="false" tabindex="-1" data-node-title="Ledger Write Replica" data-node-state="nominal" data-node-sla="100.0% · 0.0 s lag" data-node-note="Synchronous quorum replication verified on 3 zones.">Ledger Write Replica</button></li></ul></li></ul><div class="v9-tree-detail" data-tree-detail aria-live="polite"><div class="v9-demo-row"><strong data-tree-title>Edge Ingress Gateway</strong><span class="va-pill" data-variant="status" data-state="nominal" data-tree-badge>NOMINAL</span></div><div class="va-nums" data-tree-sla>SLO: 99.94% · 14.2 ms p99</div><p class="qe-fig-desc" data-tree-note>Zero packet drop across dual TLS terminators in last 24h.</p></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>tree.nodes[].{id, label, role, children[]}, node.summary</code></div><div><strong>Optional (omit if null):</strong> <code>node.telemetry_note, node.uptime_pct (omit when missing)</code></div><div><strong>Warmup / empty fallback:</strong> Render empty inspector card with node ID only; never fabricate 24h drop counts.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-gate" data-rigor="L2"><div class="va-card qe-bench-card" id="br-review-room-gate-band"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · EXECUTIVE BLUF BRIDGE</div><h2 class="qe-fig-title">Decision Gate Banner &amp; Readiness Checklist</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Lead-with-verdict gate banner tying executive go/hold posture directly to quantitative verification checkboxes.</p><div class="qe-bench-body"><div class="v9-br-banner"><div class="v9-br-head"><strong>Verdict: CONDITIONAL HOLD — Complete Failover Drill Prior to Cutover</strong><span class="va-pill" data-variant="status" data-state="warn">HOLD · 3/4 GATES PASS</span></div><p class="qe-fig-desc">Primary schema backfill and telemetry unit normalization passed verification; final Canary signoff requires green multi-AZ failover latency under 250.0 ms.</p><div class="v9-br-checks"><div class="v9-br-check"><span>1. Type &amp; Build Parity</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>2. Metric Conservation</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div><div class="v9-br-check"><span>3. Multi-AZ Failover (&lt; 250 ms)</span><span class="va-pill" data-variant="status" data-state="warn">PENDING</span></div><div class="v9-br-check"><span>4. Rollback Snapshot Verified</span><span class="va-pill" data-variant="status" data-state="nominal">PASS</span></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>gate.verdict, gate.checklist[].{label, status, state}</code></div><div><strong>Optional (omit if null):</strong> <code>gate.blocker_reason, gate.signoff_ts (omit if not recorded)</code></div><div><strong>Warmup / empty fallback:</strong> Hold verdict neutral (&#x27;Pending Signoff&#x27;) until every gate check reports real status.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="BR" data-schema-modality="bridge-runbook" data-rigor="L2"><div class="va-card qe-bench-card" id="br-split-runbook-and-callout"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 3 · PROCEDURAL BRIDGE</div><h2 class="qe-fig-title">Split Verification Runbook &amp; Escalation Callout</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">BR · L2</span></div></div><p class="qe-fig-desc">Asymmetric split pairing ordered diagnostic steps and copy-safe command blocks with fault escalation thresholds.</p><div class="qe-bench-body"><div class="v9-split-runbook"><div class="v9-demo-subcard"><div class="v9-demo-label">Field Diagnostic &amp; Recovery Sequence</div><ol class="v9-runbook-steps"><li>Measure bus termination impedance across CAN_H / CAN_L (expect 60.0 Ω nominal with dual 120 Ω ends).</li><li>Inspect optical/TSN grandmaster lock offset against 0.35 µs dropout ceiling before escalating.</li><li>Capture deterministic trace bundle and attach calibration delta before resetting fault latch.</li></ol><pre class="v9-runbook-cmd" role="region" aria-label="Diagnostic command" tabindex="0"><code>diag-probe --bus tsn0 --check-eol --window 12s</code></pre></div><div class="v9-callout-stack"><div class="v9-callout-box is-warn"><strong>Thermal Derating Watch</strong><br/>Defer load step above 85 °C enclosure ambient until coolant delta recovers below 4 °C.</div><div class="v9-callout-box"><strong>Escalation Threshold</strong><br/>Route unresolved cyclic frame jitter (&gt; 12.0 µs) directly to Systems Controls Desk.</div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>steps[].{seq, title, action, outcome}, safety.warning</code></div><div><strong>Optional (omit if null):</strong> <code>telemetry.live_probe, step.elapsed_s (omit when offline)</code></div><div><strong>Warmup / empty fallback:</strong> Display documented static step copy paired with explicit &#x27;Telemetry offline&#x27; note.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-kpi-gauges" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-dense-kpi-gauge-cards"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 COCKPIT PRIMITIVE</div><h2 class="qe-fig-title">Dense Operational KPI Gauge Row &amp; Trackless Unbounded Cards</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Compact 4-up/2-up cards combining bounded used/limit gauges (.va-kpi-gauge-card) with trackless scalar cards (.va-kpi-card) for unbounded totals.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-kpi-demo-wrap><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><span class="v9-demo-label">4-up Desktop / 2-up Tablet KPI Gauges (Absent Sub-Slots Omitted Cleanly)</span><button type="button" class="va-pill" data-variant="chip" data-kpi-toggle-state aria-pressed="true">Simulate Post-Restart Warmup (N=3)</button></div><div class="va-kpi-gauge-grid"><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Partner Quota</span><span class="va-pill" data-variant="status" data-state="nominal">Nominal</span></div><div class="va-kpi-gauge-val">68.4%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Partner Quota Utilization" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:68.4%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:71.4%" title="Daily target 71.4%"></span></div><div class="va-kpi-gauge-stats"><span>6.84M / 10M</span><span>n=482</span><span>Target 71.4%</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Core Compute</span><span class="va-pill" data-variant="tag">NO TARGET PIN</span></div><div class="va-kpi-gauge-val">41.2%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Core Compute Utilization" aria-valuenow="41" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:41.2%"></div></div><div class="va-kpi-gauge-stats"><span>82.4M / 200M</span><span>n=1,920</span></div></div><div class="va-kpi-gauge-card" data-state="warn"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Queue Depth</span><span class="va-pill" data-variant="status" data-state="warn">ADVISORY</span></div><div class="va-kpi-gauge-val">84.0%</div><div class="va-kpi-gauge-track" role="progressbar" aria-label="Queue Depth" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" style="inline-size:84%"></div><span class="va-kpi-gauge-target" style="inset-inline-start:80%" title="Queue advisory threshold 80%"></span></div><div class="va-kpi-gauge-stats"><span>42 / 50 slots</span><span>p95 180 ms</span></div></div><div class="va-kpi-gauge-card" data-state="nominal"><div class="va-kpi-gauge-head"><span class="va-kpi-gauge-label">Post-Restart Buffer</span><span class="va-pill" data-variant="tag">WARMUP</span></div><div class="va-kpi-gauge-val" data-kpi-warmup-val>3 / 50 calls</div><div class="va-kpi-gauge-track" role="progressbar" data-kpi-warmup-bar aria-label="Warmup Sample Count" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"><div class="va-kpi-gauge-fill" data-kpi-warmup-fill style="inline-size:6%"></div></div><div class="va-kpi-gauge-stats"><span data-kpi-warmup-note>Warming up — 3 samples collected (uptime 12m)</span></div></div></div><div class="va-kpi-grid"><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Cumulative Steps</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">14,820 steps</div><div class="va-kpi-stats"><span>Unbounded total</span><span>7d window</span></div></div><div class="va-kpi-card" data-state="nominal"><div class="va-kpi-head"><span class="va-kpi-label">Total Tokens</span><span class="va-pill" data-variant="tag">TRACKLESS</span></div><div class="va-kpi-val">1.42M tokens</div><div class="va-kpi-stats"><span>No capacity ceiling</span><span>No fake gauge bar</span></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>cards[].{id, label, used_pct, used_label, limit_label, n_samples}</code></div><div><strong>Optional (omit if null):</strong> <code>cards[].daily_target_pct (omit pin when null), cards[].sub_stats[] (up to 3)</code></div><div><strong>Warmup / empty fallback:</strong> Keep proportional gauge + numerator/limit; show &#x27;Warming up — N samples collected&#x27; when N &lt; 10.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-joined-toolbar" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-joined-workspace-toolbar"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TOOLBAR GRAMMAR</div><h2 class="qe-fig-title">Compact Joined Workspace Toolbar (27px Desktop / 44px Touch)</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Single-row ARIA toolbar with hairline-joined filter groups that wrap cleanly on 900px foldables and expand to 44px touch targets on phones.</p><div class="qe-bench-body"><div class="v9-demo-stack"><div class="va-toolbar-joined" role="toolbar" aria-label="Telemetry filter and export controls" data-joined-toolbar><div class="va-tb-group" role="group" aria-label="Time window"><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="24h" aria-pressed="true">24h</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="7d" aria-pressed="false">7d</button><button type="button" class="va-tb-btn" data-tb-group="window" data-tb-val="30d" aria-pressed="false">30d</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Cohort scope"><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="all" aria-pressed="true">All Runs (482)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="excursions" aria-pressed="false">Excursions (19)</button><button type="button" class="va-tb-btn" data-tb-group="scope" data-tb-val="post" aria-pressed="false">Since Ceiling Effective</button></div><span class="va-tb-sep" role="separator" aria-orientation="vertical"></span><div class="va-tb-group" role="group" aria-label="Export actions"><button type="button" class="va-tb-btn" data-tb-action="export">Export CSV</button><button type="button" class="va-tb-btn" data-tb-action="reset">Reset</button></div></div><div class="v9-triage-meta" data-tb-status aria-live="polite">Window: 24h · Scope: All Runs (482)</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>filters.{window_opts[], scope_opts[]}, actions[].{id, label}</code></div><div><strong>Optional (omit if null):</strong> <code>active_count, export_href (disable/omit if endpoint unavailable)</code></div><div><strong>Warmup / empty fallback:</strong> Render compact joined buttons with aria-pressed on stateful toggles; expand to 44px on touch.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-period-stepper" data-rigor="M3"><div class="va-card qe-bench-card" id="ui-period-stepper-popover"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · M3 TEMPORAL &amp; SCOPE PRIMITIVE</div><h2 class="qe-fig-title">Compound Period Stepper, Grouped Popover &amp; Scope Chip</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3</span></div></div><p class="qe-fig-desc">Consolidates Calendar-to-Date (MTD/QTD/YTD) and Rolling (30d/90d/52w) windows into one keyboard-accessible popover plus 3-level entity scope chip.</p><div class="qe-bench-body"><div class="v9-demo-stack" data-stepper-demo><div class="v9-demo-row" style="justify-content:space-between;align-items:center"><div class="va-period-stepper" data-period-stepper data-value="mtd"><div class="va-period-nav"><button type="button" class="va-period-step" data-period-step="-1" aria-label="Previous window">&lsaquo;</button><button type="button" class="va-period-trigger" aria-haspopup="menu" aria-expanded="false"><span data-period-label>MTD &middot; Nov 1&ndash;22</span><svg viewBox="0 0 12 12" width="11" height="11" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="va-period-step" data-period-step="1" aria-label="Next window">&rsaquo;</button></div><button type="button" class="va-period-today" data-period-today hidden>Today</button><div class="va-preset-popover" role="menu" focusgroup="menu nomemory" aria-label="Telemetry time window presets" hidden><div class="va-preset-group"><div class="va-preset-group-label">Calendar-to-Date</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="true" data-preset="mtd" data-label="MTD" data-span="Nov 1&ndash;22" data-at-today="true"><span>Month-to-Date (MTD)</span><span class="va-preset-span">Nov 1&ndash;22</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="qtd" data-label="QTD" data-span="Oct 1&ndash;Nov 22"><span>Quarter-to-Date (QTD)</span><span class="va-preset-span">Oct&ndash;Nov</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="ytd" data-label="YTD" data-span="Jan 1&ndash;Nov 22"><span>Year-to-Date (YTD)</span><span class="va-preset-span">Jan&ndash;Nov</span></button></div><div class="va-preset-group"><div class="va-preset-group-label">Rolling Windows</div><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r30" data-label="Last 30d" data-span="Oct 24&ndash;Nov 22"><span>Last 30d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r90" data-label="Last 90d" data-span="Aug 25&ndash;Nov 22"><span>Last 90d</span><span class="va-preset-span">1d bins</span></button><button type="button" class="va-preset-item" role="menuitemradio" aria-checked="false" data-preset="r52w" data-label="Last 52w" data-span="52 weeks"><span>Last 52w</span><span class="va-preset-span">1w bins</span></button></div></div></div><div class="va-scope-chip" data-level="entity" data-scope-demo><span class="va-scope-dot" aria-hidden="true"></span><span class="va-scope-label" data-scope-label>Substation B &middot; Transformer 02</span><button type="button" class="va-scope-clear" data-scope-reset aria-label="Clear entity scope">&times;</button></div></div><div class="v9-triage-meta" data-stepper-status aria-live="polite">Active window: MTD &middot; Nov 1&ndash;22 &middot; Adaptive bin: 1d</div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>period.{preset, start_iso, end_iso, step_delta}, scope.{level, entity, item}</code></div><div><strong>Optional (omit if null):</strong> <code>preset.disabled_reason (disable unsupported offline presets with explanatory title)</code></div><div><strong>Warmup / empty fallback:</strong> Preserve both Calendar-to-Date and Rolling presets; restore trigger focus and close overlays cleanly on selection.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="M4" data-schema-modality="cyclical_whisker" data-rigor="L2"><figure class="va-card qe-bench-card qe-figure" id="qe-cyclical-whiskers"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 2 · M4 CYCLICAL WHISKERS</div><h2 class="qe-fig-title">Activity by Hour of Day — Min/Avg/Max Whiskers</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">M4 · L2</span></div></div><p class="qe-fig-desc">Active-day per-slot Min–Max range stems, Active Avg crossbars, and Last 24h markers across 00h–23h (replaces raw multi-day sums whose bars scale artificially with window length).</p><div class="qe-plot-wrap" data-echarts-mode="echarts" data-quiet-echarts="{&quot;kind&quot;:&quot;cyclical_whisker&quot;,&quot;buckets&quot;:[{&quot;label&quot;:&quot;00h&quot;,&quot;min&quot;:2,&quot;avg&quot;:5.2,&quot;max&quot;:11,&quot;recent&quot;:4,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;01h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.4,&quot;max&quot;:8,&quot;recent&quot;:3,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;02h&quot;,&quot;min&quot;:0,&quot;avg&quot;:2.1,&quot;max&quot;:6,&quot;recent&quot;:1,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;03h&quot;,&quot;min&quot;:0,&quot;avg&quot;:1.8,&quot;max&quot;:5,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;04h&quot;,&quot;min&quot;:1,&quot;avg&quot;:2.4,&quot;max&quot;:7,&quot;recent&quot;:2,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;05h&quot;,&quot;min&quot;:1,&quot;avg&quot;:3.9,&quot;max&quot;:9,&quot;recent&quot;:5,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;06h&quot;,&quot;min&quot;:3,&quot;avg&quot;:6.8,&quot;max&quot;:13,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;07h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.4,&quot;max&quot;:19,&quot;recent&quot;:12,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;08h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.2,&quot;max&quot;:26,&quot;recent&quot;:18,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;09h&quot;,&quot;min&quot;:10,&quot;avg&quot;:20.8,&quot;max&quot;:31,&quot;recent&quot;:24,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;10h&quot;,&quot;min&quot;:12,&quot;avg&quot;:23.5,&quot;max&quot;:35,&quot;recent&quot;:27,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;11h&quot;,&quot;min&quot;:11,&quot;avg&quot;:22.1,&quot;max&quot;:34,&quot;recent&quot;:21,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;12h&quot;,&quot;min&quot;:9,&quot;avg&quot;:18.7,&quot;max&quot;:29,&quot;recent&quot;:17,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;13h&quot;,&quot;min&quot;:11,&quot;avg&quot;:21.6,&quot;max&quot;:33,&quot;recent&quot;:25,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;14h&quot;,&quot;min&quot;:13,&quot;avg&quot;:24.4,&quot;max&quot;:37,&quot;recent&quot;:29,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;15h&quot;,&quot;min&quot;:12,&quot;avg&quot;:22.9,&quot;max&quot;:35,&quot;recent&quot;:22,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;16h&quot;,&quot;min&quot;:10,&quot;avg&quot;:19.6,&quot;max&quot;:31,&quot;recent&quot;:20,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;17h&quot;,&quot;min&quot;:8,&quot;avg&quot;:16.8,&quot;max&quot;:27,&quot;recent&quot;:15,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;18h&quot;,&quot;min&quot;:6,&quot;avg&quot;:13.5,&quot;max&quot;:23,&quot;recent&quot;:14,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;19h&quot;,&quot;min&quot;:5,&quot;avg&quot;:11.9,&quot;max&quot;:21,&quot;recent&quot;:13,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;20h&quot;,&quot;min&quot;:4,&quot;avg&quot;:10.6,&quot;max&quot;:19,&quot;recent&quot;:9,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;21h&quot;,&quot;min&quot;:4,&quot;avg&quot;:9.4,&quot;max&quot;:17,&quot;recent&quot;:11,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;22h&quot;,&quot;min&quot;:3,&quot;avg&quot;:7.8,&quot;max&quot;:15,&quot;recent&quot;:8,&quot;activeDays&quot;:14},{&quot;label&quot;:&quot;23h&quot;,&quot;min&quot;:2,&quot;avg&quot;:6.1,&quot;max&quot;:13,&quot;recent&quot;:5,&quot;activeDays&quot;:14}],&quot;opts&quot;:{&quot;unit&quot;:&quot;calls/day&quot;,&quot;recentLabel&quot;:&quot;Last 24h&quot;,&quot;rangeLabel&quot;:&quot;Min\u2013Max&quot;,&quot;avgLabel&quot;:&quot;Active Avg&quot;}}"><div class="qe-plot-modebar" role="group" aria-label="Plot rendering backend"><span class="qe-modebar-label">Renderer</span><button type="button" class="qe-mode-btn" data-qe-mode="svg" aria-pressed="false">Quiet SVG</button><button type="button" class="qe-mode-btn is-active" data-qe-mode="echarts" aria-pressed="true">Live ECharts</button></div><div class="qe-legend-series" aria-label="Series legend"><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="7" y1="1" x2="7" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="1" x2="10" y2="1" stroke="var(--text-secondary)" stroke-width="1.5"/><line x1="4" y1="11" x2="10" y2="11" stroke="var(--text-secondary)" stroke-width="1.5"/></svg><span class="qe-leg-txt">Min–Max</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><line x1="2" y1="6" x2="12" y2="6" stroke="var(--text-primary)" stroke-width="2.4"/></svg><span class="qe-leg-txt">Active Avg</span></span><span class="qe-leg-item"><svg class="qe-leg-svg" width="14" height="12" viewBox="0 0 14 12" aria-hidden="true"><circle cx="7" cy="6" r="3.5" fill="var(--accent-focal)"/></svg><span class="qe-leg-txt">Last 24h</span></span></div><div class="va-figure-scroll"><div class="qe-echarts-host"></div><svg class="qe-svg-fallback qe-svg-680" viewBox="0 0 680 240" role="img" aria-label="Activity by Hour of Day Min Avg Max Whiskers" preserveAspectRatio="xMidYMid meet"><title>Activity by Hour of Day — Min/Avg/Max Whiskers</title><text x="54" y="18" font-family="var(--font-sans)" font-size="11" font-weight="600" fill="var(--text-secondary)">Activity / (calls/day)</text><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="206.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">0</text><line x1="54.0" y1="158.5" x2="660.0" y2="158.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="162.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">10</text><line x1="54.0" y1="115.0" x2="660.0" y2="115.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="119.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20</text><line x1="54.0" y1="71.5" x2="660.0" y2="71.5" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="75.5" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">30</text><line x1="54.0" y1="28.0" x2="660.0" y2="28.0" stroke="var(--border-hairline)" stroke-dasharray="3 3" stroke-width="1"/><text x="46.0" y="32.0" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">40</text><line x1="54.0" y1="28.0" x2="54.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="54.0" y1="202.0" x2="660.0" y2="202.0" stroke="var(--text-secondary)" stroke-width="1"/><line x1="66.6" y1="193.3" x2="66.6" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="154.2" x2="70.1" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="63.1" y1="193.3" x2="70.1" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="59.6" y1="179.4" x2="73.6" y2="179.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="66.6" cy="184.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="66.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">00h</text><line x1="91.9" y1="197.7" x2="91.9" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="167.2" x2="95.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="88.4" y1="197.7" x2="95.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="84.9" y1="187.2" x2="98.9" y2="187.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="91.9" cy="188.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="117.1" y1="202.0" x2="117.1" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="175.9" x2="120.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="113.6" y1="202.0" x2="120.6" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="110.1" y1="192.9" x2="124.1" y2="192.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="117.1" cy="197.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="142.4" y1="202.0" x2="142.4" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="180.2" x2="145.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="138.9" y1="202.0" x2="145.9" y2="202.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="135.4" y1="194.2" x2="149.4" y2="194.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="142.4" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="167.6" y1="197.7" x2="167.6" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="171.6" x2="171.1" y2="171.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="164.1" y1="197.7" x2="171.1" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="160.6" y1="191.6" x2="174.6" y2="191.6" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="167.6" cy="193.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="167.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">04h</text><line x1="192.9" y1="197.7" x2="192.9" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="162.8" x2="196.4" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="189.4" y1="197.7" x2="196.4" y2="197.7" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="185.9" y1="185.0" x2="199.9" y2="185.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="192.9" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="218.1" y1="188.9" x2="218.1" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="145.4" x2="221.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="214.6" y1="188.9" x2="221.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="211.1" y1="172.4" x2="225.1" y2="172.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="218.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="243.4" y1="180.2" x2="243.4" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="119.4" x2="246.9" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="239.9" y1="180.2" x2="246.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="236.4" y1="152.4" x2="250.4" y2="152.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="243.4" cy="149.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="268.6" y1="167.2" x2="268.6" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="88.9" x2="272.1" y2="88.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="265.1" y1="167.2" x2="272.1" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="261.6" y1="131.5" x2="275.6" y2="131.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="268.6" cy="123.7" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="268.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">08h</text><line x1="293.9" y1="158.5" x2="293.9" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="67.2" x2="297.4" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="290.4" y1="158.5" x2="297.4" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="286.9" y1="111.5" x2="300.9" y2="111.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="293.9" cy="97.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="319.1" y1="149.8" x2="319.1" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="49.8" x2="322.6" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="315.6" y1="149.8" x2="322.6" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="312.1" y1="99.8" x2="326.1" y2="99.8" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="319.1" cy="84.5" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="344.4" y1="154.2" x2="344.4" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="54.1" x2="347.9" y2="54.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="340.9" y1="154.2" x2="347.9" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="337.4" y1="105.9" x2="351.4" y2="105.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="344.4" cy="110.6" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="369.6" y1="162.8" x2="369.6" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="75.9" x2="373.1" y2="75.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="366.1" y1="162.8" x2="373.1" y2="162.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="362.6" y1="120.7" x2="376.6" y2="120.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="369.6" cy="128.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="369.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">12h</text><line x1="394.9" y1="154.2" x2="394.9" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="58.5" x2="398.4" y2="58.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="391.4" y1="154.2" x2="398.4" y2="154.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="387.9" y1="108.0" x2="401.9" y2="108.0" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="394.9" cy="93.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="420.1" y1="145.4" x2="420.1" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="41.0" x2="423.6" y2="41.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="416.6" y1="145.4" x2="423.6" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="413.1" y1="95.9" x2="427.1" y2="95.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="420.1" cy="75.9" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="445.4" y1="149.8" x2="445.4" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="49.8" x2="448.9" y2="49.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="441.9" y1="149.8" x2="448.9" y2="149.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="438.4" y1="102.4" x2="452.4" y2="102.4" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="445.4" cy="106.3" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="470.6" y1="158.5" x2="470.6" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="67.2" x2="474.1" y2="67.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="467.1" y1="158.5" x2="474.1" y2="158.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="463.6" y1="116.7" x2="477.6" y2="116.7" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="470.6" cy="115.0" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="470.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">16h</text><line x1="495.9" y1="167.2" x2="495.9" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="84.5" x2="499.4" y2="84.5" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="492.4" y1="167.2" x2="499.4" y2="167.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="488.9" y1="128.9" x2="502.9" y2="128.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="495.9" cy="136.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="521.1" y1="175.9" x2="521.1" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="102.0" x2="524.6" y2="102.0" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="517.6" y1="175.9" x2="524.6" y2="175.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="514.1" y1="143.3" x2="528.1" y2="143.3" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="521.1" cy="141.1" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="546.4" y1="180.2" x2="546.4" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="110.6" x2="549.9" y2="110.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="542.9" y1="180.2" x2="549.9" y2="180.2" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="539.4" y1="150.2" x2="553.4" y2="150.2" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="546.4" cy="145.4" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="571.6" y1="184.6" x2="571.6" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="119.4" x2="575.1" y2="119.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="568.1" y1="184.6" x2="575.1" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="564.6" y1="155.9" x2="578.6" y2="155.9" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="571.6" cy="162.8" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="571.6" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">20h</text><line x1="596.9" y1="184.6" x2="596.9" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="128.1" x2="600.4" y2="128.1" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="593.4" y1="184.6" x2="600.4" y2="184.6" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="589.9" y1="161.1" x2="603.9" y2="161.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="596.9" cy="154.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="622.1" y1="188.9" x2="622.1" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="136.8" x2="625.6" y2="136.8" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="618.6" y1="188.9" x2="625.6" y2="188.9" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="615.1" y1="168.1" x2="629.1" y2="168.1" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="622.1" cy="167.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><line x1="647.4" y1="193.3" x2="647.4" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="145.4" x2="650.9" y2="145.4" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="643.9" y1="193.3" x2="650.9" y2="193.3" stroke="var(--text-secondary)" stroke-opacity="0.72" stroke-width="1.5"/><line x1="640.4" y1="175.5" x2="654.4" y2="175.5" stroke="var(--text-primary)" stroke-width="2.4"/><circle cx="647.4" cy="180.2" r="3.6" fill="var(--accent-focal)" stroke="var(--bg-surface)" stroke-width="1.4"/><text x="647.4" y="220.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11" fill="var(--text-secondary)">23h</text></svg></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>buckets[].{label (00h..23h|Mon..Sun), min, avg, max, activeDays}</code></div><div><strong>Optional (omit if null):</strong> <code>buckets[].recent (Last 24h | Current Cycle marker; omit if current cycle empty)</code></div><div><strong>Warmup / empty fallback:</strong> Skip slots with activeDays === 0 rather than zero-filling; never plot multi-day raw sums on cyclical axes.</div></div></details></figure></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-forms-states" data-rigor="L2"><div class="va-card qe-bench-card" id="qe-forms-zero-states"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · FORMS, ZERO-STATES &amp; REVERSIBILITY</div><h2 class="qe-fig-title">Validated Threshold Form, 4-Way Zero-States &amp; Reversible Undo</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · L2</span></div></div><p class="qe-fig-desc">Demonstrates blur/submit validation with corrective input clearing, explicit gate reasons, 4 honest zero-data patterns (with 1-click filter recovery), and reversible Undo toasts.</p><div class="qe-bench-body"><div class="va-workbench-panes" data-s44-root><section class="va-pane" aria-labelledby="s44-form-hdr"><div class="va-pane-hdr"><strong id="s44-form-hdr" class="v9-sec-title">Threshold Form &amp; Reversible Undo</strong><span class="va-pill" data-variant="status" data-state="nominal" data-s44-rule-pill>Active · 250 ms</span></div><div class="va-pane-body v9-demo-stack"><form class="v9-demo-stack" data-s44-form novalidate><div class="va-field"><label class="va-field-label" for="s44-threshold-input">Alert Ceiling (ms)</label><span id="s44-threshold-hint" class="va-field-hint">Allowed range: 10–5000 ms (validates on blur/submit; clears on input).</span><input class="va-input va-nums" id="s44-threshold-input" name="ceiling_ms" type="number" min="10" max="5000" required value="250" aria-invalid="false" aria-describedby="s44-threshold-hint" data-error="s44-threshold-err"><div id="s44-threshold-err" class="va-field-error" hidden>Enter an integer ceiling between 10 and 5000 ms.</div></div><div class="va-gate-reason" data-s44-gate-reason data-state="nominal" aria-live="polite">Ready: active threshold 250 ms can be saved or archived safely.</div><div class="v9-demo-row"><button type="submit" class="va-btn-primary" data-s44-save>Save Threshold</button><button type="button" class="va-btn-ghost" data-s44-archive>Archive Rule</button></div></form><div class="va-undo-toast" data-s44-toast role="status" aria-live="polite" hidden><span class="va-undo-msg" data-s44-toast-msg>Rule archived.</span><span class="va-undo-actions"><button type="button" class="va-tb-btn" data-s44-undo>Undo</button><button type="button" class="va-tb-btn" data-s44-toast-dismiss aria-label="Dismiss notification">Dismiss</button></span></div></div></section><section class="va-pane" aria-labelledby="s44-states-hdr"><div class="va-pane-hdr"><strong id="s44-states-hdr" class="v9-sec-title">4-Way Zero-Data Taxonomy</strong><span class="va-pane-count">4 states</span></div><div class="va-pane-body v9-demo-stack"><div class="va-tab-strip" role="tablist" aria-label="Zero-data state taxonomy" data-s44-tabs><button type="button" class="va-tab" role="tab" id="s44-tab-filtered" aria-selected="true" aria-controls="s44-panel-filtered" data-s44-kind="filtered">Filtered (0)</button><button type="button" class="va-tab" role="tab" id="s44-tab-first-run" aria-selected="false" aria-controls="s44-panel-first-run" data-s44-kind="first-run">First-Run</button><button type="button" class="va-tab" role="tab" id="s44-tab-warmup" aria-selected="false" aria-controls="s44-panel-warmup" data-s44-kind="warmup">Warmup (N=4)</button><button type="button" class="va-tab" role="tab" id="s44-tab-stale" aria-selected="false" aria-controls="s44-panel-stale" data-s44-kind="stale">Stale Cache</button></div><div id="s44-panel-filtered" role="tabpanel" aria-labelledby="s44-tab-filtered" data-s44-panel="filtered"><div class="va-empty-state" data-kind="filtered"><h3 class="va-empty-title" data-s44-filtered-title>0 runs match "region:ap-east · status:fault"</h3><p class="va-empty-copy" data-s44-filtered-copy>Two active filters exclude all 48 recorded spans in this window.</p><div class="va-empty-actions"><button type="button" class="va-btn-primary" data-s44-clear-filters>Clear filters</button><button type="button" class="va-btn-ghost" data-s44-reapply-filters hidden>Re-apply filter</button></div></div></div><div id="s44-panel-first-run" role="tabpanel" aria-labelledby="s44-tab-first-run" data-s44-panel="first-run" hidden><div class="va-empty-state" data-kind="first-run"><h3 class="va-empty-title">No collectors connected</h3><p class="va-empty-copy">Attach an OpenTelemetry or Modbus probe endpoint to stream verified latencies.</p><div class="va-empty-actions"><button type="button" class="va-btn-primary" data-s44-connect>Connect Collector</button></div></div></div><div id="s44-panel-warmup" role="tabpanel" aria-labelledby="s44-tab-warmup" data-s44-panel="warmup" hidden><div class="va-empty-state" data-kind="warmup"><h3 class="va-empty-title">Warming up — 4 samples collected</h3><p class="va-empty-copy">Sampling every 30 s; steady baseline percentiles unlock once N &ge; 10 samples arrive.</p></div></div><div id="s44-panel-stale" role="tabpanel" aria-labelledby="s44-tab-stale" data-s44-panel="stale" hidden><div class="va-empty-state" data-kind="stale"><h3 class="va-empty-title">Upstream sync timed out — showing last valid values</h3><div class="va-stale-retained"><span>p95 Latency: 142 ms · Error Rate: 0.4%</span><span class="va-pill" data-variant="status" data-state="warn">STALE · Last sync 14:22:08 UTC</span></div><div class="va-empty-actions"><button type="button" class="va-btn-ghost" data-s44-retry>Retry now</button></div></div></div></div></section></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>threshold_ms (10..5000), sync.{status, last_sync_utc}, filter_query</code></div><div><strong>Optional (omit if null):</strong> <code>gate_reason (when blocked), cached_last_good.{p95_ms, error_pct}</code></div><div><strong>Warmup / empty fallback:</strong> Retain last valid values with STALE badge on timeout; expose Clear filters on filtered zero-results.</div></div></details></div></article><article class="qe-specimen qe-specimen-wide" data-modality="UI" data-schema-modality="ui-alarm-lifecycle" data-rigor="L3"><div class="va-card qe-bench-card" id="ui-alarm-lifecycle"><div class="qe-fig-hdr"><div><div class="qe-fig-kicker">PILLAR 1 · ISA-18.2 / IEC 60601-1-8 ALARM LIFECYCLE</div><h2 class="qe-fig-title">Automated 4-Phase Alarm Takeover &amp; Acknowledge Flow</h2></div><div class="qe-fig-badges"><span class="va-pill" data-variant="tag">UI · M3 / M4 / M5</span></div></div><p class="qe-fig-desc">Transitions calmly from Safe Baseline through Pre-Breach Approach to Reduced-Motion-Safe Autonomous Takeover, then restores the balanced layout after Acknowledgement.</p><div class="qe-bench-body"><div class="va-alarm-console" data-alarm-config="{&quot;viewId&quot;:&quot;specimen-50-alarm&quot;,&quot;initialMode&quot;:&quot;ack&quot;,&quot;benchControls&quot;:true,&quot;paramLabel&quot;:&quot;Feeder-B Bus Voltage&quot;,&quot;channelTag&quot;:&quot;ISA-18.2 / IEC 60601-1-8&quot;,&quot;unit&quot;:&quot;% nominal&quot;,&quot;decimals&quot;:1,&quot;threshold&quot;:94.0,&quot;direction&quot;:&quot;below&quot;,&quot;nominalStart&quot;:98.2,&quot;breachPeak&quot;:91.4,&quot;ackValue&quot;:91.4,&quot;breachReason&quot;:&quot;94.0% Floor Breach&quot;,&quot;ackActionHint&quot;:&quot;Click Acknowledge Alarm to restore balanced sibling grid with latched steady fault.&quot;,&quot;siblings&quot;:[{&quot;label&quot;:&quot;Feeder-A Voltage&quot;,&quot;val&quot;:&quot;99.1%&quot;},{&quot;label&quot;:&quot;Grid Sync Freq&quot;,&quot;val&quot;:&quot;59.985 Hz&quot;},{&quot;label&quot;:&quot;Reserve SoC&quot;,&quot;val&quot;:&quot;78.4%&quot;}]}" data-alarm-phase="ack"><div class="va-sr-only va-alarm-live" aria-live="polite" aria-atomic="true"></div><div class="va-alarm-banner" data-alarm-banner></div><section class="va-alarm-takeover" data-alarm-takeover aria-label="Specimen 50 Unacknowledged Alarm Takeover"></section><div class="va-alarm-balanced-wrap" data-alarm-balanced><div class="v9-demo-grid"><div class="v9-demo-subcard" data-alarm-fault-target="1"><div class="v9-demo-label">Feeder-B Bus Voltage (Monitored Channel)</div><div class="v9-demo-row"><strong>Threshold: &gt;= 94.0% nominal</strong><span class="va-pill" data-variant="status" data-state="fault">LATCHED EXCURSION · 91.4%</span></div><p class="qe-fig-desc">Steps 1–4 demonstrate Calm Baseline, Amber Approaching Limit, Reduced-Motion-Safe Takeover, and Acknowledged Diagnostic restoration.</p></div><div class="v9-demo-subcard"><div class="v9-demo-label">Nominal Sibling Channels</div><div class="v9-demo-row"><span class="va-pill" data-variant="status" data-state="nominal">FEEDER-A 99.1%</span><span class="va-pill" data-variant="status" data-state="nominal">SYNC 59.985 Hz</span><span class="va-pill" data-variant="status" data-state="nominal">BESS 78.4%</span></div></div></div></div></div></div><details class="qe-data-contract"><summary>Data Inputs &amp; Honest Fallback</summary><div class="qe-data-contract-body"><div><strong>Required inputs:</strong> <code>channel.{paramLabel, unit, threshold, direction, nominalStart, breachPeak}</code></div><div><strong>Optional (omit if null):</strong> <code>siblings[].{label, val}, initialMode (auto|ack), ?alarm= override</code></div><div><strong>Warmup / empty fallback:</strong> Honor prefers-reduced-motion: reduce (steady double frame), pause elapsed timers on document.hidden, and force Phase 4 in @media print.</div></div></details></div></article></section>
   </main>
   <script src="../assets/vendor/echarts.min.js"></script>
   <script id="qe-bench-runtime">
@@ -17172,11 +17159,16 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     (payload.envelopes || []).forEach(function (env) {
       if (typeof env.value !== 'number' || !Number.isFinite(env.value)) return;
       var col = cssVar(doc, env.token || '--status-warn', env.type === 'abort' ? t.statusDanger : t.statusWarn);
+      var lblTxt = env.label || String(env.value);
+      var lp = String(env.labelPosition || '').toLowerCase();
+      var pos = (lp === 'below' || lp === 'insideendbottom') ? 'insideEndBottom'
+        : ((lp === 'above' || lp === 'insideendtop') ? 'insideEndTop'
+          : ((lblTxt.trim().indexOf('-2%') === 0 || env.direction === 'lower') ? 'insideEndBottom' : 'insideEndTop'));
       items.push({
-        name: env.label || String(env.value),
+        name: lblTxt,
         yAxis: env.value,
         lineStyle: { color: col, type: env.type === 'abort' ? 'dashdot' : 'dashed', width: 1.4 },
-        label: { formatter: env.label || String(env.value), position: 'insideEndTop', color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
+        label: { formatter: lblTxt, position: pos, distance: 5, color: col, fontSize: 11, fontWeight: 600, backgroundColor: t.bgSurface, padding: [2, 5], borderRadius: 2 },
       });
     });
     return items;
@@ -17228,7 +17220,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     var fmtSub = function (txt) {
       var s = txt == null ? '' : String(txt);
       if (s.indexOf('{') >= 0 || s.indexOf('}') >= 0) return s;
-      return s.replace(/(^|[^A-Za-z0-9_])([A-Za-z\u03b7\u03c3\u03c4\u03bc\u0394\u0177p](?:\u0302|\u0304)?)_([A-Za-z0-9]{1,4})(?![A-Za-z0-9_])/g, '$1$2{sub|$3}');
+      return s.replace(/(^|[^A-Za-z0-9_])([A-Za-z\u03b7\u03c3\u03c4\u03c9\u03bc\u0394\u0177p](?:\u0302|\u0304)?)_([A-Za-z0-9]{1,4})(?![A-Za-z0-9_])/g, '$1$2{sub|$3}');
     };
     var xAxisBase = {
       type: xMeta.log ? 'log' : 'value',
@@ -17469,16 +17461,16 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
 
 
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.7.0 — Reusable 4-Phase Automated Alarm Lifecycle Controller */
+/* Quiet UI v9.7.0 — Edge-to-Edge Alarm Excursion Trace & Card Synchronization */
 (function (global) {
   'use strict';
 
-  var INSTANCES = [];
-  var PHASES = Object.assign(Object.create(null), { nominal: 1, approaching: 2, unack: 3, ack: 4 });
-
-  function hasPhase(k) {
-    return typeof k === 'string' && Object.prototype.hasOwnProperty.call(PHASES, k);
-  }
+  var HEADER_META = Object.assign(Object.create(null), {
+    nominal: { label: 'ALL SYSTEMS NOMINAL', state: 'nominal' },
+    approaching: { label: 'APPROACHING LIMIT', state: 'warn' },
+    unack: { label: '1 UNACK ALARM', state: 'fault' },
+    ack: { label: '1 LATCHED FAULT', state: 'fault' }
+  });
 
   function escHtml(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -17491,10 +17483,372 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     return num.toFixed(d);
   }
 
+  function computeExcursion(val, cfg) {
+    var th = Number(cfg.threshold);
+    var diff = val - th;
+    var crossed = cfg.direction === 'below' ? val < th : val > th;
+    var sign = diff >= 0 ? '+' : '';
+    return { crossed: crossed, diff: diff, deltaStr: sign + fmtNum(diff, cfg.decimals) + ' ' + cfg.unit };
+  }
+
+  function resolveSampleAt(cfg, ph, elapsedMs) {
+    var nom = Number(cfg.nominalStart), th = Number(cfg.threshold), peak = Number(cfg.breachPeak);
+    var ackVal = (typeof cfg.ackValue === 'number' && isFinite(cfg.ackValue)) ? Number(cfg.ackValue) : (th + (peak - th) * 0.65);
+    var span = th - nom;
+    if (ph === 'nominal') {
+      return nom + Math.sin(elapsedMs / 380) * Math.max(Math.abs(span) * 0.08, 0.002);
+    }
+    if (ph === 'approaching') {
+      var af = Math.min(0.95, Math.max(0.15, (elapsedMs - 2000) / 2000));
+      return nom + span * (0.35 + af * 0.62);
+    }
+    if (ph === 'unack') {
+      var bf = Math.min(1, Math.max(0.28, (elapsedMs - 4000) / 3400));
+      return th + (peak - th) * bf + Math.sin(elapsedMs / 420) * Math.abs(peak - th) * 0.05;
+    }
+    return ackVal;
+  }
+
+  function buildPhaseSeries(cfg, ph, elapsedMs) {
+    var nom = Number(cfg.nominalStart), th = Number(cfg.threshold), peak = Number(cfg.breachPeak);
+    var n = 34, arr = [];
+    var span = th - nom, exc = peak - th;
+    var seed = Number(elapsedMs || 0) / 520;
+    var tail = resolveSampleAt(cfg, ph, Number(elapsedMs || 0));
+    var ripNom = Math.max(Math.abs(span) * 0.06, Math.abs(th) * 0.0004 || 0.01);
+    var ripExc = Math.max(Math.abs(exc) * 0.07, ripNom);
+    for (var i = 0; i < n; i++) {
+      var wave = Math.sin(i * 0.72 + seed) * 0.55 + Math.cos(i * 1.45 + seed * 0.6) * 0.45;
+      var v;
+      if (ph === 'nominal') {
+        v = nom + wave * ripNom;
+      } else if (ph === 'approaching') {
+        if (i < 20) {
+          v = nom + wave * ripNom;
+        } else {
+          var tApp = (i - 19) / (n - 20);
+          v = nom + (tail - nom) * tApp + wave * ripNom * 0.5;
+          if ((cfg.direction === 'below' && v <= th) || (cfg.direction !== 'below' && v >= th)) {
+            v = th + (cfg.direction === 'below' ? 1 : -1) * Math.max(Math.abs(span) * 0.02, 0.002);
+          }
+        }
+      } else {
+        if (i <= 13) {
+          v = nom + wave * ripNom;
+        } else if (i <= 21) {
+          var tRamp = (i - 13) / 8.5;
+          v = nom + span * (0.1 + tRamp * 0.87) + wave * ripNom * 0.4;
+          if ((cfg.direction === 'below' && v <= th) || (cfg.direction !== 'below' && v >= th)) {
+            v = th + (cfg.direction === 'below' ? 1 : -1) * Math.max(Math.abs(span) * 0.015, 0.001);
+          }
+        } else if (ph === 'unack') {
+          var uFrac = (i - 21) / (n - 22);
+          var dip = Math.sin(uFrac * Math.PI * 0.82);
+          v = th + exc * (0.32 + 0.68 * Math.min(1, uFrac * 0.85 + dip * 0.25)) + wave * ripExc;
+        } else {
+          var aFrac = (i - 21) / (n - 22);
+          v = aFrac < 0.55 ? (th + exc * (0.35 + aFrac * 1.1) + wave * ripExc * 0.5) : (peak + (tail - peak) * ((aFrac - 0.55) / 0.45));
+        }
+      }
+      arr.push(v);
+    }
+    arr[n - 1] = tail;
+    return arr;
+  }
+
+  function computeScaleAndGrid(cfg, series) {
+    var th = Number(cfg.threshold);
+    var vals = series.concat([th, Number(cfg.nominalStart), Number(cfg.breachPeak)]);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var rawSpan = Math.max(hi - lo, Math.abs(th) * 0.004 || 0.5);
+    var pad = rawSpan * 0.16;
+    if (global.QuietSvgLayout && typeof global.QuietSvgLayout.niceScale125 === 'function') {
+      var sc = global.QuietSvgLayout.niceScale125(lo - pad, hi + pad, { targetTicks: 4, includeZero: false });
+      return sc;
+    }
+    var yMin = lo - pad, yMax = hi + pad;
+    var step = (yMax - yMin) / 4;
+    return { min: yMin, max: yMax, step: step, ticks: [yMin, yMin + step, yMin + step * 2, yMin + step * 3, yMax] };
+  }
+
+  function buildBreachPolygon(series, th, dir, mapX, mapY, yTh) {
+    var n = series.length;
+    if (n < 2) return { areaPath: '', crossX: null };
+    var isHit = function (v) { return dir === 'below' ? v < th : v > th; };
+    var polyPts = [], segs = [], curRun = null, firstCrossX = null;
+    for (var i = 0; i < n; i++) {
+      var v1 = series[i], h1 = isHit(v1), x1 = mapX(i, n), y1 = mapY(v1);
+      if (i > 0) {
+        var v0 = series[i - 1], h0 = isHit(v0), x0 = mapX(i - 1, n);
+        if (h0 !== h1) {
+          var t = (th - v0) / ((v1 - v0) || 1e-9);
+          var xc = x0 + Math.max(0, Math.min(1, t)) * (x1 - x0);
+          if (h1) {
+            if (firstCrossX === null) firstCrossX = xc;
+            curRun = [[xc, yTh]];
+          } else if (curRun) {
+            curRun.push([xc, yTh]);
+            segs.push(curRun);
+            curRun = null;
+          }
+        }
+      } else if (h1) {
+        if (firstCrossX === null) firstCrossX = x1;
+        curRun = [[x1, yTh]];
+      }
+      if (h1 && curRun) curRun.push([x1, y1]);
+      polyPts.push(x1.toFixed(1) + ',' + y1.toFixed(1));
+    }
+    if (curRun && curRun.length > 0) {
+      curRun.push([mapX(n - 1, n), yTh]);
+      segs.push(curRun);
+    }
+    var areaPath = segs.map(function (run) {
+      var d = run.map(function (p, idx) { return (idx === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
+      return '<path d="' + d + ' Z" fill="var(--status-err)" fill-opacity="0.18" stroke="none"/>';
+    }).join('');
+    return { areaPath: areaPath, crossX: firstCrossX, polyLine: polyPts.join(' ') };
+  }
+
+  function buildXLabels(ML, PW, W, MR, H, crossX) {
+    var placed = [{ x: ML, text: '-12s', anchor: 'start', fill: 'var(--text-muted)', weight: '500' }];
+    var bx = crossX !== null ? Math.max(ML + 74, Math.min(W - MR - 88, crossX)) : null;
+    if (W >= 540) {
+      var x8 = ML + PW * 0.24, x4 = ML + PW * 0.46;
+      if ((x8 - ML) >= 68 && (bx === null || (bx - x8) >= 90)) {
+        placed.push({ x: x8, text: '-8s', anchor: 'middle', fill: 'var(--text-muted)', weight: '500' });
+      }
+      if ((x4 - placed[placed.length - 1].x) >= 68 && (bx === null || (bx - x4) >= 88)) {
+        placed.push({ x: x4, text: '-4s', anchor: 'middle', fill: 'var(--text-muted)', weight: '500' });
+      }
+    }
+    if (bx !== null) {
+      placed.push({ x: bx, text: '00:00 BREACH', anchor: 'middle', fill: 'var(--status-err)', weight: '700' });
+    }
+    placed.push({ x: W - MR, text: 'LIVE', anchor: 'end', fill: 'var(--status-err)', weight: '700' });
+    return placed.map(function (it) {
+      return '<text x="' + it.x.toFixed(1) + '" y="' + (H - 7) + '" text-anchor="' + it.anchor + '" font-family="var(--font-mono)" font-size="11" font-weight="' + it.weight + '" fill="' + it.fill + '">' + it.text + '</text>';
+    }).join('');
+  }
+
+  function buildFocusSvg(cfg, phase, series, containerWidth) {
+    var W = Math.max(460, Math.min(1120, Math.round(Number(containerWidth) || 960)));
+    var H = 192, ML = 64, MR = 24, MT = 22, MB = 28;
+    var PW = W - ML - MR, PH = H - MT - MB;
+    var pts = (Array.isArray(series) && series.length >= 12) ? series : buildPhaseSeries(cfg, phase || 'unack', 4400);
+    var sc = computeScaleAndGrid(cfg, pts);
+    var yMin = sc.min, yMax = sc.max, th = Number(cfg.threshold), n = pts.length;
+    var mapX = function (idx, total) { return ML + (total <= 1 ? PW : (idx / (total - 1)) * PW); };
+    var mapY = function (v) { return MT + PH - ((v - yMin) / (yMax - yMin || 1)) * PH; };
+    var yTh = mapY(th);
+    var breach = buildBreachPolygon(pts, th, cfg.direction, mapX, mapY, yTh);
+    var decGrid = (sc.step && sc.step < 0.05) ? 3 : ((sc.step && sc.step < 0.5) ? 2 : cfg.decimals);
+    var gridHtml = (sc.ticks || []).filter(function (tv) {
+      var ty = mapY(tv);
+      return ty >= MT + 4 && ty <= MT + PH - 4;
+    }).map(function (tv) {
+      var ty = mapY(tv).toFixed(1);
+      return '<line x1="' + ML + '" y1="' + ty + '" x2="' + (W - MR) + '" y2="' + ty + '" stroke="var(--border-hairline)" stroke-width="1"/>' +
+        '<text x="' + (ML - 8) + '" y="' + (Number(ty) + 3.5).toFixed(1) + '" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-muted)">' + fmtNum(tv, decGrid) + '</text>';
+    }).join('');
+    var crossPin = '';
+    if (breach.crossX !== null) {
+      var pinX = breach.crossX;
+      var pinLblX = Math.max(ML + 68, Math.min(W - MR - 68, pinX));
+      crossPin = '<line x1="' + pinX.toFixed(1) + '" y1="' + (MT + 2) + '" x2="' + pinX.toFixed(1) + '" y2="' + (MT + PH) + '" stroke="var(--status-err)" stroke-width="1.5" stroke-dasharray="4 3"/>' +
+        '<circle cx="' + pinX.toFixed(1) + '" cy="' + yTh.toFixed(1) + '" r="4" fill="var(--status-err)" stroke="var(--bg-surface)" stroke-width="1.5"/>' +
+        '<text x="' + pinLblX.toFixed(1) + '" y="' + (MT - 5) + '" text-anchor="middle" font-family="var(--font-sans)" font-size="11" font-weight="700" fill="var(--status-err)" paint-order="stroke fill" stroke="var(--bg-surface)" stroke-width="3.5" stroke-linejoin="round">Threshold Crossed</text>';
+    }
+    var strokeClr = phase === 'nominal' ? 'var(--accent-primary)' : (phase === 'approaching' ? 'var(--status-warn)' : 'var(--status-err)');
+    var lastX = mapX(n - 1, n).toFixed(1), lastY = mapY(pts[n - 1]).toFixed(1);
+    var limSideLeft = breach.crossX === null || breach.crossX > ML + PW * 0.42;
+    var limX = limSideLeft ? (ML + 8) : (W - MR - 8);
+    var limAnc = limSideLeft ? 'start' : 'end';
+    var limY = (cfg.direction === 'below' || yTh > MT + PH * 0.55) ? Math.max(MT + 13, yTh - 6) : Math.min(MT + PH - 6, yTh + 13);
+    return '<svg class="va-alarm-focus-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + escHtml(cfg.paramLabel) + ' full-width excursion trace">' +
+      '<rect x="' + ML + '" y="' + MT + '" width="' + PW + '" height="' + PH + '" fill="var(--bg-elevated)" rx="3"/>' +
+      gridHtml + breach.areaPath +
+      '<line x1="' + ML + '" y1="' + yTh.toFixed(1) + '" x2="' + (W - MR) + '" y2="' + yTh.toFixed(1) + '" stroke="var(--status-warn)" stroke-width="1.5" stroke-dasharray="5 4"/>' +
+      crossPin +
+      '<text x="' + limX.toFixed(1) + '" y="' + limY.toFixed(1) + '" text-anchor="' + limAnc + '" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--status-warn)" paint-order="stroke fill" stroke="var(--bg-elevated)" stroke-width="3.5" stroke-linejoin="round">Limit ' + fmtNum(th, cfg.decimals) + ' ' + escHtml(cfg.unit) + '</text>' +
+      '<polyline fill="none" stroke="' + strokeClr + '" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="' + (breach.polyLine || '') + '"/>' +
+      '<circle cx="' + lastX + '" cy="' + lastY + '" r="4.5" fill="' + strokeClr + '" stroke="var(--bg-surface)" stroke-width="1.5"/>' +
+      buildXLabels(ML, PW, W, MR, H, breach.crossX) +
+      '</svg>';
+  }
+
+  function syncV08Card(card, inst, phMeta) {
+    var cfg = inst.cfg, ph = inst.phase, val = inst.val;
+    var valEl = card.querySelector('.v08-kpi-val'), pill = card.querySelector('.v08-kpi-head .va-pill'), subEl = card.querySelector('.v08-kpi-target');
+    if (valEl) valEl.textContent = fmtNum(val, cfg.decimals) + ' ' + cfg.unit;
+    if (pill) {
+      pill.setAttribute('data-state', phMeta.state);
+      pill.textContent = ph === 'nominal' ? 'LOCK ±0.02 Hz' : (ph === 'approaching' ? 'APPROACHING LIMIT' : (ph === 'unack' ? 'ACTIVE ALARM' : 'LATCHED PEAK ' + fmtNum(cfg.breachPeak, cfg.decimals) + ' ' + cfg.unit));
+    }
+    if (subEl) {
+      var rateTxt = (inst.rate >= 0 ? '+' : '') + fmtNum(inst.rate, cfg.decimals) + ' ' + cfg.unit + '/s';
+      var pkExc = computeExcursion(Number(cfg.breachPeak), cfg);
+      subEl.textContent = ph === 'nominal'
+        ? ('Reference 60.000 Hz · Limit ' + fmtNum(cfg.threshold, cfg.decimals) + ' ' + cfg.unit)
+        : (ph === 'approaching'
+          ? ('Rate ' + rateTxt + ' · Limit ' + fmtNum(cfg.threshold, cfg.decimals) + ' ' + cfg.unit)
+          : ('Peak ' + fmtNum(cfg.breachPeak, cfg.decimals) + ' ' + cfg.unit + ' (' + pkExc.deltaStr + ') · Limit ' + fmtNum(cfg.threshold, cfg.decimals) + ' ' + cfg.unit));
+    }
+    var vis = card.querySelector('.v08-kpi-visual svg');
+    if (vis && inst.series && inst.series.length > 2) {
+      var col = ph === 'nominal' ? 'var(--accent-primary)' : (ph === 'approaching' ? 'var(--status-warn)' : 'var(--status-err)');
+      var lo = 59.72, hi = 60.06, normPts = inst.series.slice(-12);
+      var xs = normPts.map(function (_v, idx) { return 8 + (idx / (normPts.length - 1)) * 464; });
+      var ys = normPts.map(function (v) { var t = Math.max(0.05, Math.min(0.95, (v - lo) / (hi - lo))); return 31 - t * 23; });
+      var pl = vis.querySelector('polyline'), cr = vis.querySelector('circle'), bar = vis.querySelectorAll('rect')[1];
+      if (pl) { pl.setAttribute('points', xs.map(function (x, i) { return x.toFixed(1) + ',' + ys[i].toFixed(1); }).join(' ')); pl.setAttribute('stroke', col); }
+      if (cr) { cr.setAttribute('cx', xs[xs.length - 1].toFixed(1)); cr.setAttribute('cy', ys[ys.length - 1].toFixed(1)); cr.setAttribute('fill', col); }
+      if (bar) {
+        var fw = Math.max(4, Math.min(464, ((val - lo) / (hi - lo)) * 464));
+        bar.setAttribute('width', fw.toFixed(1)); bar.setAttribute('fill', col);
+      }
+    }
+  }
+
+  function syncScalarCard(card, inst, phMeta) {
+    var cfg = inst.cfg, ph = inst.phase, val = inst.val;
+    var valEl = card.querySelector('.qe-scalar-val');
+    if (valEl) {
+      if (card.dataset.vaUnc === undefined) {
+        var m = (valEl.textContent || '').match(/(±\s*[0-9.]+)/);
+        card.dataset.vaUnc = m ? m[1] : '';
+      }
+      var unc = card.dataset.vaUnc;
+      valEl.textContent = fmtNum(val, cfg.decimals) + (unc ? ' ' + unc : '') + ' ' + cfg.unit;
+    }
+    var pill = card.querySelector('.qe-scalar-disp .va-pill');
+    if (pill) {
+      pill.setAttribute('data-state', phMeta.state);
+      pill.textContent = ph === 'nominal' ? 'Nominal' : (ph === 'approaching' ? 'CAUTION' : (ph === 'unack' ? 'TRIPWIRE' : 'LATCHED FAULT'));
+    }
+    var marg = card.querySelector('.qe-scalar-margin');
+    if (marg) {
+      var nom = Number(cfg.nominalStart), th = Number(cfg.threshold), den = Math.abs(nom - th) || 1;
+      var remPct = ((cfg.direction === 'below' ? (val - th) : (th - val)) / den) * 100;
+      marg.textContent = 'Margin ' + (remPct >= 0 ? '+' : '') + remPct.toFixed(1) + '%';
+    }
+    var svg = card.querySelector('svg.qe-gauge-svg');
+    if (svg && typeof cfg.gaugeMin === 'number' && typeof cfg.gaugeMax === 'number') {
+      var tPos = Math.max(0, Math.min(1, (val - cfg.gaugeMin) / ((cfg.gaugeMax - cfg.gaugeMin) || 1)));
+      var ax = 24 + tPos * 292, fillCol = ph === 'nominal' ? 'var(--status-ok)' : (ph === 'approaching' ? 'var(--status-warn)' : 'var(--status-danger)');
+      var polys = svg.querySelectorAll('polygon'), actPin = polys[polys.length - 1];
+      if (actPin) {
+        actPin.setAttribute('points', ax.toFixed(1) + ',27.0 ' + (ax - 4.5).toFixed(1) + ',39.5 ' + (ax + 4.5).toFixed(1) + ',39.5');
+        actPin.setAttribute('fill', fillCol);
+      }
+      svg.querySelectorAll('text').forEach(function (tx) {
+        if ((tx.textContent || '').indexOf('ACT') === 0) {
+          tx.textContent = 'ACT\u00a0' + fmtNum(val, cfg.decimals) + ' ' + cfg.unit;
+          tx.setAttribute('fill', fillCol);
+          var anc = ax < 80 ? 'start' : (ax > 260 ? 'end' : 'middle');
+          tx.setAttribute('text-anchor', anc);
+          tx.setAttribute('x', Math.max(8, Math.min(332, ax)).toFixed(1));
+        }
+      });
+    }
+  }
+
+  function syncTopbar(doc, inst, phMeta) {
+    var bar = doc.querySelector('#va-shell-topbar .va-shell-topbar-status');
+    if (!bar) return;
+    var cfg = inst.cfg, ph = inst.phase;
+    var pills = bar.querySelectorAll('.va-pill[data-variant="status"]');
+    var metrics = bar.querySelectorAll('.va-topbar-metric');
+    if (cfg.viewId === 'v01-icu-bedside-terminal') {
+      if (pills[0]) { pills[0].setAttribute('data-state', phMeta.state); pills[0].textContent = phMeta.label; }
+      if (metrics[0]) { metrics[0].setAttribute('data-state', phMeta.state); metrics[0].textContent = 'MAP ' + fmtNum(inst.val, cfg.decimals) + ' ' + cfg.unit; }
+    } else if (cfg.viewId === 'v07-grid-scada-poi-console') {
+      var lastPill = pills[pills.length - 1];
+      if (lastPill) { lastPill.setAttribute('data-state', phMeta.state); lastPill.textContent = phMeta.label; }
+      var freqMetric = metrics[1] || metrics[0];
+      if (freqMetric) { freqMetric.setAttribute('data-state', phMeta.state); freqMetric.textContent = fmtNum(ph === 'unack' || ph === 'ack' ? inst.val : cfg.nominalStart, cfg.decimals) + ' ' + cfg.unit; }
+    } else if (pills.length) {
+      pills[0].setAttribute('data-state', phMeta.state);
+      pills[0].textContent = phMeta.label;
+    }
+  }
+
+  function syncBoundUI(host, inst) {
+    var doc = inst.doc || global.document;
+    if (!doc) return;
+    var cfg = inst.cfg, ph = inst.phase;
+    var phMeta = HEADER_META[ph] || HEADER_META.nominal;
+    doc.querySelectorAll('[data-alarm-header-pill]').forEach(function (hp) {
+      hp.setAttribute('data-state', phMeta.state);
+      hp.textContent = phMeta.label;
+    });
+    syncTopbar(doc, inst, phMeta);
+    var rateTxt = (inst.rate >= 0 ? '+' : '') + fmtNum(inst.rate, cfg.decimals) + ' ' + cfg.unit + '/s';
+    host.querySelectorAll('[data-alarm-fault-target="1"]').forEach(function (card) {
+      if (card.classList.contains('v08-kpi-card')) {
+        syncV08Card(card, inst, phMeta);
+      } else if (card.classList.contains('qe-scalar-card')) {
+        syncScalarCard(card, inst, phMeta);
+      } else if (card.classList.contains('v9-kpi-tile')) {
+        var kv = card.querySelector('.v9-kpi-val'), ks = card.querySelector('.v9-kpi-sub');
+        var dVal = ph === 'ack' ? Number(cfg.breachPeak) : inst.val;
+        if (kv) { kv.textContent = fmtNum(dVal, cfg.decimals) + ' ' + cfg.unit; kv.setAttribute('data-tone', ph === 'nominal' ? '' : (ph === 'approaching' ? 'warn' : 'danger')); }
+        if (ks) {
+          var th = Number(cfg.threshold);
+          ks.textContent = ph === 'nominal' ? ('SLO Ceiling: ' + fmtNum(th, 1) + ' ms (Normal)') :
+            (ph === 'approaching' ? ('Approaching ' + fmtNum(th, 1) + ' ms (' + rateTxt + ')') :
+              (ph === 'unack' ? ('BREACH ACTIVE (+' + fmtNum(dVal - th, 1) + ' ms over SLO)') : ('Latched Peak: +' + fmtNum(dVal - th, 1) + ' ms above ' + fmtNum(th, 1) + ' ms')));
+        }
+      } else if (card.classList.contains('v9-demo-subcard')) {
+        var sp = card.querySelector('.va-pill');
+        if (sp) { sp.setAttribute('data-state', phMeta.state); sp.textContent = ph === 'ack' ? ('LATCHED · ' + fmtNum(cfg.breachPeak, cfg.decimals) + '%') : phMeta.label; }
+      }
+    });
+  }
+
+  global.QuietAlarmTrace = {
+    escHtml: escHtml,
+    fmtNum: fmtNum,
+    computeExcursion: computeExcursion,
+    resolveSampleAt: resolveSampleAt,
+    buildPhaseSeries: buildPhaseSeries,
+    buildFocusSvg: buildFocusSvg,
+    syncBoundUI: syncBoundUI
+  };
+})(typeof window !== 'undefined' ? window : this);
+
+
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Quiet UI v9.7.0 — Reusable 4-Phase Automated Alarm Lifecycle Controller */
+(function (global) {
+  'use strict';
+
+  var INSTANCES = [];
+  var PHASES = Object.assign(Object.create(null), { nominal: 1, approaching: 2, unack: 3, ack: 4 });
+
+  function getTrace() {
+    return global.QuietAlarmTrace || {};
+  }
+
+  function hasPhase(k) {
+    return typeof k === 'string' && Object.prototype.hasOwnProperty.call(PHASES, k);
+  }
+
+  function escHtml(s) {
+    return getTrace().escHtml ? getTrace().escHtml(s) : String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fmtNum(v, dec) {
+    if (getTrace().fmtNum) return getTrace().fmtNum(v, dec);
+    var num = Number(v);
+    if (!isFinite(num)) return '--';
+    var d = (typeof dec === 'number' && isFinite(dec)) ? Math.max(0, Math.min(6, Math.round(dec))) : 1;
+    return num.toFixed(d);
+  }
+
   function fmtDuration(secTotal) {
     var s = Math.max(0, Math.floor(secTotal));
-    var m = Math.floor(s / 60);
-    var r = s % 60;
+    var m = Math.floor(s / 60), r = s % 60;
     return (m < 10 ? '0' : '') + m + 'm ' + (r < 10 ? '0' : '') + r + 's';
   }
 
@@ -17515,70 +17869,29 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   }
 
   function computeExcursion(val, cfg) {
-    var th = Number(cfg.threshold);
-    var diff = val - th;
-    var crossed = cfg.direction === 'below' ? val < th : val > th;
-    var sign = diff >= 0 ? '+' : '';
-    var deltaStr = sign + fmtNum(diff, cfg.decimals) + ' ' + cfg.unit;
-    return { crossed: crossed, diff: diff, deltaStr: deltaStr };
+    if (getTrace().computeExcursion) return getTrace().computeExcursion(val, cfg);
+    var th = Number(cfg.threshold), diff = val - th;
+    return { crossed: cfg.direction === 'below' ? val < th : val > th, diff: diff, deltaStr: (diff >= 0 ? '+' : '') + fmtNum(diff, cfg.decimals) + ' ' + cfg.unit };
   }
 
-  function buildFocusSvg(cfg, phase, series) {
-    var W = 680, H = 160, ML = 56, MR = 24, MT = 18, MB = 26;
-    var PW = W - ML - MR, PH = H - MT - MB;
-    var th = Number(cfg.threshold);
-    var vals = series.concat([th, Number(cfg.nominalStart), Number(cfg.breachPeak)]);
-    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
-    var pad = Math.max((hi - lo) * 0.22, Math.abs(th) * 0.015 || 0.5);
-    var yMin = lo - pad, yMax = hi + pad;
-    function mapX(idx, n) { return ML + (n <= 1 ? PW : (idx / (n - 1)) * PW); }
-    function mapY(v) { return MT + PH - ((v - yMin) / (yMax - yMin || 1)) * PH; }
+  function sampleForPhase(cfg, ph, elapsedMs) {
+    var nom = Number(cfg.nominalStart), th = Number(cfg.threshold), peak = Number(cfg.breachPeak);
+    var val = getTrace().resolveSampleAt ? getTrace().resolveSampleAt(cfg, ph, elapsedMs) : nom;
+    var rate = ph === 'nominal' ? (cfg.direction === 'below' ? -0.05 : 0.05) :
+      (ph === 'approaching' ? ((th - nom) / 2.0) : (ph === 'unack' ? ((peak - th) / 2.2) : 0));
+    return { val: val, rate: rate };
+  }
 
-    var yTh = mapY(th);
-    var n = series.length;
-    var pts = [];
-    for (var i = 0; i < n; i++) pts.push(mapX(i, n).toFixed(1) + ',' + mapY(series[i]).toFixed(1));
-    var polyPts = pts.join(' ');
+  function measureChartWidth(host, el) {
+    var slot = el ? el.querySelector('[data-alarm-svg-slot]') : null;
+    var w = (slot && slot.clientWidth > 120) ? (slot.clientWidth - 20) : (host.clientWidth > 120 ? (host.clientWidth - 60) : 960);
+    return Math.max(460, Math.min(1120, w));
+  }
 
-    var areaPath = '';
-    if (n > 1) {
-      var excPts = [];
-      for (var j = 0; j < n; j++) {
-        var v = series[j];
-        var hit = cfg.direction === 'below' ? v < th : v > th;
-        if (hit) {
-          excPts.push([mapX(j, n), mapY(v), mapX(j, n), yTh]);
-        }
-      }
-      if (excPts.length > 0) {
-        var topSeg = excPts.map(function (p, k) { return (k === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ');
-        var baseSeg = excPts.slice().reverse().map(function (p) { return 'L' + p[2].toFixed(1) + ',' + p[3].toFixed(1); }).join(' ');
-        areaPath = '<path d="' + topSeg + ' ' + baseSeg + ' Z" fill="var(--status-err)" fill-opacity="0.18" stroke="none"/>';
-      }
-    }
-
-    var strokeClr = phase === 'nominal' ? 'var(--accent-primary)' : (phase === 'approaching' ? 'var(--status-warn)' : 'var(--status-err)');
-    var lastX = mapX(Math.max(0, n - 1), n).toFixed(1);
-    var lastY = mapY(series[n - 1] != null ? series[n - 1] : th).toFixed(1);
-    var ticks = [yMin + (yMax - yMin) * 0.15, th, yMin + (yMax - yMin) * 0.85];
-    var gridHtml = ticks.map(function (tv) {
-      var ty = mapY(tv).toFixed(1);
-      return '<line x1="' + ML + '" y1="' + ty + '" x2="' + (W - MR) + '" y2="' + ty + '" stroke="var(--border-hairline)" stroke-width="1"/>' +
-        '<text x="' + (ML - 6) + '" y="' + (Number(ty) + 3.5).toFixed(1) + '" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--text-muted)">' + fmtNum(tv, cfg.decimals) + '</text>';
-    }).join('');
-
-    var limY = cfg.direction === 'above' ? (yTh + 12.5).toFixed(1) : (yTh - 5).toFixed(1);
-    return '<svg class="va-alarm-focus-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + escHtml(cfg.paramLabel) + ' excursion trace">' +
-      '<rect x="' + ML + '" y="' + MT + '" width="' + PW + '" height="' + PH + '" fill="var(--bg-elevated)" rx="3"/>' +
-      gridHtml + areaPath +
-      '<line x1="' + ML + '" y1="' + yTh.toFixed(1) + '" x2="' + (W - MR) + '" y2="' + yTh.toFixed(1) + '" stroke="var(--status-warn)" stroke-width="1.5" stroke-dasharray="5 4"/>' +
-      '<text x="' + (W - MR - 4) + '" y="' + limY + '" text-anchor="end" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--status-warn)">Limit ' + fmtNum(th, cfg.decimals) + ' ' + escHtml(cfg.unit) + '</text>' +
-      '<polyline fill="none" stroke="' + strokeClr + '" stroke-width="2.4" stroke-linejoin="round" points="' + polyPts + '"/>' +
-      '<circle cx="' + lastX + '" cy="' + lastY + '" r="4.5" fill="' + strokeClr + '" stroke="var(--bg-surface)" stroke-width="1.5"/>' +
-      '<text x="' + ML + '" y="' + (H - 6) + '" font-family="var(--font-sans)" font-size="11" fill="var(--text-muted)">Calm Baseline</text>' +
-      '<text x="' + (ML + PW * 0.45).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle" font-family="var(--font-sans)" font-size="11" fill="var(--text-muted)">Pre-Breach Approach</text>' +
-      '<text x="' + (W - MR) + '" y="' + (H - 6) + '" text-anchor="end" font-family="var(--font-sans)" font-size="11" fill="var(--text-muted)">Live Window</text>' +
-      '</svg>';
+  function buildFocusSvgForHost(host, el, cfg, phase, series) {
+    var T = getTrace();
+    var w = measureChartWidth(host, el);
+    return T.buildFocusSvg ? T.buildFocusSvg(cfg, phase, series, w) : '';
   }
 
   function renderTakeover(host, inst) {
@@ -17591,6 +17904,9 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     var sibHtml = (cfg.siblings || []).map(function (s) {
       return '<span class="va-alarm-sibling-chip"><span class="va-alarm-sibling-dot" aria-hidden="true"></span><strong>' + escHtml(s.label) + '</strong> <span>' + escHtml(s.val) + '</span></span>';
     }).join('');
+    var hintId = 'va-alarm-ack-hint-' + INSTANCES.indexOf(inst);
+    var wChart = measureChartWidth(host, null);
+    var svgHtml = getTrace().buildFocusSvg ? getTrace().buildFocusSvg(cfg, 'unack', inst.series, wChart) : '';
     el.innerHTML =
       '<div class="va-alarm-takeover-head">' +
         '<div class="va-alarm-takeover-title-group">' +
@@ -17605,17 +17921,20 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
         '<div class="va-alarm-metric-cell is-excursion"><span class="va-alarm-metric-k">Excursion Delta</span><span class="va-alarm-metric-v va-nums" data-alarm-delta>' + escHtml(exc.deltaStr) + '</span></div>' +
         '<div class="va-alarm-metric-cell"><span class="va-alarm-metric-k">Rate of Change</span><span class="va-alarm-metric-v va-nums" data-alarm-rate>' + escHtml(rateTxt) + '</span></div>' +
       '</div>' +
-      '<div class="va-alarm-chart-card" data-alarm-svg-slot>' + buildFocusSvg(cfg, 'unack', inst.series) + '</div>' +
+      '<div class="va-alarm-chart-card" data-alarm-svg-slot>' + svgHtml + '</div>' +
       '<div class="va-alarm-timeline" aria-label="Breach Progression Timeline">' +
-        '<div class="va-alarm-tl-step"><span>1 · Calm Baseline</span><span>0s – 2s</span></div>' +
-        '<div class="va-alarm-tl-step"><span>2 · Pre-Breach Approach</span><span>2s – 4s</span></div>' +
-        '<div class="va-alarm-tl-step is-active"><span>3 · Threshold Crossed</span><span>' + escHtml(cfg.breachReason || 'Takeover Active') + '</span></div>' +
-        '<div class="va-alarm-tl-step"><span>4 · Operator Ack</span><span>Awaiting Response</span></div>' +
+        '<div class="va-alarm-tl-step"><span>-00:08</span><span>Safe Window</span></div>' +
+        '<div class="va-alarm-tl-step"><span>-00:03</span><span>Pre-Alarm Trend</span></div>' +
+        '<div class="va-alarm-tl-step is-active"><span>00:00</span><span>Limit Crossed</span></div>' +
+        '<div class="va-alarm-tl-step"><span>Active</span><span>Operator Ack Pending</span></div>' +
       '</div>' +
       (sibHtml ? '<div class="va-alarm-siblings" aria-label="Nominal Sibling Channels">' + sibHtml + '</div>' : '') +
       '<div class="va-alarm-takeover-actions">' +
-        '<button type="button" class="va-alarm-ack-btn" data-alarm-ack>Acknowledge Alarm</button>' +
-        '<span class="va-alarm-limit-note">' + escHtml(cfg.ackActionHint || 'Acknowledge to silence alert frame and inspect full diagnostic workspace.') + '</span>' +
+        '<button type="button" class="va-alarm-ack-btn" data-alarm-ack aria-describedby="' + hintId + '">Acknowledge Alarm</button>' +
+        '<div class="va-alarm-action-hints" id="' + hintId + '">' +
+          '<span class="va-alarm-shortcut-note"><kbd class="va-kbd">Enter</kbd> / <kbd class="va-kbd">Space</kbd> to silence and restore balanced view</span>' +
+          '<span class="va-alarm-limit-note">' + escHtml(cfg.ackActionHint || '') + '</span>' +
+        '</div>' +
       '</div>';
     var ackBtn = el.querySelector('[data-alarm-ack]');
     if (ackBtn) ackBtn.addEventListener('click', function () { acknowledge(inst, true); });
@@ -17624,8 +17943,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   function renderBanner(host, inst) {
     var bn = host.querySelector('[data-alarm-banner]');
     if (!bn) return;
-    var cfg = inst.cfg;
-    var ph = inst.phase;
+    var cfg = inst.cfg, ph = inst.phase;
     var peakExc = computeExcursion(Number(cfg.breachPeak), cfg);
     var stState = ph === 'nominal' ? 'nominal' : (ph === 'approaching' ? 'warn' : 'fault');
     var stText = ph === 'nominal' ? 'CALM BASELINE' : (ph === 'approaching' ? 'APPROACHING LIMIT' : (ph === 'ack' ? 'ACKNOWLEDGED · LATCHED FAULT' : 'ACTIVE ALARM'));
@@ -17659,8 +17977,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     bn.querySelectorAll('[data-alarm-jump]').forEach(function (jb) {
       jb.addEventListener('click', function () {
         var targetPh = jb.getAttribute('data-alarm-jump');
-        var nextFocus = targetPh === 'unack' ? '[data-alarm-ack]' : '[data-alarm-jump="' + targetPh + '"]';
-        setPhase(inst, targetPh, true, nextFocus);
+        setPhase(inst, targetPh, true, targetPh === 'unack' ? '[data-alarm-ack]' : '[data-alarm-jump="' + targetPh + '"]');
       });
     });
   }
@@ -17670,31 +17987,10 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     if (lr) lr.textContent = text;
   }
 
-  function sampleForPhase(cfg, ph, elapsedMs) {
-    var nom = Number(cfg.nominalStart), th = Number(cfg.threshold), peak = Number(cfg.breachPeak);
-    var dir = cfg.direction === 'below' ? -1 : 1;
-    var spanApp = th - nom;
-    if (ph === 'nominal') {
-      var jitter = Math.sin(elapsedMs / 380) * Math.max(Math.abs(spanApp) * 0.08, 0.05);
-      return { val: nom + jitter, rate: dir * 0.05 };
-    }
-    if (ph === 'approaching') {
-      var frac = Math.min(0.95, Math.max(0.15, (elapsedMs - 2000) / 2000));
-      var v = nom + spanApp * (0.35 + frac * 0.62);
-      return { val: v, rate: (th - nom) / 2.0 };
-    }
-    if (ph === 'unack') {
-      var bFrac = Math.min(1, Math.max(0.25, (elapsedMs - 4000) / 3500));
-      var v2 = th + (peak - th) * bFrac + Math.sin(elapsedMs / 420) * Math.abs(peak - th) * 0.06;
-      return { val: v2, rate: (peak - th) / 2.2 };
-    }
-    return { val: th + (peak - th) * 0.65, rate: 0 };
-  }
-
   function setPhase(inst, ph, holdManual, focusSel) {
     if (!hasPhase(ph)) ph = 'nominal';
     if (holdManual) stopTimers(inst);
-    var doc = inst.doc;
+    var doc = inst.doc, T = getTrace();
     var hadFocus = !!(doc && doc.activeElement && inst.host.contains(doc.activeElement));
     var prev = inst.phase;
     inst.phase = ph;
@@ -17702,52 +17998,32 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     inst.host.setAttribute('data-alarm-phase', ph);
     if (ph === 'nominal') {
       inst.breachSec = 0;
-      if (holdManual) {
-        inst.elapsedMs = 400;
-        var s1 = sampleForPhase(inst.cfg, 'nominal', 400);
-        inst.val = s1.val; inst.rate = s1.rate;
-        inst.series = [Number(inst.cfg.nominalStart), inst.val];
-      } else {
-        var s1l = sampleForPhase(inst.cfg, 'nominal', inst.elapsedMs);
-        inst.val = s1l.val; inst.rate = s1l.rate;
-      }
+      if (holdManual) inst.elapsedMs = 0;
     } else if (ph === 'approaching') {
       inst.breachSec = 0;
-      if (holdManual) {
-        inst.elapsedMs = 3100;
-        var s2 = sampleForPhase(inst.cfg, 'approaching', 3100);
-        inst.val = s2.val; inst.rate = s2.rate;
-        inst.series = [Number(inst.cfg.nominalStart), Number(inst.cfg.nominalStart), inst.val];
-      }
+      if (holdManual) inst.elapsedMs = 3100;
     } else if (ph === 'unack') {
-      if (holdManual && inst.elapsedMs < 4000) inst.elapsedMs = 4200;
+      if (holdManual && inst.elapsedMs < 4000) inst.elapsedMs = 4400;
       inst.breachSec = Math.max(1, Math.floor(Math.max(0, inst.elapsedMs - 4000) / 1000) + 1);
-      if (holdManual) {
-        var s3 = sampleForPhase(inst.cfg, 'unack', inst.elapsedMs);
-        inst.val = s3.val; inst.rate = s3.rate;
-        inst.series = [Number(inst.cfg.nominalStart), (Number(inst.cfg.nominalStart) + Number(inst.cfg.threshold)) / 2, Number(inst.cfg.threshold), inst.val];
-      }
     } else {
       inst.breachSec = Math.max(inst.breachSec, 4);
-      var s4 = sampleForPhase(inst.cfg, 'ack', inst.elapsedMs);
-      inst.val = s4.val; inst.rate = 0;
-      if (holdManual || inst.series.length < 2) {
-        inst.series = [Number(inst.cfg.nominalStart), Number(inst.cfg.threshold), Number(inst.cfg.breachPeak), inst.val];
-      }
     }
+    var sm = sampleForPhase(inst.cfg, ph, inst.elapsedMs);
+    inst.val = sm.val;
+    inst.rate = sm.rate;
+    inst.series = T.buildPhaseSeries ? T.buildPhaseSeries(inst.cfg, ph, inst.elapsedMs) : [sm.val];
     renderBanner(inst.host, inst);
     if (ph === 'unack') renderTakeover(inst.host, inst);
+    if (T.syncBoundUI) T.syncBoundUI(inst.host, inst);
     if (focusSel || hadFocus) {
       var targetSel = focusSel || (ph === 'unack' ? '[data-alarm-ack]' : '[data-alarm-replay]');
       var fEl = inst.host.querySelector(targetSel);
       if (fEl && typeof fEl.focus === 'function') fEl.focus({ preventScroll: true });
     }
     if (prev !== ph) {
-      var msg = ph === 'approaching'
-        ? inst.cfg.paramLabel + ' approaching operating limit.'
-        : (ph === 'unack'
-          ? 'Alarm triggered: ' + inst.cfg.paramLabel + ' breached limit. Action required.'
-          : (ph === 'ack' ? 'Alarm acknowledged. Balanced diagnostic view restored.' : inst.cfg.paramLabel + ' returned to calm baseline.'));
+      var msg = ph === 'approaching' ? (inst.cfg.paramLabel + ' approaching operating limit.') :
+        (ph === 'unack' ? ('Alarm triggered: ' + inst.cfg.paramLabel + ' breached limit. Action required.') :
+          (ph === 'ack' ? 'Alarm acknowledged. Balanced diagnostic view restored.' : (inst.cfg.paramLabel + ' returned to calm baseline.')));
       announce(inst.host, msg);
     }
   }
@@ -17762,7 +18038,6 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     inst.manualHold = false;
     inst.elapsedMs = 0;
     inst.breachSec = 0;
-    inst.series = [Number(inst.cfg.nominalStart)];
     setPhase(inst, 'nominal', false, restoreFocus ? '[data-alarm-replay]' : '');
     startLoop(inst);
   }
@@ -17772,32 +18047,39 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   }
 
   function tick(inst) {
-    if (!inst.host.isConnected || inst.doc.hidden || inst.manualHold || inst.phase === 'ack') return;
+    if (!inst.host.isConnected) {
+      stopTimers(inst);
+      inst.host.__vaAlarmBound = false;
+      delete inst.host.__vaAlarmInst;
+      var i = INSTANCES.indexOf(inst);
+      if (i >= 0) INSTANCES.splice(i, 1);
+      return;
+    }
+    if (inst.doc.hidden || inst.manualHold || inst.phase === 'ack') return;
     inst.elapsedMs += 250;
+    var T = getTrace();
     var nextPhase = inst.elapsedMs < 2000 ? 'nominal' : (inst.elapsedMs < 4000 ? 'approaching' : 'unack');
     var sm = sampleForPhase(inst.cfg, nextPhase, inst.elapsedMs);
     inst.val = sm.val;
     inst.rate = sm.rate;
-    inst.series.push(inst.val);
-    if (inst.series.length > 28) inst.series.shift();
+    inst.series = T.buildPhaseSeries ? T.buildPhaseSeries(inst.cfg, nextPhase, inst.elapsedMs) : inst.series.concat([inst.val]).slice(-34);
     if (nextPhase !== inst.phase) {
       setPhase(inst, nextPhase, false, '');
       return;
     }
     if (nextPhase === 'unack') {
       inst.breachSec = Math.max(1, Math.floor((inst.elapsedMs - 4000) / 1000) + 1);
-      var tEl = inst.host.querySelector('[data-alarm-timer]');
-      var mEl = inst.host.querySelector('[data-alarm-live-metric]');
-      var dEl = inst.host.querySelector('[data-alarm-delta]');
-      var sEl = inst.host.querySelector('[data-alarm-svg-slot]');
+      var tEl = inst.host.querySelector('[data-alarm-timer]'), mEl = inst.host.querySelector('[data-alarm-live-metric]');
+      var dEl = inst.host.querySelector('[data-alarm-delta]'), sEl = inst.host.querySelector('[data-alarm-svg-slot]');
       if (tEl) tEl.textContent = fmtDuration(inst.breachSec);
       if (mEl) mEl.textContent = fmtNum(inst.val, inst.cfg.decimals) + ' ' + inst.cfg.unit;
       if (dEl) dEl.textContent = computeExcursion(inst.val, inst.cfg).deltaStr;
-      if (sEl) sEl.innerHTML = buildFocusSvg(inst.cfg, 'unack', inst.series);
+      if (sEl) sEl.innerHTML = buildFocusSvgForHost(inst.host, inst.host.querySelector('[data-alarm-takeover]'), inst.cfg, 'unack', inst.series);
     } else {
       var bVal = inst.host.querySelector('[data-alarm-banner-val]');
       if (bVal) bVal.textContent = fmtNum(inst.val, inst.cfg.decimals) + ' ' + inst.cfg.unit;
     }
+    if (T.syncBoundUI) T.syncBoundUI(inst.host, inst);
   }
 
   function startLoop(inst) {
@@ -17826,22 +18108,17 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
     try { cfg = normalizeCfg(JSON.parse(raw)); } catch (_e) { return; }
     if (!cfg) return;
     host.__vaAlarmBound = true;
+    var T = getTrace();
     var inst = {
-      host: host, doc: doc, cfg: cfg, phase: 'nominal',
-      elapsedMs: 0, breachSec: 0, timerId: 0, manualHold: false,
-      val: Number(cfg.nominalStart), rate: 0, series: [Number(cfg.nominalStart)]
+      host: host, doc: doc, cfg: cfg, phase: 'nominal', elapsedMs: 0, breachSec: 0, timerId: 0, manualHold: false,
+      val: Number(cfg.nominalStart), rate: 0, series: T.buildPhaseSeries ? T.buildPhaseSeries(cfg, 'nominal', 0) : [Number(cfg.nominalStart)]
     };
     host.__vaAlarmInst = inst;
     INSTANCES.push(inst);
     var ov = resolveOverride(host, doc);
-    if (ov) {
-      setPhase(inst, ov, true, '');
-    } else if (cfg.initialMode === 'ack') {
-      setPhase(inst, 'ack', true, '');
-    } else {
-      setPhase(inst, 'nominal', false, '');
-      startLoop(inst);
-    }
+    if (ov) setPhase(inst, ov, true, '');
+    else if (cfg.initialMode === 'ack') setPhase(inst, 'ack', true, '');
+    else { setPhase(inst, 'nominal', false, ''); startLoop(inst); }
   }
 
   function bindHandoffLinks(doc) {
@@ -17849,8 +18126,7 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
       if (a.__vaHandoffWired) return;
       a.__vaHandoffWired = true;
       a.addEventListener('click', function (ev) {
-        var w = a.getAttribute('data-quiet-handoff-world');
-        var v = a.getAttribute('data-quiet-handoff-view');
+        var w = a.getAttribute('data-quiet-handoff-world'), v = a.getAttribute('data-quiet-handoff-view');
         try {
           if (global.parent && global.parent !== global && global.parent.QuietStudioPortalV9 &&
               typeof global.parent.QuietStudioPortalV9.openExamples === 'function' && w && v) {
@@ -17904,11 +18180,8 @@ show(column(*figs))</code></pre></div><div class="qe-eco-panel" role="tabpanel" 
   };
 
   if (global.document) {
-    if (global.document.readyState === 'loading') {
-      global.document.addEventListener('DOMContentLoaded', function () { boot(global.document); });
-    } else {
-      boot(global.document);
-    }
+    if (global.document.readyState === 'loading') global.document.addEventListener('DOMContentLoaded', function () { boot(global.document); });
+    else boot(global.document);
   }
 })(typeof window !== 'undefined' ? window : this);
 

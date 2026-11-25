@@ -42,7 +42,7 @@ Quiet UI v9.6 abandons rigid monolithic page templates and artificial walls betw
 
 ---
 
-## 2. Workflow A — New Interface / Document Intake
+## 2. Workflow WF-01 (Workflow A) — New Interface / Document Intake
 
 When an agent or engineer receives a request to build, redesign, or audit an interface, the workflow executes through four sequential gates:
 
@@ -92,7 +92,7 @@ Before declaring the interface complete, the agent runs the Murder Board rubric 
 
 ---
 
-## 3. Workflow B — Multi-Audience Distillation & Numerical Conservation
+## 3. Workflow WF-02 (Workflow B) — Multi-Audience Distillation & Numerical Conservation
 
 A frequent failure mode in technical reporting is creating separate, unlinked documents for executives, engineers, and operators, causing numbers to drift. Quiet UI v9.2 enforces the **Numerical Conservation Law**:
 
@@ -123,7 +123,7 @@ A frequent failure mode in technical reporting is creating separate, unlinked do
 
 ---
 
-## 4. Workflow C — Screen-to-Paper Dual Physics (`@media screen` <-> `@media print` / `@page`)
+## 4. Workflow WF-03 (Workflow C) — Screen-to-Paper Dual Physics (`@media screen` <-> `@media print` / `@page`)
 
 Quiet UI documents are authored in standard semantic HTML, but behave as dual-physics systems across screen and print mediums:
 
@@ -181,7 +181,7 @@ All shell navigation and interactive dock elements are scoped inside `@layer she
 
 ---
 
-## 5. Workflow D — Review-Room Dual-Layer Pattern
+## 5. Workflow WF-04 (Workflow D) — Review-Room Dual-Layer Pattern
 
 In critical engineering reviews (Flight Readiness Reviews, Key Decision Points, and Incident Tiger Teams), program managers and chief engineers sit in the same room. A dashboard catering to only one audience triggers failure: executives get lost in raw traces, while engineers distrust simplified summaries.
 
@@ -215,7 +215,7 @@ Quiet UI formalizes the **Review-Room Dual-Layer Pattern**:
 
 ---
 
-## 6. Workflow E — Clean-Room Open-Standards Schematic & Starter Customization Flows
+## 6. Workflow WF-05 (Workflow E) — Clean-Room Open-Standards Schematic & Starter Customization Flows
 
 Quiet UI v9.2 generates every systems schematic through first-party deterministic Python compilers and supports customized brand starters:
 
@@ -239,7 +239,7 @@ The customization workspaces under `customizations/`:
 
 ---
 
-## 7. Workflow F — Pedagogical Scaffolding & Experimental Lab Reporting (`Educator <-> Student`)
+## 7. Workflow WF-06 (Workflow F) — Pedagogical Scaffolding & Experimental Lab Reporting (`Educator <-> Student`)
 
 The `Educator <-> Student / Learner` vector is distinct from both specialist-to-specialist reviews and common-reader summaries. It optimizes for **durable mental-model construction under a strict Cognitive Speed Limit** without teaching sloppy, unitless habits:
 
@@ -270,7 +270,7 @@ The `Educator <-> Student / Learner` vector is distinct from both specialist-to-
 
 ---
 
-## 7A. Workflow G — Brownfield Retrofit, Persistent `.quiet-ui.md` & Drift Normalization
+## 7A. Workflow WF-07 (Workflow G) — Brownfield Retrofit, Persistent `.quiet-ui.md` & Drift Normalization
 
 When replacing or overhauling a live production console rather than building greenfield from scratch, execute these seven migration controls so visual refinement never removes working features or drifts back into ad-hoc CSS:
 
@@ -349,7 +349,7 @@ python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/app/web --context
 
 ---
 
-## 11. Workflow E — Journalistic Data Articles vs. Interactive Explorers (`v9.6.0`)
+## 11. Workflow WF-08 (Workflow H) — Journalistic Data Articles vs. Interactive Explorers (`v9.6.0`)
 
 Every public-data screen MUST commit 100% to **Path A** OR **Path B** — never a hybrid combining magazine essays with persistent app sidebars, slide-deck toggles, or heavy toolbars wedged above charts:
 1. **Path A — Fluid Journalistic Data Article (`N0`, `v22-reading-and-mobility-brief`)**: Open on an `N0` full reading canvas (zero app rail/drawer/footer) with a single-line provenance eyebrow above the serif Question-First headline, an **inline sentence `<select>` scope dropdown** (`[data-v22-scope-select]`) driving `.va-lead-highlight`, unboxed typographic `.va-editorial-callouts`, and `.va-hex-tile.is-selected`, aligned along one shared `50rem` flush-left plumb line (`66ch` narrative paragraphs/subheads left-aligned via `margin-inline: 0`, full `50rem` `.va-breakout-wide` figures/matrices, zero code slabs). Place quiet links on the `Source:` footer line (`Source: ... · Show data table · Copy for AI`) plus a borderless top-right `Show chart` return bar (`.va-table-top-bar`) placed outside and directly above the `.va-table-wrap` frame (never inside bordered table wrappers or table headers) on expanded multi-row editorial tables.
@@ -365,7 +365,9 @@ Multi-panel operational consoles (`v08` Microgrid Quad, `v01` ICU Console, `v04`
 | Phase | Trigger / Window | Visual & Focus Physics | Accessibility & Safety Contract |
 | :--- | :--- | :--- | :--- |
 | **1. Calm Baseline** | `0–2 s` on launch (`nominal`) | Balanced 2x2 quad or multi-panel console inside safe boundaries (`[data-alarm-phase="nominal"]`). | Zero chromatic alarm noise; nominal sibling channels stay quiet monochrome/neutral. |
-| **2. Pre-Breach Approach** | `2–4 s` ramp (`approaching`) | Monitored channel trends toward limit; quiet amber `APPROACHING LIMIT` badge + signed rate of change appear. | Marks `.va-alarm-console [data-alarm-fault-target="1"]` warning outline; discrete transition `aria-live="polite"`. |
-| **3. Autonomous Alarm Takeover** | Crossing threshold `>= 4 s` (`unack`) | Focused full-stage alert card replaces cluttered grid; shows severity pill, `00m 0Xs` elapsed clock, signed **Excursion Delta**, NIST 1-2-5 SVG trace, mini breach timeline, compressed sibling strip, and **`Acknowledge Alarm`** (`>= 44px`). | Opt-in pulse (`1.4 s`, `<= 2 Hz`) strictly inside `@media (prefers-reduced-motion: no-preference)`; `reduce` switches to steady high-contrast double frame; ticking timer carries `aria-live="off"`. |
-| **4. Acknowledged Diagnostic** | Click `Acknowledge Alarm` (`ack`; `v07` default) | Flashing halts immediately; restores exact balanced console layout smoothly while latching steady red/amber fault highlight + shaded breach marker + header **`Replay Breach`** control. | `@media print` (`M1`) always forces Phase 4 steady diagnostics (`display: none` on `.va-alarm-takeover`); live timers pause on `document.hidden`; deterministic `?alarm=` hooks prevent test races. |
+| **2. Pre-Breach Approach** | `2–4 s` ramp (`approaching`) | Monitored channel trends toward limit; quiet amber `APPROACHING LIMIT` badge + signed rate of change appear. | Marks single `[data-alarm-fault-target="1"]` card warning outline; discrete transition `aria-live="polite"`. |
+| **3. Autonomous Alarm Takeover** | Crossing threshold `>= 4 s` (`unack`) | Focused full-stage alert card replaces cluttered grid; shows severity pill, `00m 0Xs` elapsed clock, signed **Excursion Delta**, Full-Width Excursion Trace (28–36 samples, shaded breach area, `Threshold Crossed` pin, `-12s..LIVE` timecodes), mini timeline, sibling strip, and **`Acknowledge Alarm`** (`>= 44px`). | Opt-in pulse (`1.4 s`, `<= 2 Hz`) strictly inside `@media (prefers-reduced-motion: no-preference)`; `reduce` switches to steady high-contrast double frame; ticking timer carries `aria-live="off"`. |
+| **4. Acknowledged Diagnostic** | Click `Acknowledge Alarm` (`ack`; `v07` default) | Flashing halts immediately; restores exact balanced console layout smoothly while latching steady fault highlight + **`Replay Breach`** control. | `@media print` (`M1`) always forces Phase 4 steady diagnostics (`display: none` on `.va-alarm-takeover`); timers pause on `document.hidden`; deterministic `?alarm=` hooks prevent test races. |
+
+- **Target Channel Card Binding & Synchronized Page Status Pill**: Bind `[data-alarm-fault-target="1"]` strictly to one live telemetry card (`v08` Q2 Frequency, `v01` MAP Card 1, `v04` Latency Tile 1, `v07` Frequency Card 2) and synchronize `[data-alarm-header-pill]` + N3 topbar metrics identically (`ALL SYSTEMS NOMINAL` -> `APPROACHING LIMIT` -> `1 UNACK ALARM` -> `1 LATCHED FAULT`), paired with **Single Control Home** (`v02`, `v05`, `v07`, `v09`, `v10`, `v19`, `v20` keep chip bars inline without duplicating `Interactive Controls` in the left rail).
 

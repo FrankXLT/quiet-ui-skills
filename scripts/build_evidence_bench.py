@@ -118,6 +118,7 @@ def _bundle_bench_js() -> str:
             "src/js/quiet-sankey-layout.js",
             "src/js/quiet-card-export.js",
             "src/js/echarts-quiet-adapter.js",
+            "src/js/quiet-alarm-trace.js",
             "src/js/quiet-alarm-lifecycle.js",
             "docs/bench/bench.js",
         )

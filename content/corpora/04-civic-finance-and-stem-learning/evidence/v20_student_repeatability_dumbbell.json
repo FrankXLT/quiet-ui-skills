@@ -3,8 +3,8 @@
   "id": "v20-student-repeatability-dumbbell",
   "plot_kind": "dumbbell",
   "metadata": {
-    "title": "Five-Station RC Bench Repeatability at t = 2.40 s",
-    "description": "Comparison of raw pre-zero voltage vs calibrated t = 2.40 s crossing (mean 1.82 V vs 1.84 V theory, u = ±0.05 V, ≤ 0.8 σ) across V₀ = 5.00 V rigs.",
+    "title": "Five-Bench Probe Zero Repeatability Calibration (1τ Reference)",
+    "description": "Pre-step rig verification comparing raw pre-zero voltage vs calibrated t = 2.40 s crossing (1.82 V mean vs 1.84 V baseline, u = ±0.05 V, ≤ 0.8 σ) across the five 5.00 V capstone benches.",
     "rigor_level": "L3",
     "audience": "Capstone Jury & Lab Instructor"
   },

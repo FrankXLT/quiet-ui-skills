@@ -231,11 +231,11 @@
 
   function findStageQuickControls(doc) {
     const sels = [
-      '.qe-scope-preset-bar button[data-scope-preset]', '#v07-node-chips button',
+      '.qe-scope-preset-bar button[data-scope-preset]',
       '#v02-subgroup-chips button', '#v05-enclave-chips button', '#v10-fund-chips button',
       '#v11-shock-chips button', '#v12-role-chips button', '#v12-lab button[data-term]',
       '#v03-guide button[data-term]', '.v18-filter-bar button[data-v18-filter]',
-      '#v19-filter-chips button', '#v20-rubric-chips button', '#v21-step-chips button',
+      '#v19-filter-chips button', '#v21-step-chips button',
       '.va-tab-strip button',
     ];
     for (let i = 0; i < sels.length; i += 1) {

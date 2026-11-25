@@ -287,7 +287,6 @@
     display: block;
     inline-size: 100%;
     block-size: auto;
-    max-block-size: 185px;
   }
 
   .va-alarm-timeline {
@@ -308,53 +307,39 @@
     color: var(--text-secondary);
   }
 
-  .va-alarm-tl-step.is-active {
-    border-color: var(--status-err);
-    color: var(--text-primary);
-    font-weight: 700;
-  }
+  .va-alarm-tl-step.is-active { border-color: var(--status-err); color: var(--text-primary); font-weight: 700; }
 
   .va-alarm-siblings {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.45rem 0.75rem;
-    padding: 0.5rem 0.75rem;
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-inner);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.75rem;
+    padding: 0.5rem 0.75rem; background: var(--bg-surface);
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-inner);
   }
-
   .va-alarm-sibling-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: var(--ts-xs);
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: var(--ts-xs); color: var(--text-secondary); font-variant-numeric: tabular-nums;
   }
-
-  .va-alarm-sibling-dot {
-    inline-size: 7px;
-    block-size: 7px;
-    border-radius: 50%;
-    background: var(--status-ok);
-    flex: 0 0 auto;
-  }
+  .va-alarm-sibling-dot { inline-size: 7px; block-size: 7px; border-radius: 50%; background: var(--status-ok); flex: 0 0 auto; }
 
   .va-alarm-takeover-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.65rem;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 0.65rem 1rem; padding-top: 0.6rem; border-top: 1px solid var(--border-subtle);
+  }
+  .va-alarm-action-hints { display: flex; flex-direction: column; align-items: flex-end; gap: 0.12rem; min-inline-size: 0; }
+  .va-alarm-shortcut-note { font-size: var(--ts-xs); font-weight: 600; color: var(--text-primary); }
+  .va-kbd {
+    display: inline-block; padding: 0.08rem 0.36rem; font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700;
+    line-height: 1.25; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-strong); border-radius: var(--radius-xs);
   }
 
-  .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"] {
+  .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"],
+  .va-alarm-console[data-alarm-phase="approaching"] .v08-kpi-card[data-alarm-fault-target="1"] {
+    border-color: var(--status-warn);
     outline: 2px solid var(--status-warn);
     outline-offset: 2px;
   }
-  .va-alarm-console[data-alarm-phase="ack"] [data-alarm-fault-target="1"] {
+  .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) [data-alarm-fault-target="1"],
+  .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) .v08-kpi-card[data-alarm-fault-target="1"] {
+    border-color: var(--status-err);
     outline: 2px solid var(--status-err);
     outline-offset: 2px;
   }
@@ -396,9 +381,11 @@
     .va-alarm-ack-btn,
     .va-alarm-btn { border: 2px solid ButtonText; forced-color-adjust: none; }
     .va-alarm-takeover,
-    .va-alarm-console[data-alarm-phase="approaching"] [data-alarm-fault-target="1"],
-    .va-alarm-console[data-alarm-phase="ack"] [data-alarm-fault-target="1"] { outline: 2px solid Highlight; outline-offset: 2px; }
-    .va-alarm-console[data-alarm-phase="ack"] > .va-alarm-banner { border-inline-start: 4px solid Highlight; }
+    .va-alarm-console:is([data-alarm-phase="approaching"], [data-alarm-phase="unack"], [data-alarm-phase="ack"]) [data-alarm-fault-target="1"],
+    .va-alarm-console:is([data-alarm-phase="approaching"], [data-alarm-phase="unack"], [data-alarm-phase="ack"]) .v08-kpi-card[data-alarm-fault-target="1"] {
+      border-color: Highlight; outline: 2px solid Highlight; outline-offset: 2px;
+    }
+    .va-alarm-console:is([data-alarm-phase="unack"], [data-alarm-phase="ack"]) > .va-alarm-banner { border-inline-start: 4px solid Highlight; }
     .va-alarm-sibling-dot { background: Highlight; border: 1px solid CanvasText; }
     .va-alarm-focus-svg { forced-color-adjust: auto; }
   }

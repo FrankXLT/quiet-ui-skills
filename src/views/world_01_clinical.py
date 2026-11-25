@@ -15,6 +15,7 @@ try:
         format_math_html,
         inject_fig_class,
         load_world_inputs,
+        mark_scalar_card_target,
         render_alarm_console_close,
         render_alarm_console_open,
         render_handoff_link,
@@ -27,6 +28,7 @@ except ImportError:
         format_math_html,
         inject_fig_class,
         load_world_inputs,
+        mark_scalar_card_target,
         render_alarm_console_close,
         render_alarm_console_open,
         render_handoff_link,
@@ -56,7 +58,10 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     cm = corpus["canonical_metrics"]
     map_m, peep_cmd, peep_act, drop_m = cm["map_mmhg"], cm["peep_cmd_cmh2o"], cm["peep_act_cmh2o"], cm["dropout_duration_s"]
     ta_html, tb_html = format_math_html("T_A"), format_math_html("T_B")
-    scalars_html = _inject_mobile_tile(inject_fig_class(embed_compile(specs["scalars"], "L3", "m4"), "v01-scalars-fig"), float(drop_m["value"]))
+    scalars_html = mark_scalar_card_target(
+        _inject_mobile_tile(inject_fig_class(embed_compile(specs["scalars"], "L3", "m4"), "v01-scalars-fig"), float(drop_m["value"])),
+        0,
+    )
     scope_html = inject_fig_class(embed_compile(specs["scope"], "L3", "m4"), "v01-scope-fig")
     alarm_cfg = {
         "viewId": "v01-icu-bedside-terminal",
@@ -67,8 +72,11 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         "decimals": 1,
         "threshold": float(map_m["lower_limit"]),
         "direction": "below",
-        "nominalStart": float(map_m["target"]),
-        "breachPeak": float(map_m["value"]) - 4.0,
+        "nominalStart": 74.0,
+        "breachPeak": 59.5,
+        "ackValue": float(map_m["value"]),
+        "gaugeMin": 50.0,
+        "gaugeMax": 120.0,
         "breachReason": f"< {map_m['lower_limit']:.1f} mmHg Floor",
         "ackActionHint": "Acknowledge alert and verify radial transducer zero before titration.",
         "siblings": [
@@ -89,10 +97,13 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <span class="va-kicker">ADULT ICU · BED 04 · SEPSIS PROTOCOL</span>
       <h1 class="v9-masthead-title">Hemodynamic &amp; Ventilator Telemetry</h1>
     </div>
-    {handoff}
+    <div class="v9-masthead-tags">
+      <span class="va-pill" data-variant="status" data-state="nominal" data-alarm-header-pill="1">ALL SYSTEMS NOMINAL</span>
+      {handoff}
+    </div>
   </header>
   {render_alarm_console_open(alarm_cfg, "nominal", "Mean Arterial Pressure Unacknowledged Alarm")}
-  <section id="v01-vent" data-alarm-fault-target="1" aria-label="Bedside Vital and Ventilator Scalars">
+  <section id="v01-vent" aria-label="Bedside Vital and Ventilator Scalars">
     {scalars_html}
   </section>
 
@@ -395,10 +406,9 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
         "v02-trial-regulatory-brief": _build_v02_html(corpus, specs),
         "v03-patient-recovery-companion": _build_v03_html(corpus, specs),
     }
-    map_val = float(corpus["canonical_metrics"]["map_mmhg"]["value"])
     v01_status = [
-        {"text": "▲ 1 CAUTION", "variant": "status", "state": "warn"},
-        {"text": f"MAP {map_val:.1f} mmHg", "variant": "plain", "state": "warn"},
+        {"text": "ALL SYSTEMS NOMINAL", "variant": "status", "state": "nominal"},
+        {"text": "MAP 74.0 mmHg", "variant": "plain", "state": "nominal"},
         {"text": "NTP Synced", "variant": "status", "state": "nominal"},
     ]
     view_cfg = {

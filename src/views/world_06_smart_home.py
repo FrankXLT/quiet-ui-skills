@@ -131,7 +131,9 @@ def _v18_mushroom_cards(temp_c: float, rh_pct: float, soc: float, dry_cnt: int, 
         ("media", "bulb", "gold", "Living Room Lights", "Evening Glow · 65%", "Warm white dimming active"),
         ("media", "speaker", "indigo", "Family Room Media", "Standby · Quiet", "Living speakers idle"),
         ("safety", "droplet", "emerald", "Water Leak Sensors", f"All {dry_cnt} Dry", "Kitchen, bath & basement clear"),
-        ("energy", "battery", "sky", "Home Battery", f"{soc:.0f}% Charged", f"Ready for ${tariff:.2f}/kWh peak"),
+        ("climate", "thermo", "emerald", "Primary Bedroom",
+         '<span class="v18-temp-num" data-temp-c="20.2 °C" data-temp-f="68 °F">20.2 °C</span> · Quiet',
+         "Night setback armed"),
     ]
     tiles = "\n".join(
         f"""      <article class="v18-zone-tile v18-mush-card" data-v18-cat="{cat}">
@@ -152,7 +154,6 @@ def _v18_mushroom_cards(temp_c: float, rh_pct: float, soc: float, dry_cnt: int, 
         <button type="button" class="v18-filter-btn" data-v18-filter="climate" aria-pressed="false">Climate</button>
         <button type="button" class="v18-filter-btn" data-v18-filter="media" aria-pressed="false">Lights &amp; Media</button>
         <button type="button" class="v18-filter-btn" data-v18-filter="safety" aria-pressed="false">Safety</button>
-        <button type="button" class="v18-filter-btn" data-v18-filter="energy" aria-pressed="false">Energy</button>
       </div>
     </div>
     <div class="v18-room-grid">
@@ -233,7 +234,7 @@ def _build_v18_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Home Assistant &amp; Daily Energy</h1>
-    <p class="v9-masthead-sub">Generating {pv_kw:.2f} kW from solar and exporting {abs(net_kw):.2f} kW ({net_kw:+.2f} kW) while holding {soc:.0f}% battery ahead of ${tariff:.2f}/kWh evening rates.</p>
+    <p class="v9-masthead-sub">Solar panels are producing {pv_kw:.2f} kW with {net_kw:+.2f} kW net grid export and {soc:.0f}% battery reserve ahead of ${tariff:.2f}/kWh evening peak rates.</p>
   </header>
 
 {_v18_energy_kpis(pv_kw, load_kw, net_kw, soc)}

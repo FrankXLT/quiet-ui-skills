@@ -15,6 +15,7 @@ try:
         esc,
         format_math_html,
         load_world_inputs,
+        mark_scalar_card_target,
         render_alarm_console_close,
         render_alarm_console_open,
         render_params_aside,
@@ -27,6 +28,7 @@ except ImportError:
         esc,
         format_math_html,
         load_world_inputs,
+        mark_scalar_card_target,
         render_alarm_console_close,
         render_alarm_console_open,
         render_params_aside,
@@ -53,6 +55,9 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
         "direction": "below",
         "nominalStart": freq,
         "breachPeak": 59.845,
+        "ackValue": 59.864,
+        "gaugeMin": 59.85,
+        "gaugeMax": 60.15,
         "breachReason": "< 59.900 Hz Underfreq",
         "ackActionHint": "Acknowledge to return to balanced SCADA topology with latched bus diagnostic.",
         "siblings": [
@@ -68,6 +73,7 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <span class="va-kicker">POI-MGRID-03 · ISA-5.1 / ISA-101 · DWG-SCADA-POI-0307-R2</span>
       <div class="v9-masthead-tags">
         <span class="va-pill" data-variant="tag">CAL-PMU-2026-031</span>
+        <span class="va-pill" data-variant="status" data-state="fault" data-alarm-header-pill="1">1 LATCHED FAULT</span>
         <span id="v07-gate-pill" class="va-pill" data-variant="status" data-state="nominal">BREAKER 52-M CLOSED</span>
       </div>
     </div>
@@ -75,7 +81,7 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     <p class="v9-masthead-sub">Shows acknowledged frequency excursion history beside live microgrid dispatch ({p_act:.1f} MW / {freq:.3f} Hz); click Replay Breach or verify LOTO [10]=0 before transfer.</p>
   </header>
   {render_alarm_console_open(v07_alarm_cfg, "ack", "POI Bus Frequency Unacknowledged Alarm")}
-  <section id="v07-scalars" data-alarm-fault-target="1" aria-label="Synchrophasor and BESS Telemetry">{scalars_html}</section>
+  <section id="v07-scalars" aria-label="Synchrophasor and BESS Telemetry">{mark_scalar_card_target(scalars_html, 1)}</section>
   <section id="v07-node-bar" class="v07-node-bar" aria-label="Microgrid Node Telemetry Selector">
     <div id="v07-node-chips" class="v07-node-chips" role="group" aria-label="Inspect Microgrid Node">
       <button type="button" class="v07-node-chip" data-v07-node="poi" aria-pressed="false" data-v07-diag="POI Breaker 52-M Closed · Active Dispatch {p_act:.1f} MW (CMD {p_cmd:.1f} MW) · Synchrophasor {freq:.3f} Hz (±0.005 Hz)">POI 52-M · {p_act:.1f} MW</button>
@@ -153,19 +159,19 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     v08_alarm_cfg = {
         "viewId": "v08-plant-floor-wall-kiosk",
         "initialMode": "auto",
-        "paramLabel": "Feeder-B Voltage",
-        "channelTag": "CELL-03 · FEEDER-B BUS",
-        "unit": "% nominal",
-        "decimals": 1,
-        "threshold": 94.0,
+        "paramLabel": "Grid Synchrophasor Frequency",
+        "channelTag": "CELL-03 · PMU CH2",
+        "unit": "Hz",
+        "decimals": 3,
+        "threshold": 59.850,
         "direction": "below",
-        "nominalStart": 97.8,
-        "breachPeak": 91.2,
-        "breachReason": "< 94.0% Undervoltage",
+        "nominalStart": freq,
+        "breachPeak": 59.758,
+        "ackValue": 59.790,
+        "breachReason": "< 59.850 Hz Underfreq",
         "ackActionHint": "Acknowledge alarm to restore the 2x2 quad console with latched steady fault.",
         "siblings": [
-            {"label": "Dispatch", "val": f"{p_act:.1f} MW"},
-            {"label": "Sync Freq", "val": f"{freq:.3f} Hz"},
+            {"label": "Active Dispatch", "val": f"{p_act:.1f} MW"},
             {"label": "BESS SoC", "val": f"{soc:.1f}%"},
             {"label": "Cell-03 OEE", "val": f"{oee:.1f}%"},
         ],
@@ -178,11 +184,11 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
       <h1 class="v08-wall-title">Plant Test &amp; Live Microgrid HMI Display</h1>
     </div>
     <div class="v08-wall-status">
-      <span class="va-pill" data-variant="status" data-state="nominal">ALL SYSTEMS NOMINAL</span>
+      <span class="va-pill" data-variant="status" data-state="nominal" data-alarm-header-pill="1">ALL SYSTEMS NOMINAL</span>
       <span class="va-pill" data-variant="tag">52-M CLOSED · LOTO CLEAR</span>
     </div>
   </header>
-  {render_alarm_console_open(v08_alarm_cfg, "nominal", "Feeder-B Voltage Unacknowledged Alarm")}
+  {render_alarm_console_open(v08_alarm_cfg, "nominal", "Grid Synchrophasor Frequency Unacknowledged Alarm")}
   <div class="v08-inst-bar" role="toolbar" aria-label="Benchtop Instrument Controls">
     <div id="v08-ch-readout" class="v08-inst-readout va-nums" aria-live="polite">CH1 · Active Dispatch — Min 23.1 MW · Avg {p_act:.1f} MW · Max 24.1 MW · Ripple ±0.4 MW (1h)</div>
     <div class="v08-inst-actions">
@@ -196,7 +202,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     </div>
   </div>
 
-  <div class="v08-kpi-grid" data-alarm-fault-target="1" aria-label="Primary Plant Floor Telemetry">
+  <div class="v08-kpi-grid" aria-label="Primary Plant Floor Telemetry">
     <article class="v08-kpi-card is-v08-selected" role="button" tabindex="0" aria-pressed="true" data-v08-ch="dispatch">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Microgrid Active Dispatch</span><span class="va-pill" data-variant="status" data-state="nominal">POI SYNCED</span></div>
       {sp1}
@@ -205,12 +211,12 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
         <span class="v08-kpi-target va-nums">Target {p_cmd:.1f} MW · Nominal</span>
       </div>
     </article>
-    <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="freq">
+    <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="freq" data-alarm-fault-target="1">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Grid Synchrophasor Frequency</span><span class="va-pill" data-variant="status" data-state="nominal">LOCK ±0.02 Hz</span></div>
       {sp2}
       <div class="v08-kpi-hero">
         <span class="v08-kpi-val va-nums">{freq:.3f} Hz</span>
-        <span class="v08-kpi-target va-nums">Reference {freq_cmd:.3f} Hz</span>
+        <span class="v08-kpi-target va-nums">Reference {freq_cmd:.3f} Hz · Limit 59.850 Hz</span>
       </div>
     </article>
     <article class="v08-kpi-card" role="button" tabindex="0" aria-pressed="false" data-v08-ch="bess">
@@ -338,8 +344,8 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
     }
     v07_status = [
         {"text": f"POI {p_act:.1f} MW", "variant": "plain", "state": "nominal"},
-        {"text": f"{freq:.3f} Hz", "variant": "plain", "state": "nominal"},
-        {"text": "NOMINAL", "variant": "status", "state": "nominal"},
+        {"text": "59.864 Hz", "variant": "plain", "state": "fault"},
+        {"text": "1 LATCHED FAULT", "variant": "status", "state": "fault"},
     ]
     view_cfg = {
         "v07-grid-scada-poi-console": {

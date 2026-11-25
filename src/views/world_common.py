@@ -293,3 +293,18 @@ def render_handoff_link(world_id: str, view_id: str, label: str) -> str:
         f"{esc(label)}</a>"
     )
 
+
+def mark_scalar_card_target(scalars_html: str, card_index: int = 0) -> str:
+    """Attach data-alarm-fault-target='1' strictly onto the N-th .qe-scalar-card in compiled scalar markup."""
+    seen = -1
+
+    def _sub(match: re.Match[str]) -> str:
+        nonlocal seen
+        seen += 1
+        if seen == card_index:
+            return '<div class="qe-scalar-card" data-alarm-fault-target="1">'
+        return match.group(0)
+
+    return re.sub(r'<div class="qe-scalar-card">', _sub, scalars_html)
+
+

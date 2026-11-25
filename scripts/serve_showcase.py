@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Threaded local HTTP preview server for the Quiet UI Skills v9.6 Studio & Evidence Library."""
+"""Threaded local HTTP preview server for the Quiet UI Skills v9.7 Studio & Evidence Library."""
 
 from __future__ import annotations
 
