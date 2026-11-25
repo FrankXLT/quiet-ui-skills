@@ -124,7 +124,7 @@ quiet-ui-skills/
 ├── THIRD_PARTY_LICENSES.md                          # Clean-room zero third-party runtime & Apache ECharts license notice
 ├── install.sh                                       # 1-command plugin & 3-pillar cross-agent installer
 ├── tokens/quiet-ui-tokens.css                       # Standalone 4-theme CSS design tokens (MIT)
-├── src/                                             # Flattened CSS (00–17), JS runtime & 22-view generators
+├── src/                                             # Flattened CSS (00–18), JS runtime & 22-view generators
 ├── scripts/                                         # Canonical builders (build_all.py, build_showcase.py, serve_showcase.py)
 ├── tests/                                           # Unified stdlib & Chrome CDP visual regression suite
 ├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
