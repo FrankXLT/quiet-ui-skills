@@ -6,9 +6,9 @@ from __future__ import annotations
 from typing import Any
 
 try:
-    from world_common import cm_val, embed_compile, esc
+    from world_common import cm_val, embed_compile, esc, render_handoff_link
 except ImportError:
-    from src.views.world_common import cm_val, embed_compile, esc
+    from src.views.world_common import cm_val, embed_compile, esc, render_handoff_link
 
 
 def build_v19_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
@@ -47,7 +47,7 @@ def build_v19_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       </div>
     </div>
     <h1 class="v9-masthead-title">Product Release Roadmap &amp; Critical-Path Blocker Triage</h1>
-    <p class="v9-masthead-sub">Conserves {p99:.1f} ms tail ceiling, {gap:.1f} s scrape gap fix, {esc(hex_pol)} policy gate, +{flt:.1f} d parallel security buffer, and {n_blk} tracked launch blockers.</p>
+    <p class="v9-masthead-sub">Launch stays held across {n_blk} open blockers: patch the {gap:.1f} s monitoring blindspot, bring p99 below {p99:.1f} ms, and keep +{flt:.1f} d slack on {esc(hex_pol)}.</p>
   </header>
 
   <section id="v19-disposition" class="v9-br-banner" aria-label="Release Readiness Summary">
@@ -86,46 +86,49 @@ def build_v19_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
 def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     """Student -> Educator/Judge upward lab report following Claim -> Method -> Data -> Error -> Critique."""
     cm = corpus["canonical_metrics"]
+    zeta = float(cm_val(cm, "step_damping_ratio"))
+    mp_pct = float(cm_val(cm, "step_overshoot_pct"))
+    v_peak = float(cm_val(cm, "step_peak_v"))
+    t_set = float(cm_val(cm, "step_settling_s"))
     v0 = float(cm_val(cm, "rc_v0_v"))
-    tau = float(cm_val(cm, "rc_tau_s"))
     v_tau = float(cm_val(cm, "rc_vtau_v"))
     v_mean = float(cm_val(cm, "rc_mean_trial_v"))
     u_cal = float(cm_val(cm, "rc_uncertainty_v"))
     sig = float(cm_val(cm, "rc_sigma_bound"))
-    scope_html = embed_compile(specs["rc_lab"], "L3", "m2")
+    scope_html = embed_compile(specs["step_lab"], "L3", "m2")
     dumb_html = embed_compile(specs["repeatability"], "L3", "m2")
 
     return f"""<div class="v9-stage-inner v9-view-v20">
   <header class="v9-masthead">
     <div class="v9-masthead-eyebrow">
-      <span class="va-kicker">CAPSTONE-RC-LAB · 5-BENCH-REPEATABILITY · STUDENT-TO-EDUCATOR</span>
+      <span class="va-kicker">CAPSTONE-RLC-STEP · ζ = {zeta:.2f} RINGDOWN · STUDENT-TO-EDUCATOR</span>
       <div class="v9-masthead-tags">
-        <span class="va-pill" data-variant="tag">V₀ = {v0:.2f} V</span>
+        <span class="va-pill" data-variant="tag">ζ = {zeta:.2f} (22% DAMPING)</span>
         <span class="va-pill" data-variant="status" data-state="nominal">PASS · ≤ {sig:.1f} σ</span>
       </div>
     </div>
-    <h1 class="v9-masthead-title">Student Capstone RC Discharge Repeatability Report</h1>
-    <p class="v9-masthead-sub">Upward verification from {v0:.2f} V initial charge: five-station 1τ mean {v_mean:.2f} V matches {v_tau:.2f} V law at τ = {tau:.2f} s within ±{u_cal:.2f} V uncertainty.</p>
+    <h1 class="v9-masthead-title">Student Capstone Second-Order Step Response &amp; Repeatability Report</h1>
+    <p class="v9-masthead-sub">Second-order 5.00 V step ringdown (ζ = {zeta:.2f}, peak {v_peak:.2f} V / +{mp_pct:.1f}% overshoot, settling in {t_set:.2f} s) verified against 5-bench repeatability (±{u_cal:.2f} V).</p>
   </header>
 
   <section id="v20-claim" aria-label="Headline Experimental Claim">
     <div class="v20-claim-box">
       <div class="v9-br-head">
-        <h2 class="v9-sec-title">Headline Claim: Bench RC Decay Confirms τ = {tau:.2f} s Within ±{u_cal:.2f} V Repeatability</h2>
+        <h2 class="v9-sec-title">Headline Claim: Underdamped Step Ringdown Peak {v_peak:.2f} V (+{mp_pct:.1f}%) Settles Within {t_set:.2f} s</h2>
         <span class="va-pill" data-variant="status" data-state="nominal">PASS · ≤ {sig:.1f} σ</span>
       </div>
-      <p class="qe-fig-desc">Discharging from {v0:.2f} V across five lab benches yielded mean 1τ voltage {v_mean:.2f} V vs {v_tau:.2f} V theoretical crossing (exp(−1) · {v0:.2f} V), holding every residual inside ±{sig:.1f} σ with combined instrument uncertainty ±{u_cal:.2f} V.</p>
+      <p class="qe-fig-desc">Driving a {v0:.2f} V step with 22% damping ratio (ζ = {zeta:.2f}) reached a measured {v_peak:.2f} V first crest before entering the ±2% [4.90 V, 5.10 V] envelope by t_s = {t_set:.2f} s, while five replicated stations stayed within ±{u_cal:.2f} V ({v_mean:.2f} V mean vs {v_tau:.2f} V reference).</p>
       <div class="v20-rubric-bar" id="v20-rubric-chips" role="group" aria-label="Reviewer rubric lens">
         <span class="v9-demo-label">Rubric Focus:</span>
-        <button type="button" class="va-pill" data-variant="chip" data-v20-focus="claim" aria-pressed="true">Claim &amp; Theory</button>
+        <button type="button" class="va-pill" data-variant="chip" data-v20-focus="claim" aria-pressed="true">Claim &amp; Ringdown</button>
         <button type="button" class="va-pill" data-variant="chip" data-v20-focus="repeat" aria-pressed="false">Bench Repeatability</button>
         <button type="button" class="va-pill" data-variant="chip" data-v20-focus="error" aria-pressed="false">Error Bounds</button>
       </div>
     </div>
     <div class="v20-method-grid">
-      <div class="v9-demo-subcard" data-v20-card="claim"><span class="v9-demo-label">Step Input &amp; Law</span><strong class="va-nums">{v0:.2f} V · τ = {tau:.2f} s</strong><span class="qe-fig-desc">Theoretical 1τ target = {v_tau:.2f} V</span></div>
-      <div class="v9-demo-subcard" data-v20-card="repeat"><span class="v9-demo-label">5-Station Mean</span><strong class="va-nums">{v_mean:.2f} V observed</strong><span class="qe-fig-desc">Pre-zero offset drift corrected</span></div>
-      <div class="v9-demo-subcard" data-v20-card="error"><span class="v9-demo-label">Uncertainty &amp; Residual</span><strong class="va-nums">±{u_cal:.2f} V · ≤ {sig:.1f} σ</strong><span class="qe-fig-desc">All 9 scope runs within envelope</span></div>
+      <div class="v9-demo-subcard" data-v20-card="claim"><span class="v9-demo-label">Damping &amp; Overshoot</span><strong class="va-nums">ζ = {zeta:.2f} · +{mp_pct:.1f}%</strong><span class="qe-fig-desc">Crest {v_peak:.2f} V · settles {t_set:.2f} s</span></div>
+      <div class="v9-demo-subcard" data-v20-card="repeat"><span class="v9-demo-label">5-Station Bench Mean</span><strong class="va-nums">{v_mean:.2f} V observed</strong><span class="qe-fig-desc">Pre-zero probe offset removed</span></div>
+      <div class="v9-demo-subcard" data-v20-card="error"><span class="v9-demo-label">Uncertainty &amp; Residual</span><strong class="va-nums">±{u_cal:.2f} V · ≤ {sig:.1f} σ</strong><span class="qe-fig-desc">All 12 ringdown runs in envelope</span></div>
     </div>
   </section>
 
@@ -137,10 +140,10 @@ def build_v20_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
   <section id="v20-critique" class="va-card" aria-label="Self-Critique &amp; Judge Checklist">
     <div class="v9-br-head">
       <h2 class="v9-sec-title">Error Budget &amp; Self-Critique Verification Checklist</h2>
-      <span class="va-nums" id="v20-focus-note" aria-live="polite">Focus: Claim &amp; Theory verified against {v_tau:.2f} V model</span>
+      <span class="va-nums" id="v20-focus-note" aria-live="polite">Focus: Claim &amp; Ringdown verified against ζ = {zeta:.2f} model</span>
     </div>
     <div class="v9-br-checks">
-      <div class="v9-br-check" data-v20-card="claim"><span>1. Zero-adjusted 1τ fit matches exp(−1) law ({v_tau:.2f} V)</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
+      <div class="v9-br-check" data-v20-card="claim"><span>1. First overshoot crest {v_peak:.2f} V (+{mp_pct:.1f}%) settles ≤ {t_set:.2f} s</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
       <div class="v9-br-check" data-v20-card="repeat"><span>2. 5-station spread bounded around {v_mean:.2f} V mean</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
       <div class="v9-br-check" data-v20-card="error"><span>3. Probe offset zeroed within ±{u_cal:.2f} V repeatability</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
       <div class="v9-br-check" data-v20-card="error"><span>4. Max standardized residual bounded ≤ {sig:.1f} σ</span><span class="va-pill" data-variant="status" data-state="nominal">VERIFIED</span></div>
@@ -160,6 +163,7 @@ def build_v21_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
     win_h = float(cm_val(cm, "bay_recovery_window_h"))
     bus_html = embed_compile(specs["bus_schematic"], "L2", "m3")
     gantt_html = embed_compile(specs["recovery_gantt"], "L2", "m3")
+    back_link = render_handoff_link("05-physical-systems-auto-and-aero", "v14-fieldbus-and-scope-debugger", "<- Open CAN-FD Scope & Bus Bench")
 
     return f"""<div class="v9-stage-inner v9-view-v21">
   <header class="v9-masthead">
@@ -168,10 +172,11 @@ def build_v21_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       <div class="v9-masthead-tags">
         <span class="va-pill" data-variant="tag">DUAL {ohm} Ω EOL</span>
         <span class="va-pill" data-variant="status" data-state="fault" id="v21-esc-badge">ESCALATED · {win_h:.1f} H</span>
+        {back_link}
       </div>
     </div>
     <h1 class="v9-masthead-title">Field Anomaly Escalation TSN &amp; {win_h:.1f} h Bay Recovery</h1>
-    <p class="v9-masthead-sub">Bottom-up handoff from bench troubleshooting: {drop:.2f} µs reflection dropout (&gt; {stub:.1f} m stub) plus {derate:.0f} °C MCU derate ahead of {bte:.1f}% BTE dyno re-qualification.</p>
+    <p class="v9-masthead-sub">Escalates bench reflection dropout ({drop:.2f} µs across &gt; {stub:.1f} m stub) and {derate:.0f} °C inverter thermal derate into an {win_h:.1f} h recovery plan before {bte:.1f}% efficiency retest.</p>
   </header>
 
   <section id="v21-symptom" class="v21-handoff-banner" aria-label="Field Escalation Troubleshooting Note">

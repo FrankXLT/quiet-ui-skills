@@ -31,6 +31,7 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 | `sample_count` | `1200` | `1` | `evidence/v06_ai_calibration_plot.json` -> `parametric_legend[2].value` | `v06-ai-drift-and-lineage-ide` |
 | `roadmap_float_days` | `3.0` | `d` | `evidence/v19_release_roadmap_gantt.json` -> `tasks[2].float_days` | `v19-product-roadmap-and-triage` |
 | `tracked_blockers` | `4` | `1` | `evidence/v19_release_roadmap_gantt.json` -> `tracked_blockers` | `v19-product-roadmap-and-triage` |
+| `ood_routed_samples` | `10` | `1` | `evidence/v06_ood_drift_samples_table.json` -> `rows.length` | `v06-ai-drift-and-lineage-ide` |
 
 ---
 
@@ -39,9 +40,9 @@ All views (`v04`, `v05`, `v06`, `v19`) derive their physical thresholds, registe
 | View ID | Presenter Source | Target Audience | Audience Lenses | Tempo | Medium & Shell | Chromatic Budget | Rigor | Unit of Proof |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `v04-sre-incident-workbench` | Site Reliability Engineer | On-Call & VP Engineering | Technician / Operator, Program Manager | `T1` (5-15 s) | `M3`, `N2` | Quiet Cockpit | `L3` | p99 latency scope, burn rate (`16.8 %/h`), canary gate (`0`), explicit `12.0 s` null gap |
-| `v05-zero-trust-ato-spec` | Security Architect | Authorizing Official (AO) & CISO | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M1` / `M2`, `N1` | Archival Proof | `L2` | 3 bounded enclaves, 4 PPSM edges, `CSR_MTLS_POLICY` (`0x8003B104`) decode |
-| `v06-ai-drift-and-lineage-ide` | ML / Data Platform Engineer | Application Engineer | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M3`, `N3` | Archival Proof | `L3` | 4-entity ER lineage (`RAW_EVENTS` -> `DRIFT_ALERTS`), `ECE = 0.050`, `±u_y` bins, residuals |
-| `v19-product-roadmap-and-triage` | Engineering Lead | Product Manager & Leadership | Program Manager, Project / Systems Engineer | `T2` (1-3 m) | `M3`, `N1` | Decision Contrast | `L2` | Critical-path release Gantt (`Today Day 8`), `+3.0 d` float, `250.0 ms` SLO gate, `4` blocker queue |
+| `v05-zero-trust-ato-spec` | Security Architect | Authorizing Official (AO) & CISO | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M1` / `M2`, `N2` | Archival Proof | `L2` | 3 bounded enclaves, 4 PPSM edges, `CSR_MTLS_POLICY` (`0x8003B104`) decode |
+| `v06-ai-drift-and-lineage-ide` | ML / Data Platform Engineer | Application Engineer | Project / Systems Engineer, Discipline Engineer | `T3` (10-45 m) | `M3`, `N3` | Archival Proof | `L3` | 4-entity ER lineage (`RAW_EVENTS` -> `DRIFT_ALERTS`), `ECE = 0.050`, `10` OOD drift samples, `±u_y` bins, residuals |
+| `v19-product-roadmap-and-triage` | Engineering Lead | Product Manager & Leadership | Program Manager, Project / Systems Engineer | `T2` (1-3 m) | `M3`, `N2` | Decision Contrast | `L2` | Critical-path release Gantt (`Today Day 8`), `+3.0 d` float, `250.0 ms` SLO gate, `4` blocker queue |
 
 ---
 

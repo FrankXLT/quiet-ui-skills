@@ -20,6 +20,8 @@ try:
         esc,
         format_math_html,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
         render_params_aside,
         slice_schematic_panel,
     )
@@ -31,6 +33,8 @@ except ImportError:
         esc,
         format_math_html,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
         render_params_aside,
         slice_schematic_panel,
     )
@@ -46,6 +50,25 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     ca_s = float(cm_val(cm, "cursor_a_s"))
     cb_s = float(cm_val(cm, "cursor_b_s"))
     scope_html = embed_compile(specs["scope"], "L3", "m3")
+    alarm_cfg = {
+        "viewId": "v04-sre-incident-workbench",
+        "initialMode": "auto",
+        "paramLabel": "API Checkout Latency (p99)",
+        "channelTag": "API-EDGE-W2 · SLO BREACH",
+        "unit": "ms",
+        "decimals": 1,
+        "threshold": p99_lim,
+        "direction": "above",
+        "nominalStart": 182.0,
+        "breachPeak": p99_peak,
+        "breachReason": f"> {p99_lim:.1f} ms SLO Ceiling",
+        "ackActionHint": "Acknowledge alert to return to balanced scope and trigger canary traffic drain.",
+        "siblings": [
+            {"label": "Budget Burn", "val": f"{burn:.1f} %/h"},
+            {"label": "OTel Gap", "val": f"{drop_s:.1f} s"},
+            {"label": "Canary Gate", "val": "TRIPPED"},
+        ],
+    }
 
     return f"""<div class="v9-stage-inner v9-view-v04">
   <header class="v9-masthead">
@@ -57,12 +80,12 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">SRE Incident Command &amp; Tail-Latency Workbench</h1>
-    <p class="v9-masthead-sub">p99 tail-latency breach ({p99_peak:.1f} ms &gt; {p99_lim:.1f} ms), error-budget burn ({burn:.1f} %/h), and uninterpolated {drop_s:.1f} s scrape dropout.</p>
+    <p class="v9-masthead-sub">Checkout p99 spiked to {p99_peak:.1f} ms (vs {p99_lim:.1f} ms limit) with {burn:.1f} %/h budget burn across a {drop_s:.1f} s gap; drain canary traffic next.</p>
   </header>
-
+  {render_alarm_console_open(alarm_cfg, "nominal", "Checkout p99 Latency Unacknowledged Alarm")}
   <section id="v04-incident" class="v9-gate-band" data-state="warn" aria-label="SLO Incident Summary">
     <div class="v9-kpi-strip">
-      <div class="v9-kpi-tile">
+      <div class="v9-kpi-tile" data-alarm-fault-target="1">
         <span class="va-kicker">API p99 LATENCY PEAK</span>
         <span class="v9-kpi-val va-nums" data-tone="danger">{p99_peak:.1f} ms</span>
         <span class="v9-kpi-sub">SLO Ceiling: {p99_lim:.1f} ms (+{p99_peak - p99_lim:.1f} ms)</span>
@@ -114,6 +137,7 @@ def _build_v04_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
   </section>
+  {render_alarm_console_close()}
 </div>"""
 
 
@@ -145,7 +169,7 @@ def _build_v05_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Zero-Trust Enclave ATO Boundary &amp; mTLS Policy Spec</h1>
-    <p class="v9-masthead-sub">Authorizing Official proof binding {enclaves} isolated enclaves and {edges} cross-enclave PPSM edges to register CSR_MTLS_POLICY.</p>
+    <p class="v9-masthead-sub">Verifies {enclaves} isolated security zones, {edges} cross-boundary firewall rules, and fail-closed TLS policy bits (CSR_MTLS_POLICY) before Authorization to Operate signoff.</p>
   </header>
 
   <section id="v05-disposition" class="v9-gate-band" aria-label="ATO Boundary Disposition">
@@ -218,6 +242,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     )
     er_spec["metadata"] = {**er_spec.get("metadata", {}), "drawing_id": "AI-TELEMETRY-ER-06"}
     er_html = embed_compile(er_spec, "L3", "m3")
+    ood_html = embed_compile(specs["ood_samples"], "L3", "m3")
 
     return f"""<div class="v9-stage-inner v9-view-v06">
   <header class="v9-masthead">
@@ -229,7 +254,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">AI Calibration Drift &amp; Telemetry Lineage Workbench</h1>
-    <p class="v9-masthead-sub">Expected Calibration Error (ECE = {ece:.3f} &gt; {ece_max:.3f}) across {n_val} validation samples with {er_cnt}-entity Crow's-Foot audit lineage.</p>
+    <p class="v9-masthead-sub">Calibration error hit {ece:.3f} (above {ece_max:.3f} across {n_val} samples); route high-confidence calls (&ge; 0.75) to safe fallback and audit flagged OOD rows below.</p>
   </header>
 
   <section id="v06-drift" class="v9-gate-band" data-state="warn" aria-label="Calibration Fallback Gate">
@@ -259,7 +284,7 @@ def _build_v06_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
 
   <div class="v9-dual-grid">
     <section id="v06-cal" class="v9-dual-col" aria-label="Classifier Reliability Plot">{cal_html}</section>
-    <section id="v06-lineage" class="v9-dual-col" aria-label="Telemetry ER Lineage Diagram">{er_html}</section>
+    <section id="v06-lineage" class="v9-dual-col" aria-label="Telemetry ER Lineage Diagram &amp; Routed OOD Samples">{er_html}<div id="v06-ood-samples">{ood_html}</div></section>
   </div>
 </div>"""
 
@@ -271,6 +296,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         "bitfield": "v05_tls_policy_bitfield.json",
         "schematics": "v05_zero_trust_and_er_schematics.json",
         "cal_plot": "v06_ai_calibration_plot.json",
+        "ood_samples": "v06_ood_drift_samples_table.json",
         "roadmap_gantt": "v19_release_roadmap_gantt.json",
     }
     corpus, bp, specs = load_world_inputs(corpora_dir, "02-cloud-cyber-and-ai-ops", spec_files)
@@ -303,7 +329,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         },
         "v05-zero-trust-ato-spec": {
             "option_label": "v05 · Cloud Security Checklist", "default_medium": "m2",
-            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
             "nav_icon": "shield-halved", "nav_brand": "Zero-Trust Spec",
             "topbar_brand": "Zero-Trust Security Spec", "rail_brand": "Security Sections",
             "topbar_status": [], "nav_items": ["Disposition", "Rationale", "Enclave Map", "Policy Reg"],
@@ -323,7 +349,7 @@ def build_world_02(corpora_dir: Path) -> dict[str, Any]:
         },
         "v19-product-roadmap-and-triage": {
             "option_label": "v19 · Product Release Roadmap", "default_medium": "m3",
-            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
             "nav_icon": "list-check", "nav_brand": "Release Roadmap",
             "topbar_brand": "Release Roadmap · 4 Launch Blockers", "rail_brand": "Roadmap Views",
             "topbar_status": [], "nav_items": ["Gate Summary", "Critical-Path Gantt", "Blocker Queue"],

@@ -7,8 +7,8 @@
 
   const state = {
     studioView: 'overview', world: '', view: '', medium: 'auto', theme: 'white',
-    nav: 'auto', vp: '1920x1080', zoom: 'fit', density: 'd2',
-    corners: 'auto', scale: '100', presetLocked: false, isMounted: false, renderedView: '',
+    nav: 'auto', vp: '1920x1080', zoom: 'fit', density: 'd2', corners: 'auto',
+    scale: '100', alarm: '', presetLocked: false, isMounted: false, renderedView: '',
   };
   let manifest = { worlds: [] };
 
@@ -39,6 +39,7 @@
       medium: ['auto', 'm1'], theme: ['white', 'paper', 'dark-paper', 'dark'],
       nav: ['auto', 'n0', 'n1', 'n2', 'n3', 'n4'], zoom: ['fit', '1:1'],
       density: ['d1', 'd2', 'd3', 'd4'], corners: ['auto', 'sharp', 'subtle', 'rounded', 'soft'],
+      alarm: ['nominal', 'approaching', 'unack', 'ack'],
     };
     const rawMode = (p.get('mode') || '').toLowerCase();
     const hasViewOrWorld = p.has('view') || p.has('world') || p.has('domain');
@@ -46,7 +47,7 @@
     else if (hasViewOrWorld || rawMode === 'examples' || rawMode === 'worlds') state.studioView = 'examples';
     else state.studioView = 'overview';
 
-    ['medium', 'theme', 'nav', 'zoom', 'density', 'corners'].forEach(function (k) {
+    ['medium', 'theme', 'nav', 'zoom', 'density', 'corners', 'alarm'].forEach(function (k) {
       if (rules[k].indexOf(p.get(k)) !== -1) state[k] = p.get(k);
     });
     const vp = p.get('vp') || '';
@@ -96,6 +97,7 @@
     if (state.density !== 'd2') p.set('density', state.density);
     if (state.corners !== 'auto') p.set('corners', state.corners);
     if (state.scale !== '100') p.set('scale', state.scale);
+    if (state.alarm) p.set('alarm', state.alarm);
     window.history.replaceState(null, '', window.location.pathname + '?' + p.toString());
   }
 
@@ -222,11 +224,10 @@
     docEl.dataset.chromatic = viewMeta.chromatic_code || 'c4';
     docEl.dataset.density = state.density;
     docEl.dataset.corners = state.corners;
-    docEl.dataset.world = state.world;
-    docEl.dataset.view = state.view;
-    docEl.dataset.navShell = state.nav;
-    docEl.dataset.effectiveNav = computeEffectiveNav(state.nav, viewMeta, stageW);
+    docEl.dataset.world = state.world; docEl.dataset.view = state.view;
+    docEl.dataset.navShell = state.nav; docEl.dataset.effectiveNav = computeEffectiveNav(state.nav, viewMeta, stageW);
     docEl.dataset.formFactor = stageW <= 480 ? 'touch' : 'desktop';
+    if (state.alarm) docEl.dataset.alarmOverride = state.alarm; else delete docEl.dataset.alarmOverride;
     if (state.scale && state.scale !== '100') docEl.style.fontSize = state.scale + '%';
     else docEl.style.removeProperty('font-size');
   }
@@ -238,6 +239,7 @@
     syncIframeAttributes();
     const doc = iframe.contentDocument, win = iframe.contentWindow, main = doc.getElementById('va-stage-main');
     if (main && state.renderedView !== state.view) {
+      if (win && win.QuietAlarmLifecycle && win.QuietAlarmLifecycle.destroyAll) win.QuietAlarmLifecycle.destroyAll(doc);
       if (win && win.QuietEChartsAdapter && win.QuietEChartsAdapter.disposeAll) win.QuietEChartsAdapter.disposeAll(doc);
       const tpl = document.getElementById('tpl-view-' + state.view);
       main.innerHTML = tpl ? tpl.innerHTML : '<div class="v9-stage-inner">View template not found</div>';
@@ -250,6 +252,7 @@
         if (win.QuietWorlds02To05Runtime) win.QuietWorlds02To05Runtime.boot(doc);
         if (win.QuietWorld06Runtime) win.QuietWorld06Runtime.boot(doc);
         if (win.QuietStageRichV9) win.QuietStageRichV9.boot(doc);
+        if (win.QuietAlarmLifecycle) win.QuietAlarmLifecycle.boot(doc);
       }
       syncShellNav(doc, viewMeta);
       state.renderedView = state.view;
@@ -268,7 +271,11 @@
   }
 
   function disposePortalCharts(iframe) {
-    try { const w = iframe.contentWindow; if (w && w.QuietEChartsAdapter && w.QuietEChartsAdapter.disposeAll) w.QuietEChartsAdapter.disposeAll(iframe.contentDocument); } catch (_e) {}
+    try {
+      const w = iframe.contentWindow;
+      if (w && w.QuietAlarmLifecycle && w.QuietAlarmLifecycle.destroyAll) w.QuietAlarmLifecycle.destroyAll(iframe.contentDocument);
+      if (w && w.QuietEChartsAdapter && w.QuietEChartsAdapter.disposeAll) w.QuietEChartsAdapter.disposeAll(iframe.contentDocument);
+    } catch (_e) {}
   }
 
   function syncBarControls() {
@@ -328,44 +335,41 @@
   function applyState(worldChanged) {
     const worldObj = findWorld(state.world);
     if (worldObj && (worldChanged || !findView(worldObj, state.view))) state.view = worldObj.views[0].view_id;
+    if (worldChanged) state.alarm = '';
     if (worldChanged && !state.presetLocked && window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
     const viewKey = state.studioView + ':' + state.view + ':' + state.medium;
     if (state.lastViewKey !== viewKey && window.QuietStudioSheetV9) window.QuietStudioSheetV9.untuckStudioBar();
     state.lastViewKey = viewKey;
-    if (state.studioView === 'overview') { syncBarControls(); syncUrlParams(); return; }
-    const viewMeta = findView(worldObj, state.view), iframe = document.getElementById('va-stage-portal');
+    const iframe = document.getElementById('va-stage-portal');
+    if (state.studioView === 'overview') {
+      if (iframe) { disposePortalCharts(iframe); state.renderedView = ''; }
+      syncBarControls(); syncUrlParams(); return;
+    }
     if (!iframe) return;
     updatePortalDimensions();
     if (state.studioView === 'components') { syncExternalMode(iframe); syncBarControls(); syncUrlParams(); return; }
+    const viewMeta = findView(worldObj, state.view);
     if (!viewMeta) return;
     if (iframe.dataset.externalMode) { disposePortalCharts(iframe); delete iframe.dataset.externalMode; iframe.removeAttribute('src'); state.isMounted = false; }
     if (!state.isMounted || !iframe.contentDocument || !iframe.contentDocument.getElementById('va-stage-main')) {
-      state.renderedView = '';
-      iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); };
-      iframe.srcdoc = buildIframeSrcDoc(viewMeta);
+      state.renderedView = ''; iframe.onload = function () { state.isMounted = true; updatePortalDimensions(); syncIframeDOM(); }; iframe.srcdoc = buildIframeSrcDoc(viewMeta);
     } else syncIframeDOM();
     syncBarControls(); syncUrlParams();
   }
-
   function openExamples(worldId, viewId) {
-    state.studioView = 'examples';
-    if (worldId) state.world = worldId;
-    if (viewId) state.view = viewId;
-    const w = findWorld(state.world);
-    if (w) { state.world = w.world_id; const v = findView(w, state.view); if (v) state.view = v.view_id; }
-    state.presetLocked = false;
-    if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
-    applyState(false);
+    state.studioView = 'examples'; state.alarm = ''; if (worldId) state.world = worldId; if (viewId) state.view = viewId;
+    const w = findWorld(state.world); if (w) { state.world = w.world_id; const v = findView(w, state.view); if (v) state.view = v.view_id; }
+    state.presetLocked = false; if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state); applyState(false);
   }
 
-  function openComponents() { state.studioView = 'components'; applyState(false); }
+  function openComponents() { state.studioView = 'components'; state.alarm = ''; applyState(false); }
   function openBridgeDialog() {
     const worldObj = findWorld(state.world), viewMeta = findView(worldObj, state.view);
     if (window.QuietStudioSheetV9) window.QuietStudioSheetV9.openBridgeDialog(worldObj, viewMeta);
   }
   function printActiveStage() { const iframe = document.getElementById('va-stage-portal'); if (iframe && iframe.contentWindow) { iframe.contentWindow.focus(); iframe.contentWindow.print(); } }
   function stepView(delta) {
-    state.presetLocked = false;
+    state.presetLocked = false; state.alarm = '';
     if (window.QuietStudioPresetsRailV9) {
       window.QuietStudioPresetsRailV9.stepGlobalView(manifest, state, delta);
       window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
@@ -410,7 +414,7 @@
       const vid = e.target.value;
       const hitW = (manifest.worlds || []).find(function (w) { return (w.views || []).some(function (v) { return v.view_id === vid; }); });
       if (hitW) state.world = hitW.world_id;
-      state.view = vid; state.presetLocked = false;
+      state.view = vid; state.alarm = ''; state.presetLocked = false;
       if (window.QuietStudioPresetsRailV9) window.QuietStudioPresetsRailV9.applyViewPreset(state.view, state);
       applyState(false);
     });

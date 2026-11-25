@@ -12,18 +12,18 @@ Each view in World 04 projects canonical truth along an asymmetric presenter-to-
 
 | View ID | Presenter Source | Target Audience | Lenses | Tempo | Medium & Shell | Chromatic Budget | Rigor | Primary Unit of Proof & Modality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `v10-civic-capital-budget-deck` | Civic Policy Analyst | City/School Board & Citizens | `Program Manager`, `Consumer / Common Reader` | `T2` (1-3 min) | `M2`, `N1` | `Decision Contrast` | `L2` | Capital balance reconciliation (`M USD`) and reserve coverage (`%`); Waterfall (`M4`) + GAO/USWDS Table (`M2`) |
+| `v10-civic-capital-budget-deck` | Civic Policy Analyst | City/School Board & Citizens | `Program Manager`, `Consumer / Common Reader` | `T2` (1-3 min) | `M2`, `N2` | `Decision Contrast` | `L2` | Capital balance reconciliation (`M USD`) and reserve coverage (`%`); Waterfall (`M4`) + GAO/USWDS Table (`M2`) |
 | `v11-treasury-stress-test-solver` | Quantitative Risk Analyst | Treasury & Investment Committee | `Program Manager`, `Discipline Engineer` | `T2` (1-3 min) | `M3`, `N2` | `Decision Contrast` | `L3` | `+250 bps` liquidity drawdown (`%`) with Monte Carlo `±u_y` vs. deterministic model + `20.0%` regulatory floor; Cartesian Plot + Residual Strip (`M4`) |
 | `v12-stem-interactive-lab` | STEM Educator | Student & Lab Peer | `Educator / Mentor`, `Student / Learner` | `T3` (10-45 min) | `M1`, `M2`, `N1` | `Pedagogical Flow` | `L3` | `V(t) = V_0 * exp(-t / tau)` term-bound decay vs. discrete oscilloscope points (`±u_y`) + residual strip; Cartesian Plot (`M4`) |
-| `v20-student-capstone-lab-report` | Student Researcher | Educator & Capstone Judges | `Student / Learner`, `Educator / Mentor` | `T2` / `T3` (1-45 min) | `M2`, `N1` | `Pedagogical Flow` | `L3` | Upward Claim -> Method -> Data -> Error -> Critique proof: 5-bench dumbbell (`1.82 V` mean vs `1.84 V` theory, `±0.05 V`) + raw oscilloscope decay (`M4`) |
+| `v20-student-capstone-lab-report` | Student Researcher | Educator & Capstone Judges | `Student / Learner`, `Educator / Mentor` | `T2` / `T3` (1-45 min) | `M2`, `N1` | `Pedagogical Flow` | `L3` | Upward Claim -> Method -> Data -> Error -> Critique proof: 2nd-order step ringdown (`ζ = 0.22`, `49.2%` overshoot, `7.46 V` peak, `1.52 s` settle) + 5-bench dumbbell (`1.82 V` mean vs `1.84 V` theory, `±0.05 V`) |
 
 ---
 
 ## 2. Medium Physics & Navigation Shell Contracts
 
-- **`v10-civic-capital-budget-deck` (`M2` Editorial Web, `N1` Left Rail)**:
-  - Pairs an upper Review-Room Gate Band (`+11.9 M USD` headroom above `15.0 M USD` floor) with the `6`-step waterfall and `GAO`/`USWDS` capital trade matrix.
-  - Non-color-only text status badges (`NOMINAL`, `REVIEW`) prevent alarmist color-only misreading for citizen oversight while exposing Option B trade space for board members.
+- **`v10-civic-capital-budget-deck` (`M2` Editorial Web, `N2` Top Bar)**:
+  - Pairs an upper Review-Room Gate Band (`+11.9 M USD` headroom above `15.0 M USD` floor) with the `6`-step waterfall and `10`-row `GAO`/`USWDS` capital trade matrix.
+  - Non-color-only text status badges (`NOMINAL`, `REVIEW`, `HOLD`) prevent alarmist color-only misreading for citizen oversight while exposing Option B trade space for board members.
 - **`v11-treasury-stress-test-solver` (`M3` Stateful Web App, `N2` Top Bar)**:
   - Supports interactive committee scenario review across Quarters `1..8` under `+250 bps` rate shock without obscuring the `20.0%` statutory liquidity floor (`direction: "lower"`).
   - Separates deterministic duration-convexity decay from `n = 10,000` Monte Carlo medians (`±u_y` whiskers) and renders normalized residuals `(y_i - y_hat_i) / u_y` at the base.
@@ -31,7 +31,7 @@ Each view in World 04 projects canonical truth along an asymmetric presenter-to-
   - Unrolls cleanly for `@media print` lab hand-ins (`M1`) with inline `va-test-condition-block` (`RC-BENCH-RIG-04`, `T_amb = 22.4 ± 0.2 °C`, `f_s = 1.00 kHz`) and NIST `1-2-5` gridlines.
   - Preserves interactive `data-term` highlighting on screen (`M2`) binding `V_0 (5.00 V)` (`tx`) and `exp(-t / tau) (tau = 2.40 s)` (`path_loss`) directly to graph layers.
 - **`v20-student-capstone-lab-report` (`M2` Editorial Web, `N1` Left Rail)**:
-  - Structures Student -> Educator defense claim-first (`5.00 V` start, `tau = 2.40 s`, `1.82 V` five-bench mean vs `1.84 V` law) paired with synchronized rubric lens filters and zero-adjusted error checklist.
+  - Structures Student -> Educator defense claim-first (`ζ = 0.22` step ringdown, `7.46 V` overshoot peak, `1.52 s` `±2%` settling corridor, and `1.82 V` five-bench repeatability mean) paired with synchronized rubric lens filters and zero-adjusted error checklist.
 
 ---
 
@@ -108,6 +108,10 @@ All numerical values below are conserved identically across `corpus.json`, `evid
 | `rc_mean_trial_v` | `1.82` | `V` | `v20_student_repeatability_dumbbell.json` | Five-bench mean calibrated voltage (`Stn 1..Stn 5`) |
 | `rc_uncertainty_v` | `0.05` | `V` | `v20_student_repeatability_dumbbell.json` | Combined instrument calibration repeatability bound `±0.05 V` |
 | `rc_sigma_bound` | `0.8` | `sigma` | `v20_student_repeatability_dumbbell.json` | Maximum residual magnitude (`<= 0.8 sigma`) across trials |
+| `step_damping_ratio` | `0.22` | `1` | `v20_underdamped_step_lab.json` | Underdamped second-order damping ratio (`ζ = 0.22`, `22%`) |
+| `step_overshoot_pct` | `49.2` | `%` | `v20_underdamped_step_lab.json` | Peak overshoot `M_p = 49.2%` above `5.00 V` step |
+| `step_peak_v` | `7.46` | `V` | `v20_underdamped_step_lab.json` | Peak overshoot voltage `7.46 V` at first crest |
+| `step_settling_s` | `1.52` | `s` | `v20_underdamped_step_lab.json` | `±2%` settling time `[4.90 V, 5.10 V]` (`1.52 s`) |
 | `reading_proficiency_us_pct` | `31` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | US national Grade 4 NAEP Reading proficient rate (`31%`) |
 | `reading_proficiency_md_pct` | `35` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | Maryland Grade 4 NAEP Reading proficient rate (`35%`) |
 | `reading_proficiency_wy_pct` | `36` | `%` | `v22_reading_hex_map.json`, `v22_reading_arrow_dumbbell.json` | Wyoming Grade 4 NAEP Reading proficient rate (`36%`) |

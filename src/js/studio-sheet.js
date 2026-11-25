@@ -157,7 +157,7 @@
     });
 
     const sd = document.getElementById('va-sheet-domain-select');
-    if (sd) sd.addEventListener('change', function (e) { state.world = e.target.value; state.presetLocked = false; applyState(true); });
+    if (sd) sd.addEventListener('change', function (e) { state.world = e.target.value; state.alarm = ''; state.presetLocked = false; applyState(true); });
 
     const sm = document.getElementById('va-sheet-medium-select');
     if (sm) sm.addEventListener('change', function (e) { state.medium = e.target.value; state.presetLocked = true; applyState(); });

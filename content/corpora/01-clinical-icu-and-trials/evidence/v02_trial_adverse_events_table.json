@@ -94,6 +94,69 @@
       "effect_hr": 0.90,
       "effect_hr_u": 0.28,
       "disposition": "PASS"
+    },
+    {
+      "endpoint": "New-Onset Atrial Fibrillation",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 6.4,
+      "rate_u_pct": 1.2,
+      "control_rate_pct": 7.9,
+      "effect_hr": 0.81,
+      "effect_hr_u": 0.16,
+      "disposition": "VERIFIED"
+    },
+    {
+      "endpoint": "Hyperglycemia > 180 mg/dL",
+      "cohort_arm": "SOFA >= 8 (n=486)",
+      "rate_pct": 14.2,
+      "rate_u_pct": 2.1,
+      "control_rate_pct": 15.6,
+      "effect_hr": 0.91,
+      "effect_hr_u": 0.15,
+      "disposition": "PASS"
+    },
+    {
+      "endpoint": "Sensor Dropout (A-Line Artifact)",
+      "cohort_arm": "Telemetry QC (n=620)",
+      "rate_pct": 3.8,
+      "rate_u_pct": 0.9,
+      "control_rate_pct": 4.0,
+      "effect_hr": 0.95,
+      "effect_hr_u": 0.22,
+      "disposition": "WATCH",
+      "_row_status": "warn"
+    },
+    {
+      "endpoint": "Calibration Hold (Lactate Batch 4B)",
+      "cohort_arm": "Site-07 Analyzer Hold",
+      "rate_pct": 0.8,
+      "rate_u_pct": 0.4,
+      "control_rate_pct": 0.6,
+      "effect_hr": 1.12,
+      "effect_hr_u": 0.34,
+      "disposition": "HOLD",
+      "_row_status": "warn"
+    },
+    {
+      "endpoint": "Hepatic Transaminase > 3x ULN",
+      "cohort_arm": "Outlier Batch · Age >= 65",
+      "rate_pct": 4.5,
+      "rate_u_pct": 1.1,
+      "control_rate_pct": 4.1,
+      "effect_hr": 1.09,
+      "effect_hr_u": 0.24,
+      "disposition": "REVIEW",
+      "_row_status": "warn"
+    },
+    {
+      "endpoint": "Clamped Vasopressor Ceiling Breach",
+      "cohort_arm": "Protocol Arm (n=620)",
+      "rate_pct": 2.3,
+      "rate_u_pct": 0.8,
+      "control_rate_pct": 3.4,
+      "effect_hr": 0.68,
+      "effect_hr_u": 0.19,
+      "disposition": "APPROVED"
     }
   ]
 }

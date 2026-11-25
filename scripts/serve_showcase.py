@@ -53,13 +53,13 @@ class ReusableThreadingHTTPServer(ThreadingHTTPServer):
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.6 Studio Showcase & 49-Specimen Component Library.")
+    parser = argparse.ArgumentParser(description="Serve Quiet UI v9.7 Studio Showcase & 50-Specimen Component Library.")
     parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 0.0.0.0)")
     parser.add_argument("--port", type=int, default=8788, help="TCP port (default: 8788)")
     args = parser.parse_args()
 
     with ReusableThreadingHTTPServer((args.host, args.port), QuietUIShowcaseHandler) as httpd:
-        print(f"[OK] Quiet UI Showcase v9.6 listening on http://{args.host}:{args.port}/", flush=True)
+        print(f"[OK] Quiet UI Showcase v9.7 listening on http://{args.host}:{args.port}/", flush=True)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

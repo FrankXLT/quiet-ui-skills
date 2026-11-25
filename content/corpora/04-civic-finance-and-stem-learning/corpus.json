@@ -105,6 +105,10 @@
       "unit": "sigma",
       "description": "Maximum standardized residual across replicated bench trials"
     },
+    "step_damping_ratio": {"value": 0.22, "unit": "1", "description": "Second-order underdamped step damping ratio zeta"},
+    "step_overshoot_pct": {"value": 49.2, "unit": "%", "description": "Underdamped step overshoot percentage above 5.00 V target"},
+    "step_peak_v": {"value": 7.46, "unit": "V", "description": "Peak overshoot voltage at first ringdown crest"},
+    "step_settling_s": {"value": 1.52, "unit": "s", "description": "Settling time into +-2% band [4.90 V, 5.10 V]"},
     "reading_proficiency_us_pct": {
       "value": 31,
       "unit": "%",
@@ -209,6 +213,7 @@
         "rc_sigma_bound"
       ]
     },
+    {"evidence_file": "evidence/v20_underdamped_step_lab.json", "metric_ids": ["step_damping_ratio", "step_overshoot_pct", "step_peak_v", "step_settling_s"]},
     {
       "evidence_file": "evidence/v22_reading_hex_map.json",
       "metric_ids": [
@@ -256,9 +261,7 @@
         "M2"
       ],
       "chromatic_budget": "Decision Contrast",
-      "nav_shells": [
-        "N1"
-      ],
+      "nav_shells": ["N2"],
       "rigor_level": "L2",
       "evidence_refs": [
         "evidence/v10_civic_capital_waterfall.json",
@@ -333,7 +336,7 @@
     },
     {
       "view_id": "v20-student-capstone-lab-report",
-      "title": "Student RC Decay Capstone Lab Report & Error Analysis",
+      "title": "Student Capstone Second-Order Step Response & Repeatability Report",
       "domain_cluster": "Earth Science & STEM Education",
       "presenter": "Student Researcher",
       "audience": "Educator & Capstone Judge",
@@ -355,13 +358,13 @@
       ],
       "rigor_level": "L3",
       "evidence_refs": [
-        "evidence/v12_stem_rc_cooling_lab.json",
+        "evidence/v20_underdamped_step_lab.json",
         "evidence/v20_student_repeatability_dumbbell.json"
       ],
       "decision_gate": {
         "status": "NOMINAL",
-        "primary_margin": "5-station calibrated mean 1.82 V vs 1.84 V theory at tau = 2.40 s from V_0 = 5.00 V (±0.05 V repeatability, <= 0.8 sigma)",
-        "bounded_action": "Request Lab Section 2 signoff: all 5 bench stations reproduce first-order RC decay within combined +/-0.05 V calibration uncertainty."
+        "primary_margin": "Underdamped 5.00 V step (zeta = 0.22) peaks at 7.46 V (+49.2%) and settles within +/-2% [4.90 V, 5.10 V] at t_s = 1.52 s across 5 bench stations (±0.05 V, <= 0.8 sigma)",
+        "bounded_action": "Request Lab Section 2 signoff: all 5 bench stations and 12 ringdown captures match second-order zeta = 0.22 dynamics within <= 0.8 sigma."
       }
     },
     {

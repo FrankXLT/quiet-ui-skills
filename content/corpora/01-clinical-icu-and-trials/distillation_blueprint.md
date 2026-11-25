@@ -9,7 +9,7 @@ This blueprint documents the asymmetric translation of `01-clinical-icu-and-tria
 | View ID | Presenter | Target Audience | Lenses | Tempos | Mediums | Chromatic Budget | Nav Shells | Rigor | Bound Evidence Specs |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `v01-icu-bedside-terminal` | ICU Informaticist | Bedside Nurse & Intensivist | Technician / Operator | `T1` (5-15 s) | `M4` (Walk-up POI Terminal) | Quiet Cockpit | `N0`, `N3` | `L3` | `v01_icu_ventilator_scalars.json`, `v01_icu_hemodynamic_scope.json` |
-| `v02-trial-regulatory-brief` | Clinical Biostatistician | FDA Reviewer & Hospital CMO | Discipline Engineer, Program Manager | `T2` (1-3 min), `T3` (10-45 min) | `M1` (Archival Print), `M2` (Editorial Web) | Decision Contrast | `N1` | `L3` | `v02_trial_consort_forest.json`, `v02_trial_adverse_events_table.json` |
+| `v02-trial-regulatory-brief` | Clinical Biostatistician | FDA Reviewer & Hospital CMO | Discipline Engineer, Program Manager | `T2` (1-3 min), `T3` (10-45 min) | `M1` (Archival Print), `M2` (Editorial Web) | Decision Contrast | `N2` | `L3` | `v02_trial_consort_forest.json`, `v02_trial_adverse_events_table.json` |
 | `v03-patient-recovery-companion` | Clinical Care Team | Discharged Patient & Family | Consumer / Common Reader | `T3` (10-45 min) | `M3` (Stateful Web App) | Pedagogical Flow | `N2`, `N4` | `L1` | `v01_icu_ventilator_scalars.json` |
 
 ---

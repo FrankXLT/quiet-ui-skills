@@ -10,7 +10,7 @@ This blueprint governs asymmetric presenter-to-audience translation, bias scrubb
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | `v07-grid-scada-poi-console` | Grid Controls Engineer | Control Room Operator | Technician / Operator | `T1` | `M4` | Quiet Cockpit | `N3` | `L3` | `v07_grid_scada_pid_and_bus.json`, `v07_synchrophasor_scalars.json` |
 | `v08-plant-floor-wall-kiosk` | Plant Operations | Line Crew & Facility Visitors | Technician / Operator, Consumer / Common Reader | `T1` | `M5` | Quiet Cockpit | `N0` | `L1` | `v07_synchrophasor_scalars.json` |
-| `v09-spc-quality-and-modbus-report` | Quality Engineer | Line Lead & Plant Manager | Discipline Engineer, Program Manager | `T2`, `T3` | `M1`, `M2` | Decision Contrast | `N1` | `L3` | `v09_spc_control_plot.json`, `v09_modbus_plc_bitfield.json` |
+| `v09-spc-quality-and-modbus-report` | Quality Engineer | Line Lead & Plant Manager | Discipline Engineer, Program Manager | `T2`, `T3` | `M1`, `M2` | Decision Contrast | `N2` | `L3` | `v09_spc_control_plot.json`, `v09_modbus_plc_bitfield.json` |
 
 ---
 

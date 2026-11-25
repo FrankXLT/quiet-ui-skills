@@ -21,6 +21,7 @@ try:
         esc,
         format_math_html,
         load_world_inputs,
+        render_handoff_link,
         render_params_aside,
     )
 except ImportError:
@@ -32,6 +33,7 @@ except ImportError:
         esc,
         format_math_html,
         load_world_inputs,
+        render_handoff_link,
         render_params_aside,
     )
 
@@ -58,7 +60,7 @@ def _build_v13_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Argonne D³ Propulsion Efficiency Archival Monograph</h1>
-    <p class="v9-masthead-sub">Steady-state Brake Thermal Efficiency ({eta_html} peak {bte:.1f}% at 14.0 bar IMEP) with cubic analytical fit, ±{uy_html} bars, and residual audit.</p>
+    <p class="v9-masthead-sub">Engine thermal efficiency peaks at {bte:.1f}% at 14.0 bar load and stays inside ±{uy_html} measurement bounds across cruise operating points before printing.</p>
   </header>
 
   <div class="v9-editorial-grid">
@@ -89,6 +91,7 @@ def _build_v14_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     bus_html = embed_compile(specs["canfd_bus"], "L3", "m3")
     bit_html = embed_compile(specs["canfd_bit"], "L3", "m3")
     scope_html = embed_compile(specs["canfd_scope"], "L3", "m3")
+    esc_link = render_handoff_link("05-physical-systems-auto-and-aero", "v21-field-anomaly-escalation-tsn", "Escalate to Recovery Plan ->")
 
     return f"""<div class="v9-stage-inner v9-view-v14">
   <header class="v9-masthead">
@@ -97,10 +100,11 @@ def _build_v14_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <div class="v9-masthead-tags">
         <span class="va-pill" data-variant="tag">{ohm} Ω · Stub ≤ {stub_m:.1f} m</span>
         <span id="v14-gate-pill" class="va-pill" data-variant="status" data-state="warn">MCU 0xEF WARN</span>
+        {esc_link}
       </div>
     </div>
     <h1 class="v9-masthead-title">CAN-FD Bus Topology, Arbitration Header &amp; Reflection Scope Debugger</h1>
-    <p class="v9-masthead-sub">500 kbps arbitration / 2.0 Mbps data phase across {ohm} Ω EOL trunk with uninterpolated {drop_us:.2f} µs reflection dropout (0.90–1.25 µs).</p>
+    <p class="v9-masthead-sub">Shows {drop_us:.2f} µs signal dropout (0.90–1.25 µs) from an over-length branch on the {ohm} Ω bus; inspect stubs and clear the warning latch below.</p>
   </header>
 
   <div class="v9-dual-grid">

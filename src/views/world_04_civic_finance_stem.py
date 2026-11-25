@@ -59,7 +59,7 @@ def _build_v10_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">FY2027 Civic Capital Budget &amp; Reserve Policy Deck</h1>
-    <p class="v9-masthead-sub">Six-step capital cash reconciliation from {open_m:.1f} M USD opening reserve to {close_m:.1f} M USD closing balance ({cov_pct:.1f}% statutory coverage).</p>
+    <p class="v9-masthead-sub">Tracks capital cash from {open_m:.1f} M USD opening reserves to {close_m:.1f} M USD closing balance ({cov_pct:.1f}% statutory coverage) across 10 funded lines and escrow holds.</p>
   </header>
 
   <section id="v10-gate" class="v9-gate-band" data-state="warn" aria-label="Board Trade Disposition">
@@ -90,12 +90,12 @@ def _build_v10_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <div id="v10-fund-chips" class="v9-filter-bar va-sheet-hide" role="group" aria-label="Filter Capital Matrix Rows">
-      <button type="button" class="va-pill v9-chip is-active" data-variant="chip" data-fund="all" aria-pressed="true" data-summary="Showing all 6 capital ledger rows (closing balance 26.9 M USD, 179.3% coverage).">All Lines (6)</button>
-      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="inflow" aria-pressed="false" data-summary="Base & Inflows: 48.0 M USD base + 16.5 M USD grant + 22.0 M USD utility bond (86.5 M USD pool).">Inflows (+38.5M)</button>
-      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="outlay" aria-pressed="false" data-summary="Capital Outlays: -28.4 M USD School HVAC GMP and -31.2 M USD Water Main Option B.">Outlays (-59.6M)</button>
-      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="review" aria-pressed="false" data-summary="REVIEW Item: Mainline Water Main Replacement (31.2 M USD) pending ductile-iron quote lock.">Review Only (1)</button>
+      <button type="button" class="va-pill v9-chip is-active" data-variant="chip" data-fund="all" aria-pressed="true" data-summary="Showing all 10 capital ledger rows (closing balance 26.9 M USD, 179.3% coverage).">All Lines (10)</button>
+      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="inflow" aria-pressed="false" data-summary="Base, Inflows &amp; Escrows: 48.0 M base + 16.5 M grant + 22.0 M bond + 4.2 M transit hold + 0.9 M escrow.">Inflows &amp; Escrow (5)</button>
+      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="outlay" aria-pressed="false" data-summary="Outlays &amp; Closing: 28.4 M HVAC, 31.2 M Water Main, 3.5 M Roof, 1.8 M Sewer, 26.9 M Closing Balance.">Outlays &amp; Balance (5)</button>
+      <button type="button" class="va-pill v9-chip" data-variant="chip" data-fund="review" aria-pressed="false" data-summary="Flagged Items: Water Main (31.2 M REVIEW), Transit Hold (4.2 M HOLD), and Sewer Telemetry (1.8 M REVIEW).">Review &amp; Hold (3)</button>
     </div>
-    <div id="v10-fund-readout" class="v9-filter-readout va-sheet-hide" aria-live="polite">Showing all 6 capital ledger rows (closing balance 26.9 M USD, 179.3% coverage).</div>
+    <div id="v10-fund-readout" class="v9-filter-readout va-sheet-hide" aria-live="polite">Showing all 10 capital ledger rows (closing balance 26.9 M USD, 179.3% coverage).</div>
   </section>
 
   <section id="v10-waterfall" aria-label="FY2027 Capital Reserve Waterfall">{waterfall_html}</section>
@@ -121,7 +121,7 @@ def _build_v11_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Treasury +{shock} bps Rate-Shock Liquidity Drawdown Solver</h1>
-    <p class="v9-masthead-sub">Monte Carlo 10,000-path liquidity medians (±{format_math_html("u_y")}) vs deterministic convexity decay against the {floor_pct:.1f}% statutory floor.</p>
+    <p class="v9-masthead-sub">Tests cash liquidity across 10,000 simulated paths against the {floor_pct:.1f}% safety floor under a +{shock} bps rate shock.</p>
   </header>
 
   <section id="v11-solver" class="v9-gate-band" aria-label="Rate-Shock Solver Summary">
@@ -179,7 +179,7 @@ def _build_v12_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">First-Order RC Discharge &amp; Experimental Residual Lab</h1>
-    <p class="v9-masthead-sub">Term-bound exponential decay V(t) = {v0:.2f} · exp(−t / {tau:.2f}) compared with 9 student oscilloscope points (±{format_math_html("u_y")}).</p>
+    <p class="v9-masthead-sub">Capacitor voltage begins at {v0:.2f} V and decays exponentially (τ = {tau:.2f} s) across 9 oscilloscope lab measurements (±{format_math_html("u_y")}).</p>
   </header>
 
   <div class="v9-filter-bar va-sheet-hide" id="v12-role-chips" role="group" aria-label="Switch Audience Perspective">
@@ -220,6 +220,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
         "table": "v10_civic_budget_table.json",
         "drawdown": "v11_treasury_drawdown_plot.json",
         "rc_lab": "v12_stem_rc_cooling_lab.json",
+        "step_lab": "v20_underdamped_step_lab.json",
         "repeatability": "v20_student_repeatability_dumbbell.json",
         "hex_map": "v22_reading_hex_map.json",
         "arrow_dumbbell": "v22_reading_arrow_dumbbell.json",
@@ -236,7 +237,7 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
     view_cfg = {
         "v10-civic-capital-budget-deck": {
             "option_label": "v10 · City Budget Breakdown", "default_medium": "m2",
-            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
             "nav_icon": "landmark", "nav_brand": "Civic Budget FY27",
             "topbar_brand": "Civic Capital Budget FY2027", "rail_brand": "Budget Sections",
             "topbar_status": [], "nav_items": ["Trade Gate", "Cash Waterfall", "Reserve Table"],

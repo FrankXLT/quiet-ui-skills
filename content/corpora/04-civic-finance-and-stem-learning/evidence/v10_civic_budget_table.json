@@ -98,6 +98,40 @@
       "reserve_coverage_pct": 179.3,
       "board_status": "NOMINAL",
       "covenant_note": "+11.9 M USD above 15.0 M USD policy floor"
+    },
+    {
+      "line_item": "Transit Electrification Grant",
+      "ledger_class": "Conditional Inflow Hold",
+      "amount_musd": 4.2,
+      "reserve_coverage_pct": 207.3,
+      "board_status": "HOLD",
+      "covenant_note": "Outlier batch billing audit pending FTA release",
+      "_row_status": "warn"
+    },
+    {
+      "line_item": "Library Roof Seismic Phase II",
+      "ledger_class": "Encumbered Outlay",
+      "amount_musd": 3.5,
+      "reserve_coverage_pct": 156.0,
+      "board_status": "NOMINAL",
+      "covenant_note": "Clamped limit against FY27 bond draw cap"
+    },
+    {
+      "line_item": "Regional Sewer Lift Telemetry",
+      "ledger_class": "Capital Outlay",
+      "amount_musd": 1.8,
+      "reserve_coverage_pct": 167.3,
+      "board_status": "REVIEW",
+      "covenant_note": "Sensor dropout recovery · dual-SCADA meter check",
+      "_row_status": "warn"
+    },
+    {
+      "line_item": "Meter Calibration Hold Reserve",
+      "ledger_class": "Risk Escrow",
+      "amount_musd": 0.9,
+      "reserve_coverage_pct": 173.3,
+      "board_status": "VERIFIED",
+      "covenant_note": "Calibration hold escrow ring-fenced inside contingency"
     }
   ]
 }

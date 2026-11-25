@@ -15,6 +15,9 @@ try:
         format_math_html,
         inject_fig_class,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
+        render_handoff_link,
         render_params_aside,
     )
 except ImportError:
@@ -24,6 +27,9 @@ except ImportError:
         format_math_html,
         inject_fig_class,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
+        render_handoff_link,
         render_params_aside,
     )
 
@@ -31,9 +37,12 @@ except ImportError:
 def _inject_mobile_tile(scalars_html: str, dropout_s: float) -> str:
     tile = (
         '\n<div class="qe-scalar-card v01-mobile-only-tile">'
-        '<h3 class="qe-scalar-title">Artifact Gap</h3>'
+        '<div class="qe-scalar-zone1 qe-scalar-top"><span class="va-kicker">SIGNAL QUALITY</span>'
+        '<span class="qe-scalar-ts va-nums">6.4–8.8 s Window</span></div>'
+        '<h3 class="qe-scalar-title">Signal Dropout</h3>'
         '<div class="qe-scalar-zone2 qe-scalar-val-row">'
-        f'<div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{dropout_s:.1f}\u00a0s</span></div>'
+        f'<div class="qe-scalar-val-wrap"><span class="qe-scalar-val va-nums">{dropout_s:.1f}\u00a0s</span>'
+        '<span class="qe-scalar-calc qe-unit">Uninterpolated null gap</span></div>'
         '<div class="qe-scalar-disp"><span class="va-pill" data-variant="status" data-state="warn">CHECK</span></div>'
         '</div></div>'
     )
@@ -45,17 +54,30 @@ def _inject_mobile_tile(scalars_html: str, dropout_s: float) -> str:
 
 def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) -> str:
     cm = corpus["canonical_metrics"]
-    map_m = cm["map_mmhg"]
-    peep_cmd = cm["peep_cmd_cmh2o"]
-    peep_act = cm["peep_act_cmh2o"]
-    drop_m = cm["dropout_duration_s"]
+    map_m, peep_cmd, peep_act, drop_m = cm["map_mmhg"], cm["peep_cmd_cmh2o"], cm["peep_act_cmh2o"], cm["dropout_duration_s"]
     ta_html, tb_html = format_math_html("T_A"), format_math_html("T_B")
-
-    scalars_html = embed_compile(specs["scalars"], "L3", "m4")
-    scalars_html = inject_fig_class(scalars_html, "v01-scalars-fig")
-    scalars_html = _inject_mobile_tile(scalars_html, float(drop_m["value"]))
-    scope_html = embed_compile(specs["scope"], "L3", "m4")
-    scope_html = inject_fig_class(scope_html, "v01-scope-fig")
+    scalars_html = _inject_mobile_tile(inject_fig_class(embed_compile(specs["scalars"], "L3", "m4"), "v01-scalars-fig"), float(drop_m["value"]))
+    scope_html = inject_fig_class(embed_compile(specs["scope"], "L3", "m4"), "v01-scope-fig")
+    alarm_cfg = {
+        "viewId": "v01-icu-bedside-terminal",
+        "initialMode": "auto",
+        "paramLabel": "Mean Arterial Pressure (MAP)",
+        "channelTag": "BED ICU-04 · HEMODYNAMICS",
+        "unit": "mmHg",
+        "decimals": 1,
+        "threshold": float(map_m["lower_limit"]),
+        "direction": "below",
+        "nominalStart": float(map_m["target"]),
+        "breachPeak": float(map_m["value"]) - 4.0,
+        "breachReason": f"< {map_m['lower_limit']:.1f} mmHg Floor",
+        "ackActionHint": "Acknowledge alert and verify radial transducer zero before titration.",
+        "siblings": [
+            {"label": "PEEP Act", "val": f"{peep_act['value']:.1f} cmH2O"},
+            {"label": "SpO2", "val": f"{cm['spo2_pct']['value']:.1f}%"},
+            {"label": "Dropout", "val": f"{drop_m['value']:.1f} s"},
+        ],
+    }
+    handoff = render_handoff_link("01-clinical-icu-and-trials", "v03-patient-recovery-companion", "Patient Recovery View ->")
 
     return f"""<div class="v9-stage-inner v9-view-v01">
   <div class="va-m1-block-only v9-m1-folio">
@@ -67,9 +89,10 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       <span class="va-kicker">ADULT ICU · BED 04 · SEPSIS PROTOCOL</span>
       <h1 class="v9-masthead-title">Hemodynamic &amp; Ventilator Telemetry</h1>
     </div>
+    {handoff}
   </header>
-
-  <section id="v01-vent" aria-label="Bedside Vital and Ventilator Scalars">
+  {render_alarm_console_open(alarm_cfg, "nominal", "Mean Arterial Pressure Unacknowledged Alarm")}
+  <section id="v01-vent" data-alarm-fault-target="1" aria-label="Bedside Vital and Ventilator Scalars">
     {scalars_html}
   </section>
 
@@ -103,6 +126,7 @@ def _build_v01_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
   </section>
+  {render_alarm_console_close()}
 </div>"""
 
 
@@ -126,7 +150,7 @@ def _build_v02_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       </div>
     </div>
     <h1 class="v9-masthead-title">Sepsis Vasopressor-Sparing Trial — FDA &amp; CMO Review</h1>
-    <p class="v9-masthead-sub">Executive gate disposition for CMO triage paired with CONSORT subgroup hazard ratios and KDIGO renal safety register.</p>
+    <p class="v9-masthead-sub">Reviews 28-day survival gains and 10 safety/monitoring cohorts (renal events, artifact dropouts, and lab holds) before authorizing protocol rollout.</p>
   </header>
 
   <div class="v02-book-spread">
@@ -313,10 +337,11 @@ def _build_v03_html(corpus: dict[str, Any], specs: dict[str, Any]) -> str:
       <span class="va-kicker">HOME RECOVERY PLAN · DISCHARGE DAY 2</span>
       <div class="v9-masthead-tags">
         <span class="va-pill" data-variant="tag">Morning Check-In</span>
+        {render_handoff_link("01-clinical-icu-and-trials", "v01-icu-bedside-terminal", "<- Clinician Bedside Monitor")}
       </div>
     </div>
     <h1 class="v9-masthead-title">Post-Hospital Home Recovery Guide</h1>
-    <p class="v9-masthead-sub">Clear daily oxygen and blood pressure goals without hospital jargon.</p>
+    <p class="v9-masthead-sub">Shows daily oxygen and blood pressure goals in plain terms so patients know when to rest or call the nurse line.</p>
   </header>
 
   <section id="v03-today" class="v03-welcome-card" aria-label="Today's Summary">
@@ -388,7 +413,7 @@ def build_world_01(corpora_dir: Path) -> dict[str, Any]:
         },
         "v02-trial-regulatory-brief": {
             "option_label": "v02 · Clinical Trial Results", "default_medium": "m2",
-            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
             "nav_icon": "file-medical", "nav_brand": "CONSORT Brief",
             "topbar_brand": "CONSORT Brief", "rail_brand": "CONSORT Brief",
             "topbar_status": [], "nav_items": ["Disposition", "Cohort & Methods", "Subgroup Forest", "KDIGO Safety", "SAP Appendix"],

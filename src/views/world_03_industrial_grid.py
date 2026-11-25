@@ -15,6 +15,8 @@ try:
         esc,
         format_math_html,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
         render_params_aside,
     )
 except ImportError:
@@ -25,6 +27,8 @@ except ImportError:
         esc,
         format_math_html,
         load_world_inputs,
+        render_alarm_console_close,
+        render_alarm_console_open,
         render_params_aside,
     )
 
@@ -38,6 +42,25 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
     reg_val = esc(cm_val(cm, "modbus_reg_value"))
     scalars_html = embed_compile(specs["scalars"], "L3", "m4")
     pid_bus_html = embed_compile(specs["pid_bus"], "L3", "m4")
+    v07_alarm_cfg = {
+        "viewId": "v07-grid-scada-poi-console",
+        "initialMode": "ack",
+        "paramLabel": "POI Bus Frequency",
+        "channelTag": "IEEE 1547 · PMU BUS",
+        "unit": "Hz",
+        "decimals": 3,
+        "threshold": 59.900,
+        "direction": "below",
+        "nominalStart": freq,
+        "breachPeak": 59.845,
+        "breachReason": "< 59.900 Hz Underfreq",
+        "ackActionHint": "Acknowledge to return to balanced SCADA topology with latched bus diagnostic.",
+        "siblings": [
+            {"label": "Active Dispatch", "val": f"{p_act:.1f} MW"},
+            {"label": "BESS Charge", "val": f"{soc:.1f}%"},
+            {"label": "Modbus Reg", "val": reg_val},
+        ],
+    }
 
     return f"""<div class="v9-stage-inner v9-view-v07">
   <header class="v9-masthead">
@@ -49,10 +72,10 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Microgrid POI Dispatch, ISA-5.1 P&amp;ID &amp; RS-485 Console</h1>
-    <p class="v9-masthead-sub">Active dispatch {p_act:.1f} MW (CMD {p_cmd:.1f} MW), synchrophasor {freq:.3f} Hz, BESS SoC {soc:.1f}%, and 120 Ω RS-485 fieldbus telemetry.</p>
+    <p class="v9-masthead-sub">Shows acknowledged frequency excursion history beside live microgrid dispatch ({p_act:.1f} MW / {freq:.3f} Hz); click Replay Breach or verify LOTO [10]=0 before transfer.</p>
   </header>
-
-  <section id="v07-scalars" aria-label="Synchrophasor and BESS Telemetry">{scalars_html}</section>
+  {render_alarm_console_open(v07_alarm_cfg, "ack", "POI Bus Frequency Unacknowledged Alarm")}
+  <section id="v07-scalars" data-alarm-fault-target="1" aria-label="Synchrophasor and BESS Telemetry">{scalars_html}</section>
   <section id="v07-node-bar" class="v07-node-bar" aria-label="Microgrid Node Telemetry Selector">
     <div id="v07-node-chips" class="v07-node-chips" role="group" aria-label="Inspect Microgrid Node">
       <button type="button" class="v07-node-chip" data-v07-node="poi" aria-pressed="false" data-v07-diag="POI Breaker 52-M Closed · Active Dispatch {p_act:.1f} MW (CMD {p_cmd:.1f} MW) · Synchrophasor {freq:.3f} Hz (±0.005 Hz)">POI 52-M · {p_act:.1f} MW</button>
@@ -89,6 +112,7 @@ def _build_v07_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
   </section>
+  {render_alarm_console_close()}
 </div>"""
 
 
@@ -126,6 +150,26 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     sp2 = _v08_tile_svg((0.52, 0.56, 0.50, 0.48, 0.54, 0.49, 0.51, 0.46), 0.72, 0.75, "var(--accent-primary)")
     sp3 = _v08_tile_svg((0.48, 0.54, 0.60, 0.65, 0.70, 0.74, 0.77, 0.784), soc / 100.0, 0.80, "var(--accent-focal)")
     sp4 = _v08_tile_svg((0.86, 0.88, 0.90, 0.91, 0.92, 0.93, 0.94, 0.942), oee / 100.0, 0.95, "var(--status-ok)")
+    v08_alarm_cfg = {
+        "viewId": "v08-plant-floor-wall-kiosk",
+        "initialMode": "auto",
+        "paramLabel": "Feeder-B Voltage",
+        "channelTag": "CELL-03 · FEEDER-B BUS",
+        "unit": "% nominal",
+        "decimals": 1,
+        "threshold": 94.0,
+        "direction": "below",
+        "nominalStart": 97.8,
+        "breachPeak": 91.2,
+        "breachReason": "< 94.0% Undervoltage",
+        "ackActionHint": "Acknowledge alarm to restore the 2x2 quad console with latched steady fault.",
+        "siblings": [
+            {"label": "Dispatch", "val": f"{p_act:.1f} MW"},
+            {"label": "Sync Freq", "val": f"{freq:.3f} Hz"},
+            {"label": "BESS SoC", "val": f"{soc:.1f}%"},
+            {"label": "Cell-03 OEE", "val": f"{oee:.1f}%"},
+        ],
+    }
 
     return f"""<div class="v9-stage-inner v9-view-v08" data-v08-hold="false">
   <header class="v08-wall-header">
@@ -138,7 +182,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
       <span class="va-pill" data-variant="tag">52-M CLOSED · LOTO CLEAR</span>
     </div>
   </header>
-
+  {render_alarm_console_open(v08_alarm_cfg, "nominal", "Feeder-B Voltage Unacknowledged Alarm")}
   <div class="v08-inst-bar" role="toolbar" aria-label="Benchtop Instrument Controls">
     <div id="v08-ch-readout" class="v08-inst-readout va-nums" aria-live="polite">CH1 · Active Dispatch — Min 23.1 MW · Avg {p_act:.1f} MW · Max 24.1 MW · Ripple ±0.4 MW (1h)</div>
     <div class="v08-inst-actions">
@@ -152,7 +196,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     </div>
   </div>
 
-  <div class="v08-kpi-grid" aria-label="Primary Plant Floor Telemetry">
+  <div class="v08-kpi-grid" data-alarm-fault-target="1" aria-label="Primary Plant Floor Telemetry">
     <article class="v08-kpi-card is-v08-selected" role="button" tabindex="0" aria-pressed="true" data-v08-ch="dispatch">
       <div class="v08-kpi-head"><span class="v08-kpi-label">Microgrid Active Dispatch</span><span class="va-pill" data-variant="status" data-state="nominal">POI SYNCED</span></div>
       {sp1}
@@ -191,6 +235,7 @@ def _build_v08_html(corpus: dict[str, Any]) -> str:
     <span>CNC-CELL-03 Bearing Bore Process Capability: {format_math_html("C_pk")} = {cpk:.2f} (10.000 ± 0.042 mm Control Limits)</span>
     <span>POI Dispatch Synced · Zero Out-of-Control Lots</span>
   </footer>
+  {render_alarm_console_close()}
 </div>"""
 
 
@@ -225,7 +270,7 @@ def _build_v09_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Bearing Bore Shewhart {xbar_html} SPC &amp; Modbus Interlock Report</h1>
-    <p class="v9-masthead-sub">Metrological capability proof across 12 subgroups (n = {n_sub}, ±{uy_html} uncertainty whiskers) paired with 16-bit Modbus interlock decode {reg_val}.</p>
+    <p class="v9-masthead-sub">Shows 12 production lots staying safely inside ±3σ limits (n = {n_sub}, ±{uy_html} error bounds) alongside safe Modbus lock bits ({reg_val}).</p>
   </header>
 
   <section id="v09-capability" class="v9-gate-band" aria-label="Process Capability Gate">
@@ -320,7 +365,7 @@ def build_world_03(corpora_dir: Path) -> dict[str, Any]:
         },
         "v09-spc-quality-and-modbus-report": {
             "option_label": "v09 · Factory Quality Report", "default_medium": "m2",
-            "chromatic_code": "c3", "default_nav": "n1", "allowed_navs": ["n1", "n2", "n0"],
+            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
             "nav_icon": "chart-line", "nav_brand": "SPC & Modbus Audit",
             "topbar_brand": "SPC & Modbus Audit", "rail_brand": "Audit Sections",
             "topbar_status": [], "nav_items": ["Capability Gate", "Analysis", "Shewhart SPC", "Modbus Reg"],

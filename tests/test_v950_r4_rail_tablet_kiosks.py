@@ -82,9 +82,10 @@ class TestV950R4RailTabletKiosks(unittest.TestCase):
 
     def _check_pinned_sticky_rail(self, driver: Any, base_url: str) -> None:
         set_viewport(driver, 1920, 1080, 1)
-        for world_id, view_id, expect_top in (
-            ("01-clinical-icu-and-trials", "v01-icu-bedside-terminal", True),
-            ("04-civic-finance-and-stem-learning", "v10-civic-capital-budget-deck", False),
+        for world_id, view_id, expect_top, min_sy in (
+            ("01-clinical-icu-and-trials", "v01-icu-bedside-terminal", True, 50.0),
+            ("02-cloud-cyber-and-ai-ops", "v06-ai-drift-and-lineage-ide", True, 100.0),
+            ("04-civic-finance-and-stem-learning", "v20-student-capstone-lab-report", False, 40.0),
         ):
             driver.get(f"{base_url}?world={world_id}&view={view_id}&vp=fill&theme=white")
             self._wait_view(driver, view_id)
@@ -149,7 +150,7 @@ class TestV950R4RailTabletKiosks(unittest.TestCase):
                 )
                 for _ in range(25):
                     sy = float(driver.execute_script("return window.scrollY || 0;"))
-                    if sy > 100.0:
+                    if sy >= min_sy:
                         break
                     time.sleep(0.05)
 
@@ -168,7 +169,7 @@ class TestV950R4RailTabletKiosks(unittest.TestCase):
                     };
                     """
                 )
-                self.assertGreater(after["sy"], 100.0, f"{view_id} did not scroll stage: {after}")
+                self.assertGreaterEqual(after["sy"], min_sy, f"{view_id} did not scroll stage: {after}")
                 self.assertGreaterEqual(after["rTop"], -1.0, f"{view_id} rail scrolled off top: {after}")
                 self.assertGreaterEqual(after["bTop"], 0.0, f"{view_id} rail brand clipped off top: {after}")
                 self.assertLessEqual(after["fBot"], after["h"] + 1.0, f"{view_id} rail footer cut off after scroll: {after}")

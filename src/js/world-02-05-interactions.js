@@ -97,9 +97,9 @@
       d.querySelectorAll('#v10-budget-table tbody tr').forEach(function (row) {
         const txt = (row.textContent || '');
         const show = f === 'all'
-          || (f === 'inflow' && (txt.includes('Opening') || txt.includes('Grant') || txt.includes('Bond')))
-          || (f === 'outlay' && (txt.includes('HVAC') || txt.includes('Water Main') || txt.includes('Closing')))
-          || (f === 'review' && txt.includes('REVIEW'));
+          || (f === 'inflow' && (txt.includes('Opening') || txt.includes('Grant') || txt.includes('Bond') || txt.includes('Escrow')))
+          || (f === 'outlay' && (txt.includes('Outlay') || txt.includes('Closing')))
+          || (f === 'review' && (txt.includes('REVIEW') || txt.includes('HOLD')));
         row.classList.toggle('v10-row-hidden', !show);
       });
     });

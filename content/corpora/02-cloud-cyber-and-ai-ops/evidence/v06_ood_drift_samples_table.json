@@ -1,0 +1,124 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:table",
+  "id": "v06-ood-drift-samples-table",
+  "metadata": {
+    "title": "Routed Out-of-Distribution & Calibration Hold Samples (CLS-ROUTER-V4)",
+    "description": "Operational sample log inspecting 10 routed out-of-distribution overconfidence breaches, sensor dropouts, outlier batches, and clamped fallback routes against the ECE = 0.040 drift gate.",
+    "rigor_level": "L3",
+    "timestamp_utc": "2026-11-17T04:18:00Z"
+  },
+  "columns": [
+    {
+      "key": "sample_id",
+      "label": "Sample ID",
+      "data_type": "string",
+      "priority": 1
+    },
+    {
+      "key": "p_hat",
+      "label": "Pred Conf.",
+      "unit": "1",
+      "quantity_calculus": "p_hat / 1",
+      "data_type": "numeric",
+      "priority": 1
+    },
+    {
+      "key": "edge_condition",
+      "label": "Observed Condition",
+      "data_type": "string",
+      "priority": 1
+    },
+    {
+      "key": "latency_ms",
+      "label": "Route Latency",
+      "unit": "ms",
+      "quantity_calculus": "t_rt / ms",
+      "data_type": "numeric",
+      "priority": 2
+    },
+    {
+      "key": "route_status",
+      "label": "Disposition",
+      "data_type": "status",
+      "priority": 1
+    }
+  ],
+  "rows": [
+    {
+      "sample_id": "OOD-9041",
+      "p_hat": 0.91,
+      "edge_condition": "Outlier batch · unseen currency token",
+      "latency_ms": 18.4,
+      "route_status": "HOLD",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9048",
+      "p_hat": 0.85,
+      "edge_condition": "Overconfident bin (f_obs 0.73 vs 0.85)",
+      "latency_ms": 16.2,
+      "route_status": "REVIEW",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9053",
+      "p_hat": 0.88,
+      "edge_condition": "Calibration hold · ECE 0.050 > 0.040",
+      "latency_ms": 19.7,
+      "route_status": "HOLD",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9062",
+      "p_hat": 0.78,
+      "edge_condition": "Sensor dropout · null ASN upstream",
+      "latency_ms": 42.1,
+      "route_status": "DEGRADED",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9070",
+      "p_hat": 0.76,
+      "edge_condition": "Clamped limit >= 0.75 fallback path",
+      "latency_ms": 14.9,
+      "route_status": "CONDITIONAL",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9077",
+      "p_hat": 0.84,
+      "edge_condition": "Outlier batch · truncated device UA",
+      "latency_ms": 21.5,
+      "route_status": "REVIEW",
+      "_row_status": "warn"
+    },
+    {
+      "sample_id": "OOD-9085",
+      "p_hat": 0.93,
+      "edge_condition": "Calibration hold · region fail-closed",
+      "latency_ms": 15.8,
+      "route_status": "HOLD"
+    },
+    {
+      "sample_id": "OOD-9091",
+      "p_hat": 0.62,
+      "edge_condition": "In-distribution control check (match)",
+      "latency_ms": 11.4,
+      "route_status": "VERIFIED"
+    },
+    {
+      "sample_id": "OOD-9096",
+      "p_hat": 0.54,
+      "edge_condition": "Clamped limit · low-confidence abstain",
+      "latency_ms": 12.6,
+      "route_status": "NOMINAL"
+    },
+    {
+      "sample_id": "OOD-9104",
+      "p_hat": 0.41,
+      "edge_condition": "Standard calibrated pass cohort",
+      "latency_ms": 10.9,
+      "route_status": "PASS"
+    }
+  ]
+}

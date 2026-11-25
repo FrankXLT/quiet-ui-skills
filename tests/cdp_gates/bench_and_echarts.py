@@ -93,9 +93,9 @@ def _check_bench_page(driver: Any, bench_url: str, errs: list[str]) -> None:
     time.sleep(0.25)
     ec_err = driver.execute_script("""
         const specs = document.querySelectorAll('.qe-specimen');
-        if (specs.length !== 49) return 'expected 49 specimens, found ' + specs.length;
+        if (specs.length !== 50) return 'expected 50 specimens, found ' + specs.length;
         const contracts = document.querySelectorAll('.qe-specimen .qe-data-contract');
-        if (contracts.length !== 49) return 'expected 49 data contracts, found ' + contracts.length;
+        if (contracts.length !== 50) return 'expected 50 data contracts, found ' + contracts.length;
         const s45 = document.getElementById('m4-l1-us-hex-tile-map');
         if (!s45 || s45.querySelectorAll('.va-hex-tile').length !== 51) return 'Specimen 45 missing 51 US hex tiles';
         const s44 = document.getElementById('qe-forms-zero-states');
@@ -198,14 +198,14 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
             if failed_res:
                 errs.append(f"[DOCS_ROOT_404] {path}: {failed_res}")
 
-        # Verify Components tab inside /docs root loads all 49 specimens
+        # Verify Components tab inside /docs root loads all 50 specimens
         driver.get(f"{docs_root_url}/")
         time.sleep(0.25)
         driver.execute_script("document.getElementById('va-tab-components').click();")
         time.sleep(0.5)
         cnt = driver.execute_script("return document.getElementById('va-stage-portal')?.contentDocument?.querySelectorAll('.qe-specimen').length || 0;")
-        if int(cnt) != 49:
-            errs.append(f"[DOCS_COMPONENTS_TAB] expected 49 specimens, got {cnt}")
+        if int(cnt) != 50:
+            errs.append(f"[DOCS_COMPONENTS_TAB] expected 50 specimens, got {cnt}")
 
         # Verify all 8 optical/gallery photos resolve cleanly under docs/ web root
         for wid, vid, expected_n in (
@@ -238,7 +238,7 @@ def _check_docs_http_root(driver: Any, errs: list[str]) -> None:
 
 
 def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Verify standalone bench (49 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
+    """Verify standalone bench (50 specimens, ECharts, UI controls), Studio Components tab, and /docs HTTP root."""
     errs: list[str] = []
     _check_bench_page(driver, f"{root_url}/docs/bench/evidence-bench.html", errs)
 
@@ -248,8 +248,8 @@ def run_bench_and_docs_gates(driver: Any, base_url: str, root_url: str) -> list[
     time.sleep(0.25)
     driver.execute_script("document.getElementById('va-tab-components').click();")
     time.sleep(0.5)
-    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===49;"):
-        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 49 specimens")
+    if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='components'&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===50;"):
+        errs.append("[STUDIO_COMPONENTS_TAB] failed to mount 50 specimens")
     driver.execute_script("document.getElementById('va-tab-examples').click();")
     time.sleep(0.25)
     if not driver.execute_script("const p=document.getElementById('va-stage-portal');return document.documentElement.dataset.studioView==='examples'&&!p.hasAttribute('src');"):

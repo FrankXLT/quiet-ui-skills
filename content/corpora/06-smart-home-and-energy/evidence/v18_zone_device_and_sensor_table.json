@@ -21,6 +21,10 @@
     {"device_id": "Living Room Thermostat", "zone": "Main Level", "state": "Comfortable", "primary_metric": "21.5 °C / 44.0 % RH", "tariff_note": "Heat pump idling quietly"},
     {"device_id": "Water Leak Sensors", "zone": "Basement & Bath", "state": "Dry (6/6)", "primary_metric": "6 clear", "numeric_value": 6, "tariff_note": "Main water valve ready"},
     {"device_id": "Front Door", "zone": "Front Entry", "state": "Locked", "primary_metric": "Deadbolt engaged", "tariff_note": "2-step unlock interlock"},
-    {"device_id": "Garage Door", "zone": "North Bay", "state": "Closed", "primary_metric": "Clear", "tariff_note": "2-step open interlock"}
+    {"device_id": "Garage Door", "zone": "North Bay", "state": "Closed", "primary_metric": "Clear", "tariff_note": "2-step open interlock"},
+    {"device_id": "EV Charger", "zone": "Garage Wall", "state": "Paused", "primary_metric": "0.0 kW · Peak Limit", "tariff_note": "Paused 16:00-21:00 unless Solar > 4 kW"},
+    {"device_id": "Crawlspace Node", "zone": "Underfloor", "state": "Check Needed", "primary_metric": "61.8% RH · Recalibrating", "tariff_note": "Zero check queued 02:00"},
+    {"device_id": "Attic Fan Node", "zone": "Upper Attic", "state": "Offline", "primary_metric": "Waiting for sensor", "tariff_note": "Last check-in 18m ago; reconnect pending"},
+    {"device_id": "Bath Exhaust Fan", "zone": "East Wing", "state": "Auto", "primary_metric": "Idle · Brief spike ignored", "tariff_note": "Humidity hold 55% RH"}
   ]
 }

@@ -63,6 +63,11 @@ UI_BRIDGE_CONTRACTS: dict[str, tuple[str, str, str]] = {
         "gate_reason (when blocked), cached_last_good.{p95_ms, error_pct}",
         "Retain last valid values with STALE badge on timeout; expose Clear filters on filtered zero-results.",
     ),
+    "ui-alarm-lifecycle": (
+        "channel.{paramLabel, unit, threshold, direction, nominalStart, breachPeak}",
+        "siblings[].{label, val}, initialMode (auto|ack), ?alarm= override",
+        "Honor prefers-reduced-motion: reduce (steady double frame), pause elapsed timers on document.hidden, and force Phase 4 in @media print.",
+    ),
 }
 
 

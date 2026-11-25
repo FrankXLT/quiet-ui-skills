@@ -137,7 +137,7 @@
       "tempos": ["T2", "T3"],
       "mediums": ["M1", "M2"],
       "chromatic_budget": "Decision Contrast",
-      "nav_shells": ["N1"],
+      "nav_shells": ["N2"],
       "rigor_level": "L3",
       "evidence_refs": [
         "evidence/v02_trial_consort_forest.json",

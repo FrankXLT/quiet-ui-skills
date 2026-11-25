@@ -40,7 +40,7 @@ python3 -B scripts/build_all.py --check
 # Run zero-dependency unit, corpora, hygiene & portability tests (skips CDP if Chrome absent)
 python3 -B -m unittest discover -s tests -v
 
-# Run full verification including all 22 Studio CDP gates + 49 Bench specimens + /docs root test
+# Run full verification including all 22 Studio CDP gates + 50 Bench specimens + /docs root test
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 
 # Serve local preview (http://127.0.0.1:8788/)
@@ -60,7 +60,7 @@ python3 -B scripts/serve_showcase.py --port 8788
 | `customizations/` | MIT starter kits (`personal-starter/`, `brand-starter/`) and starter build/verify scripts. |
 | `content/corpora/` | 6 domain corpora (`22` views, `29` JSON specs, `204` conserved metric checks) + attribution docs. |
 | `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..17` incl. `17-editorial-research-brief.css`), JS runtimes (`js/` incl. `studio-landing.js`, `quiet-card-export.js`, `quiet-svg-chart-layout.js`, `quiet-time-binning.js`), and domain builders (`views/`). |
-| `docs/` | GitHub Pages web root (`index.html`, `bench/evidence-bench.html` with `49` specimens, `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos). |
+| `docs/` | GitHub Pages web root (`index.html`, `bench/evidence-bench.html` with `50` specimens, `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos). |
 | `scripts/` | Build & preview CLI (`build_all.py`, `build_showcase.py`, `build_evidence_bench.py`, `bench_forms_specimen.py`, `build_readme_hero.py`, `serve_showcase.py`). |
 | `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`, `test_v950_landing_portal_and_rail.py`, `test_v960_civic_and_print_audit.py`). |
 | `quiet-ui-showcase.html` | Compiled standalone 6-domain, 22-view Studio portal (mirrored byte-for-byte to `docs/index.html`). |

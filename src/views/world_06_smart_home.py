@@ -233,12 +233,14 @@ def _build_v18_html(corpus: dict[str, Any], specs: dict[str, dict[str, Any]]) ->
       </div>
     </div>
     <h1 class="v9-masthead-title">Home Assistant &amp; Daily Energy</h1>
-    <p class="v9-masthead-sub">Producing {pv_kw:.2f} kW from solar and exporting {abs(net_kw):.2f} kW ({net_kw:+.2f} kW) before the ${tariff:.2f}/kWh evening peak window.</p>
+    <p class="v9-masthead-sub">Generating {pv_kw:.2f} kW from solar and exporting {abs(net_kw):.2f} kW ({net_kw:+.2f} kW) while holding {soc:.0f}% battery ahead of ${tariff:.2f}/kWh evening rates.</p>
   </header>
 
 {_v18_energy_kpis(pv_kw, load_kw, net_kw, soc)}
+  <div class="v18-rooms-and-doors">
 {_v18_mushroom_cards(temp_c, rh_pct, soc, dry_cnt, tariff)}
 {_v18_access_cards()}
+  </div>
 
   <section id="v18-energy" aria-label="24-Hour Home Energy Usage Bar Chart">
     {energy_plot_html}

@@ -340,9 +340,18 @@ class TestV950LandingPortalAndRail(unittest.TestCase):
         )
         self.assertEqual(synced, {"theme": "dark-paper", "density": "d3", "locked": True, "sl": 0, "st": 0})
 
-        # 2. N1 view (v19 Roadmap & Triage) -> rail collapse + reopen button + Quick Switch tree
+        # 2. N1 view (v12 RC Lab) -> rail collapse + reopen button + Quick Switch tree, and N2 Single Control Home (v19) hides rail
         driver.execute_script("window.QuietStudioPortalV9.openExamples('02-cloud-cyber-and-ai-ops', 'v19-product-roadmap-and-triage');")
         self._wait_iframe_view(driver, "v19-product-roadmap-and-triage")
+        time.sleep(0.15)
+        driver.switch_to.frame("va-stage-portal")
+        try:
+            self.assertEqual(driver.execute_script("return getComputedStyle(document.getElementById('va-shell-rail')).display;"), "none")
+        finally:
+            driver.switch_to.default_content()
+
+        driver.execute_script("window.QuietStudioPortalV9.openExamples('04-civic-finance-and-stem-learning', 'v12-stem-interactive-lab');")
+        self._wait_iframe_view(driver, "v12-stem-interactive-lab")
         time.sleep(0.25)
         driver.switch_to.frame("va-stage-portal")
         try:

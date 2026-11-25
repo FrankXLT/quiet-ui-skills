@@ -25,9 +25,15 @@
     "overconfidence_gate_offset": -0.08,
     "sample_count": 1200,
     "roadmap_float_days": 3.0,
-    "tracked_blockers": 4
+    "tracked_blockers": 4,
+    "ood_routed_samples": 10
   },
   "evidence_bindings": {
+    "ood_routed_samples": {
+      "file": "evidence/v06_ood_drift_samples_table.json",
+      "json_path": "$.rows.length",
+      "unit": "1"
+    },
     "p99_threshold_ms": {
       "file": "evidence/v04_sre_latency_scope.json",
       "json_path": "$.channels[0].threshold_envelopes[0].value",
@@ -178,7 +184,7 @@
       ],
       "chromatic_budget": "Archival Proof",
       "nav_shells": [
-        "N1"
+        "N2"
       ],
       "rigor_level": "L2",
       "evidence_refs": [
@@ -209,7 +215,8 @@
       "rigor_level": "L3",
       "evidence_refs": [
         "evidence/v05_zero_trust_and_er_schematics.json",
-        "evidence/v06_ai_calibration_plot.json"
+        "evidence/v06_ai_calibration_plot.json",
+        "evidence/v06_ood_drift_samples_table.json"
       ],
       "actionable_disposition": "ECE = 0.050 exceeds 0.040 drift ceiling across N = 1200 validation samples (overconfidence -0.120 at p_hat = 0.85); route p_hat >= 0.75 predictions to deterministic fallback."
     },
@@ -230,7 +237,7 @@
       ],
       "chromatic_budget": "Decision Contrast",
       "nav_shells": [
-        "N1"
+        "N2"
       ],
       "rigor_level": "L2",
       "evidence_refs": [

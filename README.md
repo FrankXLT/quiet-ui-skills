@@ -11,14 +11,14 @@
 2. **`quiet-evidence` (Metrology, Clean-Room SVG Compilers & CJK-Safe `QuietSvgLayout`):** Deterministically compiles calibrated waveforms, analytical & calibration plots, cyclical Min–Avg–Max whiskers (`buildCyclicalWhiskerOption`), waterfalls, 32/64-bit hardware bitfields, tabular ledgers, and clean-room systems schematics—with East-Asian wide (`1.75x`) & combining-mark gutter math (`visual_char_units` / `QuietSvgLayout.visualUnits`) across SVG and ECharts.
 3. **`quiet-bridge` (Audience Translation & Plain-English Rationale):** Translates dense multi-domain instrumentation across expert, executive, and learner audiences with verifiable data conservation, persistent `.quiet-ui.md` intake memory, and explicit `Warming up — N samples collected` disclosures on thin buffers.
 
-![Quiet UI v9.6 — 6-Domain Studio, 22 Views & 49-Component Suite](docs/assets/quiet-ui-hero.png)
+![Quiet UI v9.6 — 6-Domain Studio, 22 Views & 50-Component Suite](docs/assets/quiet-ui-hero.png)
 
 ---
 
 ## Quick Start & Installation
 
 - **Live v9.6 Interactive Studio (`6 Domains · 22 Views`):** [**https://FrankXLT.github.io/quiet-ui-skills/**](https://FrankXLT.github.io/quiet-ui-skills/) — or open [`quiet-ui-showcase.html`](quiet-ui-showcase.html) locally (zero build step, zero external CDNs).
-- **3-Pillar Component Library (`49 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, US 51-hex tile maps, ranked directional arrow dumbbells, paired subgroup bars, dual count/% slopegraphs, diverging %/$ tables (`Chart | Table` & `Copy for AI`), forms & zero-states, systems schematics, and decision bridges.
+- **3-Pillar Component Library (`50 Compiled Specimens`):** Open [`docs/bench/evidence-bench.html`](docs/bench/evidence-bench.html) locally or switch to the **Components** tab in the studio bar to inspect UI controls, KPI gauges, US 51-hex tile maps, ranked directional arrow dumbbells, paired subgroup bars, dual count/% slopegraphs, diverging %/$ tables (`Chart | Table` & `Copy for AI`), forms & zero-states, 4-phase alarm lifecycles, systems schematics, and decision bridges.
 - **Agent Onboarding (`AGENTS.md` / `CLAUDE.md`):** Read [`AGENTS.md`](AGENTS.md) for single-command rebuilds (`scripts/build_all.py`), portable auditor usage (`audit_quiet_html.py`), and repository invariants.
 - **Deep-Link Any State:** Append `?mode=examples&domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console&theme=white` or `?mode=components&theme=dark` to share an exact domain view, component library tab, or surface theme.
 
@@ -128,7 +128,7 @@ quiet-ui-skills/
 ├── scripts/                                         # Canonical builders (build_all.py, build_showcase.py, serve_showcase.py)
 ├── tests/                                           # Unified stdlib & Chrome CDP visual regression suite
 ├── docs/index.html                                  # GitHub Pages mirror of quiet-ui-showcase.html
-├── docs/bench/evidence-bench.html                   # 49-specimen deterministic 3-Pillar Component Library
+├── docs/bench/evidence-bench.html                   # 50-specimen deterministic 3-Pillar Component Library
 ├── customizations/                                  # Personal (22-view) & Brand (18-view) starter kits (MIT)
 └── skills/
     ├── quiet-ui/                                    # Pillar 1: 7 mediums, forms/zero-states, .quiet-ui.md & audit_quiet_html.py

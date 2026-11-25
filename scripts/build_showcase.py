@@ -59,6 +59,7 @@ def bundle_stage_css(repo_root: Path) -> str:
         "src/css/16-kiosks-and-sticky-rail.css",
         "src/css/17-editorial-research-brief.css",
         "src/css/18-editorial-print-rules.css",
+        "src/css/19-alarm-lifecycle.css",
     ):
         fpath = repo_root / rel
         if fpath.exists():
@@ -90,6 +91,7 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/world-02-05-interactions.js",
             "src/js/world-06-interactions.js",
             "src/js/stage-rich-interactions.js",
+            "src/js/quiet-alarm-lifecycle.js",
         )
         if (repo_root / rel).exists()
     )

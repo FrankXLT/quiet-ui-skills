@@ -241,12 +241,12 @@ def audit_corpora(corpora_dir: Path = CORPORA_DIR) -> dict[str, Any]:
 
 
 class TestCorporaConservation(unittest.TestCase):
-    """Validate 6-domain coverage, multi-theme compilation, and 204 conservation checks."""
+    """Validate 6-domain coverage, multi-theme compilation, and 214 conservation checks."""
 
     def test_all_6_worlds_matrix_and_conservation_checks(self) -> None:
         res = audit_corpora(CORPORA_DIR)
         self.assertTrue(res["ok"], "Corpora audit failed:\n" + "\n".join(res["errors"]))
-        self.assertEqual(res["stats"], {"worlds": 6, "views": 22, "evidence_specs": 29, "conserved_checks": 204})
+        self.assertEqual(res["stats"], {"worlds": 6, "views": 22, "evidence_specs": 31, "conserved_checks": 214})
 
     def test_each_world_compiles_under_all_themes_and_l1_to_l3(self) -> None:
         for corpus_path in sorted(CORPORA_DIR.glob("*/corpus.json")):

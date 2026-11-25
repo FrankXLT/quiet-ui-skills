@@ -11,6 +11,7 @@ import re
 import sys
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE_SCRIPTS = REPO_ROOT / "skills" / "quiet-evidence" / "scripts"
@@ -264,3 +265,31 @@ def assemble_world_bundle(
         "world_meta": {"world_id": corpus["world_id"], "world_label": world_label, "title": scrub_prose(corpus["title"]), "views": views_meta, "conservation_ledger": format_ledger_rows(ledger_rows)},
         "templates": templates,
     }
+
+
+def render_alarm_console_open(cfg: dict[str, Any], initial_phase: str = "nominal", takeover_label: str = "Active Unacknowledged Alarm Takeover") -> str:
+    """Open reusable 4-phase ISA-18.2 alarm lifecycle host wrapper and balanced body slot."""
+    cfg_attr = esc(json.dumps(cfg, separators=(",", ":")))
+    return (
+        f'<div class="va-alarm-console" data-alarm-config="{cfg_attr}" data-alarm-phase="{esc(initial_phase)}">'
+        '<div class="va-sr-only va-alarm-live" aria-live="polite" aria-atomic="true"></div>'
+        '<div class="va-alarm-banner" data-alarm-banner></div>'
+        f'<section class="va-alarm-takeover" data-alarm-takeover aria-label="{esc(takeover_label)}"></section>'
+        '<div class="va-alarm-balanced-wrap" data-alarm-balanced>'
+    )
+
+
+def render_alarm_console_close() -> str:
+    """Close reusable 4-phase ISA-18.2 alarm lifecycle host wrapper."""
+    return "</div></div>"
+
+
+def render_handoff_link(world_id: str, view_id: str, label: str) -> str:
+    """Render an accessible cross-view handoff navigation pill for Studio and standalone frames."""
+    href = f"?world={esc(quote(str(world_id), safe=''))}&amp;view={esc(quote(str(view_id), safe=''))}"
+    return (
+        f'<a class="va-handoff-link" href="{href}" '
+        f'data-quiet-handoff-world="{esc(world_id)}" data-quiet-handoff-view="{esc(view_id)}">'
+        f"{esc(label)}</a>"
+    )
+
