@@ -8529,9 +8529,13 @@ h1, h2, h3, h4, .wf-title { text-wrap: balance; }
           sr.markPoint.data.forEach(function (pt) { if (pt.label) pt.label.fontSize = 11; });
         }
         if (sr.markLine && Array.isArray(sr.markLine.data)) {
+          var maxEnvChars = Math.max(18, Math.floor(Math.max(120, (w || 320) - leftPx - 20) / 9));
           sr.markLine.data.forEach(function (d) {
-            var pos = (d.label && String(d.label.formatter || '').toLowerCase().indexOf('floor') >= 0) ? 'insideStartBottom' : 'insideEndTop';
-            d.label = Object.assign({}, d.label, { position: pos, fontSize: 11, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+            var rawFmt = d.label && typeof d.label.formatter === 'string' ? d.label.formatter : '';
+            var fmt = (rawFmt.length > maxEnvChars && typeof global.QuietSvgLayout !== 'undefined') ? global.QuietSvgLayout.wrapLabelLines(rawFmt, maxEnvChars, 2).join('\n') : rawFmt;
+            var pos = rawFmt.toLowerCase().indexOf('floor') >= 0 ? 'insideStartBottom' : 'insideEndTop';
+            d.label = Object.assign({}, d.label, { position: pos, fontSize: 11, lineHeight: 13, backgroundColor: haloBg, padding: [1, 4], borderRadius: 2 });
+            if (fmt) d.label.formatter = fmt;
           });
         }
       });
