@@ -1,17 +1,17 @@
-# Quiet UI v9.6.0 — Master Engineering Workflows & Architecture
+# Quiet UI v9.7.0 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.6.0 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.7.0 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS, NAEP/Census ACS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.6 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Public Data, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.7 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Public Data, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.6
+                                      QUIET UI v9.7
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼
@@ -30,7 +30,7 @@ Quiet UI v9.6 abandons rigid monolithic page templates and artificial walls betw
    - Enforces deterministic compilation via zero-dependency Python/JS builders consuming structured JSON specs (`urn:quiet-ui:schema:v9:*`), completely terminating freehand SVG coordinate guessing.
 
 3. **Pillar 3 — Directional Presenter-to-Audience Bridge & Murder Board (`skills/quiet-bridge/`)**:
-   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (22 presenter-to-audience views)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
+   - Formulates communication as an asymmetric vector across **6 Universal Domain Clusters (26 presenter-to-audience views)**: `Presenter Source` &rarr; `Audience Lens` $\times$ `Decision Tempo`.
    - Projects across seven foundational audience lenses: *Technician/Operator*, *Discipline Engineer*, *Project/Systems Engineer*, *Program Manager*, *Consumer/Common Reader*, *Educator/Mentor*, and *Student/Learner*.
    - Operates across three decision tempos: *Tactical* (5–15s anomaly intervention), *Executive* (1–3m gate compression *within that leader's discipline*), and *Analytical* (10–45m full evidentiary proof).
    - Enforces the **4 Universal Audience Evaluation Invariants** across every domain view:
@@ -230,10 +230,10 @@ Structured topology and systems diagrams route through `skills/quiet-evidence/sc
 
 ### 6.2 Starter Customization Kits (`personal-starter` & `brand-starter`)
 The customization workspaces under `customizations/`:
-- `customizations/personal-starter/` (personal portfolio / workspace theme — all 22 domain views)
-- `customizations/brand-starter/` (enterprise brand palette — 18 product/engineering domain views)
+- `customizations/personal-starter/` (personal portfolio / workspace theme — all 26 domain views)
+- `customizations/brand-starter/` (enterprise brand palette — 22 product/engineering domain views)
 
-**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.2:
+**Inheritance Rule**: Starters override token values via `styles/overrides.css` while inheriting the core `@layer` hierarchy and Stage Portal machinery. In v9.7:
 - Starters compile deterministically using `customizations/scripts/build_showcase.py`.
 - They gain immediate access to all seven delivery mediums (`M1`–`M7`) and six data modalities (`M1`–`M6`) without modifying their `customization.json` schema.
 
@@ -375,8 +375,9 @@ Multi-panel operational consoles (`v08` Microgrid Quad, `v01` ICU Console, `v04`
 
 ## 13. Wave 2 Studio Archetypes (`v23–v26` & Specimens `51–53`, `v9.7.0`)
 
-1. **Semantic Config Diff Review (`v23`, Specimen `51`)**: Evaluates `r41` vs `r42` across `14` edge clusters (`6 of 24` changed, `2/14 = 14.3%` canary, `30 min` soak) with Single Control Home filters, unchanged context key toggle, breaking pinning callout, and two-step reversible rollout gate + `r41` undo toast.
-2. **High-Row Telemetry Triage Desk (`v24`, Specimen `52`)**: Binds `48` events (`9` critical burst `14:20Z–14:35Z`, `14` warnings, `11` auth/TLS, `14` nominal; median `148.0 ms`) across a `24`-bucket histogram, live search bar, split-pane table + synchronized Right-Side Row Inspector, and `Clear filters` zero-match recovery.
-3. **Subsea Corridor & Link-Margin Schematic (`v25`)**: Synchronizes `0–640 km` 2D bathymetry (`CLS-Alpha` to `CLS-Bravo`, `8` repeaters, `BU-03` @ `240 km`, `Span S5` `+4.8 dB` @ `362 km`) pixel-for-pixel above the distance-locked OSNR profile (`16.4 dB` min vs `15.0 dB` SD-FEC floor) and `1.12 A` repeater table.
-4. **Constrained Trade-Space Calculator (`v26`, Specimen `53`)**: Coupled sliders (`Growth 10–50%`, `Commit 20–80%`, `Runway Floor 18–36 mo`) dynamically recompute 36-month Option A/B/C curves, vertical break-even crossover marker (`Month 14`), 10-row comparison ledger, and feasibility disposition (`5.2 M USD` budget cap).
+1. **Semantic Config Diff Review (`v23`, Specimen `51`)**: Evaluates `r41` vs `r42` across `14` edge clusters (`6 of 24` changed, `2/14 = 14.3%` canary, `30 min` soak) with Single Control Home filters, unchanged context key toggle, responsive full-width blast chart, stacked `td[data-label]` mobile rows, and two-step rollout gate synchronizing `2 of 14 clusters` <-> `14 of 14 clusters` (`Global r42 active`) + `r41` undo toast.
+2. **High-Row Telemetry Triage Desk (`v24`, Specimen `52`)**: Binds `48` events (`9` critical burst `14:20Z–14:35Z`, `14` warnings, `11` auth/TLS, `14` nominal; median `148.0 ms`) across a `24`-bucket clickable full-width histogram, live search, synchronized Right-Side Row Inspector (showing explicit zero-match notice when `0` rows match), and `Clear filters` restoration.
+3. **Subsea Corridor & Link-Margin Schematic (`v25`)**: Synchronizes full-width `0–640 km` 2D bathymetry (`CLS-Alpha` to `CLS-Bravo`, `Repeaters R1–R8`, `BU-03` @ `240 km`, `Span S5` `+4.8 dB` @ `362 km`) pixel-for-pixel above the distance-locked OSNR profile (`16.4 dB` min vs `15.0 dB` SD-FEC floor) and `1.12 A` repeater table.
+4. **Constrained Trade-Space Calculator (`v26`, Specimen `53`)**: Coupled sliders (`Growth 10–50%`, `Commit 20–80%`, `Runway Floor 18–36 mo`) dynamically update full-width Option A/B/C spend curves, crossover marker (`Month 14`), `10`-row ledger, amber `OVER-CONSTRAINED` warning (`OVER CEILING`) when zero options satisfy both `$5.20M` cap and runway floor, and red `None (Runway Blocked)` gate when all runway options fail.
+
 

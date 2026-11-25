@@ -94,6 +94,7 @@ def bundle_stage_js(repo_root: Path) -> str:
             "src/js/stage-rich-interactions.js",
             "src/js/quiet-alarm-trace.js",
             "src/js/quiet-alarm-lifecycle.js",
+            "src/js/quiet-wave2-svg.js",
             "src/js/quiet-wave2-interactions.js",
         )
         if (repo_root / rel).exists()

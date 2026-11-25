@@ -49,30 +49,32 @@ def _badge_state(risk: str) -> str:
 
 
 def build_v23_blast_svg() -> str:
-    """Render deterministic SVG bar comparison of Stage 1 canary traffic vs held clusters."""
+    """Render deterministic full-width SVG bar comparison of Stage 1 canary traffic vs held clusters."""
     bars = []
+    bar_x, track_w = 196.0, 788.0
     for idx, (label, cohort, pct, fill_tok) in enumerate(_V23_COHORTS):
         y = 32 + idx * 36
-        bar_w = round((pct / 40.0) * 410.0, 1)
+        bar_w = round((pct / 40.0) * track_w, 1)
         is_canary = "Canary" in cohort
         bg_op = "0.14" if is_canary else "0.06"
         bars.append(
-            f'<rect x="240" y="{y}" width="410" height="22" rx="3" fill="var(--text-muted)" opacity="{bg_op}"/>'
-            f'<rect x="240" y="{y}" width="{bar_w}" height="22" rx="3" fill="{fill_tok}"/>'
-            f'<text x="230" y="{y + 15}" text-anchor="end" font-size="11.5" fill="var(--text-primary)">{html.escape(label)}</text>'
-            f'<rect x="{246 + bar_w:.1f}" y="{y + 2}" width="126" height="18" rx="2" fill="var(--bg-surface)" opacity="0.92"/>'
-            f'<text x="{250 + bar_w:.1f}" y="{y + 15}" font-size="11.5" font-weight="600" fill="var(--text-primary)">{pct:.1f}% ({cohort})</text>'
+            f'<text x="2" y="{y + 15}" text-anchor="start" font-size="11.5" fill="var(--text-primary)">{html.escape(label)}</text>'
+            f'<rect x="{bar_x:.1f}" y="{y}" width="{track_w:.1f}" height="22" rx="3" fill="var(--text-muted)" opacity="{bg_op}"/>'
+            f'<rect x="{bar_x:.1f}" y="{y}" width="{bar_w}" height="22" rx="3" fill="{fill_tok}"/>'
+            f'<text x="1118" y="{y + 15}" text-anchor="end" font-size="11.5" font-weight="600" fill="var(--text-primary)">{pct:.1f}% ({cohort})</text>'
         )
     grid = "".join(
-        f'<line x1="240" y1="24" x2="240" y2="210" stroke="var(--border-subtle)"/>' if i == 0 else
-        f'<line x1="{240 + i * 102.5:.1f}" y1="24" x2="{240 + i * 102.5:.1f}" y2="210" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
-        f'<text x="{240 + i * 102.5:.1f}" y="226" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">{i * 10}%</text>'
+        f'<line x1="{bar_x:.1f}" y1="24" x2="{bar_x:.1f}" y2="210" stroke="var(--border-subtle)"/>'
+        f'<text x="{bar_x:.1f}" y="226" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">0%</text>'
+        if i == 0 else
+        f'<line x1="{bar_x + i * (track_w / 4.0):.1f}" y1="24" x2="{bar_x + i * (track_w / 4.0):.1f}" y2="210" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
+        f'<text x="{bar_x + i * (track_w / 4.0):.1f}" y="226" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">{i * 10}%</text>'
         for i in range(5)
     )
     return (
-        '<svg viewBox="0 0 780 236" preserveAspectRatio="xMidYMid meet" role="img" '
+        '<svg data-v23-blast-svg viewBox="0 0 1120 236" preserveAspectRatio="xMidYMid meet" role="img" '
         'aria-label="Canary blast radius chart showing 14.3% traffic across 2 canary clusters and 85.7% held on baseline r41">'
-        f'<text x="16" y="16" font-size="12" font-weight="650" fill="var(--text-primary)">Traffic Share by Cluster Cohort (14 Edge Clusters)</text>'
+        '<text x="2" y="16" font-size="12" font-weight="650" fill="var(--text-primary)">Traffic Share by Cluster Cohort (14 Edge Clusters)</text>'
         f'{grid}{"".join(bars)}'
         '</svg>'
     )
@@ -86,12 +88,12 @@ def build_v23_table_rows() -> str:
         st = _badge_state(risk)
         out.append(
             f'<tr class="v23-row" data-v23-cat="{cat}" data-diff-risk="{risk}"{hidden_attr}>'
-            f'<td><code class="w2-code">{html.escape(key)}</code></td>'
-            f'<td><span class="w2-num">{html.escape(r41)}</span></td>'
-            f'<td><span class="w2-num">{html.escape(r42)}</span></td>'
-            f'<td>{html.escape(impact)}</td>'
-            f'<td class="w2-num">{html.escape(clusters)}</td>'
-            f'<td><span class="va-pill" data-variant="tag" data-state="{st}">{html.escape(risk)}</span></td>'
+            f'<td data-label="Parameter Key"><code class="w2-code">{html.escape(key)}</code></td>'
+            f'<td data-label="Baseline r41"><span class="w2-num">{html.escape(r41)}</span></td>'
+            f'<td data-label="Candidate r42"><span class="w2-num">{html.escape(r42)}</span></td>'
+            f'<td data-label="Policy Impact">{html.escape(impact)}</td>'
+            f'<td data-label="Clusters" class="w2-num">{html.escape(clusters)}</td>'
+            f'<td data-label="Risk"><span class="va-pill" data-variant="tag" data-state="{st}">{html.escape(risk)}</span></td>'
             '</tr>'
         )
     return "".join(out)
@@ -99,15 +101,15 @@ def build_v23_table_rows() -> str:
 
 def _v23_kpis() -> str:
     cards = (
-        ("Changed Parameters", "6 of 24", "3 security · 3 capacity & timeout", "nominal"),
-        ("Canary Blast Radius", "2 of 14 clusters", "14.3% traffic · ewr-edge-01, fra-edge-02", "warn"),
-        ("Required Soak Window", "30 min", "Zero-fault gate prior to global promotion", "nominal"),
-        ("Rollback Readiness", "Instant r41 Revert", "Pre-warmed snapshot r41 ready", "nominal"),
+        ("Changed Parameters", "6 of 24", "3 security · 3 capacity & timeout", "nominal", "", "", ""),
+        ("Canary Blast Radius", "2 of 14 clusters", "14.3% traffic · ewr-edge-01, fra-edge-02", "warn", ' data-v23-kpi-tile="blast"', ' data-v23-kpi="blast"', ' data-v23-kpi="blast_sub"'),
+        ("Required Soak Window", "30 min", "Zero-fault gate prior to global promotion", "nominal", "", "", ""),
+        ("Rollback Readiness", "Instant r41 Revert", "Pre-warmed snapshot r41 ready", "nominal", "", "", ""),
     )
     return "".join(
-        f'<div class="w2-kpi-tile" data-state="{st}"><span class="w2-kpi-lbl">{lbl}</span>'
-        f'<span class="w2-kpi-val">{val}</span><span class="w2-kpi-sub">{sub}</span></div>'
-        for lbl, val, sub, st in cards
+        f'<div class="w2-kpi-tile" data-state="{st}"{t_attr}><span class="w2-kpi-lbl">{lbl}</span>'
+        f'<span class="w2-kpi-val"{v_attr}>{val}</span><span class="w2-kpi-sub"{s_attr}>{sub}</span></div>'
+        for lbl, val, sub, st, t_attr, v_attr, s_attr in cards
     )
 
 
@@ -204,7 +206,7 @@ def generate_v24_events() -> list[dict[str, str]]:
                     dur = nom_durs[n_i]
                     svc = _V24_SERVICES[n_i % 4]
                     code = "200"
-                    msg = f"Nominal health probe & edge commit verified"
+                    msg = "Nominal health probe & edge commit verified"
                     n_i += 1
                     sev_lbl = "NOMINAL"
                 rows.append({
@@ -216,11 +218,13 @@ def generate_v24_events() -> list[dict[str, str]]:
 
 
 def build_v24_histogram_svg() -> str:
-    """Build clickable 24-bucket event volume & severity histogram SVG across 14:00Z-15:00Z."""
+    """Build clickable full-width 24-bucket event volume & severity histogram SVG across 14:00Z-15:00Z."""
     bars = []
+    ml, pw = 26.0, 1086.0
+    step = pw / 24.0
+    bw = 33.0
     for i, (hhmm, c_cnt, w_cnt, a_cnt, n_cnt) in enumerate(_V24_BUCKETS):
-        x = 58 + i * 33
-        bw = 23
+        x = ml + i * step + (step - bw) / 2.0
         segs = ((c_cnt, "var(--status-danger)"), (w_cnt, "var(--status-warn)"), (a_cnt, "var(--accent-focal)"), (n_cnt, "var(--text-muted)"))
         cur_y = 148.0
         parts = []
@@ -229,26 +233,33 @@ def build_v24_histogram_svg() -> str:
                 continue
             h = cnt * 24.0
             cur_y -= h
-            parts.append(f'<rect x="{x}" y="{cur_y:.1f}" width="{bw}" height="{h - 1:.1f}" rx="1.5" fill="{fill_tok}"/>')
-        lbl = f'<text x="{x + bw / 2:.1f}" y="166" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">{hhmm}</text>' if i % 4 == 0 else ""
+            parts.append(f'<rect x="{x:.1f}" y="{cur_y:.1f}" width="{bw:.1f}" height="{h - 1:.1f}" rx="1.5" fill="{fill_tok}"/>')
+        lbl = ""
+        if i % 4 == 0:
+            lbl = f'<text x="{x + bw / 2.0:.1f}" y="166" text-anchor="middle" font-size="11.5" fill="var(--text-muted)">{hhmm}</text>'
+        elif i == 23:
+            lbl = f'<text x="{ml + pw:.1f}" y="166" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{hhmm}</text>'
         bars.append(
             f'<g class="w2-svg-bar-grp" role="button" tabindex="0" data-v24-bucket="{i}" '
             f'aria-pressed="false" aria-label="Bucket {hhmm} UTC: {c_cnt + w_cnt + a_cnt + n_cnt} events">'
-            f'<rect class="w2-bucket-hit" x="{x - 2}" y="28" width="{bw + 4}" height="122" rx="2" fill="transparent"/>'
+            f'<rect class="w2-bucket-hit" x="{x - 3:.1f}" y="28" width="{bw + 6:.1f}" height="122" rx="2" fill="transparent"/>'
             f'{"".join(parts)}{lbl}</g>'
         )
     y_grid = "".join(
-        f'<line x1="50" y1="{148 - val * 24}" x2="852" y2="{148 - val * 24}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
-        f'<text x="44" y="{152 - val * 24}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{val}</text>'
+        f'<line x1="26" y1="{148 - val * 24}" x2="1112" y2="{148 - val * 24}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>'
+        f'<text x="20" y="{152 - val * 24}" text-anchor="end" font-size="11.5" fill="var(--text-muted)">{val}</text>'
         for val in (0, 1, 2, 3, 4)
     )
+    hl_x = ml + 8.0 * step
+    hl_w = 6.0 * step
+    hl_cx = hl_x + hl_w / 2.0
     burst_hl = (
-        '<rect x="320" y="24" width="198" height="124" rx="3" fill="var(--status-danger)" opacity="0.06"/>'
-        '<rect x="352" y="14" width="144" height="18" rx="2" fill="var(--bg-surface)" opacity="0.94"/>'
-        '<text x="424" y="27" text-anchor="middle" font-size="11.5" font-weight="650" fill="var(--status-danger)">Burst Peak 14:20Z–14:35Z</text>'
+        f'<rect x="{hl_x:.1f}" y="24" width="{hl_w:.1f}" height="124" rx="3" fill="var(--status-danger)" opacity="0.06"/>'
+        f'<rect x="{hl_cx - 74:.1f}" y="14" width="148" height="18" rx="2" fill="var(--bg-surface)" opacity="0.94"/>'
+        f'<text x="{hl_cx:.1f}" y="27" text-anchor="middle" font-size="11.5" font-weight="650" fill="var(--status-danger)">Burst Peak 14:20Z–14:35Z</text>'
     )
     return (
-        '<svg viewBox="0 0 872 178" preserveAspectRatio="xMidYMid meet" role="img" '
+        '<svg data-v24-hist-svg viewBox="0 0 1120 178" preserveAspectRatio="xMidYMid meet" role="img" '
         'aria-label="24-bucket telemetry event histogram from 14:00Z to 15:00Z showing 9 critical fault burst between 14:20Z and 14:35Z">'
         f'{burst_hl}{y_grid}{"".join(bars)}</svg>'
     )
@@ -266,12 +277,12 @@ def _v24_table_body(events: Iterable[dict[str, str]]) -> str:
             f'data-ev-ts="{ev["ts"]}" data-ev-svc="{ev["svc"]}" data-ev-span="{ev["span"]}" '
             f'data-ev-trace="{ev["trace"]}" data-ev-dur="{ev["dur"]}" data-ev-sev="{ev["sev"]}" '
             f'data-ev-caller="{ev["caller"]}" data-ev-code="{ev["code"]}" data-ev-msg="{html.escape(ev["msg"])}">'
-            f'<td class="w2-num">{ev["ts"]}</td>'
-            f'<td><code class="w2-code">{ev["svc"]}</code></td>'
-            f'<td class="w2-num">{ev["span"]}</td>'
-            f'<td class="w2-num">{ev["dur"]}</td>'
-            f'<td><span class="va-pill" data-variant="tag" data-state="{st}">{ev["sev"]}</span></td>'
-            f'<td>{html.escape(ev["msg"])}</td></tr>'
+            f'<td data-label="UTC Time" class="w2-num">{ev["ts"]}</td>'
+            f'<td data-label="Service"><code class="w2-code">{ev["svc"]}</code></td>'
+            f'<td data-label="Span ID" class="w2-num">{ev["span"]}</td>'
+            f'<td data-label="Dur." class="w2-num">{ev["dur"]}</td>'
+            f'<td data-label="Level"><span class="va-pill" data-variant="tag" data-state="{st}">{ev["sev"]}</span></td>'
+            f'<td data-label="Event Summary">{html.escape(ev["msg"])}</td></tr>'
         )
     return "".join(trs)
 
@@ -336,6 +347,10 @@ def build_v24_html() -> str:
         '<div class="w2-card-hdr">'
         '<h4 class="w2-card-title w2-inspector-title">Row Inspector</h4>'
         f'<span class="va-pill" data-variant="tag" data-state="{_badge_state(first["sev"])}" data-insp-sev>{first["sev"]}</span></div>'
+        '<div class="w2-insp-empty" data-v24-insp-empty hidden>'
+        '<p><strong>No matching row selected</strong> — adjust the active filter or search query, or click <em>Clear filters</em> to restore rows.</p>'
+        '</div>'
+        '<div data-v24-insp-body>'
         '<dl class="w2-dl">'
         f'<dt>Timestamp</dt><dd class="w2-num" data-insp-ts>{first["ts"]}</dd>'
         f'<dt>Service</dt><dd class="w2-code" data-insp-svc>{first["svc"]}</dd>'
@@ -345,9 +360,9 @@ def build_v24_html() -> str:
         f'<dt>Status / Latency</dt><dd class="w2-num" data-insp-code>{first["code"]} · {first["dur"]}</dd>'
         f'<dt>Event Detail</dt><dd data-insp-msg>{html.escape(first["msg"])}</dd>'
         '</dl>'
-        '<div class="w2-btn-group"><button type="button" class="w2-action-btn" data-v24-copy>Copy Trace Summary</button>'
+        '<div class="w2-btn-group w2-table-mt"><button type="button" class="w2-action-btn" data-v24-copy>Copy Trace Summary</button>'
         '<span class="w2-kpi-sub" role="status" aria-live="polite" data-v24-copy-status></span></div>'
-        '</aside></div></section></div>'
+        '</div></aside></div></section></div>'
     )
 
 

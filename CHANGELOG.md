@@ -2,6 +2,15 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.7.0] - 2026-11-25
+
+### Added
+- **Wave 1 — 4-Phase ISA-18.2 / IEC 60601-1-8 Alarm Lifecycle, Single Control Home & Specimen 50 (`src/js/quiet-alarm-lifecycle.js`, `src/css/19-alarm-lifecycle.css`, `scripts/bench_alarm_specimen.py`, `WORKFLOWS.md` WF-09)**: Separated Calm Baseline (`nominal`), Pre-Breach Warning (`approaching`), Autonomous Alarm Takeover (`unack` with `Acknowledge Alarm` action), and Acknowledged Diagnostic (`ack` with `Replay Breach` and balanced sibling visibility) across `v08`, `v01`, `v04`, `v07`, and Specimen `50`, while keeping inline chip bars inside Single Control Home (`v02`, `v05`, `v07`, `v09`, `v10`, `v19`, `v20`) and expanding evidentiary tables (`v02`, `v06`, `v10`, `v18`).
+- **Wave 2 — Four Practitioner Views (`v23–v26`) & Specimens `51–53` (`src/views/world_wave2_ops.py`, `src/views/world_wave2_infra_calc.py`, `src/js/quiet-wave2-interactions.js`, `src/css/20-wave2-archetypes.css`)**: Expanded the Studio showcase from `22` to **`26`** views (`26` in `personal-starter`, `22` across Domains `01–05` in `brand-starter`) and the Component Library from `50` to **`53`** specimens with Semantic Config Diff Review (`v23` / Specimen 51 with two-step canary gate and reversible `r41` undo toast), High-Row Telemetry Triage Desk (`v24` / Specimen 52 with 48 events, 24-bucket clickable histogram, live search, and docked Row Inspector), Subsea Bathymetry & Distance-Aligned OSNR Corridor (`v25` across `0–640 km`, `8` repeaters, `Span S5`), and Constrained Trade-Space Calculator (`v26` / Specimen 53).
+
+### Fixed
+- **Wave 3 — Plumb-Line Responsive SVGs, Over-Constrained Solver Honesty & Mobile Stacked Cards (`src/js/quiet-wave2-svg.js`, `src/js/quiet-wave2-interactions.js`, `src/css/20-wave2-archetypes.css`, `scripts/bench_alarm_specimen.py`)**: Expanded Wave 2 SVGs (`v23`–`v26`, Specimens 52–53) across full card width via `ResizeObserver` `1:1` viewBox sizing (`0` mobile horizontal scrollbars, `>= 11px` legibility), added the `Repeater R8` halo label at `585 km` on `v25`, switched `v26` and Specimen 53 to an explicit amber `OVER-CONSTRAINED` warning whenever `$5.20M` budget and runway floor cannot both be met (`OVER CEILING` matrix rows), added `td[data-label]` `<= 600px` stacked cards, synchronized `v23` / Specimen 51 blast KPI (`2 of 14` -> `14 of 14 clusters`), added explicit `0`-match empty-selection feedback in the `v24` / Specimen 52 Row Inspector, and aligned Specimen `50` with `v08` (`59.850 Hz` grid synchrophasor frequency).
+
 ## [9.6.0] - 2026-11-25
 
 ### Added

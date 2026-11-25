@@ -3,7 +3,7 @@ name: quiet-ui
 description: Design system and UI architecture skill generating responsive HTML interfaces across 7 delivery mediums with 4-theme tokens, concentric geometry, and human-factors controls grounded in ISA-101, FDA IEC 62366, and NASA-STD-3001.
 ---
 
-# Quiet UI v9.6.0 — Qualitative Delivery Medium Physics & Shells
+# Quiet UI v9.7.0 — Qualitative Delivery Medium Physics & Shells
 
 Quiet UI Pillar 1 manages physical optical constraints, viewing distance, container geometry, and chromatic budgets across seven delivery mediums—serving clinical bedside stations, grid SCADA consoles, industrial kiosks, civic data briefs, and optical HUDs alike.
 

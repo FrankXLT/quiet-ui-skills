@@ -48,7 +48,8 @@ def _specimen_51_diff_gate() -> str:
         '<th>Policy Impact</th><th>Clusters</th><th>Risk</th></tr></thead>'
         f'<tbody data-v23-tbody>{build_v23_table_rows()}</tbody></table></div>'
         '<div class="w2-promote-bar">'
-        '<div class="w2-gate-meta"><span class="w2-gate-status-line" data-v23-gate-status>Baseline r41 active — 1-click r41 revert pre-armed</span></div>'
+        '<div class="w2-gate-meta"><span class="w2-gate-status-line" data-v23-gate-status>Baseline r41 active — 1-click r41 revert pre-armed</span>'
+        '<span class="w2-kpi-sub"><strong data-v23-kpi="blast">2 of 14 clusters</strong> · <span data-v23-kpi="blast_sub">14.3% traffic · ewr-edge-01, fra-edge-02</span></span></div>'
         '<div class="w2-btn-group w2-gate-actions">'
         '<button type="button" class="w2-action-btn" data-tone="primary" data-v23-stage>1. Stage r42 Canary</button>'
         '<button type="button" class="w2-action-btn" data-v23-confirm disabled>2. Confirm Promotion</button>'
@@ -94,10 +95,10 @@ def _specimen_52_triage() -> str:
             f'data-ev-ts="{ev["ts"]}" data-ev-svc="{ev["svc"]}" data-ev-span="{ev["span"]}" '
             f'data-ev-trace="{ev["trace"]}" data-ev-dur="{ev["dur"]}" data-ev-sev="{ev["sev"]}" '
             f'data-ev-caller="{ev["caller"]}" data-ev-code="{ev["code"]}" data-ev-msg="{html.escape(ev["msg"])}">'
-            f'<td class="w2-num">{ev["ts"]}</td><td><code class="w2-code">{ev["svc"]}</code></td>'
-            f'<td class="w2-num">{ev["span"]}</td><td class="w2-num">{ev["dur"]}</td>'
-            f'<td><span class="va-pill" data-variant="tag" data-state="{st}">{ev["sev"]}</span></td>'
-            f'<td>{html.escape(ev["msg"])}</td></tr>'
+            f'<td data-label="UTC" class="w2-num">{ev["ts"]}</td><td data-label="Service"><code class="w2-code">{ev["svc"]}</code></td>'
+            f'<td data-label="Span" class="w2-num">{ev["span"]}</td><td data-label="Dur." class="w2-num">{ev["dur"]}</td>'
+            f'<td data-label="Level"><span class="va-pill" data-variant="tag" data-state="{st}">{ev["sev"]}</span></td>'
+            f'<td data-label="Summary">{html.escape(ev["msg"])}</td></tr>'
         )
     body = (
         '<div class="w2-stack" data-v24-scope="bench">'
@@ -125,7 +126,9 @@ def _specimen_52_triage() -> str:
         '<aside class="w2-inspector" aria-label="Specimen 52 row inspector" data-v24-inspector>'
         '<div class="w2-card-hdr"><h4 class="w2-card-title w2-inspector-title">Row Inspector</h4>'
         f'<span class="va-pill" data-variant="tag" data-state="{"fault" if first["sev"] == "CRITICAL" else ("warn" if first["sev"] == "WARN" else "nominal")}" data-insp-sev>{first["sev"]}</span></div>'
-        '<dl class="w2-dl">'
+        '<div class="w2-insp-empty" data-v24-insp-empty hidden><p class="w2-kpi-val">No matching event selected</p>'
+        '<p class="w2-kpi-sub">Clear filters or adjust query, then select a log row to inspect trace attributes.</p></div>'
+        '<div data-v24-insp-body><dl class="w2-dl">'
         f'<dt>Timestamp</dt><dd class="w2-num" data-insp-ts>{first["ts"]}</dd>'
         f'<dt>Service</dt><dd class="w2-code" data-insp-svc>{first["svc"]}</dd>'
         f'<dt>Span ID</dt><dd class="w2-num" data-insp-span>{first["span"]}</dd>'
@@ -135,7 +138,7 @@ def _specimen_52_triage() -> str:
         f'<dt>Detail</dt><dd data-insp-msg>{html.escape(first["msg"])}</dd></dl>'
         '<div class="w2-btn-group"><button type="button" class="w2-action-btn" data-v24-copy>Copy Trace Summary</button>'
         '<span class="w2-kpi-sub" role="status" aria-live="polite" data-v24-copy-status></span></div>'
-        '</aside></div></div>'
+        '</div></aside></div></div>'
     )
     return _wrap_specimen(
         "ui-triage-log-inspector", "ui-triage-log-inspector",
@@ -157,7 +160,7 @@ def _specimen_53_tradespace() -> str:
         '<span class="w2-kpi-sub" data-v26-kpi="crossover">Month ' + str(mod["crossover"]) + '</span>'
         '<span aria-hidden="true">·</span>'
         '<span class="w2-kpi-sub" data-v26-kpi="savings">Saves $' + f'{mod["savings"]:.2f}M vs PayGo</span>'
-        '</div><span class="va-pill" data-variant="status" data-state="' + str(mod["rec_state"]) + '" data-v26-rec-badge>RECOMMENDED: OPTION B HYBRID</span></div>'
+        '</div><span class="va-pill" data-variant="status" data-state="' + str(mod["rec_state"]) + '" data-v26-rec-badge>RECOMMENDED: ' + str(mod["winner"]).upper() + '</span></div>'
         '<div class="w2-sliders-grid" role="region" aria-label="Specimen 53 trade-space sliders">'
         '<div class="w2-slider-field"><label class="w2-slider-hdr" for="s53-growth"><span>Annual Growth</span>'
         '<span class="w2-slider-val" data-v26-out="growth">25%</span></label>'

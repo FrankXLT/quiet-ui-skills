@@ -339,7 +339,8 @@
         }
       } else if (card.classList.contains('v9-demo-subcard')) {
         var sp = card.querySelector('.va-pill');
-        if (sp) { sp.setAttribute('data-state', phMeta.state); sp.textContent = ph === 'ack' ? ('LATCHED · ' + fmtNum(cfg.breachPeak, cfg.decimals) + '%') : phMeta.label; }
+        var uSuf = cfg.unit && cfg.unit.charAt(0) === '%' ? '%' : (' ' + (cfg.unit || ''));
+        if (sp) { sp.setAttribute('data-state', phMeta.state); sp.textContent = ph === 'ack' ? ('LATCHED · ' + fmtNum(cfg.breachPeak, cfg.decimals) + uSuf) : phMeta.label; }
       }
     });
   }

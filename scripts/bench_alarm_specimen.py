@@ -16,21 +16,21 @@ def compile_alarm_lifecycle_specimen() -> str:
         "viewId": "specimen-50-alarm",
         "initialMode": "ack",
         "benchControls": True,
-        "paramLabel": "Feeder-B Bus Voltage",
+        "paramLabel": "Grid Synchrophasor Frequency",
         "channelTag": "ISA-18.2 / IEC 60601-1-8",
-        "unit": "% nominal",
-        "decimals": 1,
-        "threshold": 94.0,
+        "unit": "Hz",
+        "decimals": 3,
+        "threshold": 59.850,
         "direction": "below",
-        "nominalStart": 98.2,
-        "breachPeak": 91.4,
-        "ackValue": 91.4,
-        "breachReason": "94.0% Floor Breach",
+        "nominalStart": 59.985,
+        "breachPeak": 59.758,
+        "ackValue": 59.790,
+        "breachReason": "< 59.850 Hz Underfreq",
         "ackActionHint": "Click Acknowledge Alarm to restore balanced sibling grid with latched steady fault.",
         "siblings": [
-            {"label": "Feeder-A Voltage", "val": "99.1%"},
-            {"label": "Grid Sync Freq", "val": "59.985 Hz"},
-            {"label": "Reserve SoC", "val": "78.4%"},
+            {"label": "Active Dispatch", "val": "23.6 MW"},
+            {"label": "BESS SoC", "val": "78.4%"},
+            {"label": "Cell-03 OEE", "val": "94.2%"},
         ],
     }
     cfg_json = html.escape(json.dumps(config, separators=(",", ":")), quote=True)
@@ -43,17 +43,17 @@ def compile_alarm_lifecycle_specimen() -> str:
         '<div class="va-alarm-balanced-wrap" data-alarm-balanced>'
         '<div class="v9-demo-grid">'
         '<div class="v9-demo-subcard" data-alarm-fault-target="1">'
-        '<div class="v9-demo-label">Feeder-B Bus Voltage (Monitored Channel)</div>'
-        '<div class="v9-demo-row"><strong>Threshold: &gt;= 94.0% nominal</strong>'
-        '<span class="va-pill" data-variant="status" data-state="fault">LATCHED EXCURSION · 91.4%</span></div>'
+        '<div class="v9-demo-label">Grid Synchrophasor Frequency (CELL-03 · PMU CH2)</div>'
+        '<div class="v9-demo-row"><strong>Limit: &gt;= 59.850 Hz</strong>'
+        '<span class="va-pill" data-variant="status" data-state="fault">LATCHED EXCURSION · 59.790 Hz</span></div>'
         '<p class="qe-fig-desc">Steps 1–4 demonstrate Calm Baseline, Amber Approaching Limit, Reduced-Motion-Safe Takeover, and Acknowledged Diagnostic restoration.</p>'
         '</div>'
         '<div class="v9-demo-subcard">'
         '<div class="v9-demo-label">Nominal Sibling Channels</div>'
         '<div class="v9-demo-row">'
-        '<span class="va-pill" data-variant="status" data-state="nominal">FEEDER-A 99.1%</span>'
-        '<span class="va-pill" data-variant="status" data-state="nominal">SYNC 59.985 Hz</span>'
-        '<span class="va-pill" data-variant="status" data-state="nominal">BESS 78.4%</span>'
+        '<span class="va-pill" data-variant="status" data-state="nominal">DISPATCH 23.6 MW</span>'
+        '<span class="va-pill" data-variant="status" data-state="nominal">BESS SoC 78.4%</span>'
+        '<span class="va-pill" data-variant="status" data-state="nominal">CELL-03 OEE 94.2%</span>'
         '</div>'
         '</div>'
         '</div></div></div>'

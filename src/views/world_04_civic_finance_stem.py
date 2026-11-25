@@ -10,11 +10,11 @@ from typing import Any
 try:
     from world_directional_views import build_v20_html
     from world_04_public_data import build_v22_html
-    from world_wave2_infra_calc import build_v26_html
+    from world_wave2_infra_calc import WAVE2_WORLD04_VIEW_CFG, build_v26_html
 except ImportError:
     from src.views.world_directional_views import build_v20_html
     from src.views.world_04_public_data import build_v22_html
-    from src.views.world_wave2_infra_calc import build_v26_html
+    from src.views.world_wave2_infra_calc import WAVE2_WORLD04_VIEW_CFG, build_v26_html
 
 try:
     from world_common import (
@@ -304,17 +304,6 @@ def build_world_04(corpora_dir: Path) -> dict[str, Any]:
             "bias_risk": "Sidebars, boxed button bars above figures, and inline code slabs fracture journalistic reading rhythm.",
             "bias_replacement": "Full-canvas centered 68-character prose with quiet inline scope dropdown, unboxed breakout visuals, and source footer table/AI links.",
         },
-        "v26-constrained-trade-space-calculator": {
-            "option_label": "v26 · Capital Trade-Space Solver", "default_medium": "m3",
-            "chromatic_code": "c3", "default_nav": "n2", "allowed_navs": ["n2", "n0"],
-            "nav_icon": "sliders", "nav_brand": "Trade-Space Solver",
-            "topbar_brand": "36-Month Capital Trade-Space Calculator", "rail_brand": "Solver View",
-            "topbar_status": [], "nav_items": ["Trade-Space Chart"],
-            "nav_anchors": ["v26-calc-title"],
-            "inv_col": "v26-constrained-trade-space-calculator", "short_tag": "v26",
-            "bias_removed": "Unbounded Spreadsheet Tables & Static Spend Assumptions",
-            "bias_risk": "Static budgets conceal cash runway depletion and growth-driven PayGo cost crossovers.",
-            "bias_replacement": "Constrained sensitivity sliders updating 36-month curves, break-even marker, and 10-row matrix live.",
-        },
     }
+    view_cfg.update(WAVE2_WORLD04_VIEW_CFG)
     return assemble_world_bundle(corpus, bp, "04 · Budgets, Finance & Labs", view_cfg, html_map)

@@ -1,4 +1,4 @@
-# Quiet UI Customizations Architecture (v9.2)
+# Quiet UI Customizations Architecture (v9.7)
 
 > **Customize in 60 Seconds (Show Inspiration Examples)**  
 > Transform Quiet UI into your own bespoke design system in under a minute by providing 1–3 inspirational examples (screenshots, URLs, brand guides) or brand hexes.
@@ -29,11 +29,11 @@ Please clone the starter, extract design tokens into customization.json, update 
 
 | Blueprint | Scope | Coverage | Optical Backplates | Best For |
 | :--- | :--- | :---: | :---: | :--- |
-| **`personal-starter`** | Personal & Spatial Workspaces | 22 Views | 8 CC0 / PD Photos | Personal research, clinical/grid consoles, optical HUDs, and smart-home decks. |
-| **`brand-starter`** | Team & Product Portal | 18 Views | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
+| **`personal-starter`** | Personal & Spatial Workspaces | 26 Views | 8 CC0 / PD Photos | Personal research, clinical/grid consoles, optical HUDs, and smart-home decks. |
+| **`brand-starter`** | Team & Product Portal | 22 Views | Omitted | Enterprise software products, SaaS platforms, B2B dashboards, and technical documentation hubs. |
 
 > [!NOTE]
-> `brand-starter` omits optical HUD overlays and residential smart-home views, keeping enterprise software and engineering deployments focused across 18 views.
+> `brand-starter` omits optical HUD overlays and residential smart-home views, keeping enterprise software and engineering deployments focused across 22 views (Domains 01–05).
 
 ---
 
@@ -43,8 +43,8 @@ Please clone the starter, extract design tokens into customization.json, update 
 customizations/
 ├── README.md                          # This architecture guide
 ├── LICENSE                            # Standalone MIT License (0 NOTICE obligations)
-├── personal-starter/                  # Read-only 22-view blueprint
-│   ├── customization.json             # Manifest (mode: personal, all 22 views)
+├── personal-starter/                  # Read-only 26-view blueprint
+│   ├── customization.json             # Manifest (mode: personal, all 26 views)
 │   ├── intent/                        # Architectural design rationale
 │   │   ├── 00-global-structure.md     # Layout, chrome & 7-step typography
 │   │   ├── 01-docs-and-specs.md       # Editorial & regulatory spec rationale

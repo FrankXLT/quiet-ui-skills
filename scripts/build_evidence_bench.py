@@ -123,6 +123,7 @@ def _bundle_bench_js() -> str:
             "src/js/echarts-quiet-adapter.js",
             "src/js/quiet-alarm-trace.js",
             "src/js/quiet-alarm-lifecycle.js",
+            "src/js/quiet-wave2-svg.js",
             "src/js/quiet-wave2-interactions.js",
             "docs/bench/bench.js",
         )

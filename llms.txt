@@ -60,7 +60,7 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.6.0).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.7.0).
 - [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [public-data-and-storytelling.md](skills/quiet-ui/foundation/public-data-and-storytelling.md), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [forms-states-and-resilience.md](skills/quiet-ui/foundation/forms-states-and-resilience.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`, `audit_editorial_print.py`, `audit_ux_and_drift.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + CJK-safe `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & `.quiet-ui.md`-aware intake router.

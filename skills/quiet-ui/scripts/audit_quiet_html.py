@@ -394,7 +394,7 @@ def audit_static_target(
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.6.0 HTML/CSS/JS & CDP Linter.")
+    parser = argparse.ArgumentParser(description="Portable Quiet UI v9.7.0 HTML/CSS/JS & CDP Linter.")
     parser.add_argument("target", nargs="?", help="HTML/CSS/JS file, directory, or http(s):// URL")
     parser.add_argument("--cdp", action="store_true", help="Run Headless Chrome checks across 390, 820, and 1440px")
     parser.add_argument("--web-root", help="Filesystem web root for resolving leading '/' CSS and JS paths")
