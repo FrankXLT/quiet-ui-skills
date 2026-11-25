@@ -11,6 +11,7 @@ import tempfile
 import time
 import unittest
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_SCRIPTS = REPO_ROOT / "skills" / "quiet-evidence" / "scripts"
@@ -118,233 +119,178 @@ class TestV960EditorialAndPrintGatesCDP(unittest.TestCase):
                 raise AssertionError("QUIET_REQUIRE_CDP=1 requires Chromium/Chrome")
             self.skipTest("Chrome/Chromium absent")
 
+    def _check_v22_path_a_and_table(self, driver: Any, root_url: str, by_cls: Any, set_viewport_fn: Any) -> None:
+        set_viewport_fn(driver, 1440, 900, 1)
+        driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=white")
+        time.sleep(0.35)
+        driver.switch_to.frame("va-stage-portal")
+        v22_layout = driver.execute_script(
+            "const nav=document.documentElement.dataset.effectiveNav, railVis=getComputedStyle(document.getElementById('va-shell-rail')).display;"
+            "const barCnt=document.querySelectorAll('#v22-public-brief .va-card-actions').length, preCnt=document.querySelectorAll('#v22-public-brief pre').length;"
+            "const slideCnt=document.querySelectorAll('#v22-public-brief .va-brief-slides').length, proseW=document.querySelector('#v22-reading-essay').getBoundingClientRect().width;"
+            "return {nav, railVis, barCnt, preCnt, slideCnt, proseW, hexW:document.querySelector('#v22-map').getBoundingClientRect().width, hexTop:document.querySelector('#v22-map svg').getBoundingClientRect().top};"
+        )
+        self.assertEqual((v22_layout["nav"], v22_layout["railVis"]), ("n0", "none"))
+        self.assertEqual((v22_layout["barCnt"], v22_layout["preCnt"], v22_layout["slideCnt"]), (0, 0, 0))
+        self.assertGreater(v22_layout["hexW"], v22_layout["proseW"] + 60.0)
+        self.assertLess(v22_layout["hexTop"], 900.0)
+        self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), [])
+
+        for code, expected in (("md", ["MD"]), ("wy", ["WY"]), ("us", [])):
+            driver.execute_script(f"const s=document.querySelector('[data-v22-scope-select]');s.value='{code}';s.dispatchEvent(new Event('change',{{bubbles:true}}));")
+            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), expected)
+            if code == "wy":
+                self.assertIn("36% of Wyoming", driver.execute_script("return document.querySelector('[data-v22-lead]').textContent;"))
+                self.assertIn("$72,495", driver.execute_script("return document.querySelectorAll('.va-callout-num')[1].textContent;"))
+
+        driver.execute_script("document.querySelector('.va-hex-tile[data-state=\"DC\"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));")
+        self.assertIn("District of Columbia (DC): 26%", driver.execute_script("return document.querySelector('.va-hex-readout').textContent;"))
+        ca_tile = driver.find_element(by_cls.CSS_SELECTOR, '.va-hex-tile[data-state="CA"]')
+        driver.execute_script("arguments[0].focus();", ca_tile)
+        ca_tile.send_keys("\n")
+        self.assertEqual(driver.execute_script("return document.activeElement?.getAttribute('data-state') || '';"), "CA")
+
+        driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
+        tbl_chk = driver.execute_script(
+            "const p=document.querySelector('#v22-map .va-card-table-panel'), w=p.querySelector('.va-table-wrap'), bar=p.querySelector('.va-table-top-bar'), ret=p.querySelector('[data-qe-editorial-return]');"
+            "const wr=w.getBoundingClientRect(), rr=ret.getBoundingClientRect();"
+            "return {vis:!p.hasAttribute('hidden'), rows:p.querySelectorAll('tbody tr').length, capW:p.querySelector('caption').getBoundingClientRect().width,"
+            " btnTxt:document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent, align:getComputedStyle(p.querySelector('tbody td.num')).textAlign,"
+            " pBdr:parseFloat(getComputedStyle(p).borderTopWidth), inWrap:!!(w&&w.contains(bar)), gap:wr.top-rr.bottom, rDelta:Math.abs(wr.right-rr.right)};"
+        )
+        self.assertTrue(tbl_chk["vis"] and not tbl_chk["inWrap"] and tbl_chk["pBdr"] == 0.0, tbl_chk)
+        self.assertEqual((tbl_chk["rows"], tbl_chk["btnTxt"], tbl_chk["align"]), (51, "Show chart", "right"))
+        self.assertLessEqual(tbl_chk["capW"], 2.0)
+        self.assertGreaterEqual(tbl_chk["gap"], 4.0, tbl_chk)
+        self.assertLessEqual(tbl_chk["rDelta"], 1.0, tbl_chk)
+        ret_chk = driver.execute_script(
+            "document.querySelector('#v22-map [data-qe-editorial-return]').click();const t=document.querySelector('#v22-map [data-qe-editorial-toggle]');"
+            "return {txt:t.textContent, focused:document.activeElement===t, hid:document.querySelector('#v22-map .va-card-table-panel').hasAttribute('hidden')};"
+        )
+        self.assertEqual(ret_chk, {"txt": "Show data table", "focused": True, "hid": True})
+
+        copy_link = driver.find_element(by_cls.CSS_SELECTOR, '#v22-map [data-qe-copy="ai"]')
+        w_before = float(copy_link.rect["width"])
+        copy_link.click()
+        time.sleep(0.15)
+        copy_chk = driver.execute_script("const b=document.querySelector('#v22-map [data-qe-copy=\"ai\"]');return {txt:b.textContent.trim(), st:document.querySelector('#v22-map .va-copy-status').textContent, w:b.getBoundingClientRect().width};")
+        self.assertIn("Copied for AI", copy_chk["txt"])
+        self.assertIn("Copied for AI", copy_chk["st"])
+        self.assertLessEqual(abs(copy_chk["w"] - w_before), 1.5)
+        arrow_chk = driver.execute_script(
+            "const g=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-gain'), d=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-drop');"
+            "const gr=g?.getBoundingClientRect(), dr=d?.getBoundingClientRect();"
+            "return {gW:gr?.width||0,gH:gr?.height||0,dW:dr?.width||0,dH:dr?.height||0,gCol:g?getComputedStyle(g).color:'',dCol:d?getComputedStyle(d).color:''};"
+        )
+        self.assertTrue(14.0 <= arrow_chk["gW"] <= 24.0 and 6.0 <= arrow_chk["gH"] <= 16.0, arrow_chk)
+        self.assertTrue(14.0 <= arrow_chk["dW"] <= 24.0 and 6.0 <= arrow_chk["dH"] <= 16.0, arrow_chk)
+        self.assertNotEqual(arrow_chk["gCol"], arrow_chk["dCol"])
+        driver.switch_to.default_content()
+
+    def _check_v22_dark_print_and_explorers(self, driver: Any, root_url: str) -> None:
+        driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=dark")
+        time.sleep(0.3)
+        driver.switch_to.frame("va-stage-portal")
+        sel_cols = driver.execute_script("const b=document.querySelector('[data-v22-scope-select]');return {fg:getComputedStyle(b).color,bg:getComputedStyle(document.body).backgroundColor};")
+        def _lum(rgb_s: str) -> float:
+            nums = [int(x) / 255.0 for x in rgb_s.replace("rgba(", "").replace("rgb(", "").split(")")[0].split(",")[:3]]
+            lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in nums]
+            return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+        l_fg, l_bg = _lum(sel_cols["fg"]), _lum(sel_cols["bg"])
+        self.assertGreaterEqual((max(l_fg, l_bg) + 0.05) / (min(l_fg, l_bg) + 0.05), 4.5, sel_cols)
+        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+        time.sleep(0.1)
+        print_ink = driver.execute_script("return getComputedStyle(document.querySelector('.va-brief-question')).color;")
+        link_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-footer-link')).display;")
+        cue_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-scroll-cue')).display;")
+        driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
+        self.assertLess(_lum(print_ink), 0.05, print_ink)
+        self.assertEqual((link_disp, cue_disp), ("none", "none"))
+        driver.switch_to.default_content()
+
+        driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v11-treasury-stress-test-solver&theme=white")
+        time.sleep(0.35)
+        driver.switch_to.frame("va-stage-portal")
+        driver.execute_script("document.querySelector('[data-qe-view=\"table\"]').click();")
+        v11_tbl = driver.execute_script(
+            "const p=document.querySelector('.va-card-table-panel'), h0=p.querySelector('thead th:first-child'), r0=p.querySelector('tbody th[scope=\"row\"], tbody td:first-child');"
+            "const rl=[...p.querySelectorAll('tbody tr :first-child')].map(e=>e.textContent.trim()), td=p.querySelector('tbody td.num');"
+            "return {ok:!p.hasAttribute('hidden')&&rl.length===8,hA:getComputedStyle(h0).textAlign,rA:getComputedStyle(r0).textAlign,tdA:getComputedStyle(td).textAlign,rl0:rl[0],rl7:rl[7],hasNum:r0.classList.contains('num')};"
+        )
+        self.assertTrue(v11_tbl["ok"] and not v11_tbl["hasNum"] and v11_tbl["tdA"] == "right", v11_tbl)
+        self.assertIn(v11_tbl["hA"], {"left", "start"})
+        self.assertIn(v11_tbl["rA"], {"left", "start"})
+        self.assertEqual((v11_tbl["rl0"], v11_tbl["rl7"]), ("1", "8"))
+        driver.execute_script("document.querySelector('[data-qe-view=\"chart\"]').click();")
+        self.assertTrue(driver.execute_script("return document.querySelector('.va-card-table-panel').hasAttribute('hidden');"))
+        driver.switch_to.default_content()
+
+        driver.get(f"{root_url}/quiet-ui-showcase.html?world=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=white")
+        time.sleep(0.35)
+        driver.switch_to.frame("va-stage-portal")
+        driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"table\"]').click();")
+        v06_tbl = driver.execute_script(
+            "const p=document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel'), r0=p.querySelector('tbody th[scope=\"row\"]');"
+            "return {ok:!p.hasAttribute('hidden')&&p.querySelectorAll('tbody tr').length===10,rA:getComputedStyle(r0).textAlign,r0Txt:r0.textContent.trim()};"
+        )
+        self.assertTrue(v06_tbl["ok"] and v06_tbl["r0Txt"] == "0.05" and v06_tbl["rA"] in {"left", "start"}, v06_tbl)
+        driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"chart\"]').click();")
+        self.assertTrue(driver.execute_script("return document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel').hasAttribute('hidden');"))
+        driver.switch_to.default_content()
+
+    def _check_bench_and_mobile(self, driver: Any, root_url: str, by_cls: Any, set_viewport_fn: Any) -> None:
+        driver.get(f"{root_url}/docs/bench/evidence-bench.html")
+        time.sleep(0.35)
+        bench_chk = driver.execute_script(
+            "const specs=[...document.querySelectorAll('.qe-specimen')], s49=specs.find(e=>e.querySelector('#m2-l2-diverging-mobility-matrix'));"
+            "const cue=s49.querySelector('.va-scroll-cue'), s45=specs.find(e=>/Equal-Area US 51-Hex Tile Map/i.test(e.textContent||''));"
+            "s45.scrollIntoView({behavior:'instant',block:'start'});"
+            "return {tb:document.querySelector('.qe-topbar').getBoundingClientRect().bottom, ct:s45.getBoundingClientRect().top,"
+            " s49Wide:s49.classList.contains('qe-specimen-wide'), cueDisp:getComputedStyle(cue).display};"
+        )
+        self.assertGreaterEqual(bench_chk["ct"], bench_chk["tb"] + 8.0)
+        self.assertTrue(bench_chk["s49Wide"] and bench_chk["cueDisp"] == "none", bench_chk)
+
+        btn = driver.find_element(by_cls.CSS_SELECTOR, '.qe-specimen [data-qe-copy="ai"]')
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
+        time.sleep(0.08)
+        btn.click()
+        time.sleep(0.25)
+        status_res = driver.execute_script("const b=document.querySelector('.qe-specimen [data-qe-copy=\"ai\"]'), st=b.closest('.va-card-actions').querySelector('.qe-copy-status');return {t:st.textContent,op:getComputedStyle(st).opacity};")
+        self.assertIn("Copied for AI", status_res["t"])
+        self.assertGreaterEqual(float(status_res["op"]), 0.99, status_res)
+
+        set_viewport_fn(driver, 390, 844, 1)
+        driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=white&medium=m1")
+        time.sleep(0.3)
+        mob_chk = driver.execute_script(
+            "const bar=document.getElementById('va-studio-bar').getBoundingClientRect(), ctr=document.querySelector('.va-bar-center').getBoundingClientRect(),"
+            " sel=document.getElementById('va-view-select').getBoundingClientRect(), cmp=document.getElementById('va-tab-components'),"
+            " m1Cue=document.getElementById('va-stage-portal').contentDocument.querySelector('#v22-matrix .va-scroll-cue');"
+            "return {barH:bar.height, selW:sel.width, selClip:sel.right>ctr.right+1, cmpClip:cmp.scrollWidth>cmp.clientWidth+1,"
+            " ov:document.documentElement.scrollWidth>window.innerWidth+1, m1CueDisp:m1Cue?getComputedStyle(m1Cue).display:'none'};"
+        )
+        self.assertLessEqual(mob_chk["barH"], 48.5)
+        self.assertGreaterEqual(mob_chk["selW"], 120.0, mob_chk)
+        self.assertFalse(mob_chk["selClip"] or mob_chk["cmpClip"] or mob_chk["ov"], mob_chk)
+        self.assertEqual(mob_chk["m1CueDisp"], "none", mob_chk)
+
     def test_v22_brief_and_specimen_45_49_interactions_cdp(self) -> None:
         self._require_or_skip()
         try:
             from cdp_gates import create_headless_driver, set_viewport, start_http_server
         except ImportError:
             from tests.cdp_gates import create_headless_driver, set_viewport, start_http_server
+        from selenium.webdriver.common.by import By
 
         srv, port = start_http_server(REPO_ROOT)
         root_url = f"http://127.0.0.1:{port}"
         driver = create_headless_driver()
         try:
             driver.execute_cdp_cmd("Browser.grantPermissions", {"permissions": ["clipboardReadWrite", "clipboardSanitizedWrite"]})
-            from selenium.webdriver.common.by import By
-
-            set_viewport(driver, 1440, 900, 1)
-            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=white")
-            time.sleep(0.35)
-            driver.switch_to.frame("va-stage-portal")
-
-            # Path A structural invariants: n0 zero sidebar, provenance eyebrow, inline select, unboxed figures, zero slide/code/toolbar clutter
-            v22_layout = driver.execute_script(
-                "const nav=document.documentElement.dataset.effectiveNav;"
-                "const railVis=getComputedStyle(document.getElementById('va-shell-rail')).display;"
-                "const barCnt=document.querySelectorAll('#v22-public-brief .va-card-actions').length;"
-                "const preCnt=document.querySelectorAll('#v22-public-brief pre').length;"
-                "const slideCnt=document.querySelectorAll('#v22-public-brief .va-brief-slides').length;"
-                "const selW=document.querySelector('[data-v22-scope-select]').getBoundingClientRect().width;"
-                "const proseW=document.querySelector('#v22-reading-essay').getBoundingClientRect().width;"
-                "const hexW=document.querySelector('#v22-map').getBoundingClientRect().width;"
-                "const hexTop=document.querySelector('#v22-map svg').getBoundingClientRect().top;"
-                "return {nav, railVis, barCnt, preCnt, slideCnt, selW, proseW, hexW, hexTop};"
-            )
-            self.assertEqual((v22_layout["nav"], v22_layout["railVis"]), ("n0", "none"))
-            self.assertEqual((v22_layout["barCnt"], v22_layout["preCnt"], v22_layout["slideCnt"]), (0, 0, 0))
-            self.assertGreater(v22_layout["hexW"], v22_layout["proseW"] + 60.0)
-            self.assertLess(v22_layout["hexTop"], 900.0)
-
-            init_sel = driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);")
-            self.assertEqual(init_sel, [], f"Expected zero hex outlines on US National load, got {init_sel}")
-
-            # Inline sentence scope select US -> Maryland -> Wyoming -> US National
-            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='md';s.dispatchEvent(new Event('change',{bubbles:true}));")
-            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), ["MD"])
-
-            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='wy';s.dispatchEvent(new Event('change',{bubbles:true}));")
-            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), ["WY"])
-            lead_wy = driver.execute_script("return document.querySelector('[data-v22-lead]').textContent;")
-            self.assertIn("36% of Wyoming", lead_wy)
-            self.assertIn("$72,495", driver.execute_script("return document.querySelectorAll('.va-callout-num')[1].textContent;"))
-
-            driver.execute_script("const s=document.querySelector('[data-v22-scope-select]');s.value='us';s.dispatchEvent(new Event('change',{bubbles:true}));")
-            self.assertEqual(driver.execute_script("return [...document.querySelectorAll('.va-hex-tile.is-selected')].map(e=>e.dataset.state);"), [])
-
-            # Hex tile click readout + keyboard Enter focus retention
-            driver.execute_script("document.querySelector('.va-hex-tile[data-state=\"DC\"]').dispatchEvent(new MouseEvent('click', {bubbles:true}));")
-            ro = driver.execute_script("return document.querySelector('.va-hex-readout').textContent;")
-            self.assertIn("District of Columbia (DC): 26%", ro)
-            ca_tile = driver.find_element(By.CSS_SELECTOR, '.va-hex-tile[data-state="CA"]')
-            driver.execute_script("arguments[0].focus();", ca_tile)
-            ca_tile.send_keys("\n")
-            kept_focus = driver.execute_script("return document.activeElement?.getAttribute('data-state') || '';")
-            self.assertEqual(kept_focus, "CA", "Hex tile activation dropped keyboard focus")
-
-            # Quiet footer Show data table -> borderless top Show chart return -> focus return + Copy for AI
-            driver.execute_script("document.querySelector('#v22-map [data-qe-editorial-toggle]').click();")
-            tbl_chk = driver.execute_script(
-                "const p=document.querySelector('#v22-map .va-card-table-panel'), w=p.querySelector('.va-table-wrap'),"
-                " bar=p.querySelector('.va-table-top-bar'), ret=p.querySelector('[data-qe-editorial-return]');"
-                "const wr=w.getBoundingClientRect(), rr=ret.getBoundingClientRect();"
-                "return {vis:!p.hasAttribute('hidden'), rows:p.querySelectorAll('tbody tr').length,"
-                " capW:p.querySelector('caption').getBoundingClientRect().width,"
-                " btnTxt:document.querySelector('#v22-map [data-qe-editorial-toggle]').textContent,"
-                " align:getComputedStyle(p.querySelector('tbody td.num')).textAlign,"
-                " pBdr:parseFloat(getComputedStyle(p).borderTopWidth), inWrap:!!(w&&w.contains(bar)),"
-                " gap:wr.top-rr.bottom, rDelta:Math.abs(wr.right-rr.right)};"
-            )
-            self.assertTrue(tbl_chk["vis"] and not tbl_chk["inWrap"] and tbl_chk["pBdr"] == 0.0, tbl_chk)
-            self.assertEqual((tbl_chk["rows"], tbl_chk["btnTxt"], tbl_chk["align"]), (51, "Show chart", "right"))
-            self.assertLessEqual(tbl_chk["capW"], 2.0)
-            self.assertGreaterEqual(tbl_chk["gap"], 4.0, tbl_chk)
-            self.assertLessEqual(tbl_chk["rDelta"], 1.0, tbl_chk)
-            ret_chk = driver.execute_script(
-                "document.querySelector('#v22-map [data-qe-editorial-return]').click();"
-                "const t=document.querySelector('#v22-map [data-qe-editorial-toggle]');"
-                "return {txt:t.textContent, focused:document.activeElement===t, hid:document.querySelector('#v22-map .va-card-table-panel').hasAttribute('hidden')};"
-            )
-            self.assertEqual(ret_chk, {"txt": "Show data table", "focused": True, "hid": True})
-
-            copy_link = driver.find_element(By.CSS_SELECTOR, '#v22-map [data-qe-copy="ai"]')
-            w_before = float(copy_link.rect["width"])
-            copy_link.click()
-            time.sleep(0.15)
-            copy_chk = driver.execute_script(
-                "const b=document.querySelector('#v22-map [data-qe-copy=\"ai\"]');"
-                "return {txt:b.textContent.trim(), st:document.querySelector('#v22-map .va-copy-status').textContent, w:b.getBoundingClientRect().width};"
-            )
-            self.assertIn("Copied for AI", copy_chk["txt"])
-            self.assertIn("Copied for AI", copy_chk["st"])
-            self.assertLessEqual(abs(copy_chk["w"] - w_before), 1.5)
-            arrow_chk = driver.execute_script(
-                "const g=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-gain');"
-                "const d=document.querySelector('#v22-dumbbell .va-arrow-legend svg.va-arrow-swatch.is-drop');"
-                "const gr=g?.getBoundingClientRect(), dr=d?.getBoundingClientRect();"
-                "return {gW:gr?.width||0,gH:gr?.height||0,dW:dr?.width||0,dH:dr?.height||0,"
-                "gCol:g?getComputedStyle(g).color:'',dCol:d?getComputedStyle(d).color:''};"
-            )
-            self.assertTrue(14.0 <= arrow_chk["gW"] <= 24.0 and 6.0 <= arrow_chk["gH"] <= 16.0, arrow_chk)
-            self.assertTrue(14.0 <= arrow_chk["dW"] <= 24.0 and 6.0 <= arrow_chk["dH"] <= 16.0, arrow_chk)
-            self.assertNotEqual(arrow_chk["gCol"], arrow_chk["dCol"])
-            driver.switch_to.default_content()
-
-            # Dark theme inline select contrast + @media print ink reset + footer link hidden
-            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=dark")
-            time.sleep(0.3)
-            driver.switch_to.frame("va-stage-portal")
-            sel_cols = driver.execute_script(
-                "const b=document.querySelector('[data-v22-scope-select]');"
-                "const cs=getComputedStyle(b), bs=getComputedStyle(document.body);return {fg:cs.color,bg:bs.backgroundColor};"
-            )
-            def _lum(rgb_s: str) -> float:
-                nums = [int(x) / 255.0 for x in rgb_s.replace("rgba(", "").replace("rgb(", "").split(")")[0].split(",")[:3]]
-                lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in nums]
-                return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
-            l_fg, l_bg = _lum(sel_cols["fg"]), _lum(sel_cols["bg"])
-            ratio = (max(l_fg, l_bg) + 0.05) / (min(l_fg, l_bg) + 0.05)
-            self.assertGreaterEqual(ratio, 4.5, f"Inline select contrast {ratio:.2f}:1 < 4.5:1 ({sel_cols})")
-            driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
-            time.sleep(0.1)
-            print_ink = driver.execute_script("return getComputedStyle(document.querySelector('.va-brief-question')).color;")
-            link_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-footer-link')).display;")
-            cue_disp = driver.execute_script("return getComputedStyle(document.querySelector('.va-scroll-cue')).display;")
-            driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
-            self.assertLess(_lum(print_ink), 0.05, f"Expected dark print ink even from dark theme, got {print_ink}")
-            self.assertEqual(link_disp, "none")
-            self.assertEqual(cue_disp, "none")
-            driver.switch_to.default_content()
-
-            # Explorer curves (v11 & v06) Table toggle + left-aligned col0 row headers + return to Chart
-            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v11-treasury-stress-test-solver&theme=white")
-            time.sleep(0.35)
-            driver.switch_to.frame("va-stage-portal")
-            driver.execute_script("document.querySelector('[data-qe-view=\"table\"]').click();")
-            v11_tbl = driver.execute_script(
-                "const p=document.querySelector('.va-card-table-panel');"
-                "const h0=p.querySelector('thead th:first-child'), r0=p.querySelector('tbody th[scope=\"row\"], tbody td:first-child');"
-                "const rl=[...p.querySelectorAll('tbody tr :first-child')].map(e=>e.textContent.trim());"
-                "const td=p.querySelector('tbody td.num');"
-                "return {ok:!p.hasAttribute('hidden')&&rl.length===8,hA:getComputedStyle(h0).textAlign,rA:getComputedStyle(r0).textAlign,"
-                "tdA:getComputedStyle(td).textAlign,rl0:rl[0],rl7:rl[7],hasNum:r0.classList.contains('num')};"
-            )
-            self.assertTrue(v11_tbl["ok"], "v11 Table toggle should show 8 quarters")
-            self.assertIn(v11_tbl["hA"], {"left", "start"})
-            self.assertIn(v11_tbl["rA"], {"left", "start"})
-            self.assertFalse(v11_tbl["hasNum"])
-            self.assertEqual(v11_tbl["tdA"], "right")
-            self.assertEqual((v11_tbl["rl0"], v11_tbl["rl7"]), ("1", "8"))
-            driver.execute_script("document.querySelector('[data-qe-view=\"chart\"]').click();")
-            self.assertTrue(driver.execute_script("return document.querySelector('.va-card-table-panel').hasAttribute('hidden');"))
-            driver.switch_to.default_content()
-
-            driver.get(f"{root_url}/quiet-ui-showcase.html?world=02-cloud-cyber-and-ai-ops&view=v06-ai-drift-and-lineage-ide&theme=white")
-            time.sleep(0.35)
-            driver.switch_to.frame("va-stage-portal")
-            driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"table\"]').click();")
-            v06_tbl = driver.execute_script(
-                "const p=document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel');"
-                "const r0=p.querySelector('tbody th[scope=\"row\"]');"
-                "return {ok:!p.hasAttribute('hidden')&&p.querySelectorAll('tbody tr').length===10,"
-                "rA:getComputedStyle(r0).textAlign,r0Txt:r0.textContent.trim()};"
-            )
-            self.assertTrue(v06_tbl["ok"], "v06 Table toggle should show 10 calibration bins")
-            self.assertIn(v06_tbl["rA"], {"left", "start"})
-            self.assertEqual(v06_tbl["r0Txt"], "0.05")
-            driver.execute_script("document.querySelector('#w02-v06-ai-calibration-plot [data-qe-view=\"chart\"]').click();")
-            self.assertTrue(driver.execute_script("return document.querySelector('#w02-v06-ai-calibration-plot .va-card-table-panel').hasAttribute('hidden');"))
-            driver.switch_to.default_content()
-
-            # Component Library Specimens 45-49 checks
-            driver.get(f"{root_url}/docs/bench/evidence-bench.html")
-            time.sleep(0.35)
-            bench_chk = driver.execute_script(
-                "const specs=[...document.querySelectorAll('.qe-specimen')];"
-                "const s49=specs.find(e=>e.querySelector('#m2-l2-diverging-mobility-matrix'));"
-                "const cue=s49.querySelector('.va-scroll-cue');"
-                "const s45=specs.find(e=>/Equal-Area US 51-Hex Tile Map/i.test(e.textContent||''));"
-                "s45.scrollIntoView({behavior:'instant',block:'start'});"
-                "const tb=document.querySelector('.qe-topbar').getBoundingClientRect().bottom;"
-                "const ct=s45.getBoundingClientRect().top;"
-                "return {tb, ct, s49Wide:s49.classList.contains('qe-specimen-wide'), cueDisp:getComputedStyle(cue).display};"
-            )
-            self.assertGreaterEqual(bench_chk["ct"], bench_chk["tb"] + 8.0)
-            self.assertTrue(bench_chk["s49Wide"], "Specimen 49 should span full grid width")
-            self.assertEqual(bench_chk["cueDisp"], "none", "Desktop non-overflowing Specimen 49 should hide horizontal scroll cue")
-
-            btn = driver.find_element(By.CSS_SELECTOR, '.qe-specimen [data-qe-copy="ai"]')
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-            time.sleep(0.08)
-            btn.click()
-            time.sleep(0.25)
-            status_res = driver.execute_script(
-                "const btn=document.querySelector('.qe-specimen [data-qe-copy=\"ai\"]');"
-                "const st=btn.closest('.va-card-actions').querySelector('.qe-copy-status');"
-                "return {t:st.textContent,op:getComputedStyle(st).opacity};"
-            )
-            self.assertIn("Copied for AI", status_res["t"])
-            self.assertGreaterEqual(float(status_res["op"]), 0.99, f"Expected visible copy confirmation opacity>=0.99, got {status_res}")
-
-            # 390px mobile Studio topbar picker readable width without clipping + M1 scroll-cue suppression
-            set_viewport(driver, 390, 844, 1)
-            driver.get(f"{root_url}/quiet-ui-showcase.html?world=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief&theme=white&medium=m1")
-            time.sleep(0.3)
-            mob_chk = driver.execute_script(
-                "const bar=document.getElementById('va-studio-bar').getBoundingClientRect();"
-                "const ctr=document.querySelector('.va-bar-center').getBoundingClientRect();"
-                "const sel=document.getElementById('va-view-select').getBoundingClientRect();"
-                "const cmp=document.getElementById('va-tab-components');"
-                "const cmpClip=cmp.scrollWidth>cmp.clientWidth+1;"
-                "const d=document.getElementById('va-stage-portal').contentDocument;"
-                "const m1Cue=d.querySelector('#v22-matrix .va-scroll-cue');"
-                "return {barH:bar.height, selW:sel.width, selClip:sel.right>ctr.right+1, cmpClip, ov:document.documentElement.scrollWidth>window.innerWidth+1, m1CueDisp:m1Cue?getComputedStyle(m1Cue).display:'none'};"
-            )
-            self.assertLessEqual(mob_chk["barH"], 48.5)
-            self.assertGreaterEqual(mob_chk["selW"], 120.0, f"Expected mobile #va-view-select >=120px wide, got {mob_chk}")
-            self.assertFalse(mob_chk["selClip"], f"Expected #va-view-select unclipped inside .va-bar-center, got {mob_chk}")
-            self.assertFalse(mob_chk["cmpClip"], f"Expected Components tab unclipped, got {mob_chk}")
-            self.assertFalse(mob_chk["ov"], "390px Studio bar caused horizontal overflow")
-            self.assertEqual(mob_chk["m1CueDisp"], "none", f"Expected M1 scroll-cue hidden at 390px, got {mob_chk}")
+            self._check_v22_path_a_and_table(driver, root_url, By, set_viewport)
+            self._check_v22_dark_print_and_explorers(driver, root_url)
+            self._check_bench_and_mobile(driver, root_url, By, set_viewport)
         finally:
             driver.quit()
             srv.shutdown()
