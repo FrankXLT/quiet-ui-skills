@@ -295,7 +295,11 @@ def _build_takeaway_table_panel(
         "<tr>" + "".join(
             f'<th scope="row">{esc(c)}</th>'
             if ci == 0
-            else f'<td{" class=\"num\"" if num_cols[ci] else ""} data-label="{esc(headers[ci])}">{esc(c)}</td>'
+            else (
+                f'<td class="num" data-label="{esc(headers[ci])}">{esc(c)}</td>'
+                if num_cols[ci]
+                else f'<td data-label="{esc(headers[ci])}">{esc(c)}</td>'
+            )
             for ci, c in enumerate(r)
         ) + "</tr>"
         for r in rows
