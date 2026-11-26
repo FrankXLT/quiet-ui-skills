@@ -423,6 +423,8 @@ class TestProjectSiteBuilder(unittest.TestCase):
             self.assertLess(ov_html.index("styles/tokens.layered.css"), ov_html.index("styles/overrides.css"))
             self.assertNotIn("SPDX-License-Identifier: Apache-2.0", ov_html)
             self.assertNotIn("SPDX-License-Identifier: Apache-2.0", (out_dir / "docs" / "index.html").read_text(encoding="utf-8"))
+            self.assertIn("details.qe-spec-drawer:not([open])", ov_html)
+            self.assertIn(".qe-spec-pre", ov_html)
 
             subprocess.run(["git", "init", "-q"], cwd=base, check=True)
             starter_dir = base / "customizations" / "project-site-starter"

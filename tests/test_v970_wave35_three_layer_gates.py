@@ -21,7 +21,7 @@ for _p in (str(AUDITOR_SCRIPTS), str(TESTS_DIR)):
 
 from audit_editorial_print import probe_print_flow_collision  # noqa: E402
 from audit_quiet_checks import CDP_AUDIT_JS, audit_cdp_urls  # noqa: E402
-from audit_wave35_probes import CDP_WAVE35_PROBES_JS  # noqa: E402
+from audit_wave35_probes import CDP_WAVE35_PROBES_JS, probe_print_safe_margins  # noqa: E402
 from cdp_gates import create_headless_driver, select_view, set_viewport, start_http_server  # noqa: E402
 
 WAVE35_CODES = (
@@ -240,6 +240,37 @@ class TestWave35CDPGates(unittest.TestCase):
                 srv.shutdown()
                 srv.server_close()
         self.assertEqual([e for e in errs if "[PRINT_EDGE_CLIP]" in e or "[DISABLED_CONTROL_LOW_CONTRAST]" in e], [], errs)
+
+    def test_project_site_overview_print_safe_margins(self) -> None:
+        self._require_or_skip_cdp()
+        driver = create_headless_driver()
+        try:
+            for label, site_dir in (
+                ("docs", REPO_ROOT / "docs"),
+                ("starter", REPO_ROOT / "customizations" / "project-site-starter" / "site"),
+            ):
+                srv, port = start_http_server(site_dir)
+                url = f"http://127.0.0.1:{port}/"
+                try:
+                    driver.get(url)
+                    time.sleep(0.25)
+                    driver.execute_cdp_cmd(
+                        "Emulation.setDeviceMetricsOverride",
+                        {"width": 820, "height": 1100, "deviceScaleFactor": 1, "mobile": False},
+                    )
+                    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "print"})
+                    time.sleep(0.14)
+                    self.assertEqual(probe_print_safe_margins(driver, url, "white"), [], f"{label} closed drawer print clip")
+                    driver.execute_script("document.querySelectorAll('details.qe-spec-drawer').forEach(d => { d.open = true; });")
+                    time.sleep(0.08)
+                    self.assertEqual(probe_print_safe_margins(driver, url, "white"), [], f"{label} open drawer print clip")
+                finally:
+                    driver.execute_cdp_cmd("Emulation.setEmulatedMedia", {"media": "screen"})
+                    driver.execute_cdp_cmd("Emulation.clearDeviceMetricsOverride", {})
+                    srv.shutdown()
+                    srv.server_close()
+        finally:
+            driver.quit()
 
 
 if __name__ == "__main__":

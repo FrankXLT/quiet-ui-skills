@@ -374,6 +374,7 @@
 
 @media print {
   [hidden]:not([hidden="until-found"]),
+  details.qe-spec-drawer:not([open]), details.qe-data-contract:not([open]), details.qe-eco-drawer:not([open]),
   .oaw-skip-link, .oaw-topbar, .oaw-mobile-subnav, .oaw-popover, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-cta-row, .va-demo-site-strip { display: none; }
   :root,
   [data-theme] {
@@ -390,7 +391,8 @@
   }
   .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .oaw-steps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .oaw-install-cmd code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .oaw-install-cmd code, .qe-spec-pre, .qe-spec-pre code, .oaw-main pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .qe-spec-pre { overflow-x: visible; background: #F8FAFC; color: #0F172A; border-color: #CBD5E1; }
   .oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card, .oaw-diagram-panel, .oaw-showcase-card {
     break-inside: avoid; page-break-inside: avoid; background: #FFFFFF; border-color: #CBD5E1;
   }
