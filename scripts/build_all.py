@@ -20,11 +20,21 @@ for p in (REPO_ROOT, REPO_ROOT / "scripts"):
 from build_evidence_bench import render_bench_html  # noqa: E402
 from build_showcase import WORLD_BUILDERS, build_showcase as compile_studio  # noqa: E402
 from customizations.scripts.build_showcase import build_showcase as compile_starter  # noqa: E402
+from src.site_shell import (  # noqa: E402
+    build_project_site,
+    load_site_config,
+    render_demo_chrome_css,
+    render_demo_return_bar,
+    render_social_svg,
+)
+from src.site_shell.templates import escape_tag_body, read_asset  # noqa: E402
 
 TOKEN_MIRRORS: tuple[str, ...] = (
     "skills/quiet-ui/tokens/quiet-ui-tokens.css",
     "customizations/personal-starter/styles/quiet-ui-tokens.css",
     "customizations/brand-starter/styles/quiet-ui-tokens.css",
+    "customizations/project-site-starter/styles/quiet-ui-tokens.css",
+    "docs/styles/quiet-ui-tokens.css",
 )
 LLMS_MIRRORS: tuple[str, ...] = ("docs/llms.txt", "skills/quiet-ui/llms.txt")
 EVIDENCE_CSS_PARTS: tuple[str, ...] = (
@@ -85,6 +95,46 @@ def _render_evidence_bundle_js() -> str:
     return re.sub(r"</\s*script", r"<\/script", js, flags=re.I)
 
 
+def _add_project_site_outputs(outputs: dict[Path, bytes], tok_bytes: bytes, tmp_dir: Path) -> None:
+    """Populate Quiet UI 3-route docs/ and project-site-starter static site outputs."""
+    tok_src = REPO_ROOT / "tokens" / "quiet-ui-tokens.css"
+
+    quiet_cfg = load_site_config(REPO_ROOT / "src" / "chrome" / "quiet-ui-site.json")
+    quiet_dir = tmp_dir / "quiet-site"
+    build_project_site(
+        quiet_cfg, quiet_dir, bundle=False, tokens_path=tok_src, overrides_path=None, render_demo=False
+    )
+    docs_root = REPO_ROOT / "docs"
+    outputs[docs_root / "index.html"] = (quiet_dir / "index.html").read_bytes()
+    outputs[docs_root / "docs" / "index.html"] = (quiet_dir / "docs" / "index.html").read_bytes()
+    outputs[docs_root / "styles" / "tokens.layered.css"] = (quiet_dir / "styles" / "tokens.layered.css").read_bytes()
+    outputs[docs_root / "assets" / "quiet-ui-social.svg"] = render_social_svg(quiet_cfg).encode("utf-8")
+    shell_js = escape_tag_body(read_asset("site-shell.js"), "script")
+    outputs[docs_root / "demo" / "index.html"] = compile_studio(
+        REPO_ROOT,
+        list(WORLD_BUILDERS.keys()),
+        docs_base="..",
+        default_studio_view="examples",
+        is_demo_route=True,
+        site_nav_html=render_demo_return_bar(quiet_cfg, current="demo"),
+        site_nav_assets=render_demo_chrome_css(tok_bytes.decode("utf-8")),
+        site_nav_js=f'  <script id="va-demo-site-shell-js">\n{shell_js}\n  </script>',
+    ).encode("utf-8")
+
+    starter_root = REPO_ROOT / "customizations" / "project-site-starter"
+    starter_cfg = load_site_config(starter_root / "oaw-site.json")
+    overrides_src = starter_root / "styles" / "overrides.css"
+    starter_dir = tmp_dir / "starter-site"
+    build_project_site(starter_cfg, starter_dir, bundle=False, tokens_path=tok_src, overrides_path=overrides_src)
+    site_dir = starter_root / "site"
+    outputs[site_dir / "index.html"] = (starter_dir / "index.html").read_bytes()
+    outputs[site_dir / "docs" / "index.html"] = (starter_dir / "docs" / "index.html").read_bytes()
+    outputs[site_dir / "styles" / "quiet-ui-tokens.css"] = tok_bytes
+    outputs[site_dir / "styles" / "tokens.layered.css"] = (starter_dir / "styles" / "tokens.layered.css").read_bytes()
+    outputs[site_dir / "styles" / "overrides.css"] = overrides_src.read_bytes()
+    outputs[site_dir / "assets" / "social-preview.svg"] = render_social_svg(starter_cfg).encode("utf-8")
+
+
 def compute_all_artifacts() -> dict[Path, bytes]:
     """Compute exact bytes for every mirrored token, bundle, showcase, and starter."""
     outputs: dict[Path, bytes] = {}
@@ -105,7 +155,6 @@ def compute_all_artifacts() -> dict[Path, bytes]:
     studio_html = compile_studio(REPO_ROOT, list(WORLD_BUILDERS.keys()))
     studio_bytes = studio_html.encode("utf-8")
     outputs[REPO_ROOT / "quiet-ui-showcase.html"] = studio_bytes
-    outputs[REPO_ROOT / "docs" / "index.html"] = studio_bytes
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp_dir = Path(tmp)
@@ -116,6 +165,7 @@ def compute_all_artifacts() -> dict[Path, bytes]:
             with contextlib.redirect_stdout(io.StringIO()):
                 compile_starter(REPO_ROOT / "customizations" / starter, src_html, out_tmp, bundle=False)
             outputs[REPO_ROOT / "customizations" / starter / "showcase.html"] = out_tmp.read_bytes()
+        _add_project_site_outputs(outputs, tok_bytes, tmp_dir)
 
     return outputs
 

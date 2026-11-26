@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.1 — Modular Multi-Domain Showcase Compiler."""
+"""Quiet UI v9.8 — Modular Multi-Domain Showcase Compiler."""
 
 from __future__ import annotations
 
@@ -101,7 +101,17 @@ def bundle_stage_js(repo_root: Path) -> str:
     )
 
 
-def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
+def build_showcase(
+    repo_root: Path,
+    world_ids: list[str] | None = None,
+    *,
+    docs_base: str = "./docs",
+    default_studio_view: str = "overview",
+    is_demo_route: bool = False,
+    site_nav_html: str = "",
+    site_nav_assets: str = "",
+    site_nav_js: str = "",
+) -> str:
     """Assemble standalone Quiet UI Studio HTML for selected domain(s)."""
     selected_ids = list(WORLD_BUILDERS.keys()) if world_ids is None else world_ids
     corpora_dir = repo_root / "content" / "corpora"
@@ -152,6 +162,11 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
     shell_html = (repo_root / "src" / "chrome" / "studio-shell.html").read_text(encoding="utf-8")
     replacements = {
         "__CHROME_CSS__": chrome_css,
+        "__DOCS_BASE__": esc(docs_base),
+        "__DEFAULT_STUDIO_VIEW__": esc(default_studio_view),
+        "__IS_DEMO_ROUTE__": "true" if is_demo_route else "false",
+        "__SITE_NAV_ASSETS__": site_nav_assets,
+        "__SITE_NAV_BAR__": site_nav_html,
         "__WORLD_OPTIONS__": world_options,
         "__VIEW_OPTIONS__": view_options,
         "__PORTAL_CSS__": bundle_stage_css(repo_root),
@@ -159,13 +174,14 @@ def build_showcase(repo_root: Path, world_ids: list[str] | None = None) -> str:
         "__V9_MANIFEST_JSON__": manifest_json,
         "__VIEW_TEMPLATES__": view_templates,
         "__STUDIO_JS__": studio_js,
+        "__SITE_NAV_JS__": site_nav_js,
     }
     pat = re.compile("|".join(re.escape(k) for k in replacements))
     return pat.sub(lambda m: replacements[m.group(0)], shell_html)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Build Quiet UI v9.5 Multi-Domain Showcase")
+    parser = argparse.ArgumentParser(description="Build Quiet UI v9.8 Multi-Domain Showcase")
     parser.add_argument("--worlds", default="all", help="Comma-separated domain IDs or 'all' (default: all)")
     parser.add_argument("--output", default="quiet-ui-showcase.html", help="Output HTML file path")
     args = parser.parse_args()
@@ -177,7 +193,7 @@ def main() -> int:
         out_path = REPO_ROOT / out_path
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html_out, encoding="utf-8")
-    print(f"[OK] Built Quiet UI v9.5 showcase ({len(selected)} domain(s)) -> {out_path}")
+    print(f"[OK] Built Quiet UI v9.8 showcase ({len(selected)} domain(s)) -> {out_path}")
     return 0
 
 

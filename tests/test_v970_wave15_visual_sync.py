@@ -24,7 +24,7 @@ def _has_chrome() -> bool:
 
 
 class TestWave15Contracts(unittest.TestCase):
-    """Static checks for WF-01..WF-09, v9.7 badges, AST compatibility, and line budgets."""
+    """Static checks for WF-01..WF-09, v9.8 badges, Overview route, AST compatibility, and line budgets."""
 
     def test_workflows_version_badge_and_line_budgets(self) -> None:
         wf_text = (REPO_ROOT / "docs" / "WORKFLOWS.md").read_text("utf-8")
@@ -57,13 +57,30 @@ class TestWave15Contracts(unittest.TestCase):
             self.assertLessEqual(len((REPO_ROOT / rel).read_text("utf-8").splitlines()), 450, rel)
 
         for html_rel in (
-            "quiet-ui-showcase.html", "docs/index.html",
+            "quiet-ui-showcase.html",
+            "docs/demo/index.html",
             "customizations/personal-starter/showcase.html",
             "customizations/brand-starter/showcase.html",
         ):
-            txt = (REPO_ROOT / html_rel).read_text("utf-8")
-            self.assertIn('<span class="va-studio-badge">v9.7</span>', txt, f"{html_rel} missing v9.7 badge")
-            self.assertNotIn('<span class="va-studio-badge">v9.6</span>', txt, f"{html_rel} kept stale v9.6 badge")
+            html_path = REPO_ROOT / html_rel
+            self.assertTrue(html_path.is_file(), f"Missing generated Studio file: {html_rel}")
+            txt = html_path.read_text("utf-8")
+            self.assertIn('<span class="va-studio-badge">v9.8</span>', txt, f"{html_rel} missing v9.8 badge")
+            self.assertNotIn('<span class="va-studio-badge">v9.7</span>', txt, f"{html_rel} kept stale v9.7 badge")
+
+        docs_index = REPO_ROOT / "docs" / "index.html"
+        self.assertTrue(docs_index.is_file(), "Missing docs/index.html")
+        docs_txt = docs_index.read_text("utf-8")
+        self.assertIn("oaw-topbar", docs_txt, "docs/index.html missing Overview oaw-topbar")
+        self.assertRegex(
+            docs_txt,
+            r'(?:data-oaw-route="overview"|<a\b[^>]*data-oaw-route-link="overview"[^>]*aria-current="page"|<a\b[^>]*aria-current="page"[^>]*data-oaw-route-link="overview")',
+            "docs/index.html missing overview route marker",
+        )
+        self.assertIn("./demo/index.html", docs_txt, "docs/index.html missing ./demo/index.html link")
+        self.assertIn("./docs/index.html", docs_txt, "docs/index.html missing ./docs/index.html link")
+        self.assertNotIn("va-studio-bar", docs_txt, "docs/index.html should be Overview, not Studio shell")
+        self.assertNotIn("va-studio-badge", docs_txt, "docs/index.html should be Overview, not Studio shell")
 
 
 class TestWave15CDP(unittest.TestCase):

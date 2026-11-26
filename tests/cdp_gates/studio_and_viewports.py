@@ -250,10 +250,38 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
         errs.append(f"[CONSOLE_SEVERE] {severe[0].get('message')}")
 
 
+def _check_docs_demo_route(driver: Any, root_url: str, errs: list[str]) -> None:
+    """Verify /docs/demo/index.html at 390px and 1440px for slim strip, bar height, hidden overview tab, and 0 overflow."""
+    demo_js = (
+        "const b = document.getElementById('va-studio-bar');"
+        "if (!b) return 'missing #va-studio-bar';"
+        "b.classList.remove('is-tucked');"
+        "if (b.getBoundingClientRect().height > 48.5) return 'bar height>48.5';"
+        "const s = document.querySelector('.va-demo-site-strip');"
+        "if (!s) return 'missing .va-demo-site-strip';"
+        "if (getComputedStyle(s).position !== 'static') return 'strip position not static';"
+        "const sr = s.getBoundingClientRect();"
+        "if (sr.height < 44 || sr.height > 48) return 'strip height=' + sr.height;"
+        "const ov = document.getElementById('va-tab-overview');"
+        "if (ov && getComputedStyle(ov).display !== 'none' && !ov.hidden) return '#va-tab-overview not hidden';"
+        "if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 || b.scrollWidth > b.clientWidth + 1) return 'overflow';"
+        "return '';"
+    )
+    for vp_w, vp_h in ((390, 844), (1440, 900)):
+        set_viewport(driver, vp_w, vp_h, 1)
+        driver.get(f"{root_url}/docs/demo/index.html")
+        time.sleep(0.25)
+        demo_err = driver.execute_script(demo_js)
+        if demo_err:
+            errs.append(f"[DOCS_DEMO_ROUTE_{vp_w}] {demo_err}")
+
+
 def run_studio_and_viewport_gates(driver: Any, base_url: str, root_url: str) -> list[str]:
-    """Run all Studio bar, 26-view x 5-viewport continuum, theme, print, interaction & starter CDP checks."""
+    """Run all Studio bar, 26-view x 5-viewport continuum, theme, print, interaction, starter & /docs/demo CDP checks."""
     errs: list[str] = []
     _check_studio_bar_and_viewports(driver, base_url, errs)
     _check_themes_print_why_and_interactions(driver, base_url, root_url, errs)
+    _check_docs_demo_route(driver, root_url, errs)
     set_viewport(driver, 1440, 900, 1)
     return errs
+

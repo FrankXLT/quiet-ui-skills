@@ -1,0 +1,249 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:project-site",
+  "license": "MIT",
+  "project": {
+    "slug": "workbench-starter",
+    "title": "Open Workbench Starter",
+    "tagline": "Calm static portal template for open-source tools, guides, and architectural diagrams.",
+    "version": "1.0.0",
+    "repo_url": "https://github.com/open-agentic-workbench/starter",
+    "site_url": "https://open-agentic-workbench.github.io/starter/",
+    "license_summary": "MIT"
+  },
+  "hub": {
+    "label": "OAW Projects",
+    "hub_url": "https://open-agentic-workbench.github.io/",
+    "projects": [
+      {
+        "slug": "workbench-starter",
+        "title": "Open Workbench Starter",
+        "tagline": "Static project overview and searchable documentation reader",
+        "url": "https://open-agentic-workbench.github.io/starter/",
+        "badge": "v1.0.0",
+        "current": true
+      },
+      {
+        "slug": "telemetry-inspector",
+        "title": "Telemetry Command Interface",
+        "tagline": "Deterministic terminal trace and structured log inspector",
+        "url": "https://open-agentic-workbench.github.io/telemetry-inspector/",
+        "badge": "Tool",
+        "current": false
+      },
+      {
+        "slug": "schema-validator",
+        "title": "Schema Contract Validator",
+        "tagline": "Zero-dependency JSON contract validator and diff checker",
+        "url": "https://open-agentic-workbench.github.io/schema-validator/",
+        "badge": "Validator",
+        "current": false
+      },
+      {
+        "slug": "benchmark-runner",
+        "title": "Performance Benchmark Runner",
+        "tagline": "Reproducible timing and throughput verification harness",
+        "url": "https://open-agentic-workbench.github.io/benchmark-runner/",
+        "badge": "Bench",
+        "current": false
+      }
+    ],
+    "pillars": [
+      { "id": "home", "title": "Home", "desc": "Workbench home and overview", "href": "https://open-agentic-workbench.github.io/", "status": "link" },
+      { "id": "learn", "title": "Learn", "desc": "Interactive engineering and science guides", "href": "https://open-agentic-workbench.github.io/", "status": "link" },
+      { "id": "projects", "title": "Projects", "desc": "Open-source tools and browser demos", "href": "https://open-agentic-workbench.github.io/", "status": "active", "badge": "Active" },
+      { "id": "research", "title": "Research", "desc": "Long-form technical investigations", "href": "", "status": "soon", "badge": "Soon" }
+    ]
+  },
+  "user_menu": {
+    "label": "@open-agentic-workbench",
+    "profile_url": "https://github.com/open-agentic-workbench",
+    "repo_label": "GitHub Repository"
+  },
+  "routes": {
+    "overview": {
+      "href": "index.html",
+      "label": "Overview"
+    },
+    "demo": {
+      "href": "demo/index.html",
+      "label": "Demo",
+      "enabled": false
+    },
+    "docs": {
+      "href": "docs/index.html",
+      "label": "Docs"
+    }
+  },
+  "demo_wrapper": {
+    "enabled": false
+  },
+  "overview": {
+    "kicker": "OPEN PROJECT PORTAL",
+    "headline": "Ship clear documentation and project overviews without frontend build bloat.",
+    "summary": "Open Workbench Starter gives maintainers a clean static site with a focused overview page, a two-column Markdown docs reader, and shared navigation across sibling tools.",
+    "command_pills": [
+      { "slug": "open-workbench" },
+      { "slug": "oaw-site.json" },
+      { "slug": "docs-reader" }
+    ],
+    "quickstart_steps": [
+      {
+        "icon": "cubes",
+        "title": "1 — Copy Starter Folder",
+        "body": "Duplicate this starter folder once and fill in your spelled-out project title and Markdown guides."
+      },
+      {
+        "icon": "desktop",
+        "title": "2 — Build Static Routes",
+        "body": "Compile Overview, Docs, and your 1280x640 preview image with zero JavaScript build steps."
+      },
+      {
+        "icon": "terminal",
+        "title": "3 — Ship Anywhere",
+        "body": "Publish static HTML, CSS tokens, and vector diagrams to GitHub Pages or any web host."
+      }
+    ],
+    "primary_cta": {
+      "label": "Get Started",
+      "href": "docs/index.html#doc-getting-started"
+    },
+    "secondary_cta": {
+      "label": "Browse Repository",
+      "href": "https://github.com/open-agentic-workbench/starter"
+    },
+    "install_commands": [
+      {
+        "label": "Build static site",
+        "command": "python3 -B customizations/scripts/build_project_site.py --config oaw-site.json --out dist"
+      }
+    ],
+    "plain_language_blocks": [
+      {
+        "title": "One Manifest, Predictable Routes",
+        "body": "Keep project metadata, sibling switcher links, and navigation routes in a single validated JSON manifest with zero hidden build config."
+      },
+      {
+        "title": "Plain Markdown Documentation",
+        "body": "Write guides in ordinary Markdown files and render them into a fast, keyboard-accessible reader with section links and quick jumps."
+      },
+      {
+        "title": "Offline-Ready Static Output",
+        "body": "Emit self-contained HTML, CSS, and vector diagrams that deploy cleanly to any static host across four readable light and dark themes."
+      }
+    ],
+    "architecture_diagrams": [
+      {
+        "id": "build-pipeline",
+        "title": "Static Site Build Pipeline",
+        "caption": "How a single manifest and Markdown guides compile into static HTML, CSS tokens, and social preview cards.",
+        "spec": {
+          "$schema": "urn:quiet-ui:schema:v9:schematic",
+          "schematic_kind": "pipeline",
+          "metadata": {
+            "title": "Static Site Build Pipeline",
+            "rigor_level": "L2"
+          },
+          "stages": ["Author", "Validate", "Render", "Publish"],
+          "nodes": [
+            {
+              "id": "manifest",
+              "stage": 0,
+              "label": "oaw-site.json",
+              "metric": "Manifest & Routes"
+            },
+            {
+              "id": "markdown",
+              "stage": 0,
+              "label": "docs/*.md",
+              "metric": "Markdown Guides"
+            },
+            {
+              "id": "validate",
+              "stage": 1,
+              "label": "Config Guard",
+              "metric": "Schema & Path Check"
+            },
+            {
+              "id": "render",
+              "stage": 2,
+              "label": "Static Builder",
+              "metric": "HTML, CSS & SVG",
+              "focal": true
+            },
+            {
+              "id": "publish",
+              "stage": 3,
+              "label": "Static Bundle",
+              "metric": "Overview + Docs"
+            }
+          ],
+          "edges": [
+            {"from": "manifest", "to": "validate"},
+            {"from": "markdown", "to": "validate"},
+            {"from": "validate", "to": "render"},
+            {"from": "render", "to": "publish"}
+          ]
+        }
+      }
+    ]
+  },
+  "docs_reader": {
+    "title": "Documentation",
+    "subtitle": "Guides and architecture notes compiled from repository Markdown.",
+    "sources": [
+      {
+        "id": "getting-started",
+        "title": "Getting Started",
+        "path": "docs/getting-started.md"
+      },
+      {
+        "id": "architecture",
+        "title": "Architecture Overview",
+        "path": "docs/architecture.md"
+      }
+    ],
+    "quick_jumps": [
+      {
+        "label": "Getting Started",
+        "href": "#doc-getting-started"
+      },
+      {
+        "label": "Architecture Overview",
+        "href": "#doc-architecture"
+      },
+      {
+        "label": "Home Overview",
+        "href": "../index.html"
+      }
+    ]
+  },
+  "social_preview": {
+    "image_path": "assets/social-preview.png",
+    "width": 1280,
+    "height": 640,
+    "eyebrow": "OPEN WORKBENCH STARTER",
+    "title": "Open Workbench Starter",
+    "subtitle": "Calm static project portal, Markdown docs reader, and zero-dependency preview cards.",
+    "pills": [
+      "Static HTML5",
+      "Light / Dark",
+      "Docs Reader",
+      "MIT License"
+    ],
+    "accent_hex": "#1D4ED8",
+    "routes": [
+      {
+        "label": "Overview",
+        "detail": "index.html / pipeline & install"
+      },
+      {
+        "label": "Docs Reader",
+        "detail": "docs/index.html / Markdown"
+      },
+      {
+        "label": "Social Card",
+        "detail": "1280x640 SVG & PNG preview"
+      }
+    ]
+  }
+}

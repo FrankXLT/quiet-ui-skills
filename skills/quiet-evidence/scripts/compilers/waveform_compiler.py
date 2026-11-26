@@ -259,7 +259,7 @@ def _render_analog_channel(
             ecol = resolve_token(env.get("color"), "var(--status-danger)")
             parts.append(f'<line x1="{x0}" y1="{ev_y:.1f}" x2="{x0 + pw + 5:.1f}" y2="{ev_y:.1f}" stroke="{ecol}" stroke-width="1.2" stroke-dasharray="4,3"/>')
             txt = f"{f'{ev_val:+g}' if is_bipolar else f'{ev_val:g}'}\u00a0{unit}" if unit else (f"{ev_val:+g}" if is_bipolar else f"{ev_val:g}")
-            thr_cands.append({"x": x0 + pw + 8.0, "y": ev_y + 4.0, "text": txt, "anchor": "start", "fill": ecol, "w": 84.0})
+            thr_cands.append({"x": x0 + pw + 15.0, "y": ev_y + 4.0, "text": txt, "anchor": "start", "fill": ecol, "w": 80.0})
         for th in avoid_label_overlaps(thr_cands, min_y=wave_top + 11.0, max_y=ly + lane_h - 3.0, step_y=14.0):
             parts.append(halo_text(th["x"], th["y"], th["text"], anchor="start", size=11.5, weight="700", fill=th["fill"], halo=False))
 
@@ -366,7 +366,7 @@ def _compile_scope(spec: dict[str, Any], rigor: str, medium: str) -> str:
     t_min, t_span = _resolve_timebase(tb, vis_ch)
     t_max = t_min + t_span
 
-    x0, pw, lane_h, hdr_h, lane_gap = 84.0, 536.0, 94.0, 22.0, 14.0
+    x0, pw, lane_h, hdr_h, lane_gap = 84.0, 524.0, 94.0, 22.0, 14.0
     wave_h = lane_h - hdr_h
     t_sc = compute_linear_125_scale(t_min, t_max, target_ticks=6)
     nom_dt = _safe_float(tb.get("nominal_dt"))

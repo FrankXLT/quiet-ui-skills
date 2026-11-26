@@ -168,6 +168,7 @@ def check_immutability(repo_root: Path) -> list[str]:
         "skills/quiet-bridge/",
         "customizations/personal-starter/",
         "customizations/brand-starter/",
+        "customizations/project-site-starter/",
     )
     for line in res.stdout.splitlines():
         if len(line) < 4:

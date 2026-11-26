@@ -1,8 +1,8 @@
-# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.7
+# Quiet UI Skills (`quiet-ui` + `quiet-evidence` + `quiet-bridge`) v9.8
 
-> 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, and **audience communication vectors (`quiet-bridge`)** on one 4-theme CSS token palette.
+> 100% first-party, zero-dependency design system and deterministic engineering compiler suite unifying **7 physical delivery mediums (`quiet-ui`)**, **6 calibrated evidence & open-standards SVG compilers (`quiet-evidence`)**, **audience communication vectors (`quiet-bridge`)**, and **reusable 3-route OAW project-site shells** on one 4-theme CSS token palette.
 
-- **v9.7 Multi-Domain Interactive Studio (`6 Domains · 26 Views`):** `quiet-ui-showcase.html` (Overview Landing Page, Light Topbar, `1080p` Framed Portal, Interactive `#va-shell-rail`, GitHub Pages: `docs/index.html`)
+- **v9.8 GitHub Pages Three-Route Hub & Studio (`6 Domains · 26 Views`):** `docs/index.html` (Plain-Language Overview & OAW Hub Switcher), `docs/demo/index.html` (`26`-View Interactive Studio wrapped with `32px` `.va-demo-site-strip`, standalone local `quiet-ui-showcase.html`), `docs/docs/index.html` (Searchable Plain-Language Markdown + `urn:quiet-ui:schema:v9:*` Reader), and `docs/assets/quiet-ui-social.png` (`1280x640` SVG/PNG Social Preview)
 - **3-Pillar Component Library (`53 Compiled Specimens`):** `docs/bench/evidence-bench.html` (Quiet SVG | Live Apache ECharts + Civic Tile Maps/Arrow Dumbbells/Subgroup Bars/Dual Slopegraphs/Diverging Matrices + Copy-for-AI Takeaway Cards + 4-Phase Alarm Specimen + Wave 2 Diff Gate, Triage Inspector & Trade-Space Solver + Data Contracts)
 - **Repository:** https://github.com/FrankXLT/quiet-ui-skills
 - **Bundled Pillars:** `quiet-ui` (7 Mediums · N0–N4 Morphing Shells · `.quiet-ui.md` Contract) + `quiet-evidence` (Calibrated Plots, Waveforms, Bitfields & Open-Standards Schematics) + `quiet-bridge` (Audience Translation & Plain-English Rationale)
@@ -19,19 +19,21 @@ cd quiet-ui-skills
 Installs the native **Quiet UI Skills** plugin into `~/.gemini/config/plugins/quiet-ui-skills/` and standalone skills into `~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}/`.
 
 ### Customize in 60 Seconds (`customizations/`)
-One manifest (`customizations/<name>/customization.json`) skins UI shells and every compiled SVG schematic simultaneously:
+One manifest (`customizations/<name>/customization.json` or `oaw-site.json`) skins UI shells, compiled SVG schematics, and project portals simultaneously:
 - **`customizations/personal-starter/`**: Full-range blueprint (26 views across 6 domains) for personal research, telemetry, optical viewport HUD, and tactile consoles.
 - **`customizations/brand-starter/`**: Product blueprint (22 views across Domains 01–05) for enterprise documentation, workflows, roadmaps, public data briefs, and engineering workspaces.
+- **`customizations/project-site-starter/`**: Reusable 3-route OAW project-site shell (`oaw-site.json`, `urn:quiet-ui:schema:v9:project-site`) compiling `/` Overview, optional `/demo/` wrapper, searchable `/docs/` Markdown + `quiet-evidence` reader, and `1280x640` SVG/PNG social cards.
 
 ```bash
 python3 customizations/scripts/build_showcase.py customizations/<target>
+python3 customizations/scripts/build_project_site.py --config customizations/<site>/oaw-site.json --out dist/
 python3 customizations/scripts/verify_customization.py customizations/<target> --check-immutability
 ```
 
 ## 2. Shared Architectural Contracts (`quiet-ui` + `quiet-evidence` + `quiet-bridge`)
 
-1. **Self-Immutability Lock & Persistent `.quiet-ui.md`:** `skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`, `customizations/personal-starter/`, and `customizations/brand-starter/` are strictly read-only during user workflows. Always check the target repo for `.quiet-ui.md` before re-running intake (`audit_quiet_html.py --init-context`).
-2. **4-Theme CSS Token Cohesion & 4-Way SHA-256 Parity:** All 3 pillars bind surfaces, ink, hairlines, and semantic tints to `tokens/quiet-ui-tokens.css` (`data-theme="white|paper|dark-paper|dark"`, defaulting to `white`), mirrored across `tokens/`, `skills/quiet-ui/tokens/`, and both starter kits.
+1. **Self-Immutability Lock & Persistent `.quiet-ui.md`:** `skills/quiet-ui/`, `skills/quiet-evidence/`, `skills/quiet-bridge/`, `customizations/personal-starter/`, `customizations/brand-starter/`, and `customizations/project-site-starter/` are strictly read-only during user workflows. Always check the target repo for `.quiet-ui.md` before re-running intake (`audit_quiet_html.py --init-context`).
+2. **4-Theme CSS Token Cohesion & 5-Target Token Parity:** All 3 pillars bind surfaces, ink, hairlines, and semantic tints to `tokens/quiet-ui-tokens.css` (`data-theme="white|paper|dark-paper|dark"`, defaulting to `white`), with 6 synced copies across `tokens/`, `skills/quiet-ui/tokens/`, `customizations/{personal,brand,project-site}-starter/styles/`, and `docs/styles/`.
 3. **Fluid 4K Root Scale & 3-Role Font Stack:**
    - Fluid 4K root: `clamp(16px, calc(12.4px + 0.25vw), 22px)` with `11px` hard legibility floor (`--ts-xs`).
    - `--font-sans` (`Inter`, system sans + `tabular-nums`) for navigation, kickers, controls, and headings.
@@ -60,12 +62,13 @@ python3 customizations/scripts/verify_customization.py customizations/<target> -
 ## 5. Reference Map
 
 - [AGENTS.md](AGENTS.md): Repository map, build/verify commands, and strict invariants for coding agents.
-- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.7.0).
+- [plugin.json](plugin.json): Native Antigravity plugin manifest (`quiet-ui-skills` v9.8.0).
 - [skills/quiet-ui/SKILL.md](skills/quiet-ui/SKILL.md): Pillar 1 Delivery Medium Physics router (`M1–M7`), [public-data-and-storytelling.md](skills/quiet-ui/foundation/public-data-and-storytelling.md), [brownfield-retrofit-and-migration.md](skills/quiet-ui/foundation/brownfield-retrofit-and-migration.md), [forms-states-and-resilience.md](skills/quiet-ui/foundation/forms-states-and-resilience.md), [data-grounding-and-widget-binding.md](skills/quiet-ui/foundation/data-grounding-and-widget-binding.md), and portable auditor (`audit_quiet_html.py`, `audit_editorial_print.py`, `audit_ux_and_drift.py`, `audit_wave35_probes.py`).
 - [skills/quiet-evidence/SKILL.md](skills/quiet-evidence/SKILL.md): Pillar 2 deterministic compiler, portable assets (`assets/quiet-evidence-bundle.{css,js}` + CJK-safe `window.QuietSvgLayout`), and metrology router (`6` modalities).
 - [skills/quiet-bridge/SKILL.md](skills/quiet-bridge/SKILL.md): Pillar 3 audience translation & `.quiet-ui.md`-aware intake router.
-- [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows (A–E), Guardrail 6 drift normalization, 4-variant pill grammar, and verification lifecycle.
-- [scripts/build_all.py](scripts/build_all.py): Canonical single-command artifact synchronizer & `--check` drift gate.
+- [docs/WORKFLOWS.md](docs/WORKFLOWS.md): End-to-end 3-pillar workflows (`WF-01–WF-10`, incl. reusable OAW project-site shell), Guardrail 6 drift normalization, 4-variant pill grammar, and verification lifecycle.
+- [src/site_shell/](src/site_shell/): Zero-dependency OAW 3-route project-site builder (`config.py`, `markdown_docs.py`, `social_card.py`, `assets/`) driven by [src/chrome/quiet-ui-site.json](src/chrome/quiet-ui-site.json) (`urn:quiet-ui:schema:v9:project-site`).
+- [scripts/build_all.py](scripts/build_all.py): Canonical single-command artifact synchronizer & `--check` drift gate, paired with [scripts/build_social_preview.py](scripts/build_social_preview.py) (`1280x640` SVG/PNG cards in [docs/assets/quiet-ui-social.png](docs/assets/quiet-ui-social.png)).
 - [tests/](tests/): Unified stdlib (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_v940_context_forms_drift.py`, `test_v960_civic_and_print_audit.py`, `test_v970_wave35_three_layer_gates.py`) and Chrome CDP (`test_cdp_visuals.py`) suite.
 - [tokens/quiet-ui-tokens.css](tokens/quiet-ui-tokens.css): Standalone 4-theme CSS Custom Properties (MIT).
-- [customizations/README.md](customizations/README.md): 60-second brand & personal onboarding guide (MIT).
+- [customizations/README.md](customizations/README.md): 60-second brand & personal onboarding guide (MIT), plus [customizations/project-site-starter/README.md](customizations/project-site-starter/README.md) & [customizations/scripts/build_project_site.py](customizations/scripts/build_project_site.py).

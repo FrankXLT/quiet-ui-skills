@@ -1,0 +1,1855 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="white" data-oaw-route="docs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%231D4ED8'/%3E%3Cpath d='M3.5 5.2h9M3.5 8h9M3.5 10.8h5.5' fill='none' stroke='%23FFFFFF' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>Quiet UI Documentation — Quiet User Interface Skills</title>
+  <meta name="description" content="Plain-language guides covering quick installation, 60-second branding, the three pillars, calibrated charts, and the OAW project-site shell.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Calm Interfaces, Exact Charts &amp; Plain-Language Docs">
+  <meta property="og:description" content="Zero-dependency 4-theme design system, 53 calibrated components, and reusable 3-route OAW project site shell.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Calm Interfaces, Exact Charts &amp; Plain-Language Docs">
+  <meta name="twitter:description" content="Zero-dependency 4-theme design system, 53 calibrated components, and reusable 3-route OAW project site shell.">
+  <link rel="canonical" href="https://FrankXLT.github.io/quiet-ui-skills/docs/">
+  <meta property="og:url" content="https://FrankXLT.github.io/quiet-ui-skills/docs/">
+  <meta property="og:image" content="https://FrankXLT.github.io/quiet-ui-skills/assets/quiet-ui-social.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta name="twitter:image" content="https://FrankXLT.github.io/quiet-ui-skills/assets/quiet-ui-social.png">
+  <script>(function(){try{var v={white:1,paper:1,'dark-paper':1,dark:1};var p=new URLSearchParams(window.location.search).get('theme');var t=(p&&v[p])?p:null;if(!t){try{var s=window.localStorage.getItem('quiet-ui-site-theme');if(s&&v[s])t=s;}catch(_e){}}t=t||'white';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="color-scheme"]');if(m)m.setAttribute('content',(t==='dark'||t==='dark-paper')?'dark':'light');}catch(_e){}})();</script>
+  <style id="oaw-layer-order">@layer reset, tokens, shell, archetypes, evidence, views, utilities;</style>
+  <link rel="stylesheet" href="../styles/tokens.layered.css">
+  <style id="oaw-site-shell-css">
+/* Quiet UI v9.8.0 — Shared Site Shell, 46px OAW Topbar, Popovers & Centered Overview */
+
+@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { margin: 0; padding: 0; scroll-padding-top: 4rem; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--bg-canvas); color: var(--text-primary);
+    font-family: var(--font-sans); font-size: var(--ts-base); line-height: 1.55;
+  }
+  :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  button:not(.va-pill-btn) { background: none; border: none; padding: 0; cursor: pointer; }
+  a { color: var(--accent-primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img, svg { display: block; max-inline-size: 100%; }
+  h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  table { border-collapse: collapse; border-spacing: 0; }
+  pre, code, kbd, samp { font-family: var(--font-mono); }
+  dialog { margin: auto; border: none; padding: 0; background: transparent; color: inherit; }
+  dialog::backdrop { background: transparent; }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  sub, sup { font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; color: inherit; }
+  sub { bottom: -0.22em; }
+  sup { top: -0.45em; }
+}
+
+/* @oaw-shell-start */
+@layer shell {
+  .oaw-skip-link {
+    position: absolute; inset-block-start: -100px; inset-inline-start: 0.75rem; z-index: 150;
+    padding: 0.45rem 0.85rem; border-radius: var(--radius-sm, 6px);
+    background: var(--accent-primary); color: var(--text-on-accent); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-skip-link:focus-visible { inset-block-start: 0.5rem; }
+
+  .oaw-demo-chrome {
+    position: relative; z-index: 120; flex-shrink: 0; font-family: var(--font-sans); color: var(--text-primary);
+  }
+  .oaw-demo-chrome :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+  .oaw-topbar {
+    position: sticky; inset-block-start: 0; z-index: 95;
+    block-size: 46px; min-block-size: 46px; max-block-size: 46px;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-inline: clamp(0.5rem, 1.5vw, 0.9rem);
+    background: var(--bg-elevated); color: var(--text-primary);
+    border-block-end: 1px solid var(--border-hairline);
+  }
+  .oaw-topbar.oaw-topbar--demo,
+  .oaw-topbar.va-demo-site-strip { position: static; }
+  .oaw-topbar-left { display: flex; align-items: center; gap: 0.5rem; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-topbar-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
+  .oaw-switcher-wrap,
+  .oaw-pillar-wrap,
+  .oaw-user-wrap { position: relative; display: inline-flex; align-items: center; min-inline-size: 0; }
+
+  .oaw-brand-link {
+    display: inline-flex; align-items: center; block-size: 32px; padding-inline: 0.35rem;
+    border-radius: var(--radius-sm, 6px); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0;
+  }
+  .oaw-brand-link:hover { text-decoration: none; background: var(--bg-subtle); }
+
+  .oaw-projects-btn,
+  .oaw-pillar-btn,
+  .oaw-user-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+    block-size: 32px; min-block-size: 32px;
+    border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 600; flex-shrink: 0;
+  }
+  .oaw-projects-btn {
+    padding: 0 0.7rem; border-radius: var(--radius-pill, 999px);
+    min-inline-size: 0; max-inline-size: 18rem; flex-shrink: 1; anchor-name: --oaw-projects-anchor;
+  }
+  .oaw-projects-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; }
+  .oaw-pillar-btn { inline-size: 32px; padding: 0; border-radius: var(--radius-sm, 6px); color: var(--text-secondary); anchor-name: --oaw-pillar-anchor; }
+  .oaw-user-btn { padding: 0 0.65rem; border-radius: var(--radius-pill, 999px); white-space: nowrap; anchor-name: --oaw-user-anchor; }
+  .oaw-btn-chev { flex-shrink: 0; transition: transform 150ms ease; }
+  :is(.oaw-projects-btn, .oaw-user-btn)[aria-expanded="true"] .oaw-btn-chev { transform: rotate(180deg); }
+  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):hover,
+  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn)[aria-expanded="true"] {
+    background: var(--bg-subtle); border-color: var(--accent-primary); color: var(--text-primary);
+  }
+
+  .oaw-nav-links { display: inline-flex; align-items: center; gap: 0.15rem; margin-inline-start: 0.15rem; flex-shrink: 0; }
+  .oaw-nav-link {
+    position: relative; display: inline-flex; align-items: center;
+    block-size: 46px; padding-inline: 0.55rem; background: transparent; border: none; border-radius: 0;
+    color: var(--text-secondary); font-size: var(--ts-nav); font-weight: 600; white-space: nowrap; text-decoration: none;
+  }
+  .oaw-nav-link:hover { color: var(--text-primary); background: var(--bg-subtle); text-decoration: none; }
+  .oaw-nav-link[aria-current="page"] { color: var(--text-primary); box-shadow: inset 0 -2.5px 0 var(--accent-primary); }
+
+  .oaw-mobile-subnav { display: none; }
+  @media (min-width: 680px) and (max-width: 820px) {
+    .oaw-nav-link { padding-inline: 0.4rem; }
+  }
+  @media (max-width: 679px) {
+    .oaw-topbar { padding-inline: 0.5rem; gap: 0.35rem; }
+    .oaw-topbar-left, .oaw-topbar-right { gap: 0.3rem; }
+    .oaw-brand-link { font-size: var(--ts-xs); padding-inline: 0.25rem; }
+    .oaw-projects-btn { padding-inline: 0.5rem; font-size: var(--ts-xs); max-inline-size: 13.5rem; }
+    .oaw-nav-links { display: none; }
+    .oaw-user-label { display: none; }
+    .oaw-user-btn { padding-inline: 0.45rem; gap: 0.2rem; }
+    .oaw-mobile-subnav {
+      position: static; display: flex; align-items: center; gap: 0.25rem;
+      block-size: 36px; min-block-size: 36px; padding-inline: 0.65rem;
+      background: var(--bg-surface); border-block-end: 1px solid var(--border-hairline);
+    }
+    .oaw-mobile-subnav .oaw-nav-link { block-size: 36px; padding-inline: 0.5rem; font-size: var(--ts-sm); }
+  }
+
+  /* Opaque Viewport-Aware Popovers */
+  [popover].oaw-popover {
+    display: none; position: fixed; padding: 0.5rem; overflow-y: auto; overscroll-behavior: contain;
+    max-inline-size: calc(100dvw - 16px); max-block-size: calc(100dvh - 64px);
+    border-radius: var(--radius-card, 8px); border: 1px solid var(--border-strong);
+    background-color: var(--bg-surface); color: var(--text-primary);
+    box-shadow: 0 12px 32px color-mix(in oklab, var(--text-primary) 16%, transparent); z-index: 160;
+  }
+  [popover].oaw-popover:is(:popover-open, .\:popover-open, [data-open="true"]) {
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  .oaw-projects-popover { inline-size: min(21rem, calc(100dvw - 16px)); }
+  .oaw-pillar-popover { inline-size: min(19.5rem, calc(100dvw - 16px)); }
+  .oaw-user-popover { inline-size: min(16.5rem, calc(100dvw - 16px)); }
+
+  @supports (position-area: block-end) {
+    .oaw-projects-popover,
+    .oaw-pillar-popover,
+    .oaw-user-popover {
+      inset: auto; margin: 0; margin-block-start: 6px;
+      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    }
+    .oaw-projects-popover { position-anchor: --oaw-projects-anchor; position-area: block-end span-inline-end; }
+    .oaw-pillar-popover { position-anchor: --oaw-pillar-anchor; position-area: block-end span-inline-start; }
+    .oaw-user-popover { position-anchor: --oaw-user-anchor; position-area: block-end span-inline-start; }
+  }
+  @supports not (position-area: block-end) {
+    .oaw-projects-popover,
+    .oaw-pillar-popover,
+    .oaw-user-popover { position: fixed; inset: auto; margin: 0; }
+  }
+
+  .oaw-pop-stage1-back {
+    display: flex; align-items: center; gap: 0.5rem; inline-size: 100%; min-block-size: 36px;
+    padding: 0.4rem 0.6rem; border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-pop-stage1-back:hover { background: var(--bg-subtle); border-color: var(--accent-primary); text-decoration: none; }
+  .oaw-popover-label {
+    padding: 0.25rem 0.45rem 0.05rem; font-family: var(--font-mono); font-size: var(--ts-xs);
+    font-weight: 700; letter-spacing: 0.055em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .oaw-pop-list,
+  .oaw-theme-list { display: flex; flex-direction: column; gap: 0.2rem; }
+  .oaw-pop-sep { border: 0; border-block-start: 1px solid var(--border-hairline); margin: 0.2rem 0; }
+
+  .oaw-pop-row,
+  .oaw-theme-opt {
+    display: flex; align-items: center; gap: 0.55rem; inline-size: 100%; min-block-size: 38px;
+    padding: 0.4rem 0.55rem; border-radius: var(--radius-sm, 6px); border: 1px solid transparent;
+    color: var(--text-primary); font-size: var(--ts-sm); font-weight: 500; text-align: start; text-decoration: none;
+  }
+  .oaw-pop-row--compact { min-block-size: 36px; padding-block: 0.3rem; }
+  :is(.oaw-pop-row, .oaw-theme-opt):hover { background: var(--bg-subtle); text-decoration: none; }
+  :is(.oaw-pop-row, .oaw-theme-opt):is(.is-active, [aria-current="page"], [aria-pressed="true"]) {
+    background: var(--bg-elevated); border-color: var(--accent-primary); font-weight: 600;
+  }
+  .oaw-pop-row.is-soon { opacity: 0.72; cursor: default; }
+  .oaw-pop-row.is-soon:hover { background: transparent; }
+
+  .oaw-pop-icon-well {
+    inline-size: 28px; block-size: 28px; flex: 0 0 auto; border-radius: var(--radius-sm, 6px);
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline); color: var(--accent-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .oaw-pop-row-body { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-pop-row-title { font-size: var(--ts-sm); font-weight: 600; color: var(--text-primary); line-height: 1.25; }
+  .oaw-pop-row-sub { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.3; }
+  .oaw-pop-badge {
+    flex-shrink: 0; padding: 0.15rem 0.45rem; border-radius: var(--radius-xs, 4px);
+    border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600; white-space: nowrap;
+  }
+  .oaw-pop-row.is-active .oaw-pop-badge { color: var(--accent-primary); border-color: var(--accent-primary); }
+  .oaw-pop-check,
+  .oaw-theme-check { margin-inline-start: auto; flex-shrink: 0; color: var(--accent-primary); }
+  .oaw-theme-opt:not([aria-pressed="true"]) .oaw-theme-check { visibility: hidden; }
+  .oaw-theme-dot {
+    inline-size: 14px; block-size: 14px; flex: 0 0 auto; border-radius: var(--radius-pill, 999px);
+    background: var(--bg-canvas); border: 1.5px solid var(--border-strong);
+  }
+  @media (max-width: 679px) {
+    .oaw-pop-row, .oaw-theme-opt { min-block-size: 42px; }
+  }
+  @media print { .oaw-topbar, .oaw-mobile-subnav, .oaw-popover { display: none; } }
+}
+/* @oaw-shell-end */
+
+@layer shell {
+  .oaw-main {
+    inline-size: 100%; max-inline-size: min(67.5rem, 100%); margin-inline: auto;
+    padding: clamp(1.5rem, 3.2vw, 2.75rem) clamp(0.875rem, 2.5vw, 1.5rem) 3.5rem;
+    display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); min-inline-size: 0;
+  }
+  .oaw-site-footer {
+    border-block-start: 1px solid var(--border-hairline); background: var(--bg-elevated);
+    color: var(--text-secondary); padding: 1.25rem clamp(0.875rem, 2.5vw, 1.5rem); font-size: var(--ts-xs);
+  }
+  .oaw-footer-inner {
+    max-inline-size: min(67.5rem, 100%); margin-inline: auto;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.25rem;
+  }
+  .oaw-site-footer a { color: var(--text-secondary); }
+  .oaw-site-footer a:hover { color: var(--accent-primary); }
+}
+
+@layer views {
+  .oaw-hero {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 0.9rem; min-inline-size: 0; max-inline-size: 52rem; margin-inline: auto;
+  }
+  .oaw-hero-kicker {
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary);
+  }
+  .oaw-hero h1 {
+    font-family: var(--font-serif); font-size: clamp(1.9rem, 4vw, 2.75rem);
+    line-height: 1.15; font-weight: 700; color: var(--text-primary); max-inline-size: 24ch;
+  }
+  .oaw-hero-lead {
+    font-size: var(--ts-prose); line-height: 1.58; color: var(--text-secondary); max-inline-size: 40rem;
+  }
+  .oaw-hero-cmd-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-block-start: 0.15rem; }
+  .oaw-cmd-slug {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.35rem 0.78rem; border-radius: var(--radius-pill, 999px);
+    border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    color: var(--text-primary); font-family: var(--font-mono); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-cmd-slug:hover { border-color: var(--accent-primary); background: var(--bg-surface); text-decoration: none; }
+  .oaw-cmd-caret,
+  .oaw-cmd-cursor { color: var(--accent-primary); font-weight: 700; }
+  @media (prefers-reduced-motion: no-preference) {
+    .oaw-cmd-cursor { animation: oawCursorBreathe 2.4s ease-in-out infinite; }
+    @keyframes oawCursorBreathe { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.38; } }
+  }
+
+  .oaw-cta-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.65rem; margin-block-start: 0.25rem; }
+  .oaw-btn,
+  .oaw-btn-primary,
+  .oaw-btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    min-block-size: 38px; padding: 0.45rem 0.95rem;
+    border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-strong);
+    background: var(--bg-surface); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 600; text-decoration: none;
+  }
+  .oaw-btn-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--text-on-accent); }
+  :is(.oaw-btn, .oaw-btn-secondary):hover { background: var(--bg-elevated); border-color: var(--accent-primary); text-decoration: none; }
+  .oaw-btn-primary:hover { opacity: 0.92; text-decoration: none; }
+
+  @media (max-width: 679px) {
+    :is(.oaw-cta-row a, .oaw-cta-row button, .oaw-btn, .oaw-btn-primary, .oaw-btn-secondary, .oaw-copy-btn, .oaw-copy-code-btn) {
+      min-block-size: 44px; min-inline-size: 44px;
+    }
+  }
+
+  .oaw-showcase-card {
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 12px); padding: clamp(1.15rem, 2.5vw, 1.75rem);
+    display: flex; flex-direction: column; gap: 1.35rem;
+  }
+  .oaw-steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  @media (max-width: 759px) { .oaw-steps-grid { grid-template-columns: minmax(0, 1fr); } }
+  .oaw-step-item { display: flex; flex-direction: column; gap: 0.4rem; }
+  .oaw-step-icon {
+    inline-size: 36px; block-size: 36px; border-radius: var(--radius-sm, 8px);
+    background: var(--tint-indigo-bg, var(--bg-subtle)); color: var(--accent-primary);
+    display: inline-flex; align-items: center; justify-content: center; margin-block-end: 0.15rem;
+  }
+  .oaw-step-title { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
+  .oaw-step-desc { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-quickstart-box {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm, 8px); padding: 1rem 1.1rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .oaw-quickstart-top { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .oaw-quickstart-top h2 { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+  .oaw-quickstart-top span { font-size: var(--ts-xs); color: var(--text-muted); }
+
+  .oaw-section-hdr {
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.5rem 1rem; margin-block-end: 0.85rem;
+  }
+  .oaw-section-hdr h2 { font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); line-height: 1.25; }
+  .oaw-section-hdr :is(span, p) { font-size: var(--ts-sm); color: var(--text-muted); }
+
+  .oaw-install-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+  .oaw-pillars-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .oaw-pillars-grid[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oaw-domains-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  @media (max-width: 1020px) { .oaw-pillars-grid, .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 759px) { .oaw-install-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 699px) { .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: minmax(0, 1fr); } }
+
+  .oaw-card,
+  .oaw-install-card,
+  .oaw-pillar-card,
+  .oaw-domain-card {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
+    padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.55rem; min-inline-size: 0;
+  }
+  .oaw-install-card { background: var(--bg-elevated); padding: 0.85rem 0.95rem; }
+  .oaw-pillar-card .oaw-btn,
+  .oaw-domain-card .oaw-btn { margin-block-start: auto; align-self: flex-start; }
+  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) h3 { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) p { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-install-cmd {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding: 0.45rem 0.65rem; background: var(--bg-surface); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner, 4px); min-inline-size: 0;
+  }
+  .oaw-install-cmd code { font-size: var(--ts-xs); color: var(--text-primary); overflow-x: auto; white-space: nowrap; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-copy-btn,
+  .oaw-copy-code-btn {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    min-block-size: 30px; padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-xs); font-weight: 600;
+  }
+  :is(.oaw-copy-btn, .oaw-copy-code-btn):hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+  :is(.oaw-copy-btn, .oaw-copy-code-btn)[data-copied="true"] { background: var(--status-ok-bg); color: var(--status-ok); border-color: var(--status-ok); }
+
+  .oaw-tag {
+    display: inline-flex; align-items: center; align-self: flex-start; padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-xs, 4px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-secondary); font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600;
+  }
+
+  .oaw-diagram-panel {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
+    padding: clamp(0.85rem, 2vw, 1.25rem); display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 0; overflow-x: auto;
+  }
+  .oaw-diagram-panel svg { inline-size: 100%; max-inline-size: 100%; block-size: auto; }
+}
+
+@layer utilities {
+  .sr-only,
+  .oaw-sr-only {
+    position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  :is(button, .oaw-btn, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):is(:disabled, [aria-disabled="true"]),
+  :is(select, input, textarea):disabled {
+    opacity: 1; background: var(--disabled-bg, var(--bg-subtle)); color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong)); cursor: not-allowed;
+  }
+  .hidden,
+  [hidden]:not([hidden="until-found"]) { display: none; }
+}
+
+@media print {
+  [hidden]:not([hidden="until-found"]),
+  .oaw-skip-link, .oaw-topbar, .oaw-mobile-subnav, .oaw-popover, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-cta-row, .va-demo-site-strip { display: none; }
+  :root,
+  [data-theme] {
+    --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9;
+    --text-primary: #0F172A; --text-secondary: #334155; --text-muted: #475569;
+    --border-hairline: #CBD5E1; --border-strong: #94A3B8; --accent-primary: #1D4ED8; --text-on-accent: #FFFFFF;
+    background: #FFFFFF; color: #0F172A;
+  }
+  body { margin: 0; background: #FFFFFF; color: #0F172A; }
+  .oaw-main:not([hidden]):not(.hidden),
+  .oaw-site-footer:not([hidden]):not(.hidden) {
+    display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box;
+    padding-inline: max(1.5rem, 24px); background: #FFFFFF; color: #0F172A;
+  }
+  .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oaw-steps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .oaw-install-cmd code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card, .oaw-diagram-panel, .oaw-showcase-card {
+    break-inside: avoid; page-break-inside: avoid; background: #FFFFFF; border-color: #CBD5E1;
+  }
+}
+
+/* Quiet UI v9.8.0 — Route 3 Docs Reader, Sticky Rail, Search & Modal Sheet */
+
+@layer shell {
+  .oaw-docs-layout {
+    inline-size: 100%; max-inline-size: min(82rem, 100%); margin-inline: auto;
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(0.875rem, 2.5vw, 1.5rem) 3rem;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-items: start; min-inline-size: 0;
+  }
+  .oaw-docs-rail { display: none; flex-direction: column; gap: 0.25rem; min-inline-size: 0; }
+  .oaw-docs-toc-trigger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; justify-self: start;
+    min-block-size: 44px; padding: 0.45rem 0.9rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-docs-toc-trigger:hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+
+  @media (min-width: 760px) {
+    .oaw-docs-layout { grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); gap: 2rem; }
+    .oaw-docs-rail {
+      display: flex; position: sticky; inset-block-start: 68px;
+      max-block-size: calc(100dvh - 84px); overflow-y: auto; overscroll-behavior: contain;
+      padding-block: 0.25rem; padding-inline-end: 0.75rem; border-inline-end: 1px solid var(--border-hairline);
+    }
+    .oaw-docs-toc-trigger { display: none; }
+  }
+
+  .oaw-docs-rail-title {
+    padding: 0.45rem 0.6rem 0.2rem; font-size: var(--ts-xs); font-weight: 700;
+    letter-spacing: 0.055em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .oaw-docs-rail-link,
+  .oaw-docs-rail a,
+  .oaw-docs-toc-list a {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.45rem;
+    min-block-size: 36px; padding: 0.38rem 0.65rem; border-radius: var(--radius-sm, 6px);
+    color: var(--text-secondary); font-size: var(--ts-sm); font-weight: 500; line-height: 1.35; text-decoration: none;
+  }
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):hover {
+    background: var(--bg-subtle); color: var(--text-primary); text-decoration: none;
+  }
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):is([aria-current="page"], [aria-current="location"], .is-active) {
+    background: var(--bg-elevated); color: var(--text-primary);
+    border-inline-start: 3px solid var(--accent-primary); font-weight: 600;
+  }
+
+  /* Native <dialog class="va-modal-sheet" closedby="any"> */
+  dialog.va-modal-sheet {
+    border: 1px solid var(--border-strong); border-radius: var(--radius-card, 8px);
+    background-color: var(--bg-surface); color: var(--text-primary); padding: 0; margin: auto;
+    inline-size: min(92vw, 720px); max-inline-size: calc(100dvw - 1.5rem); max-block-size: calc(100dvh - 3rem);
+    box-shadow: 0 24px 56px color-mix(in oklab, var(--text-primary) 24%, transparent); overflow: hidden;
+  }
+  dialog.va-modal-sheet[open] {
+    display: flex; flex-direction: column; background-color: var(--bg-surface); color: var(--text-primary);
+  }
+  dialog.va-modal-sheet:modal { overscroll-behavior: contain; }
+  html:has(dialog.va-modal-sheet:modal),
+  body:has(dialog.va-modal-sheet:modal) { overflow: hidden; overscroll-behavior: contain; }
+  dialog.va-modal-sheet::backdrop {
+    background: color-mix(in oklab, var(--hud-pod-bg, var(--bg-shell)) 80%, transparent);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); overflow: hidden; overscroll-behavior: contain;
+  }
+  .va-modal-sheet-hdr {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    min-block-size: 44px; padding: 0.45rem 0.85rem;
+    border-block-end: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-primary); flex: 0 0 auto;
+  }
+  .va-modal-sheet-hdr button {
+    min-block-size: 36px; min-inline-size: 36px; padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .va-modal-sheet-body { padding: var(--density-card-pad, 0.9rem); overflow-y: auto; overscroll-behavior: contain; min-block-size: 0; flex: 1 1 auto; }
+
+  @media (max-width: 759px) {
+    dialog.va-modal-sheet {
+      margin: auto 0 0 0; inline-size: 100%; max-inline-size: 100%; max-block-size: 86dvh;
+      border-radius: var(--radius-card, 8px) var(--radius-card, 8px) 0 0; border-inline: 0; border-block-end: 0;
+    }
+    .oaw-docs-toc-list a, .va-modal-sheet-hdr button { min-block-size: 44px; }
+  }
+}
+
+@layer views {
+  .oaw-docs-main,
+  .oaw-docs-prose,
+  .oaw-docs-article {
+    inline-size: 100%; max-inline-size: 100%; min-inline-size: 0;
+    display: flex; flex-direction: column; gap: 1.15rem;
+  }
+
+  .oaw-docs-searchbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.65rem; padding: 0.65rem 0.85rem;
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 8px); min-inline-size: 0;
+  }
+  .oaw-docs-searchbar input[type="search"] {
+    flex: 1 1 12rem; min-inline-size: 0; min-block-size: 38px; padding: 0.4rem 0.7rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm);
+  }
+  .oaw-docs-search-clear,
+  .oaw-docs-searchbar button {
+    min-block-size: 38px; padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  :is(.oaw-docs-search-clear, .oaw-docs-searchbar button):hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+  .oaw-docs-search-count {
+    font-family: var(--font-mono); font-variant-numeric: var(--font-nums);
+    font-size: var(--ts-xs); color: var(--text-muted); white-space: nowrap;
+  }
+  @media (max-width: 679px) {
+    .oaw-docs-searchbar input[type="search"] { flex: 1 1 100%; min-block-size: 44px; font-size: max(1rem, var(--ts-base)); }
+    .oaw-docs-search-clear, .oaw-docs-searchbar button, .oaw-empty-actions button, .oaw-empty-actions a { min-block-size: 44px; }
+  }
+
+  .va-empty-state[data-kind="filtered"] {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem; padding: 1.5rem;
+    border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    border-radius: var(--radius-card, 8px); color: var(--text-primary); min-inline-size: 0;
+  }
+  .va-empty-state[data-kind="filtered"] :is(h2, h3, .va-empty-title) { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
+  .va-empty-state[data-kind="filtered"] :is(p, .va-empty-copy) { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-start: 0.25rem; }
+  .oaw-empty-actions button,
+  .oaw-empty-actions a {
+    display: inline-flex; align-items: center; justify-content: center; min-block-size: 36px; padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600; text-decoration: none;
+  }
+  .oaw-empty-actions :is(button, a):hover { background: var(--bg-subtle); border-color: var(--accent-primary); text-decoration: none; }
+
+  .oaw-docs-section,
+  .oaw-doc-section {
+    display: flex; flex-direction: column; gap: 0.75rem; padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--border-hairline); scroll-margin-top: 4.5rem; min-inline-size: 0;
+  }
+  .oaw-docs-prose h1 { font-family: var(--font-serif); font-size: var(--ts-display); line-height: 1.2; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-prose h2 { font-size: var(--ts-xl); line-height: 1.25; font-weight: 700; color: var(--text-primary); margin-block-start: 0.45rem; }
+  .oaw-docs-prose h3 { font-size: var(--ts-md); line-height: 1.3; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-prose :is(p, li, blockquote) {
+    font-size: var(--ts-prose); line-height: 1.62; color: var(--text-secondary);
+    max-inline-size: min(var(--measure-prose, 72ch), 100%); overflow-wrap: anywhere;
+  }
+  .oaw-docs-prose ul { list-style: disc; padding-inline-start: 1.35rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .oaw-docs-prose ol { list-style: decimal; padding-inline-start: 1.35rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .oaw-docs-prose blockquote {
+    padding: 0.65rem 0.95rem; border-inline-start: 3px solid var(--accent-primary);
+    background: var(--bg-elevated); border-radius: 0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0;
+  }
+  .oaw-docs-prose :not(pre) > code {
+    padding: 0.1rem 0.35rem; border-radius: var(--radius-xs, 2px); border: 1px solid var(--border-hairline);
+    background: var(--bg-subtle); color: var(--text-primary); font-size: 0.88em; overflow-wrap: anywhere;
+  }
+
+  .oaw-code-block,
+  .oaw-docs-prose pre,
+  pre {
+    margin: 0; padding: 0.85rem 1rem; border-radius: var(--radius-card, 8px);
+    border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text-primary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); line-height: 1.55; max-inline-size: 100%; overflow-x: auto;
+  }
+  .oaw-code-block pre { padding: 0; border: 0; border-radius: 0; background: transparent; }
+  pre > code { background: transparent; border: 0; padding: 0; color: inherit; font-size: inherit; }
+  .oaw-code-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-block-end: 0.5rem; margin-block-end: 0.55rem;
+    border-block-end: 1px solid var(--border-hairline); font-size: var(--ts-xs); color: var(--text-muted);
+  }
+
+  .va-table-wrap {
+    overflow-x: auto; max-inline-size: 100%; border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 8px); background: var(--bg-surface);
+  }
+  .va-table-wrap table,
+  .oaw-docs-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--ts-sm); }
+  .oaw-docs-prose :is(th, td) { padding: 0.55rem 0.75rem; border-block-end: 1px solid var(--border-hairline); text-align: start; vertical-align: top; }
+  .oaw-docs-prose thead th { background: var(--bg-elevated); color: var(--text-primary); font-weight: 700; }
+  .va-table-wrap table td code,
+  .va-table-wrap table td[data-param-key],
+  .oaw-docs-prose table td code { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+}
+
+@layer utilities {
+  dialog.va-modal-sheet[open] { background-color: var(--bg-surface); color: var(--text-primary); }
+  .hidden,
+  [hidden]:not([hidden="until-found"]) { display: none; }
+}
+
+@media print {
+  [hidden]:not([hidden="until-found"]),
+  .oaw-docs-rail, .oaw-docs-toc-trigger, .oaw-docs-searchbar, .oaw-copy-btn,
+  .oaw-copy-code-btn, .oaw-code-copy, .oaw-empty-actions, dialog.va-modal-sheet { display: none; }
+
+  .oaw-docs-layout:not([hidden]):not(.hidden) {
+    display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box;
+    padding-inline: max(1.5rem, 24px); background: #FFFFFF; color: #0F172A;
+  }
+  .oaw-docs-main, .oaw-docs-prose, .oaw-docs-article { max-inline-size: 100%; color: #0F172A; }
+  .va-table-wrap { overflow: visible; border: 0; }
+  .oaw-docs-prose table { inline-size: 100%; max-inline-size: 100%; font-size: 9pt; }
+  .oaw-docs-prose :is(th, td),
+  .oaw-docs-prose td code { white-space: normal; overflow-wrap: anywhere; }
+  .oaw-code-block,
+  pre {
+    background: #F8FAFC; color: #0F172A; border-color: #CBD5E1;
+    white-space: pre-wrap; overflow-wrap: anywhere; break-inside: avoid; page-break-inside: avoid;
+  }
+}
+
+@layer evidence {
+  .va-figure-card.qe-figure { margin: 0; color: var(--text-primary); display: flex; flex-direction: column; gap: 0.75rem; }
+  .va-figure-hdr.qe-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .qe-fig-title { margin: 0; font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  .qe-fig-badges { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .va-pill[data-variant="tag"] {
+    display: inline-flex; align-items: center; padding: 0.15rem 0.45rem; border-radius: var(--radius-xs, 2px);
+    border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600;
+  }
+  .qe-schematic-wrap, .va-figure-scroll { min-inline-size: 0; max-inline-size: 100%; overflow-x: auto; }
+  .qe-spec-drawer { border-block-start: 1px solid var(--border-hairline); padding-block-start: 0.55rem; }
+  .qe-spec-summary { font-size: var(--ts-xs); font-weight: 600; color: var(--text-muted); }
+  .qe-spec-pre {
+    margin: 0.5rem 0 0; padding: 0.75rem; border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-primary); font-size: var(--ts-xs); line-height: 1.5; max-inline-size: 100%; overflow-x: auto;
+  }
+}
+@layer views {
+  .oaw-docs-intro { display: flex; flex-direction: column; gap: 0.45rem; }
+  .oaw-docs-intro h1 { font-family: var(--font-serif); font-size: var(--ts-display); line-height: 1.2; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-intro p { font-size: var(--ts-prose); line-height: 1.55; color: var(--text-secondary); max-inline-size: min(var(--measure-prose, 72ch), 100%); }
+  .oaw-docs-rail-link.oaw-docs-sub { padding-inline-start: 1.15rem; font-size: var(--ts-xs); color: var(--text-muted); }
+  .oaw-code-hdr {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-block-end: 0.5rem; margin-block-end: 0.55rem; border-block-end: 1px solid var(--border-hairline);
+    font-size: var(--ts-xs); color: var(--text-muted);
+  }
+  .oaw-code-lang { font-family: var(--font-mono); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .oaw-callout {
+    display: flex; flex-direction: column; gap: 0.35rem; padding: 0.75rem 0.95rem;
+    border: 1px solid var(--border-hairline); border-inline-start: 3px solid var(--accent-primary);
+    border-radius: 0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0; background: var(--bg-elevated);
+  }
+  .oaw-callout-title { font-size: var(--ts-xs); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-primary); }
+  .oaw-diagram-caption { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.45; }
+}
+  </style>
+</head>
+<body>
+  <a class="oaw-skip-link" href="#oaw-main-content">Skip to content</a>
+  <header class="oaw-topbar" role="banner">
+    <div class="oaw-topbar-left">
+      <a class="oaw-brand-link" href="https://projects.oaworkbench.org/">OAW Projects</a>
+      <div class="oaw-switcher-wrap">
+        <button type="button" id="oaw-projects-btn" class="oaw-projects-btn" popovertarget="oaw-projects-popover" aria-controls="oaw-projects-popover" aria-expanded="false"><span class="oaw-projects-label">Quiet User Interface Skills</span><svg class="oaw-btn-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M4 6l4 4 4-4"/></svg></button>
+        <div id="oaw-projects-popover" class="oaw-popover oaw-projects-popover" popover="auto" aria-label="Projects Switcher">
+          <a class="oaw-pop-stage1-back" href="https://projects.oaworkbench.org/"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M12.5 8H3.5M7 4.5 3.5 8 7 11.5"/></svg><span>All Projects</span></a>
+          <div class="oaw-popover-label">Projects</div>
+          <div class="oaw-pop-list">
+        <a class="oaw-pop-row" href="https://projects.oaworkbench.org/agy-nexus-mcp/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Antigravity Nexus</span><span class="oaw-pop-row-sub">Steer Antigravity IDE, track quota %, and route helper models</span></span></a>
+        <a class="oaw-pop-row is-active" href="../index.html" aria-current="page"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 14 5.2 8 8.4 2 5.2 8 2Z"/><path fill="none" d="M2 8.2l6 3.2 6-3.2"/><path fill="none" d="M2 11.2l6 3.2 6-3.2"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Quiet User Interface Skills</span><span class="oaw-pop-row-sub">Design system, calibrated charts, and OAW project-site shell</span></span><svg class="oaw-pop-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <nav class="oaw-nav-links" aria-label="Primary Navigation"><a class="oaw-nav-link" href="../index.html" data-oaw-route-link="overview">Overview</a> <a class="oaw-nav-link" href="../demo/index.html" data-oaw-route-link="demo">Demo</a> <a class="oaw-nav-link" href="./index.html" data-oaw-route-link="docs" aria-current="page">Docs</a></nav>
+    </div>
+    <div class="oaw-topbar-right">
+      <div class="oaw-pillar-wrap">
+        <button type="button" id="oaw-pillar-btn" class="oaw-pillar-btn" popovertarget="oaw-pillar-popover" aria-controls="oaw-pillar-popover" aria-expanded="false" aria-label="Open Agentic Workbench Ecosystem" title="Open Agentic Workbench"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3" cy="3" r="1.35" fill="currentColor"/><circle cx="8" cy="3" r="1.35" fill="currentColor"/><circle cx="13" cy="3" r="1.35" fill="currentColor"/><circle cx="3" cy="8" r="1.35" fill="currentColor"/><circle cx="8" cy="8" r="1.35" fill="currentColor"/><circle cx="13" cy="8" r="1.35" fill="currentColor"/><circle cx="3" cy="13" r="1.35" fill="currentColor"/><circle cx="8" cy="13" r="1.35" fill="currentColor"/><circle cx="13" cy="13" r="1.35" fill="currentColor"/></svg></button>
+        <div id="oaw-pillar-popover" class="oaw-popover oaw-pillar-popover" popover="auto" aria-label="Open Agentic Workbench Ecosystem">
+          <div class="oaw-popover-label">Open Agentic Workbench</div>
+          <div class="oaw-pop-list">
+        <a class="oaw-pop-row" href="https://www.oaworkbench.org/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M2.5 7.5 8 3l5.5 4.5V13.5h-4v-3.5h-3v3.5h-4z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Home</span><span class="oaw-pop-row-sub">Workbench home and overview</span></span></a>
+        <a class="oaw-pop-row" href="https://learn.oaworkbench.org/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M2.5 3.5h4.2c.7 0 1.3.5 1.3 1.2v8.3c-.4-.5-1-.7-1.6-.7H2.5zm11 0H9.3c-.7 0-1.3.5-1.3 1.2v8.3c.4-.5 1-.7 1.6-.7h3.9z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Learn</span><span class="oaw-pop-row-sub">Interactive engineering and science guides</span></span></a>
+        <a class="oaw-pop-row is-active" href="https://projects.oaworkbench.org/" aria-current="page"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Projects</span><span class="oaw-pop-row-sub">Open-source tools and browser demos</span></span><span class="oaw-pop-badge">Active</span></a>
+        <div class="oaw-pop-row is-soon" aria-disabled="true"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none"/><path fill="none" d="M10.4 5.6 9 9l-3.4 1.4L7 7z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Research</span><span class="oaw-pop-row-sub">Long-form technical investigations</span></span><span class="oaw-pop-badge">Soon</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="oaw-user-wrap">
+        <button type="button" id="oaw-user-btn" class="oaw-user-btn" popovertarget="oaw-user-popover" aria-controls="oaw-user-popover" aria-expanded="false" aria-label="@FrankXLT menu and theme" title="@FrankXLT"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.6" fill="none"/><path fill="none" d="M3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg><span class="oaw-user-label">@FrankXLT</span><svg class="oaw-btn-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M4 6l4 4 4-4"/></svg></button>
+        <div id="oaw-user-popover" class="oaw-popover oaw-user-popover" popover="auto" aria-label="Color Theme and Account Menu">
+          <div class="oaw-popover-label">Color Theme</div>
+          <div class="oaw-theme-list" role="group" aria-label="Color Theme">
+          <button type="button" class="oaw-theme-opt is-active" data-theme-opt="white" aria-pressed="true"><span class="oaw-theme-dot" data-theme="white" aria-hidden="true"></span><span class="oaw-theme-label">Pure White</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="paper" aria-pressed="false"><span class="oaw-theme-dot" data-theme="paper" aria-hidden="true"></span><span class="oaw-theme-label">Warm Paper</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="dark" aria-pressed="false"><span class="oaw-theme-dot" data-theme="dark" aria-hidden="true"></span><span class="oaw-theme-label">Dark</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="dark-paper" aria-pressed="false"><span class="oaw-theme-dot" data-theme="dark-paper" aria-hidden="true"></span><span class="oaw-theme-label">Dark Paper</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          </div>
+          <hr class="oaw-pop-sep">
+          <div class="oaw-popover-label">Account &amp; Source</div>
+          <div class="oaw-pop-list">
+            <a class="oaw-pop-row oaw-pop-row--compact" href="https://github.com/FrankXLT/quiet-ui-skills" target="_blank" rel="noopener noreferrer"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5M9 3.5l-2 9"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">GitHub Repository</span></span></a>
+            <a class="oaw-pop-row oaw-pop-row--compact" href="https://github.com/FrankXLT" target="_blank" rel="noopener noreferrer"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.6" fill="none"/><path fill="none" d="M3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">@FrankXLT</span></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <nav class="oaw-mobile-subnav" aria-label="Mobile Route Navigation"><a class="oaw-nav-link" href="../index.html" data-oaw-route-link="overview">Overview</a> <a class="oaw-nav-link" href="../demo/index.html" data-oaw-route-link="demo">Demo</a> <a class="oaw-nav-link" href="./index.html" data-oaw-route-link="docs" aria-current="page">Docs</a></nav>
+  <main id="oaw-main-content" class="oaw-docs-layout">
+    <aside class="oaw-docs-rail" aria-label="Documentation Outline">
+      <div class="oaw-docs-rail-title">Quick Jumps</div>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-getting-started">Getting Started</button>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-brand-customization">60-Second Brand Customization</button>
+      <a class="oaw-docs-rail-link" href="../demo/index.html?mode=components" data-oaw-route-link>Component Demo (53 Specimens)</a>
+      <div class="oaw-docs-rail-title">Guides</div>
+      <a class="oaw-docs-rail-link" href="#doc-getting-started" data-doc-jump="doc-getting-started">Getting Started</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-what-quiet-user-interface-skills-solves" data-doc-jump="getting-started-what-quiet-user-interface-skills-solves">What Quiet User Interface Skills Solves</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-install-in-one-command" data-doc-jump="getting-started-install-in-one-command">Install in One Command</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-your-first-figure-or-page-in-under-2-minutes" data-doc-jump="getting-started-your-first-figure-or-page-in-under-2-minutes">Your First Figure or Page in Under 2 Minutes</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-where-everything-lives" data-doc-jump="getting-started-where-everything-lives">Where Everything Lives</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-next-steps" data-doc-jump="getting-started-next-steps">Next Steps</a>
+      <a class="oaw-docs-rail-link" href="#doc-brand-customization" data-doc-jump="doc-brand-customization">60-Second Brand Customization</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-one-manifest-for-shells-and-charts" data-doc-jump="brand-customization-one-manifest-for-shells-and-charts">One Manifest for Shells and Charts</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-choosing-the-right-starter" data-doc-jump="brand-customization-choosing-the-right-starter">Choosing the Right Starter</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-option-a-customize-with-an-ai-coding-agent" data-doc-jump="brand-customization-option-a-customize-with-an-ai-coding-agent">Option A: Customize with an AI Coding Agent</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-option-b-manual-cli-workflow" data-doc-jump="brand-customization-option-b-manual-cli-workflow">Option B: Manual CLI Workflow</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-building-a-3-route-public-project-site" data-doc-jump="brand-customization-building-a-3-route-public-project-site">Building a 3-Route Public Project Site</a>
+      <a class="oaw-docs-rail-link" href="#doc-three-pillars" data-doc-jump="doc-three-pillars">Architecture &amp; Three Pillars</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-plain-language-overview-of-the-three-pillars" data-doc-jump="three-pillars-plain-language-overview-of-the-three-pillars">Plain-Language Overview of the Three Pillars</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-pillar-comparison-table" data-doc-jump="three-pillars-pillar-comparison-table">Pillar Comparison Table</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-end-to-end-3-pillar-flow" data-doc-jump="three-pillars-end-to-end-3-pillar-flow">End-to-End 3-Pillar Flow</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-technical-contract-summary" data-doc-jump="three-pillars-technical-contract-summary">Technical Contract Summary</a>
+      <a class="oaw-docs-rail-link" href="#doc-evidence-and-auditor" data-doc-jump="doc-evidence-and-auditor">Calibrated Charts &amp; Layout Auditor</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs" data-doc-jump="evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs">Why Quiet UI Compiles Charts from JSON Specs</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout" data-doc-jump="evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout">When to Use compile_evidence.py vs. window.QuietSvgLayout</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-how-audit-quiet-html-py-protects-every-page" data-doc-jump="evidence-and-auditor-how-audit-quiet-html-py-protects-every-page">How audit_quiet_html.py Protects Every Page</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-common-auditor-findings-reference" data-doc-jump="evidence-and-auditor-common-auditor-findings-reference">Common Auditor Findings Reference</a>
+      <a class="oaw-docs-rail-link" href="#doc-workflows-and-project-site" data-doc-jump="doc-workflows-and-project-site">Workflows &amp; Reusable Project-Site Shell</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english" data-doc-jump="workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english">The 10 Quiet UI Workflows in Plain English</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#workflows-and-project-site-reusable-oaw-project-site-shell-wf-10" data-doc-jump="workflows-and-project-site-reusable-oaw-project-site-shell-wf-10">Reusable OAW Project-Site Shell (WF-10)</a>
+    </aside>
+    <div class="oaw-docs-main">
+      <button type="button" id="oaw-docs-toc-trigger" class="oaw-docs-toc-trigger" aria-haspopup="dialog" aria-controls="oaw-docs-toc-dialog" aria-expanded="false">Table of Contents</button>
+      <section class="oaw-docs-intro">
+        <h1>Quiet UI Documentation</h1>
+        <p>Plain-language guides covering quick installation, 60-second branding, the three pillars, calibrated charts, and the OAW project-site shell.</p>
+      </section>
+      <div class="oaw-docs-searchbar" role="search">
+        <label class="oaw-sr-only" for="oaw-docs-search">Search documentation</label>
+        <input type="search" id="oaw-docs-search" aria-label="Search documentation" placeholder="Search guides (press /)" autocomplete="off">
+        <span id="oaw-docs-search-count" class="oaw-docs-search-count" aria-live="polite"></span>
+        <button type="button" id="oaw-docs-search-clear" class="oaw-docs-search-clear">Clear</button>
+      </div>
+      <div id="oaw-docs-empty" class="va-empty-state" data-kind="filtered" hidden>
+        <h2 class="va-empty-title">No matching sections</h2>
+        <p class="va-empty-copy">No guides matched your search query. Clear the filter or jump directly to a guide.</p>
+        <div class="oaw-empty-actions">
+          <button type="button" id="oaw-empty-clear-btn">Clear search</button>
+          <button type="button" data-doc-jump="doc-getting-started">Getting Started</button>
+          <button type="button" data-doc-jump="doc-brand-customization">60-Second Brand Customization</button>
+          <a href="../demo/index.html?mode=components" data-oaw-route-link>Component Demo (53 Specimens)</a>
+        </div>
+      </div>
+      <div class="oaw-docs-prose">
+<article class="oaw-doc-section" id="doc-getting-started">
+<h1 id="getting-started-getting-started">Getting Started</h1>
+<p>Quiet User Interface Skills gives developers and AI coding agents a calm, zero-dependency front-end toolkit. Instead of fighting cluttered dashboards, unreadable dark themes, or hand-coded SVG coordinates, you work from one shared design contract that compiles clean interfaces and exact charts out of the box.</p>
+<h2 id="getting-started-what-quiet-user-interface-skills-solves">What Quiet User Interface Skills Solves</h2>
+<ul><li><strong>Calm screens without clutter:</strong> Pages follow clear reading widths, balanced spacing, and predictable navigation across phones, desktops, wall displays, and control consoles.</li><li><strong>Honest 1-2-5 charts:</strong> Quantitative plots snap to clean <code>1</code>, <code>2</code>, and <code>5</code> axis steps, label units and uncertainty ranges plainly, and show missing-data gaps honestly instead of smoothing over them.</li><li><strong>Automatic 4-theme contrast:</strong> One CSS token stylesheet (<code>tokens/quiet-ui-tokens.css</code>) switches smoothly across <strong>Pure White</strong>, <strong>Warm Paper</strong>, <strong>Dark</strong>, and <strong>Dark Paper</strong> while meeting contrast standards without <code>!important</code>.</li><li><strong>Built-in HTML and CSS verification:</strong> An offline Python auditor inspects your generated pages and stylesheets for clipped labels, low contrast, unlabeled form fields, and style drift before you ship.</li></ul>
+<aside class="oaw-callout" data-callout="note"><div class="oaw-callout-title">Note</div><p>Core engine modules (<code>skills/</code>, <code>src/</code>, <code>scripts/</code>, <code>tests/</code>) are licensed under Apache 2.0. Design tokens, starter kits in <code>customizations/</code>, and every page or chart you generate are MIT-licensed with zero attribution requirements.</p></aside>
+<h2 id="getting-started-install-in-one-command">Install in One Command</h2>
+<p>Clone the repository and run the installer to register both the native Antigravity plugin and portable cross-agent skills (Claude Code, Cursor, Codex, and Windsurf):</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>git clone https://github.com/FrankXLT/quiet-ui-skills.git
+cd quiet-ui-skills
+./install.sh</code></pre></div>
+<p>Running <code>./install.sh</code> installs the plugin bundle to <code>~/.gemini/config/plugins/quiet-ui-skills/</code> and copies the three portable skills into <code>~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}/</code>.</p>
+<p>If you prefer installing individual pillars through the Skills CLI, pick the ones you need:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-ui
+npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-evidence
+npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-bridge</code></pre></div>
+<h2 id="getting-started-your-first-figure-or-page-in-under-2-minutes">Your First Figure or Page in Under 2 Minutes</h2>
+<p>You can try Quiet UI immediately using pure Python (<code>&gt;= 3.10</code>) with zero third-party packages.</p>
+<h3 id="getting-started-1-compile-a-calibrated-chart">1. Compile a Calibrated Chart</h3>
+<p>Compile one of the included evidence specs into a standalone, 4-theme HTML5 page:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B skills/quiet-evidence/scripts/compile_evidence.py \
+  content/corpora/02-cloud-cyber-and-ai-ops/evidence/v06_ai_calibration_plot.json \
+  --rigor L2 --theme white --out first-chart.html</code></pre></div>
+<p>Swap <code>--fragment</code> in place of <code>--out</code> when you want an embeddable HTML/SVG fragment to drop directly into an existing app or Markdown guide.</p>
+<h3 id="getting-started-2-build-a-calm-page-with-design-tokens">2. Build a Calm Page with Design Tokens</h3>
+<p>Link <code>tokens/quiet-ui-tokens.css</code> (and optionally <code>skills/quiet-evidence/assets/quiet-evidence-bundle.css</code>) inside your HTML <code>&lt;head&gt;</code>, then set <code>data-theme=&quot;white&quot;</code> on <code>&lt;html&gt;</code>:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">html</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-theme=&quot;white&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+  &lt;title&gt;Service Health Summary&lt;/title&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;./tokens/quiet-ui-tokens.css&quot; /&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      padding: 2rem;
+      background: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+    }
+    .summary-card {
+      max-inline-size: 46rem;
+      padding: 1.5rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-card);
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main class=&quot;summary-card&quot;&gt;
+    &lt;h1&gt;API Gateway Readiness&lt;/h1&gt;
+    &lt;p&gt;All regional probes remain within target response tolerances.&lt;/p&gt;
+  &lt;/main&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+<h3 id="getting-started-3-verify-layout-contrast-and-drift">3. Verify Layout, Contrast, and Drift</h3>
+<p>Run the portable auditor against your generated HTML file to catch contrast issues, clipped SVGs, unlabeled controls, or style drift:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B skills/quiet-ui/scripts/audit_quiet_html.py first-chart.html --strict-drift</code></pre></div>
+<p>When working inside an ongoing codebase, initialize a <code>.quiet-ui.md</code> context file once so agents remember your layout mode and blocklist rules across sessions:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B skills/quiet-ui/scripts/audit_quiet_html.py --init-context .quiet-ui.md</code></pre></div>
+<h3 id="getting-started-4-preview-locally">4. Preview Locally</h3>
+<p>Serve the local studio and documentation portal on port <code>8788</code>:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B scripts/serve_showcase.py --port 8788</code></pre></div>
+<h2 id="getting-started-where-everything-lives">Where Everything Lives</h2>
+<p>Use this map to jump straight to the right part of the Quiet UI Skills site:</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Surface</th><th>Path</th><th>What You Will Find</th></tr></thead><tbody><tr><td><strong>Overview</strong></td><td><code>index.html</code></td><td>Plain-language summary, install commands, 6-domain preview cards, and ecosystem flow diagram.</td></tr><tr><td><strong>Demo</strong></td><td><code>demo/index.html</code></td><td>Interactive 6-domain, 26-view Studio covering memos, runbooks, dashboards, and hardware consoles.</td></tr><tr><td><strong>Docs</strong></td><td><code>docs/index.html</code></td><td>Searchable two-column Markdown reader with section outlines, quick jumps, and live diagrams.</td></tr><tr><td><strong>Component Library</strong></td><td><code>demo/index.html?mode=components</code></td><td>53 compiled UI, SVG plot, ECharts, schematic, form, and zero-state specimens (<code>docs/bench/evidence-bench.html</code>).</td></tr></tbody></table></div>
+<h2 id="getting-started-next-steps">Next Steps</h2>
+<ul><li><strong>Adapt colors and fonts in one minute:</strong> Read <a href="#doc-brand-customization" data-doc-jump="doc-brand-customization">60-Second Brand Customization</a>.</li><li><strong>Understand the three pillars:</strong> Read <a href="#doc-three-pillars" data-doc-jump="doc-three-pillars">Architecture &amp; Three Pillars</a>.</li><li><strong>Explore charts and verification rules:</strong> Read <a href="#doc-evidence-and-auditor" data-doc-jump="doc-evidence-and-auditor">Calibrated Charts &amp; Layout Auditor</a>.</li></ul>
+</article>
+<article class="oaw-doc-section" id="doc-brand-customization">
+<h1 id="brand-customization-60-second-brand-customization">60-Second Brand Customization</h1>
+<p>You do not need to edit core skill files or hand-tune twenty separate stylesheets to match your product palette. Quiet UI drives both interface shells and compiled charts from a single manifest so your brand stays consistent everywhere.</p>
+<h2 id="brand-customization-one-manifest-for-shells-and-charts">One Manifest for Shells and Charts</h2>
+<p>Every customization lives in its own folder under <code>customizations/&lt;my-brand&gt;/</code> with a <code>customization.json</code> manifest and a <code>styles/overrides.css</code> file:</p>
+<ul><li><strong>UI shells read your tokens</strong> for page canvases, card surfaces, text ink, buttons, corner radius, and density.</li><li><strong>Compiled SVG and ECharts figures read the same palette</strong> so axis highlights, focal series, and status badges match the surrounding page automatically across all four surface themes (<code>white</code>, <code>paper</code>, <code>dark-paper</code>, and <code>dark</code>).</li></ul>
+<aside class="oaw-callout" data-callout="important"><div class="oaw-callout-title">Important</div><p>Treat <code>skills/</code>, <code>tokens/</code>, <code>customizations/brand-starter/</code>, and <code>customizations/personal-starter/</code> as read-only blueprints. Always copy a starter into a new folder such as <code>customizations/acme-app/</code> before editing.</p></aside>
+<h2 id="brand-customization-choosing-the-right-starter">Choosing the Right Starter</h2>
+<p>Quiet UI ships three MIT-licensed starters depending on what you are building:</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Starter</th><th>Scope</th><th>Included Surfaces</th><th>Best For</th></tr></thead><tbody><tr><td><strong><code>brand-starter</code></strong></td><td><strong>22 views</strong> (Domains 01–05)</td><td>Editorial briefs, RFCs, dashboards, data grids, and tree explorers; omits optical HUDs and residential smart-home views</td><td>SaaS products, engineering platforms, B2B dashboards, and internal tools</td></tr><tr><td><strong><code>personal-starter</code></strong></td><td><strong>26 views</strong> (All 6 domains)</td><td>Full showcase range including 8 CC0/PD photo backplates, optical HUD pods, and home energy consoles</td><td>Personal research workbenches, ambient wall displays, and spatial prototypes</td></tr><tr><td><strong><code>project-site-starter</code></strong></td><td><strong>3-route public site</strong> (<code>oaw-site.json</code>)</td><td><code>Overview</code> landing page, optional <code>Demo</code> wrapper, and searchable <code>Docs</code> Markdown reader</td><td>Open-source repositories, SDK documentation portals, and static project sites</td></tr></tbody></table></div>
+<h2 id="brand-customization-option-a-customize-with-an-ai-coding-agent">Option A: Customize with an AI Coding Agent</h2>
+<p>Paste this prompt into your AI assistant along with 1–3 visual references or brand hex codes:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">text</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>I want to customize Quiet UI for [personal / brand] use in customizations/&lt;my-brand&gt;/.
+Here are 1-3 inspirational design references:
+- Reference 1: [URL, screenshot, or description]
+- Reference 2: [URL, screenshot, or description]
+Brand Hexes / Fonts:
+- Primary Accent: #1D4ED8
+- Focal Accent: #0F766E
+- Surface / Canvas: #FFFFFF / #F8FAFC
+- Typography: Inter / Newsreader / JetBrains Mono
+
+Please clone the matching starter, update customization.json and styles/overrides.css, and compile and verify the showcase.</code></pre></div>
+<h2 id="brand-customization-option-b-manual-cli-workflow">Option B: Manual CLI Workflow</h2>
+<p>To customize a product or workspace showcase directly from the terminal:</p>
+<ol><li><strong>Clone a starter into your own folder:</strong></li></ol>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>cp -r customizations/brand-starter customizations/my-brand</code></pre></div>
+<ol><li><strong>Edit <code>customizations/my-brand/customization.json</code>:</strong> Update <code>name</code>, <code>title</code>, <code>palette</code> hexes, <code>fonts</code>, <code>corner_geometry</code> (<code>auto</code>, <code>sharp</code>, <code>subtle</code>, <code>rounded</code>, <code>soft</code>), and <code>density</code>.</li><li><strong>Override tokens cleanly in CSS:</strong> Wrap palette and typography changes inside <code>@layer tokens</code> inside <code>customizations/my-brand/styles/overrides.css</code> so they sit neatly in the cascade (<code>@layer reset, tokens, shell, archetypes, evidence, views, utilities;</code>) with zero <code>!important</code> rules:</li></ol>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">css</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>@layer tokens {
+  :root {
+    --accent-primary: #1D4ED8;
+    --accent-focal: #0F766E;
+    --font-sans: &#x27;Inter&#x27;, -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif;
+    --font-mono: &#x27;JetBrains Mono&#x27;, &#x27;Fira Code&#x27;, ui-monospace, monospace;
+  }
+
+  :root[data-theme=&quot;white&quot;] {
+    --bg-canvas: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+  }
+
+  :root:is([data-theme=&quot;dark&quot;], [data-theme=&quot;dark-paper&quot;]) {
+    --accent-primary: #60A5FA;
+    --accent-focal: #2DD4BF;
+    --bg-canvas: #090D16;
+    --bg-surface: #0F1624;
+    --text-primary: #F1F5F9;
+    --text-secondary: #CBD5E1;
+  }
+}</code></pre></div>
+<ol><li><strong>Compile and verify your customized showcase:</strong></li></ol>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B customizations/scripts/build_showcase.py customizations/my-brand
+python3 -B customizations/scripts/verify_customization.py customizations/my-brand --check-immutability</code></pre></div>
+<p>The verifier checks WCAG text-to-surface contrast ratios (<code>&gt;= 4.5:1</code>), confirms zero <code>!important</code> overrides, and verifies that none of the read-only starter or skill directories were modified.</p>
+<h2 id="brand-customization-building-a-3-route-public-project-site">Building a 3-Route Public Project Site</h2>
+<p>If you want a clean project website (<code>Overview</code>, <code>Docs</code>, and an optional <code>Demo</code> tab) rather than a showcase explorer, start from <code>customizations/project-site-starter/</code>:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>cp -r customizations/project-site-starter site</code></pre></div>
+<p>Update <code>site/oaw-site.json</code> with your project metadata, Markdown guide list (<code>docs_reader.sources</code>), and install commands, then compile the static site:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B customizations/scripts/build_project_site.py --config site/oaw-site.json --out dist/</code></pre></div>
+<p>Every output file in <code>dist/</code> is static HTML, CSS, and SVG ready for GitHub Pages or any static web server. Read <a href="#doc-workflows-and-project-site" data-doc-jump="doc-workflows-and-project-site">Workflows &amp; Reusable Project-Site Shell</a> for full <code>oaw-site.json</code> schema details.</p>
+</article>
+<article class="oaw-doc-section" id="doc-three-pillars">
+<h1 id="three-pillars-architecture-three-pillars">Architecture &amp; Three Pillars</h1>
+<p>Quiet UI separates how a screen looks, how numbers are plotted, and how the message is written into three focused skills—<strong><code>quiet-ui</code></strong>, <strong><code>quiet-evidence</code></strong>, and <strong><code>quiet-bridge</code></strong>. Instead of asking an AI coding agent or developer to juggle layout physics, SVG coordinate math, and executive framing in one giant prompt, each pillar owns one clear job.</p>
+<aside class="oaw-callout" data-callout="note"><div class="oaw-callout-title">Note</div><p>You do not need to learn every technical rule up front. Start with plain goals—readable text, honest numbers, and a layout tailored to the reader—and let each pillar supply the exact building blocks.</p></aside>
+<hr />
+<h2 id="three-pillars-plain-language-overview-of-the-three-pillars">Plain-Language Overview of the Three Pillars</h2>
+<h3 id="three-pillars-1-quiet-ui-surfaces-shells-and-physical-readability">1. <code>quiet-ui</code> — Surfaces, Shells, and Physical Readability</h3>
+<p>Think of <code>quiet-ui</code> as the <strong>room and furniture</strong> of your interface. Whether someone is reading a printed handout, tapping a hospital bedside screen, or inspecting a desktop workbench, the surface automatically adapts:</p>
+<ul><li><strong>7 delivery mediums (<code>M1</code>–<code>M7</code>)</strong>: Tuned rules for paper and print (<code>M1</code>), editorial web articles (<code>M2</code>), stateful desktop/mobile web apps (<code>M3</code>), walk-up point-of-interest kiosks (<code>M4</code>), 10-foot ambient wall displays (<code>M5</code>), collimated optical HUDs (<code>M6</code>), and transparent window overlays (<code>M7</code>).</li><li><strong>5 polymorphic navigation shells (<code>N0</code>–<code>N4</code>)</strong>: Layouts morph cleanly from a distraction-free document stage (<code>N0</code>), an adaptive left rail (<code>N1</code>), a sticky top bar (<code>N2</code>), or a header-plus-rail command deck (<code>N3</code>), down to a thumb-friendly mobile bottom dock (<code>N4</code>, strictly restricted to viewports under <code>700px</code>).</li><li><strong>4 calibrated themes (<code>white</code>, <code>paper</code>, <code>dark</code>, <code>dark-paper</code>)</strong>: Built with OKLCH color tokens and a shared <code>--chart-1..5</code> palette so light, warm-paper, and dark surfaces stay readable without manual color tweaking.</li><li><strong>Hard <code>11px</code> legibility floor</strong>: No CSS rule or rendered element is allowed to shrink below <code>11px</code>, and sticky header bars stay compact so content owns the first screen.</li></ul>
+<h3 id="three-pillars-2-quiet-evidence-calibrated-charts-and-engineering-diagrams">2. <code>quiet-evidence</code> — Calibrated Charts and Engineering Diagrams</h3>
+<p>Think of <code>quiet-evidence</code> as the <strong>drafting table</strong>. Instead of letting an LLM guess SVG pixel coordinates freehand—which often causes overlapping labels or clipped axes—you describe data or system topology in a structured JSON spec and let a deterministic compiler draw the figure:</p>
+<ul><li><strong>6 calibrated modalities</strong>: Covers (1) scalar readouts and gauges, (2) tables and matrices, (3) hardware bitfields and registers, (4) analytical and spectral plots, (5) multi-channel waveforms and timing diagrams, and (6) schematics and topologies.</li><li><strong>Zero freehand SVG guessing</strong>: Static specs compile through <code>compile_evidence.py</code>, while live browser charts route through <code>window.QuietSvgLayout</code> and <code>QuietEChartsDefaults</code> so tick intervals, margins, and label clearances stay mathematically consistent.</li></ul>
+<h3 id="three-pillars-3-quiet-bridge-plain-language-framing-without-changing-the-numbers">3. <code>quiet-bridge</code> — Plain-Language Framing Without Changing the Numbers</h3>
+<p>Think of <code>quiet-bridge</code> as the <strong>translator</strong> in the room. A plant operator, a systems engineer, and a program manager all look at the same system, yet each needs a different level of detail and speed:</p>
+<ul><li><strong>7 audience lenses</strong>: <code>Technician &amp; Operator</code>, <code>Discipline Engineer</code>, <code>Project Systems Engineer</code>, <code>Program Manager</code>, <code>Consumer &amp; Common Reader</code>, <code>Educator &amp; Mentor</code>, and <code>Student &amp; Learner</code>.</li><li><strong>3 decision tempos</strong>: <code>Tactical Seconds</code> (5–15 second anomaly triage), <code>Executive Minutes</code> (1–3 minute gate review), and <code>Analytical Deep Dive</code> (10–45 minute peer-reviewed proof).</li><li><strong>The Numerical Conservation Law</strong>: Presentation may adjust wording and jargon density, <strong>never</strong> the underlying truth. Sample counts (<code>N</code>), timestamps, units, limits, and baselines must trace back to the same verified data source across web briefs, slide decks, and printed handouts.</li></ul>
+<hr />
+<h2 id="three-pillars-pillar-comparison-table">Pillar Comparison Table</h2>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Pillar</th><th>Plain-Language Role</th><th>Core Inventory</th><th>Primary Guarantee</th></tr></thead><tbody><tr><td><strong><code>quiet-ui</code></strong></td><td>Layout, navigation, and visual comfort</td><td>7 mediums (<code>M1</code>–<code>M7</code>), <code>N0–N4</code> shells, 4 themes</td><td>Readable typography (<code>&gt;= 11px</code>), clean focus, strict CSS token use</td></tr><tr><td><strong><code>quiet-evidence</code></strong></td><td>Accurate charts, scopes, and schematics</td><td>6 modalities, 3 rigor levels (<code>L1</code>–<code>L3</code>)</td><td>Deterministic geometry, explicit units, zero freehand SVG guessing</td></tr><tr><td><strong><code>quiet-bridge</code></strong></td><td>Audience framing and red-team review</td><td>7 audience lenses, 3 decision tempos</td><td>Numerical Conservation Law—same verified facts at every depth</td></tr></tbody></table></div>
+<hr />
+<h2 id="three-pillars-end-to-end-3-pillar-flow">End-to-End 3-Pillar Flow</h2>
+<p>The pipeline diagram below is compiled directly from an inline <code>urn:quiet-ui:schema:v9:schematic</code> (<code>schematic_kind: &quot;pipeline&quot;</code>) JSON block—showing how verified tokens and data travel through all three pillars into audited screen, print, demo, and documentation outputs.</p>
+<div class="oaw-compiled-diagram"><figure class="va-figure-card qe-figure" id="quiet-ui-three-pillar-flow" data-qe-modality="schematic" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Quiet UI Three-Pillar Architecture Flow</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCHEMATIC</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-schematic-wrap" data-rigor="L1" data-medium="m2"><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Quiet UI Three-Pillar Architecture Flow"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 252" role="img" aria-label="Quiet UI Three-Pillar Architecture Flow">
+<defs><marker id="qe-pipe-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>
+<text x="104.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Tokens + Data Truth</text>
+<text x="333.3" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Three-Pillar Engine</text>
+<text x="562.7" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Verified Outputs</text>
+<path d="M 192.0 96.0 H 218.7 V 63.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 192.0 96.0 H 218.7 V 129.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 192.0 162.0 H 218.7 V 129.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 192.0 162.0 H 218.7 V 195.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 63.0 H 448.0 V 63.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 63.0 H 448.0 V 129.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 129.0 H 448.0 V 129.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 129.0 H 448.0 V 195.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 195.0 H 448.0 V 63.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 195.0 H 448.0 V 195.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<rect data-role="node" x="16.0" y="73.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="104.0" y="91.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">4-Theme CSS Tokens</text>
+<text x="104.0" y="109.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">OKLCH · N0–N4</text>
+<rect data-role="node" x="16.0" y="139.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="104.0" y="157.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Verified Data Truth</text>
+<text x="104.0" y="175.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Units · Epochs · N</text>
+<rect data-role="node" x="245.3" y="40.0" width="176.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="333.3" y="58.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">quiet-ui</text>
+<text x="333.3" y="76.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">7 Mediums · Shells</text>
+<rect data-role="node" x="245.3" y="106.0" width="176.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="333.3" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">quiet-evidence</text>
+<text x="333.3" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">6 Modalities · 1-2-5</text>
+<rect data-role="node" x="245.3" y="172.0" width="176.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="333.3" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">quiet-bridge</text>
+<text x="333.3" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">7 Lenses · 3 Tempos</text>
+<rect data-role="node" x="474.7" y="40.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--status-ok)" stroke-width="1.5"/>
+<text x="562.7" y="58.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Screen &amp; Print</text>
+<text x="562.7" y="76.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">11px+ · Safe Margins</text>
+<rect data-role="node" x="474.7" y="106.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--status-ok)" stroke-width="1.5"/>
+<text x="562.7" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Interactive Demo</text>
+<text x="562.7" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Chart | Table · Copy</text>
+<rect data-role="node" x="474.7" y="172.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--status-ok)" stroke-width="1.5"/>
+<text x="562.7" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Verified Docs</text>
+<text x="562.7" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Static + CDP Pass</text>
+</svg></div></div><figcaption class="va-figure-caption">Tokens and verified data flow through quiet-ui, quiet-evidence, and quiet-bridge into audited outputs.</figcaption><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:schematic)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Quiet UI Three-Pillar Architecture Flow"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:schematic&quot;,
+  &quot;id&quot;: &quot;quiet-ui-three-pillar-flow&quot;,
+  &quot;schematic_kind&quot;: &quot;pipeline&quot;,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Quiet UI Three-Pillar Architecture Flow&quot;,
+    &quot;description&quot;: &quot;Tokens and verified data flow through quiet-ui, quiet-evidence, and quiet-bridge into audited outputs.&quot;,
+    &quot;rigor_level&quot;: &quot;L1&quot;,
+    &quot;audience&quot;: &quot;Developers &amp; Technical Reviewers&quot;
+  },
+  &quot;stages&quot;: [
+    &quot;Tokens + Data Truth&quot;,
+    &quot;Three-Pillar Engine&quot;,
+    &quot;Verified Outputs&quot;
+  ],
+  &quot;nodes&quot;: [
+    {
+      &quot;id&quot;: &quot;tokens&quot;,
+      &quot;label&quot;: &quot;4-Theme CSS Tokens&quot;,
+      &quot;metric&quot;: &quot;OKLCH \u00b7 N0\u2013N4&quot;,
+      &quot;stage&quot;: 0
+    },
+    {
+      &quot;id&quot;: &quot;data&quot;,
+      &quot;label&quot;: &quot;Verified Data Truth&quot;,
+      &quot;metric&quot;: &quot;Units \u00b7 Epochs \u00b7 N&quot;,
+      &quot;stage&quot;: 0
+    },
+    {
+      &quot;id&quot;: &quot;ui&quot;,
+      &quot;label&quot;: &quot;quiet-ui&quot;,
+      &quot;metric&quot;: &quot;7 Mediums \u00b7 Shells&quot;,
+      &quot;stage&quot;: 1,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;evidence&quot;,
+      &quot;label&quot;: &quot;quiet-evidence&quot;,
+      &quot;metric&quot;: &quot;6 Modalities \u00b7 1-2-5&quot;,
+      &quot;stage&quot;: 1,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;bridge&quot;,
+      &quot;label&quot;: &quot;quiet-bridge&quot;,
+      &quot;metric&quot;: &quot;7 Lenses \u00b7 3 Tempos&quot;,
+      &quot;stage&quot;: 1,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;screen-print&quot;,
+      &quot;label&quot;: &quot;Screen &amp; Print&quot;,
+      &quot;metric&quot;: &quot;11px+ \u00b7 Safe Margins&quot;,
+      &quot;stage&quot;: 2,
+      &quot;stroke&quot;: &quot;var(--status-ok)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;demo&quot;,
+      &quot;label&quot;: &quot;Interactive Demo&quot;,
+      &quot;metric&quot;: &quot;Chart | Table \u00b7 Copy&quot;,
+      &quot;stage&quot;: 2,
+      &quot;stroke&quot;: &quot;var(--status-ok)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;docs&quot;,
+      &quot;label&quot;: &quot;Verified Docs&quot;,
+      &quot;metric&quot;: &quot;Static + CDP Pass&quot;,
+      &quot;stage&quot;: 2,
+      &quot;stroke&quot;: &quot;var(--status-ok)&quot;
+    }
+  ],
+  &quot;edges&quot;: [
+    {
+      &quot;from&quot;: &quot;tokens&quot;,
+      &quot;to&quot;: &quot;ui&quot;
+    },
+    {
+      &quot;from&quot;: &quot;tokens&quot;,
+      &quot;to&quot;: &quot;evidence&quot;
+    },
+    {
+      &quot;from&quot;: &quot;data&quot;,
+      &quot;to&quot;: &quot;evidence&quot;
+    },
+    {
+      &quot;from&quot;: &quot;data&quot;,
+      &quot;to&quot;: &quot;bridge&quot;
+    },
+    {
+      &quot;from&quot;: &quot;ui&quot;,
+      &quot;to&quot;: &quot;screen-print&quot;
+    },
+    {
+      &quot;from&quot;: &quot;ui&quot;,
+      &quot;to&quot;: &quot;demo&quot;
+    },
+    {
+      &quot;from&quot;: &quot;evidence&quot;,
+      &quot;to&quot;: &quot;demo&quot;
+    },
+    {
+      &quot;from&quot;: &quot;evidence&quot;,
+      &quot;to&quot;: &quot;docs&quot;
+    },
+    {
+      &quot;from&quot;: &quot;bridge&quot;,
+      &quot;to&quot;: &quot;screen-print&quot;
+    },
+    {
+      &quot;from&quot;: &quot;bridge&quot;,
+      &quot;to&quot;: &quot;docs&quot;
+    }
+  ]
+}</code></pre></details></figure></div>
+<hr />
+<h2 id="three-pillars-technical-contract-summary">Technical Contract Summary</h2>
+<ol><li><strong>Token Layering</strong>: Customizations live in <code>customizations/&lt;brand&gt;/styles/overrides.css</code> rather than mutating core files in <code>tokens/</code>, <code>src/css/</code>, or <code>src/chrome/</code> during feature work.</li><li><strong>Pre-Edit Grounding</strong>: Every interface declares its target medium (<code>M1</code>–<code>M7</code>), shell (<code>N0</code>–<code>N4</code>), chromatic budget, and <strong>Data-to-Widget Binding Map</strong> before writing HTML or CSS.</li><li><strong>Zero-State &amp; Reversibility Contracts</strong>: Empty views distinguish first-run, filtered (<code>Clear filters</code> action), warmup (<code>Warming up — N samples collected</code> when <code>N &lt; 10</code>), and stale retained feeds, while destructive actions follow tiered confirmation (<code>&gt;= 7s</code> Undo Toast, <code>ARM -&gt; EXECUTE</code>, or <code>&lt;dialog closedby=&quot;any&quot;&gt;</code>).</li></ol>
+</article>
+<article class="oaw-doc-section" id="doc-evidence-and-auditor">
+<h1 id="evidence-and-auditor-calibrated-charts-layout-auditor">Calibrated Charts &amp; Layout Auditor</h1>
+<p>Most chart bugs happen when code draws raw pixels by hand or hides missing measurements behind smooth curves. Quiet UI solves both problems in two steps: <strong>compile charts from structured JSON specs</strong> so math and labels stay exact, then <strong>run an automated layout auditor</strong> to catch visual and accessibility regressions before shipping.</p>
+<hr />
+<h2 id="evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs">Why Quiet UI Compiles Charts from JSON Specs</h2>
+<p>Writing <code>&lt;svg&gt;</code> coordinates manually in an editor or asking an AI model to guess <code>x</code>/<code>y</code> numbers leads to clipped text, awkward tick marks, and misleading trends. Describing a figure in <code>urn:quiet-ui:schema:v9:&lt;modality&gt;</code> JSON gives every chart five built-in guarantees:</p>
+<ul><li><strong><code>1-2-5</code> steps</strong>: Axes snap to clean human-readable intervals (<code>1</code>, <code>2</code>, <code>5</code> times powers of <code>10</code>) rather than irregular fractions like <code>3.7</code> or <code>14.3</code>, making mental estimation effortless.</li><li><strong>Explicit unit labels</strong>: Every axis and readout pairs the quantity with its unit (for example, <code>Active Power, P / kW</code> or <code>η_bte / %</code>) so readers never guess whether a value is watts, kilowatts, or percent.</li><li><strong>Honest gaps</strong>: Missing or <code>null</code> samples stay visible as broken gaps in lines and waveforms instead of being silently bridged by fake interpolation.</li><li><strong><code>Chart | Table</code> toggle</strong>: Takeaway figure cards pair the visual chart with a clean data table so screen readers, keyboard users, and detail checkers can inspect exact numbers.</li><li><strong><code>Copy data</code> and <code>Copy for AI</code></strong>: One click exports tab-separated values (<code>TSV</code>) for spreadsheets (<code>Copy data</code>) or a structured Markdown summary (<code>Copy for AI</code>) ready to paste into an analysis prompt.</li></ul>
+<hr />
+<h2 id="evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout">When to Use <code>compile_evidence.py</code> vs. <code>window.QuietSvgLayout</code></h2>
+<p>Choose the compiler path that matches how your page delivers data:</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Approach</th><th>When to Use It</th><th>Runtime Dependencies</th><th>Primary Entry Point</th></tr></thead><tbody><tr><td><strong><code>compile_evidence.py</code></strong></td><td>Static reports, print briefs (<code>M1</code>), docs pages, bitfields, HIL scopes, and system schematics built from known JSON specs</td><td><strong>Zero JS</strong> (pure Python stdlib emitting standalone HTML or <code>&lt;figure&gt;</code> SVG)</td><td><code>python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html</code></td></tr><tr><td><strong><code>window.QuietSvgLayout</code></strong></td><td>Live dashboards (<code>M3</code>/<code>M5</code>) where users filter ranges, resize panes, or stream dynamic data in the browser</td><td>Bundled <code>quiet-evidence-bundle.js</code> + CSS tokens (<code>QuietSvgLayout</code> &amp; <code>QuietEChartsDefaults</code>)</td><td><code>niceScale125</code>, <code>sharedNiceScale125</code>, <code>measureCategoryGutter</code>, <code>placeReferenceLabel</code>, <code>binTimeSeries</code></td></tr></tbody></table></div>
+<p>Use <code>--fragment</code> with <code>compile_evidence.py</code> when embedding a compiled <code>&lt;figure&gt;</code> inside an existing page, or import <code>compile_spec(...)</code> directly in Python build scripts. When building interactive browser charts, route dynamic scales through <code>window.QuietSvgLayout</code> and <code>QuietEChartsDefaults</code> so theme switches (<code>white</code>, <code>paper</code>, <code>dark</code>, <code>dark-paper</code>) and resize events re-measure labels automatically.</p>
+<hr />
+<h2 id="evidence-and-auditor-how-audit-quiet-html-py-protects-every-page">How <code>audit_quiet_html.py</code> Protects Every Page</h2>
+<p><code>skills/quiet-ui/scripts/audit_quiet_html.py</code> is a portable quality gate you can run against a single file, a static build directory, or a live local server. Think of it as an automated design and accessibility reviewer with three layers:</p>
+<ol><li><strong>Static HTML, CSS, JS &amp; JSON checks</strong>: Scans source files immediately—with no browser needed—to catch CSS overrides (<code>!important</code>), tiny hardcoded fonts (<code>&lt; 11px</code>), missing form labels, dead-end empty states, chrome emojis, and inline mock fixtures.</li><li><strong>Token discipline (<code>--strict-drift</code>)</strong>: Flags raw <code>#hex</code>, <code>rgb()</code>, and <code>hsl()</code> colors in application CSS or inline presentation styles so pages use semantic <code>var(--*)</code> tokens instead of drifting off-theme.</li><li><strong>Persistent <code>.quiet-ui.md</code> project contract</strong>: Run <code>--init-context</code> once to create <code>.quiet-ui.md</code> in your repo root (or pass <code>--context</code>). It remembers Greenfield vs. Brownfield mode, mount prefixes, file exclusions, <code>--strict-drift</code>, and your <strong>Deprecation Blocklist</strong> (<code>selector:</code> / <code>copy:</code>) so removed legacy UI never creeps back in.</li><li><strong>Live browser checks (<code>--cdp</code>)</strong>: Launches Headless Chrome (requires <code>selenium</code> + Chrome) at <strong><code>390px</code></strong> (phone), <strong><code>820px</code></strong> (unfolded foldable / tablet), and <strong><code>1440px</code></strong> (desktop) to measure real rendered pixel bounds—catching oversized sticky headers, clipped controls, and SVG labels colliding with plotted lines.</li></ol>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code># 1. Create starter .quiet-ui.md contract (auto-discovered by future runs)
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py --init-context path/to/repo/.quiet-ui.md
+
+# 2. Run static + strict token-drift checks
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/web --context path/to/repo/.quiet-ui.md --strict-drift
+
+# 3. Run live Headless Chrome sweep at 390px, 820px, and 1440px
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp --mount-prefix /web=/path/to/web</code></pre></div>
+<hr />
+<h2 id="evidence-and-auditor-common-auditor-findings-reference">Common Auditor Findings Reference</h2>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Finding Code</th><th>Check Type</th><th>What Triggered It</th><th>How to Fix It</th></tr></thead><tbody><tr><td><strong><code>[IMPORTANT]</code></strong></td><td>Static CSS</td><td>Stylesheet contains a forbidden <code>!important</code> declaration.</td><td>Remove <code>!important</code> and place overrides in the proper <code>@layer</code> (<code>reset, tokens, shell, archetypes, evidence, views, utilities</code>).</td></tr><tr><td><strong><code>[FONT_FLOOR]</code></strong></td><td>Static CSS (<code>[FONT_FLOOR_CDP]</code> in <code>--cdp</code>)</td><td>Hardcoded <code>font-size</code> below <code>11px</code> (or computed text under <code>10.8px</code> in <code>--cdp</code>).</td><td>Use <code>--ts-xs</code> (<code>max(11px, 0.6875rem)</code>) or larger fluid typography tokens.</td></tr><tr><td><strong><code>[STICKY_CHROME_BLOAT]</code></strong></td><td>Live <code>--cdp</code> (<code>390</code> / <code>820</code> / <code>1440px</code>)</td><td>Top sticky/fixed header height exceeds <code>64px</code> (<code>&gt;= 680px</code> viewports) or <code>88px</code> (<code>&lt; 680px</code>).</td><td>Keep topbars to a single compact row on desktop/foldables and at most two compact rows on mobile.</td></tr><tr><td><strong><code>[TOKEN_BYPASS_HEX]</code></strong></td><td>Static CSS (<code>--strict-drift</code>)</td><td>Raw <code>#hex</code>, <code>rgb()</code>, or <code>hsl()</code> color literal used outside token/theme layers.</td><td>Replace the literal color with a semantic CSS token such as <code>var(--text-primary)</code> or <code>var(--status-warn)</code>.</td></tr><tr><td><strong><code>[DEAD_END_ZERO_STATE]</code></strong></td><td>Static HTML &amp; <code>--cdp</code></td><td>Filtered empty-state box has no recovery <code>&lt;button&gt;</code> or <code>&lt;a href&gt;</code> action.</td><td>Add a visible <code>Clear filters</code> or <code>Reset</code> button/link inside the empty-state container.</td></tr><tr><td><strong><code>[SVG_LABEL_STROKE_COLLISION]</code></strong></td><td>Live <code>--cdp</code></td><td>Visible SVG <code>&lt;text&gt;</code> label sits closer than <code>6px</code> to a plotted curve/line without an opaque badge plate or halo.</td><td>Route labels through <code>placeReferenceLabel</code> / <code>svg_knockout_label</code> or increase offset clearance to <code>&gt;= 6px</code>.</td></tr></tbody></table></div>
+<aside class="oaw-callout" data-callout="tip"><div class="oaw-callout-title">Tip</div><p>Pass <code>--json</code> to <code>audit_quiet_html.py</code> in CI pipelines to capture machine-readable pass/fail counts and exact file/line diagnostics.</p></aside>
+</article>
+<article class="oaw-doc-section" id="doc-workflows-and-project-site">
+<h1 id="workflows-and-project-site-workflows-reusable-project-site-shell">Workflows &amp; Reusable Project-Site Shell</h1>
+<p>Quiet UI turns common interface, reporting, and documentation tasks into ten repeatable workflows (<code>WF-01</code> through <code>WF-10</code>). Each workflow pairs plain-language goals with built-in layout, chart, and verification rules, and <code>WF-10</code> packages the reusable <strong>Open Agentic Workbench (OAW) Project-Site Shell</strong> so any repository can publish an overview, optional interactive demo, and searchable docs site from one JSON manifest.</p>
+<hr />
+<h2 id="workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english">The 10 Quiet UI Workflows in Plain English</h2>
+<p>Whether you are building a brand-new dashboard, cleaning up a legacy console, or publishing documentation for an open-source tool, start by matching your task to one of these ten workflows:</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Workflow</th><th>Real-World Task</th><th>What Quiet UI Enforces</th></tr></thead><tbody><tr><td><strong><code>WF-01</code></strong></td><td><strong>New screen intake</strong></td><td>Answers who the reader is, how fast they need a decision, and which surface (<code>M1</code>–<code>M7</code>) fits before writing HTML, locking real data fields and final audit gates.</td></tr><tr><td><strong><code>WF-02</code></strong></td><td><strong>Consistent numbers across views</strong></td><td>Enforces the <strong>Numerical Conservation Law</strong>: operator, engineer, and manager views read from one verified dataset so counts, units, and limits never drift apart.</td></tr><tr><td><strong><code>WF-03</code></strong></td><td><strong>Print-ready dual physics</strong></td><td>Strips interactive rails, topbars, and cursors automatically in <code>@media print</code> while unwrapping tables and locking clean paper margins (<code>M1</code>).</td></tr><tr><td><strong><code>WF-04</code></strong></td><td><strong>Executive + engineer review rooms</strong></td><td>Pairs a top Go / Caution / No-Go summary band (1–3 minute scan) directly above full calibrated curves and waveforms (10–45 minute proof).</td></tr><tr><td><strong><code>WF-05</code></strong></td><td><strong>Clean-room schematics &amp; starters</strong></td><td>Compiles sequence, fault-tree, P&amp;ID, pipeline, and interface diagrams from JSON specs (<code>compile_evidence.py</code>), paired with MIT starter kits.</td></tr><tr><td><strong><code>WF-06</code></strong></td><td><strong>Teaching labs &amp; student reports</strong></td><td>Uses concept-before-symbol pacing, linked equation colors, and structured lab reporting (claim, apparatus, repeatability bounds, and error critique).</td></tr><tr><td><strong><code>WF-07</code></strong></td><td><strong>Brownfield legacy upgrades</strong></td><td>Saves <code>.quiet-ui.md</code> project rules, tracks feature parity and retired selectors, isolates old CSS inside <code>layer(legacy)</code>, and strips style drift after launch.</td></tr><tr><td><strong><code>WF-08</code></strong></td><td><strong>Public data briefs vs. explorers</strong></td><td>Commits each page cleanly to either a focused reading brief (<code>N0</code>) or a full-width explorer with <code>Chart | Table</code>, <code>Copy data</code>, and <code>Copy for AI</code>.</td></tr><tr><td><strong><code>WF-09</code></strong></td><td><strong>4-phase alarm lifecycles</strong></td><td>Separates calm monitoring from critical alerts: quiet baseline, approaching-limit warning, focused unacknowledged alert takeover, and latched diagnostics.</td></tr><tr><td><strong><code>WF-10</code></strong></td><td><strong>Reusable OAW project sites</strong></td><td>Compiles a static 3-route project portal (<code>Overview</code>, optional <code>Demo</code>, and searchable <code>Docs</code>) plus <code>1280x640</code> social cards from one <code>oaw-site.json</code> file.</td></tr></tbody></table></div>
+<aside class="oaw-callout" data-callout="tip"><div class="oaw-callout-title">Tip</div><p>You do not need to memorize workflow codes. Describe the task in plain English—such as &quot;upgrade a legacy console without losing exports&quot; (<code>WF-07</code>) or &quot;publish docs with a live demo tab&quot; (<code>WF-10</code>)—and follow the matching checklist.</p></aside>
+<hr />
+<h2 id="workflows-and-project-site-reusable-oaw-project-site-shell-wf-10">Reusable OAW Project-Site Shell (<code>WF-10</code>)</h2>
+<p>Instead of maintaining a heavy JavaScript framework for repository websites, <code>WF-10</code> builds a fast, zero-dependency static site from <code>customizations/project-site-starter/</code> and <code>customizations/scripts/build_project_site.py</code>.</p>
+<h3 id="workflows-and-project-site-the-three-route-pattern">The Three-Route Pattern</h3>
+<ol><li><strong><code>Overview</code> (<code>index.html</code> at root)</strong>: Presents the project headline, copy-ready install commands, plain-language feature blocks, optional domain preview cards, compiled architecture diagrams, and a top hub switcher linking sibling OAW projects.</li><li><strong><code>Demo</code> (<code>demo/index.html</code>, optional)</strong>: Wraps an interactive studio or app entry inside a subfolder with a <strong>slim top return bar</strong> (<code>Overview</code> and <code>Docs</code> links) and preserves query parameters such as <code>mode</code>, <code>view</code>, <code>world</code>, and <code>domain</code>. Set <code>routes.demo.enabled</code> and <code>demo_wrapper.enabled</code> to <code>false</code> for docs-only repositories.</li><li><strong><code>Docs</code> (<code>docs/index.html</code>)</strong>: Renders repository Markdown files into a two-column reader with a sticky table of contents, a light-dismiss mobile <code>&lt;dialog closedby=&quot;any&quot;&gt;</code> outline drawer, quick-jump pills, and instant client-side filtering.</li></ol>
+<div class="oaw-compiled-diagram"><figure class="va-figure-card qe-figure" id="oaw-project-site-flow" data-qe-modality="schematic" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">Reusable OAW Project-Site Build Pipeline</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCHEMATIC</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-schematic-wrap" data-rigor="L1" data-medium="m2"><div class="va-figure-scroll" tabindex="0" role="region" aria-label="Reusable OAW Project-Site Build Pipeline"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 318" role="img" aria-label="Reusable OAW Project-Site Build Pipeline">
+<defs><marker id="qe-pipe-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>
+<text x="104.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">1. Inputs</text>
+<text x="333.3" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">2. Static Builder</text>
+<text x="562.7" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">3. Published Routes</text>
+<path d="M 192.0 129.0 H 218.7 V 162.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 192.0 195.0 H 218.7 V 162.0 H 243.3" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 162.0 H 448.0 V 63.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 162.0 H 448.0 V 129.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 162.0 H 448.0 V 195.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 421.3 162.0 H 448.0 V 261.0 H 472.7" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<rect data-role="node" x="16.0" y="106.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="104.0" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">oaw-site.json</text>
+<text x="104.0" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Schema v9 Manifest</text>
+<rect data-role="node" x="16.0" y="172.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="104.0" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">docs/*.md</text>
+<text x="104.0" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Guides + Diagrams</text>
+<rect data-role="node" x="245.3" y="139.0" width="176.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="333.3" y="157.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">build_project_site.py</text>
+<text x="333.3" y="175.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">Zero-Dep Compiler</text>
+<rect data-role="node" x="474.7" y="40.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="562.7" y="58.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Overview</text>
+<text x="562.7" y="76.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">index.html</text>
+<rect data-role="node" x="474.7" y="106.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="562.7" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Demo (Optional)</text>
+<text x="562.7" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">demo/index.html</text>
+<rect data-role="node" x="474.7" y="172.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="562.7" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Searchable Docs</text>
+<text x="562.7" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">docs/index.html</text>
+<rect data-role="node" x="474.7" y="238.0" width="176.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="562.7" y="256.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Social Preview</text>
+<text x="562.7" y="274.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">1280x640 SVG/PNG</text>
+</svg></div></div><figcaption class="va-figure-caption">oaw-site.json and Markdown guides compile via build_project_site.py into Overview, Demo, Docs, and 1280x640 social previews.</figcaption><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:schematic)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for Reusable OAW Project-Site Build Pipeline"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:schematic&quot;,
+  &quot;id&quot;: &quot;oaw-project-site-flow&quot;,
+  &quot;schematic_kind&quot;: &quot;pipeline&quot;,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;Reusable OAW Project-Site Build Pipeline&quot;,
+    &quot;description&quot;: &quot;oaw-site.json and Markdown guides compile via build_project_site.py into Overview, Demo, Docs, and 1280x640 social previews.&quot;,
+    &quot;rigor_level&quot;: &quot;L1&quot;,
+    &quot;audience&quot;: &quot;Repository Maintainers&quot;
+  },
+  &quot;stages&quot;: [
+    &quot;1. Inputs&quot;,
+    &quot;2. Static Builder&quot;,
+    &quot;3. Published Routes&quot;
+  ],
+  &quot;nodes&quot;: [
+    {
+      &quot;id&quot;: &quot;manifest&quot;,
+      &quot;stage&quot;: 0,
+      &quot;label&quot;: &quot;oaw-site.json&quot;,
+      &quot;metric&quot;: &quot;Schema v9 Manifest&quot;
+    },
+    {
+      &quot;id&quot;: &quot;markdown&quot;,
+      &quot;stage&quot;: 0,
+      &quot;label&quot;: &quot;docs/*.md&quot;,
+      &quot;metric&quot;: &quot;Guides + Diagrams&quot;
+    },
+    {
+      &quot;id&quot;: &quot;builder&quot;,
+      &quot;stage&quot;: 1,
+      &quot;label&quot;: &quot;build_project_site.py&quot;,
+      &quot;metric&quot;: &quot;Zero-Dep Compiler&quot;,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;overview&quot;,
+      &quot;stage&quot;: 2,
+      &quot;label&quot;: &quot;Overview&quot;,
+      &quot;metric&quot;: &quot;index.html&quot;
+    },
+    {
+      &quot;id&quot;: &quot;demo&quot;,
+      &quot;stage&quot;: 2,
+      &quot;label&quot;: &quot;Demo (Optional)&quot;,
+      &quot;metric&quot;: &quot;demo/index.html&quot;
+    },
+    {
+      &quot;id&quot;: &quot;docs&quot;,
+      &quot;stage&quot;: 2,
+      &quot;label&quot;: &quot;Searchable Docs&quot;,
+      &quot;metric&quot;: &quot;docs/index.html&quot;
+    },
+    {
+      &quot;id&quot;: &quot;social&quot;,
+      &quot;stage&quot;: 2,
+      &quot;label&quot;: &quot;Social Preview&quot;,
+      &quot;metric&quot;: &quot;1280x640 SVG/PNG&quot;
+    }
+  ],
+  &quot;edges&quot;: [
+    {
+      &quot;from&quot;: &quot;manifest&quot;,
+      &quot;to&quot;: &quot;builder&quot;
+    },
+    {
+      &quot;from&quot;: &quot;markdown&quot;,
+      &quot;to&quot;: &quot;builder&quot;
+    },
+    {
+      &quot;from&quot;: &quot;builder&quot;,
+      &quot;to&quot;: &quot;overview&quot;
+    },
+    {
+      &quot;from&quot;: &quot;builder&quot;,
+      &quot;to&quot;: &quot;demo&quot;
+    },
+    {
+      &quot;from&quot;: &quot;builder&quot;,
+      &quot;to&quot;: &quot;docs&quot;
+    },
+    {
+      &quot;from&quot;: &quot;builder&quot;,
+      &quot;to&quot;: &quot;social&quot;
+    }
+  ]
+}</code></pre></details></figure></div>
+<h3 id="workflows-and-project-site-inside-oaw-site-json-urn-quiet-ui-schema-v9-project-site">Inside <code>oaw-site.json</code> (<code>urn:quiet-ui:schema:v9:project-site</code>)</h3>
+<p>Every project site is driven by a validated <code>oaw-site.json</code> manifest. The loader (<code>load_site_config</code>) checks path confinement—blocking directory escapes outside the config folder—and rejects private IP addresses, internal local-network hostnames, and personal home directory paths before writing HTML:</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Manifest Section</th><th>Required / Purpose</th><th>Key Fields</th></tr></thead><tbody><tr><td><strong><code>$schema</code></strong></td><td>Schema identifier</td><td>Must equal <code>&quot;urn:quiet-ui:schema:v9:project-site&quot;</code>.</td></tr><tr><td><strong><code>project</code></strong></td><td>Identity and links</td><td><code>slug</code>, <code>title</code>, <code>version</code>, <code>tagline</code>, <code>repo_url</code>, <code>site_url</code>, <code>license_summary</code>.</td></tr><tr><td><strong><code>hub</code></strong></td><td>Sibling project switcher</td><td><code>label</code>, <code>hub_url</code>, and <code>projects[]</code> (<code>slug</code>, <code>title</code>, <code>tagline</code>, <code>url</code>, <code>badge</code>, <code>current</code>).</td></tr><tr><td><strong><code>routes</code></strong></td><td>Top navigation tabs</td><td><code>overview</code>, <code>demo</code> (<code>enabled</code>, <code>legacy_query_keys</code>), and <code>docs</code> (<code>href</code>, <code>label</code>).</td></tr><tr><td><strong><code>overview</code></strong></td><td>Root landing content</td><td><code>kicker</code>, <code>headline</code>, <code>summary</code>, CTAs, <code>install_commands</code>, <code>plain_language_blocks</code>, <code>domain_previews</code>, <code>architecture_diagrams</code>.</td></tr><tr><td><strong><code>docs_reader</code></strong></td><td>Docs compiler inputs</td><td><code>title</code>, <code>subtitle</code>, <code>sources[]</code> (<code>id</code>, <code>path</code>, <code>title</code>, <code>category</code>), and <code>quick_jumps[]</code>.</td></tr><tr><td><strong><code>demo_wrapper</code></strong></td><td>Optional demo shell</td><td><code>enabled</code>, <code>entry_path</code>, <code>docs_base</code>, <code>default_studio_view</code>, <code>topbar_links[]</code>.</td></tr><tr><td><strong><code>social_preview</code></strong></td><td>Open Graph card metadata</td><td><code>image_path</code>, <code>width</code> (<code>1280</code>), <code>height</code> (<code>640</code>), <code>eyebrow</code>, <code>title</code>, <code>subtitle</code>, <code>pills[]</code>, <code>accent_hex</code>.</td></tr></tbody></table></div>
+<h3 id="workflows-and-project-site-markdown-diagram-fences-search-recovery-social-previews">Markdown Diagram Fences, Search Recovery &amp; Social Previews</h3>
+<ul><li><strong>Inline <code>quiet-evidence</code> diagram fences</strong>: Wrap any <code>urn:quiet-ui:schema:v9:*</code> JSON spec inside a <code>```quiet-evidence</code> (or <code>```json-diagram</code>) fenced block in your Markdown guide. The compiler turns it into a crisp, theme-safe inline <code>&lt;svg&gt;</code> diagram at build time with zero client-side JavaScript.</li><li><strong>Client-side search with zero-results recovery</strong>: The docs compiler embeds an inline <code>#oaw-docs-search-index</code> payload covering titles, categories, headings, and body text. Pressing <code>/</code> focuses the search box; if a filter matches zero guides, the empty state displays a recovery button (<code>#oaw-empty-clear-btn</code>) to clear the query or jump straight to a recommended guide.</li><li><strong><code>1280x640</code> SVG &amp; PNG social previews</strong>: Every build writes a crisp <code>1280x640</code> SVG preview card beside <code>social_preview.image_path</code> by default (<code>--no-social-svg</code> to skip), and passing <code>--social-png</code> renders the matching PNG card using Pillow only when requested.</li></ul>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code># Copy the MIT starter kit and customize oaw-site.json + docs/*.md
+cp -r customizations/project-site-starter my-project-site
+
+# Build Overview, Docs, optional Demo, and 1280x640 SVG + PNG social previews
+python3 -B customizations/scripts/build_project_site.py \
+  --config my-project-site/oaw-site.json --out dist/ --social-png</code></pre></div>
+<p>Add <code>--bundle</code> to inline <code>quiet-ui-tokens.css</code> and optional <code>styles/overrides.css</code> directly into the generated HTML pages for single-file portability.</p>
+</article>
+      </div>
+    </div>
+  </main>
+  <dialog id="oaw-docs-toc-dialog" class="va-modal-sheet" closedby="any" aria-labelledby="oaw-docs-toc-title">
+    <div class="va-modal-sheet-hdr">
+      <strong id="oaw-docs-toc-title">Documentation Outline</strong>
+      <button type="button" data-close-dialog aria-label="Close outline">Close</button>
+    </div>
+    <div class="va-modal-sheet-body">
+      <nav class="oaw-docs-toc-list" aria-label="Mobile Documentation Outline">
+      <div class="oaw-docs-rail-title">Quick Jumps</div>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-getting-started">Getting Started</button>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-brand-customization">60-Second Brand Customization</button>
+      <a class="oaw-docs-rail-link" href="../demo/index.html?mode=components" data-oaw-route-link>Component Demo (53 Specimens)</a>
+      <div class="oaw-docs-rail-title">Guides</div>
+      <a class="oaw-docs-rail-link" href="#doc-getting-started" data-doc-jump="doc-getting-started">Getting Started</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-what-quiet-user-interface-skills-solves" data-doc-jump="getting-started-what-quiet-user-interface-skills-solves">What Quiet User Interface Skills Solves</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-install-in-one-command" data-doc-jump="getting-started-install-in-one-command">Install in One Command</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-your-first-figure-or-page-in-under-2-minutes" data-doc-jump="getting-started-your-first-figure-or-page-in-under-2-minutes">Your First Figure or Page in Under 2 Minutes</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-where-everything-lives" data-doc-jump="getting-started-where-everything-lives">Where Everything Lives</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-next-steps" data-doc-jump="getting-started-next-steps">Next Steps</a>
+      <a class="oaw-docs-rail-link" href="#doc-brand-customization" data-doc-jump="doc-brand-customization">60-Second Brand Customization</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-one-manifest-for-shells-and-charts" data-doc-jump="brand-customization-one-manifest-for-shells-and-charts">One Manifest for Shells and Charts</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-choosing-the-right-starter" data-doc-jump="brand-customization-choosing-the-right-starter">Choosing the Right Starter</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-option-a-customize-with-an-ai-coding-agent" data-doc-jump="brand-customization-option-a-customize-with-an-ai-coding-agent">Option A: Customize with an AI Coding Agent</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-option-b-manual-cli-workflow" data-doc-jump="brand-customization-option-b-manual-cli-workflow">Option B: Manual CLI Workflow</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#brand-customization-building-a-3-route-public-project-site" data-doc-jump="brand-customization-building-a-3-route-public-project-site">Building a 3-Route Public Project Site</a>
+      <a class="oaw-docs-rail-link" href="#doc-three-pillars" data-doc-jump="doc-three-pillars">Architecture &amp; Three Pillars</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-plain-language-overview-of-the-three-pillars" data-doc-jump="three-pillars-plain-language-overview-of-the-three-pillars">Plain-Language Overview of the Three Pillars</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-pillar-comparison-table" data-doc-jump="three-pillars-pillar-comparison-table">Pillar Comparison Table</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-end-to-end-3-pillar-flow" data-doc-jump="three-pillars-end-to-end-3-pillar-flow">End-to-End 3-Pillar Flow</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#three-pillars-technical-contract-summary" data-doc-jump="three-pillars-technical-contract-summary">Technical Contract Summary</a>
+      <a class="oaw-docs-rail-link" href="#doc-evidence-and-auditor" data-doc-jump="doc-evidence-and-auditor">Calibrated Charts &amp; Layout Auditor</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs" data-doc-jump="evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs">Why Quiet UI Compiles Charts from JSON Specs</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout" data-doc-jump="evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout">When to Use compile_evidence.py vs. window.QuietSvgLayout</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-how-audit-quiet-html-py-protects-every-page" data-doc-jump="evidence-and-auditor-how-audit-quiet-html-py-protects-every-page">How audit_quiet_html.py Protects Every Page</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#evidence-and-auditor-common-auditor-findings-reference" data-doc-jump="evidence-and-auditor-common-auditor-findings-reference">Common Auditor Findings Reference</a>
+      <a class="oaw-docs-rail-link" href="#doc-workflows-and-project-site" data-doc-jump="doc-workflows-and-project-site">Workflows &amp; Reusable Project-Site Shell</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english" data-doc-jump="workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english">The 10 Quiet UI Workflows in Plain English</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#workflows-and-project-site-reusable-oaw-project-site-shell-wf-10" data-doc-jump="workflows-and-project-site-reusable-oaw-project-site-shell-wf-10">Reusable OAW Project-Site Shell (WF-10)</a>
+      </nav>
+    </div>
+  </dialog>
+  <footer class="oaw-site-footer">
+    <div class="oaw-footer-inner">
+      <span>Quiet User Interface Skills · v9.8.0 · Apache-2.0 Core + MIT Customizations &amp; Generated Output</span>
+      <span><a href="https://github.com/FrankXLT/quiet-ui-skills">Repository</a> · <a href="https://projects.oaworkbench.org/">OAW Projects</a></span>
+    </div>
+  </footer>
+  <script type="application/json" id="oaw-docs-search-index">[{"id":"doc-getting-started","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"Getting Started","excerpt":"Quiet User Interface Skills gives developers and AI coding agents a calm, zero-dependency front-end toolkit. Instead of fighting cluttered dashboards, unreadable dark themes...","text":"Getting Started Quiet User Interface Skills gives developers and AI coding agents a calm, zero-dependency front-end toolkit. Instead of fighting cluttered dashboards, unreadable dark themes, or hand-coded SVG coordinates, you work from one shared design contract that compiles clean interfaces and exact charts out of the box."},{"id":"getting-started-what-quiet-user-interface-skills-solves","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"What Quiet User Interface Skills Solves","excerpt":"Calm screens without clutter: Pages follow clear reading widths, balanced spacing, and predictable navigation across phones, desktops, wall displays, and control consoles...","text":"What Quiet User Interface Skills Solves Calm screens without clutter: Pages follow clear reading widths, balanced spacing, and predictable navigation across phones, desktops, wall displays, and control consoles. Honest 1-2-5 charts: Quantitative plots snap to clean 1, 2, and 5 axis steps, label units and uncertainty ranges plainly, and show missing-data gaps honestly instead of smoothing over them. Automatic 4-theme contrast: One CSS token stylesheet (tokens/quiet-ui-tokens.css) switches smoothly across Pure White, Warm Paper, Dark, and Dark Paper while meeting contrast standards without !important. Built-in HTML and CSS verification: An offline Python auditor inspects your generated pages and stylesheets for clipped labels, low contrast, unlabeled form fields, and style drift before you ship. Note Core engine modules (skills/, src/, scripts/, tests/) are licensed under Apache 2.0. Design tokens, starter kits in customizations/, and every page or chart you generate are MIT-licensed with zero attribution requirements."},{"id":"getting-started-install-in-one-command","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"Install in One Command","excerpt":"Clone the repository and run the installer to register both the native Antigravity plugin and portable cross-agent skills (Claude Code, Cursor, Codex, and Windsurf): git clone...","text":"Install in One Command Clone the repository and run the installer to register both the native Antigravity plugin and portable cross-agent skills (Claude Code, Cursor, Codex, and Windsurf): git clone https://github.com/FrankXLT/quiet-ui-skills.git cd quiet-ui-skills ./install.sh Running ./install.sh installs the plugin bundle to ~/.gemini/config/plugins/quiet-ui-skills/ and copies the three portable skills into ~/.agents/skills/{quiet-ui,quiet-evidence,quiet-bridge}/. If you prefer installing individual pillars through the Skills CLI, pick the ones you need: npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-ui npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-evidence npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-bridge"},{"id":"getting-started-your-first-figure-or-page-in-under-2-minutes","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"Your First Figure or Page in Under 2 Minutes","excerpt":"You can try Quiet UI immediately using pure Python (>= 3.10) with zero third-party packages.","text":"Your First Figure or Page in Under 2 Minutes You can try Quiet UI immediately using pure Python (>= 3.10) with zero third-party packages."},{"id":"getting-started-1-compile-a-calibrated-chart","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"1. Compile a Calibrated Chart","excerpt":"Compile one of the included evidence specs into a standalone, 4-theme HTML5 page: python3 -B skills/quiet-evidence/scripts/compile_evidence.py \\...","text":"1. Compile a Calibrated Chart Compile one of the included evidence specs into a standalone, 4-theme HTML5 page: python3 -B skills/quiet-evidence/scripts/compile_evidence.py \\ content/corpora/02-cloud-cyber-and-ai-ops/evidence/v06_ai_calibration_plot.json \\ --rigor L2 --theme white --out first-chart.html Swap --fragment in place of --out when you want an embeddable HTML/SVG fragment to drop directly into an existing app or Markdown guide."},{"id":"getting-started-2-build-a-calm-page-with-design-tokens","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"2. Build a Calm Page with Design Tokens","excerpt":"Link tokens/quiet-ui-tokens.css (and optionally skills/quiet-evidence/assets/quiet-evidence-bundle.css) inside your HTML \u003chead>, then set data-theme=\"white\" on \u003chtml>...","text":"2. Build a Calm Page with Design Tokens Link tokens/quiet-ui-tokens.css (and optionally skills/quiet-evidence/assets/quiet-evidence-bundle.css) inside your HTML \u003chead>, then set data-theme=\"white\" on \u003chtml>: \u003c!doctype html> \u003chtml lang=\"en\" data-theme=\"white\"> \u003chead> \u003cmeta charset=\"utf-8\" /> \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> \u003ctitle>Service Health Summary\u003c/title> \u003clink rel=\"stylesheet\" href=\"./tokens/quiet-ui-tokens.css\" /> \u003cstyle> body { margin: 0; padding: 2rem; background: var(--bg-canvas); color: var(--text-primary); font-family: var(--font-sans); } .summary-card { max-inline-size: 46rem; padding: 1.5rem; background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card); } \u003c/style> \u003c/head> \u003cbody> \u003cmain class=\"summary-card\"> \u003ch1>API Gateway Readiness\u003c/h1> \u003cp>All regional probes remain within target response tolerances.\u003c/p> \u003c/main> \u003c/body> \u003c/html>"},{"id":"getting-started-3-verify-layout-contrast-and-drift","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"3. Verify Layout, Contrast, and Drift","excerpt":"Run the portable auditor against your generated HTML file to catch contrast issues, clipped SVGs, unlabeled controls, or style drift: python3 -B...","text":"3. Verify Layout, Contrast, and Drift Run the portable auditor against your generated HTML file to catch contrast issues, clipped SVGs, unlabeled controls, or style drift: python3 -B skills/quiet-ui/scripts/audit_quiet_html.py first-chart.html --strict-drift When working inside an ongoing codebase, initialize a .quiet-ui.md context file once so agents remember your layout mode and blocklist rules across sessions: python3 -B skills/quiet-ui/scripts/audit_quiet_html.py --init-context .quiet-ui.md"},{"id":"getting-started-4-preview-locally","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"4. Preview Locally","excerpt":"Serve the local studio and documentation portal on port 8788: python3 -B scripts/serve_showcase.py --port 8788","text":"4. Preview Locally Serve the local studio and documentation portal on port 8788: python3 -B scripts/serve_showcase.py --port 8788"},{"id":"getting-started-where-everything-lives","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"Where Everything Lives","excerpt":"Use this map to jump straight to the right part of the Quiet UI Skills site: Surface Path What You Will Find Overview index.html Plain-language summary, install commands...","text":"Where Everything Lives Use this map to jump straight to the right part of the Quiet UI Skills site: Surface Path What You Will Find Overview index.html Plain-language summary, install commands, 6-domain preview cards, and ecosystem flow diagram. Demo demo/index.html Interactive 6-domain, 26-view Studio covering memos, runbooks, dashboards, and hardware consoles. Docs docs/index.html Searchable two-column Markdown reader with section outlines, quick jumps, and live diagrams. Component Library demo/index.html?mode=components 53 compiled UI, SVG plot, ECharts, schematic, form, and zero-state specimens (docs/bench/evidence-bench.html)."},{"id":"getting-started-next-steps","doc_id":"getting-started","title":"Getting Started","category":"Start Here","heading":"Next Steps","excerpt":"Adapt colors and fonts in one minute: Read 60-Second Brand Customization. Understand the three pillars: Read Architecture & Three Pillars. Explore charts and verification...","text":"Next Steps Adapt colors and fonts in one minute: Read 60-Second Brand Customization. Understand the three pillars: Read Architecture & Three Pillars. Explore charts and verification rules: Read Calibrated Charts & Layout Auditor."},{"id":"doc-brand-customization","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"60-Second Brand Customization","excerpt":"You do not need to edit core skill files or hand-tune twenty separate stylesheets to match your product palette. Quiet UI drives both interface shells and compiled charts from...","text":"60-Second Brand Customization You do not need to edit core skill files or hand-tune twenty separate stylesheets to match your product palette. Quiet UI drives both interface shells and compiled charts from a single manifest so your brand stays consistent everywhere."},{"id":"brand-customization-one-manifest-for-shells-and-charts","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"One Manifest for Shells and Charts","excerpt":"Every customization lives in its own folder under customizations/\u003cmy-brand>/ with a customization.json manifest and a styles/overrides.css file: UI shells read your tokens for...","text":"One Manifest for Shells and Charts Every customization lives in its own folder under customizations/\u003cmy-brand>/ with a customization.json manifest and a styles/overrides.css file: UI shells read your tokens for page canvases, card surfaces, text ink, buttons, corner radius, and density. Compiled SVG and ECharts figures read the same palette so axis highlights, focal series, and status badges match the surrounding page automatically across all four surface themes (white, paper, dark-paper, and dark). Important Treat skills/, tokens/, customizations/brand-starter/, and customizations/personal-starter/ as read-only blueprints. Always copy a starter into a new folder such as customizations/acme-app/ before editing."},{"id":"brand-customization-choosing-the-right-starter","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"Choosing the Right Starter","excerpt":"Quiet UI ships three MIT-licensed starters depending on what you are building: Starter Scope Included Surfaces Best For brand-starter 22 views (Domains 01\u201305) Editorial briefs...","text":"Choosing the Right Starter Quiet UI ships three MIT-licensed starters depending on what you are building: Starter Scope Included Surfaces Best For brand-starter 22 views (Domains 01\u201305) Editorial briefs, RFCs, dashboards, data grids, and tree explorers; omits optical HUDs and residential smart-home views SaaS products, engineering platforms, B2B dashboards, and internal tools personal-starter 26 views (All 6 domains) Full showcase range including 8 CC0/PD photo backplates, optical HUD pods, and home energy consoles Personal research workbenches, ambient wall displays, and spatial prototypes project-site-starter 3-route public site (oaw-site.json) Overview landing page, optional Demo wrapper, and searchable Docs Markdown reader Open-source repositories, SDK documentation portals, and static project sites"},{"id":"brand-customization-option-a-customize-with-an-ai-coding-agent","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"Option A: Customize with an AI Coding Agent","excerpt":"Paste this prompt into your AI assistant along with 1\u20133 visual references or brand hex codes: I want to customize Quiet UI for [personal / brand] use in...","text":"Option A: Customize with an AI Coding Agent Paste this prompt into your AI assistant along with 1\u20133 visual references or brand hex codes: I want to customize Quiet UI for [personal / brand] use in customizations/\u003cmy-brand>/. Here are 1-3 inspirational design references: - Reference 1: [URL, screenshot, or description] - Reference 2: [URL, screenshot, or description] Brand Hexes / Fonts: - Primary Accent: #1D4ED8 - Focal Accent: #0F766E - Surface / Canvas: #FFFFFF / #F8FAFC - Typography: Inter / Newsreader / JetBrains Mono Please clone the matching starter, update customization.json and styles/overrides.css, and compile and verify the showcase."},{"id":"brand-customization-option-b-manual-cli-workflow","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"Option B: Manual CLI Workflow","excerpt":"To customize a product or workspace showcase directly from the terminal: Clone a starter into your own folder: cp -r customizations/brand-starter customizations/my-brand Edit...","text":"Option B: Manual CLI Workflow To customize a product or workspace showcase directly from the terminal: Clone a starter into your own folder: cp -r customizations/brand-starter customizations/my-brand Edit customizations/my-brand/customization.json: Update name, title, palette hexes, fonts, corner_geometry (auto, sharp, subtle, rounded, soft), and density. Override tokens cleanly in CSS: Wrap palette and typography changes inside @layer tokens inside customizations/my-brand/styles/overrides.css so they sit neatly in the cascade (@layer reset, tokens, shell, archetypes, evidence, views, utilities;) with zero !important rules: @layer tokens { :root { --accent-primary: #1D4ED8; --accent-focal: #0F766E; --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; } :root[data-theme=\"white\"] { --bg-canvas: #F8FAFC; --bg-surface: #FFFFFF; --text-primary: #0F172A; --text-secondary: #334155; } :root:is([data-theme=\"dark\"], [data-theme=\"dark-paper\"]) { --accent-primary: #60A5FA; --accent-focal: #2DD4BF; --bg-canvas: #090D16; --bg-surface: #0F1624; --text-primary: #F1F5F9; --text-secondary: #CBD5E1; } } Compile and verify your customized showcase: python3 -B customizations/scripts/build_showcase.py customizations/my-brand python3 -B customizations/scripts/verify_customization.py customizations/my-brand --check-immutability The verifier checks WCAG text-to-surface contrast ratios (>= 4.5:1), confirms zero !important overrides, and verifies that none of the read-only starter or skill directories were modified."},{"id":"brand-customization-building-a-3-route-public-project-site","doc_id":"brand-customization","title":"60-Second Brand Customization","category":"Customization","heading":"Building a 3-Route Public Project Site","excerpt":"If you want a clean project website (Overview, Docs, and an optional Demo tab) rather than a showcase explorer, start from customizations/project-site-starter/: cp -r...","text":"Building a 3-Route Public Project Site If you want a clean project website (Overview, Docs, and an optional Demo tab) rather than a showcase explorer, start from customizations/project-site-starter/: cp -r customizations/project-site-starter site Update site/oaw-site.json with your project metadata, Markdown guide list (docs_reader.sources), and install commands, then compile the static site: python3 -B customizations/scripts/build_project_site.py --config site/oaw-site.json --out dist/ Every output file in dist/ is static HTML, CSS, and SVG ready for GitHub Pages or any static web server. Read Workflows & Reusable Project-Site Shell for full oaw-site.json schema details."},{"id":"doc-three-pillars","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"Architecture & Three Pillars","excerpt":"Quiet UI separates how a screen looks, how numbers are plotted, and how the message is written into three focused skills\u2014quiet-ui, quiet-evidence, and quiet-bridge. Instead of...","text":"Architecture & Three Pillars Quiet UI separates how a screen looks, how numbers are plotted, and how the message is written into three focused skills\u2014quiet-ui, quiet-evidence, and quiet-bridge. Instead of asking an AI coding agent or developer to juggle layout physics, SVG coordinate math, and executive framing in one giant prompt, each pillar owns one clear job. Note You do not need to learn every technical rule up front. Start with plain goals\u2014readable text, honest numbers, and a layout tailored to the reader\u2014and let each pillar supply the exact building blocks."},{"id":"three-pillars-1-quiet-ui-surfaces-shells-and-physical-readability","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"1. quiet-ui \u2014 Surfaces, Shells, and Physical Readability","excerpt":"Think of quiet-ui as the room and furniture of your interface. Whether someone is reading a printed handout, tapping a hospital bedside screen, or inspecting a desktop...","text":"1. quiet-ui \u2014 Surfaces, Shells, and Physical Readability Think of quiet-ui as the room and furniture of your interface. Whether someone is reading a printed handout, tapping a hospital bedside screen, or inspecting a desktop workbench, the surface automatically adapts: 7 delivery mediums (M1\u2013M7): Tuned rules for paper and print (M1), editorial web articles (M2), stateful desktop/mobile web apps (M3), walk-up point-of-interest kiosks (M4), 10-foot ambient wall displays (M5), collimated optical HUDs (M6), and transparent window overlays (M7). 5 polymorphic navigation shells (N0\u2013N4): Layouts morph cleanly from a distraction-free document stage (N0), an adaptive left rail (N1), a sticky top bar (N2), or a header-plus-rail command deck (N3), down to a thumb-friendly mobile bottom dock (N4, strictly restricted to viewports under 700px). 4 calibrated themes (white, paper, dark, dark-paper): Built with OKLCH color tokens and a shared --chart-1..5 palette so light, warm-paper, and dark surfaces stay readable without manual color tweaking. Hard 11px legibility floor: No CSS rule or rendered element is allowed to shrink below 11px, and sticky header bars stay compact so content owns the first screen."},{"id":"three-pillars-2-quiet-evidence-calibrated-charts-and-engineering-diagrams","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"2. quiet-evidence \u2014 Calibrated Charts and Engineering Diagrams","excerpt":"Think of quiet-evidence as the drafting table. Instead of letting an LLM guess SVG pixel coordinates freehand\u2014which often causes overlapping labels or clipped axes\u2014you describe...","text":"2. quiet-evidence \u2014 Calibrated Charts and Engineering Diagrams Think of quiet-evidence as the drafting table. Instead of letting an LLM guess SVG pixel coordinates freehand\u2014which often causes overlapping labels or clipped axes\u2014you describe data or system topology in a structured JSON spec and let a deterministic compiler draw the figure: 6 calibrated modalities: Covers (1) scalar readouts and gauges, (2) tables and matrices, (3) hardware bitfields and registers, (4) analytical and spectral plots, (5) multi-channel waveforms and timing diagrams, and (6) schematics and topologies. Zero freehand SVG guessing: Static specs compile through compile_evidence.py, while live browser charts route through window.QuietSvgLayout and QuietEChartsDefaults so tick intervals, margins, and label clearances stay mathematically consistent."},{"id":"three-pillars-3-quiet-bridge-plain-language-framing-without-changing-the-numbers","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"3. quiet-bridge \u2014 Plain-Language Framing Without Changing the Numbers","excerpt":"Think of quiet-bridge as the translator in the room. A plant operator, a systems engineer, and a program manager all look at the same system, yet each needs a different level...","text":"3. quiet-bridge \u2014 Plain-Language Framing Without Changing the Numbers Think of quiet-bridge as the translator in the room. A plant operator, a systems engineer, and a program manager all look at the same system, yet each needs a different level of detail and speed: 7 audience lenses: Technician & Operator, Discipline Engineer, Project Systems Engineer, Program Manager, Consumer & Common Reader, Educator & Mentor, and Student & Learner. 3 decision tempos: Tactical Seconds (5\u201315 second anomaly triage), Executive Minutes (1\u20133 minute gate review), and Analytical Deep Dive (10\u201345 minute peer-reviewed proof). The Numerical Conservation Law: Presentation may adjust wording and jargon density, never the underlying truth. Sample counts (N), timestamps, units, limits, and baselines must trace back to the same verified data source across web briefs, slide decks, and printed handouts."},{"id":"three-pillars-pillar-comparison-table","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"Pillar Comparison Table","excerpt":"Pillar Plain-Language Role Core Inventory Primary Guarantee quiet-ui Layout, navigation, and visual comfort 7 mediums (M1\u2013M7), N0\u2013N4 shells, 4 themes Readable typography (>=...","text":"Pillar Comparison Table Pillar Plain-Language Role Core Inventory Primary Guarantee quiet-ui Layout, navigation, and visual comfort 7 mediums (M1\u2013M7), N0\u2013N4 shells, 4 themes Readable typography (>= 11px), clean focus, strict CSS token use quiet-evidence Accurate charts, scopes, and schematics 6 modalities, 3 rigor levels (L1\u2013L3) Deterministic geometry, explicit units, zero freehand SVG guessing quiet-bridge Audience framing and red-team review 7 audience lenses, 3 decision tempos Numerical Conservation Law\u2014same verified facts at every depth"},{"id":"three-pillars-end-to-end-3-pillar-flow","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"End-to-End 3-Pillar Flow","excerpt":"The pipeline diagram below is compiled directly from an inline urn:quiet-ui:schema:v9:schematic (schematic_kind: \"pipeline\") JSON block\u2014showing how verified tokens and data...","text":"End-to-End 3-Pillar Flow The pipeline diagram below is compiled directly from an inline urn:quiet-ui:schema:v9:schematic (schematic_kind: \"pipeline\") JSON block\u2014showing how verified tokens and data travel through all three pillars into audited screen, print, demo, and documentation outputs. Quiet UI Three-Pillar Architecture Flow Tokens and verified data flow through quiet-ui, quiet-evidence, and quiet-bridge into audited outputs."},{"id":"three-pillars-technical-contract-summary","doc_id":"three-pillars","title":"Architecture & Three Pillars","category":"Architecture","heading":"Technical Contract Summary","excerpt":"Token Layering: Customizations live in customizations/\u003cbrand>/styles/overrides.css rather than mutating core files in tokens/, src/css/, or src/chrome/ during feature work...","text":"Technical Contract Summary Token Layering: Customizations live in customizations/\u003cbrand>/styles/overrides.css rather than mutating core files in tokens/, src/css/, or src/chrome/ during feature work. Pre-Edit Grounding: Every interface declares its target medium (M1\u2013M7), shell (N0\u2013N4), chromatic budget, and Data-to-Widget Binding Map before writing HTML or CSS. Zero-State & Reversibility Contracts: Empty views distinguish first-run, filtered (Clear filters action), warmup (Warming up \u2014 N samples collected when N \u003c 10), and stale retained feeds, while destructive actions follow tiered confirmation (>= 7s Undo Toast, ARM -> EXECUTE, or \u003cdialog closedby=\"any\">)."},{"id":"doc-evidence-and-auditor","doc_id":"evidence-and-auditor","title":"Calibrated Charts & Layout Auditor","category":"Charts & Auditing","heading":"Calibrated Charts & Layout Auditor","excerpt":"Most chart bugs happen when code draws raw pixels by hand or hides missing measurements behind smooth curves. Quiet UI solves both problems in two steps: compile charts from...","text":"Calibrated Charts & Layout Auditor Most chart bugs happen when code draws raw pixels by hand or hides missing measurements behind smooth curves. Quiet UI solves both problems in two steps: compile charts from structured JSON specs so math and labels stay exact, then run an automated layout auditor to catch visual and accessibility regressions before shipping."},{"id":"evidence-and-auditor-why-quiet-ui-compiles-charts-from-json-specs","doc_id":"evidence-and-auditor","title":"Calibrated Charts & Layout Auditor","category":"Charts & Auditing","heading":"Why Quiet UI Compiles Charts from JSON Specs","excerpt":"Writing \u003csvg> coordinates manually in an editor or asking an AI model to guess x/y numbers leads to clipped text, awkward tick marks, and misleading trends. Describing a figure...","text":"Why Quiet UI Compiles Charts from JSON Specs Writing \u003csvg> coordinates manually in an editor or asking an AI model to guess x/y numbers leads to clipped text, awkward tick marks, and misleading trends. Describing a figure in urn:quiet-ui:schema:v9:\u003cmodality> JSON gives every chart five built-in guarantees: 1-2-5 steps: Axes snap to clean human-readable intervals (1, 2, 5 times powers of 10) rather than irregular fractions like 3.7 or 14.3, making mental estimation effortless. Explicit unit labels: Every axis and readout pairs the quantity with its unit (for example, Active Power, P / kW or \u03b7_bte / %) so readers never guess whether a value is watts, kilowatts, or percent. Honest gaps: Missing or null samples stay visible as broken gaps in lines and waveforms instead of being silently bridged by fake interpolation. Chart | Table toggle: Takeaway figure cards pair the visual chart with a clean data table so screen readers, keyboard users, and detail checkers can inspect exact numbers. Copy data and Copy for AI: One click exports tab-separated values (TSV) for spreadsheets (Copy data) or a structured Markdown summary (Copy for AI) ready to paste into an analysis prompt."},{"id":"evidence-and-auditor-when-to-use-compile-evidence-py-vs-window-quietsvglayout","doc_id":"evidence-and-auditor","title":"Calibrated Charts & Layout Auditor","category":"Charts & Auditing","heading":"When to Use compile_evidence.py vs. window.QuietSvgLayout","excerpt":"Choose the compiler path that matches how your page delivers data: Approach When to Use It Runtime Dependencies Primary Entry Point compile_evidence.py Static reports, print...","text":"When to Use compile_evidence.py vs. window.QuietSvgLayout Choose the compiler path that matches how your page delivers data: Approach When to Use It Runtime Dependencies Primary Entry Point compile_evidence.py Static reports, print briefs (M1), docs pages, bitfields, HIL scopes, and system schematics built from known JSON specs Zero JS (pure Python stdlib emitting standalone HTML or \u003cfigure> SVG) python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html window.QuietSvgLayout Live dashboards (M3/M5) where users filter ranges, resize panes, or stream dynamic data in the browser Bundled quiet-evidence-bundle.js + CSS tokens (QuietSvgLayout & QuietEChartsDefaults) niceScale125, sharedNiceScale125, measureCategoryGutter, placeReferenceLabel, binTimeSeries Use --fragment with compile_evidence.py when embedding a compiled \u003cfigure> inside an existing page, or import compile_spec(...) directly in Python build scripts. When building interactive browser charts, route dynamic scales through window.QuietSvgLayout and QuietEChartsDefaults so theme switches (white, paper, dark, dark-paper) and resize events re-measure labels automatically."},{"id":"evidence-and-auditor-how-audit-quiet-html-py-protects-every-page","doc_id":"evidence-and-auditor","title":"Calibrated Charts & Layout Auditor","category":"Charts & Auditing","heading":"How audit_quiet_html.py Protects Every Page","excerpt":"skills/quiet-ui/scripts/audit_quiet_html.py is a portable quality gate you can run against a single file, a static build directory, or a live local server. Think of it as an...","text":"How audit_quiet_html.py Protects Every Page skills/quiet-ui/scripts/audit_quiet_html.py is a portable quality gate you can run against a single file, a static build directory, or a live local server. Think of it as an automated design and accessibility reviewer with three layers: Static HTML, CSS, JS & JSON checks: Scans source files immediately\u2014with no browser needed\u2014to catch CSS overrides (!important), tiny hardcoded fonts (\u003c 11px), missing form labels, dead-end empty states, chrome emojis, and inline mock fixtures. Token discipline (--strict-drift): Flags raw #hex, rgb(), and hsl() colors in application CSS or inline presentation styles so pages use semantic var(--*) tokens instead of drifting off-theme. Persistent .quiet-ui.md project contract: Run --init-context once to create .quiet-ui.md in your repo root (or pass --context). It remembers Greenfield vs. Brownfield mode, mount prefixes, file exclusions, --strict-drift, and your Deprecation Blocklist (selector: / copy:) so removed legacy UI never creeps back in. Live browser checks (--cdp): Launches Headless Chrome (requires selenium + Chrome) at 390px (phone), 820px (unfolded foldable / tablet), and 1440px (desktop) to measure real rendered pixel bounds\u2014catching oversized sticky headers, clipped controls, and SVG labels colliding with plotted lines. # 1. Create starter .quiet-ui.md contract (auto-discovered by future runs) python3 -B skills/quiet-ui/scripts/audit_quiet_html.py --init-context path/to/repo/.quiet-ui.md # 2. Run static + strict token-drift checks python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/web --context path/to/repo/.quiet-ui.md --strict-drift # 3. Run live Headless Chrome sweep at 390px, 820px, and 1440px python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp --mount-prefix /web=/path/to/web"},{"id":"evidence-and-auditor-common-auditor-findings-reference","doc_id":"evidence-and-auditor","title":"Calibrated Charts & Layout Auditor","category":"Charts & Auditing","heading":"Common Auditor Findings Reference","excerpt":"Finding Code Check Type What Triggered It How to Fix It [IMPORTANT] Static CSS Stylesheet contains a forbidden !important declaration. Remove !important and place overrides in...","text":"Common Auditor Findings Reference Finding Code Check Type What Triggered It How to Fix It [IMPORTANT] Static CSS Stylesheet contains a forbidden !important declaration. Remove !important and place overrides in the proper @layer (reset, tokens, shell, archetypes, evidence, views, utilities). [FONT_FLOOR] Static CSS ([FONT_FLOOR_CDP] in --cdp) Hardcoded font-size below 11px (or computed text under 10.8px in --cdp). Use --ts-xs (max(11px, 0.6875rem)) or larger fluid typography tokens. [STICKY_CHROME_BLOAT] Live --cdp (390 / 820 / 1440px) Top sticky/fixed header height exceeds 64px (>= 680px viewports) or 88px (\u003c 680px). Keep topbars to a single compact row on desktop/foldables and at most two compact rows on mobile. [TOKEN_BYPASS_HEX] Static CSS (--strict-drift) Raw #hex, rgb(), or hsl() color literal used outside token/theme layers. Replace the literal color with a semantic CSS token such as var(--text-primary) or var(--status-warn). [DEAD_END_ZERO_STATE] Static HTML & --cdp Filtered empty-state box has no recovery \u003cbutton> or \u003ca href> action. Add a visible Clear filters or Reset button/link inside the empty-state container. [SVG_LABEL_STROKE_COLLISION] Live --cdp Visible SVG \u003ctext> label sits closer than 6px to a plotted curve/line without an opaque badge plate or halo. Route labels through placeReferenceLabel / svg_knockout_label or increase offset clearance to >= 6px. Tip Pass --json to audit_quiet_html.py in CI pipelines to capture machine-readable pass/fail counts and exact file/line diagnostics."},{"id":"doc-workflows-and-project-site","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"Workflows & Reusable Project-Site Shell","excerpt":"Quiet UI turns common interface, reporting, and documentation tasks into ten repeatable workflows (WF-01 through WF-10). Each workflow pairs plain-language goals with built-in...","text":"Workflows & Reusable Project-Site Shell Quiet UI turns common interface, reporting, and documentation tasks into ten repeatable workflows (WF-01 through WF-10). Each workflow pairs plain-language goals with built-in layout, chart, and verification rules, and WF-10 packages the reusable Open Agentic Workbench (OAW) Project-Site Shell so any repository can publish an overview, optional interactive demo, and searchable docs site from one JSON manifest."},{"id":"workflows-and-project-site-the-10-quiet-ui-workflows-in-plain-english","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"The 10 Quiet UI Workflows in Plain English","excerpt":"Whether you are building a brand-new dashboard, cleaning up a legacy console, or publishing documentation for an open-source tool, start by matching your task to one of these...","text":"The 10 Quiet UI Workflows in Plain English Whether you are building a brand-new dashboard, cleaning up a legacy console, or publishing documentation for an open-source tool, start by matching your task to one of these ten workflows: Workflow Real-World Task What Quiet UI Enforces WF-01 New screen intake Answers who the reader is, how fast they need a decision, and which surface (M1\u2013M7) fits before writing HTML, locking real data fields and final audit gates. WF-02 Consistent numbers across views Enforces the Numerical Conservation Law: operator, engineer, and manager views read from one verified dataset so counts, units, and limits never drift apart. WF-03 Print-ready dual physics Strips interactive rails, topbars, and cursors automatically in @media print while unwrapping tables and locking clean paper margins (M1). WF-04 Executive + engineer review rooms Pairs a top Go / Caution / No-Go summary band (1\u20133 minute scan) directly above full calibrated curves and waveforms (10\u201345 minute proof). WF-05 Clean-room schematics & starters Compiles sequence, fault-tree, P&ID, pipeline, and interface diagrams from JSON specs (compile_evidence.py), paired with MIT starter kits. WF-06 Teaching labs & student reports Uses concept-before-symbol pacing, linked equation colors, and structured lab reporting (claim, apparatus, repeatability bounds, and error critique). WF-07 Brownfield legacy upgrades Saves .quiet-ui.md project rules, tracks feature parity and retired selectors, isolates old CSS inside layer(legacy), and strips style drift after launch. WF-08 Public data briefs vs. explorers Commits each page cleanly to either a focused reading brief (N0) or a full-width explorer with Chart | Table, Copy data, and Copy for AI. WF-09 4-phase alarm lifecycles Separates calm monitoring from critical alerts: quiet baseline, approaching-limit warning, focused unacknowledged alert takeover, and latched diagnostics. WF-10 Reusable OAW project sites Compiles a static 3-route project portal (Overview, optional Demo, and searchable Docs) plus 1280x640 social cards from one oaw-site.json file. Tip You do not need to memorize workflow codes. Describe the task in plain English\u2014such as \"upgrade a legacy console without losing exports\" (WF-07) or \"publish docs with a live demo tab\" (WF-10)\u2014and follow the matching checklist."},{"id":"workflows-and-project-site-reusable-oaw-project-site-shell-wf-10","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"Reusable OAW Project-Site Shell (WF-10)","excerpt":"Instead of maintaining a heavy JavaScript framework for repository websites, WF-10 builds a fast, zero-dependency static site from customizations/project-site-starter/ and...","text":"Reusable OAW Project-Site Shell (WF-10) Instead of maintaining a heavy JavaScript framework for repository websites, WF-10 builds a fast, zero-dependency static site from customizations/project-site-starter/ and customizations/scripts/build_project_site.py."},{"id":"workflows-and-project-site-the-three-route-pattern","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"The Three-Route Pattern","excerpt":"Overview (index.html at root): Presents the project headline, copy-ready install commands, plain-language feature blocks, optional domain preview cards, compiled architecture...","text":"The Three-Route Pattern Overview (index.html at root): Presents the project headline, copy-ready install commands, plain-language feature blocks, optional domain preview cards, compiled architecture diagrams, and a top hub switcher linking sibling OAW projects. Demo (demo/index.html, optional): Wraps an interactive studio or app entry inside a subfolder with a slim top return bar (Overview and Docs links) and preserves query parameters such as mode, view, world, and domain. Set routes.demo.enabled and demo_wrapper.enabled to false for docs-only repositories. Docs (docs/index.html): Renders repository Markdown files into a two-column reader with a sticky table of contents, a light-dismiss mobile \u003cdialog closedby=\"any\"> outline drawer, quick-jump pills, and instant client-side filtering. Reusable OAW Project-Site Build Pipeline oaw-site.json and Markdown guides compile via build_project_site.py into Overview, Demo, Docs, and 1280x640 social previews."},{"id":"workflows-and-project-site-inside-oaw-site-json-urn-quiet-ui-schema-v9-project-site","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"Inside oaw-site.json (urn:quiet-ui:schema:v9:project-site)","excerpt":"Every project site is driven by a validated oaw-site.json manifest. The loader (load_site_config) checks path confinement\u2014blocking directory escapes outside the config...","text":"Inside oaw-site.json (urn:quiet-ui:schema:v9:project-site) Every project site is driven by a validated oaw-site.json manifest. The loader (load_site_config) checks path confinement\u2014blocking directory escapes outside the config folder\u2014and rejects private IP addresses, internal local-network hostnames, and personal home directory paths before writing HTML: Manifest Section Required / Purpose Key Fields $schema Schema identifier Must equal \"urn:quiet-ui:schema:v9:project-site\". project Identity and links slug, title, version, tagline, repo_url, site_url, license_summary. hub Sibling project switcher label, hub_url, and projects[] (slug, title, tagline, url, badge, current). routes Top navigation tabs overview, demo (enabled, legacy_query_keys), and docs (href, label). overview Root landing content kicker, headline, summary, CTAs, install_commands, plain_language_blocks, domain_previews, architecture_diagrams. docs_reader Docs compiler inputs title, subtitle, sources[] (id, path, title, category), and quick_jumps[]. demo_wrapper Optional demo shell enabled, entry_path, docs_base, default_studio_view, topbar_links[]. social_preview Open Graph card metadata image_path, width (1280), height (640), eyebrow, title, subtitle, pills[], accent_hex."},{"id":"workflows-and-project-site-markdown-diagram-fences-search-recovery-social-previews","doc_id":"workflows-and-project-site","title":"Workflows & Reusable Project-Site Shell","category":"Workflows & Shell","heading":"Markdown Diagram Fences, Search Recovery & Social Previews","excerpt":"Inline quiet-evidence diagram fences: Wrap any urn:quiet-ui:schema:v9:* JSON spec inside a ```quiet-evidence (or ```json-diagram) fenced block in your Markdown guide. The...","text":"Markdown Diagram Fences, Search Recovery & Social Previews Inline quiet-evidence diagram fences: Wrap any urn:quiet-ui:schema:v9:* JSON spec inside a ```quiet-evidence (or ```json-diagram) fenced block in your Markdown guide. The compiler turns it into a crisp, theme-safe inline \u003csvg> diagram at build time with zero client-side JavaScript. Client-side search with zero-results recovery: The docs compiler embeds an inline #oaw-docs-search-index payload covering titles, categories, headings, and body text. Pressing / focuses the search box; if a filter matches zero guides, the empty state displays a recovery button (#oaw-empty-clear-btn) to clear the query or jump straight to a recommended guide. 1280x640 SVG & PNG social previews: Every build writes a crisp 1280x640 SVG preview card beside social_preview.image_path by default (--no-social-svg to skip), and passing --social-png renders the matching PNG card using Pillow only when requested. # Copy the MIT starter kit and customize oaw-site.json + docs/*.md cp -r customizations/project-site-starter my-project-site # Build Overview, Docs, optional Demo, and 1280x640 SVG + PNG social previews python3 -B customizations/scripts/build_project_site.py \\ --config my-project-site/oaw-site.json --out dist/ --social-png Add --bundle to inline quiet-ui-tokens.css and optional styles/overrides.css directly into the generated HTML pages for single-file portability."}]</script>
+  <script>
+/**
+ * Quiet UI v9.8.0 — Shared Site Shell Runtime
+ * 4-theme persistence, user-menu theme buttons, sticky route links, viewport-aware popovers, and copy buttons.
+ */
+(function (window) {
+  'use strict';
+
+  const STORAGE_KEY = 'quiet-ui-site-theme';
+  const VALID_THEMES = new Set(['white', 'paper', 'dark-paper', 'dark']);
+  const DARK_THEMES = new Set(['dark-paper', 'dark']);
+  const VIEWPORT_PAD = 8;
+  const ROUTE_LINK_SELECTOR =
+    '[data-oaw-route-link], .oaw-nav-links a, .oaw-mobile-subnav a, .oaw-cta-row a, .oaw-domain-card a';
+  const POPOVER_PAIRS = [
+    { btnId: 'oaw-projects-btn', popId: 'oaw-projects-popover', alignRight: false },
+    { btnId: 'oaw-pillar-btn', popId: 'oaw-pillar-popover', alignRight: true },
+    { btnId: 'oaw-user-btn', popId: 'oaw-user-popover', alignRight: true }
+  ];
+  const copyTimers = new WeakMap();
+  const hasAnchorCss = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('position-area', 'block-end');
+
+  function normalizeTheme(raw) {
+    const val = String(raw || '').trim();
+    return VALID_THEMES.has(val) ? val : null;
+  }
+
+  function readStoredTheme() {
+    try { return normalizeTheme(window.localStorage.getItem(STORAGE_KEY)); } catch (_e) { return null; }
+  }
+
+  function writeStoredTheme(theme) {
+    try { window.localStorage.setItem(STORAGE_KEY, theme); } catch (_e) {}
+  }
+
+  function readUrlTheme() {
+    try { return normalizeTheme(new URLSearchParams(window.location.search).get('theme')); } catch (_e) { return null; }
+  }
+
+  function resolveInitialTheme() {
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    const attrTheme = demoHost ? demoHost.dataset.theme : document.documentElement.dataset.theme;
+    return readUrlTheme() || readStoredTheme() || normalizeTheme(attrTheme) || 'white';
+  }
+
+  function withThemeParam(rawHref, theme) {
+    const trimmed = String(rawHref || '').trim();
+    if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//') || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
+      return null;
+    }
+    const hashIdx = trimmed.indexOf('#');
+    const beforeHash = hashIdx >= 0 ? trimmed.slice(0, hashIdx) : trimmed;
+    const hashPart = hashIdx >= 0 ? trimmed.slice(hashIdx) : '';
+    const qIdx = beforeHash.indexOf('?');
+    const pathPart = qIdx >= 0 ? beforeHash.slice(0, qIdx) : beforeHash;
+    const params = new URLSearchParams(qIdx >= 0 ? beforeHash.slice(qIdx + 1) : '');
+    params.set('theme', theme);
+    const qs = params.toString();
+    return pathPart + (qs ? '?' + qs : '') + hashPart;
+  }
+
+  function syncColorSchemeMeta(theme) {
+    const scheme = DARK_THEMES.has(theme) ? 'dark' : 'light';
+    let meta = document.querySelector('meta[name="color-scheme"]');
+    if (!meta && document.head) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'color-scheme');
+      document.head.appendChild(meta);
+    }
+    if (meta) meta.setAttribute('content', scheme);
+  }
+
+  function updateUrlTheme(theme) {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('theme', theme);
+      window.history.replaceState(null, '', url.toString());
+    } catch (_e) {}
+  }
+
+  function applyTheme(rawTheme) {
+    const theme = normalizeTheme(rawTheme) || 'white';
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    if (demoHost) {
+      demoHost.dataset.theme = theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
+      syncColorSchemeMeta(theme);
+    }
+    document.querySelectorAll('.oaw-theme-opt[data-theme-opt]').forEach(function (btn) {
+      const on = btn.getAttribute('data-theme-opt') === theme;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('is-active', on);
+    });
+    document.querySelectorAll(ROUTE_LINK_SELECTOR).forEach(function (link) {
+      const nextHref = withThemeParam(link.getAttribute('href'), theme);
+      if (nextHref !== null) link.setAttribute('href', nextHref);
+    });
+    return theme;
+  }
+
+  function initThemeControls() {
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    const urlTheme = readUrlTheme();
+    const initial = applyTheme(demoHost ? (urlTheme || normalizeTheme(demoHost.dataset.theme) || 'white') : resolveInitialTheme());
+    if (urlTheme) writeStoredTheme(initial);
+
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const opt = target.closest('.oaw-theme-opt[data-theme-opt]');
+      if (!opt) return;
+      const nextTheme = applyTheme(opt.getAttribute('data-theme-opt'));
+      writeStoredTheme(nextTheme);
+      if (demoHost) {
+        window.dispatchEvent(new CustomEvent('oaw:theme-change', { detail: { theme: nextTheme } }));
+      } else {
+        updateUrlTheme(nextTheme);
+      }
+    });
+
+    window.addEventListener('oaw:studio-theme-sync', function (ev) {
+      const t = ev && ev.detail ? normalizeTheme(ev.detail.theme) : null;
+      if (t) applyTheme(t);
+    });
+    window.addEventListener('storage', function (ev) {
+      if (ev.key === STORAGE_KEY) {
+        const t = normalizeTheme(ev.newValue);
+        if (!t) return;
+        const applied = applyTheme(t);
+        if (demoHost) window.dispatchEvent(new CustomEvent('oaw:theme-change', { detail: { theme: applied } }));
+      }
+    });
+  }
+
+  function clearInlinePos(popEl) {
+    Object.assign(popEl.style, { position: '', margin: '', inset: '', top: '', left: '' });
+  }
+
+  function clampPopover(popEl, trigEl, alignRight) {
+    if (!popEl || !trigEl) return;
+    clearInlinePos(popEl);
+    const r = popEl.getBoundingClientRect();
+    const tr = trigEl.getBoundingClientRect();
+    const overflows = r.right > window.innerWidth - VIEWPORT_PAD || r.left < VIEWPORT_PAD;
+    if (hasAnchorCss && !overflows) return;
+    const maxL = Math.max(VIEWPORT_PAD, window.innerWidth - r.width - VIEWPORT_PAD);
+    const rawL = hasAnchorCss ? r.left : (alignRight ? tr.right - r.width : tr.left);
+    const rawT = hasAnchorCss ? Math.max(VIEWPORT_PAD, r.top) : Math.min(tr.bottom + 6, Math.max(VIEWPORT_PAD, window.innerHeight - r.height - VIEWPORT_PAD));
+    Object.assign(popEl.style, {
+      position: 'fixed', margin: '0', inset: 'auto',
+      top: Math.round(rawT) + 'px', left: Math.round(Math.min(Math.max(VIEWPORT_PAD, rawL), maxL)) + 'px'
+    });
+  }
+
+  function initPopovers() {
+    const supportsPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
+    const entries = POPOVER_PAIRS.map(function (p) {
+      return { btn: document.getElementById(p.btnId), pop: document.getElementById(p.popId), alignRight: p.alignRight };
+    }).filter(function (e) { return Boolean(e.btn && e.pop); });
+
+    const setFallback = function (entry, open) {
+      entry.pop.hidden = !open;
+      if (open) {
+        entry.pop.setAttribute('data-open', 'true');
+        clampPopover(entry.pop, entry.btn, entry.alignRight);
+      } else {
+        entry.pop.removeAttribute('data-open');
+        clearInlinePos(entry.pop);
+      }
+      entry.btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+
+    entries.forEach(function (entry) {
+      const btn = entry.btn, pop = entry.pop;
+      if (supportsPopover) {
+        const isPopOpen = function () { return typeof pop.matches === 'function' && pop.matches(':popover-open'); };
+        btn.setAttribute('aria-expanded', isPopOpen() ? 'true' : 'false');
+        pop.addEventListener('toggle', function (ev) {
+          const open = ev && typeof ev.newState === 'string' ? ev.newState === 'open' : isPopOpen();
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) clampPopover(pop, btn, entry.alignRight);
+          else clearInlinePos(pop);
+        });
+        pop.addEventListener('click', function (ev) {
+          if (ev.target && ev.target.closest('a[href]') && typeof pop.hidePopover === 'function' && isPopOpen()) pop.hidePopover();
+        });
+        return;
+      }
+      setFallback(entry, false);
+      btn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        const willOpen = pop.getAttribute('data-open') !== 'true';
+        entries.forEach(function (other) { if (other !== entry) setFallback(other, false); });
+        setFallback(entry, willOpen);
+      });
+      pop.addEventListener('click', function (ev) {
+        if (ev.target && ev.target.closest('a[href]')) setFallback(entry, false);
+      });
+    });
+
+    if (!supportsPopover && entries.length > 0) {
+      document.addEventListener('click', function (ev) {
+        entries.forEach(function (e) {
+          if (e.pop.getAttribute('data-open') === 'true' && !e.pop.contains(ev.target) && !e.btn.contains(ev.target)) setFallback(e, false);
+        });
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Escape') return;
+        entries.forEach(function (e) {
+          if (e.pop.getAttribute('data-open') === 'true') {
+            const hadFocus = e.pop.contains(document.activeElement);
+            setFallback(e, false);
+            if (hadFocus) e.btn.focus();
+          }
+        });
+      });
+    }
+    window.addEventListener('resize', function () {
+      entries.forEach(function (e) {
+        const open = supportsPopover ? (typeof e.pop.matches === 'function' && e.pop.matches(':popover-open')) : e.pop.getAttribute('data-open') === 'true';
+        if (open) clampPopover(e.pop, e.btn, e.alignRight);
+      });
+    });
+  }
+
+  function fallbackCopyText(text) {
+    const prevFocus = document.activeElement;
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.cssText = 'position:fixed;inset-block-start:-9999px;opacity:0;';
+    document.body.appendChild(area);
+    let copied = false;
+    try {
+      area.select();
+      area.setSelectionRange(0, text.length);
+      copied = typeof document.execCommand === 'function' && document.execCommand('copy');
+    } catch (_e) {
+      copied = false;
+    } finally {
+      area.remove();
+      if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus({ preventScroll: true });
+    }
+    return copied;
+  }
+
+  function writeClipboard(text) {
+    if (!text) return Promise.resolve(false);
+    if (window.navigator && window.navigator.clipboard && typeof window.navigator.clipboard.writeText === 'function') {
+      return window.navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () {
+        return fallbackCopyText(text);
+      });
+    }
+    return Promise.resolve(fallbackCopyText(text));
+  }
+
+  function ensureLiveRegion() {
+    let region = document.querySelector('#oaw-live-status, [data-oaw-live-status]');
+    if (!region && document.body) {
+      region = document.createElement('div');
+      region.id = 'oaw-live-status';
+      region.className = 'oaw-sr-only';
+      region.setAttribute('aria-live', 'polite');
+      region.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(region);
+    }
+    return region;
+  }
+
+  function setCopiedFeedback(btn) {
+    if (!btn.dataset.copyLabel) btn.dataset.copyLabel = (btn.textContent || '').trim() || 'Copy';
+    const prevTimer = copyTimers.get(btn);
+    if (prevTimer) window.clearTimeout(prevTimer);
+    btn.setAttribute('data-copied', 'true');
+    btn.textContent = 'Copied';
+    const live = ensureLiveRegion();
+    if (live) live.textContent = 'Copied to clipboard';
+    copyTimers.set(btn, window.setTimeout(function () {
+      btn.removeAttribute('data-copied');
+      btn.textContent = btn.dataset.copyLabel || 'Copy';
+      if (live && live.textContent === 'Copied to clipboard') live.textContent = '';
+      copyTimers.delete(btn);
+    }, 1600));
+  }
+
+  function resolveCopyPayload(btn) {
+    if (btn.hasAttribute('data-copy-text')) return btn.getAttribute('data-copy-text') || '';
+    const block = btn.closest('.oaw-code-block');
+    if (block) {
+      const codeEl = block.querySelector('pre code, pre');
+      return codeEl ? codeEl.textContent || '' : '';
+    }
+    const cmdWrap = btn.closest('.oaw-install-cmd');
+    const cmdCode = cmdWrap ? cmdWrap.querySelector('code') : null;
+    return cmdCode ? cmdCode.textContent || '' : '';
+  }
+
+  function initCopyButtons() {
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const btn = target.closest('.oaw-copy-btn[data-copy-text], .oaw-copy-code-btn');
+      if (!btn) return;
+      const text = resolveCopyPayload(btn);
+      if (text) writeClipboard(text).then(function (ok) { if (ok) setCopiedFeedback(btn); });
+    });
+  }
+
+  function init() {
+    initThemeControls();
+    initPopovers();
+    initCopyButtons();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+}(window));
+
+  </script>
+  <script>
+/**
+ * Quiet UI v9.8.0 — Route 3 Docs Search, Quick Jumps & Mobile TOC Sheet
+ */
+(function (window) {
+  'use strict';
+
+  function parseSearchIndex() {
+    const el = document.getElementById('oaw-docs-search-index');
+    if (!el) return [];
+    try {
+      const parsed = JSON.parse(el.textContent || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_e) {
+      return [];
+    }
+  }
+
+  function buildSectionModel() {
+    const sections = Array.from(document.querySelectorAll('.oaw-docs-section, .oaw-doc-section'));
+    const records = parseSearchIndex();
+    const byId = new Map();
+    const byDocKey = new Map();
+    const entries = sections.map(function (el) {
+      const entry = { el: el, texts: [] };
+      if (el.id) {
+        byId.set(el.id, entry);
+        byDocKey.set(el.id.startsWith('doc-') ? el.id.slice(4) : el.id, entry);
+      }
+      if (el.dataset && el.dataset.docId) byDocKey.set(el.dataset.docId, entry);
+      return entry;
+    });
+
+    records.forEach(function (rec) {
+      if (!rec || typeof rec !== 'object') return;
+      const haystack = [rec.title, rec.category, rec.heading, rec.text].filter(Boolean).join(' ').toLowerCase();
+      if (!haystack) return;
+      let target = null;
+      if (rec.doc_id && byDocKey.has(String(rec.doc_id))) {
+        target = byDocKey.get(String(rec.doc_id));
+      } else if (rec.id && byId.has(String(rec.id))) {
+        target = byId.get(String(rec.id));
+      } else if (rec.id) {
+        const node = document.getElementById(String(rec.id));
+        if (node) target = entries.find(function (e) { return e.el.contains(node); }) || null;
+      }
+      if (target) target.texts.push(haystack);
+    });
+
+    entries.forEach(function (entry) {
+      if (entry.texts.length === 0) entry.texts.push((entry.el.textContent || '').toLowerCase());
+    });
+    return entries;
+  }
+
+  function entryMatchesTokens(entry, tokens) {
+    if (tokens.length === 0) return true;
+    return entry.texts.some(function (chunk) {
+      return tokens.every(function (tok) { return chunk.indexOf(tok) !== -1; });
+    });
+  }
+
+  function formatCountText(visible, total) {
+    if (visible === 0) return '0 matching sections';
+    return String(visible) + ' of ' + String(total) + (total === 1 ? ' guide' : ' guides');
+  }
+
+  function bindDialogLightDismissFallback(dialog) {
+    if (!dialog || (typeof HTMLDialogElement !== 'undefined' && 'closedBy' in HTMLDialogElement.prototype)) return;
+    let pressedOutside = false;
+    const isOutside = function (ev) {
+      const r = dialog.getBoundingClientRect();
+      return ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom;
+    };
+    dialog.addEventListener('pointerdown', function (ev) { pressedOutside = isOutside(ev); });
+    dialog.addEventListener('pointerup', function (ev) {
+      if (pressedOutside && isOutside(ev)) dialog.close();
+      pressedOutside = false;
+    });
+    dialog.addEventListener('click', function (ev) {
+      if (ev.target === dialog && (ev.clientX !== 0 || ev.clientY !== 0) && isOutside(ev)) dialog.close();
+    });
+  }
+
+  function isEditableElement(el) {
+    if (!el) return false;
+    const tag = (el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || Boolean(el.isContentEditable);
+  }
+
+  function resolveInPageTargetId(el) {
+    const raw = (el.getAttribute('data-doc-target') || el.getAttribute('data-doc-jump') || el.getAttribute('href') || '').trim();
+    if (!raw) return null;
+    if (raw.startsWith('#')) return raw.slice(1) || null;
+    return /^[a-zA-Z0-9_-]+$/.test(raw) ? raw : null;
+  }
+
+  function bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch) {
+    if (!tocTrigger || !tocDialog) return;
+    tocTrigger.setAttribute('aria-expanded', tocDialog.open ? 'true' : 'false');
+    tocTrigger.addEventListener('click', function () {
+      if (tocDialog.open) return;
+      if (typeof tocDialog.showModal === 'function') tocDialog.showModal();
+      else tocDialog.setAttribute('open', '');
+      tocTrigger.setAttribute('aria-expanded', 'true');
+    });
+    tocDialog.addEventListener('close', function () { tocTrigger.setAttribute('aria-expanded', 'false'); });
+    tocDialog.addEventListener('click', function (ev) {
+      const el = ev.target;
+      if (!el || typeof el.closest !== 'function') return;
+      if (el.closest('[data-close-dialog], [data-toc-close], .va-modal-sheet-hdr button, button[aria-label*="close" i]')) {
+        closeTocDialog();
+        return;
+      }
+      const tocLink = el.closest('a[href]');
+      if (!tocLink) return;
+      const href = (tocLink.getAttribute('href') || '').trim();
+      if (href.startsWith('#')) {
+        const targetSection = href.slice(1) ? document.getElementById(href.slice(1)) : null;
+        if (targetSection && targetSection.closest('[hidden]')) resetSearch(false);
+      }
+      closeTocDialog();
+    });
+    bindDialogLightDismissFallback(tocDialog);
+  }
+
+  function init() {
+    const entries = buildSectionModel();
+    const searchInput = document.getElementById('oaw-docs-search');
+    const clearBtn = document.getElementById('oaw-docs-search-clear');
+    const emptyClearBtn = document.getElementById('oaw-empty-clear-btn');
+    const countEl = document.getElementById('oaw-docs-search-count');
+    const emptyEl = document.getElementById('oaw-docs-empty') || document.querySelector('.va-empty-state[data-kind="filtered"]');
+    const tocTrigger = document.getElementById('oaw-docs-toc-trigger');
+    const tocDialog = document.getElementById('oaw-docs-toc-dialog');
+
+    function closeTocDialog() {
+      if (!tocDialog) return;
+      if (tocDialog.open && typeof tocDialog.close === 'function') tocDialog.close();
+      else if (tocDialog.hasAttribute('open')) tocDialog.removeAttribute('open');
+      if (tocTrigger) tocTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function applyFilter(rawQuery) {
+      const tokens = String(rawQuery || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      entries.forEach(function (entry) {
+        const match = entryMatchesTokens(entry, tokens);
+        entry.el.hidden = !match;
+        if (match) visible += 1;
+      });
+      if (countEl) countEl.textContent = formatCountText(visible, entries.length);
+      if (emptyEl) emptyEl.hidden = !(visible === 0 && entries.length > 0);
+    }
+
+    function resetSearch(focusInput) {
+      if (searchInput) {
+        searchInput.value = '';
+        if (focusInput && typeof searchInput.focus === 'function') searchInput.focus();
+      }
+      applyFilter('');
+    }
+
+    function jumpToTargetId(targetId) {
+      resetSearch(false);
+      closeTocDialog();
+      const targetEl = document.getElementById(targetId);
+      if (targetEl && typeof targetEl.scrollIntoView === 'function') {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () { applyFilter(searchInput.value); });
+      applyFilter(searchInput.value);
+    } else if (entries.length > 0) {
+      applyFilter('');
+    }
+
+    if (clearBtn) clearBtn.addEventListener('click', function () { resetSearch(true); });
+
+    if (emptyClearBtn) {
+      emptyClearBtn.addEventListener('click', function () {
+        const targetId = resolveInPageTargetId(emptyClearBtn);
+        if (targetId) jumpToTargetId(targetId);
+        else resetSearch(true);
+      });
+    }
+
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const jumpEl = target.closest('[data-doc-jump], [data-doc-target], .oaw-docs-main a[href^="#"], .oaw-docs-prose a[href^="#"]');
+      if (!jumpEl || jumpEl === emptyClearBtn) return;
+      const targetId = resolveInPageTargetId(jumpEl);
+      if (!targetId) { closeTocDialog(); return; }
+      ev.preventDefault();
+      jumpToTargetId(targetId);
+    });
+
+    bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch);
+
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== '/' || ev.ctrlKey || ev.metaKey || ev.altKey || !searchInput) return;
+      if (document.querySelector('dialog[open]') || isEditableElement(document.activeElement)) return;
+      ev.preventDefault();
+      searchInput.focus();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+}(window));
+
+  </script>
+</body>
+</html>

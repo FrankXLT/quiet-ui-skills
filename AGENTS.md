@@ -1,4 +1,4 @@
-# AGENTS.md — Quiet UI Skills (`v9.7.0`)
+# AGENTS.md — Quiet UI Skills (`v9.8.0`)
 
 Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Follow the mode boundary, commands, and invariants below verbatim.
 
@@ -10,8 +10,8 @@ Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Fol
    - Inspect target root for `.quiet-ui.md` first (`--init-context` to scaffold) and bind every view strictly from real API/schema fields via `skills/quiet-ui/foundation/data-grounding-and-widget-binding.md`.
    - Compile quantitative evidence specs via `skills/quiet-evidence/scripts/compile_evidence.py` (or `window.QuietSvgLayout` for dynamic browser SVG plots).
    - Audit generated HTML/CSS/JS via `skills/quiet-ui/scripts/audit_quiet_html.py` (auto-discovers `.quiet-ui.md`; add `--strict-drift` for token bypasses and inline style drift).
-   - Brand or personalize a showcase by cloning `customizations/brand-starter/` or `customizations/personal-starter/` into `customizations/<my-brand>/`.
-   - **Treat `skills/`, `tokens/`, and both `*-starter/` directories as strictly READ-ONLY.**
+   - Brand a showcase or build a 3-route project site by cloning `customizations/brand-starter/`, `customizations/personal-starter/`, or `customizations/project-site-starter/` into `customizations/<my-site>/` (or running `python3 -B customizations/scripts/build_project_site.py --config <oaw-site.json> --out <dir>`).
+   - **Treat `skills/`, `tokens/`, and all `*-starter/` directories as strictly READ-ONLY.**
 2. **Contributing to Quiet UI Core**:
    - Edit source modules in `src/`, compilers in `skills/quiet-evidence/scripts/compilers/`, skill docs in `skills/`, scripts in `scripts/`, or tests in `tests/`.
    - Always regenerate all derived outputs with `python3 -B scripts/build_all.py` after editing core sources, tokens, or `llms.txt`.
@@ -28,22 +28,25 @@ Instructions for AI coding agents working in or consuming `quiet-ui-skills`. Fol
 python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --rigor L3 --theme white --out chart.html
 python3 -B skills/quiet-evidence/scripts/compile_evidence.py spec.json --fragment
 
-# Initialize .quiet-ui.md and audit external HTML/CSS/JS tree or URL (--strict-drift / --cdp)
+# Initialize .quiet-ui.md and audit external HTML/CSS/JS tree or 3-route docs/ URLs (--strict-drift / --cdp)
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py --init-context path/to/repo/.quiet-ui.md
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py path/to/web/v9 --mount-prefix /web=/path/to/web --exclude "*.min.js" --strict-drift
 python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/ --cdp --context path/to/repo/.quiet-ui.md
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/demo/ --cdp
+python3 -B skills/quiet-ui/scripts/audit_quiet_html.py http://127.0.0.1:8788/docs/ --cdp
 
-# Sync mirrors, rebuild skills/quiet-evidence/assets/, Studio, Component Library & starters
+# Sync mirrors, rebuild skills/quiet-evidence/assets/, Studio, 3-route docs/, social preview & starters
 python3 -B scripts/build_all.py
 python3 -B scripts/build_all.py --check
+python3 -B scripts/build_social_preview.py --check
 
 # Run zero-dependency unit, corpora, hygiene & portability tests (skips CDP if Chrome absent)
 python3 -B -m unittest discover -s tests -v
 
-# Run full verification including all 26 Studio CDP gates + 53 Bench specimens + /docs root test
+# Run full verification including all 26 Studio CDP gates + 53 Bench specimens + 3-route /docs root tests
 QUIET_REQUIRE_CDP=1 python3 -B -m unittest discover -s tests -v
 
-# Serve local preview (http://127.0.0.1:8788/)
+# Serve local 3-route preview (http://127.0.0.1:8788/, /demo/, /docs/)
 python3 -B scripts/serve_showcase.py --port 8788
 ```
 
@@ -57,13 +60,14 @@ python3 -B scripts/serve_showcase.py --port 8788
 | `skills/quiet-evidence/` | Pillar 2 router, metrology guides, deterministic compilers, and standalone `assets/quiet-evidence-bundle.{css,js}` (incl. CJK-safe `QuietSvgLayout` + `QuietEChartsDefaults` + `QuietPeriodStepper` + `quiet-card-export`). |
 | `skills/quiet-bridge/` | Pillar 3 router, 7 audience lenses, 3 decision tempos, and `.quiet-ui.md`-aware Intake / Murder Board / Dual-Layer protocols. |
 | `tokens/` | Canonical MIT-licensed 4-theme CSS custom properties (`white`, `paper`, `dark-paper`, `dark`, incl. `--bg-subtle`). |
-| `customizations/` | MIT starter kits (`personal-starter/`, `brand-starter/`) and starter build/verify scripts. |
+| `customizations/` | MIT starter kits (`personal-starter/`, `brand-starter/`, `project-site-starter/`) and starter build/verify scripts (`build_project_site.py`, `verify_customization.py`). |
 | `content/corpora/` | 6 domain corpora (`26` views, `36` JSON specs, `261` conserved metric checks) + attribution docs. |
 | `src/` | First-party Studio shell (`chrome/`), `@layer` CSS (`css/00..20` incl. `20-wave2-archetypes.css`), JS runtimes (`js/` incl. `studio-landing.js`, `quiet-wave2-interactions.js`, `quiet-card-export.js`), and domain builders (`views/`). |
-| `docs/` | GitHub Pages web root (`index.html`, `bench/evidence-bench.html` with `53` specimens, `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos). |
-| `scripts/` | Build & preview CLI (`build_all.py`, `build_showcase.py`, `build_evidence_bench.py`, `bench_wave2_specimens.py`, `serve_showcase.py`). |
+| `src/site_shell/` | Reusable 3-route OAW project-site builder (`__init__.py`, `config.py`), searchable markdown renderer (`markdown_docs.py`), `1280x640` social-card generator (`social_card.py`), and `assets/`. |
+| `docs/` | GitHub Pages 3-route web root: `index.html` Overview, `demo/index.html` Studio, `docs/index.html` Searchable Docs, `bench/evidence-bench.html` (`53` specimens), `assets/quiet-ui-social.png` (`1280x640`), `WORKFLOWS.md`, vendored `echarts.min.js`, CC0/PD photos. |
+| `scripts/` | Build & preview CLI (`build_all.py`, `build_showcase.py`, `build_evidence_bench.py`, `bench_wave2_specimens.py`, `build_social_preview.py`, `serve_showcase.py`). |
 | `tests/` | Unified `unittest` suite (`test_compilers.py`, `test_corpora.py`, `test_portable_auditor.py`, `test_repo_hygiene.py`, `test_cdp_visuals.py`, `test_v970_wave2_archetypes.py`). |
-| `quiet-ui-showcase.html` | Compiled standalone 6-domain, 26-view Studio portal (mirrored byte-for-byte to `docs/index.html`). |
+| `quiet-ui-showcase.html` | Standalone local 6-domain, 26-view Studio portal (live `docs/demo/index.html` wraps it with `.va-demo-site-strip`). |
 
 ---
 
@@ -103,7 +107,7 @@ python3 -B scripts/serve_showcase.py --port 8788
 - **DO NOT use `!important` anywhere in CSS or HTML** or violate the **`>= 11px` computed font floor** in UI controls, tables, or pills.
 - **DO NOT hand-write SVG coordinates or evaluate unsafe math strings**: Author `urn:quiet-ui:schema:v9:<modality>` JSON and compile via `compile_evidence.py` (`ast`-only math evaluation).
 - **DO NOT connect discrete empirical data points with Bezier splines** or omit physical units / measurement tolerances.
-- **DO NOT edit mirrored files independently**: Modify `tokens/quiet-ui-tokens.css` or `llms.txt` at the root and propagate strictly via `python3 -B scripts/build_all.py` (never edit `docs/index.html`, `docs/bench/evidence-bench.html`, or `skills/quiet-evidence/assets/` by hand).
+- **DO NOT edit mirrored files independently**: Modify `tokens/quiet-ui-tokens.css`, `src/chrome/quiet-ui-site.json`, or `llms.txt` and propagate strictly via `python3 -B scripts/build_all.py` (never edit `docs/index.html`, `docs/demo/index.html`, `docs/docs/index.html`, `docs/bench/evidence-bench.html`, or `skills/quiet-evidence/assets/` by hand).
 - **DO NOT mix license boundaries or leak private strings**: Core engine (`skills/`, `src/`, `scripts/`, `tests/`) is **Apache-2.0**; `tokens/`, `customizations/`, and all user-generated output are **MIT** (`0` attribution obligations). Keep private IPs, internal hostnames, and personal machine paths out of committed diffs.
 
 ---

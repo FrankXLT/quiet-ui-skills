@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.5 — Everyday Plain-English Overview Landing Page & Live Layout Preview
+ * Quiet UI v9.8 — Everyday Plain-Language Overview Landing Page & Live Layout Preview
  */
 (function (window, document) {
   'use strict';
@@ -152,9 +152,9 @@
 
   function buildLandingHtml(worlds, totalViews, domainCardsHtml, installCmd) {
     return '<div class="va-landing-wrap"><section class="va-landing-hero" aria-label="Quiet UI Introduction">' +
-      '<span class="va-landing-kicker">CLEAN INTERFACES &amp; HONEST CHARTS FOR AI CODING TOOLS</span>' +
+      '<span class="va-landing-kicker">QUIET UI v9.8 · CLEAN INTERFACES &amp; HONEST CHARTS FOR AI CODING TOOLS</span>' +
       '<h1 class="va-landing-h1">Screens &amp; Reports Built to Be Read, Not Decorated</h1>' +
-      '<p class="va-landing-sub">Most AI tools default to cluttered, neon dashboards that tire your eyes. Quiet UI gives AI coding agents calm layouts, readable charts, and automatic quality checks for desktop screens, printed pages, and phones.</p>' +
+      '<p class="va-landing-sub">Most AI tools default to cluttered, neon dashboards that tire your eyes. Quiet UI v9.8 gives AI coding agents calm layouts, honest charts, plain-language docs, a reusable project-site starter, and automatic quality checks for desktop screens, printed pages, and phones.</p>' +
       '<div class="va-landing-chips">' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-morph-card"><span class="va-chip-prompt">&gt;</span><span>how_it_works_</span></button>' +
       '<button type="button" class="va-landing-chip" data-scroll-target="va-landing-standards"><span class="va-chip-prompt">&gt;</span><span>real_world_rules_</span></button>' +
@@ -165,7 +165,7 @@
       '</div></section>' +
       '<section id="va-landing-morph-card" class="va-morph-card" aria-label="How the Showcase Works and Live Preview"><div class="va-morph-steps">' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('step') + '</span><div><h2>1. Flip Through Real Screens</h2><p>Use &lt; and &gt; in the top bar to step through ' + totalViews + ' examples across desktop monitors, printable pages, phones, and dark mode.</p></div></div>' +
-      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. See Why Every Choice Matters</h2><p>Labels never collide with chart lines, numbers match from summary to detail, and clicking <strong>Why?</strong> explains each layout in plain English.</p></div></div>' +
+      '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('proof') + '</span><div><h2>2. See Why Every Choice Matters</h2><p>Labels never collide with chart lines, numbers match from summary to detail, and clicking <strong>Why?</strong> explains each layout in plain language.</p></div></div>' +
       '<div class="va-morph-step"><span class="va-step-icon-tile">' + svgTileIcon('rail') + '</span><div><h2>3. Try the Live Controls</h2><p>Open or close the sidebar, jump along live signal graphs, click table rows to inspect details, or drag the window edges to resize.</p></div></div>' +
       '</div><div class="va-morph-stage-wrap"><div class="va-morph-stage-hdr">' +
       '<div class="va-morph-stage-title"><span>LIVE LAYOUT PREVIEW</span><span>·</span><span id="va-morph-mode-label">Desktop (1080p) · 1920×1080</span></div>' +
@@ -195,9 +195,9 @@
       '<span>Click any example below to open it in a desktop window, printable page, or phone frame.</span></div><div class="va-domain-grid">' + domainCardsHtml + '</div></section>' +
       '<section id="va-landing-pillars" class="va-pillars-card" aria-label="Three Focused Skills and One-Minute Install">' +
       '<div class="va-landing-sec-hdr"><h2>Three Focused Skills &amp; One-Minute Install</h2><span>Works locally with Antigravity, Claude Code, Cursor, Codex, and Windsurf — zero extra packages required.</span></div>' +
-      '<div class="va-pillars-grid"><div class="va-pillar-col"><h3>quiet-ui (Clean Layouts)</h3><p>Chooses sensible spacing, fonts, and menus for desktop apps, printed reports, wall boards, and phones — plus <code>audit_quiet_html.py</code> to catch layout bugs automatically.</p></div>' +
+      '<div class="va-pillars-grid"><div class="va-pillar-col"><h3>quiet-ui (Clean Layouts &amp; Site Starter)</h3><p>Chooses sensible spacing, fonts, and menus for desktop apps, printed reports, wall boards, phones, and a reusable project-site starter — plus <code>audit_quiet_html.py</code> to catch layout bugs automatically.</p></div>' +
       '<div class="va-pillar-col"><h3>quiet-evidence (Honest Charts)</h3><p>Builds 53 ready-to-use charts, timelines, tables, signal traces, and diagrams where labels stay readable across light and dark themes.</p></div>' +
-      '<div class="va-pillar-col"><h3>quiet-bridge (Plain Language)</h3><p>Tailors complex data for executives, engineers, operators, or students in clear everyday language without altering a single number.</p></div></div>' +
+      '<div class="va-pillar-col"><h3>quiet-bridge (Plain-Language Docs)</h3><p>Tailors complex data and plain-language docs for executives, engineers, operators, or students in clear everyday language without altering a single number.</p></div></div>' +
       '<div class="va-install-bar"><div class="va-install-code-row"><code>' + esc(installCmd) + '</code><button type="button" id="va-landing-copy-install" class="va-studio-btn">Copy</button>' +
       '<span id="va-landing-copy-status" class="va-copy-status" role="status"></span></div><button type="button" id="va-landing-open-components" class="va-landing-cta">Browse All 53 Building Blocks &rarr;</button></div></section></div>';
   }

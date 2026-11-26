@@ -1,0 +1,52 @@
+/* SPDX-License-Identifier: MIT */
+/* ==========================================================================
+   Quiet UI v9.8.0 — OAW Project Site Starter Token Overrides
+   Demonstrates how sibling Open Agentic Workbench repositories customize
+   --accent-primary, --accent-focal, and typography inside @layer tokens
+   while preserving WCAG AA contrast across all 4 Quiet UI surface themes.
+   License: MIT (https://github.com/FrankXLT/quiet-ui-skills)
+   ========================================================================== */
+
+@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+
+@layer tokens {
+  /* 1. White Polarity (Default) & Shared Typographic Scale
+     Note: Keep surface (--bg-*) and ink (--text-*) overrides out of bare :root
+     so [data-theme="paper"], [data-theme="dark-paper"], and [data-theme="dark"]
+     retain their calibrated surface polarity from quiet-ui-tokens.css. */
+  :root,
+  [data-theme="white"] {
+    /* Typography Stack Overrides (inherited by all 4 themes via :root) */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-serif: 'Newsreader', 'Charter', 'Source Serif 4', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-nums: tabular-nums slashed-zero;
+    --measure-prose: 72ch;
+
+    /* White Theme Accents (>= 5.0:1 vs #FFFFFF surface & #F1F5F9 subtle) */
+    --accent-primary: #1D4ED8;
+    --accent-focal: #0F766E;
+    --text-on-accent: #FFFFFF;
+  }
+
+  /* 2. Warm Editorial Paper Theme (>= 6.0:1 vs #FCFBF8 surface & #EAE5DC) */
+  [data-theme="paper"] {
+    --accent-primary: #1E40AF;
+    --accent-focal: #115E59;
+    --text-on-accent: #FFFFFF;
+  }
+
+  /* 3. Warm Charcoal Dark-Paper Theme (>= 5.9:1 vs #1C1B19 surface) */
+  [data-theme="dark-paper"] {
+    --accent-primary: #60A5FA;
+    --accent-focal: #2DD4BF;
+    --text-on-accent: #0F172A;
+  }
+
+  /* 4. Deep Telemetry Dark Theme (>= 7.6:1 vs #0F1624 surface & #162033) */
+  [data-theme="dark"] {
+    --accent-primary: #38BDF8;
+    --accent-focal: #2DD4BF;
+    --text-on-accent: #0F172A;
+  }
+}

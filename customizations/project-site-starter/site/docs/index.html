@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="white" data-oaw-route="docs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%231D4ED8'/%3E%3Cpath d='M3.5 5.2h9M3.5 8h9M3.5 10.8h5.5' fill='none' stroke='%23FFFFFF' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>Documentation — Open Workbench Starter</title>
+  <meta name="description" content="Guides and architecture notes compiled from repository Markdown.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Open Workbench Starter">
+  <meta property="og:description" content="Calm static project portal, Markdown docs reader, and zero-dependency preview cards.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Open Workbench Starter">
+  <meta name="twitter:description" content="Calm static project portal, Markdown docs reader, and zero-dependency preview cards.">
+  <link rel="canonical" href="https://open-agentic-workbench.github.io/starter/docs/">
+  <meta property="og:url" content="https://open-agentic-workbench.github.io/starter/docs/">
+  <meta property="og:image" content="https://open-agentic-workbench.github.io/starter/assets/social-preview.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta name="twitter:image" content="https://open-agentic-workbench.github.io/starter/assets/social-preview.png">
+  <script>(function(){try{var v={white:1,paper:1,'dark-paper':1,dark:1};var p=new URLSearchParams(window.location.search).get('theme');var t=(p&&v[p])?p:null;if(!t){try{var s=window.localStorage.getItem('quiet-ui-site-theme');if(s&&v[s])t=s;}catch(_e){}}t=t||'white';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name="color-scheme"]');if(m)m.setAttribute('content',(t==='dark'||t==='dark-paper')?'dark':'light');}catch(_e){}})();</script>
+  <style id="oaw-layer-order">@layer reset, tokens, shell, archetypes, evidence, views, utilities;</style>
+  <link rel="stylesheet" href="../styles/tokens.layered.css">
+  <link rel="stylesheet" href="../styles/overrides.css">
+  <style id="oaw-site-shell-css">
+/* Quiet UI v9.8.0 — Shared Site Shell, 46px OAW Topbar, Popovers & Centered Overview */
+
+@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { margin: 0; padding: 0; scroll-padding-top: 4rem; }
+  body {
+    margin: 0; padding: 0;
+    background: var(--bg-canvas); color: var(--text-primary);
+    font-family: var(--font-sans); font-size: var(--ts-base); line-height: 1.55;
+  }
+  :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  button:not(.va-pill-btn) { background: none; border: none; padding: 0; cursor: pointer; }
+  a { color: var(--accent-primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img, svg { display: block; max-inline-size: 100%; }
+  h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  table { border-collapse: collapse; border-spacing: 0; }
+  pre, code, kbd, samp { font-family: var(--font-mono); }
+  dialog { margin: auto; border: none; padding: 0; background: transparent; color: inherit; }
+  dialog::backdrop { background: transparent; }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  sub, sup { font-size: 0.75em; line-height: 0; position: relative; vertical-align: baseline; color: inherit; }
+  sub { bottom: -0.22em; }
+  sup { top: -0.45em; }
+}
+
+/* @oaw-shell-start */
+@layer shell {
+  .oaw-skip-link {
+    position: absolute; inset-block-start: -100px; inset-inline-start: 0.75rem; z-index: 150;
+    padding: 0.45rem 0.85rem; border-radius: var(--radius-sm, 6px);
+    background: var(--accent-primary); color: var(--text-on-accent); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-skip-link:focus-visible { inset-block-start: 0.5rem; }
+
+  .oaw-demo-chrome {
+    position: relative; z-index: 120; flex-shrink: 0; font-family: var(--font-sans); color: var(--text-primary);
+  }
+  .oaw-demo-chrome :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+  .oaw-topbar {
+    position: sticky; inset-block-start: 0; z-index: 95;
+    block-size: 46px; min-block-size: 46px; max-block-size: 46px;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-inline: clamp(0.5rem, 1.5vw, 0.9rem);
+    background: var(--bg-elevated); color: var(--text-primary);
+    border-block-end: 1px solid var(--border-hairline);
+  }
+  .oaw-topbar.oaw-topbar--demo,
+  .oaw-topbar.va-demo-site-strip { position: static; }
+  .oaw-topbar-left { display: flex; align-items: center; gap: 0.5rem; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-topbar-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
+  .oaw-switcher-wrap,
+  .oaw-pillar-wrap,
+  .oaw-user-wrap { position: relative; display: inline-flex; align-items: center; min-inline-size: 0; }
+
+  .oaw-brand-link {
+    display: inline-flex; align-items: center; block-size: 32px; padding-inline: 0.35rem;
+    border-radius: var(--radius-sm, 6px); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0;
+  }
+  .oaw-brand-link:hover { text-decoration: none; background: var(--bg-subtle); }
+
+  .oaw-projects-btn,
+  .oaw-pillar-btn,
+  .oaw-user-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+    block-size: 32px; min-block-size: 32px;
+    border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 600; flex-shrink: 0;
+  }
+  .oaw-projects-btn {
+    padding: 0 0.7rem; border-radius: var(--radius-pill, 999px);
+    min-inline-size: 0; max-inline-size: 18rem; flex-shrink: 1; anchor-name: --oaw-projects-anchor;
+  }
+  .oaw-projects-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; }
+  .oaw-pillar-btn { inline-size: 32px; padding: 0; border-radius: var(--radius-sm, 6px); color: var(--text-secondary); anchor-name: --oaw-pillar-anchor; }
+  .oaw-user-btn { padding: 0 0.65rem; border-radius: var(--radius-pill, 999px); white-space: nowrap; anchor-name: --oaw-user-anchor; }
+  .oaw-btn-chev { flex-shrink: 0; transition: transform 150ms ease; }
+  :is(.oaw-projects-btn, .oaw-user-btn)[aria-expanded="true"] .oaw-btn-chev { transform: rotate(180deg); }
+  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):hover,
+  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn)[aria-expanded="true"] {
+    background: var(--bg-subtle); border-color: var(--accent-primary); color: var(--text-primary);
+  }
+
+  .oaw-nav-links { display: inline-flex; align-items: center; gap: 0.15rem; margin-inline-start: 0.15rem; flex-shrink: 0; }
+  .oaw-nav-link {
+    position: relative; display: inline-flex; align-items: center;
+    block-size: 46px; padding-inline: 0.55rem; background: transparent; border: none; border-radius: 0;
+    color: var(--text-secondary); font-size: var(--ts-nav); font-weight: 600; white-space: nowrap; text-decoration: none;
+  }
+  .oaw-nav-link:hover { color: var(--text-primary); background: var(--bg-subtle); text-decoration: none; }
+  .oaw-nav-link[aria-current="page"] { color: var(--text-primary); box-shadow: inset 0 -2.5px 0 var(--accent-primary); }
+
+  .oaw-mobile-subnav { display: none; }
+  @media (min-width: 680px) and (max-width: 820px) {
+    .oaw-nav-link { padding-inline: 0.4rem; }
+  }
+  @media (max-width: 679px) {
+    .oaw-topbar { padding-inline: 0.5rem; gap: 0.35rem; }
+    .oaw-topbar-left, .oaw-topbar-right { gap: 0.3rem; }
+    .oaw-brand-link { font-size: var(--ts-xs); padding-inline: 0.25rem; }
+    .oaw-projects-btn { padding-inline: 0.5rem; font-size: var(--ts-xs); max-inline-size: 13.5rem; }
+    .oaw-nav-links { display: none; }
+    .oaw-user-label { display: none; }
+    .oaw-user-btn { padding-inline: 0.45rem; gap: 0.2rem; }
+    .oaw-mobile-subnav {
+      position: static; display: flex; align-items: center; gap: 0.25rem;
+      block-size: 36px; min-block-size: 36px; padding-inline: 0.65rem;
+      background: var(--bg-surface); border-block-end: 1px solid var(--border-hairline);
+    }
+    .oaw-mobile-subnav .oaw-nav-link { block-size: 36px; padding-inline: 0.5rem; font-size: var(--ts-sm); }
+  }
+
+  /* Opaque Viewport-Aware Popovers */
+  [popover].oaw-popover {
+    display: none; position: fixed; padding: 0.5rem; overflow-y: auto; overscroll-behavior: contain;
+    max-inline-size: calc(100dvw - 16px); max-block-size: calc(100dvh - 64px);
+    border-radius: var(--radius-card, 8px); border: 1px solid var(--border-strong);
+    background-color: var(--bg-surface); color: var(--text-primary);
+    box-shadow: 0 12px 32px color-mix(in oklab, var(--text-primary) 16%, transparent); z-index: 160;
+  }
+  [popover].oaw-popover:is(:popover-open, .\:popover-open, [data-open="true"]) {
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  .oaw-projects-popover { inline-size: min(21rem, calc(100dvw - 16px)); }
+  .oaw-pillar-popover { inline-size: min(19.5rem, calc(100dvw - 16px)); }
+  .oaw-user-popover { inline-size: min(16.5rem, calc(100dvw - 16px)); }
+
+  @supports (position-area: block-end) {
+    .oaw-projects-popover,
+    .oaw-pillar-popover,
+    .oaw-user-popover {
+      inset: auto; margin: 0; margin-block-start: 6px;
+      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    }
+    .oaw-projects-popover { position-anchor: --oaw-projects-anchor; position-area: block-end span-inline-end; }
+    .oaw-pillar-popover { position-anchor: --oaw-pillar-anchor; position-area: block-end span-inline-start; }
+    .oaw-user-popover { position-anchor: --oaw-user-anchor; position-area: block-end span-inline-start; }
+  }
+  @supports not (position-area: block-end) {
+    .oaw-projects-popover,
+    .oaw-pillar-popover,
+    .oaw-user-popover { position: fixed; inset: auto; margin: 0; }
+  }
+
+  .oaw-pop-stage1-back {
+    display: flex; align-items: center; gap: 0.5rem; inline-size: 100%; min-block-size: 36px;
+    padding: 0.4rem 0.6rem; border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-pop-stage1-back:hover { background: var(--bg-subtle); border-color: var(--accent-primary); text-decoration: none; }
+  .oaw-popover-label {
+    padding: 0.25rem 0.45rem 0.05rem; font-family: var(--font-mono); font-size: var(--ts-xs);
+    font-weight: 700; letter-spacing: 0.055em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .oaw-pop-list,
+  .oaw-theme-list { display: flex; flex-direction: column; gap: 0.2rem; }
+  .oaw-pop-sep { border: 0; border-block-start: 1px solid var(--border-hairline); margin: 0.2rem 0; }
+
+  .oaw-pop-row,
+  .oaw-theme-opt {
+    display: flex; align-items: center; gap: 0.55rem; inline-size: 100%; min-block-size: 38px;
+    padding: 0.4rem 0.55rem; border-radius: var(--radius-sm, 6px); border: 1px solid transparent;
+    color: var(--text-primary); font-size: var(--ts-sm); font-weight: 500; text-align: start; text-decoration: none;
+  }
+  .oaw-pop-row--compact { min-block-size: 36px; padding-block: 0.3rem; }
+  :is(.oaw-pop-row, .oaw-theme-opt):hover { background: var(--bg-subtle); text-decoration: none; }
+  :is(.oaw-pop-row, .oaw-theme-opt):is(.is-active, [aria-current="page"], [aria-pressed="true"]) {
+    background: var(--bg-elevated); border-color: var(--accent-primary); font-weight: 600;
+  }
+  .oaw-pop-row.is-soon { opacity: 0.72; cursor: default; }
+  .oaw-pop-row.is-soon:hover { background: transparent; }
+
+  .oaw-pop-icon-well {
+    inline-size: 28px; block-size: 28px; flex: 0 0 auto; border-radius: var(--radius-sm, 6px);
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline); color: var(--accent-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .oaw-pop-row-body { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-pop-row-title { font-size: var(--ts-sm); font-weight: 600; color: var(--text-primary); line-height: 1.25; }
+  .oaw-pop-row-sub { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.3; }
+  .oaw-pop-badge {
+    flex-shrink: 0; padding: 0.15rem 0.45rem; border-radius: var(--radius-xs, 4px);
+    border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600; white-space: nowrap;
+  }
+  .oaw-pop-row.is-active .oaw-pop-badge { color: var(--accent-primary); border-color: var(--accent-primary); }
+  .oaw-pop-check,
+  .oaw-theme-check { margin-inline-start: auto; flex-shrink: 0; color: var(--accent-primary); }
+  .oaw-theme-opt:not([aria-pressed="true"]) .oaw-theme-check { visibility: hidden; }
+  .oaw-theme-dot {
+    inline-size: 14px; block-size: 14px; flex: 0 0 auto; border-radius: var(--radius-pill, 999px);
+    background: var(--bg-canvas); border: 1.5px solid var(--border-strong);
+  }
+  @media (max-width: 679px) {
+    .oaw-pop-row, .oaw-theme-opt { min-block-size: 42px; }
+  }
+  @media print { .oaw-topbar, .oaw-mobile-subnav, .oaw-popover { display: none; } }
+}
+/* @oaw-shell-end */
+
+@layer shell {
+  .oaw-main {
+    inline-size: 100%; max-inline-size: min(67.5rem, 100%); margin-inline: auto;
+    padding: clamp(1.5rem, 3.2vw, 2.75rem) clamp(0.875rem, 2.5vw, 1.5rem) 3.5rem;
+    display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); min-inline-size: 0;
+  }
+  .oaw-site-footer {
+    border-block-start: 1px solid var(--border-hairline); background: var(--bg-elevated);
+    color: var(--text-secondary); padding: 1.25rem clamp(0.875rem, 2.5vw, 1.5rem); font-size: var(--ts-xs);
+  }
+  .oaw-footer-inner {
+    max-inline-size: min(67.5rem, 100%); margin-inline: auto;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.25rem;
+  }
+  .oaw-site-footer a { color: var(--text-secondary); }
+  .oaw-site-footer a:hover { color: var(--accent-primary); }
+}
+
+@layer views {
+  .oaw-hero {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: 0.9rem; min-inline-size: 0; max-inline-size: 52rem; margin-inline: auto;
+  }
+  .oaw-hero-kicker {
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary);
+  }
+  .oaw-hero h1 {
+    font-family: var(--font-serif); font-size: clamp(1.9rem, 4vw, 2.75rem);
+    line-height: 1.15; font-weight: 700; color: var(--text-primary); max-inline-size: 24ch;
+  }
+  .oaw-hero-lead {
+    font-size: var(--ts-prose); line-height: 1.58; color: var(--text-secondary); max-inline-size: 40rem;
+  }
+  .oaw-hero-cmd-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-block-start: 0.15rem; }
+  .oaw-cmd-slug {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.35rem 0.78rem; border-radius: var(--radius-pill, 999px);
+    border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    color: var(--text-primary); font-family: var(--font-mono); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-cmd-slug:hover { border-color: var(--accent-primary); background: var(--bg-surface); text-decoration: none; }
+  .oaw-cmd-caret,
+  .oaw-cmd-cursor { color: var(--accent-primary); font-weight: 700; }
+  @media (prefers-reduced-motion: no-preference) {
+    .oaw-cmd-cursor { animation: oawCursorBreathe 2.4s ease-in-out infinite; }
+    @keyframes oawCursorBreathe { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.38; } }
+  }
+
+  .oaw-cta-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.65rem; margin-block-start: 0.25rem; }
+  .oaw-btn,
+  .oaw-btn-primary,
+  .oaw-btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    min-block-size: 38px; padding: 0.45rem 0.95rem;
+    border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-strong);
+    background: var(--bg-surface); color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 600; text-decoration: none;
+  }
+  .oaw-btn-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--text-on-accent); }
+  :is(.oaw-btn, .oaw-btn-secondary):hover { background: var(--bg-elevated); border-color: var(--accent-primary); text-decoration: none; }
+  .oaw-btn-primary:hover { opacity: 0.92; text-decoration: none; }
+
+  @media (max-width: 679px) {
+    :is(.oaw-cta-row a, .oaw-cta-row button, .oaw-btn, .oaw-btn-primary, .oaw-btn-secondary, .oaw-copy-btn, .oaw-copy-code-btn) {
+      min-block-size: 44px; min-inline-size: 44px;
+    }
+  }
+
+  .oaw-showcase-card {
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 12px); padding: clamp(1.15rem, 2.5vw, 1.75rem);
+    display: flex; flex-direction: column; gap: 1.35rem;
+  }
+  .oaw-steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  @media (max-width: 759px) { .oaw-steps-grid { grid-template-columns: minmax(0, 1fr); } }
+  .oaw-step-item { display: flex; flex-direction: column; gap: 0.4rem; }
+  .oaw-step-icon {
+    inline-size: 36px; block-size: 36px; border-radius: var(--radius-sm, 8px);
+    background: var(--tint-indigo-bg, var(--bg-subtle)); color: var(--accent-primary);
+    display: inline-flex; align-items: center; justify-content: center; margin-block-end: 0.15rem;
+  }
+  .oaw-step-title { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
+  .oaw-step-desc { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-quickstart-box {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-sm, 8px); padding: 1rem 1.1rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .oaw-quickstart-top { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+  .oaw-quickstart-top h2 { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+  .oaw-quickstart-top span { font-size: var(--ts-xs); color: var(--text-muted); }
+
+  .oaw-section-hdr {
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.5rem 1rem; margin-block-end: 0.85rem;
+  }
+  .oaw-section-hdr h2 { font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); line-height: 1.25; }
+  .oaw-section-hdr :is(span, p) { font-size: var(--ts-sm); color: var(--text-muted); }
+
+  .oaw-install-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+  .oaw-pillars-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .oaw-pillars-grid[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oaw-domains-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  @media (max-width: 1020px) { .oaw-pillars-grid, .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 759px) { .oaw-install-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 699px) { .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: minmax(0, 1fr); } }
+
+  .oaw-card,
+  .oaw-install-card,
+  .oaw-pillar-card,
+  .oaw-domain-card {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
+    padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.55rem; min-inline-size: 0;
+  }
+  .oaw-install-card { background: var(--bg-elevated); padding: 0.85rem 0.95rem; }
+  .oaw-pillar-card .oaw-btn,
+  .oaw-domain-card .oaw-btn { margin-block-start: auto; align-self: flex-start; }
+  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) h3 { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) p { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-install-cmd {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding: 0.45rem 0.65rem; background: var(--bg-surface); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-inner, 4px); min-inline-size: 0;
+  }
+  .oaw-install-cmd code { font-size: var(--ts-xs); color: var(--text-primary); overflow-x: auto; white-space: nowrap; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-copy-btn,
+  .oaw-copy-code-btn {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    min-block-size: 30px; padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-xs); font-weight: 600;
+  }
+  :is(.oaw-copy-btn, .oaw-copy-code-btn):hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+  :is(.oaw-copy-btn, .oaw-copy-code-btn)[data-copied="true"] { background: var(--status-ok-bg); color: var(--status-ok); border-color: var(--status-ok); }
+
+  .oaw-tag {
+    display: inline-flex; align-items: center; align-self: flex-start; padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-xs, 4px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-secondary); font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600;
+  }
+
+  .oaw-diagram-panel {
+    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
+    padding: clamp(0.85rem, 2vw, 1.25rem); display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 0; overflow-x: auto;
+  }
+  .oaw-diagram-panel svg { inline-size: 100%; max-inline-size: 100%; block-size: auto; }
+}
+
+@layer utilities {
+  .sr-only,
+  .oaw-sr-only {
+    position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  :is(button, .oaw-btn, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):is(:disabled, [aria-disabled="true"]),
+  :is(select, input, textarea):disabled {
+    opacity: 1; background: var(--disabled-bg, var(--bg-subtle)); color: var(--disabled-fg, var(--text-muted));
+    border: 1px dashed var(--disabled-border, var(--border-strong)); cursor: not-allowed;
+  }
+  .hidden,
+  [hidden]:not([hidden="until-found"]) { display: none; }
+}
+
+@media print {
+  [hidden]:not([hidden="until-found"]),
+  .oaw-skip-link, .oaw-topbar, .oaw-mobile-subnav, .oaw-popover, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-cta-row, .va-demo-site-strip { display: none; }
+  :root,
+  [data-theme] {
+    --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9;
+    --text-primary: #0F172A; --text-secondary: #334155; --text-muted: #475569;
+    --border-hairline: #CBD5E1; --border-strong: #94A3B8; --accent-primary: #1D4ED8; --text-on-accent: #FFFFFF;
+    background: #FFFFFF; color: #0F172A;
+  }
+  body { margin: 0; background: #FFFFFF; color: #0F172A; }
+  .oaw-main:not([hidden]):not(.hidden),
+  .oaw-site-footer:not([hidden]):not(.hidden) {
+    display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box;
+    padding-inline: max(1.5rem, 24px); background: #FFFFFF; color: #0F172A;
+  }
+  .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .oaw-steps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .oaw-install-cmd code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card, .oaw-diagram-panel, .oaw-showcase-card {
+    break-inside: avoid; page-break-inside: avoid; background: #FFFFFF; border-color: #CBD5E1;
+  }
+}
+
+/* Quiet UI v9.8.0 — Route 3 Docs Reader, Sticky Rail, Search & Modal Sheet */
+
+@layer shell {
+  .oaw-docs-layout {
+    inline-size: 100%; max-inline-size: min(82rem, 100%); margin-inline: auto;
+    padding: clamp(1rem, 2.5vw, 2rem) clamp(0.875rem, 2.5vw, 1.5rem) 3rem;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-items: start; min-inline-size: 0;
+  }
+  .oaw-docs-rail { display: none; flex-direction: column; gap: 0.25rem; min-inline-size: 0; }
+  .oaw-docs-toc-trigger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; justify-self: start;
+    min-block-size: 44px; padding: 0.45rem 0.9rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .oaw-docs-toc-trigger:hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+
+  @media (min-width: 760px) {
+    .oaw-docs-layout { grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); gap: 2rem; }
+    .oaw-docs-rail {
+      display: flex; position: sticky; inset-block-start: 68px;
+      max-block-size: calc(100dvh - 84px); overflow-y: auto; overscroll-behavior: contain;
+      padding-block: 0.25rem; padding-inline-end: 0.75rem; border-inline-end: 1px solid var(--border-hairline);
+    }
+    .oaw-docs-toc-trigger { display: none; }
+  }
+
+  .oaw-docs-rail-title {
+    padding: 0.45rem 0.6rem 0.2rem; font-size: var(--ts-xs); font-weight: 700;
+    letter-spacing: 0.055em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .oaw-docs-rail-link,
+  .oaw-docs-rail a,
+  .oaw-docs-toc-list a {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.45rem;
+    min-block-size: 36px; padding: 0.38rem 0.65rem; border-radius: var(--radius-sm, 6px);
+    color: var(--text-secondary); font-size: var(--ts-sm); font-weight: 500; line-height: 1.35; text-decoration: none;
+  }
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):hover {
+    background: var(--bg-subtle); color: var(--text-primary); text-decoration: none;
+  }
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):is([aria-current="page"], [aria-current="location"], .is-active) {
+    background: var(--bg-elevated); color: var(--text-primary);
+    border-inline-start: 3px solid var(--accent-primary); font-weight: 600;
+  }
+
+  /* Native <dialog class="va-modal-sheet" closedby="any"> */
+  dialog.va-modal-sheet {
+    border: 1px solid var(--border-strong); border-radius: var(--radius-card, 8px);
+    background-color: var(--bg-surface); color: var(--text-primary); padding: 0; margin: auto;
+    inline-size: min(92vw, 720px); max-inline-size: calc(100dvw - 1.5rem); max-block-size: calc(100dvh - 3rem);
+    box-shadow: 0 24px 56px color-mix(in oklab, var(--text-primary) 24%, transparent); overflow: hidden;
+  }
+  dialog.va-modal-sheet[open] {
+    display: flex; flex-direction: column; background-color: var(--bg-surface); color: var(--text-primary);
+  }
+  dialog.va-modal-sheet:modal { overscroll-behavior: contain; }
+  html:has(dialog.va-modal-sheet:modal),
+  body:has(dialog.va-modal-sheet:modal) { overflow: hidden; overscroll-behavior: contain; }
+  dialog.va-modal-sheet::backdrop {
+    background: color-mix(in oklab, var(--hud-pod-bg, var(--bg-shell)) 80%, transparent);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); overflow: hidden; overscroll-behavior: contain;
+  }
+  .va-modal-sheet-hdr {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    min-block-size: 44px; padding: 0.45rem 0.85rem;
+    border-block-end: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-primary); flex: 0 0 auto;
+  }
+  .va-modal-sheet-hdr button {
+    min-block-size: 36px; min-inline-size: 36px; padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  .va-modal-sheet-body { padding: var(--density-card-pad, 0.9rem); overflow-y: auto; overscroll-behavior: contain; min-block-size: 0; flex: 1 1 auto; }
+
+  @media (max-width: 759px) {
+    dialog.va-modal-sheet {
+      margin: auto 0 0 0; inline-size: 100%; max-inline-size: 100%; max-block-size: 86dvh;
+      border-radius: var(--radius-card, 8px) var(--radius-card, 8px) 0 0; border-inline: 0; border-block-end: 0;
+    }
+    .oaw-docs-toc-list a, .va-modal-sheet-hdr button { min-block-size: 44px; }
+  }
+}
+
+@layer views {
+  .oaw-docs-main,
+  .oaw-docs-prose,
+  .oaw-docs-article {
+    inline-size: 100%; max-inline-size: 100%; min-inline-size: 0;
+    display: flex; flex-direction: column; gap: 1.15rem;
+  }
+
+  .oaw-docs-searchbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.65rem; padding: 0.65rem 0.85rem;
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 8px); min-inline-size: 0;
+  }
+  .oaw-docs-searchbar input[type="search"] {
+    flex: 1 1 12rem; min-inline-size: 0; min-block-size: 38px; padding: 0.4rem 0.7rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm);
+  }
+  .oaw-docs-search-clear,
+  .oaw-docs-searchbar button {
+    min-block-size: 38px; padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
+  }
+  :is(.oaw-docs-search-clear, .oaw-docs-searchbar button):hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
+  .oaw-docs-search-count {
+    font-family: var(--font-mono); font-variant-numeric: var(--font-nums);
+    font-size: var(--ts-xs); color: var(--text-muted); white-space: nowrap;
+  }
+  @media (max-width: 679px) {
+    .oaw-docs-searchbar input[type="search"] { flex: 1 1 100%; min-block-size: 44px; font-size: max(1rem, var(--ts-base)); }
+    .oaw-docs-search-clear, .oaw-docs-searchbar button, .oaw-empty-actions button, .oaw-empty-actions a { min-block-size: 44px; }
+  }
+
+  .va-empty-state[data-kind="filtered"] {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.65rem; padding: 1.5rem;
+    border: 1px solid var(--border-strong); background: var(--bg-elevated);
+    border-radius: var(--radius-card, 8px); color: var(--text-primary); min-inline-size: 0;
+  }
+  .va-empty-state[data-kind="filtered"] :is(h2, h3, .va-empty-title) { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
+  .va-empty-state[data-kind="filtered"] :is(p, .va-empty-copy) { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
+
+  .oaw-empty-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-block-start: 0.25rem; }
+  .oaw-empty-actions button,
+  .oaw-empty-actions a {
+    display: inline-flex; align-items: center; justify-content: center; min-block-size: 36px; padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
+    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600; text-decoration: none;
+  }
+  .oaw-empty-actions :is(button, a):hover { background: var(--bg-subtle); border-color: var(--accent-primary); text-decoration: none; }
+
+  .oaw-docs-section,
+  .oaw-doc-section {
+    display: flex; flex-direction: column; gap: 0.75rem; padding-block-end: 1.25rem;
+    border-block-end: 1px solid var(--border-hairline); scroll-margin-top: 4.5rem; min-inline-size: 0;
+  }
+  .oaw-docs-prose h1 { font-family: var(--font-serif); font-size: var(--ts-display); line-height: 1.2; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-prose h2 { font-size: var(--ts-xl); line-height: 1.25; font-weight: 700; color: var(--text-primary); margin-block-start: 0.45rem; }
+  .oaw-docs-prose h3 { font-size: var(--ts-md); line-height: 1.3; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-prose :is(p, li, blockquote) {
+    font-size: var(--ts-prose); line-height: 1.62; color: var(--text-secondary);
+    max-inline-size: min(var(--measure-prose, 72ch), 100%); overflow-wrap: anywhere;
+  }
+  .oaw-docs-prose ul { list-style: disc; padding-inline-start: 1.35rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .oaw-docs-prose ol { list-style: decimal; padding-inline-start: 1.35rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .oaw-docs-prose blockquote {
+    padding: 0.65rem 0.95rem; border-inline-start: 3px solid var(--accent-primary);
+    background: var(--bg-elevated); border-radius: 0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0;
+  }
+  .oaw-docs-prose :not(pre) > code {
+    padding: 0.1rem 0.35rem; border-radius: var(--radius-xs, 2px); border: 1px solid var(--border-hairline);
+    background: var(--bg-subtle); color: var(--text-primary); font-size: 0.88em; overflow-wrap: anywhere;
+  }
+
+  .oaw-code-block,
+  .oaw-docs-prose pre,
+  pre {
+    margin: 0; padding: 0.85rem 1rem; border-radius: var(--radius-card, 8px);
+    border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text-primary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); line-height: 1.55; max-inline-size: 100%; overflow-x: auto;
+  }
+  .oaw-code-block pre { padding: 0; border: 0; border-radius: 0; background: transparent; }
+  pre > code { background: transparent; border: 0; padding: 0; color: inherit; font-size: inherit; }
+  .oaw-code-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-block-end: 0.5rem; margin-block-end: 0.55rem;
+    border-block-end: 1px solid var(--border-hairline); font-size: var(--ts-xs); color: var(--text-muted);
+  }
+
+  .va-table-wrap {
+    overflow-x: auto; max-inline-size: 100%; border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-card, 8px); background: var(--bg-surface);
+  }
+  .va-table-wrap table,
+  .oaw-docs-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--ts-sm); }
+  .oaw-docs-prose :is(th, td) { padding: 0.55rem 0.75rem; border-block-end: 1px solid var(--border-hairline); text-align: start; vertical-align: top; }
+  .oaw-docs-prose thead th { background: var(--bg-elevated); color: var(--text-primary); font-weight: 700; }
+  .va-table-wrap table td code,
+  .va-table-wrap table td[data-param-key],
+  .oaw-docs-prose table td code { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+}
+
+@layer utilities {
+  dialog.va-modal-sheet[open] { background-color: var(--bg-surface); color: var(--text-primary); }
+  .hidden,
+  [hidden]:not([hidden="until-found"]) { display: none; }
+}
+
+@media print {
+  [hidden]:not([hidden="until-found"]),
+  .oaw-docs-rail, .oaw-docs-toc-trigger, .oaw-docs-searchbar, .oaw-copy-btn,
+  .oaw-copy-code-btn, .oaw-code-copy, .oaw-empty-actions, dialog.va-modal-sheet { display: none; }
+
+  .oaw-docs-layout:not([hidden]):not(.hidden) {
+    display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box;
+    padding-inline: max(1.5rem, 24px); background: #FFFFFF; color: #0F172A;
+  }
+  .oaw-docs-main, .oaw-docs-prose, .oaw-docs-article { max-inline-size: 100%; color: #0F172A; }
+  .va-table-wrap { overflow: visible; border: 0; }
+  .oaw-docs-prose table { inline-size: 100%; max-inline-size: 100%; font-size: 9pt; }
+  .oaw-docs-prose :is(th, td),
+  .oaw-docs-prose td code { white-space: normal; overflow-wrap: anywhere; }
+  .oaw-code-block,
+  pre {
+    background: #F8FAFC; color: #0F172A; border-color: #CBD5E1;
+    white-space: pre-wrap; overflow-wrap: anywhere; break-inside: avoid; page-break-inside: avoid;
+  }
+}
+
+@layer evidence {
+  .va-figure-card.qe-figure { margin: 0; color: var(--text-primary); display: flex; flex-direction: column; gap: 0.75rem; }
+  .va-figure-hdr.qe-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .qe-fig-title { margin: 0; font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  .qe-fig-badges { display: inline-flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  .va-pill[data-variant="tag"] {
+    display: inline-flex; align-items: center; padding: 0.15rem 0.45rem; border-radius: var(--radius-xs, 2px);
+    border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600;
+  }
+  .qe-schematic-wrap, .va-figure-scroll { min-inline-size: 0; max-inline-size: 100%; overflow-x: auto; }
+  .qe-spec-drawer { border-block-start: 1px solid var(--border-hairline); padding-block-start: 0.55rem; }
+  .qe-spec-summary { font-size: var(--ts-xs); font-weight: 600; color: var(--text-muted); }
+  .qe-spec-pre {
+    margin: 0.5rem 0 0; padding: 0.75rem; border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-hairline);
+    background: var(--bg-elevated); color: var(--text-primary); font-size: var(--ts-xs); line-height: 1.5; max-inline-size: 100%; overflow-x: auto;
+  }
+}
+@layer views {
+  .oaw-docs-intro { display: flex; flex-direction: column; gap: 0.45rem; }
+  .oaw-docs-intro h1 { font-family: var(--font-serif); font-size: var(--ts-display); line-height: 1.2; font-weight: 700; color: var(--text-primary); }
+  .oaw-docs-intro p { font-size: var(--ts-prose); line-height: 1.55; color: var(--text-secondary); max-inline-size: min(var(--measure-prose, 72ch), 100%); }
+  .oaw-docs-rail-link.oaw-docs-sub { padding-inline-start: 1.15rem; font-size: var(--ts-xs); color: var(--text-muted); }
+  .oaw-code-hdr {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    padding-block-end: 0.5rem; margin-block-end: 0.55rem; border-block-end: 1px solid var(--border-hairline);
+    font-size: var(--ts-xs); color: var(--text-muted);
+  }
+  .oaw-code-lang { font-family: var(--font-mono); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .oaw-callout {
+    display: flex; flex-direction: column; gap: 0.35rem; padding: 0.75rem 0.95rem;
+    border: 1px solid var(--border-hairline); border-inline-start: 3px solid var(--accent-primary);
+    border-radius: 0 var(--radius-sm, 6px) var(--radius-sm, 6px) 0; background: var(--bg-elevated);
+  }
+  .oaw-callout-title { font-size: var(--ts-xs); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-primary); }
+  .oaw-diagram-caption { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.45; }
+}
+  </style>
+</head>
+<body>
+  <a class="oaw-skip-link" href="#oaw-main-content">Skip to content</a>
+  <header class="oaw-topbar" role="banner">
+    <div class="oaw-topbar-left">
+      <a class="oaw-brand-link" href="https://open-agentic-workbench.github.io/">OAW Projects</a>
+      <div class="oaw-switcher-wrap">
+        <button type="button" id="oaw-projects-btn" class="oaw-projects-btn" popovertarget="oaw-projects-popover" aria-controls="oaw-projects-popover" aria-expanded="false"><span class="oaw-projects-label">Open Workbench Starter</span><svg class="oaw-btn-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M4 6l4 4 4-4"/></svg></button>
+        <div id="oaw-projects-popover" class="oaw-popover oaw-projects-popover" popover="auto" aria-label="Projects Switcher">
+          <a class="oaw-pop-stage1-back" href="https://open-agentic-workbench.github.io/"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M12.5 8H3.5M7 4.5 3.5 8 7 11.5"/></svg><span>All Projects</span></a>
+          <div class="oaw-popover-label">Projects</div>
+          <div class="oaw-pop-list">
+        <a class="oaw-pop-row is-active" href="https://open-agentic-workbench.github.io/starter/" aria-current="page"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Open Workbench Starter</span><span class="oaw-pop-row-sub">Static project overview and searchable documentation reader</span></span><svg class="oaw-pop-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></a>
+        <a class="oaw-pop-row" href="https://open-agentic-workbench.github.io/telemetry-inspector/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Telemetry Command Interface</span><span class="oaw-pop-row-sub">Deterministic terminal trace and structured log inspector</span></span><span class="oaw-pop-badge">Tool</span></a>
+        <a class="oaw-pop-row" href="https://open-agentic-workbench.github.io/schema-validator/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Schema Contract Validator</span><span class="oaw-pop-row-sub">Zero-dependency JSON contract validator and diff checker</span></span><span class="oaw-pop-badge">Validator</span></a>
+        <a class="oaw-pop-row" href="https://open-agentic-workbench.github.io/benchmark-runner/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Performance Benchmark Runner</span><span class="oaw-pop-row-sub">Reproducible timing and throughput verification harness</span></span><span class="oaw-pop-badge">Bench</span></a>
+          </div>
+        </div>
+      </div>
+      <nav class="oaw-nav-links" aria-label="Primary Navigation"><a class="oaw-nav-link" href="../index.html" data-oaw-route-link="overview">Overview</a> <a class="oaw-nav-link" href="./index.html" data-oaw-route-link="docs" aria-current="page">Docs</a></nav>
+    </div>
+    <div class="oaw-topbar-right">
+      <div class="oaw-pillar-wrap">
+        <button type="button" id="oaw-pillar-btn" class="oaw-pillar-btn" popovertarget="oaw-pillar-popover" aria-controls="oaw-pillar-popover" aria-expanded="false" aria-label="Open Agentic Workbench Ecosystem" title="Open Agentic Workbench"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="3" cy="3" r="1.35" fill="currentColor"/><circle cx="8" cy="3" r="1.35" fill="currentColor"/><circle cx="13" cy="3" r="1.35" fill="currentColor"/><circle cx="3" cy="8" r="1.35" fill="currentColor"/><circle cx="8" cy="8" r="1.35" fill="currentColor"/><circle cx="13" cy="8" r="1.35" fill="currentColor"/><circle cx="3" cy="13" r="1.35" fill="currentColor"/><circle cx="8" cy="13" r="1.35" fill="currentColor"/><circle cx="13" cy="13" r="1.35" fill="currentColor"/></svg></button>
+        <div id="oaw-pillar-popover" class="oaw-popover oaw-pillar-popover" popover="auto" aria-label="Open Agentic Workbench Ecosystem">
+          <div class="oaw-popover-label">Open Agentic Workbench</div>
+          <div class="oaw-pop-list">
+        <a class="oaw-pop-row" href="https://open-agentic-workbench.github.io/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M2.5 7.5 8 3l5.5 4.5V13.5h-4v-3.5h-3v3.5h-4z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Home</span><span class="oaw-pop-row-sub">Workbench home and overview</span></span></a>
+        <a class="oaw-pop-row" href="https://open-agentic-workbench.github.io/"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M2.5 3.5h4.2c.7 0 1.3.5 1.3 1.2v8.3c-.4-.5-1-.7-1.6-.7H2.5zm11 0H9.3c-.7 0-1.3.5-1.3 1.2v8.3c.4-.5 1-.7 1.6-.7h3.9z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Learn</span><span class="oaw-pop-row-sub">Interactive engineering and science guides</span></span></a>
+        <a class="oaw-pop-row is-active" href="https://open-agentic-workbench.github.io/" aria-current="page"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M8 2 13.5 5v6L8 14 2.5 11V5L8 2Z"/><path fill="none" d="M2.5 5 8 8l5.5-3M8 8v6"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Projects</span><span class="oaw-pop-row-sub">Open-source tools and browser demos</span></span><span class="oaw-pop-badge">Active</span></a>
+        <div class="oaw-pop-row is-soon" aria-disabled="true"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none"/><path fill="none" d="M10.4 5.6 9 9l-3.4 1.4L7 7z"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">Research</span><span class="oaw-pop-row-sub">Long-form technical investigations</span></span><span class="oaw-pop-badge">Soon</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="oaw-user-wrap">
+        <button type="button" id="oaw-user-btn" class="oaw-user-btn" popovertarget="oaw-user-popover" aria-controls="oaw-user-popover" aria-expanded="false" aria-label="@open-agentic-workbench menu and theme" title="@open-agentic-workbench"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.6" fill="none"/><path fill="none" d="M3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg><span class="oaw-user-label">@open-agentic-workbench</span><svg class="oaw-btn-chev" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M4 6l4 4 4-4"/></svg></button>
+        <div id="oaw-user-popover" class="oaw-popover oaw-user-popover" popover="auto" aria-label="Color Theme and Account Menu">
+          <div class="oaw-popover-label">Color Theme</div>
+          <div class="oaw-theme-list" role="group" aria-label="Color Theme">
+          <button type="button" class="oaw-theme-opt is-active" data-theme-opt="white" aria-pressed="true"><span class="oaw-theme-dot" data-theme="white" aria-hidden="true"></span><span class="oaw-theme-label">Pure White</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="paper" aria-pressed="false"><span class="oaw-theme-dot" data-theme="paper" aria-hidden="true"></span><span class="oaw-theme-label">Warm Paper</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="dark" aria-pressed="false"><span class="oaw-theme-dot" data-theme="dark" aria-hidden="true"></span><span class="oaw-theme-label">Dark</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          <button type="button" class="oaw-theme-opt" data-theme-opt="dark-paper" aria-pressed="false"><span class="oaw-theme-dot" data-theme="dark-paper" aria-hidden="true"></span><span class="oaw-theme-label">Dark Paper</span><svg class="oaw-theme-check" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/></svg></button>
+          </div>
+          <hr class="oaw-pop-sep">
+          <div class="oaw-popover-label">Account &amp; Source</div>
+          <div class="oaw-pop-list">
+            <a class="oaw-pop-row oaw-pop-row--compact" href="https://github.com/open-agentic-workbench/starter" target="_blank" rel="noopener noreferrer"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path fill="none" d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5M9 3.5l-2 9"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">GitHub Repository</span></span></a>
+            <a class="oaw-pop-row oaw-pop-row--compact" href="https://github.com/open-agentic-workbench" target="_blank" rel="noopener noreferrer"><span class="oaw-pop-icon-well" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="5.2" r="2.6" fill="none"/><path fill="none" d="M3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/></svg></span><span class="oaw-pop-row-body"><span class="oaw-pop-row-title">@open-agentic-workbench</span></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <nav class="oaw-mobile-subnav" aria-label="Mobile Route Navigation"><a class="oaw-nav-link" href="../index.html" data-oaw-route-link="overview">Overview</a> <a class="oaw-nav-link" href="./index.html" data-oaw-route-link="docs" aria-current="page">Docs</a></nav>
+  <main id="oaw-main-content" class="oaw-docs-layout">
+    <aside class="oaw-docs-rail" aria-label="Documentation Outline">
+      <div class="oaw-docs-rail-title">Quick Jumps</div>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-getting-started">Getting Started</button>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-architecture">Architecture Overview</button>
+      <a class="oaw-docs-rail-link" href="../index.html" data-oaw-route-link>Home Overview</a>
+      <div class="oaw-docs-rail-title">Guides</div>
+      <a class="oaw-docs-rail-link" href="#doc-getting-started" data-doc-jump="doc-getting-started">Getting Started</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-1-copy-the-starter-into-your-repository" data-doc-jump="getting-started-1-copy-the-starter-into-your-repository">1. Copy the Starter into Your Repository</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-2-configure-oaw-site-json" data-doc-jump="getting-started-2-configure-oaw-site-json">2. Configure oaw-site.json</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-3-add-markdown-guides" data-doc-jump="getting-started-3-add-markdown-guides">3. Add Markdown Guides</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-4-override-colors-and-fonts-in-styles-overrides-css" data-doc-jump="getting-started-4-override-colors-and-fonts-in-styles-overrides-css">4. Override Colors and Fonts in styles/overrides.css</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-5-build-the-static-site" data-doc-jump="getting-started-5-build-the-static-site">5. Build the Static Site</a>
+      <a class="oaw-docs-rail-link" href="#doc-architecture" data-doc-jump="doc-architecture">Architecture Overview</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-three-route-layout" data-doc-jump="architecture-three-route-layout">Three-Route Layout</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-shared-shell-chrome" data-doc-jump="architecture-shared-shell-chrome">Shared Shell Chrome</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-build-pipeline-overview" data-doc-jump="architecture-build-pipeline-overview">Build Pipeline Overview</a>
+    </aside>
+    <div class="oaw-docs-main">
+      <button type="button" id="oaw-docs-toc-trigger" class="oaw-docs-toc-trigger" aria-haspopup="dialog" aria-controls="oaw-docs-toc-dialog" aria-expanded="false">Table of Contents</button>
+      <section class="oaw-docs-intro">
+        <h1>Documentation</h1>
+        <p>Guides and architecture notes compiled from repository Markdown.</p>
+      </section>
+      <div class="oaw-docs-searchbar" role="search">
+        <label class="oaw-sr-only" for="oaw-docs-search">Search documentation</label>
+        <input type="search" id="oaw-docs-search" aria-label="Search documentation" placeholder="Search guides (press /)" autocomplete="off">
+        <span id="oaw-docs-search-count" class="oaw-docs-search-count" aria-live="polite"></span>
+        <button type="button" id="oaw-docs-search-clear" class="oaw-docs-search-clear">Clear</button>
+      </div>
+      <div id="oaw-docs-empty" class="va-empty-state" data-kind="filtered" hidden>
+        <h2 class="va-empty-title">No matching sections</h2>
+        <p class="va-empty-copy">No guides matched your search query. Clear the filter or jump directly to a guide.</p>
+        <div class="oaw-empty-actions">
+          <button type="button" id="oaw-empty-clear-btn">Clear search</button>
+          <button type="button" data-doc-jump="doc-getting-started">Getting Started</button>
+          <button type="button" data-doc-jump="doc-architecture">Architecture Overview</button>
+          <a href="../index.html" data-oaw-route-link>Home Overview</a>
+        </div>
+      </div>
+      <div class="oaw-docs-prose">
+<article class="oaw-doc-section" id="doc-getting-started">
+<h1 id="getting-started-getting-started-with-the-oaw-project-site-shell">Getting Started with the OAW Project Site Shell</h1>
+<p>The OAW Project Site Shell gives an open-source repository a clean, fast documentation and showcase website with zero runtime build dependencies. You write plain Markdown guides, describe your project in <code>oaw-site.json</code>, and compile static HTML ready for GitHub Pages or any static host.</p>
+<h2 id="getting-started-1-copy-the-starter-into-your-repository">1. Copy the Starter into Your Repository</h2>
+<p>Copy <code>customizations/project-site-starter</code> into your project repository (for example, into a <code>site/</code> folder) so your team owns every configuration file, guide, and stylesheet directly.</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">text</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>site/
+├── oaw-site.json           # Site metadata, routes, hub links, and doc list
+├── docs/
+│   ├── getting-started.md  # Maintainer onboarding guide
+│   └── architecture.md     # Three-route layout and pipeline diagram
+└── styles/
+    └── overrides.css       # Optional brand palette and font overrides</code></pre></div>
+<h2 id="getting-started-2-configure-oaw-site-json">2. Configure <code>oaw-site.json</code></h2>
+<p>Open <code>oaw-site.json</code> and update the project title, tagline, repository URL, and documentation list. Every path in the manifest must stay relative to the folder containing <code>oaw-site.json</code>.</p>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Section</th><th>Purpose</th><th>Key Fields</th></tr></thead><tbody><tr><td><code>project</code></td><td>Core identity and links</td><td><code>slug</code>, <code>title</code>, <code>tagline</code>, <code>version</code>, <code>repo_url</code>, <code>site_url</code></td></tr><tr><td><code>hub</code></td><td>Sibling-project switcher menu</td><td><code>label</code>, <code>hub_url</code>, <code>projects</code> (<code>title</code>, <code>url</code>, <code>current</code>)</td></tr><tr><td><code>routes</code></td><td>Labels and paths for the three routes</td><td><code>overview</code>, <code>demo</code> (<code>enabled</code>), <code>docs</code></td></tr><tr><td><code>overview</code></td><td>Hero copy, install steps, and previews</td><td><code>kicker</code>, <code>headline</code>, <code>summary</code>, <code>primary_cta</code>, <code>install_commands</code></td></tr><tr><td><code>docs_reader</code></td><td>Guides shown in the <code>/docs/</code> reader</td><td><code>title</code>, <code>subtitle</code>, <code>sources</code> (<code>path</code>, <code>id</code>, <code>title</code>), <code>quick_jumps</code></td></tr><tr><td><code>demo_wrapper</code></td><td>Optional interactive app at <code>/demo/</code></td><td><code>enabled</code>, <code>entry_path</code>, <code>docs_base</code>, <code>topbar_links</code></td></tr><tr><td><code>social_preview</code></td><td>Open Graph card metadata</td><td><code>image_path</code>, <code>eyebrow</code>, <code>title</code>, <code>subtitle</code>, <code>accent_hex</code></td></tr></tbody></table></div>
+<h2 id="getting-started-3-add-markdown-guides">3. Add Markdown Guides</h2>
+<p>Place new <code>.md</code> files inside <code>docs/</code> and register each one in <code>docs_reader.sources</code> inside <code>oaw-site.json</code>:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">json</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>{
+  &quot;docs_reader&quot;: {
+    &quot;title&quot;: &quot;Project Guides&quot;,
+    &quot;sources&quot;: [
+      { &quot;path&quot;: &quot;docs/getting-started.md&quot;, &quot;id&quot;: &quot;getting-started&quot;, &quot;title&quot;: &quot;Getting Started&quot; },
+      { &quot;path&quot;: &quot;docs/architecture.md&quot;, &quot;id&quot;: &quot;architecture&quot;, &quot;title&quot;: &quot;Architecture&quot; }
+    ]
+  }
+}</code></pre></div>
+<p>You can use standard GitHub-style headings, tables, <code>[!NOTE]</code> / <code>[!TIP]</code> callouts, and inline <code>quiet-evidence</code> diagram blocks inside any guide.</p>
+<aside class="oaw-callout" data-callout="tip"><div class="oaw-callout-title">Tip</div><p>Keep all guide links relative (such as <code>./architecture.md</code>), and avoid workstation filesystem paths or internal network addresses in <code>oaw-site.json</code>. The config validator blocks private network tokens automatically so public builds stay clean.</p></aside>
+<h2 id="getting-started-4-override-colors-and-fonts-in-styles-overrides-css">4. Override Colors and Fonts in <code>styles/overrides.css</code></h2>
+<p>Edit <code>styles/overrides.css</code> to adapt the palette and font stack while keeping light and dark themes readable. Use the built-in Quiet UI custom properties so contrast stays consistent across every route:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">css</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+
+@layer tokens {
+  :root,
+  [data-theme=&quot;white&quot;] {
+    --accent-primary: #1D4ED8;
+    --accent-focal: #0F766E;
+    --text-on-accent: #FFFFFF;
+    --font-sans: &#x27;Inter&#x27;, -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, sans-serif;
+    --font-mono: &#x27;JetBrains Mono&#x27;, &#x27;Fira Code&#x27;, ui-monospace, monospace;
+  }
+
+  [data-theme=&quot;paper&quot;] {
+    --accent-primary: #1E40AF;
+    --accent-focal: #115E59;
+    --text-on-accent: #FFFFFF;
+  }
+
+  :is([data-theme=&quot;dark&quot;], [data-theme=&quot;dark-paper&quot;]) {
+    --accent-primary: #60A5FA;
+    --accent-focal: #2DD4BF;
+    --text-on-accent: #0F172A;
+  }
+}</code></pre></div>
+<h2 id="getting-started-5-build-the-static-site">5. Build the Static Site</h2>
+<p>Run <code>build_project_site.py</code> against your site directory to validate <code>oaw-site.json</code>, compile your Markdown guides and diagrams, and generate the output bundle:</p>
+<div class="oaw-code-block"><div class="oaw-code-hdr"><span class="oaw-code-lang">bash</span><button type="button" class="oaw-copy-code-btn" aria-label="Copy code">Copy</button></div><pre><code>python3 -B customizations/scripts/build_project_site.py --config oaw-site.json --out dist/</code></pre></div>
+<p>Once the build completes, open <code>dist/index.html</code> locally or publish <code>dist/</code> to static hosting. To understand how the three generated routes fit together, read the <a href="#doc-architecture" data-doc-jump="doc-architecture">architecture guide</a>.</p>
+</article>
+<article class="oaw-doc-section" id="doc-architecture">
+<h1 id="architecture-project-site-shell-architecture">Project Site Shell Architecture</h1>
+<p>The OAW Project Site Shell separates marketing overview, live interactive demos, and long-form documentation into three focused routes. Splitting these jobs keeps the landing page calm, gives interactive tools full viewport room, and turns Markdown guides into a fast, searchable reader.</p>
+<h2 id="architecture-three-route-layout">Three-Route Layout</h2>
+<div class="va-table-wrap"><table class="booktabs"><thead><tr><th>Route</th><th>Purpose</th><th>Key Chrome &amp; Behavior</th></tr></thead><tbody><tr><td><code>/</code> (Overview)</td><td>Introduce the project in plain language</td><td>Sticky topbar, hero summary, copyable install commands, domain previews, and architecture visuals</td></tr><tr><td><code>/demo/</code> (Interactive Demo)</td><td>Host an existing HTML app or studio</td><td>Slim 32 px return bar above the app entry (<code>demo_wrapper.entry_path</code>) with quick links back to Overview and Docs</td></tr><tr><td><code>/docs/</code> (Searchable Reader)</td><td>Read and search technical guides</td><td>Sticky left navigation rail on desktop, responsive table-of-contents sheet on mobile, instant search, and compiled diagrams</td></tr></tbody></table></div>
+<h3 id="architecture-overview"><code>/</code> Overview</h3>
+<p>The root route (<code>index.html</code>) answers three questions in seconds: what the tool does, how to install it, and where to try or read more. Content comes from the <code>overview</code> section of <code>oaw-site.json</code>, paired with optional social preview metadata (<code>social_preview</code>) for clean link cards.</p>
+<h3 id="architecture-demo-interactive-demo"><code>/demo/</code> Interactive Demo</h3>
+<p>When <code>demo_wrapper.enabled</code> is <code>true</code>, the builder wraps your standalone demo page (<code>demo_wrapper.entry_path</code>) inside <code>/demo/</code>. Instead of stacking a heavy navigation header on top of a dense workspace, the wrapper renders a slim 32 px return strip at the top so users can jump back to <code>/</code> or <code>/docs/</code> without losing canvas height.</p>
+<h3 id="architecture-docs-searchable-reader"><code>/docs/</code> Searchable Reader</h3>
+<p>Every Markdown file listed under <code>docs_reader.sources</code> compiles into the <code>/docs/</code> reader. On wide screens, a sticky sidebar lists documents and section headings; on narrow screens, a touch-friendly drawer opens the same outline. Client-side search filters headings and passages without a backend server, and fenced <code>quiet-evidence</code> blocks compile directly into theme-aware inline SVG schematics.</p>
+<h2 id="architecture-shared-shell-chrome">Shared Shell Chrome</h2>
+<p>All three routes share the unified design token layer and a compact <code>46px</code> top bar:</p>
+<ul><li><strong>Two-Stage Project Switcher:</strong> Displays your project&#x27;s spelled-out name beside <code>OAW Projects</code>, with <code>All Projects</code> pinned at the top above sibling project links.</li><li><strong>Top-Right Ecosystem &amp; Color Switcher:</strong> Pairs the 9-dot Open Agentic Workbench switcher (<code>Home</code>, <code>Learn</code>, <code>Projects</code>, <code>Research</code>) with the maintainer menu holding <strong>Pure White</strong>, <strong>Warm Paper</strong>, <strong>Dark</strong>, and <strong>Dark Paper</strong> color themes.</li><li><strong>Keyboard &amp; Touch Ergonomics:</strong> Uses skip links, visible focus rings, and 44 px minimum touch targets on mobile viewports.</li></ul>
+<h2 id="architecture-build-pipeline-overview">Build Pipeline Overview</h2>
+<p>The schematic below traces how your configuration, Markdown guides, and CSS overrides compile into the three output routes:</p>
+<div class="oaw-compiled-diagram"><figure class="va-figure-card qe-figure" id="oaw-site-shell-pipeline" data-qe-modality="schematic" data-qe-rigor="L1" data-qe-medium="m2" data-qe-theme="white"><div class="va-figure-hdr qe-card-head"><h2 class="qe-fig-title">OAW Project Site Shell Compilation Pipeline</h2><span class="qe-fig-badges"><span class="va-pill" data-variant="tag">SCHEMATIC</span><span class="va-pill" data-variant="tag">L1</span></span></div><div class="qe-schematic-wrap" data-rigor="L1" data-medium="m2"><div class="va-figure-scroll" tabindex="0" role="region" aria-label="OAW Project Site Shell Compilation Pipeline"><svg class="qe-svg qe-svg-720" viewBox="0 0 720 252" role="img" aria-label="OAW Project Site Shell Compilation Pipeline">
+<defs><marker id="qe-pipe-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 1 L 10 5 L 0 9 z" fill="var(--border-strong)"/></marker></defs>
+<text x="90.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Inputs</text>
+<text x="262.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Validation</text>
+<text x="434.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Compilation</text>
+<text x="606.0" y="22.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-secondary)">Output Routes</text>
+<path d="M 164.0 63.0 H 176.0 V 129.0 H 186.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 336.0 129.0 H 348.0 V 129.0 H 358.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 164.0 129.0 H 262.0 V 129.0 H 358.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 164.0 195.0 H 262.0 V 129.0 H 358.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 508.0 129.0 H 520.0 V 63.0 H 530.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 508.0 129.0 H 520.0 V 129.0 H 530.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<path d="M 508.0 129.0 H 520.0 V 195.0 H 530.0" fill="none" stroke="var(--border-strong)" stroke-width="1.4" marker-end="url(#qe-pipe-arr)"/>
+<rect data-role="node" x="16.0" y="40.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="90.0" y="58.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">oaw-site.json</text>
+<text x="90.0" y="76.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Site Manifest</text>
+<rect data-role="node" x="16.0" y="106.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="90.0" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">docs/*.md</text>
+<text x="90.0" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Guides &amp; Specs</text>
+<rect data-role="node" x="16.0" y="172.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="90.0" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">overrides.css</text>
+<text x="90.0" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Theme Tokens</text>
+<rect data-role="node" x="188.0" y="106.0" width="148.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="262.0" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">Config Loader</text>
+<text x="262.0" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">Path &amp; Token Gate</text>
+<rect data-role="node" x="360.0" y="106.0" width="148.0" height="46.0" rx="5" fill="var(--tint-indigo-bg)" stroke="var(--accent-focal)" stroke-width="1.5"/>
+<text x="434.0" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">build_project_site.py</text>
+<text x="434.0" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--accent-focal)">Static Builder</text>
+<rect data-role="node" x="532.0" y="40.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--status-ok)" stroke-width="1.5"/>
+<text x="606.0" y="58.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">/ Overview</text>
+<text x="606.0" y="76.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">index.html</text>
+<rect data-role="node" x="532.0" y="106.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--border-strong)" stroke-width="1.5"/>
+<text x="606.0" y="124.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">/demo/ Wrapper</text>
+<text x="606.0" y="142.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Slim Return Bar</text>
+<rect data-role="node" x="532.0" y="172.0" width="148.0" height="46.0" rx="5" fill="var(--bg-card)" stroke="var(--status-ok)" stroke-width="1.5"/>
+<text x="606.0" y="190.0" text-anchor="middle" font-family="var(--font-sans)" font-size="11.5" font-weight="700" fill="var(--text-primary)">/docs/ Reader</text>
+<text x="606.0" y="208.0" text-anchor="middle" font-family="var(--font-mono)" font-size="11.5" font-weight="500" fill="var(--text-secondary)">Search &amp; TOC</text>
+</svg></div></div><figcaption class="va-figure-caption">Four-stage static build turning oaw-site.json, Markdown guides, and CSS overrides into Overview, Demo, and Docs routes.</figcaption><details class="qe-spec-drawer"><summary class="qe-spec-summary">Inspect JSON Spec (urn:quiet-ui:schema:v9:schematic)</summary><pre class="va-mermaid-code qe-spec-pre" tabindex="0" role="region" aria-label="Raw JSON specification for OAW Project Site Shell Compilation Pipeline"><code>{
+  &quot;$schema&quot;: &quot;urn:quiet-ui:schema:v9:schematic&quot;,
+  &quot;id&quot;: &quot;oaw-site-shell-pipeline&quot;,
+  &quot;schematic_kind&quot;: &quot;pipeline&quot;,
+  &quot;metadata&quot;: {
+    &quot;title&quot;: &quot;OAW Project Site Shell Compilation Pipeline&quot;,
+    &quot;description&quot;: &quot;Four-stage static build turning oaw-site.json, Markdown guides, and CSS overrides into Overview, Demo, and Docs routes.&quot;,
+    &quot;rigor_level&quot;: &quot;L1&quot;,
+    &quot;audience&quot;: &quot;Open-Source Maintainers&quot;
+  },
+  &quot;stages&quot;: [
+    &quot;Inputs&quot;,
+    &quot;Validation&quot;,
+    &quot;Compilation&quot;,
+    &quot;Output Routes&quot;
+  ],
+  &quot;nodes&quot;: [
+    {
+      &quot;id&quot;: &quot;cfg&quot;,
+      &quot;label&quot;: &quot;oaw-site.json&quot;,
+      &quot;metric&quot;: &quot;Site Manifest&quot;,
+      &quot;stage&quot;: 0
+    },
+    {
+      &quot;id&quot;: &quot;docs&quot;,
+      &quot;label&quot;: &quot;docs/*.md&quot;,
+      &quot;metric&quot;: &quot;Guides &amp; Specs&quot;,
+      &quot;stage&quot;: 0
+    },
+    {
+      &quot;id&quot;: &quot;css&quot;,
+      &quot;label&quot;: &quot;overrides.css&quot;,
+      &quot;metric&quot;: &quot;Theme Tokens&quot;,
+      &quot;stage&quot;: 0
+    },
+    {
+      &quot;id&quot;: &quot;validate&quot;,
+      &quot;label&quot;: &quot;Config Loader&quot;,
+      &quot;metric&quot;: &quot;Path &amp; Token Gate&quot;,
+      &quot;stage&quot;: 1,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;build&quot;,
+      &quot;label&quot;: &quot;build_project_site.py&quot;,
+      &quot;metric&quot;: &quot;Static Builder&quot;,
+      &quot;stage&quot;: 2,
+      &quot;focal&quot;: true
+    },
+    {
+      &quot;id&quot;: &quot;overview&quot;,
+      &quot;label&quot;: &quot;/ Overview&quot;,
+      &quot;metric&quot;: &quot;index.html&quot;,
+      &quot;stage&quot;: 3,
+      &quot;stroke&quot;: &quot;var(--status-ok)&quot;
+    },
+    {
+      &quot;id&quot;: &quot;demo&quot;,
+      &quot;label&quot;: &quot;/demo/ Wrapper&quot;,
+      &quot;metric&quot;: &quot;Slim Return Bar&quot;,
+      &quot;stage&quot;: 3
+    },
+    {
+      &quot;id&quot;: &quot;reader&quot;,
+      &quot;label&quot;: &quot;/docs/ Reader&quot;,
+      &quot;metric&quot;: &quot;Search &amp; TOC&quot;,
+      &quot;stage&quot;: 3,
+      &quot;stroke&quot;: &quot;var(--status-ok)&quot;
+    }
+  ],
+  &quot;edges&quot;: [
+    {
+      &quot;from&quot;: &quot;cfg&quot;,
+      &quot;to&quot;: &quot;validate&quot;
+    },
+    {
+      &quot;from&quot;: &quot;validate&quot;,
+      &quot;to&quot;: &quot;build&quot;
+    },
+    {
+      &quot;from&quot;: &quot;docs&quot;,
+      &quot;to&quot;: &quot;build&quot;
+    },
+    {
+      &quot;from&quot;: &quot;css&quot;,
+      &quot;to&quot;: &quot;build&quot;
+    },
+    {
+      &quot;from&quot;: &quot;build&quot;,
+      &quot;to&quot;: &quot;overview&quot;
+    },
+    {
+      &quot;from&quot;: &quot;build&quot;,
+      &quot;to&quot;: &quot;demo&quot;
+    },
+    {
+      &quot;from&quot;: &quot;build&quot;,
+      &quot;to&quot;: &quot;reader&quot;
+    }
+  ]
+}</code></pre></details></figure></div>
+<p>Ready to set up your own copy? Follow the step-by-step instructions in the <a href="#doc-getting-started" data-doc-jump="doc-getting-started">getting-started guide</a>.</p>
+</article>
+      </div>
+    </div>
+  </main>
+  <dialog id="oaw-docs-toc-dialog" class="va-modal-sheet" closedby="any" aria-labelledby="oaw-docs-toc-title">
+    <div class="va-modal-sheet-hdr">
+      <strong id="oaw-docs-toc-title">Documentation Outline</strong>
+      <button type="button" data-close-dialog aria-label="Close outline">Close</button>
+    </div>
+    <div class="va-modal-sheet-body">
+      <nav class="oaw-docs-toc-list" aria-label="Mobile Documentation Outline">
+      <div class="oaw-docs-rail-title">Quick Jumps</div>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-getting-started">Getting Started</button>
+      <button type="button" class="oaw-docs-rail-link" data-doc-jump="doc-architecture">Architecture Overview</button>
+      <a class="oaw-docs-rail-link" href="../index.html" data-oaw-route-link>Home Overview</a>
+      <div class="oaw-docs-rail-title">Guides</div>
+      <a class="oaw-docs-rail-link" href="#doc-getting-started" data-doc-jump="doc-getting-started">Getting Started</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-1-copy-the-starter-into-your-repository" data-doc-jump="getting-started-1-copy-the-starter-into-your-repository">1. Copy the Starter into Your Repository</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-2-configure-oaw-site-json" data-doc-jump="getting-started-2-configure-oaw-site-json">2. Configure oaw-site.json</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-3-add-markdown-guides" data-doc-jump="getting-started-3-add-markdown-guides">3. Add Markdown Guides</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-4-override-colors-and-fonts-in-styles-overrides-css" data-doc-jump="getting-started-4-override-colors-and-fonts-in-styles-overrides-css">4. Override Colors and Fonts in styles/overrides.css</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#getting-started-5-build-the-static-site" data-doc-jump="getting-started-5-build-the-static-site">5. Build the Static Site</a>
+      <a class="oaw-docs-rail-link" href="#doc-architecture" data-doc-jump="doc-architecture">Architecture Overview</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-three-route-layout" data-doc-jump="architecture-three-route-layout">Three-Route Layout</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-shared-shell-chrome" data-doc-jump="architecture-shared-shell-chrome">Shared Shell Chrome</a>
+      <a class="oaw-docs-rail-link oaw-docs-sub" href="#architecture-build-pipeline-overview" data-doc-jump="architecture-build-pipeline-overview">Build Pipeline Overview</a>
+      </nav>
+    </div>
+  </dialog>
+  <footer class="oaw-site-footer">
+    <div class="oaw-footer-inner">
+      <span>Open Workbench Starter · v1.0.0 · MIT</span>
+      <span><a href="https://github.com/open-agentic-workbench/starter">Repository</a> · <a href="https://open-agentic-workbench.github.io/">OAW Projects</a></span>
+    </div>
+  </footer>
+  <script type="application/json" id="oaw-docs-search-index">[{"id":"doc-getting-started","doc_id":"getting-started","title":"Getting Started","category":"","heading":"Getting Started with the OAW Project Site Shell","excerpt":"The OAW Project Site Shell gives an open-source repository a clean, fast documentation and showcase website with zero runtime build dependencies. You write plain Markdown...","text":"Getting Started with the OAW Project Site Shell The OAW Project Site Shell gives an open-source repository a clean, fast documentation and showcase website with zero runtime build dependencies. You write plain Markdown guides, describe your project in oaw-site.json, and compile static HTML ready for GitHub Pages or any static host."},{"id":"getting-started-1-copy-the-starter-into-your-repository","doc_id":"getting-started","title":"Getting Started","category":"","heading":"1. Copy the Starter into Your Repository","excerpt":"Copy customizations/project-site-starter into your project repository (for example, into a site/ folder) so your team owns every configuration file, guide, and stylesheet...","text":"1. Copy the Starter into Your Repository Copy customizations/project-site-starter into your project repository (for example, into a site/ folder) so your team owns every configuration file, guide, and stylesheet directly. site/ \u251c\u2500\u2500 oaw-site.json # Site metadata, routes, hub links, and doc list \u251c\u2500\u2500 docs/ \u2502 \u251c\u2500\u2500 getting-started.md # Maintainer onboarding guide \u2502 \u2514\u2500\u2500 architecture.md # Three-route layout and pipeline diagram \u2514\u2500\u2500 styles/ \u2514\u2500\u2500 overrides.css # Optional brand palette and font overrides"},{"id":"getting-started-2-configure-oaw-site-json","doc_id":"getting-started","title":"Getting Started","category":"","heading":"2. Configure oaw-site.json","excerpt":"Open oaw-site.json and update the project title, tagline, repository URL, and documentation list. Every path in the manifest must stay relative to the folder containing...","text":"2. Configure oaw-site.json Open oaw-site.json and update the project title, tagline, repository URL, and documentation list. Every path in the manifest must stay relative to the folder containing oaw-site.json. Section Purpose Key Fields project Core identity and links slug, title, tagline, version, repo_url, site_url hub Sibling-project switcher menu label, hub_url, projects (title, url, current) routes Labels and paths for the three routes overview, demo (enabled), docs overview Hero copy, install steps, and previews kicker, headline, summary, primary_cta, install_commands docs_reader Guides shown in the /docs/ reader title, subtitle, sources (path, id, title), quick_jumps demo_wrapper Optional interactive app at /demo/ enabled, entry_path, docs_base, topbar_links social_preview Open Graph card metadata image_path, eyebrow, title, subtitle, accent_hex"},{"id":"getting-started-3-add-markdown-guides","doc_id":"getting-started","title":"Getting Started","category":"","heading":"3. Add Markdown Guides","excerpt":"Place new .md files inside docs/ and register each one in docs_reader.sources inside oaw-site.json: { \"docs_reader\": { \"title\": \"Project Guides\", \"sources\": [ { \"path\"...","text":"3. Add Markdown Guides Place new .md files inside docs/ and register each one in docs_reader.sources inside oaw-site.json: { \"docs_reader\": { \"title\": \"Project Guides\", \"sources\": [ { \"path\": \"docs/getting-started.md\", \"id\": \"getting-started\", \"title\": \"Getting Started\" }, { \"path\": \"docs/architecture.md\", \"id\": \"architecture\", \"title\": \"Architecture\" } ] } } You can use standard GitHub-style headings, tables, [!NOTE] / [!TIP] callouts, and inline quiet-evidence diagram blocks inside any guide. Tip Keep all guide links relative (such as ./architecture.md), and avoid workstation filesystem paths or internal network addresses in oaw-site.json. The config validator blocks private network tokens automatically so public builds stay clean."},{"id":"getting-started-4-override-colors-and-fonts-in-styles-overrides-css","doc_id":"getting-started","title":"Getting Started","category":"","heading":"4. Override Colors and Fonts in styles/overrides.css","excerpt":"Edit styles/overrides.css to adapt the palette and font stack while keeping light and dark themes readable. Use the built-in Quiet UI custom properties so contrast stays...","text":"4. Override Colors and Fonts in styles/overrides.css Edit styles/overrides.css to adapt the palette and font stack while keeping light and dark themes readable. Use the built-in Quiet UI custom properties so contrast stays consistent across every route: @layer reset, tokens, shell, archetypes, evidence, views, utilities; @layer tokens { :root, [data-theme=\"white\"] { --accent-primary: #1D4ED8; --accent-focal: #0F766E; --text-on-accent: #FFFFFF; --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; } [data-theme=\"paper\"] { --accent-primary: #1E40AF; --accent-focal: #115E59; --text-on-accent: #FFFFFF; } :is([data-theme=\"dark\"], [data-theme=\"dark-paper\"]) { --accent-primary: #60A5FA; --accent-focal: #2DD4BF; --text-on-accent: #0F172A; } }"},{"id":"getting-started-5-build-the-static-site","doc_id":"getting-started","title":"Getting Started","category":"","heading":"5. Build the Static Site","excerpt":"Run build_project_site.py against your site directory to validate oaw-site.json, compile your Markdown guides and diagrams, and generate the output bundle: python3 -B...","text":"5. Build the Static Site Run build_project_site.py against your site directory to validate oaw-site.json, compile your Markdown guides and diagrams, and generate the output bundle: python3 -B customizations/scripts/build_project_site.py --config oaw-site.json --out dist/ Once the build completes, open dist/index.html locally or publish dist/ to static hosting. To understand how the three generated routes fit together, read the architecture guide."},{"id":"doc-architecture","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"Project Site Shell Architecture","excerpt":"The OAW Project Site Shell separates marketing overview, live interactive demos, and long-form documentation into three focused routes. Splitting these jobs keeps the landing...","text":"Project Site Shell Architecture The OAW Project Site Shell separates marketing overview, live interactive demos, and long-form documentation into three focused routes. Splitting these jobs keeps the landing page calm, gives interactive tools full viewport room, and turns Markdown guides into a fast, searchable reader."},{"id":"architecture-three-route-layout","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"Three-Route Layout","excerpt":"Route Purpose Key Chrome & Behavior / (Overview) Introduce the project in plain language Sticky topbar, hero summary, copyable install commands, domain previews, and...","text":"Three-Route Layout Route Purpose Key Chrome & Behavior / (Overview) Introduce the project in plain language Sticky topbar, hero summary, copyable install commands, domain previews, and architecture visuals /demo/ (Interactive Demo) Host an existing HTML app or studio Slim 32 px return bar above the app entry (demo_wrapper.entry_path) with quick links back to Overview and Docs /docs/ (Searchable Reader) Read and search technical guides Sticky left navigation rail on desktop, responsive table-of-contents sheet on mobile, instant search, and compiled diagrams"},{"id":"architecture-overview","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"/ Overview","excerpt":"The root route (index.html) answers three questions in seconds: what the tool does, how to install it, and where to try or read more. Content comes from the overview section of...","text":"/ Overview The root route (index.html) answers three questions in seconds: what the tool does, how to install it, and where to try or read more. Content comes from the overview section of oaw-site.json, paired with optional social preview metadata (social_preview) for clean link cards."},{"id":"architecture-demo-interactive-demo","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"/demo/ Interactive Demo","excerpt":"When demo_wrapper.enabled is true, the builder wraps your standalone demo page (demo_wrapper.entry_path) inside /demo/. Instead of stacking a heavy navigation header on top of...","text":"/demo/ Interactive Demo When demo_wrapper.enabled is true, the builder wraps your standalone demo page (demo_wrapper.entry_path) inside /demo/. Instead of stacking a heavy navigation header on top of a dense workspace, the wrapper renders a slim 32 px return strip at the top so users can jump back to / or /docs/ without losing canvas height."},{"id":"architecture-docs-searchable-reader","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"/docs/ Searchable Reader","excerpt":"Every Markdown file listed under docs_reader.sources compiles into the /docs/ reader. On wide screens, a sticky sidebar lists documents and section headings; on narrow screens...","text":"/docs/ Searchable Reader Every Markdown file listed under docs_reader.sources compiles into the /docs/ reader. On wide screens, a sticky sidebar lists documents and section headings; on narrow screens, a touch-friendly drawer opens the same outline. Client-side search filters headings and passages without a backend server, and fenced quiet-evidence blocks compile directly into theme-aware inline SVG schematics."},{"id":"architecture-shared-shell-chrome","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"Shared Shell Chrome","excerpt":"All three routes share the unified design token layer and a compact 46px top bar: Two-Stage Project Switcher: Displays your project's spelled-out name beside OAW Projects, with...","text":"Shared Shell Chrome All three routes share the unified design token layer and a compact 46px top bar: Two-Stage Project Switcher: Displays your project's spelled-out name beside OAW Projects, with All Projects pinned at the top above sibling project links. Top-Right Ecosystem & Color Switcher: Pairs the 9-dot Open Agentic Workbench switcher (Home, Learn, Projects, Research) with the maintainer menu holding Pure White, Warm Paper, Dark, and Dark Paper color themes. Keyboard & Touch Ergonomics: Uses skip links, visible focus rings, and 44 px minimum touch targets on mobile viewports."},{"id":"architecture-build-pipeline-overview","doc_id":"architecture","title":"Architecture Overview","category":"","heading":"Build Pipeline Overview","excerpt":"The schematic below traces how your configuration, Markdown guides, and CSS overrides compile into the three output routes: OAW Project Site Shell Compilation Pipeline...","text":"Build Pipeline Overview The schematic below traces how your configuration, Markdown guides, and CSS overrides compile into the three output routes: OAW Project Site Shell Compilation Pipeline Four-stage static build turning oaw-site.json, Markdown guides, and CSS overrides into Overview, Demo, and Docs routes. Ready to set up your own copy? Follow the step-by-step instructions in the getting-started guide."}]</script>
+  <script>
+/**
+ * Quiet UI v9.8.0 — Shared Site Shell Runtime
+ * 4-theme persistence, user-menu theme buttons, sticky route links, viewport-aware popovers, and copy buttons.
+ */
+(function (window) {
+  'use strict';
+
+  const STORAGE_KEY = 'quiet-ui-site-theme';
+  const VALID_THEMES = new Set(['white', 'paper', 'dark-paper', 'dark']);
+  const DARK_THEMES = new Set(['dark-paper', 'dark']);
+  const VIEWPORT_PAD = 8;
+  const ROUTE_LINK_SELECTOR =
+    '[data-oaw-route-link], .oaw-nav-links a, .oaw-mobile-subnav a, .oaw-cta-row a, .oaw-domain-card a';
+  const POPOVER_PAIRS = [
+    { btnId: 'oaw-projects-btn', popId: 'oaw-projects-popover', alignRight: false },
+    { btnId: 'oaw-pillar-btn', popId: 'oaw-pillar-popover', alignRight: true },
+    { btnId: 'oaw-user-btn', popId: 'oaw-user-popover', alignRight: true }
+  ];
+  const copyTimers = new WeakMap();
+  const hasAnchorCss = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('position-area', 'block-end');
+
+  function normalizeTheme(raw) {
+    const val = String(raw || '').trim();
+    return VALID_THEMES.has(val) ? val : null;
+  }
+
+  function readStoredTheme() {
+    try { return normalizeTheme(window.localStorage.getItem(STORAGE_KEY)); } catch (_e) { return null; }
+  }
+
+  function writeStoredTheme(theme) {
+    try { window.localStorage.setItem(STORAGE_KEY, theme); } catch (_e) {}
+  }
+
+  function readUrlTheme() {
+    try { return normalizeTheme(new URLSearchParams(window.location.search).get('theme')); } catch (_e) { return null; }
+  }
+
+  function resolveInitialTheme() {
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    const attrTheme = demoHost ? demoHost.dataset.theme : document.documentElement.dataset.theme;
+    return readUrlTheme() || readStoredTheme() || normalizeTheme(attrTheme) || 'white';
+  }
+
+  function withThemeParam(rawHref, theme) {
+    const trimmed = String(rawHref || '').trim();
+    if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//') || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) {
+      return null;
+    }
+    const hashIdx = trimmed.indexOf('#');
+    const beforeHash = hashIdx >= 0 ? trimmed.slice(0, hashIdx) : trimmed;
+    const hashPart = hashIdx >= 0 ? trimmed.slice(hashIdx) : '';
+    const qIdx = beforeHash.indexOf('?');
+    const pathPart = qIdx >= 0 ? beforeHash.slice(0, qIdx) : beforeHash;
+    const params = new URLSearchParams(qIdx >= 0 ? beforeHash.slice(qIdx + 1) : '');
+    params.set('theme', theme);
+    const qs = params.toString();
+    return pathPart + (qs ? '?' + qs : '') + hashPart;
+  }
+
+  function syncColorSchemeMeta(theme) {
+    const scheme = DARK_THEMES.has(theme) ? 'dark' : 'light';
+    let meta = document.querySelector('meta[name="color-scheme"]');
+    if (!meta && document.head) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'color-scheme');
+      document.head.appendChild(meta);
+    }
+    if (meta) meta.setAttribute('content', scheme);
+  }
+
+  function updateUrlTheme(theme) {
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('theme', theme);
+      window.history.replaceState(null, '', url.toString());
+    } catch (_e) {}
+  }
+
+  function applyTheme(rawTheme) {
+    const theme = normalizeTheme(rawTheme) || 'white';
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    if (demoHost) {
+      demoHost.dataset.theme = theme;
+    } else {
+      document.documentElement.dataset.theme = theme;
+      syncColorSchemeMeta(theme);
+    }
+    document.querySelectorAll('.oaw-theme-opt[data-theme-opt]').forEach(function (btn) {
+      const on = btn.getAttribute('data-theme-opt') === theme;
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('is-active', on);
+    });
+    document.querySelectorAll(ROUTE_LINK_SELECTOR).forEach(function (link) {
+      const nextHref = withThemeParam(link.getAttribute('href'), theme);
+      if (nextHref !== null) link.setAttribute('href', nextHref);
+    });
+    return theme;
+  }
+
+  function initThemeControls() {
+    const demoHost = document.querySelector('.oaw-demo-chrome');
+    const urlTheme = readUrlTheme();
+    const initial = applyTheme(demoHost ? (urlTheme || normalizeTheme(demoHost.dataset.theme) || 'white') : resolveInitialTheme());
+    if (urlTheme) writeStoredTheme(initial);
+
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const opt = target.closest('.oaw-theme-opt[data-theme-opt]');
+      if (!opt) return;
+      const nextTheme = applyTheme(opt.getAttribute('data-theme-opt'));
+      writeStoredTheme(nextTheme);
+      if (demoHost) {
+        window.dispatchEvent(new CustomEvent('oaw:theme-change', { detail: { theme: nextTheme } }));
+      } else {
+        updateUrlTheme(nextTheme);
+      }
+    });
+
+    window.addEventListener('oaw:studio-theme-sync', function (ev) {
+      const t = ev && ev.detail ? normalizeTheme(ev.detail.theme) : null;
+      if (t) applyTheme(t);
+    });
+    window.addEventListener('storage', function (ev) {
+      if (ev.key === STORAGE_KEY) {
+        const t = normalizeTheme(ev.newValue);
+        if (!t) return;
+        const applied = applyTheme(t);
+        if (demoHost) window.dispatchEvent(new CustomEvent('oaw:theme-change', { detail: { theme: applied } }));
+      }
+    });
+  }
+
+  function clearInlinePos(popEl) {
+    Object.assign(popEl.style, { position: '', margin: '', inset: '', top: '', left: '' });
+  }
+
+  function clampPopover(popEl, trigEl, alignRight) {
+    if (!popEl || !trigEl) return;
+    clearInlinePos(popEl);
+    const r = popEl.getBoundingClientRect();
+    const tr = trigEl.getBoundingClientRect();
+    const overflows = r.right > window.innerWidth - VIEWPORT_PAD || r.left < VIEWPORT_PAD;
+    if (hasAnchorCss && !overflows) return;
+    const maxL = Math.max(VIEWPORT_PAD, window.innerWidth - r.width - VIEWPORT_PAD);
+    const rawL = hasAnchorCss ? r.left : (alignRight ? tr.right - r.width : tr.left);
+    const rawT = hasAnchorCss ? Math.max(VIEWPORT_PAD, r.top) : Math.min(tr.bottom + 6, Math.max(VIEWPORT_PAD, window.innerHeight - r.height - VIEWPORT_PAD));
+    Object.assign(popEl.style, {
+      position: 'fixed', margin: '0', inset: 'auto',
+      top: Math.round(rawT) + 'px', left: Math.round(Math.min(Math.max(VIEWPORT_PAD, rawL), maxL)) + 'px'
+    });
+  }
+
+  function initPopovers() {
+    const supportsPopover = typeof HTMLElement !== 'undefined' && 'showPopover' in HTMLElement.prototype;
+    const entries = POPOVER_PAIRS.map(function (p) {
+      return { btn: document.getElementById(p.btnId), pop: document.getElementById(p.popId), alignRight: p.alignRight };
+    }).filter(function (e) { return Boolean(e.btn && e.pop); });
+
+    const setFallback = function (entry, open) {
+      entry.pop.hidden = !open;
+      if (open) {
+        entry.pop.setAttribute('data-open', 'true');
+        clampPopover(entry.pop, entry.btn, entry.alignRight);
+      } else {
+        entry.pop.removeAttribute('data-open');
+        clearInlinePos(entry.pop);
+      }
+      entry.btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+
+    entries.forEach(function (entry) {
+      const btn = entry.btn, pop = entry.pop;
+      if (supportsPopover) {
+        const isPopOpen = function () { return typeof pop.matches === 'function' && pop.matches(':popover-open'); };
+        btn.setAttribute('aria-expanded', isPopOpen() ? 'true' : 'false');
+        pop.addEventListener('toggle', function (ev) {
+          const open = ev && typeof ev.newState === 'string' ? ev.newState === 'open' : isPopOpen();
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) clampPopover(pop, btn, entry.alignRight);
+          else clearInlinePos(pop);
+        });
+        pop.addEventListener('click', function (ev) {
+          if (ev.target && ev.target.closest('a[href]') && typeof pop.hidePopover === 'function' && isPopOpen()) pop.hidePopover();
+        });
+        return;
+      }
+      setFallback(entry, false);
+      btn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        const willOpen = pop.getAttribute('data-open') !== 'true';
+        entries.forEach(function (other) { if (other !== entry) setFallback(other, false); });
+        setFallback(entry, willOpen);
+      });
+      pop.addEventListener('click', function (ev) {
+        if (ev.target && ev.target.closest('a[href]')) setFallback(entry, false);
+      });
+    });
+
+    if (!supportsPopover && entries.length > 0) {
+      document.addEventListener('click', function (ev) {
+        entries.forEach(function (e) {
+          if (e.pop.getAttribute('data-open') === 'true' && !e.pop.contains(ev.target) && !e.btn.contains(ev.target)) setFallback(e, false);
+        });
+      });
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Escape') return;
+        entries.forEach(function (e) {
+          if (e.pop.getAttribute('data-open') === 'true') {
+            const hadFocus = e.pop.contains(document.activeElement);
+            setFallback(e, false);
+            if (hadFocus) e.btn.focus();
+          }
+        });
+      });
+    }
+    window.addEventListener('resize', function () {
+      entries.forEach(function (e) {
+        const open = supportsPopover ? (typeof e.pop.matches === 'function' && e.pop.matches(':popover-open')) : e.pop.getAttribute('data-open') === 'true';
+        if (open) clampPopover(e.pop, e.btn, e.alignRight);
+      });
+    });
+  }
+
+  function fallbackCopyText(text) {
+    const prevFocus = document.activeElement;
+    const area = document.createElement('textarea');
+    area.value = text;
+    area.setAttribute('readonly', '');
+    area.style.cssText = 'position:fixed;inset-block-start:-9999px;opacity:0;';
+    document.body.appendChild(area);
+    let copied = false;
+    try {
+      area.select();
+      area.setSelectionRange(0, text.length);
+      copied = typeof document.execCommand === 'function' && document.execCommand('copy');
+    } catch (_e) {
+      copied = false;
+    } finally {
+      area.remove();
+      if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus({ preventScroll: true });
+    }
+    return copied;
+  }
+
+  function writeClipboard(text) {
+    if (!text) return Promise.resolve(false);
+    if (window.navigator && window.navigator.clipboard && typeof window.navigator.clipboard.writeText === 'function') {
+      return window.navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () {
+        return fallbackCopyText(text);
+      });
+    }
+    return Promise.resolve(fallbackCopyText(text));
+  }
+
+  function ensureLiveRegion() {
+    let region = document.querySelector('#oaw-live-status, [data-oaw-live-status]');
+    if (!region && document.body) {
+      region = document.createElement('div');
+      region.id = 'oaw-live-status';
+      region.className = 'oaw-sr-only';
+      region.setAttribute('aria-live', 'polite');
+      region.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(region);
+    }
+    return region;
+  }
+
+  function setCopiedFeedback(btn) {
+    if (!btn.dataset.copyLabel) btn.dataset.copyLabel = (btn.textContent || '').trim() || 'Copy';
+    const prevTimer = copyTimers.get(btn);
+    if (prevTimer) window.clearTimeout(prevTimer);
+    btn.setAttribute('data-copied', 'true');
+    btn.textContent = 'Copied';
+    const live = ensureLiveRegion();
+    if (live) live.textContent = 'Copied to clipboard';
+    copyTimers.set(btn, window.setTimeout(function () {
+      btn.removeAttribute('data-copied');
+      btn.textContent = btn.dataset.copyLabel || 'Copy';
+      if (live && live.textContent === 'Copied to clipboard') live.textContent = '';
+      copyTimers.delete(btn);
+    }, 1600));
+  }
+
+  function resolveCopyPayload(btn) {
+    if (btn.hasAttribute('data-copy-text')) return btn.getAttribute('data-copy-text') || '';
+    const block = btn.closest('.oaw-code-block');
+    if (block) {
+      const codeEl = block.querySelector('pre code, pre');
+      return codeEl ? codeEl.textContent || '' : '';
+    }
+    const cmdWrap = btn.closest('.oaw-install-cmd');
+    const cmdCode = cmdWrap ? cmdWrap.querySelector('code') : null;
+    return cmdCode ? cmdCode.textContent || '' : '';
+  }
+
+  function initCopyButtons() {
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const btn = target.closest('.oaw-copy-btn[data-copy-text], .oaw-copy-code-btn');
+      if (!btn) return;
+      const text = resolveCopyPayload(btn);
+      if (text) writeClipboard(text).then(function (ok) { if (ok) setCopiedFeedback(btn); });
+    });
+  }
+
+  function init() {
+    initThemeControls();
+    initPopovers();
+    initCopyButtons();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+}(window));
+
+  </script>
+  <script>
+/**
+ * Quiet UI v9.8.0 — Route 3 Docs Search, Quick Jumps & Mobile TOC Sheet
+ */
+(function (window) {
+  'use strict';
+
+  function parseSearchIndex() {
+    const el = document.getElementById('oaw-docs-search-index');
+    if (!el) return [];
+    try {
+      const parsed = JSON.parse(el.textContent || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_e) {
+      return [];
+    }
+  }
+
+  function buildSectionModel() {
+    const sections = Array.from(document.querySelectorAll('.oaw-docs-section, .oaw-doc-section'));
+    const records = parseSearchIndex();
+    const byId = new Map();
+    const byDocKey = new Map();
+    const entries = sections.map(function (el) {
+      const entry = { el: el, texts: [] };
+      if (el.id) {
+        byId.set(el.id, entry);
+        byDocKey.set(el.id.startsWith('doc-') ? el.id.slice(4) : el.id, entry);
+      }
+      if (el.dataset && el.dataset.docId) byDocKey.set(el.dataset.docId, entry);
+      return entry;
+    });
+
+    records.forEach(function (rec) {
+      if (!rec || typeof rec !== 'object') return;
+      const haystack = [rec.title, rec.category, rec.heading, rec.text].filter(Boolean).join(' ').toLowerCase();
+      if (!haystack) return;
+      let target = null;
+      if (rec.doc_id && byDocKey.has(String(rec.doc_id))) {
+        target = byDocKey.get(String(rec.doc_id));
+      } else if (rec.id && byId.has(String(rec.id))) {
+        target = byId.get(String(rec.id));
+      } else if (rec.id) {
+        const node = document.getElementById(String(rec.id));
+        if (node) target = entries.find(function (e) { return e.el.contains(node); }) || null;
+      }
+      if (target) target.texts.push(haystack);
+    });
+
+    entries.forEach(function (entry) {
+      if (entry.texts.length === 0) entry.texts.push((entry.el.textContent || '').toLowerCase());
+    });
+    return entries;
+  }
+
+  function entryMatchesTokens(entry, tokens) {
+    if (tokens.length === 0) return true;
+    return entry.texts.some(function (chunk) {
+      return tokens.every(function (tok) { return chunk.indexOf(tok) !== -1; });
+    });
+  }
+
+  function formatCountText(visible, total) {
+    if (visible === 0) return '0 matching sections';
+    return String(visible) + ' of ' + String(total) + (total === 1 ? ' guide' : ' guides');
+  }
+
+  function bindDialogLightDismissFallback(dialog) {
+    if (!dialog || (typeof HTMLDialogElement !== 'undefined' && 'closedBy' in HTMLDialogElement.prototype)) return;
+    let pressedOutside = false;
+    const isOutside = function (ev) {
+      const r = dialog.getBoundingClientRect();
+      return ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom;
+    };
+    dialog.addEventListener('pointerdown', function (ev) { pressedOutside = isOutside(ev); });
+    dialog.addEventListener('pointerup', function (ev) {
+      if (pressedOutside && isOutside(ev)) dialog.close();
+      pressedOutside = false;
+    });
+    dialog.addEventListener('click', function (ev) {
+      if (ev.target === dialog && (ev.clientX !== 0 || ev.clientY !== 0) && isOutside(ev)) dialog.close();
+    });
+  }
+
+  function isEditableElement(el) {
+    if (!el) return false;
+    const tag = (el.tagName || '').toUpperCase();
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || Boolean(el.isContentEditable);
+  }
+
+  function resolveInPageTargetId(el) {
+    const raw = (el.getAttribute('data-doc-target') || el.getAttribute('data-doc-jump') || el.getAttribute('href') || '').trim();
+    if (!raw) return null;
+    if (raw.startsWith('#')) return raw.slice(1) || null;
+    return /^[a-zA-Z0-9_-]+$/.test(raw) ? raw : null;
+  }
+
+  function bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch) {
+    if (!tocTrigger || !tocDialog) return;
+    tocTrigger.setAttribute('aria-expanded', tocDialog.open ? 'true' : 'false');
+    tocTrigger.addEventListener('click', function () {
+      if (tocDialog.open) return;
+      if (typeof tocDialog.showModal === 'function') tocDialog.showModal();
+      else tocDialog.setAttribute('open', '');
+      tocTrigger.setAttribute('aria-expanded', 'true');
+    });
+    tocDialog.addEventListener('close', function () { tocTrigger.setAttribute('aria-expanded', 'false'); });
+    tocDialog.addEventListener('click', function (ev) {
+      const el = ev.target;
+      if (!el || typeof el.closest !== 'function') return;
+      if (el.closest('[data-close-dialog], [data-toc-close], .va-modal-sheet-hdr button, button[aria-label*="close" i]')) {
+        closeTocDialog();
+        return;
+      }
+      const tocLink = el.closest('a[href]');
+      if (!tocLink) return;
+      const href = (tocLink.getAttribute('href') || '').trim();
+      if (href.startsWith('#')) {
+        const targetSection = href.slice(1) ? document.getElementById(href.slice(1)) : null;
+        if (targetSection && targetSection.closest('[hidden]')) resetSearch(false);
+      }
+      closeTocDialog();
+    });
+    bindDialogLightDismissFallback(tocDialog);
+  }
+
+  function init() {
+    const entries = buildSectionModel();
+    const searchInput = document.getElementById('oaw-docs-search');
+    const clearBtn = document.getElementById('oaw-docs-search-clear');
+    const emptyClearBtn = document.getElementById('oaw-empty-clear-btn');
+    const countEl = document.getElementById('oaw-docs-search-count');
+    const emptyEl = document.getElementById('oaw-docs-empty') || document.querySelector('.va-empty-state[data-kind="filtered"]');
+    const tocTrigger = document.getElementById('oaw-docs-toc-trigger');
+    const tocDialog = document.getElementById('oaw-docs-toc-dialog');
+
+    function closeTocDialog() {
+      if (!tocDialog) return;
+      if (tocDialog.open && typeof tocDialog.close === 'function') tocDialog.close();
+      else if (tocDialog.hasAttribute('open')) tocDialog.removeAttribute('open');
+      if (tocTrigger) tocTrigger.setAttribute('aria-expanded', 'false');
+    }
+
+    function applyFilter(rawQuery) {
+      const tokens = String(rawQuery || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      entries.forEach(function (entry) {
+        const match = entryMatchesTokens(entry, tokens);
+        entry.el.hidden = !match;
+        if (match) visible += 1;
+      });
+      if (countEl) countEl.textContent = formatCountText(visible, entries.length);
+      if (emptyEl) emptyEl.hidden = !(visible === 0 && entries.length > 0);
+    }
+
+    function resetSearch(focusInput) {
+      if (searchInput) {
+        searchInput.value = '';
+        if (focusInput && typeof searchInput.focus === 'function') searchInput.focus();
+      }
+      applyFilter('');
+    }
+
+    function jumpToTargetId(targetId) {
+      resetSearch(false);
+      closeTocDialog();
+      const targetEl = document.getElementById(targetId);
+      if (targetEl && typeof targetEl.scrollIntoView === 'function') {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () { applyFilter(searchInput.value); });
+      applyFilter(searchInput.value);
+    } else if (entries.length > 0) {
+      applyFilter('');
+    }
+
+    if (clearBtn) clearBtn.addEventListener('click', function () { resetSearch(true); });
+
+    if (emptyClearBtn) {
+      emptyClearBtn.addEventListener('click', function () {
+        const targetId = resolveInPageTargetId(emptyClearBtn);
+        if (targetId) jumpToTargetId(targetId);
+        else resetSearch(true);
+      });
+    }
+
+    document.addEventListener('click', function (ev) {
+      const target = ev.target;
+      if (!target || typeof target.closest !== 'function') return;
+      const jumpEl = target.closest('[data-doc-jump], [data-doc-target], .oaw-docs-main a[href^="#"], .oaw-docs-prose a[href^="#"]');
+      if (!jumpEl || jumpEl === emptyClearBtn) return;
+      const targetId = resolveInPageTargetId(jumpEl);
+      if (!targetId) { closeTocDialog(); return; }
+      ev.preventDefault();
+      jumpToTargetId(targetId);
+    });
+
+    bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch);
+
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key !== '/' || ev.ctrlKey || ev.metaKey || ev.altKey || !searchInput) return;
+      if (document.querySelector('dialog[open]') || isEditableElement(document.activeElement)) return;
+      ev.preventDefault();
+      searchInput.focus();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
+}(window));
+
+  </script>
+</body>
+</html>

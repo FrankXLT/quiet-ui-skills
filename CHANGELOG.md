@@ -2,6 +2,16 @@
 
 All notable changes to **Quiet UI Skills** are documented in this file following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/).
 
+## [9.8.0] - 2026-11-26
+
+### Added
+- **Reusable OAW Project Site Shell (`src/site_shell/`, `customizations/project-site-starter/`, `customizations/scripts/build_project_site.py`)**:
+  - Zero-dependency static generator compiling `oaw-site.json` (`urn:quiet-ui:schema:v9:project-site`) and Markdown guides (with inline `quiet-evidence` diagrams) into three matching routes (`/`, `/demo/`, `/docs/`).
+  - Unified `46px` Open Agentic Workbench top bar (`OAW Projects` hub link, rounded active project dropdown with `← All Projects` + sibling links, borderless `Overview | Demo | Docs` underline tabs, `<= 679px` mobile subnav, `9-dot` pillar switcher, and `@FrankXLT` menu holding the 4-color theme switcher), centered `Newsreader` editorial hero with breathing command pills, client-side docs search (`Clear search` + quick-jump empty state), and `1280x640` SVG/PNG social previews (`scripts/build_social_preview.py`).
+- **Quiet UI Skills Three-Route Hub & Plain-Language Overhaul (`docs/index.html`, `docs/demo/index.html`, `docs/docs/index.html`, `src/chrome/docs/`, `README.md`)**:
+  - Story-led plain-language root overview (`docs/index.html`) with pre-paint deep-link redirect (`mode`/`view`/`world`/`domain`) into the `26`-view / `53`-specimen Demo Studio (`docs/demo/index.html` wrapped with the shared `46px` bar and two-way theme sync).
+  - Searchable plain-language docs reader (`docs/docs/index.html`), `docs/assets/quiet-ui-social.png` (`1280x640`), `WF-10` (`docs/WORKFLOWS.md`), spelled-out project display names, and rebuilt starters.
+
 ## [9.7.0] - 2026-11-25
 
 ### Added

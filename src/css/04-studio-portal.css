@@ -153,6 +153,8 @@ summary::-webkit-details-marker { display: none; }
   .va-tier-select { min-inline-size: 0; max-inline-size: 290px; }
 }
 @media (max-width: 519px) {
+  .va-demo-site-strip { padding: 0 0.45rem; gap: 0.4rem; }
+  .va-demo-strip-link { padding: 0.2rem 0.38rem; }
   #va-studio-bar, .va-studio-bar { padding: 0 0.25rem; gap: 0.2rem; }
   .va-bar-left, .va-bar-right { gap: 0.16rem; }
   .va-mode-tab { padding: 0 0.28rem; font-size: 11px; }
@@ -168,9 +170,10 @@ summary::-webkit-details-marker { display: none; }
 html[data-studio-view="overview"] :is(.va-bar-center, #va-bridge-btn, .va-examples-only, #va-portal-mat),
 html[data-studio-view="components"] :is(.va-bar-center, #va-bridge-btn, .va-examples-only, #va-studio-landing),
 html[data-studio-view="examples"] #va-studio-landing,
-[hidden] {
+[hidden]:not([hidden="until-found"]) {
   display: none;
 }
+html[data-demo-route="true"] #va-tab-overview { display: none; }
 
 #va-portal-mat {
   flex: 1;
@@ -412,8 +415,10 @@ dialog#va-bridge-dialog {
 
 @media (forced-colors: active) {
   .va-mode-tab[aria-selected="true"],
-  .va-format-btn[aria-pressed="true"] { border: 2px solid Highlight; }
+  .va-format-btn[aria-pressed="true"],
+  .va-demo-strip-link[aria-current="page"] { border: 2px solid Highlight; }
 }
 @media print {
   #va-studio-bar, #va-studio-landing, dialog#va-customize-sheet, dialog#va-bridge-dialog, .va-hinge-guide, .va-drag-handle { display: none; }
+  .va-demo-site-strip { display: none; }
 }

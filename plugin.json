@@ -1,9 +1,9 @@
 {
   "name": "quiet-ui-skills",
   "displayName": "Quiet UI Skills",
-  "description": "Quiet UI v9.7 3-pillar suite: 26-view interactive studio, 53-specimen Component Library, Question-First public data, Print-Flow & ISA-18.2 alarm lifecycle checks (quiet-ui), deterministic US 51-hex map/dumbbell/slopegraph/diverging matrix compilers + Takeaway Copy-for-AI (quiet-evidence), audience translation (quiet-bridge), and starter kits.",
+  "description": "Quiet UI v9.8 3-pillar suite (quiet-ui, quiet-evidence, quiet-bridge): reusable OAW 3-route project-site shell (/, demo/, docs/), searchable plain-language docs, 1280x640 social card generator, 26-view interactive studio, 53-specimen Component Library, and starter kits.",
   "logo": "assets/logo.svg",
-  "version": "9.7.0",
+  "version": "9.8.0",
   "suggestedPrompts": [
     "Turn these engineering notes and metrics into a clean Quiet UI page",
     "Compile calibrated plots, bitfields, or sequence/N2/fault-tree SVG schematics from structured JSON",

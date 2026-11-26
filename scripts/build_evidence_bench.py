@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Quiet UI v9.7 — Standalone 53-Specimen 3-Pillar Component Library Builder."""
+"""Quiet UI v9.8 — Standalone 53-Specimen 3-Pillar Component Library Builder."""
 
 from __future__ import annotations
 
@@ -142,7 +142,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Quiet UI v9.7 — Component Library (53 Building Blocks)</title>
+  <title>Quiet UI v9.8 — Component Library (53 Building Blocks)</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3.5' fill='%230F172A'/%3E%3Cpath d='M8 2.4 13 5.2 8 8 3 5.2 8 2.4Z' fill='none' stroke='%2338BDF8' stroke-width='1.4' stroke-linejoin='round'/%3E%3Cpath d='M3 8l5 2.8L13 8M3 10.8 8 13.6l5-2.8' fill='none' stroke='%23BAE6FD' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <style id="qe-bench-styles">
 {css_bundle}
@@ -153,7 +153,7 @@ def _render_bench_shell(cards_markup: str) -> str:
   <header class="qe-topbar">
     <div class="qe-topbar-inner">
       <div class="qe-brand">
-        <span class="va-kicker">QUIET UI v9.7 · READY-TO-USE BUILDING BLOCKS</span>
+        <span class="va-kicker">QUIET UI v9.8 · READY-TO-USE BUILDING BLOCKS</span>
         <h1>Component Library (53 Building Blocks · 4 Themes)</h1>
       </div>
       <nav class="qe-controls" aria-label="Component Library Controls">

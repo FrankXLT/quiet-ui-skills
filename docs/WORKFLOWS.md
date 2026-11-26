@@ -1,17 +1,17 @@
-# Quiet UI v9.7.0 — Master Engineering Workflows & Architecture
+# Quiet UI v9.8.0 — Master Engineering Workflows & Architecture
 
 > **Document Class**: Authoritative Architecture Specification  
-> **Target Version**: Quiet UI v9.7.0 (`3-Pillar Unified Continuum`)  
+> **Target Version**: Quiet UI v9.8.0 (`3-Pillar Unified Continuum`)  
 > **Standards Basis**: NIST SP 811, FDA IEC 62366, ISA-101 / NRC NUREG-0700, NIST AI RMF 100-1, SAE J1939, NAVAIR FTM-108, NASA-STD-3001, GAO/USWDS, NAEP/Census ACS
 
 ---
 
 ## 1. The 3-Pillar Compositional Philosophy
 
-Quiet UI v9.7 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Public Data, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
+Quiet UI v9.8 abandons rigid monolithic page templates and artificial walls between "diagrams" and "dashboards." Instead, any user-facing interface, monograph, console, or report—across **Clinical Care & Life Sciences, Cloud/Cyber/AI Ops, Industrial Grid & Manufacturing, Automotive & Embedded Hardware, Civic Finance & Public Data, and Earth Science & STEM Education**—is decomposed into three strictly orthogonal concerns:
 
 ```
-                                      QUIET UI v9.7
+                                      QUIET UI v9.8
                                             │
         ┌───────────────────────────────────┼───────────────────────────────────┐
         ▼                                   ▼                                   ▼
@@ -393,3 +393,23 @@ Multi-panel operational consoles (`v08` Microgrid Quad, `v01` ICU Console, `v04`
 2. **Readable Disabled Safety Gates (`WF-01`, `[DISABLED_CONTROL_LOW_CONTRAST]`)**: Locked `:disabled` / `[aria-disabled="true"]` controls bind to `--disabled-bg`, `--disabled-fg`, and `1px dashed var(--disabled-border)` (`opacity: 1`, `>= 3.0:1` UI / `>= 2.8:1` hard CDP floor across all 4 themes, `GrayText` under `forced-colors`), guarding dark-theme active-ink rules with `:not(:disabled):not([aria-disabled="true"])`.
 3. **Unbroken Monospace Parameter Keys (`WF-01`, `[PARAM_KEY_MIDWORD_WRAP]`)**: Keep `td > code` and `.w2-code` keys `white-space: nowrap; word-break: normal` above `600px` (`820–900px` tablet), allowing adjacent prose cells to wrap on word boundaries before `<= 600px` stacked cards engage.
 4. **Horizontal Print Safe Margins (`WF-03` & `WF-08`, `[PRINT_EDGE_CLIP]`)**: Under `@media print`, preserve `box-sizing: border-box; padding-inline: max(1.5rem, 24px);` on `.v9-stage-inner`, `.va-editorial-article`, and `.va-question-brief` so standalone and iframe prints clear `>= 12px` edge margins.
+
+---
+
+## 15. Workflow WF-10 — Reusable OAW Project-Site Shell, Three-Route Hub & Social Preview (v9.8.0)
+
+Every OAW repository portal separates plain-language discovery, optional interactive demos, and searchable documentation via one validated manifest with zero JS build tooling:
+
+1. **Unified `46px` OAW Top Bar & Three-Route Hub (`/`, `/demo/`, `/docs/`)**:
+   - **Left Bar (`OAW Projects` + Two-Stage Project Pill + Left Underline Tabs)**: Far-left bold `OAW Projects` link (`hub.hub_url`) sits beside a rounded `32px` active project pill (`#oaw-projects-btn`, spelled-out title e.g. `Quiet User Interface Skills`) opening a two-stage popover (`← All Projects` Stage 1 above spelled-out siblings e.g. `Antigravity Nexus` + active checkmark Stage 2), followed directly on the left across **all three routes (`Overview`, `Demo`, `Docs`)** by borderless underline tabs (`Overview`, `Demo`, `Docs`; `36px` static `.oaw-mobile-subnav` below `680px`).
+   - **Right Bar (`9-Dot Pillar Switcher` + User & Theme Menu)**: Renders strictly two `32px` controls—a `9-dot` pillar switcher (`Home`, `Learn`, `Projects` Active, `Research` Soon) and the `@<owner>` user menu (collapsing text label on `< 680px` phones) holding the **4-Color Theme Switcher** (`Pure White`, `Warm Paper`, `Dark`, `Dark Paper`) synced across routes and `/demo/` above repository/profile links.
+   - **`/` (`index.html`, Overview)**: Centered `1080px` `Newsreader` editorial hero (`kicker`, `h1`, subtitle, breathing-cursor `.oaw-cmd-slug` pills, CTAs), tinted 3-step `.oaw-showcase-card` housing `.oaw-quickstart-box` copyable install commands, balanced `.oaw-pillars-grid`, domain cards, and compiled `urn:quiet-ui:schema:v9:schematic` diagrams.
+   - **`/demo/` (`demo/index.html`, Optional Wrapper)**: Activated by `routes.demo.enabled` + `demo_wrapper.enabled` around `demo_wrapper.entry_path` (`studio-shell.html`); prepends the `position: static` `46px` `.oaw-topbar.va-demo-site-strip` via `render_demo_return_bar` (`Overview · Demo · Docs` kept on left, two-way `oaw:theme-change` sync) above `#va-studio-bar`.
+   - **`/docs/` (`docs/index.html`, Searchable Reader)**: Compiles Markdown guides and fenced `urn:quiet-ui:schema:v9:*` inline `<svg>` specs (`markdown_docs.py`), embeds `#oaw-docs-search-index` (`/` focus), and pairs a desktop sticky `.oaw-docs-rail` with a mobile `<dialog class="va-modal-sheet" closedby="any">` TOC sheet and `.va-empty-state[data-kind="filtered"]` zero-results recovery (`#oaw-empty-clear-btn` + quick jumps).
+2. **Manifest, Zero-Dep Builder, Starter & Social Preview**:
+   - **Schema & Engine**: `urn:quiet-ui:schema:v9:project-site` (`oaw-site.json`, e.g., `src/chrome/quiet-ui-site.json`) validated by `load_site_config()` (`src/site_shell/config.py`) drives the zero-dependency stdlib `src/site_shell/` package (`__init__.py`, `config.py`, `markdown_docs.py`, `social_card.py`, `builder.py`, `templates.py`, `assets/site-{shell,docs}.{css,js}`).
+   - **MIT Starter & CLI**: Clone `customizations/project-site-starter/` (read-only baseline) and build via `python3 -B customizations/scripts/build_project_site.py --config <oaw-site.json> --out <dir>` (`--social-svg`, `--social-png`, `--bundle`).
+   - **`1280x640` Social Preview**: `scripts/build_social_preview.py` writes deterministic `1280x640` SVG (stdlib) and PNG (lazy Pillow, `<= 250 KB`) cards from `social_preview` (`--check`, `--svg-only`, `--theme white|dark`).
+3. **Privacy, Subpath & Hygiene Invariants**:
+   - **Relative Subpath Links & Theme Persistence**: Route links use `./` and `../` subpath hrefs while `site-shell.js` carries `?theme=` across routes; pre-paint `legacy_query_keys` (`mode!=overview`, `view`, `world`, `domain`) forwards `/` directly to `demo/index.html?...`.
+   - **Path Confinement, Plain Language & Strict Audit**: `load_site_config()` blocks path escapes, backslash/control-char URL obfuscation, unsafe SVGs, and private host/path/agent tokens; starter chrome omits `Quiet` self-badges, bans CSS `!important` and internal jargon, and clears `audit_quiet_html.py <dist> --strict-drift` (`--cdp` across `390px`/`820px`/`1440px`) + `build_social_preview.py --check`.

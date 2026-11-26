@@ -30,15 +30,23 @@ jobs:
       - name: Verify generated bundles match canonical sources
         run: python3 -B scripts/build_all.py --check
 
+      - name: Verify 1280x640 social preview SVG/PNG parity
+        run: python3 -B scripts/build_social_preview.py --check
+
       - name: Run zero-dependency unit, compiler, corpus, portability & hygiene tests
         env:
           QUIET_SKIP_CDP: "1"
         run: python3 -B -m unittest discover -s tests -v
 
-      - name: Audit shipped HTML deliverables (static mode)
+      - name: Audit shipped HTML deliverables & starter site (static + strict-drift)
         run: |
           python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/demo/index.html --allow-showcase-chrome
           python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py customizations/project-site-starter/site --strict-drift
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/index.html --strict-drift --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/docs/index.html --strict-drift --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/styles --strict-drift --allow-showcase-chrome
 
   visual-cdp-gates:
     name: Headless Chrome CDP Visual Gates
@@ -65,17 +73,22 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install ".[dev]"
 
-      - name: Run full 21-view, optics, ECharts & bench CDP test suite
+      - name: Run full Studio, Docs & Bench CDP test suite
         env:
           QUIET_REQUIRE_CDP: "1"
           CHROME_BIN: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROMEDRIVER_BIN: ${{ steps.setup_chrome.outputs.chromedriver-path }}
         run: python3 -B -m unittest discover -s tests -v
 
-      - name: Audit showcase & bench in Headless Chrome CDP mode
+      - name: Audit starter site, docs & showcase in Headless Chrome CDP mode
         env:
           CHROME_BIN: ${{ steps.setup_chrome.outputs.chrome-path }}
           CHROMEDRIVER_BIN: ${{ steps.setup_chrome.outputs.chromedriver-path }}
         run: |
-          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py customizations/project-site-starter/site/index.html --cdp
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py customizations/project-site-starter/site/docs/index.html --cdp
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/index.html --cdp --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/demo/index.html --cdp --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/docs/index.html --cdp --allow-showcase-chrome
           python3 -B skills/quiet-ui/scripts/audit_quiet_html.py docs/bench/evidence-bench.html --cdp --allow-showcase-chrome
+          python3 -B skills/quiet-ui/scripts/audit_quiet_html.py quiet-ui-showcase.html --cdp --allow-showcase-chrome

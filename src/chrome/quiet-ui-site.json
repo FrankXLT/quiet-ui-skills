@@ -1,0 +1,215 @@
+{
+  "$schema": "urn:quiet-ui:schema:v9:project-site",
+  "project": {
+    "slug": "quiet-ui-skills",
+    "title": "Quiet User Interface Skills",
+    "version": "9.8.0",
+    "repo_url": "https://github.com/FrankXLT/quiet-ui-skills",
+    "site_url": "https://FrankXLT.github.io/quiet-ui-skills/",
+    "tagline": "Zero-dependency UI architecture, calibrated charts and diagrams, and reusable OAW project-site shell for AI coding agents.",
+    "license_summary": "Apache-2.0 Core + MIT Customizations & Generated Output"
+  },
+  "hub": {
+    "label": "OAW Projects",
+    "hub_url": "https://projects.oaworkbench.org/",
+    "projects": [
+      { "slug": "agy-nexus-mcp", "title": "Antigravity Nexus", "tagline": "Steer Antigravity IDE, track quota %, and route helper models", "url": "https://projects.oaworkbench.org/agy-nexus-mcp/", "current": false },
+      { "slug": "quiet-ui-skills", "title": "Quiet User Interface Skills", "tagline": "Design system, calibrated charts, and OAW project-site shell", "url": "./index.html", "badge": "v9.8.0", "current": true }
+    ],
+    "pillars": [
+      { "id": "home", "title": "Home", "desc": "Workbench home and overview", "href": "https://www.oaworkbench.org/", "status": "link" },
+      { "id": "learn", "title": "Learn", "desc": "Interactive engineering and science guides", "href": "https://learn.oaworkbench.org/", "status": "link" },
+      { "id": "projects", "title": "Projects", "desc": "Open-source tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active" },
+      { "id": "research", "title": "Research", "desc": "Long-form technical investigations", "href": "", "status": "soon", "badge": "Soon" }
+    ]
+  },
+  "user_menu": {
+    "label": "@FrankXLT",
+    "profile_url": "https://github.com/FrankXLT",
+    "repo_label": "GitHub Repository"
+  },
+  "routes": {
+    "overview": { "href": "index.html", "label": "Overview" },
+    "demo": { "href": "demo/index.html", "label": "Demo", "enabled": true, "legacy_query_keys": ["mode", "view", "world", "domain"] },
+    "docs": { "href": "docs/index.html", "label": "Docs" }
+  },
+  "overview": {
+    "kicker": "Open Agentic Workbench · Version 9.8.0",
+    "headline": "Calm, Readable Interfaces and Honest Charts — Built Automatically",
+    "summary": "Quiet User Interface Skills gives developers and AI coding agents a zero-dependency design system, calibrated SVG chart and diagram compilers, clear everyday framing, and automated layout checks.",
+    "command_pills": [
+      { "slug": "quiet-ui", "href": "#pillar-quiet-ui" },
+      { "slug": "quiet-evidence", "href": "#pillar-quiet-evidence" },
+      { "slug": "quiet-bridge", "href": "#pillar-quiet-bridge" }
+    ],
+    "quickstart_steps": [
+      { "icon": "terminal", "title": "1 — Install Once", "body": "Clone the repository or pull individual skills into Antigravity, Claude Code, Cursor, or Codex." },
+      { "icon": "desktop", "title": "2 — Try Live Examples", "body": "Browse 26 interactive workspaces and 53 calibrated building blocks across all 4 color themes." },
+      { "icon": "layers", "title": "3 — Audit Automatically", "body": "Run offline HTML and Chrome layout checks to catch clipped text, low contrast, or color drift." }
+    ],
+    "primary_cta": { "label": "Open Interactive Demo", "href": "demo/index.html" },
+    "secondary_cta": { "label": "Read Plain-Language Docs", "href": "docs/index.html" },
+    "tertiary_cta": { "label": "Browse 53 Building Blocks", "href": "demo/index.html?mode=components" },
+    "install_commands": [
+      {
+        "label": "Clone & Install Plugin + Portable Skills",
+        "command": "git clone https://github.com/FrankXLT/quiet-ui-skills.git && cd quiet-ui-skills && ./install.sh"
+      },
+      {
+        "label": "Install Quiet UI Skill via Skills CLI",
+        "command": "npx skills add https://github.com/FrankXLT/quiet-ui-skills --skill quiet-ui"
+      }
+    ],
+    "plain_language_blocks": [
+      {
+        "id": "pillar-quiet-ui",
+        "eyebrow": "Pillar 1 · quiet-ui",
+        "title": "Calm Layouts & Automatic Quality Checks",
+        "body": "Ship clean pages across phones, tablets, desktops, and printouts in 4 readable themes with accessible forms, helpful empty states, and automated layout checks before merge.",
+        "href": "docs/index.html#doc-three-pillars",
+        "cta_label": "Explore UI Mediums"
+      },
+      {
+        "id": "pillar-quiet-evidence",
+        "eyebrow": "Pillar 2 · quiet-evidence",
+        "title": "Calibrated Charts & System Diagrams",
+        "body": "Compile clean 1-2-5 scaled plots, waveforms, bitfields, and system diagrams from structured JSON with zero runtime dependencies and visible gaps when readings are missing.",
+        "href": "docs/index.html#doc-evidence-and-auditor",
+        "cta_label": "View Chart Specs"
+      },
+      {
+        "id": "pillar-quiet-bridge",
+        "eyebrow": "Pillar 3 · quiet-bridge",
+        "title": "Plain-Language Clarity Across Audiences",
+        "body": "Present the same verified facts clearly across executive summaries, engineering reviews, and hands-on operator guides so numbers, limits, and units always match.",
+        "href": "docs/index.html#doc-three-pillars",
+        "cta_label": "Read Bridge Guide"
+      },
+      {
+        "id": "customization-and-shell",
+        "eyebrow": "Starters & Shell · customizations/",
+        "title": "60-Second Brand Setup & Reusable Site Shell",
+        "body": "Copy an MIT starter kit to swap colors, fonts, and copy in seconds, or spin up this same 3-route overview, demo, and docs hub for any open-source project.",
+        "href": "docs/index.html#doc-brand-customization",
+        "cta_label": "Customize in 60s"
+      }
+    ],
+    "domain_previews": [
+      {
+        "world_id": "01-clinical-icu-and-trials",
+        "view_id": "v01-icu-bedside-terminal",
+        "title": "Clinical ICU & Trials",
+        "subtitle": "Bedside hemodynamic scope, ventilator readouts, and clinical trial safety proofs.",
+        "badge": "World 01 · M4",
+        "href": "demo/index.html?domain=01-clinical-icu-and-trials&view=v01-icu-bedside-terminal"
+      },
+      {
+        "world_id": "02-cloud-cyber-and-ai-ops",
+        "view_id": "v04-sre-incident-workbench",
+        "title": "Cloud, Cyber & AI Ops",
+        "subtitle": "Service latency workbench, enclave network policies, and AI calibration checks.",
+        "badge": "World 02 · M3",
+        "href": "demo/index.html?domain=02-cloud-cyber-and-ai-ops&view=v04-sre-incident-workbench"
+      },
+      {
+        "world_id": "03-industrial-grid-and-manufacturing",
+        "view_id": "v07-grid-scada-poi-console",
+        "title": "Industrial Grid & Manufacturing",
+        "subtitle": "Microgrid piping diagram, fieldbus monitor, quality control, and undersea cable health.",
+        "badge": "World 03 · M4",
+        "href": "demo/index.html?domain=03-industrial-grid-and-manufacturing&view=v07-grid-scada-poi-console"
+      },
+      {
+        "world_id": "04-civic-finance-and-stem-learning",
+        "view_id": "v22-reading-and-mobility-brief",
+        "title": "Civic Finance & STEM Learning",
+        "subtitle": "Question-first public data briefs, city capital budgets, and STEM student labs.",
+        "badge": "World 04 · M5",
+        "href": "demo/index.html?domain=04-civic-finance-and-stem-learning&view=v22-reading-and-mobility-brief"
+      },
+      {
+        "world_id": "05-physical-systems-auto-and-aero",
+        "view_id": "v15-collimated-flight-hud",
+        "title": "Physical Systems: Auto & Aero",
+        "subtitle": "Cockpit flight display, powertrain diagnostics bench, and mission readouts.",
+        "badge": "World 05 · M7",
+        "href": "demo/index.html?domain=05-physical-systems-auto-and-aero&view=v15-collimated-flight-hud"
+      },
+      {
+        "world_id": "06-smart-home-and-energy",
+        "view_id": "v18-home-assistant-companion-console",
+        "title": "Smart Home & Energy",
+        "subtitle": "Home energy dispatch, circuit load diagnostics, and solar battery balance.",
+        "badge": "World 06 · M3",
+        "href": "demo/index.html?domain=06-smart-home-and-energy&view=v18-home-assistant-companion-console"
+      }
+    ],
+    "architecture_diagrams": [
+      {
+        "$schema": "urn:quiet-ui:schema:v9:schematic",
+        "schematic_kind": "pipeline",
+        "id": "quiet-ui-ecosystem-flow",
+        "title": "How Quiet UI Compiles Tokens, Schemas, and Guides into Verified Surfaces",
+        "caption": "Zero-dependency build pipeline compiling design tokens, v9 evidence schemas, and markdown guides into the 3-route OAW site and automated audit gates.",
+        "alt": "Pipeline diagram showing Tokens, Schemas, and Guides flowing through the Quiet UI Compiler into Overview, Demo Studio, Searchable Docs, and Audit Gates.",
+        "metadata": { "title": "Quiet UI Ecosystem Flow", "rigor_level": "L1" },
+        "stages": ["1. Inputs", "2. Compile & Shell", "3. Verified Outputs"],
+        "nodes": [
+          { "id": "tokens", "stage": 0, "label": "Tokens", "metric": "4 Themes · CSS vars" },
+          { "id": "schemas", "stage": 0, "label": "Schemas", "metric": "v9 Evidence JSON" },
+          { "id": "guides", "stage": 0, "label": "Guides", "metric": "UI · Evidence · Bridge" },
+          { "id": "compiler", "stage": 1, "label": "Quiet UI Builder", "metric": "Zero Runtime Deps", "focal": true },
+          { "id": "overview", "stage": 2, "label": "Overview", "metric": "index.html" },
+          { "id": "demo", "stage": 2, "label": "Demo Studio", "metric": "26 Views · 53 Blocks" },
+          { "id": "docs", "stage": 2, "label": "Searchable Docs", "metric": "docs/index.html" },
+          { "id": "audit", "stage": 2, "label": "Audit Gates", "metric": "Drift + CDP Checks" }
+        ],
+        "edges": [
+          { "from": "tokens", "to": "compiler" },
+          { "from": "schemas", "to": "compiler" },
+          { "from": "guides", "to": "compiler" },
+          { "from": "compiler", "to": "overview" },
+          { "from": "compiler", "to": "demo" },
+          { "from": "compiler", "to": "docs" },
+          { "from": "compiler", "to": "audit" }
+        ]
+      }
+    ]
+  },
+  "docs_reader": {
+    "title": "Quiet UI Documentation",
+    "subtitle": "Plain-language guides covering quick installation, 60-second branding, the three pillars, calibrated charts, and the OAW project-site shell.",
+    "sources": [
+      { "id": "getting-started", "path": "docs/01-getting-started.md", "title": "Getting Started", "category": "Start Here" },
+      { "id": "brand-customization", "path": "docs/02-customization.md", "title": "60-Second Brand Customization", "category": "Customization" },
+      { "id": "three-pillars", "path": "docs/03-architecture-and-pillars.md", "title": "Architecture & Three Pillars", "category": "Architecture" },
+      { "id": "evidence-and-auditor", "path": "docs/04-evidence-and-auditor.md", "title": "Calibrated Charts & Layout Auditor", "category": "Charts & Auditing" },
+      { "id": "workflows-and-project-site", "path": "docs/05-workflows-and-project-site.md", "title": "Workflows & Reusable Project-Site Shell", "category": "Workflows & Shell" }
+    ],
+    "quick_jumps": [
+      { "label": "Getting Started", "target": "doc-getting-started", "kind": "doc" },
+      { "label": "60-Second Brand Customization", "target": "doc-brand-customization", "kind": "doc" },
+      { "label": "Component Demo (53 Specimens)", "target": "../demo/index.html?mode=components", "kind": "route" }
+    ]
+  },
+  "demo_wrapper": {
+    "enabled": true,
+    "entry_path": "studio-shell.html",
+    "docs_base": "..",
+    "default_studio_view": "examples",
+    "topbar_links": [
+      { "label": "Overview", "href": "../index.html" },
+      { "label": "Docs", "href": "../docs/index.html" }
+    ]
+  },
+  "social_preview": {
+    "image_path": "assets/quiet-ui-social.png",
+    "width": 1280,
+    "height": 640,
+    "eyebrow": "QUIET UI SKILLS v9.8 · OPEN AGENTIC WORKBENCH",
+    "title": "Calm Interfaces, Exact Charts & Plain-Language Docs",
+    "subtitle": "Zero-dependency 4-theme design system, 53 calibrated components, and reusable 3-route OAW project site shell.",
+    "pills": ["4 Themes", "26 Views", "53 Specimens", "3-Route OAW Shell"],
+    "accent_hex": "#1D4ED8"
+  }
+}
