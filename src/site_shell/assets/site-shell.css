@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-/* Quiet UI v9.8.0 — Shared Site Shell, 46px OAW Topbar, Popovers & Centered Overview */
+/* Quiet UI v9.8.0 — Shared Site Shell, 46px OAW Topbar, Route Menu & Popovers */
 
-@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+@layer reset, tokens, shell, archetypes, evidence, components, views, utilities;
 
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -34,101 +34,161 @@
 @layer shell {
   .oaw-skip-link {
     position: absolute; inset-block-start: -100px; inset-inline-start: 0.75rem; z-index: 150;
-    padding: 0.45rem 0.85rem; border-radius: var(--radius-sm, 6px);
-    background: var(--accent-primary); color: var(--text-on-accent); font-size: var(--ts-sm); font-weight: 600;
+    padding: 0.45rem 0.85rem; border-radius: var(--radius-sm, 6px); text-decoration: none;
+    background: var(--oaw-accent, var(--accent-primary)); color: var(--text-on-accent); font-size: var(--ts-sm); font-weight: 600;
   }
-  .oaw-skip-link:focus-visible { inset-block-start: 0.5rem; }
+  .oaw-skip-link:focus-visible { inset-block-start: 0.5rem; text-decoration: none; }
 
   .oaw-demo-chrome {
     position: relative; z-index: 120; flex-shrink: 0; font-family: var(--font-sans); color: var(--text-primary);
   }
-  .oaw-demo-chrome :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  .oaw-demo-chrome :focus-visible { outline: 2px solid var(--oaw-accent, var(--accent-primary)); outline-offset: 2px; }
 
   .oaw-topbar {
     position: sticky; inset-block-start: 0; z-index: 95;
     block-size: 46px; min-block-size: 46px; max-block-size: 46px;
-    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-    padding-inline: clamp(0.5rem, 1.5vw, 0.9rem);
-    background: var(--bg-elevated); color: var(--text-primary);
-    border-block-end: 1px solid var(--border-hairline);
+    display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 8px; padding-inline: 14px;
+    background: var(--oaw-elevated, var(--bg-elevated)); color: var(--text-primary);
+    border-block-end: 1px solid var(--oaw-border-subtle, var(--border-subtle, var(--border-hairline)));
   }
   .oaw-topbar.oaw-topbar--demo,
   .oaw-topbar.va-demo-site-strip { position: static; }
-  .oaw-topbar-left { display: flex; align-items: center; gap: 0.5rem; min-inline-size: 0; flex: 1 1 auto; }
-  .oaw-topbar-right { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; }
-  .oaw-switcher-wrap,
+  .oaw-topbar-left { display: flex; align-items: center; gap: 8px; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-topbar-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .oaw-switcher-wrap { position: relative; display: inline-flex; align-items: center; min-inline-size: 0; flex: 0 1 auto; }
+  .oaw-nav-wrap,
   .oaw-pillar-wrap,
-  .oaw-user-wrap { position: relative; display: inline-flex; align-items: center; min-inline-size: 0; }
+  .oaw-user-wrap { position: relative; display: inline-flex; align-items: center; flex-shrink: 0; }
 
   .oaw-brand-link {
-    display: inline-flex; align-items: center; block-size: 32px; padding-inline: 0.35rem;
-    border-radius: var(--radius-sm, 6px); color: var(--text-primary);
+    display: inline-flex; align-items: center; block-size: 32px; padding-inline: 6px;
+    border-radius: var(--radius-sm, 6px); color: var(--text-primary); text-decoration: none;
     font-size: var(--ts-sm); font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; flex-shrink: 0;
   }
   .oaw-brand-link:hover { text-decoration: none; background: var(--bg-subtle); }
 
   .oaw-projects-btn,
+  .oaw-route-btn,
+  .oaw-search-trigger,
   .oaw-pillar-btn,
   .oaw-user-btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
-    block-size: 32px; min-block-size: 32px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px; block-size: 32px; min-block-size: 32px;
     border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary);
-    font-size: var(--ts-sm); font-weight: 600; flex-shrink: 0;
+    font-size: var(--ts-sm); font-weight: 600; white-space: nowrap;
   }
   .oaw-projects-btn {
-    padding: 0 0.7rem; border-radius: var(--radius-pill, 999px);
-    min-inline-size: 0; max-inline-size: 18rem; flex-shrink: 1; anchor-name: --oaw-projects-anchor;
+    padding: 0 11px; border-radius: var(--radius-pill, 999px);
+    min-inline-size: 0; max-inline-size: min(18rem, 100%); flex: 0 1 auto; anchor-name: --oaw-projects-anchor;
   }
-  .oaw-projects-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-inline-size: 0; }
-  .oaw-pillar-btn { inline-size: 32px; padding: 0; border-radius: var(--radius-sm, 6px); color: var(--text-secondary); anchor-name: --oaw-pillar-anchor; }
-  .oaw-user-btn { padding: 0 0.65rem; border-radius: var(--radius-pill, 999px); white-space: nowrap; anchor-name: --oaw-user-anchor; }
-  .oaw-btn-chev { flex-shrink: 0; transition: transform 150ms ease; }
-  :is(.oaw-projects-btn, .oaw-user-btn)[aria-expanded="true"] .oaw-btn-chev { transform: rotate(180deg); }
-  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):hover,
-  :is(.oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn)[aria-expanded="true"] {
-    background: var(--bg-subtle); border-color: var(--accent-primary); color: var(--text-primary);
+  .oaw-projects-label { display: block; flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .oaw-route-btn { padding-inline: 10px; border-radius: var(--radius-pill, 999px); flex-shrink: 0; anchor-name: --oaw-route-anchor; }
+  .oaw-search-trigger { inline-size: 32px; padding: 0; border-radius: var(--radius-sm, 6px); color: var(--text-secondary); flex-shrink: 0; }
+  .oaw-search-text,
+  .oaw-search-kbd { display: none; }
+  .oaw-pillar-btn {
+    inline-size: 32px; padding: 0; border-radius: var(--radius-sm, 6px);
+    color: var(--text-secondary); flex-shrink: 0; anchor-name: --oaw-pillar-anchor;
+  }
+  .oaw-user-btn { padding: 0 9px; border-radius: var(--radius-sm, 6px); flex-shrink: 0; anchor-name: --oaw-user-anchor; }
+  .oaw-btn-chev,
+  .oaw-route-btn svg { flex-shrink: 0; transition: transform 150ms ease; }
+  :is(.oaw-projects-btn, .oaw-route-btn, .oaw-user-btn)[aria-expanded="true"] :is(.oaw-btn-chev, svg:last-child) {
+    transform: rotate(180deg);
+  }
+  :is(.oaw-projects-btn, .oaw-route-btn, .oaw-search-trigger, .oaw-pillar-btn, .oaw-user-btn):hover,
+  :is(.oaw-projects-btn, .oaw-route-btn, .oaw-search-trigger, .oaw-pillar-btn, .oaw-user-btn)[aria-expanded="true"] {
+    background: var(--bg-subtle); border-color: var(--oaw-accent, var(--accent-primary)); color: var(--text-primary);
   }
 
-  .oaw-nav-links { display: inline-flex; align-items: center; gap: 0.15rem; margin-inline-start: 0.15rem; flex-shrink: 0; }
-  .oaw-nav-link {
-    position: relative; display: inline-flex; align-items: center;
-    block-size: 46px; padding-inline: 0.55rem; background: transparent; border: none; border-radius: 0;
-    color: var(--text-secondary); font-size: var(--ts-nav); font-weight: 600; white-space: nowrap; text-decoration: none;
-  }
-  .oaw-nav-link:hover { color: var(--text-primary); background: var(--bg-subtle); text-decoration: none; }
-  .oaw-nav-link[aria-current="page"] { color: var(--text-primary); box-shadow: inset 0 -2.5px 0 var(--accent-primary); }
-
-  .oaw-mobile-subnav { display: none; }
-  @media (min-width: 680px) and (max-width: 820px) {
-    .oaw-nav-link { padding-inline: 0.4rem; }
-  }
-  @media (max-width: 679px) {
-    .oaw-topbar { padding-inline: 0.5rem; gap: 0.35rem; }
-    .oaw-topbar-left, .oaw-topbar-right { gap: 0.3rem; }
-    .oaw-brand-link { font-size: var(--ts-xs); padding-inline: 0.25rem; }
-    .oaw-projects-btn { padding-inline: 0.5rem; font-size: var(--ts-xs); max-inline-size: 13.5rem; }
-    .oaw-nav-links { display: none; }
-    .oaw-user-label { display: none; }
-    .oaw-user-btn { padding-inline: 0.45rem; gap: 0.2rem; }
-    .oaw-mobile-subnav {
-      position: static; display: flex; align-items: center; gap: 0.25rem;
-      block-size: 36px; min-block-size: 36px; padding-inline: 0.65rem;
-      background: var(--bg-surface); border-block-end: 1px solid var(--border-hairline);
+  @media (min-width: 960px) {
+    .oaw-search-trigger { inline-size: auto; block-size: 32px; padding-inline: 10px 7px; gap: 6px; border-radius: var(--radius-sm, 6px); }
+    .oaw-search-text { display: inline; color: var(--text-secondary); }
+    .oaw-search-trigger:hover .oaw-search-text { color: var(--text-primary); }
+    .oaw-search-kbd {
+      display: inline-flex; align-items: center; padding: 1px 5px;
+      border-radius: var(--radius-xs, 4px); border: 1px solid var(--border-hairline);
+      background: var(--bg-elevated); color: var(--text-muted);
+      font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600; line-height: 1.3;
     }
-    .oaw-mobile-subnav .oaw-nav-link { block-size: 36px; padding-inline: 0.5rem; font-size: var(--ts-sm); }
+  }
+
+  @media (max-width: 899.98px) {
+    #oaw-route-menu {
+      position: fixed; inset: auto; margin: 0; min-inline-size: 168px; padding: 6px;
+      max-inline-size: calc(100dvw - 16px); max-block-size: calc(100dvh - 64px); overflow-y: auto;
+      background: var(--oaw-elevated, var(--bg-elevated));
+      border: 1px solid var(--oaw-border-subtle, var(--border-subtle, var(--border-hairline)));
+      border-radius: var(--radius-card, 12px);
+      box-shadow: var(--oaw-popover-shadow, 0 12px 32px color-mix(in oklab, var(--text-primary) 16%, transparent));
+      z-index: 160;
+    }
+    #oaw-route-menu:not([popover]):not(.\:popover-open):not(.is-open):not([data-open="true"]),
+    #oaw-route-menu:not([popover]):not(.\:popover-open):not(.is-open):not([data-open="true"]) .oaw-nav-links {
+      display: none;
+    }
+    @supports selector(:popover-open) {
+      #oaw-route-menu[popover]:not(:popover-open):not(.\:popover-open):not(.is-open):not([data-open="true"]),
+      #oaw-route-menu:not(:popover-open):not(.\:popover-open):not(.is-open):not([data-open="true"]) .oaw-nav-links {
+        display: none;
+      }
+    }
+    @supports not selector(:popover-open) {
+      #oaw-route-menu:not(.\:popover-open):not(.is-open):not([data-open="true"]),
+      #oaw-route-menu:not(.\:popover-open):not(.is-open):not([data-open="true"]) .oaw-nav-links {
+        display: none;
+      }
+    }
+    #oaw-route-menu:is(:popover-open, .\:popover-open, .is-open, [data-open="true"]) { display: flex; flex-direction: column; }
+    #oaw-route-menu .oaw-nav-links { display: flex; flex-direction: column; align-items: stretch; gap: 2px; margin: 0; padding: 0; list-style: none; }
+    #oaw-route-menu .oaw-nav-link {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      inline-size: 100%; min-block-size: 38px; padding: 6px 10px; border-radius: var(--radius-sm, 6px);
+      border: 1px solid transparent; color: var(--text-primary); font-size: var(--ts-sm); font-weight: 500;
+      text-decoration: none; white-space: nowrap;
+    }
+    #oaw-route-menu .oaw-nav-link:hover { background: var(--bg-subtle); text-decoration: none; }
+    #oaw-route-menu .oaw-nav-link:is(.is-active, [aria-current="page"]) {
+      background: var(--bg-surface); border-color: var(--oaw-accent, var(--accent-primary)); font-weight: 600;
+    }
+    @supports (position-area: block-end) {
+      #oaw-route-menu {
+        margin-block-start: 6px; position-anchor: --oaw-route-anchor; position-area: block-end span-inline-end;
+        position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+      }
+    }
+  }
+
+  @media (min-width: 900px) {
+    .oaw-route-btn { display: none; }
+    #oaw-route-menu {
+      display: flex; align-items: center; position: static; inset: auto; margin: 0; padding: 0; border: 0; border-radius: 0;
+      background: transparent; box-shadow: none; overflow: visible; inline-size: auto; min-inline-size: 0;
+      max-inline-size: none; max-block-size: none; block-size: 46px; color: inherit;
+    }
+    .oaw-nav-links { display: flex; align-items: center; gap: 2px; list-style: none; margin: 0; padding: 0; block-size: 46px; }
+    .oaw-nav-link {
+      position: relative; display: inline-flex; align-items: center; block-size: 46px; padding-inline: 10px;
+      background: transparent; border: none; border-radius: 0; color: var(--text-secondary);
+      font-size: var(--ts-nav); font-weight: 600; white-space: nowrap; text-decoration: none;
+    }
+    .oaw-nav-link:hover { color: var(--text-primary); background: var(--bg-subtle); text-decoration: none; }
+    .oaw-nav-link[aria-current="page"] { color: var(--text-primary); }
+    .oaw-nav-link[aria-current="page"]::after {
+      content: ""; position: absolute; inset-inline: 0; inset-block-end: 0;
+      block-size: 2.5px; background: var(--oaw-accent, var(--accent-primary));
+    }
+    .oaw-nav-link .oaw-pop-check { display: none; }
   }
 
   /* Opaque Viewport-Aware Popovers */
   [popover].oaw-popover {
-    display: none; position: fixed; padding: 0.5rem; overflow-y: auto; overscroll-behavior: contain;
+    display: none; position: fixed; padding: 8px; overflow-y: auto; overscroll-behavior: contain;
     max-inline-size: calc(100dvw - 16px); max-block-size: calc(100dvh - 64px);
-    border-radius: var(--radius-card, 8px); border: 1px solid var(--border-strong);
-    background-color: var(--bg-surface); color: var(--text-primary);
-    box-shadow: 0 12px 32px color-mix(in oklab, var(--text-primary) 16%, transparent); z-index: 160;
+    border-radius: var(--radius-card, 12px); border: 1px solid var(--border-strong);
+    background-color: var(--bg-surface); color: var(--text-primary); z-index: 160;
+    box-shadow: var(--oaw-popover-shadow, 0 12px 32px color-mix(in oklab, var(--text-primary) 16%, transparent));
   }
-  [popover].oaw-popover:is(:popover-open, .\:popover-open, [data-open="true"]) {
-    display: flex; flex-direction: column; gap: 0.35rem;
-  }
+  [popover].oaw-popover:is(:popover-open, .\:popover-open, .is-open, [data-open="true"]) { display: flex; flex-direction: column; gap: 4px; }
   .oaw-projects-popover { inline-size: min(21rem, calc(100dvw - 16px)); }
   .oaw-pillar-popover { inline-size: min(19.5rem, calc(100dvw - 16px)); }
   .oaw-user-popover { inline-size: min(16.5rem, calc(100dvw - 16px)); }
@@ -136,10 +196,7 @@
   @supports (position-area: block-end) {
     .oaw-projects-popover,
     .oaw-pillar-popover,
-    .oaw-user-popover {
-      inset: auto; margin: 0; margin-block-start: 6px;
-      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
-    }
+    .oaw-user-popover { inset: auto; margin: 0; margin-block-start: 6px; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline; }
     .oaw-projects-popover { position-anchor: --oaw-projects-anchor; position-area: block-end span-inline-end; }
     .oaw-pillar-popover { position-anchor: --oaw-pillar-anchor; position-area: block-end span-inline-start; }
     .oaw-user-popover { position-anchor: --oaw-user-anchor; position-area: block-end span-inline-start; }
@@ -150,68 +207,84 @@
     .oaw-user-popover { position: fixed; inset: auto; margin: 0; }
   }
 
-  .oaw-pop-stage1-back {
-    display: flex; align-items: center; gap: 0.5rem; inline-size: 100%; min-block-size: 36px;
-    padding: 0.4rem 0.6rem; border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-hairline);
-    background: var(--bg-elevated); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
-  }
-  .oaw-pop-stage1-back:hover { background: var(--bg-subtle); border-color: var(--accent-primary); text-decoration: none; }
   .oaw-popover-label {
-    padding: 0.25rem 0.45rem 0.05rem; font-family: var(--font-mono); font-size: var(--ts-xs);
+    padding: 4px 8px 2px; font-family: var(--font-mono); font-size: var(--ts-xs);
     font-weight: 700; letter-spacing: 0.055em; text-transform: uppercase; color: var(--text-muted);
   }
   .oaw-pop-list,
-  .oaw-theme-list { display: flex; flex-direction: column; gap: 0.2rem; }
-  .oaw-pop-sep { border: 0; border-block-start: 1px solid var(--border-hairline); margin: 0.2rem 0; }
+  .oaw-theme-list { display: flex; flex-direction: column; gap: 3px; list-style: none; margin: 0; padding: 0; }
+  .oaw-pop-sep { border: 0; border-block-start: 1px solid var(--oaw-border-subtle, var(--border-subtle, var(--border-hairline))); margin: 4px 0; }
+  .oaw-pop-row-sep {
+    border-block-end: 1px solid var(--oaw-border-subtle, var(--border-subtle, var(--border-hairline)));
+    margin-block-end: 4px; padding-block-end: 4px;
+  }
 
+  .oaw-pop-item,
   .oaw-pop-row,
   .oaw-theme-opt {
-    display: flex; align-items: center; gap: 0.55rem; inline-size: 100%; min-block-size: 38px;
-    padding: 0.4rem 0.55rem; border-radius: var(--radius-sm, 6px); border: 1px solid transparent;
-    color: var(--text-primary); font-size: var(--ts-sm); font-weight: 500; text-align: start; text-decoration: none;
+    display: flex; align-items: center; gap: 9px; inline-size: 100%; min-block-size: 38px; padding: 6px 9px;
+    border-radius: var(--radius-sm, 6px); border: 1px solid transparent; color: var(--text-primary);
+    font-size: var(--ts-sm); font-weight: 500; text-align: start; text-decoration: none;
   }
-  .oaw-pop-row--compact { min-block-size: 36px; padding-block: 0.3rem; }
-  :is(.oaw-pop-row, .oaw-theme-opt):hover { background: var(--bg-subtle); text-decoration: none; }
-  :is(.oaw-pop-row, .oaw-theme-opt):is(.is-active, [aria-current="page"], [aria-pressed="true"]) {
-    background: var(--bg-elevated); border-color: var(--accent-primary); font-weight: 600;
+  .oaw-pop-row--compact { min-block-size: 36px; padding-block: 5px; }
+  :is(.oaw-pop-item, .oaw-pop-row, .oaw-theme-opt):hover { background: var(--bg-subtle); text-decoration: none; }
+  :is(.oaw-pop-item, .oaw-pop-row, .oaw-theme-opt):is(.is-active, [aria-current="page"], [aria-pressed="true"]) {
+    background: var(--bg-elevated); border-color: var(--oaw-accent, var(--accent-primary)); font-weight: 600;
   }
-  .oaw-pop-row.is-soon { opacity: 0.72; cursor: default; }
-  .oaw-pop-row.is-soon:hover { background: transparent; }
+  :is(.oaw-pop-item, .oaw-pop-row).is-soon { opacity: 0.72; cursor: default; }
+  :is(.oaw-pop-item, .oaw-pop-row).is-soon:hover { background: transparent; }
 
   .oaw-pop-icon-well {
     inline-size: 28px; block-size: 28px; flex: 0 0 auto; border-radius: var(--radius-sm, 6px);
-    background: var(--bg-elevated); border: 1px solid var(--border-hairline); color: var(--accent-primary);
-    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
+    color: var(--oaw-accent, var(--accent-primary)); display: inline-flex; align-items: center; justify-content: center;
   }
-  .oaw-pop-row-body { display: flex; flex-direction: column; gap: 0.1rem; min-inline-size: 0; flex: 1 1 auto; }
+  .oaw-pop-row-body { display: flex; flex-direction: column; gap: 2px; min-inline-size: 0; flex: 1 1 auto; }
   .oaw-pop-row-title { font-size: var(--ts-sm); font-weight: 600; color: var(--text-primary); line-height: 1.25; }
   .oaw-pop-row-sub { font-size: var(--ts-xs); color: var(--text-muted); line-height: 1.3; }
   .oaw-pop-badge {
-    flex-shrink: 0; padding: 0.15rem 0.45rem; border-radius: var(--radius-xs, 4px);
+    flex-shrink: 0; margin-inline-start: auto; padding: 2px 7px; border-radius: var(--radius-xs, 4px);
     border: 1px solid var(--border-hairline); background: var(--bg-elevated); color: var(--text-secondary);
     font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600; white-space: nowrap;
   }
-  .oaw-pop-row.is-active .oaw-pop-badge { color: var(--accent-primary); border-color: var(--accent-primary); }
+  .oaw-pop-badge--preview {
+    color: var(--status-ok); background: var(--status-ok-bg);
+    border-color: color-mix(in oklab, var(--status-ok) 32%, transparent);
+  }
+  :is(.oaw-pop-item, .oaw-pop-row).is-active .oaw-pop-badge:not(.oaw-pop-badge--preview) {
+    color: var(--oaw-accent, var(--accent-primary)); border-color: var(--oaw-accent, var(--accent-primary));
+  }
   .oaw-pop-check,
-  .oaw-theme-check { margin-inline-start: auto; flex-shrink: 0; color: var(--accent-primary); }
+  .oaw-theme-check { margin-inline-start: auto; flex-shrink: 0; color: var(--oaw-accent, var(--accent-primary)); }
   .oaw-theme-opt:not([aria-pressed="true"]) .oaw-theme-check { visibility: hidden; }
   .oaw-theme-dot {
     inline-size: 14px; block-size: 14px; flex: 0 0 auto; border-radius: var(--radius-pill, 999px);
     background: var(--bg-canvas); border: 1.5px solid var(--border-strong);
   }
-  @media (max-width: 679px) {
-    .oaw-pop-row, .oaw-theme-opt { min-block-size: 42px; }
+
+  @media (max-width: 679.98px) {
+    .oaw-topbar { padding-inline: 8px; gap: 6px; }
+    .oaw-topbar-left, .oaw-topbar-right { gap: 5px; }
+    .oaw-brand-link { font-size: var(--ts-xs); padding-inline: 4px; }
+    .oaw-projects-btn { padding-inline: 8px; font-size: var(--ts-xs); max-inline-size: min(11.5rem, 100%); }
+    .oaw-user-label, .oaw-user-btn .oaw-btn-chev { display: none; }
+    .oaw-user-btn { inline-size: 32px; padding: 0; gap: 0; }
   }
-  @media print { .oaw-topbar, .oaw-mobile-subnav, .oaw-popover { display: none; } }
+  @media (max-width: 679.98px), (pointer: coarse) {
+    :is(.oaw-pop-item, .oaw-pop-row, .oaw-theme-opt, #oaw-route-menu .oaw-nav-link) { min-block-size: 44px; }
+  }
+  @media (max-width: 439.98px) {
+    .oaw-topbar { padding-inline: 6px; gap: 4px; }
+    .oaw-topbar-left, .oaw-topbar-right { gap: 4px; }
+    .oaw-brand-link { padding-inline: 2px; }
+    .oaw-projects-btn { padding-inline: 7px; max-inline-size: min(132px, 100%); }
+    .oaw-route-btn { padding-inline: 8px; gap: 3px; font-size: var(--ts-xs); }
+  }
+  @media print { .oaw-topbar, .oaw-popover, #oaw-route-menu { display: none; } }
 }
 /* @oaw-shell-end */
 
 @layer shell {
-  .oaw-main {
-    inline-size: 100%; max-inline-size: min(67.5rem, 100%); margin-inline: auto;
-    padding: clamp(1.5rem, 3.2vw, 2.75rem) clamp(0.875rem, 2.5vw, 1.5rem) 3.5rem;
-    display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); min-inline-size: 0;
-  }
   .oaw-site-footer {
     border-block-start: 1px solid var(--border-hairline); background: var(--bg-elevated);
     color: var(--text-secondary); padding: 1.25rem clamp(0.875rem, 2.5vw, 1.5rem); font-size: var(--ts-xs);
@@ -225,119 +298,21 @@
 }
 
 @layer views {
-  .oaw-hero {
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    gap: 0.9rem; min-inline-size: 0; max-inline-size: 52rem; margin-inline: auto;
-  }
-  .oaw-hero-kicker {
-    font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary);
-  }
-  .oaw-hero h1 {
-    font-family: var(--font-serif); font-size: clamp(1.9rem, 4vw, 2.75rem);
-    line-height: 1.15; font-weight: 700; color: var(--text-primary); max-inline-size: 24ch;
-  }
-  .oaw-hero-lead {
-    font-size: var(--ts-prose); line-height: 1.58; color: var(--text-secondary); max-inline-size: 40rem;
-  }
-  .oaw-hero-cmd-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-block-start: 0.15rem; }
-  .oaw-cmd-slug {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    padding: 0.35rem 0.78rem; border-radius: var(--radius-pill, 999px);
-    border: 1px solid var(--border-strong); background: var(--bg-elevated);
-    color: var(--text-primary); font-family: var(--font-mono); font-size: var(--ts-sm); font-weight: 600;
-  }
-  .oaw-cmd-slug:hover { border-color: var(--accent-primary); background: var(--bg-surface); text-decoration: none; }
-  .oaw-cmd-caret,
-  .oaw-cmd-cursor { color: var(--accent-primary); font-weight: 700; }
-  @media (prefers-reduced-motion: no-preference) {
-    .oaw-cmd-cursor { animation: oawCursorBreathe 2.4s ease-in-out infinite; }
-    @keyframes oawCursorBreathe { 0%, 100% { opacity: 0.95; } 50% { opacity: 0.38; } }
-  }
-
-  .oaw-cta-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.65rem; margin-block-start: 0.25rem; }
   .oaw-btn,
   .oaw-btn-primary,
   .oaw-btn-secondary {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
-    min-block-size: 38px; padding: 0.45rem 0.95rem;
-    border-radius: var(--radius-sm, 6px); border: 1px solid var(--border-strong);
-    background: var(--bg-surface); color: var(--text-primary);
+    min-block-size: 38px; padding: 0.45rem 0.95rem; border-radius: var(--radius-sm, 6px);
+    border: 1px solid var(--border-strong); background: var(--bg-surface); color: var(--text-primary);
     font-size: var(--ts-sm); font-weight: 600; text-decoration: none;
   }
   .oaw-btn-primary { background: var(--accent-primary); border-color: var(--accent-primary); color: var(--text-on-accent); }
   :is(.oaw-btn, .oaw-btn-secondary):hover { background: var(--bg-elevated); border-color: var(--accent-primary); text-decoration: none; }
   .oaw-btn-primary:hover { opacity: 0.92; text-decoration: none; }
 
-  @media (max-width: 679px) {
-    :is(.oaw-cta-row a, .oaw-cta-row button, .oaw-btn, .oaw-btn-primary, .oaw-btn-secondary, .oaw-copy-btn, .oaw-copy-code-btn) {
-      min-block-size: 44px; min-inline-size: 44px;
-    }
-  }
-
-  .oaw-showcase-card {
-    background: var(--bg-elevated); border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-card, 12px); padding: clamp(1.15rem, 2.5vw, 1.75rem);
-    display: flex; flex-direction: column; gap: 1.35rem;
-  }
-  .oaw-steps-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
-  @media (max-width: 759px) { .oaw-steps-grid { grid-template-columns: minmax(0, 1fr); } }
-  .oaw-step-item { display: flex; flex-direction: column; gap: 0.4rem; }
-  .oaw-step-icon {
-    inline-size: 36px; block-size: 36px; border-radius: var(--radius-sm, 8px);
-    background: var(--tint-indigo-bg, var(--bg-subtle)); color: var(--accent-primary);
-    display: inline-flex; align-items: center; justify-content: center; margin-block-end: 0.15rem;
-  }
-  .oaw-step-title { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); }
-  .oaw-step-desc { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
-
-  .oaw-quickstart-box {
-    background: var(--bg-surface); border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-sm, 8px); padding: 1rem 1.1rem;
-    display: flex; flex-direction: column; gap: 0.75rem;
-  }
-  .oaw-quickstart-top { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
-  .oaw-quickstart-top h2 { font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
-  .oaw-quickstart-top span { font-size: var(--ts-xs); color: var(--text-muted); }
-
-  .oaw-section-hdr {
-    display: flex; align-items: baseline; justify-content: space-between;
-    flex-wrap: wrap; gap: 0.5rem 1rem; margin-block-end: 0.85rem;
-  }
-  .oaw-section-hdr h2 { font-size: var(--ts-xl); font-weight: 700; color: var(--text-primary); line-height: 1.25; }
-  .oaw-section-hdr :is(span, p) { font-size: var(--ts-sm); color: var(--text-muted); }
-
-  .oaw-install-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
-  .oaw-pillars-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  .oaw-pillars-grid[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .oaw-domains-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-  @media (max-width: 1020px) { .oaw-pillars-grid, .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 759px) { .oaw-install-grid { grid-template-columns: minmax(0, 1fr); } }
-  @media (max-width: 699px) { .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: minmax(0, 1fr); } }
-
-  .oaw-card,
-  .oaw-install-card,
-  .oaw-pillar-card,
-  .oaw-domain-card {
-    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
-    padding: 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.55rem; min-inline-size: 0;
-  }
-  .oaw-install-card { background: var(--bg-elevated); padding: 0.85rem 0.95rem; }
-  .oaw-pillar-card .oaw-btn,
-  .oaw-domain-card .oaw-btn { margin-block-start: auto; align-self: flex-start; }
-  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) h3 { font-size: var(--ts-md); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
-  :is(.oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card) p { font-size: var(--ts-sm); color: var(--text-secondary); line-height: 1.5; }
-
-  .oaw-install-cmd {
-    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
-    padding: 0.45rem 0.65rem; background: var(--bg-surface); border: 1px solid var(--border-hairline);
-    border-radius: var(--radius-inner, 4px); min-inline-size: 0;
-  }
-  .oaw-install-cmd code { font-size: var(--ts-xs); color: var(--text-primary); overflow-x: auto; white-space: nowrap; min-inline-size: 0; flex: 1 1 auto; }
   .oaw-copy-btn,
   .oaw-copy-code-btn {
-    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
-    min-block-size: 30px; padding: 0.25rem 0.65rem;
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; min-block-size: 30px; padding: 0.25rem 0.65rem;
     border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
     background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-xs); font-weight: 600;
   }
@@ -349,12 +324,9 @@
     border-radius: var(--radius-xs, 4px); border: 1px solid var(--border-hairline);
     background: var(--bg-elevated); color: var(--text-secondary); font-family: var(--font-mono); font-size: var(--ts-xs); font-weight: 600;
   }
-
-  .oaw-diagram-panel {
-    background: var(--bg-surface); border: 1px solid var(--border-hairline); border-radius: var(--radius-card, 8px);
-    padding: clamp(0.85rem, 2vw, 1.25rem); display: flex; flex-direction: column; gap: 0.75rem; min-inline-size: 0; overflow-x: auto;
+  @media (max-width: 679.98px) {
+    :is(.oaw-btn, .oaw-btn-primary, .oaw-btn-secondary, .oaw-copy-btn, .oaw-copy-code-btn) { min-block-size: 44px; min-inline-size: 44px; }
   }
-  .oaw-diagram-panel svg { inline-size: 100%; max-inline-size: 100%; block-size: auto; }
 }
 
 @layer utilities {
@@ -363,7 +335,7 @@
     position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
   }
-  :is(button, .oaw-btn, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-projects-btn, .oaw-pillar-btn, .oaw-user-btn):is(:disabled, [aria-disabled="true"]),
+  :is(button, .oaw-btn, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-projects-btn, .oaw-route-btn, .oaw-search-trigger, .oaw-pillar-btn, .oaw-user-btn):is(:disabled, [aria-disabled="true"]),
   :is(select, input, textarea):disabled {
     opacity: 1; background: var(--disabled-bg, var(--bg-subtle)); color: var(--disabled-fg, var(--text-muted));
     border: 1px dashed var(--disabled-border, var(--border-strong)); cursor: not-allowed;
@@ -375,7 +347,7 @@
 @media print {
   [hidden]:not([hidden="until-found"]),
   details.qe-spec-drawer:not([open]), details.qe-data-contract:not([open]), details.qe-eco-drawer:not([open]),
-  .oaw-skip-link, .oaw-topbar, .oaw-mobile-subnav, .oaw-popover, .oaw-copy-btn, .oaw-copy-code-btn, .oaw-cta-row, .va-demo-site-strip { display: none; }
+  .oaw-skip-link, .oaw-topbar, .oaw-popover, #oaw-route-menu, .oaw-copy-btn, .oaw-copy-code-btn, .va-demo-site-strip { display: none; }
   :root,
   [data-theme] {
     --bg-canvas: #FFFFFF; --bg-surface: #FFFFFF; --bg-elevated: #F8FAFC; --bg-subtle: #F1F5F9;
@@ -384,16 +356,8 @@
     background: #FFFFFF; color: #0F172A;
   }
   body { margin: 0; background: #FFFFFF; color: #0F172A; }
-  .oaw-main:not([hidden]):not(.hidden),
   .oaw-site-footer:not([hidden]):not(.hidden) {
     display: block; inline-size: 100%; max-inline-size: 100%; box-sizing: border-box;
     padding-inline: max(1.5rem, 24px); background: #FFFFFF; color: #0F172A;
-  }
-  .oaw-pillars-grid, .oaw-pillars-grid[data-cols="2"], .oaw-domains-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .oaw-steps-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .oaw-install-cmd code, .qe-spec-pre, .qe-spec-pre code, .oaw-main pre { white-space: pre-wrap; overflow-wrap: anywhere; }
-  .qe-spec-pre { overflow-x: visible; background: #F8FAFC; color: #0F172A; border-color: #CBD5E1; }
-  .oaw-card, .oaw-install-card, .oaw-pillar-card, .oaw-domain-card, .oaw-diagram-panel, .oaw-showcase-card {
-    break-inside: avoid; page-break-inside: avoid; background: #FFFFFF; border-color: #CBD5E1;
   }
 }

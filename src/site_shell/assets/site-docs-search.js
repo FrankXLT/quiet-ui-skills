@@ -1,85 +1,62 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /**
- * Quiet UI v9.8.0 — Route 3 Docs Search, Quick Jumps & Mobile TOC Sheet
+ * Quiet UI v9.8.0 — Route 3 Docs Search, Active Chapter Sync, Quick Jumps & Mobile TOC Sheet
  */
-(function (window) {
+(function (window, document) {
   'use strict';
+
+  const TOC_NAV_SEL = '.oaw-docs-rail a[href^="#"], .oaw-docs-rail a[data-doc-jump], .oaw-docs-toc-list a[href^="#"], .oaw-docs-toc-list a[data-doc-jump]';
+  const EMPTY_CLEAR_SEL = '#oaw-empty-clear-btn, [data-empty-clear], [data-doc-clear]';
+  const TOC_CLOSE_SEL = '[data-close-dialog], [data-toc-close], .va-modal-sheet-hdr button, button[aria-label*="close" i]';
+  const isDialogOpen = function (d) { return Boolean(d && (d.open || d.hasAttribute('open'))); };
+  const prefersReducedMotion = function () { return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches; };
+  const formatCountText = function (v, t) { return v === 0 ? '0 matching sections' : String(v) + ' of ' + String(t) + (t === 1 ? ' guide' : ' guides'); };
 
   function parseSearchIndex() {
     const el = document.getElementById('oaw-docs-search-index');
     if (!el) return [];
-    try {
-      const parsed = JSON.parse(el.textContent || '[]');
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (_e) {
-      return [];
+    try { const p = JSON.parse(el.textContent || '[]'); return Array.isArray(p) ? p : []; } catch (_e) { return []; }
+  }
+
+  function resolveInPageTargetId(el) {
+    if (!el || typeof el.getAttribute !== 'function') return null;
+    const raw = (el.getAttribute('data-doc-target') || el.getAttribute('data-doc-jump') || el.getAttribute('href') || '').trim();
+    if (!raw) return null;
+    return raw.startsWith('#') ? (raw.slice(1) || null) : (/^[a-zA-Z0-9_-]+$/.test(raw) ? raw : null);
+  }
+
+  function resolveChapterTitle(secEl, tocLinks) {
+    if (secEl.id) {
+      const m = tocLinks.find(function (l) { return !l.classList.contains('oaw-docs-sub') && resolveInPageTargetId(l) === secEl.id; });
+      if (m && m.textContent && m.textContent.trim()) return m.textContent.trim();
     }
+    const attr = (secEl.getAttribute('data-chapter-title') || secEl.getAttribute('data-title') || '').trim();
+    if (attr) return attr;
+    const h = secEl.querySelector('h1, h2');
+    return h && h.textContent ? h.textContent.trim() : (secEl.id || '');
   }
 
   function buildSectionModel() {
+    const tocLinks = Array.from(document.querySelectorAll(TOC_NAV_SEL));
     const sections = Array.from(document.querySelectorAll('.oaw-docs-section, .oaw-doc-section'));
-    const records = parseSearchIndex();
-    const byId = new Map();
-    const byDocKey = new Map();
+    const byId = new Map(), byDocKey = new Map();
     const entries = sections.map(function (el) {
-      const entry = { el: el, texts: [] };
-      if (el.id) {
-        byId.set(el.id, entry);
-        byDocKey.set(el.id.startsWith('doc-') ? el.id.slice(4) : el.id, entry);
-      }
+      const entry = { el: el, title: resolveChapterTitle(el, tocLinks), texts: [] };
+      if (el.id) { byId.set(el.id, entry); byDocKey.set(el.id.startsWith('doc-') ? el.id.slice(4) : el.id, entry); }
       if (el.dataset && el.dataset.docId) byDocKey.set(el.dataset.docId, entry);
       return entry;
     });
-
-    records.forEach(function (rec) {
+    parseSearchIndex().forEach(function (rec) {
       if (!rec || typeof rec !== 'object') return;
       const haystack = [rec.title, rec.category, rec.heading, rec.text].filter(Boolean).join(' ').toLowerCase();
       if (!haystack) return;
-      let target = null;
-      if (rec.doc_id && byDocKey.has(String(rec.doc_id))) {
-        target = byDocKey.get(String(rec.doc_id));
-      } else if (rec.id && byId.has(String(rec.id))) {
-        target = byId.get(String(rec.id));
-      } else if (rec.id) {
-        const node = document.getElementById(String(rec.id));
-        if (node) target = entries.find(function (e) { return e.el.contains(node); }) || null;
-      }
+      let target = rec.doc_id && byDocKey.has(String(rec.doc_id)) ? byDocKey.get(String(rec.doc_id))
+        : (rec.id && byId.has(String(rec.id)) ? byId.get(String(rec.id)) : null);
+      if (!target && rec.id) { const n = document.getElementById(String(rec.id)); if (n) target = entries.find(function (e) { return e.el.contains(n); }) || null; }
       if (target) target.texts.push(haystack);
     });
-
-    entries.forEach(function (entry) {
-      if (entry.texts.length === 0) entry.texts.push((entry.el.textContent || '').toLowerCase());
-    });
+    entries.forEach(function (e) { if (e.texts.length === 0) e.texts.push((e.el.textContent || '').toLowerCase()); });
     return entries;
-  }
-
-  function entryMatchesTokens(entry, tokens) {
-    if (tokens.length === 0) return true;
-    return entry.texts.some(function (chunk) {
-      return tokens.every(function (tok) { return chunk.indexOf(tok) !== -1; });
-    });
-  }
-
-  function formatCountText(visible, total) {
-    if (visible === 0) return '0 matching sections';
-    return String(visible) + ' of ' + String(total) + (total === 1 ? ' guide' : ' guides');
-  }
-
-  function bindDialogLightDismissFallback(dialog) {
-    if (!dialog || (typeof HTMLDialogElement !== 'undefined' && 'closedBy' in HTMLDialogElement.prototype)) return;
-    let pressedOutside = false;
-    const isOutside = function (ev) {
-      const r = dialog.getBoundingClientRect();
-      return ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom;
-    };
-    dialog.addEventListener('pointerdown', function (ev) { pressedOutside = isOutside(ev); });
-    dialog.addEventListener('pointerup', function (ev) {
-      if (pressedOutside && isOutside(ev)) dialog.close();
-      pressedOutside = false;
-    });
-    dialog.addEventListener('click', function (ev) {
-      if (ev.target === dialog && (ev.clientX !== 0 || ev.clientY !== 0) && isOutside(ev)) dialog.close();
-    });
   }
 
   function isEditableElement(el) {
@@ -88,126 +65,221 @@
     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || Boolean(el.isContentEditable);
   }
 
-  function resolveInPageTargetId(el) {
-    const raw = (el.getAttribute('data-doc-target') || el.getAttribute('data-doc-jump') || el.getAttribute('href') || '').trim();
-    if (!raw) return null;
-    if (raw.startsWith('#')) return raw.slice(1) || null;
-    return /^[a-zA-Z0-9_-]+$/.test(raw) ? raw : null;
+  function hasOpenPopover() {
+    try { if (document.querySelector('[popover]:popover-open')) return true; } catch (_e) {}
+    return Boolean(document.querySelector('.oaw-popover[data-open="true"], .oaw-popover.is-open, #oaw-route-menu.is-open, #oaw-route-menu[data-open="true"]'));
   }
 
-  function bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch) {
-    if (!tocTrigger || !tocDialog) return;
-    tocTrigger.setAttribute('aria-expanded', tocDialog.open ? 'true' : 'false');
-    tocTrigger.addEventListener('click', function () {
-      if (tocDialog.open) return;
-      if (typeof tocDialog.showModal === 'function') tocDialog.showModal();
-      else tocDialog.setAttribute('open', '');
-      tocTrigger.setAttribute('aria-expanded', 'true');
+  function bindDialogLightDismiss(dialog, closeFn, isModalFn) {
+    if (!dialog) return;
+    const supportsClosedBy = typeof HTMLDialogElement !== 'undefined' && 'closedBy' in HTMLDialogElement.prototype;
+    let pressedOutside = false, sawPointer = false;
+    const isOutside = function (ev) { const r = dialog.getBoundingClientRect(); return ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom; };
+    dialog.addEventListener('pointerdown', function (ev) { sawPointer = true; pressedOutside = isDialogOpen(dialog) && isOutside(ev); });
+    dialog.addEventListener('pointerup', function (ev) {
+      if (pressedOutside && isDialogOpen(dialog) && isOutside(ev) && (!supportsClosedBy || !isModalFn() || !ev.isTrusted)) closeFn(true);
+      pressedOutside = false;
+      window.requestAnimationFrame(function () { sawPointer = false; });
     });
-    tocDialog.addEventListener('close', function () { tocTrigger.setAttribute('aria-expanded', 'false'); });
+    dialog.addEventListener('pointercancel', function () { pressedOutside = false; sawPointer = false; });
+    dialog.addEventListener('click', function (ev) { if (!sawPointer && ev.target === dialog && (ev.clientX !== 0 || ev.clientY !== 0) && isOutside(ev)) closeFn(true); });
+  }
+
+  function bindTocDialog(tocTrigger, tocDialog, resetSearch) {
+    const state = { openedAsModal: false };
+    const cleanupClosed = function () {
+      tocDialog.classList.remove('is-open');
+      if ('returnValue' in tocDialog) tocDialog.returnValue = '';
+      state.openedAsModal = false;
+      if (tocTrigger) tocTrigger.setAttribute('aria-expanded', 'false');
+    };
+    const closeTocDialog = function (restoreFocus) {
+      if (!tocDialog) return;
+      const wasOpen = isDialogOpen(tocDialog) || tocDialog.classList.contains('is-open');
+      if (tocDialog.open && typeof tocDialog.close === 'function') { try { tocDialog.close(); } catch (_e) { tocDialog.removeAttribute('open'); } }
+      if (tocDialog.hasAttribute('open')) tocDialog.removeAttribute('open');
+      cleanupClosed();
+      if (restoreFocus && wasOpen && tocTrigger && typeof tocTrigger.focus === 'function') tocTrigger.focus();
+    };
+    if (!tocDialog) return { closeTocDialog: closeTocDialog, isOpenedAsModal: function () { return false; } };
+    if (tocTrigger) {
+      tocTrigger.setAttribute('aria-expanded', isDialogOpen(tocDialog) ? 'true' : 'false');
+      tocTrigger.addEventListener('click', function () {
+        if (isDialogOpen(tocDialog)) return;
+        if ('returnValue' in tocDialog) tocDialog.returnValue = '';
+        state.openedAsModal = false;
+        if (typeof tocDialog.showModal === 'function') { try { tocDialog.showModal(); state.openedAsModal = true; } catch (_e) { tocDialog.setAttribute('open', ''); } }
+        else tocDialog.setAttribute('open', '');
+        tocDialog.classList.add('is-open');
+        tocTrigger.setAttribute('aria-expanded', 'true');
+      });
+    }
+    tocDialog.addEventListener('close', cleanupClosed);
     tocDialog.addEventListener('click', function (ev) {
-      const el = ev.target;
-      if (!el || typeof el.closest !== 'function') return;
-      if (el.closest('[data-close-dialog], [data-toc-close], .va-modal-sheet-hdr button, button[aria-label*="close" i]')) {
-        closeTocDialog();
-        return;
-      }
+      const el = ev.target && typeof ev.target.closest === 'function' ? ev.target : null;
+      if (!el) return;
+      if (el.closest(TOC_CLOSE_SEL)) return closeTocDialog(true);
       const tocLink = el.closest('a[href]');
       if (!tocLink) return;
-      const href = (tocLink.getAttribute('href') || '').trim();
-      if (href.startsWith('#')) {
-        const targetSection = href.slice(1) ? document.getElementById(href.slice(1)) : null;
-        if (targetSection && targetSection.closest('[hidden]')) resetSearch(false);
-      }
-      closeTocDialog();
+      const tid = resolveInPageTargetId(tocLink), tel = tid ? document.getElementById(tid) : null;
+      if (tel && tel.closest('[hidden]')) resetSearch(false);
+      closeTocDialog(false);
     });
-    bindDialogLightDismissFallback(tocDialog);
+    bindDialogLightDismiss(tocDialog, closeTocDialog, function () { return state.openedAsModal; });
+    const desktopMq = typeof window.matchMedia === 'function' ? window.matchMedia('(min-width: 960px)') : null;
+    const onDesktopGrow = function () { if (desktopMq ? desktopMq.matches : window.innerWidth >= 960) closeTocDialog(false); };
+    if (desktopMq) { if (typeof desktopMq.addEventListener === 'function') desktopMq.addEventListener('change', onDesktopGrow); else if (typeof desktopMq.addListener === 'function') desktopMq.addListener(onDesktopGrow); }
+    window.addEventListener('resize', onDesktopGrow);
+    return { closeTocDialog: closeTocDialog, isOpenedAsModal: function () { return state.openedAsModal; } };
+  }
+
+  function createChapterTracker(entries, chapterEl) {
+    const defaultTitle = chapterEl && chapterEl.textContent ? chapterEl.textContent.trim() : '';
+    let activeSectionId = '', lockTarget = null, lockDist = 0, lockUntil = 0, rafPending = false;
+    const getTocLinks = function () { return Array.from(document.querySelectorAll(TOC_NAV_SEL)); };
+    const getThreshold = function () {
+      const tb = document.querySelector('.oaw-topbar'), sb = document.getElementById('oaw-docs-subbar');
+      return (tb ? tb.getBoundingClientRect().height : 46) + (sb && sb.getBoundingClientRect().height > 0 ? sb.getBoundingClientRect().height : 0) + 32;
+    };
+    const resolveSection = function (tid) {
+      const tel = tid ? document.getElementById(tid) : null, sec = tel ? tel.closest('.oaw-docs-section, .oaw-doc-section') : null;
+      return sec ? (entries.find(function (e) { return e.el === sec; }) || null) : null;
+    };
+    const setActiveChapter = function (secEntry, targetId) {
+      const links = getTocLinks();
+      if (!secEntry) {
+        activeSectionId = '';
+        if (chapterEl) chapterEl.textContent = entries.length ? 'No matching sections' : defaultTitle;
+        return links.forEach(function (l) { l.removeAttribute('aria-current'); });
+      }
+      activeSectionId = secEntry.el.id || '';
+      if (chapterEl && secEntry.title) chapterEl.textContent = secEntry.title;
+      const hasExact = Boolean(targetId && links.some(function (l) { return resolveInPageTargetId(l) === targetId; }));
+      const matchId = hasExact ? targetId : activeSectionId;
+      links.forEach(function (l) { if (matchId && resolveInPageTargetId(l) === matchId) l.setAttribute('aria-current', 'location'); else l.removeAttribute('aria-current'); });
+    };
+    const syncFromScroll = function (force) {
+      const threshold = getThreshold();
+      if (!force && lockTarget && Date.now() < lockUntil) {
+        const curDist = Math.abs(lockTarget.getBoundingClientRect().top - threshold);
+        if (curDist <= lockDist + 4 && curDist > 48) { lockDist = curDist; return; }
+      }
+      lockTarget = null;
+      const visible = entries.filter(function (e) { return !e.el.hidden; });
+      if (visible.length === 0) return setActiveChapter(null, null);
+      let active = visible[0];
+      for (let i = 0; i < visible.length; i += 1) { if (visible[i].el.getBoundingClientRect().top <= threshold) active = visible[i]; else break; }
+      const last = visible[visible.length - 1];
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8 && last.el.getBoundingClientRect().top < window.innerHeight * 0.75) active = last;
+      const links = getTocLinks(), subHeads = active.el.querySelectorAll('h2[id]');
+      let subTarget = active.el.id;
+      for (let j = 0; j < subHeads.length; j += 1) {
+        const hid = subHeads[j].id;
+        if (subHeads[j].getBoundingClientRect().top <= threshold && links.some(function (l) { return resolveInPageTargetId(l) === hid; })) subTarget = hid;
+      }
+      setActiveChapter(active, subTarget);
+    };
+    const scheduleSync = function () { if (!rafPending) { rafPending = true; window.requestAnimationFrame(function () { rafPending = false; syncFromScroll(false); }); } };
+    if (typeof window.IntersectionObserver === 'function' && entries.length > 0) {
+      const io = new IntersectionObserver(scheduleSync, { rootMargin: '-96px 0px -65% 0px', threshold: [0, 0.1] });
+      entries.forEach(function (e) { io.observe(e.el); });
+    }
+    window.addEventListener('scroll', scheduleSync, { passive: true });
+    window.addEventListener('scrollend', function () { if (lockTarget) { lockTarget = null; syncFromScroll(true); } }, { passive: true });
+    ['wheel', 'touchstart'].forEach(function (n) { window.addEventListener(n, function () { lockTarget = null; }, { passive: true }); });
+    return {
+      getActiveSectionId: function () { return activeSectionId; },
+      lockScrollSync: function (el, ms) { lockTarget = el || null; lockUntil = Date.now() + ms; lockDist = el ? Math.abs(el.getBoundingClientRect().top - getThreshold()) : 0; },
+      resolveSection: resolveSection, setActiveChapter: setActiveChapter, syncFromScroll: syncFromScroll
+    };
   }
 
   function init() {
-    const entries = buildSectionModel();
-    const searchInput = document.getElementById('oaw-docs-search');
-    const clearBtn = document.getElementById('oaw-docs-search-clear');
-    const emptyClearBtn = document.getElementById('oaw-empty-clear-btn');
-    const countEl = document.getElementById('oaw-docs-search-count');
+    const entries = buildSectionModel(), searchInput = document.getElementById('oaw-docs-search');
+    const clearBtn = document.getElementById('oaw-docs-search-clear'), emptyClearBtn = document.getElementById('oaw-empty-clear-btn');
+    const countEl = document.getElementById('oaw-docs-search-count') || document.getElementById('oaw-docs-count');
     const emptyEl = document.getElementById('oaw-docs-empty') || document.querySelector('.va-empty-state[data-kind="filtered"]');
-    const tocTrigger = document.getElementById('oaw-docs-toc-trigger');
-    const tocDialog = document.getElementById('oaw-docs-toc-dialog');
-
-    function closeTocDialog() {
-      if (!tocDialog) return;
-      if (tocDialog.open && typeof tocDialog.close === 'function') tocDialog.close();
-      else if (tocDialog.hasAttribute('open')) tocDialog.removeAttribute('open');
-      if (tocTrigger) tocTrigger.setAttribute('aria-expanded', 'false');
-    }
-
-    function applyFilter(rawQuery) {
+    const tocTrigger = document.getElementById('oaw-docs-toc-trigger'), tocDialog = document.getElementById('oaw-docs-toc-dialog');
+    const tracker = createChapterTracker(entries, document.getElementById('oaw-docs-current-chapter'));
+    const applyFilter = function (rawQuery) {
       const tokens = String(rawQuery || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
-      let visible = 0;
+      let visible = 0, firstVis = null;
       entries.forEach(function (entry) {
-        const match = entryMatchesTokens(entry, tokens);
+        const match = tokens.length === 0 || entry.texts.some(function (c) { return tokens.every(function (t) { return c.indexOf(t) !== -1; }); });
         entry.el.hidden = !match;
-        if (match) visible += 1;
+        if (match) { visible += 1; if (!firstVis) firstVis = entry; }
       });
       if (countEl) countEl.textContent = formatCountText(visible, entries.length);
       if (emptyEl) emptyEl.hidden = !(visible === 0 && entries.length > 0);
-    }
-
-    function resetSearch(focusInput) {
-      if (searchInput) {
-        searchInput.value = '';
-        if (focusInput && typeof searchInput.focus === 'function') searchInput.focus();
-      }
+      const curId = tracker.getActiveSectionId(), curOk = curId && entries.some(function (e) { return e.el.id === curId && !e.el.hidden; });
+      if (!firstVis) tracker.setActiveChapter(null, null); else if (!curOk) tracker.setActiveChapter(firstVis, firstVis.el.id);
+    };
+    const resetSearch = function (focus) {
+      if (searchInput) { searchInput.value = ''; if (focus && typeof searchInput.focus === 'function') searchInput.focus(); }
       applyFilter('');
-    }
-
-    function jumpToTargetId(targetId) {
+    };
+    const tocApi = bindTocDialog(tocTrigger, tocDialog, resetSearch);
+    const jumpToTargetId = function (tid) {
       resetSearch(false);
-      closeTocDialog();
-      const targetEl = document.getElementById(targetId);
-      if (targetEl && typeof targetEl.scrollIntoView === 'function') {
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      tocApi.closeTocDialog(false);
+      const tel = document.getElementById(tid), sec = tracker.resolveSection(tid);
+      if (sec) { tracker.lockScrollSync(tel || sec.el, prefersReducedMotion() ? 0 : 750); tracker.setActiveChapter(sec, tid); }
+      if (tel) {
+        try { window.history.replaceState(null, '', '#' + encodeURIComponent(tid)); } catch (_e) {}
+        if (typeof tel.scrollIntoView === 'function') tel.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        if (!tel.hasAttribute('tabindex')) tel.setAttribute('tabindex', '-1');
+        if (typeof tel.focus === 'function') { try { tel.focus({ preventScroll: true }); } catch (_e) { tel.focus(); } }
       }
-    }
-
-    if (searchInput) {
-      searchInput.addEventListener('input', function () { applyFilter(searchInput.value); });
-      applyFilter(searchInput.value);
-    } else if (entries.length > 0) {
-      applyFilter('');
-    }
-
+    };
+    const syncFromHash = function () {
+      let id = (window.location.hash || '').slice(1);
+      if (!id) return false;
+      try { id = decodeURIComponent(id); } catch (_e) {}
+      const sec = tracker.resolveSection(id);
+      if (!sec) return false;
+      if (sec.el.hidden) resetSearch(false);
+      tracker.lockScrollSync(document.getElementById(id) || sec.el, 350);
+      tracker.setActiveChapter(sec, id);
+      return true;
+    };
+    if (searchInput) { searchInput.addEventListener('input', function () { applyFilter(searchInput.value); }); applyFilter(searchInput.value); }
+    else if (entries.length > 0) applyFilter('');
+    if (!syncFromHash()) tracker.syncFromScroll(true);
     if (clearBtn) clearBtn.addEventListener('click', function () { resetSearch(true); });
-
-    if (emptyClearBtn) {
-      emptyClearBtn.addEventListener('click', function () {
-        const targetId = resolveInPageTargetId(emptyClearBtn);
-        if (targetId) jumpToTargetId(targetId);
-        else resetSearch(true);
-      });
-    }
-
-    document.addEventListener('click', function (ev) {
-      const target = ev.target;
-      if (!target || typeof target.closest !== 'function') return;
-      const jumpEl = target.closest('[data-doc-jump], [data-doc-target], .oaw-docs-main a[href^="#"], .oaw-docs-prose a[href^="#"]');
-      if (!jumpEl || jumpEl === emptyClearBtn) return;
-      const targetId = resolveInPageTargetId(jumpEl);
-      if (!targetId) { closeTocDialog(); return; }
-      ev.preventDefault();
-      jumpToTargetId(targetId);
+    if (emptyEl) emptyEl.addEventListener('click', function (ev) {
+      const btn = ev.target && typeof ev.target.closest === 'function' ? ev.target.closest(EMPTY_CLEAR_SEL) : null;
+      if (btn) { const tid = resolveInPageTargetId(btn); if (tid) jumpToTargetId(tid); else resetSearch(true); }
     });
-
-    bindTocDialog(tocTrigger, tocDialog, closeTocDialog, resetSearch);
-
-    document.addEventListener('keydown', function (ev) {
-      if (ev.key !== '/' || ev.ctrlKey || ev.metaKey || ev.altKey || !searchInput) return;
-      if (document.querySelector('dialog[open]') || isEditableElement(document.activeElement)) return;
+    if (emptyClearBtn && (!emptyEl || !emptyEl.contains(emptyClearBtn))) emptyClearBtn.addEventListener('click', function () { resetSearch(true); });
+    document.addEventListener('click', function (ev) {
+      const el = ev.target && typeof ev.target.closest === 'function'
+        ? ev.target.closest('[data-doc-jump], [data-doc-target], .oaw-docs-main a[href^="#"], .oaw-docs-prose a[href^="#"], .oaw-docs-rail a[href^="#"], .oaw-docs-toc-list a[href^="#"]') : null;
+      if (!el || el.matches(EMPTY_CLEAR_SEL)) return;
+      const tid = resolveInPageTargetId(el);
+      if (!tid) return tocApi.closeTocDialog(false);
       ev.preventDefault();
-      searchInput.focus();
+      jumpToTargetId(tid);
+    });
+    window.addEventListener('hashchange', syncFromHash);
+    document.addEventListener('oaw:docs-navigate', function (ev) {
+      const id = ev && ev.detail && typeof ev.detail.id === 'string' ? ev.detail.id : '';
+      if (!id || !tracker.resolveSection(id)) return;
+      ev.preventDefault();
+      jumpToTargetId(id);
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.isComposing || ev.keyCode === 229) return;
+      if (ev.key === 'Escape' && !ev.defaultPrevented) {
+        if (isDialogOpen(tocDialog)) { if (!tocApi.isOpenedAsModal()) { ev.preventDefault(); tocApi.closeTocDialog(true); } return; }
+        if (document.querySelector('dialog[open]') || hasOpenPopover() || !searchInput) return;
+        if (searchInput.value) { ev.preventDefault(); resetSearch(document.activeElement === searchInput); }
+        else if (document.activeElement === searchInput) searchInput.blur();
+      } else if (ev.key === '/' && !ev.ctrlKey && !ev.metaKey && !ev.altKey && !ev.defaultPrevented && searchInput) {
+        if (document.querySelector('dialog[open]') || isEditableElement(document.activeElement) || isEditableElement(ev.target)) return;
+        ev.preventDefault();
+        searchInput.focus();
+      }
     });
   }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
-}(window));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true }); else init();
+}(window, document));

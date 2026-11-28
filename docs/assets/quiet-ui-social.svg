@@ -40,7 +40,7 @@
 <rect x="414" y="468" width="167" height="32" rx="6" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
 <text x="497" y="489" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="13" font-weight="600" fill="#1E293B">3-Route OAW Shell</text>
 <line x1="72" y1="534" x2="700" y2="534" stroke="#E2E8F0" stroke-width="1"/>
-<text x="72" y="562" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" fill="#64748B">FrankXLT.github.io/quiet-ui-skills</text>
+<text x="72" y="562" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" fill="#64748B">projects.oaworkbench.org/quiet-ui-skills</text>
 <rect x="768" y="68" width="440" height="504" rx="12" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
 <line x1="768" y1="108" x2="1208" y2="108" stroke="#E2E8F0" stroke-width="1"/>
 <text x="792" y="93" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" font-weight="700" letter-spacing="1.2" fill="#64748B">ARCHITECTURE</text>

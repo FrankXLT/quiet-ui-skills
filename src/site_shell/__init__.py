@@ -29,11 +29,14 @@ def _bind_optional(module_rel: str, attr: str) -> Any:
 compile_markdown_docs = _bind_optional(".markdown_docs", "compile_markdown_docs")
 render_social_svg = _bind_optional(".social_card", "render_social_svg")
 render_social_png = _bind_optional(".social_card", "render_social_png")
+build_project_search_index = _bind_optional(".search_index", "build_project_search_index")
 build_project_site = _bind_optional(".builder", "build_project_site")
 render_demo_return_bar = _bind_optional(".builder", "render_demo_return_bar")
 render_demo_chrome_css = _bind_optional(".builder", "render_demo_chrome_css")
+write_project_search_index = _bind_optional(".search_index", "write_project_search_index")
 
 __all__ = [
+    "build_project_search_index",
     "build_project_site",
     "compile_markdown_docs",
     "load_site_config",
@@ -41,4 +44,5 @@ __all__ = [
     "render_demo_return_bar",
     "render_social_png",
     "render_social_svg",
+    "write_project_search_index",
 ]

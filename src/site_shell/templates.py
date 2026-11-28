@@ -13,17 +13,18 @@ from typing import Any
 _PKG_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = _PKG_DIR / "assets"
 REPO_ROOT = _PKG_DIR.parents[1]
-LAYER_ORDER = "@layer reset, tokens, shell, archetypes, evidence, views, utilities;"
-_LAYER_DECL_RE = re.compile(r"^\s*@layer\s+reset\s*,[^;]+;\s*", re.IGNORECASE | re.MULTILINE)
+LAYER_ORDER = "@layer reset, tokens, shell, archetypes, evidence, components, views, utilities;"
+_LAYER_DECL_RE = re.compile(r"^\s*@layer\s+[a-z0-9_-]+\s*,[^;]+;\s*", re.IGNORECASE | re.MULTILINE)
 _THEME_CHOICES = (("white", "Pure White"), ("paper", "Warm Paper"), ("dark", "Dark"), ("dark-paper", "Dark Paper"))
 _DEFAULT_PILLARS = (
-    {"id": "home", "title": "Home", "desc": "Workbench home and overview", "href": "https://www.oaworkbench.org/", "status": "link"},
-    {"id": "learn", "title": "Learn", "desc": "Interactive engineering and science guides", "href": "https://learn.oaworkbench.org/", "status": "link"},
-    {"id": "projects", "title": "Projects", "desc": "Open-source tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active"},
-    {"id": "research", "title": "Research", "desc": "Long-form technical investigations", "href": "", "status": "soon", "badge": "Soon"},
+    {"id": "home", "title": "Home", "desc": "Open Agentic Workbench overview", "href": "https://oaworkbench.org/", "status": "link"},
+    {"id": "learn", "title": "Learn", "desc": "Interactive science worlds, chemistry and equations", "href": "https://learn.oaworkbench.org/", "status": "preview", "badge": "Open Preview"},
+    {"id": "projects", "title": "Projects", "desc": "Open-source developer tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active"},
+    {"id": "research", "title": "Research", "desc": "Primary-source manuscript and historical studies", "href": "https://research.oaworkbench.org/", "status": "preview", "badge": "Preview"},
 )
 _SVG_PATHS = {
     "chev": '<path fill="none" d="M4 6l4 4 4-4"/>',
+    "chevron-down": '<path fill="none" d="M4 6l4 4 4-4"/>',
     "arrow-left": '<path fill="none" d="M12.5 8H3.5M7 4.5 3.5 8 7 11.5"/>',
     "check": '<path fill="none" d="M3.5 8.5 6.5 11.5 12.5 5"/>',
     "user": '<circle cx="8" cy="5.2" r="2.6" fill="none"/><path fill="none" d="M3 13.5c.8-2.3 2.7-3.5 5-3.5s4.2 1.2 5 3.5"/>',
@@ -40,6 +41,9 @@ _SVG_PATHS = {
     "book": '<path fill="none" d="M2.5 3.5h4.2c.7 0 1.3.5 1.3 1.2v8.3c-.4-.5-1-.7-1.6-.7H2.5zm11 0H9.3c-.7 0-1.3.5-1.3 1.2v8.3c.4-.5 1-.7 1.6-.7h3.9z"/>',
     "compass": '<circle cx="8" cy="8" r="5.5" fill="none"/><path fill="none" d="M10.4 5.6 9 9l-3.4 1.4L7 7z"/>',
     "code": '<path fill="none" d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5M9 3.5l-2 9"/>',
+    "search": '<circle cx="7" cy="7" r="4.5" fill="none"/><path fill="none" d="M10.5 10.5L14 14"/>',
+    "columns": '<path fill="none" d="M2.5 13.5h11M3.5 11.5h9M4.5 6.5v5M8 6.5v5M11.5 6.5v5M2.5 6.5 8 2.5l5.5 4z"/>',
+    "chapters": '<path fill="none" d="M2.5 4h1.5M6 4h7.5M2.5 8h1.5M6 8h7.5M2.5 12h1.5M6 12h7.5"/>',
 }
 
 
@@ -160,30 +164,34 @@ def route_defs(config: dict[str, Any], *, from_subdir: str = "") -> dict[str, di
     }
 
 
-def render_styles_head(*, bundle: bool, rel_prefix: str, tok_txt: str, ovr_txt: str | None, include_docs: bool) -> str:
+def render_styles_head(
+    *, bundle: bool, rel_prefix: str, tok_txt: str, ovr_txt: str | None, include_docs: bool, include_overview: bool = False,
+) -> str:
     """Render layered <style> and/or <link> stylesheet tags for <head>."""
     shell_css = read_asset("site-shell.css")
+    overview_css = read_asset("site-overview.css") if include_overview else ""
     docs_css = read_asset("site-docs.css") if include_docs else ""
+    search_css = read_asset("site-search.css")
+    extra_css = [_LAYER_DECL_RE.sub("", c).strip() for c in (shell_css, overview_css, docs_css, search_css) if c.strip()]
     if bundle:
         parts = [LAYER_ORDER, f"@layer tokens {{\n{tok_txt}\n}}"]
         if ovr_txt is not None:
             ovr_clean = _LAYER_DECL_RE.sub("", ovr_txt).strip()
             parts.append(ovr_clean if "@layer" in ovr_clean else f"@layer tokens {{\n{ovr_clean}\n}}")
-        parts.extend([_LAYER_DECL_RE.sub("", shell_css).strip(), *([_LAYER_DECL_RE.sub("", docs_css).strip()] if docs_css else []), SUPPLEMENTAL_CSS])
+        parts.extend([*extra_css, SUPPLEMENTAL_CSS])
         merged = escape_tag_body("\n\n".join(parts), "style")
         return f'  <style id="oaw-site-styles">\n{merged}\n  </style>'
 
     links = [f'  <style id="oaw-layer-order">{LAYER_ORDER}</style>', f'  <link rel="stylesheet" href="{esc(rel_prefix)}styles/tokens.layered.css">']
     if ovr_txt is not None:
         links.append(f'  <link rel="stylesheet" href="{esc(rel_prefix)}styles/overrides.css">')
-    inline_parts = [shell_css.strip(), *([docs_css.strip()] if docs_css else []), SUPPLEMENTAL_CSS]
-    merged_shell = escape_tag_body("\n\n".join(inline_parts), "style")
+    merged_shell = escape_tag_body("\n\n".join([*extra_css, SUPPLEMENTAL_CSS]), "style")
     links.append(f'  <style id="oaw-site-shell-css">\n{merged_shell}\n  </style>')
     return "\n".join(links)
 
 
 def render_head(
-    config: dict[str, Any], *, page_title: str, description: str, rel_prefix: str, bundle: bool, tok_txt: str, ovr_txt: str | None, include_docs: bool, subpath: str = "",
+    config: dict[str, Any], *, page_title: str, description: str, rel_prefix: str, bundle: bool, tok_txt: str, ovr_txt: str | None, include_docs: bool, include_overview: bool = False, subpath: str = "",
 ) -> str:
     """Render <head> metadata, OpenGraph/Twitter tags, FOUC theme guard, and legacy redirect."""
     proj, sp, routes = config.get("project") or {}, config.get("social_preview") or {}, route_defs(config)
@@ -218,7 +226,8 @@ def render_head(
         ])
     fouc_js = (
         "(function(){try{var v={white:1,paper:1,'dark-paper':1,dark:1};var p=new URLSearchParams(window.location.search).get('theme');"
-        "var t=(p&&v[p])?p:null;if(!t){try{var s=window.localStorage.getItem('quiet-ui-site-theme');if(s&&v[s])t=s;}catch(_e){}}"
+        "var t=(p&&v[p])?p:null;if(!t){try{var s1=window.localStorage.getItem('oaw_theme_v99'),s2=window.localStorage.getItem('quiet-ui-site-theme');"
+        "var s=(s1&&v[s1])?s1:((s2&&v[s2])?s2:null);if(s)t=s;}catch(_e){}}"
         "t=t||'white';document.documentElement.dataset.theme=t;var m=document.querySelector('meta[name=\"color-scheme\"]');"
         "if(m)m.setAttribute('content',(t==='dark'||t==='dark-paper')?'dark':'light');}catch(_e){}})();"
     )
@@ -230,7 +239,12 @@ def render_head(
             "for(var i=0;i<k.length;i+=1){if(q.has(k[i])&&!(k[i]==='mode'&&(q.get('mode')||'').toLowerCase()==='overview'))"
             f"{{window.location.replace({demo_js}+window.location.search+window.location.hash);return;}}}}}}catch(_e){{}}}})();</script>"
         )
-    metas.append(render_styles_head(bundle=bundle, rel_prefix=rel_prefix, tok_txt=tok_txt, ovr_txt=ovr_txt, include_docs=include_docs))
+    metas.append(
+        render_styles_head(
+            bundle=bundle, rel_prefix=rel_prefix, tok_txt=tok_txt, ovr_txt=ovr_txt,
+            include_docs=include_docs, include_overview=include_overview,
+        )
+    )
     return "<head>\n" + "\n".join(metas) + "\n</head>"
 
 
@@ -239,7 +253,11 @@ def _render_projects_switcher(config: dict[str, Any], rel_prefix: str, proj_titl
     if not hub_projects:
         return ""
     chev = svg_icon("chev", 12, "oaw-btn-chev")
-    rows = []
+    rows = [
+        f'<li class="oaw-pop-row-sep"><a class="oaw-pop-item" href="{esc(hub_url)}">'
+        f'<span class="oaw-pop-icon-well" aria-hidden="true">{svg_icon("arrow-left", 14)}</span>'
+        '<span class="oaw-pop-row-body"><span class="oaw-pop-row-title">All Projects</span></span></a></li>'
+    ]
     for item in hub_projects:
         raw_u = str(item.get("url") or "")
         url = to_page_href(raw_u, rel_prefix) if (raw_u and not is_external(raw_u)) else safe_href(raw_u, "#")
@@ -249,33 +267,33 @@ def _render_projects_switcher(config: dict[str, Any], rel_prefix: str, proj_titl
         sub = f'<span class="oaw-pop-row-sub">{esc(item["tagline"])}</span>' if item.get("tagline") else ""
         trail = svg_icon("check", 14, "oaw-pop-check") if is_curr else (f'<span class="oaw-pop-badge">{esc(item["badge"])}</span>' if item.get("badge") else "")
         rows.append(
-            f'<a class="oaw-pop-row{" is-active" if is_curr else ""}" href="{esc(url)}"{curr_attr}>'
+            f'<li><a class="oaw-pop-item{" is-active" if is_curr else ""}" href="{esc(url)}"{curr_attr}>'
             f'<span class="oaw-pop-icon-well" aria-hidden="true">{svg_icon(icon_name, 14)}</span>'
             f'<span class="oaw-pop-row-body"><span class="oaw-pop-row-title">{esc(item.get("title") or item.get("slug") or "")}</span>{sub}</span>'
-            f"{trail}</a>"
+            f"{trail}</a></li>"
         )
-    back_link = f'<a class="oaw-pop-stage1-back" href="{esc(hub_url)}">{svg_icon("arrow-left", 14)}<span>All Projects</span></a>'
-    rows_html = "\n        ".join(rows)
+    rows_html = "\n          ".join(rows)
     return (
         '      <div class="oaw-switcher-wrap">\n'
         f'        <button type="button" id="oaw-projects-btn" class="oaw-projects-btn" popovertarget="oaw-projects-popover" aria-controls="oaw-projects-popover" aria-expanded="false">'
         f'<span class="oaw-projects-label">{esc(proj_title)}</span>{chev}</button>\n'
         '        <div id="oaw-projects-popover" class="oaw-popover oaw-projects-popover" popover="auto" aria-label="Projects Switcher">\n'
-        f'          {back_link}\n          <div class="oaw-popover-label">Projects</div>\n'
-        f'          <div class="oaw-pop-list">\n        {rows_html}\n          </div>\n        </div>\n      </div>\n'
+        '          <div class="oaw-popover-label">Projects</div>\n'
+        f'          <ul class="oaw-pop-list">\n          {rows_html}\n          </ul>\n        </div>\n      </div>\n'
     )
 
 
 def _render_pillar_switcher(config: dict[str, Any], hub_url: str, rel_prefix: str = "./") -> str:
     pillars = [dict(p) for p in ((config.get("hub") or {}).get("pillars") or _DEFAULT_PILLARS) if isinstance(p, dict)]
-    icon_map = {"home": "home", "learn": "book", "projects": "cubes", "research": "compass"}
+    icon_map = {"home": "home", "learn": "book", "projects": "cubes", "research": "columns"}
     rows = []
     for item in pillars:
         pid = str(item.get("id") or "").lower()
         status = str(item.get("status") or "link").lower()
         href_raw = safe_href(item.get("href"))
         href = to_page_href(href_raw, rel_prefix) if href_raw else (hub_url if pid == "projects" else "")
-        badge = f'<span class="oaw-pop-badge">{esc(item["badge"])}</span>' if item.get("badge") else ""
+        badge_cls = "oaw-pop-badge oaw-pop-badge--preview" if status == "preview" else "oaw-pop-badge"
+        badge = f'<span class="{badge_cls}">{esc(item["badge"])}</span>' if item.get("badge") else ""
         body = (
             f'<span class="oaw-pop-icon-well" aria-hidden="true">{svg_icon(icon_map.get(pid, "cubes"), 14)}</span>'
             f'<span class="oaw-pop-row-body"><span class="oaw-pop-row-title">{esc(item.get("title") or "")}</span>'
@@ -283,18 +301,18 @@ def _render_pillar_switcher(config: dict[str, Any], hub_url: str, rel_prefix: st
             + f"</span>{badge}"
         )
         if status == "soon" or not href:
-            rows.append(f'<div class="oaw-pop-row is-soon" aria-disabled="true">{body}</div>')
+            rows.append(f'<li><div class="oaw-pop-item is-soon" aria-disabled="true">{body}</div></li>')
         else:
             is_act = status == "active"
             curr = ' aria-current="page"' if is_act else ""
-            rows.append(f'<a class="oaw-pop-row{" is-active" if is_act else ""}" href="{esc(href)}"{curr}>{body}</a>')
-    rows_html = "\n        ".join(rows)
+            rows.append(f'<li><a class="oaw-pop-item{" is-active" if is_act else ""}" href="{esc(href)}"{curr}>{body}</a></li>')
+    rows_html = "\n          ".join(rows)
     return (
         '      <div class="oaw-pillar-wrap">\n'
         f'        <button type="button" id="oaw-pillar-btn" class="oaw-pillar-btn" popovertarget="oaw-pillar-popover" aria-controls="oaw-pillar-popover" aria-expanded="false" aria-label="Open Agentic Workbench Ecosystem" title="Open Agentic Workbench">{svg_icon("grid", 14)}</button>\n'
         '        <div id="oaw-pillar-popover" class="oaw-popover oaw-pillar-popover" popover="auto" aria-label="Open Agentic Workbench Ecosystem">\n'
         '          <div class="oaw-popover-label">Open Agentic Workbench</div>\n'
-        f'          <div class="oaw-pop-list">\n        {rows_html}\n          </div>\n        </div>\n      </div>\n'
+        f'          <ul class="oaw-pop-list">\n          {rows_html}\n          </ul>\n        </div>\n      </div>\n'
     )
 
 
@@ -342,8 +360,21 @@ def _render_user_menu(config: dict[str, Any]) -> str:
     )
 
 
+def _render_search_trigger(config: dict[str, Any], rel_prefix: str) -> str:
+    """Render the unified topbar search modal trigger button."""
+    site_url = safe_href((config.get("project") or {}).get("site_url"))
+    return (
+        f'      <button type="button" id="oaw-search-btn" class="oaw-search-trigger" '
+        f'aria-haspopup="dialog" aria-controls="oaw-search-dialog" '
+        f'data-search-index="{esc(rel_prefix)}search-index.json" data-site-url="{esc(site_url)}" '
+        'aria-label="Search site and documentation (Ctrl+K)">'
+        f'{svg_icon("search", 15)}<span class="oaw-search-text">Search</span>'
+        '<kbd class="oaw-search-kbd">Ctrl+K</kbd></button>\n'
+    )
+
+
 def render_chrome_top(config: dict[str, Any], *, current: str, rel_prefix: str, is_demo: bool = False) -> str:
-    """Render skip link, unified 46px OAW topbar, popovers, and mobile subnav."""
+    """Render skip link, unified 46px single-bar OAW topbar, route menu, search trigger, and popovers."""
     proj, hub = config.get("project") or {}, config.get("hub") or {}
     from_sub = "demo" if (is_demo or current == "demo") else ("docs" if current == "docs" else "")
     routes = route_defs(config, from_subdir=from_sub)
@@ -357,30 +388,37 @@ def render_chrome_top(config: dict[str, Any], *, current: str, rel_prefix: str, 
         nav_specs.append(("demo", routes["demo"]["label"], routes["demo"]["href"]))
     nav_specs.append(("docs", routes["docs"]["label"], routes["docs"]["href"]))
 
-    def _nav_links(cls: str) -> str:
-        return " ".join(
-            f'<a class="{cls}" href="{esc(href)}" data-oaw-route-link="{key}"'
-            + (' aria-current="page"' if key == current else "")
-            + f">{esc(lbl)}</a>"
-            for key, lbl, href in nav_specs
-        )
+    active_route_label = next((lbl for key, lbl, _ in nav_specs if key == current), routes.get(current, {}).get("label") or "Overview")
+    nav_cls = "oaw-nav-links va-demo-strip-links" if is_demo else "oaw-nav-links"
+    route_items = "\n          ".join(
+        f'<li><a class="oaw-nav-link{" is-active" if key == current else ""}" data-oaw-route-link="{key}" href="{esc(href)}"'
+        + (' aria-current="page"' if key == current else "")
+        + f'><span>{esc(lbl)}</span>{svg_icon("check", 14, "oaw-pop-check") if key == current else ""}</a></li>'
+        for key, lbl, href in nav_specs
+    )
+    nav_wrap = (
+        '      <nav class="oaw-nav-wrap" aria-label="Primary Navigation">\n'
+        '        <button type="button" id="oaw-route-btn" class="oaw-route-btn" popovertarget="oaw-route-menu" '
+        'aria-controls="oaw-route-menu" aria-expanded="false" aria-label="Switch route">'
+        f'<span id="oaw-route-label" class="oaw-route-label">{esc(active_route_label)}</span>{svg_icon("chevron-down", 12)}</button>\n'
+        '        <div id="oaw-route-menu" class="oaw-route-menu">\n'
+        f'          <ul class="{nav_cls}" role="list">\n          {route_items}\n          </ul>\n'
+        '        </div>\n      </nav>\n'
+    )
 
     hdr_cls = "va-demo-site-strip oaw-topbar oaw-topbar--demo" if is_demo else "oaw-topbar"
-    nav_cls = "oaw-nav-links va-demo-strip-links" if is_demo else "oaw-nav-links"
     skip = "" if is_demo else '  <a class="oaw-skip-link" href="#oaw-main-content">Skip to content</a>\n'
     projects_ctrl = _render_projects_switcher(config, rel_prefix, proj_title, hub_label, hub_url)
+    search_ctrl = _render_search_trigger(config, rel_prefix)
     pillar_ctrl = _render_pillar_switcher(config, hub_url, rel_prefix)
     user_ctrl = _render_user_menu(config)
-    subnav_cls = "oaw-mobile-subnav va-demo-strip-links" if is_demo else "oaw-mobile-subnav"
     header = (
         f'  <header class="{hdr_cls}" role="banner">\n    <div class="oaw-topbar-left">\n'
         f'      <a class="oaw-brand-link" href="{esc(hub_url)}">{esc(hub_label)}</a>\n'
-        f"{projects_ctrl}"
-        f'      <nav class="{nav_cls}" aria-label="Primary Navigation">{_nav_links("oaw-nav-link")}</nav>\n'
+        f"{projects_ctrl}{nav_wrap}"
         '    </div>\n    <div class="oaw-topbar-right">\n'
-        f"{pillar_ctrl}{user_ctrl}"
-        '    </div>\n  </header>\n'
-        f'  <nav class="{subnav_cls}" aria-label="Mobile Route Navigation">{_nav_links("oaw-nav-link")}</nav>'
+        f"{search_ctrl}{pillar_ctrl}{user_ctrl}"
+        '    </div>\n  </header>'
     )
     if is_demo:
         return f'<div class="oaw-demo-chrome" data-theme="white">\n{header}\n</div>'

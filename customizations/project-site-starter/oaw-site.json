@@ -6,13 +6,14 @@
     "title": "Open Workbench Starter",
     "tagline": "Calm static portal template for open-source tools, guides, and architectural diagrams.",
     "version": "1.0.0",
+    "updated_at": "2026-11-27",
     "repo_url": "https://github.com/open-agentic-workbench/starter",
     "site_url": "https://open-agentic-workbench.github.io/starter/",
     "license_summary": "MIT"
   },
   "hub": {
     "label": "OAW Projects",
-    "hub_url": "https://open-agentic-workbench.github.io/",
+    "hub_url": "https://projects.oaworkbench.org/",
     "projects": [
       {
         "slug": "workbench-starter",
@@ -48,10 +49,10 @@
       }
     ],
     "pillars": [
-      { "id": "home", "title": "Home", "desc": "Workbench home and overview", "href": "https://open-agentic-workbench.github.io/", "status": "link" },
-      { "id": "learn", "title": "Learn", "desc": "Interactive engineering and science guides", "href": "https://open-agentic-workbench.github.io/", "status": "link" },
-      { "id": "projects", "title": "Projects", "desc": "Open-source tools and browser demos", "href": "https://open-agentic-workbench.github.io/", "status": "active", "badge": "Active" },
-      { "id": "research", "title": "Research", "desc": "Long-form technical investigations", "href": "", "status": "soon", "badge": "Soon" }
+      { "id": "home", "title": "Home", "desc": "Open Agentic Workbench overview", "href": "https://oaworkbench.org/", "status": "link" },
+      { "id": "learn", "title": "Learn", "desc": "Interactive science worlds, chemistry and equations", "href": "https://learn.oaworkbench.org/", "status": "preview", "badge": "Open Preview" },
+      { "id": "projects", "title": "Projects", "desc": "Open-source developer tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active" },
+      { "id": "research", "title": "Research", "desc": "Primary-source manuscript and historical studies", "href": "https://research.oaworkbench.org/", "status": "preview", "badge": "Preview" }
     ]
   },
   "user_menu": {

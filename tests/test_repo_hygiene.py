@@ -35,14 +35,28 @@ EXCLUDED_LINE_BUDGET = {
     "docs/docs/index.html",
     "docs/bench/evidence-bench.html",
     "docs/assets/quiet-ui-social.svg",
+    "docs/search-index.json",
     "customizations/personal-starter/showcase.html",
     "customizations/brand-starter/showcase.html",
     "customizations/project-site-starter/site/index.html",
     "customizations/project-site-starter/site/docs/index.html",
+    "customizations/project-site-starter/site/search-index.json",
     "customizations/project-site-starter/site/assets/social-preview.svg",
     "skills/quiet-evidence/assets/quiet-evidence-bundle.css",
     "skills/quiet-evidence/assets/quiet-evidence-bundle.js",
 }
+SITE_SHELL_NEW_ASSETS = (
+    "src/site_shell/search_index.py",
+    "src/site_shell/assets/site-overview.css",
+    "src/site_shell/assets/site-search.css",
+    "src/site_shell/assets/site-search.js",
+    "docs/assets/site-search.js",
+    "customizations/project-site-starter/site/assets/site-search.js",
+)
+SEARCH_INDEX_OUTPUTS = (
+    "docs/search-index.json",
+    "customizations/project-site-starter/site/search-index.json",
+)
 TOKEN_MIRRORS = (
     "tokens/quiet-ui-tokens.css",
     "skills/quiet-ui/tokens/quiet-ui-tokens.css",
@@ -107,6 +121,9 @@ class TestRepoHygiene(unittest.TestCase):
 
     def test_file_line_budgets(self) -> None:
         self.assertTrue(set(LAYERED_TOKEN_CSS).isdisjoint(EXCLUDED_LINE_BUDGET))
+        self.assertTrue(set(SITE_SHELL_NEW_ASSETS).isdisjoint(EXCLUDED_LINE_BUDGET))
+        for rel in SITE_SHELL_NEW_ASSETS:
+            self.assertTrue((REPO_ROOT / rel).is_file(), f"Missing expected site_shell asset: {rel}")
         violations: list[str] = []
         for p in sorted(REPO_ROOT.rglob("*")):
             if not p.is_file() or (set(p.parts) & IGNORED_DIRS) or p.suffix.lower() in BINARY_EXTS:
@@ -221,6 +238,7 @@ class TestRepoHygiene(unittest.TestCase):
         self.assertIn("WORKBENCH", social_svg.read_text(encoding="utf-8"))
 
         from src.site_shell import load_site_config
+        from src.site_shell.config import _check_string_for_private_tokens
 
         for cfg_rel in ("src/chrome/quiet-ui-site.json", "customizations/project-site-starter/oaw-site.json"):
             cfg_path = REPO_ROOT / cfg_rel
@@ -229,6 +247,18 @@ class TestRepoHygiene(unittest.TestCase):
             self.assertIsInstance(cfg, dict, f"{cfg_rel} did not return dict")
             self.assertIn("project", cfg, f"{cfg_rel} missing project section")
             self.assertIn("routes", cfg, f"{cfg_rel} missing routes section")
+
+        for rel in (*SITE_SHELL_NEW_ASSETS, *SEARCH_INDEX_OUTPUTS):
+            fp = REPO_ROOT / rel
+            self.assertTrue(fp.is_file(), f"Missing {rel}")
+            raw = fp.read_text(encoding="utf-8")
+            _check_string_for_private_tokens(raw, rel)
+            if rel in SEARCH_INDEX_OUTPUTS:
+                parsed = json.loads(raw)
+                self.assertIsInstance(parsed.get("entries"), list, f"{rel} missing entries list")
+            if rel == "src/site_shell/assets/site-search.js":
+                self.assertNotRegex(raw, r"preserveAspectRatio\s*[:=,]\s*['\"]none['\"]")
+                self.assertIn("setAttribute('fill'", raw)
 
     def test_markdown_links_schemas_and_css_tokens(self) -> None:
         tok_text = (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text(encoding="utf-8")

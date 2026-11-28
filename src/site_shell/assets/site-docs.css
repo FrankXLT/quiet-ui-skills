@@ -8,22 +8,57 @@
     display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; align-items: start; min-inline-size: 0;
   }
   .oaw-docs-rail { display: none; flex-direction: column; gap: 0.25rem; min-inline-size: 0; }
-  .oaw-docs-toc-trigger {
-    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; justify-self: start;
-    min-block-size: 44px; padding: 0.45rem 0.9rem;
-    border: 1px solid var(--border-strong); border-radius: var(--radius-sm, 6px);
-    background: var(--bg-surface); color: var(--text-primary); font-size: var(--ts-sm); font-weight: 600;
-  }
-  .oaw-docs-toc-trigger:hover { background: var(--bg-subtle); border-color: var(--accent-primary); }
 
-  @media (min-width: 760px) {
+  #oaw-docs-subbar.oaw-docs-subbar {
+    block-size: 38px; min-block-size: 38px; max-block-size: 38px;
+    display: flex; align-items: center; gap: 0.55rem;
+    inline-size: 100%; min-inline-size: 0; padding-inline: 14px;
+    background: var(--oaw-surface, var(--bg-surface));
+    border-block-end: 1px solid var(--oaw-border-subtle, var(--border-hairline));
+    color: var(--oaw-text, var(--text-primary));
+  }
+  .oaw-docs-toc-trigger {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    flex: 0 0 auto; min-block-size: 30px; block-size: 30px; padding: 0.2rem 0.65rem;
+    border: 1px solid var(--oaw-border, var(--border-strong)); border-radius: var(--radius-sm, 6px);
+    background: var(--oaw-surface, var(--bg-surface)); color: var(--oaw-text, var(--text-primary));
+    font-size: var(--ts-sm, max(12px, 0.78125rem)); font-weight: 600; line-height: 1;
+    white-space: nowrap; cursor: pointer;
+  }
+  .oaw-docs-toc-trigger:hover,
+  .oaw-docs-toc-trigger[aria-expanded="true"] {
+    background: var(--oaw-subtle, var(--bg-subtle));
+    border-color: var(--oaw-accent, var(--accent-primary));
+    color: var(--oaw-accent, var(--accent-primary));
+  }
+  .oaw-docs-subbar-sep {
+    flex: 0 0 auto; color: var(--oaw-muted, var(--text-muted));
+    font-size: var(--ts-xs, max(11px, 0.6875rem)); user-select: none;
+  }
+  .oaw-docs-subbar-chapter {
+    flex: 1 1 auto; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: max(12px, var(--ts-sm, 0.78125rem)); font-weight: 600;
+    color: var(--oaw-text-secondary, var(--text-secondary)); line-height: 1.3;
+  }
+
+  @media (max-width: 679.98px) {
+    #oaw-docs-subbar.oaw-docs-subbar {
+      position: sticky; inset-block-start: 46px; z-index: 40; padding-inline: 8px; gap: 0.45rem;
+    }
+  }
+  @media (min-width: 680px) and (max-width: 959.98px) {
+    #oaw-docs-subbar.oaw-docs-subbar { position: static; }
+  }
+  @media (min-width: 960px) {
+    #oaw-docs-subbar.oaw-docs-subbar,
+    .oaw-docs-toc-trigger { display: none; }
     .oaw-docs-layout { grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); gap: 2rem; }
     .oaw-docs-rail {
       display: flex; position: sticky; inset-block-start: 68px;
       max-block-size: calc(100dvh - 84px); overflow-y: auto; overscroll-behavior: contain;
-      padding-block: 0.25rem; padding-inline-end: 0.75rem; border-inline-end: 1px solid var(--border-hairline);
+      padding-block: 0.25rem; padding-inline-end: 0.75rem;
+      border-inline-end: 1px solid var(--oaw-border-subtle, var(--border-hairline));
     }
-    .oaw-docs-toc-trigger { display: none; }
   }
 
   .oaw-docs-rail-title {
@@ -32,15 +67,17 @@
   }
   .oaw-docs-rail-link,
   .oaw-docs-rail a,
-  .oaw-docs-toc-list a {
-    display: flex; align-items: center; justify-content: space-between; gap: 0.45rem;
-    min-block-size: 36px; padding: 0.38rem 0.65rem; border-radius: var(--radius-sm, 6px);
-    color: var(--text-secondary); font-size: var(--ts-sm); font-weight: 500; line-height: 1.35; text-decoration: none;
+  .oaw-docs-toc-list a,
+  .oaw-docs-toc-list button {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.45rem; inline-size: 100%;
+    min-block-size: 36px; padding: 0.38rem 0.65rem; border: 0; border-inline-start: 3px solid transparent;
+    border-radius: var(--radius-sm, 6px); background: transparent; color: var(--text-secondary);
+    font-size: var(--ts-sm); font-weight: 500; line-height: 1.35; text-align: start; text-decoration: none; cursor: pointer;
   }
-  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):hover {
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a, .oaw-docs-toc-list button):hover {
     background: var(--bg-subtle); color: var(--text-primary); text-decoration: none;
   }
-  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a):is([aria-current="page"], [aria-current="location"], .is-active) {
+  :is(.oaw-docs-rail-link, .oaw-docs-rail a, .oaw-docs-toc-list a, .oaw-docs-toc-list button):is([aria-current="page"], [aria-current="location"], .is-active) {
     background: var(--bg-elevated); color: var(--text-primary);
     border-inline-start: 3px solid var(--accent-primary); font-weight: 600;
   }
@@ -74,12 +111,12 @@
   }
   .va-modal-sheet-body { padding: var(--density-card-pad, 0.9rem); overflow-y: auto; overscroll-behavior: contain; min-block-size: 0; flex: 1 1 auto; }
 
-  @media (max-width: 759px) {
+  @media (max-width: 959.98px) {
     dialog.va-modal-sheet {
       margin: auto 0 0 0; inline-size: 100%; max-inline-size: 100%; max-block-size: 86dvh;
       border-radius: var(--radius-card, 8px) var(--radius-card, 8px) 0 0; border-inline: 0; border-block-end: 0;
     }
-    .oaw-docs-toc-list a, .va-modal-sheet-hdr button { min-block-size: 44px; }
+    .oaw-docs-toc-list a, .oaw-docs-toc-list button, .va-modal-sheet-hdr button { min-block-size: 44px; }
   }
 }
 
@@ -112,7 +149,7 @@
     font-family: var(--font-mono); font-variant-numeric: var(--font-nums);
     font-size: var(--ts-xs); color: var(--text-muted); white-space: nowrap;
   }
-  @media (max-width: 679px) {
+  @media (max-width: 679.98px) {
     .oaw-docs-searchbar input[type="search"] { flex: 1 1 100%; min-block-size: 44px; font-size: max(1rem, var(--ts-base)); }
     .oaw-docs-search-clear, .oaw-docs-searchbar button, .oaw-empty-actions button, .oaw-empty-actions a { min-block-size: 44px; }
   }
@@ -137,8 +174,9 @@
   .oaw-docs-section,
   .oaw-doc-section {
     display: flex; flex-direction: column; gap: 0.75rem; padding-block-end: 1.25rem;
-    border-block-end: 1px solid var(--border-hairline); scroll-margin-top: 4.5rem; min-inline-size: 0;
+    border-block-end: 1px solid var(--border-hairline); scroll-margin-top: 5.75rem; min-inline-size: 0;
   }
+  .oaw-docs-main [id] { scroll-margin-top: 5.75rem; }
   .oaw-docs-prose h1 { font-family: var(--font-serif); font-size: var(--ts-display); line-height: 1.2; font-weight: 700; color: var(--text-primary); }
   .oaw-docs-prose h2 { font-size: var(--ts-xl); line-height: 1.25; font-weight: 700; color: var(--text-primary); margin-block-start: 0.45rem; }
   .oaw-docs-prose h3 { font-size: var(--ts-md); line-height: 1.3; font-weight: 700; color: var(--text-primary); }
@@ -156,10 +194,7 @@
     padding: 0.1rem 0.35rem; border-radius: var(--radius-xs, 2px); border: 1px solid var(--border-hairline);
     background: var(--bg-subtle); color: var(--text-primary); font-size: 0.88em; overflow-wrap: anywhere;
   }
-
-  .oaw-code-block,
-  .oaw-docs-prose pre,
-  pre {
+  .oaw-code-block, .oaw-docs-prose pre, pre {
     margin: 0; padding: 0.85rem 1rem; border-radius: var(--radius-card, 8px);
     border: 1px solid var(--border-strong); background: var(--bg-elevated); color: var(--text-primary);
     font-family: var(--font-mono); font-size: var(--ts-xs); line-height: 1.55; max-inline-size: 100%; overflow-x: auto;
@@ -171,29 +206,26 @@
     padding-block-end: 0.5rem; margin-block-end: 0.55rem;
     border-block-end: 1px solid var(--border-hairline); font-size: var(--ts-xs); color: var(--text-muted);
   }
-
   .va-table-wrap {
     overflow-x: auto; max-inline-size: 100%; border: 1px solid var(--border-hairline);
     border-radius: var(--radius-card, 8px); background: var(--bg-surface);
   }
-  .va-table-wrap table,
-  .oaw-docs-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--ts-sm); }
+  .va-table-wrap table, .oaw-docs-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--ts-sm); }
   .oaw-docs-prose :is(th, td) { padding: 0.55rem 0.75rem; border-block-end: 1px solid var(--border-hairline); text-align: start; vertical-align: top; }
   .oaw-docs-prose thead th { background: var(--bg-elevated); color: var(--text-primary); font-weight: 700; }
-  .va-table-wrap table td code,
-  .va-table-wrap table td[data-param-key],
-  .oaw-docs-prose table td code { white-space: nowrap; word-break: normal; overflow-wrap: normal; }
+  .va-table-wrap table td code, .va-table-wrap table td[data-param-key], .oaw-docs-prose table td code {
+    white-space: nowrap; word-break: normal; overflow-wrap: normal;
+  }
 }
 
 @layer utilities {
   dialog.va-modal-sheet[open] { background-color: var(--bg-surface); color: var(--text-primary); }
-  .hidden,
-  [hidden]:not([hidden="until-found"]) { display: none; }
+  .hidden, [hidden]:not([hidden="until-found"]) { display: none; }
 }
 
 @media print {
   [hidden]:not([hidden="until-found"]),
-  .oaw-docs-rail, .oaw-docs-toc-trigger, .oaw-docs-searchbar, .oaw-copy-btn,
+  .oaw-docs-subbar, .oaw-docs-rail, .oaw-docs-toc-trigger, .oaw-docs-searchbar, .oaw-copy-btn,
   .oaw-copy-code-btn, .oaw-code-copy, .oaw-empty-actions, dialog.va-modal-sheet { display: none; }
 
   .oaw-docs-layout:not([hidden]):not(.hidden) {

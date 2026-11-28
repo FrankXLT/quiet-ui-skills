@@ -17,8 +17,8 @@ body.va-studio-body {
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
 }
-html.va-studio-root[data-studio-view="overview"],
-html.va-studio-root[data-studio-view="overview"] body.va-studio-body {
+html.va-studio-root[data-studio-view="overview"]:not(:has(dialog:modal)),
+html.va-studio-root[data-studio-view="overview"] body.va-studio-body:not(:has(dialog:modal)) {
   block-size: auto;
   min-block-size: 100dvh;
   overflow-x: clip;
@@ -153,8 +153,6 @@ summary::-webkit-details-marker { display: none; }
   .va-tier-select { min-inline-size: 0; max-inline-size: 290px; }
 }
 @media (max-width: 519px) {
-  .va-demo-site-strip { padding: 0 0.45rem; gap: 0.4rem; }
-  .va-demo-strip-link { padding: 0.2rem 0.38rem; }
   #va-studio-bar, .va-studio-bar { padding: 0 0.25rem; gap: 0.2rem; }
   .va-bar-left, .va-bar-right { gap: 0.16rem; }
   .va-mode-tab { padding: 0 0.28rem; font-size: 11px; }

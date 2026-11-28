@@ -4,8 +4,9 @@
     "slug": "quiet-ui-skills",
     "title": "Quiet User Interface Skills",
     "version": "9.8.0",
+    "updated_at": "2026-11-27",
     "repo_url": "https://github.com/FrankXLT/quiet-ui-skills",
-    "site_url": "https://FrankXLT.github.io/quiet-ui-skills/",
+    "site_url": "https://projects.oaworkbench.org/quiet-ui-skills/",
     "tagline": "Zero-dependency UI architecture, calibrated charts and diagrams, and reusable OAW project-site shell for AI coding agents.",
     "license_summary": "Apache-2.0 Core + MIT Customizations & Generated Output"
   },
@@ -14,13 +15,14 @@
     "hub_url": "https://projects.oaworkbench.org/",
     "projects": [
       { "slug": "agy-nexus-mcp", "title": "Antigravity Nexus", "tagline": "Steer Antigravity IDE, track quota %, and route helper models", "url": "https://projects.oaworkbench.org/agy-nexus-mcp/", "current": false },
-      { "slug": "quiet-ui-skills", "title": "Quiet User Interface Skills", "tagline": "Design system, calibrated charts, and OAW project-site shell", "url": "./index.html", "badge": "v9.8.0", "current": true }
+      { "slug": "quiet-ui-skills", "title": "Quiet User Interface Skills", "tagline": "Design system, calibrated charts, and OAW project-site shell", "url": "./index.html", "badge": "v9.8.0", "current": true },
+      { "slug": "mcp-adv-netutils", "title": "Advanced Network Utilities", "tagline": "Network checks, Saved Destinations & 30d monitor", "url": "https://projects.oaworkbench.org/mcp-adv-netutils/", "current": false }
     ],
     "pillars": [
-      { "id": "home", "title": "Home", "desc": "Workbench home and overview", "href": "https://www.oaworkbench.org/", "status": "link" },
-      { "id": "learn", "title": "Learn", "desc": "Interactive engineering and science guides", "href": "https://learn.oaworkbench.org/", "status": "link" },
-      { "id": "projects", "title": "Projects", "desc": "Open-source tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active" },
-      { "id": "research", "title": "Research", "desc": "Long-form technical investigations", "href": "", "status": "soon", "badge": "Soon" }
+      { "id": "home", "title": "Home", "desc": "Open Agentic Workbench overview", "href": "https://oaworkbench.org/", "status": "link" },
+      { "id": "learn", "title": "Learn", "desc": "Interactive science worlds, chemistry and equations", "href": "https://learn.oaworkbench.org/", "status": "preview", "badge": "Open Preview" },
+      { "id": "projects", "title": "Projects", "desc": "Open-source developer tools and browser demos", "href": "https://projects.oaworkbench.org/", "status": "active", "badge": "Active" },
+      { "id": "research", "title": "Research", "desc": "Primary-source manuscript and historical studies", "href": "https://research.oaworkbench.org/", "status": "preview", "badge": "Preview" }
     ]
   },
   "user_menu": {

@@ -152,6 +152,8 @@ def _normalize_project(raw: dict[str, Any]) -> dict[str, Any]:
     for key in ("slug", "title", "tagline", "version", "repo_url", "site_url", "license_summary"):
         val = _expect_str(proj.get(key), f"project.{key}", "")
         out[key] = _assert_safe_url(val, f"project.{key}") if key in ("repo_url", "site_url") else val
+    raw_updated = proj.get("updated_at")
+    out["updated_at"] = _expect_str(raw_updated, "project.updated_at", "").strip()
     return out
 
 
@@ -166,7 +168,12 @@ def _normalize_pillars(raw_pillars: Any) -> list[dict[str, Any]]:
         norm = dict(item)
         for key in ("id", "title", "desc", "href", "badge", "status"):
             val = _expect_str(item.get(key), f"hub.pillars[{idx}].{key}", "")
-            norm[key] = _assert_safe_url(val, f"hub.pillars[{idx}].{key}") if key == "href" else val
+            if key == "href":
+                norm[key] = _assert_safe_url(val, f"hub.pillars[{idx}].{key}")
+            elif key == "status":
+                norm[key] = val.strip().lower()
+            else:
+                norm[key] = val
         out.append(norm)
     return out
 

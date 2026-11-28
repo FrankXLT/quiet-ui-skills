@@ -252,34 +252,36 @@ class TestProjectSiteBuilder(unittest.TestCase):
         for bundle in (False, True):
             with self.subTest(bundle=bundle), tempfile.TemporaryDirectory() as tmp:
                 out_dir = Path(tmp)
-                cmd = [
-                    sys.executable, "-B", str(BUILD_CLI),
-                    "--config", str(STARTER_CFG_PATH), "--out", str(out_dir),
-                ]
+                cmd = [sys.executable, "-B", str(BUILD_CLI), "--config", str(STARTER_CFG_PATH), "--out", str(out_dir)]
                 if bundle:
                     cmd.append("--bundle")
                 res = subprocess.run(cmd, cwd=REPO_ROOT, capture_output=True, text=True)
                 self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
 
-                self.assertTrue((out_dir / "index.html").is_file())
-                self.assertTrue((out_dir / "docs" / "index.html").is_file())
-                svg_files = list((out_dir / "assets").glob("*.svg"))
-                self.assertTrue(svg_files, "Expected assets/*.svg output")
+                for req_rel in ("index.html", "docs/index.html", "search-index.json", "assets/site-search.js"):
+                    self.assertTrue((out_dir / req_rel).is_file(), f"Missing {req_rel}")
+                self.assertTrue(list((out_dir / "assets").glob("*.svg")), "Expected assets/*.svg output")
                 if bundle:
                     self.assertFalse((out_dir / "styles").exists())
                 else:
                     self.assertTrue((out_dir / "styles" / "quiet-ui-tokens.css").is_file())
-                    layered = (out_dir / "styles" / "tokens.layered.css").read_text(encoding="utf-8")
-                    self.assertIn("@layer tokens {", layered)
+                    self.assertIn("@layer tokens {", (out_dir / "styles" / "tokens.layered.css").read_text(encoding="utf-8"))
                     self.assertTrue((out_dir / "styles" / "overrides.css").is_file())
 
                 self._assert_starter_html_contracts(out_dir, bundle=bundle)
 
+    def _assert_topbar_contract(self, html_txt: str, *, search_idx: str) -> None:
+        markup = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", "", html_txt, flags=re.S | re.I)
+        for tok in ('id="oaw-projects-popover"', 'id="oaw-route-btn"', 'id="oaw-route-menu"', 'id="oaw-search-btn"',
+                    f'data-search-index="{search_idx}"', 'id="oaw-pillar-btn"', 'id="oaw-user-btn"'):
+            self.assertIn(tok, markup)
+        self.assertRegex(markup, re.compile(r'id="oaw-projects-popover"[^>]*>.*?<ul class="oaw-pop-list">\s*<li class="oaw-pop-row-sep">.*?All Projects', re.S))
+        self.assertRegex(markup, re.compile(r'href="https://research\.oaworkbench\.org/"[^>]*>.*?Research.*?oaw-pop-badge--preview[^>]*>Preview<', re.S))
+        for stale in ("oaw-pop-stage1-back", "oaw-mobile-subnav", "is-soon"):
+            self.assertNotIn(stale, markup)
+
     def _assert_starter_html_contracts(self, out_dir: Path, *, bundle: bool) -> None:
-        audit = subprocess.run(
-            [sys.executable, "-B", str(AUDITOR_CLI), str(out_dir)],
-            cwd=REPO_ROOT, capture_output=True, text=True,
-        )
+        audit = subprocess.run([sys.executable, "-B", str(AUDITOR_CLI), str(out_dir)], cwd=REPO_ROOT, capture_output=True, text=True)
         self.assertEqual(audit.returncode, 0, audit.stdout + audit.stderr)
 
         for asset in out_dir.rglob("*"):
@@ -293,6 +295,10 @@ class TestProjectSiteBuilder(unittest.TestCase):
                 self.assertNotIn("quiet ui", chrome.lower())
             self.assertNotIn('data-oaw-route-link="demo"', txt)
             self.assertNotIn("demo/index.html", txt)
+            self._assert_topbar_contract(txt, search_idx=("./search-index.json" if rel == "index.html" else "../search-index.json"))
+            self.assertTrue("oaw_theme_v99" in txt and "quiet-ui-site-theme" in txt)
+            if rel == "index.html":
+                self.assertNotIn("oaw-docs-subbar", txt)
             if bundle:
                 self.assertIn('<style id="oaw-site-styles">', txt)
                 self.assertNotIn('rel="stylesheet"', txt)
@@ -301,40 +307,34 @@ class TestProjectSiteBuilder(unittest.TestCase):
             self.assertEqual(_find_broken_relative_links(out_dir, rel), [])
 
         docs_txt = (out_dir / "docs" / "index.html").read_text(encoding="utf-8")
-        idx_m = re.search(
-            r'<script type="application/json" id="oaw-docs-search-index">(.*?)</script>',
-            docs_txt, flags=re.S,
-        )
+        idx_m = re.search(r'<script type="application/json" id="oaw-docs-search-index">(.*?)</script>', docs_txt, flags=re.S)
         self.assertIsNotNone(idx_m)
         parsed_idx = json.loads(idx_m.group(1))
         self.assertIsInstance(parsed_idx, list)
         self.assertGreater(len(parsed_idx), 0)
         self.assertIn('<dialog id="oaw-docs-toc-dialog"', docs_txt)
-        self.assertRegex(
-            docs_txt,
-            r'id="oaw-docs-empty"[^>]*class="[^"]*\bva-empty-state\b[^"]*"[^>]*data-kind="filtered"',
-        )
+        self.assertRegex(docs_txt, re.compile(r'id="oaw-docs-subbar"[^>]*>.*?id="oaw-docs-toc-trigger"', re.S))
+        searchbar_m = re.search(r'class="oaw-docs-searchbar"[^>]*>.*?</div>', docs_txt, flags=re.S)
+        self.assertIsNotNone(searchbar_m)
+        self.assertNotIn("oaw-docs-toc-trigger", searchbar_m.group(0))
+        self.assertRegex(docs_txt, r'id="oaw-docs-empty"[^>]*class="[^"]*\bva-empty-state\b[^"]*"[^>]*data-kind="filtered"')
 
     def test_render_overview_false_and_demo_return_bar(self) -> None:
         quiet_cfg = load_site_config(QUIET_CFG_PATH)
         with tempfile.TemporaryDirectory() as tmp:
             out_dir = Path(tmp)
-            emitted = build_project_site(
-                quiet_cfg, out_dir, bundle=False, render_overview=False, render_docs=True,
-            )
+            emitted = build_project_site(quiet_cfg, out_dir, bundle=False, render_overview=False, render_docs=True)
             self.assertFalse((out_dir / "index.html").exists())
+            self.assertFalse((out_dir / "search-index.json").exists())
             self.assertTrue((out_dir / "docs" / "index.html").is_file())
             self.assertEqual(list(emitted.keys()), [out_dir / "docs" / "index.html"])
 
         bar_html = render_demo_return_bar(quiet_cfg)
-        self.assertIn("va-demo-site-strip", bar_html)
-        self.assertIn('id="oaw-pillar-btn"', bar_html)
-        self.assertIn('id="oaw-user-btn"', bar_html)
-        self.assertIn("All Projects", bar_html)
-        self.assertIn("Antigravity Nexus", bar_html)
-        self.assertIn("Quiet User Interface Skills", bar_html)
-        self.assertIn("@FrankXLT", bar_html)
-        self.assertNotIn("oaw-theme-select", bar_html)
+        self._assert_topbar_contract(bar_html, search_idx="../search-index.json")
+        for tok in ("va-demo-site-strip", "Antigravity Nexus", "Quiet User Interface Skills", "@FrankXLT"):
+            self.assertIn(tok, bar_html)
+        for absent in ("oaw-theme-select", "oaw-docs-subbar"):
+            self.assertNotIn(absent, bar_html)
         for route in ("overview", "demo", "docs"):
             self.assertIn(f'data-oaw-route-link="{route}"', bar_html)
         self.assertRegex(bar_html, r'data-oaw-route-link="demo"[^>]*aria-current="page"')
@@ -411,14 +411,14 @@ class TestProjectSiteBuilder(unittest.TestCase):
             demo_html = (out_dir / "demo" / "index.html").read_text(encoding="utf-8")
             self.assertIn(".va-demo-site-strip", demo_html)
             self.assertRegex(demo_html, r'class="[^"]*\bva-demo-site-strip\b')
-            self.assertIn("oaw-theme-opt", demo_html)
-            self.assertIn("<main>App</main>", demo_html)
+            for tok in ("oaw-theme-opt", 'id="oaw-search-btn"', 'id="oaw-route-btn"', "assets/site-search.js", "<main>App</main>"):
+                self.assertIn(tok, demo_html)
+            self.assertNotIn("oaw-docs-subbar", demo_html)
             ov_html = (out_dir / "index.html").read_text(encoding="utf-8")
             self.assertNotIn("oaw-theme-select", ov_html)
-            self.assertIn('id="oaw-pillar-btn"', ov_html)
-            self.assertIn('id="oaw-user-btn"', ov_html)
-            self.assertIn("window.location.replace", ov_html)
-            self.assertIn("mode", ov_html)
+            self.assertNotIn("oaw-docs-subbar", ov_html)
+            for tok in ('id="oaw-pillar-btn"', 'id="oaw-user-btn"', 'id="oaw-search-btn"', 'id="oaw-route-btn"', "oaw_theme_v99", "quiet-ui-site-theme", "window.location.replace", "mode"):
+                self.assertIn(tok, ov_html)
             self.assertRegex(ov_html, r"q\.get\(['\"]mode['\"]\).*toLowerCase\(\)===['\"]overview['\"]")
             self.assertLess(ov_html.index("styles/tokens.layered.css"), ov_html.index("styles/overrides.css"))
             self.assertNotIn("SPDX-License-Identifier: Apache-2.0", ov_html)

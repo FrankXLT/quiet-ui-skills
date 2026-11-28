@@ -1,4 +1,4 @@
-@layer reset, tokens, shell, archetypes, evidence, views, utilities;
+@layer reset, tokens, shell, archetypes, evidence, components, views, utilities;
 @layer tokens {
 /* SPDX-License-Identifier: MIT */
 /* ==========================================================================

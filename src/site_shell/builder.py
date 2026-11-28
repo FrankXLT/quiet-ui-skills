@@ -11,20 +11,10 @@ from pathlib import Path
 from typing import Any
 
 from .markdown_docs import _sanitize_svg_html, compile_diagram_spec, compile_markdown_docs
+from .search_index import build_project_search_index, write_project_search_index
 from .templates import (
-    LAYER_ORDER,
-    REPO_ROOT,
-    esc,
-    escape_tag_body,
-    is_external,
-    json_embed,
-    read_asset,
-    render_chrome_top,
-    render_footer,
-    render_head,
-    route_defs,
-    safe_href,
-    svg_icon,
+    ASSETS_DIR, LAYER_ORDER, REPO_ROOT, _LAYER_DECL_RE, esc, escape_tag_body, is_external,
+    json_embed, read_asset, render_chrome_top, render_footer, render_head, route_defs, safe_href, svg_icon,
 )
 
 _SAFE_DOC_ID_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
@@ -32,27 +22,23 @@ _ROOT_FONT_RE = re.compile(r"\bfont-size\s*:\s*clamp\([^;]+;\s*")
 
 
 def render_demo_chrome_css(tokens_css: str = "") -> str:
-    """Build scoped token + @layer shell CSS so /demo/ reuses the 46px OAW topbar identically."""
-    tok_src = tokens_css or (
-        (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").read_text(encoding="utf-8")
-        if (REPO_ROOT / "tokens" / "quiet-ui-tokens.css").is_file()
-        else ""
-    )
-    tok_scoped = _ROOT_FONT_RE.sub("", tok_src)
-    tok_scoped = re.sub(r":root\b", ".oaw-demo-chrome", tok_scoped)
-    tok_scoped = re.sub(r"^\s*h1,\s*h2,[^\n]+\n?", "", tok_scoped, flags=re.MULTILINE)
+    """Build scoped token + @layer shell/search CSS so /demo/ reuses the 46px OAW topbar identically."""
+    tok_p = REPO_ROOT / "tokens" / "quiet-ui-tokens.css"
+    tok_src = tokens_css or (tok_p.read_text(encoding="utf-8") if tok_p.is_file() else "")
+    tok_scoped = re.sub(r"^\s*h1,\s*h2,[^\n]+\n?", "", re.sub(r":root\b", ".oaw-demo-chrome", _ROOT_FONT_RE.sub("", tok_src)), flags=re.MULTILINE)
     shell_css = read_asset("site-shell.css")
     m = re.search(r"/\*\s*@oaw-shell-start\s*\*/(.*?)/\*\s*@oaw-shell-end\s*\*/", shell_css, flags=re.S)
-    shell_block = m.group(1).strip() if m else re.sub(r"^\s*@layer\s+reset,\s*[^;]+;\s*", "", shell_css, flags=re.MULTILINE).strip()
+    shell_block = m.group(1).strip() if m else _LAYER_DECL_RE.sub("", shell_css).strip()
+    search_block = _LAYER_DECL_RE.sub("", read_asset("site-search.css")).strip()
     scoped_reset = (
         "@layer reset {\n"
         "  .oaw-demo-chrome, .oaw-demo-chrome *, .oaw-demo-chrome *::before, .oaw-demo-chrome *::after { box-sizing: border-box; }\n"
         "  .oaw-demo-chrome button { font: inherit; color: inherit; background: none; border: none; padding: 0; cursor: pointer; }\n"
-        "  .oaw-demo-chrome a { text-decoration: none; }\n"
-        "}\n"
+        "  .oaw-demo-chrome a { text-decoration: none; }\n}\n"
         "@layer utilities {\n  .oaw-demo-chrome [hidden]:not([hidden=\"until-found\"]) { display: none; }\n}"
     )
-    body = escape_tag_body(f"{LAYER_ORDER}\n@layer tokens {{\n{tok_scoped}\n}}\n\n{scoped_reset}\n\n{shell_block}", "style")
+    parts = [f"{LAYER_ORDER}\n@layer tokens {{\n{tok_scoped}\n}}", scoped_reset, shell_block, *([search_block] if search_block else [])]
+    body = escape_tag_body("\n\n".join(parts), "style")
     return f'  <style id="va-demo-site-strip-css">\n{body}\n  </style>'
 
 
@@ -228,10 +214,19 @@ def _render_overview_html(config: dict[str, Any], *, bundle: bool, tok_txt: str,
     proj, ov = config.get("project") or {}, config.get("overview") or {}
     proj_title = str(proj.get("title") or proj.get("slug") or "Project")
     desc = str(ov.get("summary") or proj.get("tagline") or proj_title)
-    head = render_head(config, page_title=proj_title, description=desc, rel_prefix="./", bundle=bundle, tok_txt=tok_txt, ovr_txt=ovr_txt, include_docs=False)
+    head = render_head(
+        config, page_title=proj_title, description=desc, rel_prefix="./",
+        bundle=bundle, tok_txt=tok_txt, ovr_txt=ovr_txt, include_docs=False, include_overview=True,
+    )
     shell_js = escape_tag_body(read_asset("site-shell.js"), "script")
     body = "\n".join(_render_overview_sections(config))
-    return f'<!DOCTYPE html>\n<html lang="en" data-theme="white" data-oaw-route="overview">\n{head}\n<body>\n{render_chrome_top(config, current="overview", rel_prefix="./")}\n  <main id="oaw-main-content" class="oaw-main">\n{body}\n  </main>\n{render_footer(config)}\n  <script>\n{shell_js}\n  </script>\n</body>\n</html>\n'
+    return (
+        f'<!DOCTYPE html>\n<html lang="en" data-theme="white" data-oaw-route="overview">\n{head}\n<body>\n'
+        f'{render_chrome_top(config, current="overview", rel_prefix="./")}\n'
+        f'  <main id="oaw-main-content" class="oaw-main">\n{body}\n  </main>\n'
+        f'{render_footer(config)}\n  <script>\n{shell_js}\n  </script>\n'
+        '  <script defer src="./assets/site-search.js"></script>\n</body>\n</html>\n'
+    )
 
 
 def _normalize_quick_jumps(raw_jumps: list[Any], doc_ids: set[str], *, demo_enabled: bool) -> list[dict[str, str]]:
@@ -284,15 +279,18 @@ def _render_docs_toc(toc: list[dict[str, Any]], jumps: list[dict[str, str]]) -> 
     return "\n      ".join(parts)
 
 
-def _render_docs_html(config: dict[str, Any], *, bundle: bool, tok_txt: str, ovr_txt: str | None) -> str:
+def _render_docs_html(
+    config: dict[str, Any], *, bundle: bool, tok_txt: str, ovr_txt: str | None, compiled: dict[str, Any] | None = None,
+) -> str:
     proj, dr = config.get("project") or {}, config.get("docs_reader") or {}
     routes = route_defs(config, from_subdir="docs")
-    compiled = compile_markdown_docs(dr.get("sources") or [], Path(str(config.get("base_dir") or ".")))
+    compiled = compiled if compiled is not None else compile_markdown_docs(dr.get("sources") or [], Path(str(config.get("base_dir") or ".")))
     toc = compiled["toc"]
     jumps = _normalize_quick_jumps(dr.get("quick_jumps") or [], {f"doc-{d['id']}" for d in toc}, demo_enabled=routes["demo"]["enabled"])
     toc_html = _render_docs_toc(toc, jumps)
 
     docs_title, docs_sub = str(dr.get("title") or "Documentation"), str(dr.get("subtitle") or "")
+    first_doc_title = str(toc[0]["title"]) if toc else docs_title
     proj_title = str(proj.get("title") or proj.get("slug") or "Project")
     empty_jumps = [_render_jump_control(j) for j in jumps] if jumps else (
         [f'<button type="button" data-doc-jump="doc-{esc(toc[0]["id"])}">Open {esc(toc[0]["title"])}</button>'] if toc else []
@@ -305,13 +303,19 @@ def _render_docs_html(config: dict[str, Any], *, bundle: bool, tok_txt: str, ovr
     )
     shell_js = escape_tag_body(read_asset("site-shell.js"), "script")
     docs_js = escape_tag_body(read_asset("site-docs-search.js"), "script")
+    subbar = (
+        '  <div id="oaw-docs-subbar" class="oaw-docs-subbar">'
+        '<button id="oaw-docs-toc-trigger" class="oaw-docs-toc-trigger" type="button" aria-haspopup="dialog" aria-controls="oaw-docs-toc-dialog" aria-expanded="false">'
+        f'{svg_icon("chapters", 14)}<span>Chapters</span></button>'
+        '<span class="oaw-docs-subbar-sep" aria-hidden="true">/</span>'
+        f'<span id="oaw-docs-current-chapter" class="oaw-docs-subbar-chapter">{esc(first_doc_title)}</span></div>'
+    )
     return (
         f'<!DOCTYPE html>\n<html lang="en" data-theme="white" data-oaw-route="docs">\n{head}\n<body>\n'
-        f'{render_chrome_top(config, current="docs", rel_prefix="../")}\n'
+        f'{render_chrome_top(config, current="docs", rel_prefix="../")}\n{subbar}\n'
         '  <main id="oaw-main-content" class="oaw-docs-layout">\n'
         f'    <aside class="oaw-docs-rail" aria-label="Documentation Outline">\n      {toc_html}\n    </aside>\n'
         '    <div class="oaw-docs-main">\n'
-        '      <button type="button" id="oaw-docs-toc-trigger" class="oaw-docs-toc-trigger" aria-haspopup="dialog" aria-controls="oaw-docs-toc-dialog" aria-expanded="false">Table of Contents</button>\n'
         f'      <section class="oaw-docs-intro">\n        <h1>{esc(docs_title)}</h1>{sub_html}\n      </section>\n'
         '      <div class="oaw-docs-searchbar" role="search">\n'
         '        <label class="oaw-sr-only" for="oaw-docs-search">Search documentation</label>\n'
@@ -325,11 +329,12 @@ def _render_docs_html(config: dict[str, Any], *, bundle: bool, tok_txt: str, ovr
         f'      <div class="oaw-docs-prose">\n{compiled["sections_html"]}\n      </div>\n'
         '    </div>\n  </main>\n'
         '  <dialog id="oaw-docs-toc-dialog" class="va-modal-sheet" closedby="any" aria-labelledby="oaw-docs-toc-title">\n'
-        '    <div class="va-modal-sheet-hdr">\n      <strong id="oaw-docs-toc-title">Documentation Outline</strong>\n'
+        '    <div class="va-modal-sheet-hdr">\n      <h2 id="oaw-docs-toc-title">Chapters</h2>\n'
         '      <button type="button" data-close-dialog aria-label="Close outline">Close</button>\n    </div>\n'
         f'    <div class="va-modal-sheet-body">\n      <nav class="oaw-docs-toc-list" aria-label="Mobile Documentation Outline">\n      {toc_html}\n      </nav>\n    </div>\n  </dialog>\n'
         f'{render_footer(config)}\n  <script type="application/json" id="oaw-docs-search-index">{json_embed(compiled["search_index"])}</script>\n'
-        f"  <script>\n{shell_js}\n  </script>\n  <script>\n{docs_js}\n  </script>\n</body>\n</html>\n"
+        f'  <script>\n{shell_js}\n  </script>\n  <script>\n{docs_js}\n  </script>\n'
+        '  <script defer src="../assets/site-search.js"></script>\n</body>\n</html>\n'
     )
 
 
@@ -359,15 +364,36 @@ def _render_demo_html(config: dict[str, Any], *, tok_txt: str = "") -> str | Non
         shell_js = escape_tag_body(read_asset("site-shell.js"), "script")
         body_end = r"</body>" if re.search(r"</body>", html_text, flags=re.I) else r"$"
         html_text = re.sub(body_end, lambda m: f'  <script id="va-demo-site-shell-js">\n{shell_js}\n  </script>\n{m.group(0)}', html_text, count=1, flags=re.I)
+    if "assets/site-search.js" not in html_text:
+        body_end = r"</body>" if re.search(r"</body>", html_text, flags=re.I) else r"$"
+        html_text = re.sub(body_end, lambda m: f'  <script defer src="../assets/site-search.js"></script>\n{m.group(0)}', html_text, count=1, flags=re.I)
     return html_text
+
+
+def _copy_site_assets(dest: Path, *, render_overview: bool, render_docs: bool) -> None:
+    """Copy packaged shell, search, overview, and docs static assets into dest/assets."""
+    assets_out = dest / "assets"
+    assets_out.mkdir(parents=True, exist_ok=True)
+    names = ["site-shell.css", "site-search.css", "site-shell.js", "site-search.js"]
+    if render_overview:
+        names.append("site-overview.css")
+    if render_docs:
+        names.extend(["site-docs.css", "site-docs-search.js"])
+    for name in names:
+        src = ASSETS_DIR / name
+        if src.is_file():
+            dst = assets_out / name
+            if not (dst.exists() and os.path.samefile(src, dst)):
+                shutil.copy2(src, dst)
 
 
 def build_project_site(
     config: dict[str, Any], out_dir: Path, *, bundle: bool = True, tokens_path: Path | None = None,
     overrides_path: Path | None = None, tokens_css: str | None = None, overrides_css: str | None = None,
     render_overview: bool = True, render_docs: bool = True, render_demo: bool = True,
+    render_search_index: bool | None = None, extra_search_entries: list[dict[str, Any]] | None = None,
 ) -> dict[Path, bytes]:
-    """Build Overview, Docs, and optional Demo routes for a Quiet UI v9.8.0 project site."""
+    """Build Overview, Docs, optional Demo routes, and search-index.json for a Quiet UI v9.8.0 site."""
     dest = Path(out_dir)
     dest.mkdir(parents=True, exist_ok=True)
     tok_src, tok_txt, ovr_src, ovr_txt = _resolve_style_inputs(config, tokens_path, overrides_path, tokens_css, overrides_css)
@@ -379,6 +405,20 @@ def build_project_site(
         if ovr_src is not None or ovr_txt is not None:
             _copy_style_safe(ovr_src, ovr_txt, styles_dir / "overrides.css")
 
+    _copy_site_assets(dest, render_overview=render_overview, render_docs=render_docs)
+
+    emit_search = render_overview if render_search_index is None else render_search_index
+    dr_sources = (config.get("docs_reader") or {}).get("sources") or []
+    base_dir = Path(str(config.get("base_dir") or "."))
+    docs_payload: dict[str, Any] | None = None
+    if render_docs:
+        docs_payload = compile_markdown_docs(dr_sources, base_dir)
+    elif emit_search and dr_sources:
+        try:
+            docs_payload = compile_markdown_docs(dr_sources, base_dir)
+        except FileNotFoundError:
+            docs_payload = None
+
     emitted: dict[Path, bytes] = {}
     if render_overview:
         ov_path = dest / "index.html"
@@ -388,7 +428,7 @@ def build_project_site(
     if render_docs:
         dc_path = dest / "docs" / "index.html"
         dc_path.parent.mkdir(parents=True, exist_ok=True)
-        dc_bytes = _render_docs_html(config, bundle=bundle, tok_txt=tok_txt, ovr_txt=ovr_txt).encode("utf-8")
+        dc_bytes = _render_docs_html(config, bundle=bundle, tok_txt=tok_txt, ovr_txt=ovr_txt, compiled=docs_payload).encode("utf-8")
         dc_path.write_bytes(dc_bytes)
         emitted[dc_path] = dc_bytes
     if render_demo and (dm_html := _render_demo_html(config, tok_txt=tok_txt)) is not None:
@@ -397,4 +437,8 @@ def build_project_site(
         dm_bytes = dm_html.encode("utf-8")
         dm_path.write_bytes(dm_bytes)
         emitted[dm_path] = dm_bytes
+    if emit_search:
+        payload = build_project_search_index(config, docs_payload=docs_payload, extra_entries=extra_search_entries)
+        search_path = write_project_search_index(dest, payload)
+        emitted[search_path] = search_path.read_bytes()
     return emitted

@@ -251,29 +251,62 @@ def _check_themes_print_why_and_interactions(driver: Any, base_url: str, root_ur
 
 
 def _check_docs_demo_route(driver: Any, root_url: str, errs: list[str]) -> None:
-    """Verify /docs/demo/index.html at 390px and 1440px for slim strip, bar height, hidden overview tab, and 0 overflow."""
+    """Verify /docs/demo/index.html at 390/900/1440px for unified topbar, 900px route pill, 960px search, no subbar, and theme persistence."""
     demo_js = (
-        "const b = document.getElementById('va-studio-bar');"
+        "const vw = arguments[0], b = document.getElementById('va-studio-bar');"
         "if (!b) return 'missing #va-studio-bar';"
         "b.classList.remove('is-tucked');"
         "if (b.getBoundingClientRect().height > 48.5) return 'bar height>48.5';"
+        "if (document.getElementById('oaw-docs-subbar')) return 'unexpected #oaw-docs-subbar on demo';"
         "const s = document.querySelector('.va-demo-site-strip');"
         "if (!s) return 'missing .va-demo-site-strip';"
         "if (getComputedStyle(s).position !== 'static') return 'strip position not static';"
         "const sr = s.getBoundingClientRect();"
         "if (sr.height < 44 || sr.height > 48) return 'strip height=' + sr.height;"
+        "const rb = document.getElementById('oaw-route-btn'), rm = document.getElementById('oaw-route-menu'), nv = s.querySelector('.oaw-topbar-left .oaw-nav-links');"
+        "if (!rb || !rm || !nv) return 'missing route switcher DOM';"
+        "if (vw < 900) {"
+        "  if (getComputedStyle(rb).display === 'none') return '#oaw-route-btn hidden <900px';"
+        "  rb.click();"
+        "  const ro = (typeof rm.matches === 'function' && rm.matches(':popover-open')) || rm.getAttribute('data-open') === 'true';"
+        "  const ls = [...rm.querySelectorAll('.oaw-nav-link')].filter(a => a.getBoundingClientRect().width > 0).map(a => a.textContent.trim());"
+        "  if (!ro || rb.getAttribute('aria-expanded') !== 'true' || !['Overview', 'Demo', 'Docs'].every(k => ls.some(t => t.includes(k)))) return 'route menu missing Overview/Demo/Docs';"
+        "  if (typeof rm.hidePopover === 'function' && rm.matches(':popover-open')) rm.hidePopover(); else rb.click();"
+        "  if (rb.getAttribute('aria-expanded') !== 'false') return 'route menu failed to close';"
+        "} else {"
+        "  if (getComputedStyle(rb).display !== 'none') return '#oaw-route-btn visible >=900px';"
+        "  if (getComputedStyle(nv).display === 'none' || [...nv.querySelectorAll('.oaw-nav-link')].filter(a => a.getBoundingClientRect().width > 0).length < 3) return 'inline .oaw-nav-links not visible';"
+        "}"
+        "const sb = document.getElementById('oaw-search-btn'), st = sb?.querySelector('.oaw-search-text');"
+        "if (!sb || !st) return 'missing #oaw-search-btn';"
+        "if (vw < 960 && getComputedStyle(st).display !== 'none') return 'search text visible <960px';"
+        "if (vw >= 960 && getComputedStyle(st).display === 'none') return 'search text hidden >=960px';"
         "const ov = document.getElementById('va-tab-overview');"
         "if (ov && getComputedStyle(ov).display !== 'none' && !ov.hidden) return '#va-tab-overview not hidden';"
         "if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1 || b.scrollWidth > b.clientWidth + 1) return 'overflow';"
         "return '';"
     )
-    for vp_w, vp_h in ((390, 844), (1440, 900)):
+    for vp_w, vp_h in ((390, 844), (900, 900), (1440, 900)):
         set_viewport(driver, vp_w, vp_h, 1)
         driver.get(f"{root_url}/docs/demo/index.html")
         time.sleep(0.25)
-        demo_err = driver.execute_script(demo_js)
+        demo_err = driver.execute_script(demo_js, vp_w)
         if demo_err:
             errs.append(f"[DOCS_DEMO_ROUTE_{vp_w}] {demo_err}")
+
+    th_err = driver.execute_script(
+        "const opt = document.querySelector('.oaw-theme-opt[data-theme-opt=\"paper\"]');"
+        "if (!opt) return 'missing paper theme option';"
+        "opt.click();"
+        "const c = document.querySelector('.oaw-demo-chrome'), d = document.getElementById('va-stage-portal')?.contentDocument;"
+        "const ok = document.documentElement.dataset.theme === 'paper' && c?.dataset.theme === 'paper'"
+        " && d?.documentElement?.dataset?.theme === 'paper'"
+        " && localStorage.getItem('oaw_theme_v99') === 'paper' && localStorage.getItem('quiet-ui-site-theme') === 'paper';"
+        "localStorage.removeItem('oaw_theme_v99'); localStorage.removeItem('quiet-ui-site-theme');"
+        "return ok ? '' : 'demo dual-key theme sync failed';"
+    )
+    if th_err:
+        errs.append(f"[DOCS_DEMO_THEME] {th_err}")
 
 
 def run_studio_and_viewport_gates(driver: Any, base_url: str, root_url: str) -> list[str]:

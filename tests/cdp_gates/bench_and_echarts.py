@@ -142,15 +142,36 @@ def _poll_js(driver: Any, script: str, *args: Any, timeout: float = 3.0) -> bool
     return bool(driver.execute_script(script, *args))
 
 
+TOPBAR_NAV_JS = """
+const vw = arguments[0], expectSub = arguments[1], tb = document.querySelector('.oaw-topbar'), r = tb ? tb.getBoundingClientRect() : null;
+if (!r || r.height < 44 || r.height > 48) return 'invalid .oaw-topbar height=' + (r ? r.height : 0);
+if (!expectSub && document.getElementById('oaw-docs-subbar')) return 'unexpected #oaw-docs-subbar';
+const rb = document.getElementById('oaw-route-btn'), rm = document.getElementById('oaw-route-menu'), nv = document.querySelector('.oaw-topbar-left .oaw-nav-links');
+if (!rb || !rm || !nv) return 'missing route nav';
+if (vw < 900) {
+  if (getComputedStyle(rb).display === 'none') return '#oaw-route-btn hidden <900px';
+  rb.click();
+  const ro = (typeof rm.matches === 'function' && rm.matches(':popover-open')) || rm.getAttribute('data-open') === 'true';
+  const ls = [...rm.querySelectorAll('.oaw-nav-link')].filter(a => a.getBoundingClientRect().width > 0).map(a => a.textContent.trim());
+  if (!ro || rb.getAttribute('aria-expanded') !== 'true' || !['Overview', 'Demo', 'Docs'].every(k => ls.some(t => t.includes(k)))) return 'route menu missing Overview/Demo/Docs';
+  if (typeof rm.hidePopover === 'function' && rm.matches(':popover-open')) rm.hidePopover(); else rb.click();
+  if (rb.getAttribute('aria-expanded') !== 'false') return 'route menu failed to close';
+} else if (getComputedStyle(rb).display !== 'none' || getComputedStyle(nv).display === 'none' || [...nv.querySelectorAll('.oaw-nav-link')].filter(a => a.getBoundingClientRect().width > 0).length < 3) {
+  return 'desktop inline nav invalid';
+}
+const sb = document.getElementById('oaw-search-btn'), st = sb?.querySelector('.oaw-search-text');
+if (!sb || !st) return 'missing #oaw-search-btn';
+return (vw < 960 && getComputedStyle(st).display !== 'none') ? 'search text visible <960px' : ((vw >= 960 && getComputedStyle(st).display === 'none') ? 'search text hidden >=960px' : '');
+"""
+
+
 def _collect_theme_bgs(driver: Any) -> set[str]:
-    """Cycle #oaw-user-popover theme buttons across all 4 themes and return distinct body bgs."""
+    """Cycle #oaw-user-popover theme buttons across all 4 themes and verify dual-key storage + distinct bgs."""
     bgs: set[str] = set()
     for th in ("white", "paper", "dark-paper", "dark"):
         bg = driver.execute_script(
-            "if(document.getElementById('oaw-theme-select')) return '';"
-            "const b=document.querySelector(`.oaw-theme-opt[data-theme-opt='${arguments[0]}']`);"
-            "if(!b) return ''; b.click();"
-            "return document.documentElement.dataset.theme===arguments[0] ? getComputedStyle(document.body).backgroundColor : '';",
+            "if(document.getElementById('oaw-theme-select')) return '';const b=document.querySelector(`.oaw-theme-opt[data-theme-opt='${arguments[0]}']`);"
+            "if(!b) return '';b.click();return (document.documentElement.dataset.theme===arguments[0]&&localStorage.getItem('oaw_theme_v99')===arguments[0]&&localStorage.getItem('quiet-ui-site-theme')===arguments[0])?getComputedStyle(document.body).backgroundColor:'';",
             th,
         )
         if bg:
@@ -169,25 +190,18 @@ def _check_bench_page(driver: Any, bench_url: str, errs: list[str]) -> None:
         errs.extend(f"[BENCH_{th.upper()}] {e}" for e in driver.execute_script(DOM_AUDIT_JS))
     if len(bgs) < 3:
         errs.append(f"[BENCH_THEMES] distinct bgs={bgs}")
-
     set_viewport(driver, 390, 844, 1)
     driver.get(f"{bench_url}?theme=white")
     time.sleep(0.2)
     errs.extend(f"[BENCH_MOBILE] {e}" for e in driver.execute_script(DOM_AUDIT_JS))
-
     set_viewport(driver, 1440, 900, 1)
     driver.get(f"{bench_url}?theme=dark&medium=m1")
     time.sleep(0.15)
-    m1_err = driver.execute_script(
-        "const f=document.querySelector('.qe-figure');return f&&getComputedStyle(f).backgroundColor!=='rgb(255, 255, 255)'?'dark M1 bg not white':'';"
-    )
-    if m1_err:
+    if m1_err := driver.execute_script("const f=document.querySelector('.qe-figure');return f&&getComputedStyle(f).backgroundColor!=='rgb(255, 255, 255)'?'dark M1 bg not white':'';"):
         errs.append(f"[BENCH_M1] {m1_err}")
-
     driver.get(f"{bench_url}?theme=white")
     time.sleep(0.25)
-    ec_err = driver.execute_script(BENCH_INTERACT_JS)
-    if ec_err:
+    if ec_err := driver.execute_script(BENCH_INTERACT_JS):
         errs.append(f"[BENCH_INTERACT] {ec_err}")
 
 
@@ -197,13 +211,8 @@ def _check_docs_routes_and_social(driver: Any, docs_root_url: str, errs: list[st
     for path in ("/", "/demo/", "/docs/", "/bench/evidence-bench.html"):
         driver.get(f"{docs_root_url}{path}")
         time.sleep(0.3)
-        failed = driver.execute_script(
-            "return [...performance.getEntriesByType('navigation'), ...performance.getEntriesByType('resource')]"
-            ".filter(r => r.responseStatus && r.responseStatus >= 400).map(r => r.name + ':' + r.responseStatus);"
-        )
-        if failed:
+        if failed := driver.execute_script("return [...performance.getEntriesByType('navigation'), ...performance.getEntriesByType('resource')].filter(r=>r.responseStatus&&r.responseStatus>=400).map(r=>r.name+':'+r.responseStatus);"):
             errs.append(f"[DOCS_ROOT_404] {path}: {failed}")
-
     try:
         with urllib.request.urlopen(f"{docs_root_url}/assets/quiet-ui-social.png", timeout=5) as resp:
             raw = resp.read(250_001)
@@ -215,26 +224,24 @@ def _check_docs_routes_and_social(driver: Any, docs_root_url: str, errs: list[st
 
 
 def _check_docs_overview_route(driver: Any, docs_root_url: str, errs: list[str]) -> None:
-    """Audit Route 1 `/` Overview across 390/900/1440px and 4-theme switching."""
+    """Audit Route 1 `/` Overview across 390/900/1440px, responsive topbar, and 4-theme persistence."""
     for vp_w, vp_h in ((390, 844), (900, 900), (1440, 900)):
         set_viewport(driver, vp_w, vp_h, 1)
         driver.get(f"{docs_root_url}/?theme=white")
         time.sleep(0.2)
+        if nav_err := driver.execute_script(TOPBAR_NAV_JS, vp_w, False):
+            errs.append(f"[DOCS_OVERVIEW_NAV_{vp_w}] {nav_err}")
         ov_err = driver.execute_script(
             "if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1) return 'horizontal overflow';"
-            "const tb = document.querySelector('.oaw-topbar'), r = tb ? tb.getBoundingClientRect() : null;"
-            "if (!r || r.height < 44 || r.height > 48) return 'invalid .oaw-topbar height=' + (r ? r.height : 0);"
             "if (document.getElementById('oaw-theme-select')) return 'unexpected #oaw-theme-select';"
             "for (const [bid, pid] of [['oaw-projects-btn','oaw-projects-popover'],['oaw-pillar-btn','oaw-pillar-popover'],['oaw-user-btn','oaw-user-popover']]) {"
             "  const btn = document.getElementById(bid), pop = document.getElementById(pid);"
             "  if (!btn || !pop) return 'missing ' + bid + ' or ' + pid;"
-            "  btn.click(); const open = (typeof pop.matches==='function'&&pop.matches(':popover-open'))||pop.getAttribute('data-open')==='true';"
-            "  if (!open) return pid + ' failed to open';"
+            "  btn.click(); if (!((typeof pop.matches==='function'&&pop.matches(':popover-open'))||pop.getAttribute('data-open')==='true')) return pid + ' failed to open';"
             "  if (typeof pop.hidePopover==='function'&&pop.matches(':popover-open')) pop.hidePopover(); else btn.click();"
             "}"
             "if (!document.querySelector('.oaw-showcase-card .oaw-quickstart-box') || !document.querySelector('.oaw-cmd-slug')) return 'missing hero slugs or showcase';"
-            "const svgs = [...document.querySelectorAll('.oaw-compiled-diagram svg, .oaw-diagram-panel svg')];"
-            "if (!svgs.some(s => {const x=s.getBoundingClientRect(); return x.width>50 && x.height>30;})) return 'missing compiled architecture SVG';"
+            "if (![...document.querySelectorAll('.oaw-compiled-diagram svg, .oaw-diagram-panel svg')].some(s=>{const x=s.getBoundingClientRect();return x.width>50&&x.height>30;})) return 'missing compiled SVG';"
             "const ctas = [...document.querySelectorAll('.oaw-cta-row a')].map(a => a.getAttribute('href') || '');"
             "if (!ctas.some(h => h.includes('demo/index.html')) || !ctas.some(h => h.includes('docs/index.html'))) return 'missing demo/docs CTAs';"
             "const cmds = [...document.querySelectorAll('.oaw-install-cmd')];"
@@ -242,112 +249,106 @@ def _check_docs_overview_route(driver: Any, docs_root_url: str, errs: list[str])
         )
         if ov_err:
             errs.append(f"[DOCS_OVERVIEW_{vp_w}] {ov_err}")
-
-    bgs = _collect_theme_bgs(driver)
-    if len(bgs) < 3:
+    if len(bgs := _collect_theme_bgs(driver)) < 3:
         errs.append(f"[DOCS_OVERVIEW_THEMES] expected >=3 distinct bgs, got {bgs}")
+    driver.get(f"{docs_root_url}/docs/")
+    time.sleep(0.15)
+    if not driver.execute_script("return document.documentElement.dataset.theme==='dark'&&localStorage.getItem('oaw_theme_v99')==='dark'&&localStorage.getItem('quiet-ui-site-theme')==='dark';"):
+        errs.append("[DOCS_THEME_PERSIST_TO_DOCS] dark theme failed cross-route persistence")
 
 
 def _check_docs_legacy_and_demo_route(driver: Any, docs_root_url: str, errs: list[str]) -> None:
-    """Verify legacy deep-link redirects from `/`, Route 2 `/demo/` components tab, and 8 optical photos."""
+    """Verify legacy redirects, Route 2 `/demo/` 390px route pill + theme sync, components tab, and 8 optical photos."""
     set_viewport(driver, 1440, 900, 1)
     driver.get(f"{docs_root_url}/?mode=components")
-    if not _poll_js(
-        driver,
-        "const p=document.getElementById('va-stage-portal');"
-        "return location.pathname.endsWith('/demo/index.html') && location.search.includes('mode=components')"
-        " && p?.contentDocument?.querySelectorAll('.qe-specimen').length === 53;",
-    ):
+    if not _poll_js(driver, "const p=document.getElementById('va-stage-portal');return location.pathname.endsWith('/demo/index.html')&&location.search.includes('mode=components')&&p?.contentDocument?.querySelectorAll('.qe-specimen').length===53;"):
         errs.append("[DOCS_LEGACY_COMPONENTS] /?mode=components failed redirect or 53-specimen mount")
-
     driver.get(f"{docs_root_url}/?world=04-civic-finance-and-stem-learning&view=v10-civic-capital-budget-deck")
-    _poll_js(
-        driver,
-        "const d=document.getElementById('va-stage-portal')?.contentDocument;"
-        "return location.pathname.endsWith('/demo/index.html') && d?.documentElement?.dataset?.view==='v10-civic-capital-budget-deck'"
-        " && (d.getElementById('va-stage-main')?.children.length || 0) > 0;",
-    )
+    _poll_js(driver, "const d=document.getElementById('va-stage-portal')?.contentDocument;return location.pathname.endsWith('/demo/index.html')&&d?.documentElement?.dataset?.view==='v10-civic-capital-budget-deck'&&(d.getElementById('va-stage-main')?.children.length||0)>0;")
     v10_err = driver.execute_script(
         "if (!location.pathname.endsWith('/demo/index.html')) return 'not redirected to /demo/index.html';"
         "const d=document.getElementById('va-stage-portal')?.contentDocument;"
         "if (d?.documentElement?.dataset?.view !== 'v10-civic-capital-budget-deck') return 'v10 not loaded';"
         "const strip=document.querySelector('.va-demo-site-strip');"
         "if (!strip || getComputedStyle(strip).position !== 'static') return 'invalid .va-demo-site-strip position';"
-        "const h = strip.getBoundingClientRect().height; if (h < 44 || h > 48) return 'strip height=' + h;"
-        "if (!strip.querySelector('.oaw-topbar-left .oaw-nav-links')) return 'nav tabs not inside .oaw-topbar-left';"
         "const opt=document.querySelector('.oaw-theme-opt[data-theme-opt=\"paper\"]'); if(!opt) return 'missing demo theme opt';"
-        "opt.click(); if (d.documentElement.dataset.theme !== 'paper') return 'demo user menu theme sync failed';"
+        "opt.click();"
+        "if (d.documentElement.dataset.theme!=='paper'||localStorage.getItem('oaw_theme_v99')!=='paper'||localStorage.getItem('quiet-ui-site-theme')!=='paper') return 'demo theme sync/storage failed';"
         "const ov=document.getElementById('va-tab-overview');"
         "return (ov && getComputedStyle(ov).display !== 'none' && !ov.hidden) ? '#va-tab-overview not hidden' : '';"
     )
     if v10_err:
         errs.append(f"[DOCS_LEGACY_V10] {v10_err}")
+    if nav_err := driver.execute_script(TOPBAR_NAV_JS, 1440, False):
+        errs.append(f"[DOCS_LEGACY_V10_NAV] {nav_err}")
 
+    set_viewport(driver, 390, 844, 1)
+    driver.get(f"{docs_root_url}/demo/")
+    time.sleep(0.25)
+    if nav390 := driver.execute_script(TOPBAR_NAV_JS, 390, False):
+        errs.append(f"[DOCS_DEMO_NAV_390] {nav390}")
+    if driver.execute_script("return document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;"):
+        errs.append("[DOCS_DEMO_390] horizontal overflow")
+
+    set_viewport(driver, 1440, 900, 1)
     driver.get(f"{docs_root_url}/demo/")
     time.sleep(0.25)
     driver.execute_script("document.getElementById('va-tab-components')?.click();")
     if not _poll_js(driver, "return document.getElementById('va-stage-portal')?.contentDocument?.querySelectorAll('.qe-specimen').length === 53;"):
         errs.append("[DOCS_DEMO_COMPONENTS] expected 53 specimens on /demo/")
-
-    for wid, vid, expected_n in (
-        ("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", 3),
-        ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", 3),
-        ("06-smart-home-and-energy", "v17-picture-frame-home-kiosk", 2),
-    ):
+    for wid, vid, expected_n in (("05-physical-systems-auto-and-aero", "v15-collimated-flight-hud", 3), ("05-physical-systems-auto-and-aero", "v16-transparent-window-overlay", 3), ("06-smart-home-and-energy", "v17-picture-frame-home-kiosk", 2)):
         driver.get(f"{docs_root_url}/demo/?world={wid}&view={vid}&theme=white")
-        ok_ph = _poll_js(
-            driver,
-            "const d=document.getElementById('va-stage-portal')?.contentDocument;"
-            "return d && [...d.querySelectorAll('img.v9-opt-photo, img.v17-art-photo')].filter(i=>i.complete&&i.naturalWidth>=1200).length===arguments[0];",
-            expected_n,
-        )
-        if not ok_ph:
+        if not _poll_js(driver, "const d=document.getElementById('va-stage-portal')?.contentDocument;return d&&[...d.querySelectorAll('img.v9-opt-photo, img.v17-art-photo')].filter(i=>i.complete&&i.naturalWidth>=1200).length===arguments[0];", expected_n):
             errs.append(f"[DOCS_DEMO_PHOTOS_{vid}] expected {expected_n} >=1200px photos")
 
 
 def _check_docs_reader_route(driver: Any, docs_root_url: str, errs: list[str]) -> None:
-    """Audit Route 3 `/docs/` across 390/900/1440px, search filter + recovery, 4 themes, and mobile TOC dialog."""
-    for vp_w, vp_h in ((390, 844), (900, 900), (1440, 900)):
+    """Audit Route 3 `/docs/` across 390/768/900/1440px, subbar/rail states, search, 4 themes, and mobile TOC dialog."""
+    for vp_w, vp_h in ((390, 844), (768, 900), (900, 900), (1440, 900)):
         set_viewport(driver, vp_w, vp_h, 1)
         driver.get(f"{docs_root_url}/docs/?theme=white")
         time.sleep(0.2)
+        if nav_err := driver.execute_script(TOPBAR_NAV_JS, vp_w, True):
+            errs.append(f"[DOCS_READER_NAV_{vp_w}] {nav_err}")
         doc_err = driver.execute_script(
+            "const vw = arguments[0];"
             "if (document.documentElement.scrollWidth > document.documentElement.clientWidth + 1) return 'horizontal overflow';"
-            "const svgs = [...document.querySelectorAll('.oaw-compiled-diagram svg')];"
-            "if (!svgs.some(s => {const r=s.getBoundingClientRect(); return r.width>50 && r.height>30;})) return 'missing .oaw-compiled-diagram svg';"
-            "return document.querySelectorAll('[data-doc-jump]').length ? '' : 'missing [data-doc-jump] quick-jumps';"
+            "const sub = document.getElementById('oaw-docs-subbar'), trig = document.getElementById('oaw-docs-toc-trigger'), rail = document.querySelector('.oaw-docs-rail');"
+            "if (!sub || !trig || !rail) return 'missing #oaw-docs-subbar, trigger, or .oaw-docs-rail';"
+            "const sh = sub.getBoundingClientRect().height, sp = getComputedStyle(sub).position;"
+            "if (vw < 680) { if (Math.abs(sh - 38) > 1 || sp !== 'sticky' || getComputedStyle(trig).display === 'none' || getComputedStyle(rail).display !== 'none') return 'mobile subbar/rail invalid: h=' + sh + ' pos=' + sp; }"
+            "else if (vw < 960) { if (Math.abs(sh - 38) > 1 || sp !== 'static' || getComputedStyle(trig).display === 'none' || getComputedStyle(rail).display !== 'none') return 'tablet subbar/rail invalid: h=' + sh + ' pos=' + sp; }"
+            "else { if (getComputedStyle(sub).display !== 'none' || getComputedStyle(trig).display !== 'none' || getComputedStyle(rail).display === 'none') return 'desktop subbar/rail invalid'; }"
+            "if (![...document.querySelectorAll('.oaw-compiled-diagram svg')].some(s=>{const r=s.getBoundingClientRect();return r.width>50&&r.height>30;})) return 'missing .oaw-compiled-diagram svg';"
+            "return document.querySelectorAll('[data-doc-jump]').length ? '' : 'missing [data-doc-jump] quick-jumps';",
+            vp_w,
         )
         if doc_err:
             errs.append(f"[DOCS_READER_{vp_w}] {doc_err}")
-
     search_err = driver.execute_script(
         "const secs = [...document.querySelectorAll('.oaw-docs-section, .oaw-doc-section')];"
-        "const inp = document.getElementById('oaw-docs-search'), empty = document.querySelector('#oaw-docs-empty.va-empty-state[data-kind=\"filtered\"]');"
-        "const clr = document.getElementById('oaw-empty-clear-btn');"
+        "const inp = document.getElementById('oaw-docs-search'), empty = document.querySelector('#oaw-docs-empty.va-empty-state[data-kind=\"filtered\"]'), clr = document.getElementById('oaw-empty-clear-btn');"
         "if (!secs.length || !inp || !empty || !clr) return 'missing docs search/empty DOM';"
         "const vis = () => secs.filter(s => !s.hidden).length;"
         "inp.value = 'brand'; inp.dispatchEvent(new Event('input', { bubbles: true }));"
         "if (vis() <= 0 || vis() >= secs.length || !empty.hidden) return 'brand search filter unexpected count';"
         "inp.value = 'zzzxqynonexistent999'; inp.dispatchEvent(new Event('input', { bubbles: true }));"
         "if (vis() !== 0 || empty.hidden || getComputedStyle(empty).display === 'none') return 'zero-results empty state failed';"
-        "clr.click();"
-        "return (inp.value === '' && empty.hidden && vis() === secs.length) ? '' : 'clear search failed to restore';"
+        "clr.click(); return (inp.value === '' && empty.hidden && vis() === secs.length) ? '' : 'clear search failed to restore';"
     )
     if search_err:
         errs.append(f"[DOCS_READER_SEARCH] {search_err}")
-
-    bgs = _collect_theme_bgs(driver)
-    if len(bgs) < 3:
+    if len(bgs := _collect_theme_bgs(driver)) < 3:
         errs.append(f"[DOCS_READER_THEMES] expected >=3 distinct bgs, got {bgs}")
-
     set_viewport(driver, 390, 844, 1)
     driver.get(f"{docs_root_url}/docs/?theme=white")
     time.sleep(0.2)
     toc_err = driver.execute_script(
         "const t=document.getElementById('oaw-docs-toc-trigger'), d=document.getElementById('oaw-docs-toc-dialog');"
         "if (!t || !d || getComputedStyle(t).display === 'none') return 'missing/hidden #oaw-docs-toc-trigger';"
-        "t.click(); if (!d.open) return 'TOC dialog failed to open';"
-        "if (typeof d.close === 'function') d.close(); return '';"
+        "t.click(); if (!d.open || t.getAttribute('aria-expanded') !== 'true') return 'TOC dialog failed to open';"
+        "const cb = d.querySelector('[data-close-dialog]'); if (cb) cb.click(); else if (typeof d.close === 'function') d.close();"
+        "return (!d.open && t.getAttribute('aria-expanded') === 'false') ? '' : 'TOC dialog failed to close';"
     )
     if toc_err:
         errs.append(f"[DOCS_READER_MOBILE_TOC] {toc_err}")
